@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -547,6 +547,21 @@ void DEFPPPPP( ASMPI_SEND_I4, asmpi_send_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *
     return;
 }
 
+void DEFPPPPP( ASMPI_SEND_C, asmpi_send_c, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
+               ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_Send: send %d complex values to proc #%d ...\n", *count, *dest );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Send( (void *)buf, *count, MPI_DOUBLE_COMPLEX, *dest, *tag, mpicom ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Send: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
 /*
  * Wrappers around MPI_Recv
  * Do not check returncode because all errors raise
@@ -593,6 +608,22 @@ void DEFPPPPP( ASMPI_RECV_I4, asmpi_recv_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *
     double start = MPI_Wtime();
     AS_MPICHECK(
         MPI_Recv( (void *)buf, *count, MPI_INTEGER4, *source, *tag, mpicom, MPI_STATUS_IGNORE ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Recv: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
+void DEFPPPPP( ASMPI_RECV_C, asmpi_recv_c, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
+               ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_Recv: recieve %d complex values from proc #%d ...\n", *count, *source );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Recv( (void *)buf, *count, MPI_DOUBLE_COMPLEX, *source, *tag, mpicom,
+                           MPI_STATUS_IGNORE ) );
     double end = MPI_Wtime();
     DEBUG_MPI( "MPI_Recv: ... in %f sec %s\n", ( end - start ), " " );
 #endif
@@ -657,6 +688,26 @@ void DEFPPPPPPPPP( ASMPI_SENDRECV_I4, asmpi_sendrecv_i4, ASTERINTEGER4 *buffer_s
     AS_MPICHECK( MPI_Sendrecv( (void *)buffer_send, *count_send, MPI_INTEGER4, *recipient,
                                *tag_send, (void *)buffer_recv, *count_recv, MPI_INTEGER4, *sender,
                                *tag_recv, mpicom, MPI_STATUS_IGNORE ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Sendrecv: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
+void DEFPPPPPPPPP( ASMPI_SENDRECV_C, asmpi_sendrecv_c, ASTERDOUBLE *buffer_send,
+                   ASTERINTEGER4 *count_send, ASTERINTEGER4 *recipient, ASTERINTEGER4 *tag_send,
+                   ASTERDOUBLE *buffer_recv, ASTERINTEGER4 *count_recv, ASTERINTEGER4 *sender,
+                   ASTERINTEGER4 *tag_recv, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_SendRecv: send/recv %d complex values to proc #%d ...\n",
+               *count_send + *count_recv, *recipient );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Sendrecv( (void *)buffer_send, *count_send, MPI_DOUBLE_COMPLEX, *recipient,
+                               *tag_send, (void *)buffer_recv, *count_recv, MPI_DOUBLE_COMPLEX,
+                               *sender, *tag_recv, mpicom, MPI_STATUS_IGNORE ) );
     double end = MPI_Wtime();
     DEBUG_MPI( "MPI_Sendrecv: ... in %f sec %s\n", ( end - start ), " " );
 #endif

@@ -51,7 +51,6 @@ subroutine crnggc(chamnz, l_print)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/debug_print.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -122,7 +121,6 @@ subroutine crnggc(chamnz, l_print)
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=nume_equa)
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
-    call debug_print(nume_equa)
     mesh = zk24(jrefn) (1:8)
     nomgdr = zk24(jrefn+1) (1:8)
 !

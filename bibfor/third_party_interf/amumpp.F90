@@ -58,6 +58,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
+#include "asterfort/filter_rhs_c.h"
 #include "asterfort/filter_rhs.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -330,9 +331,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !           --- CALCULEES SEULEMENT SUR UN PROC
                 if (lmhpc) then
                     if (.not. ltypr) then
-                        ASSERT(.false.)
+                        call filter_rhs_c(csolu, nonu//".NUME")
+                    else
+                        call filter_rhs(rsolu, nonu//".NUME")
                     end if
-                    call filter_rhs(rsolu, nonu//".NUME")
                 end if
 
 !           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
