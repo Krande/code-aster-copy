@@ -106,7 +106,7 @@ def configure(self):
     else:
         self.define("ASTER_HAVE_MED", 1)
         if not self.is_defined("ASTER_PLATFORM_MSYS2"):
-            self.define("ASTER_MED_SUPPORT_WRITE_V3",1)
+            self.define("ASTER_MED_SUPPORT_WRITE_V3", 1)
         self.env.BUILD_MED = True
 
     try:

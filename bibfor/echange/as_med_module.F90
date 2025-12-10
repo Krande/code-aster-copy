@@ -99,7 +99,7 @@ contains
                 end if
 #endif
 
-                if (vers(1) .eq. 4 .and. (vers(2) .eq. 0 .or. vers(2) .eq. 1)) then
+                if (vers(1) .eq. 4 .and. (0 .le. vers(2) .and. vers(2) .le. 2)) then
 !               pass
                 elseif (vers(1) .eq. 3 .and. vers(2) .eq. 3) then
 #if (ASTER_MED_VERSION_MAJOR == 4 && ASTER_MED_VERSION_MINOR == 0)
