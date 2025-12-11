@@ -26,7 +26,6 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/get_equa_info.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -55,18 +54,20 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 !
 !
     integer(kind=8) :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, iadpar(1), l1, ibid
-    integer(kind=8) :: iddl2, iddl3, ia2, ia3, ncdg, nbmrig, nb_nodes_mesh, kcoor, node
+    integer(kind=8) :: iddl2, iddl3, ia2, ia3, ncdg, nbmrig, nb_nodes_mesh, kcoor, node, icmp
     parameter(mxddl=6)
     character(len=8) :: nomddl(mxddl), basemo, k8b, typeq, mesh
     character(len=14) :: nume
     character(len=16) :: nompar(3), typmas, typbas
-    character(len=19) :: masse
+    character(len=19) :: masse, nume_equa
     character(len=24) :: posddl, vecau1, vecau2
     real(kind=8) :: rmin, rmax, raux, rval, cdg(3), coorno(3), massTotDirUnit
     aster_logical :: gene
     character(len=24), pointer :: refn(:) => null()
     real(kind=8) :: rundef, epsi
     blas_int :: b_incx, b_incy, b_n
+    integer(kind=8) :: idx_gd
+    integer(kind=8), pointer :: p_deeq(:) => null()
 !     ------------------------------------------------------------------
     data nomddl/'DX      ', 'DY      ', 'DZ      ',&
      &              'DRX     ', 'DRY     ', 'DRZ     '/
@@ -128,6 +129,9 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
         call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=mesh)
         call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_nodes_mesh)
         call jeveuo(mesh//'.COORDO    .VALE', 'L', kcoor)
+        call dismoi('NUME_EQUA', nume, 'NUME_DDL', repk=nume_equa)
+        call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=idx_gd)
+        call jeveuo(nume_equa(1:19)//'.DEEQ', 'L', vi=p_deeq)
     end if
 
     if (.not. gene) then
@@ -179,19 +183,24 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 !               en rotation
                 do ieq = 1, neq
                     zr(laux1+ieq-1) = 0.d0
-                    call get_equa_info(nume, ieq, typeq, nume_nodez=node)
-                    if (typeq(1:1) .ne. 'A') cycle
-                    coorno(1) = zr(kcoor-1+3*(node-1)+1)
-                    coorno(2) = zr(kcoor-1+3*(node-1)+2)
-                    coorno(3) = zr(kcoor-1+3*(node-1)+3)
-                    if (iddl2 .gt. 0) then
+!                   on reporte le traitement fait dans get_equa_info
+!                   directement car l'appel est trop couteux
+                    node = p_deeq(2*(ieq-1)+1)
+                    icmp = p_deeq(2*(ieq-1)+2)
+!                   check physical node
+                    if (node .gt. 0 .and. icmp .gt. 0) then
+                        coorno(1) = zr(kcoor-1+3*(node-1)+1)
+                        coorno(2) = zr(kcoor-1+3*(node-1)+2)
+                        coorno(3) = zr(kcoor-1+3*(node-1)+3)
+                        if (iddl2 .gt. 0) then
 !                       il y a au plus un zi(lddl+iaX non nul
 !                       car une équation ne correspond qu'à une composante
-                        zr(laux1+ieq-1) = zi(lddl+ia+ieq-1) &
-                                          -zi(lddl+ia2+ieq-1) &
-                                          *(coorno(iddl3)-cdg(iddl3)) &
-                                          +zi(lddl+ia3+ieq-1) &
-                                          *(coorno(iddl2)-cdg(iddl2))
+                            zr(laux1+ieq-1) = zi(lddl+ia+ieq-1) &
+                                              -zi(lddl+ia2+ieq-1) &
+                                              *(coorno(iddl3)-cdg(iddl3)) &
+                                              +zi(lddl+ia3+ieq-1) &
+                                              *(coorno(iddl2)-cdg(iddl2))
+                        end if
                     end if
                 end do
             end if
