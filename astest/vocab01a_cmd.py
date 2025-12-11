@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,15 @@
 # --------------------------------------------------------------------
 
 import os
+import re
 import tempfile
 import types
 from inspect import isclass
 
 from code_aster.Commands import *
 from code_aster import CA
+
+# Commands must be imported first
 from code_aster.Cata.Commands import DEFI_MATERIAU, commandStore
 from code_aster.Cata.DataStructure import DataStructure, UnitType
 from code_aster.Cata.Language.DataStructure import UnitBaseType
@@ -152,8 +155,9 @@ class CataChecker:
                 self.cr.fatal("At least one value is expected for 'enum'")
             elif len(enum) != len(into):
                 self.cr.fatal(
-                    "'into' and 'enum' must have the same size: "
-                    "{0} != {1}".format(len(into), len(enum))
+                    "'into' and 'enum' must have the same size: {0} != {1}".format(
+                        len(into), len(enum)
+                    )
                 )
 
     def check_position(self, step):
@@ -195,7 +199,7 @@ class CataChecker:
         typ = force_list(step.definition.get("typ"))
         if step.name.startswith("UNITE") and UnitType() in typ:
             if not inout:
-                self.cr.fatal("Attribute 'inout' is required with 'typ' " "UnitType().")
+                self.cr.fatal("Attribute 'inout' is required with 'typ' UnitType().")
             if step.defaultValue() == 6:
                 self.cr.fatal("Unauthorized default value: 6")
 
@@ -362,8 +366,9 @@ def check_sdprod(command, func_prod, sd_prod, verbose=True):
     except Exception as exc:
         print("Error: {0}".format(exc))
         cr.fatal(
-            "Error: {0}: the 'sd_prod' function must support "
-            "the '__all__=True' argument".format(command)
+            "Error: {0}: the 'sd_prod' function must support the '__all__=True' argument".format(
+                command
+            )
         )
     if not cr.estvide():
         if verbose:
@@ -427,17 +432,18 @@ def checkDocStrings(test, commands):
         for entity in objs:
             if getattr(entity, "ang", None):
                 lang[id(entity)] = (entity.fr, entity.ang)
-    test.assertEqual(
-        len(lang), 0, msg="'ang' is deprecated and not used anymore, " "please remove it"
-    )
+    test.assertEqual(len(lang), 0, msg="'ang' is deprecated and not used anymore, please remove it")
 
 
 def extractKeywords(commands):
     """Return the list of all the keywords (simple or factor)"""
+    expr = re.compile("[A-Za-z]")
     # keywords of each command
     cmdKwd = {}
     for command in commands:
-        cmdKwd[command.name] = get_entite(command, typ="keys", with_into=True)
+        words = get_entite(command, typ="keys", with_into=True)
+        words = [key for key in words if expr.search(key) is not None]
+        cmdKwd[command.name] = words
     # reverse dict : commands that use a keyword
     kwdCmd = {}
     for name, words in list(cmdKwd.items()):
@@ -511,7 +517,7 @@ def check_material_def(test):
     )
     test.assertTrue(
         not missing,
-        msg="These keywords must be added into the " "AU_MOINS_UN rule: " + ", ".join(missing),
+        msg="These keywords must be added into the AU_MOINS_UN rule: " + ", ".join(missing),
     )
 
 
@@ -551,8 +557,9 @@ def vocab01_ops(self, EXISTANT, INFO, **kwargs):
             "A",
             "CATAMESS_2",
             valk=(
-                "Il y avait {} mots-clefs dans le catalogue et, "
-                "maintenant, il y en a {}.".format(nbExist, nbWords),
+                "Il y avait {} mots-clefs dans le catalogue et, maintenant, il y en a {}.".format(
+                    nbExist, nbWords
+                ),
                 "Relancez avec INFO=2 pour écrire la nouvelle liste "
                 "et comparer avec le fichier vocab01a.34 existant.",
             ),

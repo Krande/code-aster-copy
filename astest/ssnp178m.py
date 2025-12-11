@@ -28,14 +28,7 @@ tmpdir = SharedTmpdir("ssnp178m_")
 
 medfile = osp.join(tmpdir.path, "resu.ssnp178m.med")
 DEFI_FICHIER(UNITE=87, FICHIER=medfile, TYPE="BINARY")
-IMPR_RESU(
-    FICHIER_UNIQUE="OUI",
-    FORMAT="MED",
-    UNITE=87,
-    INFO=1,
-    RESU=_F(RESULTAT=resnonl),
-    VERSION_MED="4.1.0",
-)
+IMPR_RESU(FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=87, INFO=1, RESU=_F(RESULTAT=resnonl))
 
 # read std field and project on hpc field
 mesh_std = LIRE_MAILLAGE(UNITE=87)

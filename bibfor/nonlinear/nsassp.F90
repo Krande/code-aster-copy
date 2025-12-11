@@ -63,7 +63,7 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ifm, niv
-    character(len=19) :: cnffdo, cndfdo, cnfvdo, cnffpi, cndfpi
+    character(len=19) :: cnffdo, cndfdo, cnfvdo, cnffpi, cndfpi, cnbudi
     aster_logical :: l_macr, l_pilo
     type(NL_DS_VectComb) :: ds_vectcomb
     aster_logical :: l_unil_pena
@@ -93,6 +93,7 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
 !
     call nmasfi(list_func_acti, hval_veasse, cnffdo)
     call nonlinDSVectCombAddAny(cnffdo, +1.d0, ds_vectcomb)
+
 !
 ! - Get Dirichlet loads
 !

@@ -114,7 +114,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     integer(kind=8) :: codret
     integer(kind=8) :: iaux, jaux, kaux
     integer(kind=8) :: numfam, nfam, cmpt, ii
-    integer(kind=8) :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
+    integer(kind=8) :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1), itypM
     integer(kind=8) :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
     integer(kind=8) :: jgren, jtest4, i_fama, kfama
     integer(kind=8) :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
@@ -536,11 +536,17 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         call jeveuo(nosdfu//'.MATY', 'L', jtyp)
         do ityp = 1, MT_NTYMAX
-            nbmat = zi(jtyp+3*(ityp-1)+2)
+            itypM = ityp
+            if (itypM .eq. MT_HEXA9) itypM = MT_HEXA8
+            if (itypM .eq. MT_TETRA15) itypM = MT_TETRA10
+            if (itypM .eq. MT_PYRAM19) itypM = MT_PYRAM13
+            if (itypM .eq. MT_PENTA21) itypM = MT_PENTA18
+            if (itypM .eq. MT_PENTA7) itypM = MT_PENTA6
+            nbmat = zi(jtyp+3*(itypM-1)+2)
             if (nbmat .ne. 0) then
-                start = zi(jtyp+3*(ityp-1))
-                nbmal = nmatyp(ityp)
-                ASSERT(zi(jtyp+3*(ityp-1)+1) == nbmal)
+                start = zi(jtyp+3*(itypM-1))
+                nbmal = nmatyp(itypM)
+                ASSERT(zi(jtyp+3*(itypM-1)+1) == nbmal)
                 nbbloc = 1
                 if (nbmal == 0) nbbloc = 0
                 call as_mfrall(1, filter, codret)
@@ -555,9 +561,9 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
                 cmpt = 0
                 if (nbmal > 0) then
 !               RECUPERATION DU TABLEAU DES RENUMEROTATIONS
-                    call jeveuo('&&'//prefix//'.NUM.'//nomtyp(ityp), 'L', kaux)
+                    call jeveuo('&&'//prefix//'.NUM.'//nomtyp(itypM), 'L', kaux)
 !               CREATION VECTEUR NUMEROS DE FAMILLE POUR LES MAILLES / TYPE
-                    do iaux = 1, nmatyp(ityp)
+                    do iaux = 1, nmatyp(itypM)
                         if (zi(jma+ient-1) .gt. 0) then
                             cmpt = cmpt+1
                             tabaux(cmpt) = nufaen(zi(kaux-1+iaux))
@@ -567,7 +573,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
                 ASSERT(cmpt .eq. nbmal)
 !
                 call as_mmhaaw(fid, nomamd, tabaux, nbmal, filter(1), &
-                               edmail, typgeo(ityp), codret)
+                               edmail, typgeo(itypM), codret)
                 if (codret .ne. 0) then
                     saux08 = 'mmhaaw'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)

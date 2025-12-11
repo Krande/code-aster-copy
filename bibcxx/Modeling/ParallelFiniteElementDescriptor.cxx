@@ -198,7 +198,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                     toCopy.push_back( -virtualNodesNumbering[-numNode - 1] - 1 );
                 }
             }
-            toCopy.push_back( explorer[numElem - 1].getType() );
+            toCopy.push_back( curElem.getType() );
             _virtualCellsDescriptor->push_back( toCopy );
         }
 

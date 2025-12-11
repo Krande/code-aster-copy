@@ -219,9 +219,7 @@ TEST_RESU(
 with SharedTmpdir("zzzz502p_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.zzzz502p.med")
     DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=resu), VERSION_MED="4.1.0"
-    )
+    IMPR_RESU(FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=resu))
     DEFI_FICHIER(ACTION="LIBERER", UNITE=80)
 
 FIN()

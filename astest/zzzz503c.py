@@ -102,11 +102,7 @@ with SharedTmpdir("zzzz503c_") as tmpdir:
     DEFI_FICHIER(UNITE=81, FICHIER=medfile, TYPE="BINARY")
 
     IMPR_RESU(
-        FICHIER_UNIQUE="OUI",
-        FORMAT="MED",
-        RESU=_F(RESULTAT=resu, GROUP_NO="COTE_H"),
-        VERSION_MED="4.0.0",
-        UNITE=81,
+        FICHIER_UNIQUE="OUI", FORMAT="MED", RESU=_F(RESULTAT=resu, GROUP_NO="COTE_H"), UNITE=81
     )
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=81)
@@ -134,11 +130,7 @@ with SharedTmpdir("zzzz503c_") as tmpdir:
     DEFI_FICHIER(UNITE=82, FICHIER=medfile, TYPE="BINARY")
 
     IMPR_RESU(
-        FICHIER_UNIQUE="OUI",
-        FORMAT="MED",
-        RESU=_F(RESULTAT=resu, GROUP_MA="BLABLA"),
-        VERSION_MED="4.0.0",
-        UNITE=82,
+        FICHIER_UNIQUE="OUI", FORMAT="MED", RESU=_F(RESULTAT=resu, GROUP_MA="BLABLA"), UNITE=82
     )
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=82)
@@ -148,9 +140,7 @@ with SharedTmpdir("zzzz503c_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.zzzz503c.med")
     DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY")
 
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=resu), VERSION_MED="4.0.0"
-    )
+    IMPR_RESU(FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=resu))
 
     mesh_std = LIRE_MAILLAGE(UNITE=80, FORMAT="MED")
 

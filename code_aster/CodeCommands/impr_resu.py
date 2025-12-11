@@ -78,13 +78,11 @@ class ImprResu(ExecuteCommand):
             for resu in keywords["RESU"]:
                 self.add_result_name(resu)
 
-        # For Mesh is always "OUI"
-        if "FICHIER_UNIQUE" in keywords and not ExecutionParameter().option & Options.HPCMode:
-            keywords["FICHIER_UNIQUE"] = "OUI"
-
     def change_syntax(self, keywords):
-        """Hook to change keywords of IMPR_RESU before checking syntax to take
-            into account child classes of DataStructureDict
+        """Hook to change keywords before checking syntax.
+
+        - It takes into account child classes of DataStructureDict.
+        - Change value depending if HPCMode is enabled or not.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed
@@ -95,6 +93,11 @@ class ImprResu(ExecuteCommand):
             resu_to_print.extend(_syntax_dsdict(resu))
 
         keywords["RESU"] = tuple(resu_to_print)
+
+        if keywords.get("FORMAT") in (None, "MED"):
+            # "OUI" is only allowed with a ParallelMesh
+            if "FICHIER_UNIQUE" in keywords and not ExecutionParameter().option & Options.HPCMode:
+                keywords["FICHIER_UNIQUE"] = "NON"
 
 
 def _syntax_dsdict(resu):

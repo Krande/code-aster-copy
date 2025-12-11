@@ -28,9 +28,13 @@ import os.path as osp
 
 from code_aster.Commands import *
 from code_aster.Utilities import SharedTmpdir
+from code_aster import CA
+from code_aster.CA import MPI
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
+
+nProc = CA.MPI.ASTER_COMM_WORLD.Get_size()
 
 MA = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
@@ -733,35 +737,39 @@ IMPR_FONCTION(
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.90.med")
     DEFI_FICHIER(UNITE=90, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=90, RESU=_F(RESULTAT=U), VERSION_MED="4.1.0"
-    )
+    if nProc == 1:
+        IMPR_RESU(FORMAT="MED", UNITE=90, RESU=_F(RESULTAT=U), VERSION_MED="4.1.0")
+    else:
+        IMPR_RESU(FORMAT="MED", UNITE=90, RESU=_F(RESULTAT=U), FICHIER_UNIQUE="OUI")
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=90)
 
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.91.med")
     DEFI_FICHIER(UNITE=91, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=91, RESU=_F(RESULTAT=U2), VERSION_MED="4.0.0"
-    )
+    if nProc == 1:
+        IMPR_RESU(FORMAT="MED", UNITE=91, RESU=_F(RESULTAT=U2), VERSION_MED="4.0.0")
+    else:
+        IMPR_RESU(FORMAT="MED", UNITE=91, RESU=_F(RESULTAT=U2), FICHIER_UNIQUE="OUI")
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=91)
 
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.92.med")
     DEFI_FICHIER(UNITE=92, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=92, RESU=_F(RESULTAT=U3), VERSION_MED="4.1.0"
-    )
+    if nProc == 1:
+        IMPR_RESU(FORMAT="MED", UNITE=92, RESU=_F(RESULTAT=U3), VERSION_MED="4.1.0")
+    else:
+        IMPR_RESU(FORMAT="MED", UNITE=92, RESU=_F(RESULTAT=U3), FICHIER_UNIQUE="OUI")
     DEFI_FICHIER(ACTION="LIBERER", UNITE=92)
 
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.94.med")
     DEFI_FICHIER(UNITE=94, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=94, RESU=_F(RESULTAT=U4), VERSION_MED="4.1.0"
-    )
+    if nProc == 1:
+        IMPR_RESU(FORMAT="MED", UNITE=94, RESU=_F(RESULTAT=U4), VERSION_MED="4.1.0")
+    else:
+        IMPR_RESU(FORMAT="MED", UNITE=94, RESU=_F(RESULTAT=U4), FICHIER_UNIQUE="OUI")
     DEFI_FICHIER(ACTION="LIBERER", UNITE=94)
 
 FIN()

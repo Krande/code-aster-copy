@@ -73,6 +73,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/filter_rhs.h"
 #include "asterfort/filter_smd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -83,6 +84,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vector_update_ghost_values.h"
 #include "jeveux.h"
 #include "asterfort/isParallelMatrix.h"
 !
@@ -249,6 +251,12 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !
 !        2.1 PRETRAITEMENT DU SECOND MEMBRE :
 !        ------------------------------------
+
+!        -- DANS LE CAS DES LAGRANGE EN HPC, CERTAINES CONTRIBUTIONS
+!           AU SECOND MEMBRE PEUVENT VENIR D'UN AUTRE PROCESSEUR
+!           CAR LES MAILLES TARDIVES NE SONT PAS PARTAGEES DONC
+!           CALCULEES SEULEMENT SUR UN PROC
+        call filter_rhs(rsolu, nonu//".NUME")
 !
 !        -- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
         call mtdscr(nomat)
