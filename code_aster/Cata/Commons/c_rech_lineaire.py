@@ -25,21 +25,15 @@ from ..Language.Syntax import *
 
 def C_RECH_LINEAIRE(cmd=None):
     if cmd is None:
-        stat = "f"
         into_meth = ("CORDE", "MIXTE", "PILOTAGE")
-        resi = 1.0e-1
-        iter = 3
     elif cmd == "THER_NON_LINE":
-        stat = "f"
         into_meth = ("CORDE",)
-        resi = 1.0e-1
-        iter = 3
 
     return FACT(
-        statut=stat,
+        statut="f",
         METHODE=SIMP(statut="f", typ="TXM", defaut="CORDE", into=into_meth),
-        RESI_LINE_RELA=SIMP(statut="f", typ="R", defaut=resi, val_min=0.0),
-        ITER_LINE_MAXI=SIMP(statut="f", typ="I", defaut=iter, val_max=999, val_min=0),
+        RESI_LINE_RELA=SIMP(statut="f", typ="R", defaut=0.1, val_min=0.0),
+        ITER_LINE_MAXI=SIMP(statut="f", typ="I", defaut=3, val_max=999, val_min=0),
         RHO_MIN=SIMP(statut="f", typ="R", defaut=1.0e-2, val_min=0.0),
         RHO_MAX=SIMP(statut="f", typ="R", defaut=1.0e1, val_min=0.0),
         RHO_EXCL=SIMP(statut="f", typ="R", defaut=0.9e-2, val_min=0.0),

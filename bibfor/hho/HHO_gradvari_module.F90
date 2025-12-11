@@ -174,7 +174,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
-        rhs = 0.d0
 !
 ! ----- Type of behavior
         call check_behavior(hhoComporState)
@@ -192,6 +191,7 @@ contains
         call hhoMecaNLDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs, &
                            mk_gbs, mk_gbs_sym)
         call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
+        ASSERT(gv_gbs == mk_cbs)
         gv_faces_dofs = gv_total_dofs-gv_cbs
         gv_cell_offset = gv_faces_dofs+1
         if (hhoComporState%l_largestrain) then
@@ -283,7 +283,7 @@ contains
                     call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_prev, &
                                         coorpg, G_prev)
                     call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_curr, &
-                                        coorpg, G_prev)
+                                        coorpg, G_curr)
                 end if
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -306,8 +306,8 @@ contains
                 Eps_curr = hhoEvalSymMatCell(hhoCell%ndim, mk_gbs_sym, BSCEval, G_curr_coeff)
             end if
 !
-            GV_prev = hhoEvalVecCell(hhoCell%ndim, mk_cbs, BSCEval, GV_prev_coeff)
-            GV_curr = hhoEvalVecCell(hhoCell%ndim, mk_cbs, BSCEval, GV_curr_coeff)
+            GV_prev = hhoEvalVecCell(hhoCell%ndim, gv_gbs, BSCEval, GV_prev_coeff)
+            GV_curr = hhoEvalVecCell(hhoCell%ndim, gv_gbs, BSCEval, GV_curr_coeff)
 !
             var_prev = hhoEvalScalCell(gv_cbs, BSCEval, hhoGVState%vari_prev(gv_cell_offset:))
             var_curr = hhoEvalScalCell(gv_cbs, BSCEval, hhoGVState%vari_curr(gv_cell_offset:))
@@ -347,16 +347,13 @@ contains
             if (l_rhs) then
                 if (hhoComporState%l_largestrain) then
 ! ---------- += weight * (PK1, g_phi)
-                    call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEval, mk_gbs, &
-                                            mk_bT)
+                    call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEval, mk_gbs, mk_bT)
                 else
 ! ---------- += weight * (Cauchy, gs_phi)
-                    call hhoComputeRhsSmall(hhoCell, Cauchy, weight, BSCEval, mk_gbs_cmp, &
-                                            mk_bT)
+                    call hhoComputeRhsSmall(hhoCell, Cauchy, weight, BSCEval, mk_gbs_cmp, mk_bT)
                 end if
 ! ---------- += weight * (sig_gv, g_phi)
-                call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEval, gv_gbs, &
-                                           gv_bT)
+                call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEval, gv_gbs, gv_bT)
 ! ---------- += weight * (sig_vari, c_phi)
                 call hhoComputeRhsMassTher(sig_vari, weight, BSCEval, gv_cbs, &
                                            rhs_vari(gv_cell_offset:))
@@ -1310,14 +1307,10 @@ contains
 !   Out AT          : contribution of At
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_Acphi(3, 3, MSIZE_CELL_SCAL)
+        real(kind=8) :: qp_dPK1_dv_ij
         integer(kind=8) :: i, j, k, row, gbs_cmp, offset
 ! --------------------------------------------------------------------------------------------------
 !
-! --------- Eval (dPK1_dv : scphi)_T
-        do i = 1, gv_cbs
-            qp_Acphi(:, :, i) = weight*dPK1_dv*BSCEval(i)
-        end do
         offset = AT%ncols-gv_cbs+1
 !
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
@@ -1326,8 +1319,9 @@ contains
         row = 1
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
+                qp_dPK1_dv_ij = weight*dPK1_dv(i, j)
                 do k = 1, gbs_cmp
-                    call daxpy_1(gv_cbs, BSCEval(k), qp_Acphi(i, j, :), AT%m(row, offset:))
+                    call daxpy_1(gv_cbs, qp_dPK1_dv_ij*BSCEval(k), BSCEval, AT%m(row, offset:))
                     row = row+1
                 end do
             end do
@@ -1363,7 +1357,7 @@ contains
 !   Out AT          : contribution of At
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_Agphi(3, 3, MSIZE_CELL_SCAL)
+        real(kind=8) :: qp_dsv_dF_ij
         integer(kind=8) :: i, j, k, col, gbs_cmp, offset
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1371,16 +1365,13 @@ contains
         gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
         offset = AT%nrows-gv_cbs+1
 !
-        do i = 1, gbs_cmp
-            qp_Agphi(:, :, i) = weight*dsv_dF*BSCEval(i)
-        end do
-!
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
         col = 1
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
+                qp_dsv_dF_ij = weight*dsv_dF(i, j)
                 do k = 1, gbs_cmp
-                    call daxpy_1(gv_cbs, qp_Agphi(i, j, k), BSCEval, AT%m(offset:, col))
+                    call daxpy_1(gv_cbs, qp_dsv_dF_ij*BSCEval(k), BSCEval, AT%m(offset:, col))
                     col = col+1
                 end do
             end do
@@ -1416,14 +1407,9 @@ contains
 !   Out AT          : contribution of At
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_Acphi(3, 3, MSIZE_CELL_SCAL)
+        real(kind=8) :: qp_dPK1_dl_ij
         integer(kind=8) :: i, j, k, row, gbs_cmp
 ! --------------------------------------------------------------------------------------------------
-!
-! --------- Eval (dPK1_dl : scphi)_T
-        do i = 1, gv_cbs
-            qp_Acphi(:, :, i) = weight*dPK1_dl*BSCEval(i)
-        end do
 !
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
         gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
@@ -1431,8 +1417,9 @@ contains
         row = 1
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
+                qp_dPK1_dl_ij = weight*dPK1_dl(i, j)
                 do k = 1, gbs_cmp
-                    call daxpy_1(gv_cbs, BSCEval(k), qp_Acphi(i, j, :), AT%m(row, :))
+                    call daxpy_1(gv_cbs, qp_dPK1_dl_ij*BSCEval(k), BSCEval, AT%m(row, :))
                     row = row+1
                 end do
             end do
@@ -1468,23 +1455,20 @@ contains
 !   Out AT          : contribution of At
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_Agphi(3, 3, MSIZE_CELL_SCAL)
+        real(kind=8) :: qp_dsl_dF_ij
         integer(kind=8) :: i, j, k, col, gbs_cmp
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (dsl_dF : sgphi)_T
         gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
 !
-        do i = 1, gbs_cmp
-            qp_Agphi(:, :, i) = weight*dsl_dF*BSCEval(i)
-        end do
-!
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
         col = 1
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
+                qp_dsl_dF_ij = weight*dsl_dF(i, j)
                 do k = 1, gbs_cmp
-                    call daxpy_1(gv_cbs, qp_Agphi(i, j, k), BSCEval, AT%m(:, col))
+                    call daxpy_1(gv_cbs, qp_dsl_dF_ij*BSCEval(k), BSCEval, AT%m(:, col))
                     col = col+1
                 end do
             end do
@@ -1814,16 +1798,13 @@ contains
 !
         call jevech('PMATERC', 'L', jmate)
         imate = zi(jmate-1+1)
-        hhoCalcStabCoeffGV = 0.d0
 !
-        do ipg = 1, npg
-            call rcvalb(fami, ipg, 1, '+', imate, &
-                        ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
-                        1, ['C_GRAD_VARI'], vale, iok, 1)
-            hhoCalcStabCoeffGV = hhoCalcStabCoeffGV+vale(1)
-        end do
+! ----- C_GRAD_VARI is constant on the cell
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
+                    1, ['C_GRAD_VARI'], vale, iok, 1)
+        hhoCalcStabCoeffGV = 10.d0*vale(1)
 !
-        hhoCalcStabCoeffGV = 10.d0*hhoCalcStabCoeffGV/real(npg, kind=8)
         if (hhoCalcStabCoeffGV <= 0.0) then
             hhoCalcStabCoeffGV = 1.d0
         end if

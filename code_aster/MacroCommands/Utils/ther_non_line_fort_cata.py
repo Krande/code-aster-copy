@@ -63,7 +63,8 @@ def compat_syntax(keywords):
             keywords["NEWTON"]["ITER_LINE_MAXI"] = keywords["RECH_LINEAIRE"]["ITER_LINE_MAXI"]
             del keywords["RECH_LINEAIRE"]
         else:
-            keywords["NEWTON"]["RESI_LINE_RELA"] = 0.1
+            # same default value than in fortran
+            keywords["NEWTON"]["RESI_LINE_RELA"] = 1e-3
             keywords["NEWTON"]["ITER_LINE_MAXI"] = 0
 
         del keywords["NEWTON"]["PREDICTION"]
