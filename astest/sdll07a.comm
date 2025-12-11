@@ -218,6 +218,17 @@ MODES = CALC_CHAMP(
     CONTRAINTE=("EFGE_ELNO"),
 )
 
+MODES = MODI_REPERE(
+    reuse=MODES,
+    RESULTAT=MODES,
+    REPERE="UTILISATEUR",
+    CARA_ELEM=FE_CAR,
+    TOUT_ORDRE="OUI",
+    MODI_CHAM=_F(NOM_CHAM="EFGE_ELNO", TYPE_CHAM="1D_GENE", NOM_CHAM_RESU="EGRU_ELNO"),
+    AFFE=_F(ANGL_NAUT=(0.0, 0.0, 0.0), GROUP_MA="POUTRE"),
+    INFO=1,
+)
+
 # DYNA_VIBRA SOLVER ####################
 
 lr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, PAS=0.01),))
@@ -319,7 +330,6 @@ TEST_RESU(
     )
 )
 
-
 ###############################################################
 # TEST DE LA FONCTIONNALITÉ "ENVELOPPE" DANS REST_GENE_PHYS
 #
@@ -407,7 +417,6 @@ RESULT = REST_GENE_PHYS(
     RESU_GENE=RESUGEN, NOM_CHAM=("DEPL", "ACCE", "EFGE_ELNO"), INTERPOL="LIN", LIST_INST=LARCH
 )
 
-
 MAXABS_EFGE = RESULT.getField("EFGE_ELNO", 1).toSimpleFieldOnCells()
 
 components = ["N", "VY", "VZ", "MT", "MFY", "MFZ"]
@@ -464,7 +473,6 @@ MAXABS_EFGE = MAXABS_EFGE.toFieldOnCells(MODEL.getFiniteElementDescriptor(), "EF
 ###########################################################
 RESULT = REST_GENE_PHYS(RESU_GENE=RESUGEN, ENVELOPPE="NORME_MOMENT")
 
-
 MAXABS_EFGE_1 = RESULT.getField("EFGE_ELNO", 1)
 
 ###########################################################
@@ -475,6 +483,80 @@ vals2 = MAXABS_EFGE.getValues()
 
 for a, b in zip(vals1, vals2):
     test.assertAlmostEqual(a, b, places=8)
+
+##########################################################
+#        TEST EGRU_ELNO FIELD ET POST_GENE_PHYS
+##########################################################
+TABLE_POST = POST_GENE_PHYS(
+    RESU_GENE=RESUGEN,
+    OBSERVATION=(_F(NOM_CHAM="EGRU_ELNO", GROUP_MA=("GEdge_3",), LIST_INST=LARCH),),
+)
+
+# Récupération des colonnes
+
+inst = TABLE_POST.get_column("INST")
+nom_cham = TABLE_POST.get_column("NOM_CHAM")
+nom_cmp = TABLE_POST.get_column("NOM_CMP")
+noeud = TABLE_POST.get_column("NOEUD")
+maille = TABLE_POST.get_column("MAILLE")
+point = TABLE_POST.get_column("POINT")
+vale_r = TABLE_POST.get_column("VALE_R")
+
+
+# Indices où NOM_CMP == 'N'
+idx_keep = [i for i, v in enumerate(nom_cmp) if v == "N"]
+
+# Table filtrée
+filtered_table = {
+    "INST": [inst[i] for i in idx_keep],
+    "NOM_CHAM": [nom_cham[i] for i in idx_keep],
+    "NOM_CMP": [nom_cmp[i] for i in idx_keep],
+    "NOEUD": [noeud[i] for i in idx_keep],
+    "MAILLE": [maille[i] for i in idx_keep],
+    "POINT": [point[i] for i in idx_keep],
+    "VALE_R": [vale_r[i] for i in idx_keep],
+}
+
+valeurs_N = filtered_table["VALE_R"]
+
+
+# --- Construction de Phi_egru  ---
+indexes = MODES.getIndexes()
+nb_modes = len(indexes)
+
+n_dofs_egru = MODES.getField("EGRU_ELNO", indexes[0]).size()
+Phi_egru = np.empty((n_dofs_egru, nb_modes), dtype=np.float64)
+
+for j, idx in enumerate(indexes):
+    Phi_egru[:, j] = MODES.getField("EGRU_ELNO", idx).getValues()
+
+# --- Reconstruction de disp ---
+disp = np.array(RESUGEN.getDisplacementValues())  # vecteur 1D contigu
+nb_modes = RESUGEN.getNumberOfModes()
+nb_instants = len(RESUGEN.getIndexes())
+
+# disp est un vecteur de taille nb_instants * nb_modes
+Qdisp = disp.reshape(nb_instants, nb_modes).T  # shape = (nb_modes, nb_instants)
+
+# --- Produit matriciel
+egru = Phi_egru @ Qdisp
+
+# --- Écriture du champ ---
+EGRU_FIELD = CA.FieldOnCellsReal(MODEL, "ELNO", "SIEF_R", FE_CAR)
+
+for t in range(egru.shape[1]):
+    # Injecter le snapshot t dans le champ EGRU_ELNO
+    EGRU_FIELD.setValues(egru[:, t])
+
+    # Récupérer la composante 'N' sur GEdge_3 (retourne 2 valeurs ELNO)
+    val_ref = EGRU_FIELD.getValuesWithDescription("N", ["GEdge_3"])[0]
+
+    # Référence numpy : deux valeurs pour l’élément
+    val_test = valeurs_N[2 * t : 2 * t + 2]
+
+    # Comparaison valeur par valeur
+    for v_test, v_ref in zip(val_test, val_ref):
+        test.assertAlmostEqual(v_test, v_ref, places=8)
 
 
 FIN()
