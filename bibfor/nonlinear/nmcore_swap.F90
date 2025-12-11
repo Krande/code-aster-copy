@@ -65,7 +65,8 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
 !
 ! - Get parameters
 !
-    call GetResi(ds_conv, type='RESI_GLOB_RELA', l_resi_test_=l_rela)
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela, &
+                 l_resi_test_=l_rela)
     call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=resi_glob_maxi, &
                  l_resi_test_=l_maxi)
     call GetResi(ds_conv, type='RESI_COMP_RELA', user_para_=resi_comp_rela, &
@@ -78,6 +79,7 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
             l_rela = .true._1
             l_comp = .false._1
             l_swap_comp_rela = .true._1
+            if (.not. l_rela) resi_glob_rela = resi_comp_rela
             if (.not. l_maxi) resi_glob_maxi = resi_comp_rela
         end if
     end if
@@ -108,7 +110,8 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
 !
 ! - Set new active residuals and convergence parameters
 !
-    call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=l_rela)
+    call SetResi(ds_conv, type_='RESI_GLOB_RELA', user_para_=resi_glob_rela, &
+                 l_resi_test_=l_rela)
     call SetResi(ds_conv, type_='RESI_GLOB_MAXI', user_para_=resi_glob_maxi, &
                  l_resi_test_=l_maxi)
     call SetResi(ds_conv, type_='RESI_COMP_RELA', l_resi_test_=l_comp)

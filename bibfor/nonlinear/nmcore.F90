@@ -142,7 +142,7 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
     if (l_swap_comp_rela) then
         call SetResi(ds_conv, type_='RESI_COMP_RELA', l_resi_test_=.true._1)
     end if
-    call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.true._1)
+    call SetResi(ds_conv, type_='RESI_GLOB_RELA', reset_resi_test_=.true._1)
 !
 ! - New minimum exterior load
 !
