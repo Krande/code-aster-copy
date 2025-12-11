@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ POST_GENE_PHYS = OPER(
                 "ACCE_ABSOLU",
                 "FORC_NODA",
                 "EFGE_ELNO",
+                "EGRU_ELNO",
                 "SIPO_ELNO",
                 "SIGM_ELNO",
                 "EFGE_ELGA",
