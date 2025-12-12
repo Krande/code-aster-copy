@@ -30,6 +30,7 @@ subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/NonLinear_type.h"
+#include "asterfort/SaveResi.h"
 #include "asterfort/SetResi.h"
 #include "asterfort/utmess.h"
 !
@@ -77,6 +78,7 @@ subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
         call SetResi(ds_conv, type_='RESI_GLOB_RELA', &
                      user_para_=1.d-6, l_resi_test_=ASTER_TRUE)
     end if
+    call SaveResi(ds_conv)
 
 ! - RESI_REFE_RELA with shell and beam
     if (l_refe .and. present(model_)) then
