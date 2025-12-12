@@ -42,10 +42,10 @@ The list of the supported *version parameters* are (with their type):
     python: str             - Python interpreter
     python_interactive: str - Python interpreter for interactive executions
     python_interactive_is_wrapped: bool - Tell of Python for interactive sessions is a wrapper.
-    mpiexec: str            - mpiexec command line with arguments
+    mpiexec: str            - mpiexec/srun command line with arguments
     mpi_get_rank: str       - command line to get the mpi rank
     only-proc0: bool        - true to limit output to proc #0, false to show all
-    require_mpiexec: bool   - tell if mpiexec is required even with one process
+    require_mpiexec: bool   - tell if mpiexec/srun is required even with one process
     use_srun: bool          - true if processes are started with srun
     FC: str                 - fortran compiler
     FCFLAGS: list[str]      - flags for fortran compiler

@@ -526,7 +526,7 @@ def get_procid():
     """Return the identifier of the current process.
 
     Returns:
-        int: Process ID, -1 if a parallel version is not run under *mpiexec*.
+        int: Process ID, -1 if a parallel version is not run under *mpiexec/srun*.
     """
     proc = run(CFG.get("mpi_get_rank"), shell=True, stdout=PIPE, universal_newlines=True)
     try:

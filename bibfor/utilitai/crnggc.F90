@@ -245,7 +245,6 @@ subroutine crnggc(chamnz, l_print)
                 else
                     nddlg = v_nugll(nddl)
                 end if
-                write (6, *) "numno1", numno1, nddl, nddlg, nec
 !
 !           Recherche des composantes demandees
                 do iec = 1, nec
