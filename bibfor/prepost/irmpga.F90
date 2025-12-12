@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,15 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
 #include "asterfort/irmase.h"
 #include "asterfort/irmpg1.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 #include "asterfort/uteref.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbimpr
-    integer :: caimpi(10, nbimpr)
-    integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    integer(kind=8) :: nbimpr
+    integer(kind=8) :: caimpi(10, nbimpr)
+    integer(kind=8) :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
     character(len=8) :: nomtyp(*)
     character(len=8) :: typech, sdcarm, carael
     character(len=16) :: tuyau, coque, grille, typmod2
@@ -48,7 +49,7 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
     character(len=64) :: nochmd
     aster_logical :: lfichUniq
     character(len=16) :: field_type
-    integer :: codret
+    integer(kind=8) :: codret
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -91,13 +92,13 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMPGA'
-    integer :: ifm, niv, nbcouc, nbsect, nummai
-    integer :: iaux, jaux, kaux, laux
-    integer :: nbrepg, nbnoso, nbnoto, ndim
-    integer :: ntypef, tygeom, tymast
-    integer :: nbpg, nbsp
-    integer :: nrimpr, iret
-    integer, parameter :: lgmax = 1000
+    integer(kind=8) :: ifm, niv, nbcouc, nbsect, nummai
+    integer(kind=8) :: iaux, jaux, kaux, laux
+    integer(kind=8) :: nbrepg, nbnoso, nbnoto, ndim
+    integer(kind=8) :: ntypef, tygeom, tymast, ityma
+    integer(kind=8) :: nbpg, nbsp
+    integer(kind=8) :: nrimpr, iret
+    integer(kind=8), parameter :: lgmax = 1000
     real(kind=8) :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
     real(kind=8) :: raux1(3*lgmax), raux2(3*lgmax), raux3(lgmax)
     aster_logical :: okgr, okcq, oktu, okpf
@@ -197,6 +198,8 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
 ! 2.1.1.2.      SI CE TYPE DE MAILLE EST RENUMEROTEE ENTRE ASTER ET MED,
 !               IL FAUT MODIFIER LA REPARTITION DES NOEUDS
                 if (modnum(tymast) .eq. 1) then
+                    call jeveuo(jexnum('&CATA.TM.NBNO', tymast), 'L', ityma)
+                    nbnoto = zi(ityma)
                     kaux = ndim*nbnoto
                     do iaux = 1, kaux
                         raux1(iaux) = refcoo(iaux)
