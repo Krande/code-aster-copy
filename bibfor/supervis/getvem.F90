@@ -34,9 +34,9 @@ subroutine getvem(noma, typent, motfac, motcle, iocc, &
 !                     :                   (RELATIVEMENT AU TYPE)
 !
 ! OUT   VAL  : ----   : TABLEAU DES VALEURS A FOURNIR
-! OUT NBVAL  : IS     : NOMBRE DE VALEUR FOURNIT
+! OUT NBVAL  : IS     : NOMBRE DE VALEURS FOURNIES
 !          CONVENTION : SI NBVAL = 0 ==> IL N'Y A PAS DE VALEUR
-!                       SI NBVAL < 0 ==> NOMBRE DE VALEUR DE LA LISTE
+!                       SI NBVAL < 0 ==> NOMBRE DE VALEURS DE LA LISTE
 !                                        SACHANT QUE L'ON NE FOURNIT QUE
 !                                        LES MXVAL PREMIERES
 !     ------------------------------------------------------------------

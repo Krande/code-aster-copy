@@ -449,6 +449,11 @@ Contactez le support technique.
 
 """
     ),
+    89: _(
+        """
+Le mot-clé GROUP_MA est obligatoire pour le test d'un champ ELNO, ELGA ou ELEM.
+"""
+    ),
     97: _(
         """
   -> Le GROUP_MA %(k1)s du maillage %(k2)s se retrouve vide du fait
