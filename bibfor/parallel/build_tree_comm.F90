@@ -46,7 +46,7 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
 !
 #ifdef ASTER_HAVE_MPI
 !
-    integer(kind=8) :: rank, nbproc, nbdist_tot, i_proc, max_nbdom, nb_comm, nbdom_inf, domtmp(50)
+    integer(kind=8) :: rank, nbproc, nbdist_tot, i_proc, max_nbdom, nb_comm, nbdom_inf
     integer(kind=8) :: dom1, dom2, i_dom, ind, nb_comm_loc, j_dom, valtmp
     mpi_int :: mrank, msize, count_send, count_recv, mpicow, mpicom
     aster_logical :: find
@@ -57,8 +57,8 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
     integer(kind=8), pointer :: v_send(:) => null()
     integer(kind=8), pointer :: v_recv(:) => null()
     integer(kind=8), pointer :: v_rest(:) => null()
+    integer(kind=8), pointer :: v_domtmp(:) => null()
     aster_logical, pointer :: v_proc(:) => null()
-
 !
     call jemarq()
 !
@@ -89,18 +89,19 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
     tag(1:nbdom) = -1
     nb_comm = 0
 !
+    AS_ALLOCATE(vi=v_domtmp, size=nbdom)
+!
     nbdom_inf = 0
-    domtmp = -1
+    v_domtmp = -1
     do i_dom = 1, nbdom
         ASSERT(domdist(i_dom) >= 0)
         valtmp = pgid(domdist(i_dom)+1)
         if (valtmp > rank) then
             nbdom_inf = nbdom_inf+1
-            ASSERT(nbdom_inf .le. 50)
-            domtmp(nbdom_inf) = valtmp
+            v_domtmp(nbdom_inf) = valtmp
         end if
     end do
-    call sort_i8(domtmp, nbdom_inf)
+    call sort_i8(v_domtmp, nbdom_inf)
 ! --- On compte le nombre de sous-domaine
     AS_ALLOCATE(vi=v_nbdist, size=nbproc)
     count_send = to_mpi_int(1)
@@ -120,7 +121,7 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
     AS_ALLOCATE(vi=v_send, size=max_nbdom)
     AS_ALLOCATE(vi=v_recv, size=nbproc*max_nbdom)
     v_send = 0
-    v_send(1:nbdom_inf) = domtmp(1:nbdom_inf)
+    v_send(1:nbdom_inf) = v_domtmp(1:nbdom_inf)
     count_send = to_mpi_int(max_nbdom)
     count_recv = count_send
     call asmpi_allgather_i(v_send, count_send, v_recv, count_recv, mpicom)
@@ -199,6 +200,7 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
     AS_DEALLOCATE(vi=v_dist)
 999 continue
     AS_DEALLOCATE(vi=v_pgidinv)
+    AS_DEALLOCATE(vi=v_domtmp)
     AS_DEALLOCATE(vi=v_deca)
     AS_DEALLOCATE(vi=v_nbdist)
     call asmpi_comm('SET', mpicow)
