@@ -1,0 +1,313 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI")
+
+
+# hysteretical damping
+xi = 0.05
+
+# Young's Modulus
+Young = 35.0e9
+
+# Section Area
+Area = 0.4 * 0.4
+
+# Beam Lenght
+L = 4.0
+
+# Mass value
+Mass = 4.0e6
+
+# Equivalent rigidity
+K_eq = 2 * Young * Area / L
+
+omega_0 = sqrt(K_eq / Mass)
+
+omega_1 = 2 * pi * 20.0
+
+A = 0.5 * (omega_1**2.0 - omega_0**2.0) / (omega_1 - omega_0)
+
+B = (log(omega_1) - log(omega_0)) / (omega_1 - omega_0)
+
+# alpha Rayleigh's coefficient
+alpha_ray = 2 * xi * (1 / omega_0 - 1 / (omega_0**2.0 * B)) * (1 - A / (omega_0**2.0 * B)) ** (-1)
+
+# beta Rayleigh coefficient
+beta_ray = (2 * xi - A * alpha_ray) / B
+
+# Max displacement value support A
+A2 = 0.002
+
+# Max displacement value support B
+A3 = 0.0045
+
+omega_2 = pi
+
+omega_3 = 2 * pi
+
+alpha_2 = 0.0
+
+alpha_3 = 0.0
+
+# Damping value
+C_m = alpha_ray * K_eq + beta_ray * Mass
+
+K1 = Young * Area / L
+
+K2 = Young * Area / L
+
+Delta_t = 0.001
+
+T_max = 1.0
+
+mesh0 = LIRE_MAILLAGE(UNITE=20)
+
+mesh1 = CREA_MAILLAGE(
+    CREA_POI1=_F(GROUP_NO=("Masse",), NOM_GROUP_MA=("Masse_POI1",)), MAILLAGE=mesh0
+)
+
+model = AFFE_MODELE(
+    AFFE=_F(
+        GROUP_MA=("Spring_1", "Spring_2", "Masse_POI1"), MODELISATION="DIS_T", PHENOMENE="MECANIQUE"
+    ),
+    MAILLAGE=mesh1,
+)
+
+elemprop = AFFE_CARA_ELEM(
+    DISCRET=(
+        _F(CARA="A_T_D_N", GROUP_MA=("Masse_POI1",), VALE=(C_m, 0.0, 0.0)),
+        _F(CARA="K_T_D_N", GROUP_MA=("Masse_POI1",), VALE=(0.0, 0.0, 0.0)),
+        _F(CARA="M_T_D_N", GROUP_MA=("Masse_POI1",), VALE=Mass),
+        _F(CARA="K_T_D_L", GROUP_MA=("Spring_1",), VALE=(K1, 0.0, 0.0)),
+        _F(CARA="K_T_D_L", GROUP_MA=("Spring_2",), VALE=(K2, 0.0, 0.0)),
+    ),
+    MODELE=model,
+)
+
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=T_max, PAS=Delta_t))
+
+DEP2_SIN = FORMULE(
+    NOM_PARA=("INST",), VALE="A2*sin(omega_2*INST+alpha_2)", A2=A2, alpha_2=alpha_2, omega_2=omega_2
+)
+
+DEP2_INT = CALC_FONC_INTERP(
+    FONCTION=DEP2_SIN,
+    LIST_PARA=listr,
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+DEP3_SIN = FORMULE(
+    NOM_PARA=("INST",), VALE="A3*sin(omega_3*INST+alpha_3)", A3=A3, alpha_3=alpha_3, omega_3=omega_3
+)
+
+DEP3_INT = CALC_FONC_INTERP(
+    FONCTION=DEP3_SIN,
+    LIST_PARA=listr,
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+VIT2_SIN = FORMULE(
+    NOM_PARA=("INST",),
+    VALE="A2*omega_2*cos(omega_2*INST+alpha_2)",
+    A2=A2,
+    alpha_2=alpha_2,
+    omega_2=omega_2,
+)
+
+import numpy as np
+
+vA0 = A2 * omega_2 * np.cos(alpha_2)
+
+aA0 = -A2 * omega_2**2.0 * np.sin(alpha_2)
+
+VIT2_INT = CALC_FONC_INTERP(
+    FONCTION=VIT2_SIN,
+    LIST_PARA=listr,
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+VIT3_SIN = FORMULE(
+    NOM_PARA=("INST",),
+    VALE="A3*omega_3*cos(omega_3*INST+alpha_3)",
+    A3=A3,
+    alpha_3=alpha_3,
+    omega_3=omega_3,
+)
+
+vB0 = A3 * omega_3 * np.cos(alpha_3)
+
+aB0 = -A3 * omega_3**2.0 * np.sin(alpha_3)
+
+VIT3_INT = CALC_FONC_INTERP(
+    FONCTION=VIT3_SIN,
+    LIST_PARA=listr,
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+ACC2_SIN = FORMULE(
+    NOM_PARA=("INST",),
+    VALE="-A2*omega_2**2.*sin(omega_2*INST+alpha_2)",
+    A2=A2,
+    alpha_2=alpha_2,
+    omega_2=omega_2,
+)
+
+ACC2_INT = CALC_FONC_INTERP(
+    FONCTION=ACC2_SIN,
+    LIST_PARA=listr,
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+ACC3_SIN = FORMULE(
+    NOM_PARA=("INST",),
+    VALE="-A3*omega_3**2.*sin(omega_3*INST+alpha_3)",
+    A3=A3,
+    alpha_3=alpha_3,
+    omega_3=omega_3,
+)
+
+ACC3_INT = CALC_FONC_INTERP(
+    FONCTION=ACC3_SIN,
+    LIST_PARA=listr,
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+load = AFFE_CHAR_MECA(
+    DDL_IMPO=(
+        _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_NO=("Node_A", "Node_B")),
+        _F(DY=0.0, DZ=0.0, GROUP_NO=("Masse",)),
+    ),
+    MODELE=model,
+)
+
+
+CH_A = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=_F(GROUP_NO="Node_A", DX=1.0))
+
+CH_B = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=_F(GROUP_NO="Node_B", DX=1.0))
+
+ASSEMBLAGE(
+    CARA_ELEM=elemprop,
+    CHARGE=(load),
+    MATR_ASSE=(_F(MATRICE=CO("MATRRIGI"), OPTION="RIGI_MECA"),),
+    MODELE=model,
+    NUME_DDL=CO("NUMDDL"),
+)
+
+mode_sta_A = MODE_STATIQUE(
+    MATR_RIGI=MATRRIGI, MODE_STAT=(_F(AVEC_CMP=("DX",), GROUP_NO=("Node_A",)),)
+)
+
+mode_sta_B = MODE_STATIQUE(
+    MATR_RIGI=MATRRIGI, MODE_STAT=(_F(AVEC_CMP=("DX",), GROUP_NO=("Node_B",)))
+)
+
+load_red = AFFE_CHAR_MECA(
+    DDL_IMPO=(
+        _F(DY=0.0, DZ=0.0, GROUP_NO=("Node_A", "Node_B")),
+        _F(DY=0.0, DZ=0.0, GROUP_NO=("Masse",)),
+    ),
+    MODELE=model,
+)
+
+
+mode_stat_A = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=mode_sta_A, NOM_CHAM="DEPL", NUME_ORDRE=1
+)
+
+mode_stat_B = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=mode_sta_B, NOM_CHAM="DEPL", NUME_ORDRE=1
+)
+
+INI0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=model,
+    AFFE=(_F(TOUT="OUI", NOM_CMP=("DX", "DY"), VALE=(0.0, 0.0)),),
+)
+
+
+VITE0 = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MODELE=model,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=INI0, CUMUL="OUI", COEF_R=0.0),
+        _F(TOUT="OUI", CHAM_GD=mode_stat_A, CUMUL="OUI", COEF_R=vA0),
+        _F(TOUT="OUI", CHAM_GD=mode_stat_B, CUMUL="OUI", COEF_R=vB0),
+    ),
+)
+
+ACCE0 = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MODELE=model,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=INI0, CUMUL="OUI", COEF_R=0.0),
+        _F(TOUT="OUI", CHAM_GD=mode_stat_A, CUMUL="OUI", COEF_R=aA0),
+        _F(TOUT="OUI", CHAM_GD=mode_stat_B, CUMUL="OUI", COEF_R=aB0),
+    ),
+)
+
+MAT_E = DEFI_MATERIAU(ELAS=_F(E=Young, NU=0.2, RHO=2300.0))
+
+mater = AFFE_MATERIAU(MAILLAGE=mesh1, AFFE=(_F(TOUT="OUI", MATER=MAT_E),))
+
+restran = DYNA_NON_LINE(
+    CHAM_MATER=mater,
+    CARA_ELEM=elemprop,
+    EXCIT=(
+        _F(CHARGE=load_red),
+        _F(CHARGE=CH_A, FONC_MULT=DEP2_INT),
+        _F(CHARGE=CH_B, FONC_MULT=DEP3_INT),
+    ),
+    ETAT_INIT=_F(ACCE=ACCE0, VITE=VITE0),
+    INCREMENT=_F(LIST_INST=listr),
+    MODELE=model,
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+)
+
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO=("Masse",),
+        INST=2.68e-1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        RESULTAT=restran,
+        VALE_CALC=0.0031437451557,
+        REFERENCE="AUTRE_ASTER",
+        PRECISION=2e-2,
+        VALE_REFE=0.0031109581358,
+    )
+)
+
+
+FIN()

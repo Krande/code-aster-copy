@@ -63,7 +63,7 @@ subroutine dlarch(result, neq, istoc, iarchi, texte, &
 !
     character(len=8) :: masse
     character(len=8) :: result
-    character(len=16) :: typear(nbtyar)
+    character(len=16) :: typear(nbtyar), tyar
     character(len=*) :: texte
 !
 !
@@ -101,10 +101,12 @@ subroutine dlarch(result, neq, istoc, iarchi, texte, &
 !====
 !
     do 21, itype = 1, nbtyar
+
+        tyar = typear(itype)
 !
-        if (typear(itype) .ne. '    ') then
+        if (tyar .ne. '    ') then
 !
-            call rsexch(' ', result, typear(itype), iarchi, chamno, &
+            call rsexch(' ', result, tyar, iarchi, chamno, &
                         iaux)
             if (iaux .eq. 0) then
                 if (alarm .gt. 0) then
@@ -120,27 +122,27 @@ subroutine dlarch(result, neq, istoc, iarchi, texte, &
             chamno(20:24) = '.VALE'
             call jeveuo(chamno, 'E', jaux)
 !
-            if (typear(itype) .eq. 'DEPL') then
+            if ((tyar .eq. 'DEPL') .or. (tyar .eq. 'DEPL_ABSOLU')) then
                 do 211, iaux = 1, neq
                     zr(jaux+iaux-1) = depl(iaux)
 211                 continue
-                    else if (typear(itype) .eq. 'VITE') then
+                    else if ((tyar .eq. 'VITE') .or. (tyar .eq. 'VITE_ABSOLU')) then
                     do 212, iaux = 1, neq
                         zr(jaux+iaux-1) = vite(iaux)
 212                     continue
-                        else if (typear(itype) .eq. 'ACCE') then
+                        else if ((tyar .eq. 'ACCE') .or. (tyar .eq. 'ACCE_ABSOLU')) then
                         do 213, iaux = 1, neq
                             zr(jaux+iaux-1) = acce(iaux)
 213                         continue
-                            else if (typear(itype) .eq. 'FORC_EXTE') then
+                            else if (tyar .eq. 'FORC_EXTE') then
                             do 214, iaux = 1, neq
                                 zr(jaux+iaux-1) = fexte(iaux)
 214                             continue
-                                else if (typear(itype) .eq. 'FORC_AMOR') then
+                                else if (tyar .eq. 'FORC_AMOR') then
                                 do 215, iaux = 1, neq
                                     zr(jaux+iaux-1) = famor(iaux)
 215                                 continue
-                                    else if (typear(itype) .eq. 'FORC_LIAI') then
+                                    else if (tyar .eq. 'FORC_LIAI') then
                                     do 216, iaux = 1, neq
                                         zr(jaux+iaux-1) = fliai(iaux)
 216                                     continue
