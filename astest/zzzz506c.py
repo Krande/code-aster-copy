@@ -57,7 +57,7 @@ LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1000.0, 1000.0))
 
 if haveMPI():
-    linear_solver = {"METHODE": "MUMPS", "RENUM": "PTSCOTCH"}
+    linear_solver = {"METHODE": "MUMPS", "RENUM": "SCOTCH"}
 else:
     linear_solver = {"METHODE": "MUMPS", "RENUM": "AUTO", "NPREC": 8}
 

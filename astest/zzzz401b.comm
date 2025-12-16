@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -276,25 +276,6 @@ TEST_RESU(
         NUME_ORDRE=1,
         GROUP_NO="C",
         RESULTAT=RESU38,
-        NOM_CHAM="DEPL",
-        NOM_CMP="DZ",
-        VALE_CALC=-41.60757189956,
-    )
-)
-ordering = "PTSCOTCH"
-RESU39 = MECA_STATIQUE(
-    MODELE=MO,
-    CHAM_MATER=CHAM_MAT,
-    LIST_INST=L1,
-    INFO=2,
-    EXCIT=(_F(CHARGE=CHAR), _F(CHARGE=CHARCI)),
-    SOLVEUR=_F(METHODE=solver, RENUM=ordering, PRETRAITEMENTS="SANS"),
-)
-TEST_RESU(
-    RESU=_F(
-        NUME_ORDRE=1,
-        GROUP_NO="C",
-        RESULTAT=RESU39,
         NOM_CHAM="DEPL",
         NOM_CMP="DZ",
         VALE_CALC=-41.60757189956,
