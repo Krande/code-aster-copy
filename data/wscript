@@ -524,6 +524,7 @@ def check_config(self):
         pyenv_abspath(self, "ipython3") if self.env.IPYTHON else cfg["python"])
     cfg["parallel"] = int(self.get_define("ASTER_HAVE_MPI") or 0)
     cfg["require_mpiexec"] = 0
+    cfg["use_srun"] = int(bool(self.options.use_srun))
     cfg["only-proc0"] = 0
     self.env["base_mpiexec"] = ["mpiexec"]
     if cfg["parallel"]:
@@ -547,6 +548,7 @@ def check_config(self):
         "mpi_get_rank",
         "only-proc0",
         "require_mpiexec",
+        "use_srun",
         "exectool",
     ):
         verbose = param != "require_mpiexec" and cfg.get(param) is not None
@@ -621,30 +623,47 @@ def check_mpiexec(self):
             root_option.append("--allow-run-as-root")
     # store for future checkings
     self.env["base_mpiexec"] = [mpiexec] + root_option
-    if (
-        self._call_cmd(
-            "Check for mpiexec flag '-n N'", self.env["base_mpiexec"] + ["-n", "1", "echo"]
-        )
-        == 0
-    ):
-        mpicmd.extend(["-n", "{mpi_nbcpu}"])
-    elif (
-        self._call_cmd(
-            "Check for mpiexec flag '-np N'", self.env["base_mpiexec"] + ["-np", "1", "echo"]
-        )
-        == 0
-    ):
-        mpicmd.extend(["-np", "{mpi_nbcpu}"])
-
-    for opt in ("--tag-output", "-print-rank-map", "-prepend-rank", "-ordered-output"):
+    # srun vs mpiexec
+    if self.options.use_srun:
+        mpicmd = [
+            "srun",
+            "-n",
+            "{mpi_nbcpu}",
+            "--cpus-per-task={ncpus}",
+            "--threads-per-core=1",
+            "--label",
+            "{program}",
+        ]
+    else:
+        mpicmd = [mpiexec]
+        narg = []
         if (
             self._call_cmd(
-                "Check for mpiexec flag '{0}'".format(opt), self.env["base_mpiexec"] + [opt, "echo"]
+                "Check for mpiexec flag '-n N'", self.env["base_mpiexec"] + ["-n", "1", "echo"]
             )
             == 0
         ):
-            mpicmd.append(opt)
-    mpicmd.append("{program}")
+            narg = ["-n", "1"]
+            mpicmd.extend(["-n", "{mpi_nbcpu}"])
+        elif (
+            self._call_cmd(
+                "Check for mpiexec flag '-np N'", self.env["base_mpiexec"] + ["-np", "1", "echo"]
+            )
+            == 0
+        ):
+            narg = ["-np", "1"]
+            mpicmd.extend(["-np", "{mpi_nbcpu}"])
+
+        for opt in ("--tag-output", "-print-rank-map", "-prepend-rank", "-ordered-output"):
+            if (
+                self._call_cmd(
+                    "Check for mpiexec flag '{0}'".format(opt),
+                    self.env["base_mpiexec"] + narg + [opt, "echo"],
+                )
+                == 0
+            ):
+                mpicmd.append(opt)
+        mpicmd.append("{program}")
     self.env["CFGJS_mpiexec"] = [" ".join(mpicmd)]
 
 
@@ -655,11 +674,15 @@ def check_mpi_get_rank(self):
         self.end_msg(self.env["mpi_get_rank"])
         self.env["CFGJS_mpi_get_rank"] = [self.env["mpi_get_rank"]]
         return
-    # default to openmpi
-    out = self.cmd_and_log(self.env["base_mpiexec"] + ["env"])
-    rank_id = "echo ${OMPI_COMM_WORLD_RANK}"
-    if "PMI_RANK" in out:
-        rank_id = "echo ${PMI_RANK}"
+    # srun vs mpiexec
+    if self.options.use_srun:
+        rank_id = 'test ! -z "${SLURM_STEPID}" && echo ${SLURM_PROCID}'
+    else:
+        # default to openmpi
+        out = self.cmd_and_log(self.env["base_mpiexec"] + ["env"])
+        rank_id = "echo ${OMPI_COMM_WORLD_RANK}"
+        if "PMI_RANK" in out:
+            rank_id = "echo ${PMI_RANK}"
     self.env["CFGJS_mpi_get_rank"] = [rank_id]
     self.end_msg(self.env["CFGJS_mpi_get_rank"][0])
 

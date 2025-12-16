@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,11 @@ The list of the supported *version parameters* are (with their type):
     parallel: bool          - true for a parallel version
     python: str             - Python interpreter
     python_interactive: str - Python interpreter for interactive executions
-    mpiexec: str            - mpiexec command line with arguments
+    mpiexec: str            - mpiexec/srun command line with arguments
     mpi_get_rank: str       - command line to get the mpi rank
     only-proc0: bool        - true to limit output to proc #0, false to show all
-    require_mpiexec: bool   - tell if mpiexec is required even with one process
+    require_mpiexec: bool   - tell if mpiexec/srun is required even with one process
+    use_srun: bool          - true if processes are started with srun
     FC: str                 - fortran compiler
     FCFLAGS: list[str]      - flags for fortran compiler
     exectool: dict[str]     - command lines for execution wrappers
@@ -166,6 +167,7 @@ VERSION_PARAMS = {
     "mpiexec": "str",
     "mpi_get_rank": "str",
     "require_mpiexec": "bool",
+    "use_srun": "bool",
     "only-proc0": "bool",
     "FC": "str",
     "FCFLAGS": "list[str]",
