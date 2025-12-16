@@ -503,9 +503,11 @@ subroutine trresu(ific, nocc)
                             call jeveuo(jexnom(mesh//'.GROUPEMA', nogrma), 'L', jnuma)
                             cellName = int_to_char8(zi(jnuma))
                         else
-                            ASSERT(l_parallel_mesh)
                             call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, scal=nogrma, &
                                         nbret=ng)
+                            if (ng == 0 .and. .not. l_parallel_mesh) then
+                                call utmess('F', 'MODELISA7_89')
+                            end if
                         end if
                     end if
 
