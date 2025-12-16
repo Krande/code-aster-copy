@@ -40,7 +40,7 @@ from ..Objects import (
     MedFileReader,
     Mesh,
     MeshBalancer,
-    MeshReader,
+    MedToAsterReader,
     ParallelMesh,
     PythonBool,
     ResultNaming,
@@ -124,7 +124,7 @@ class ExtendedParallelMesh:
             self = returnTuple[0]
             self.show(verbose & 3)
         else:
-            mr = MeshReader()
+            mr = MedToAsterReader()
             mr.readParallelMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
         return self
 
@@ -734,5 +734,5 @@ class ExtendedIncompleteMesh:
                             1 - informations about main steps
                             2 - informations about all steps
         """
-        mr = MeshReader()
+        mr = MedToAsterReader()
         mr.readIncompleteMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)

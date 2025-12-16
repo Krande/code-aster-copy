@@ -1,6 +1,6 @@
 /**
- * @file MeshReader.cxx
- * @brief Implementation de MeshReader
+ * @file MedToAsterReader.cxx
+ * @brief Implementation de MedToAsterReader
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
@@ -21,8 +21,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "IOManager/MeshReader.h"
+#include "IOManager/MedToAsterReader.h"
 
+#include "IOManager/MedUtilities.h"
 #include "Messages/Messages.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
@@ -30,24 +31,6 @@
 #include <algorithm>
 
 #ifdef ASTER_HAVE_MED
-
-static const VectorInt asterTypeList = { 1,  2,  4,  6,  7,  9,  11, 12, 14, 16,
-                                         18, 19, 20, 21, 22, 23, 24, 25, 26, 27 };
-
-static const std::map< int, med_int > asterMedMatching = {
-    { 1, 1 },    { 2, 102 },  { 4, 103 },  { 6, 104 },  { 7, 203 },  { 9, 206 },  { 11, 207 },
-    { 12, 204 }, { 14, 208 }, { 16, 209 }, { 18, 304 }, { 19, 310 }, { 20, 306 }, { 21, 315 },
-    { 22, 318 }, { 23, 305 }, { 24, 313 }, { 25, 308 }, { 26, 320 }, { 27, 327 }
-};
-
-const std::set< med_int > medTypeToRenumber = { 304, 308, 305, 306, 310, 320, 313, 315, 318, 327 };
-
-template < std::size_t N, const int indices[N] >
-void applyPermutation( const med_int *in, med_int *out ) {
-    for ( size_t i = 0; i < N; i++ ) {
-        out[i] = in[indices[i]];
-    }
-};
 
 std::vector< med_int > medToAsterRenumbering( const med_int &medType,
                                               const std::vector< med_int > &toRenumber,
@@ -152,8 +135,9 @@ std::vector< med_int > medToAsterRenumbering( const med_int &medType,
     return out;
 }
 
-void MeshReader::readMeshFromMedFile( MeshPtr &toReturn, const std::filesystem::path &filename,
-                                      const std::string &meshName, int verbosity ) {
+void MedToAsterReader::readMeshFromMedFile( MeshPtr &toReturn,
+                                            const std::filesystem::path &filename,
+                                            const std::string &meshName, int verbosity ) {
     auto fr = MedFileReader();
     fr.open( filename, MedReadOnly );
     _readMesh( toReturn, fr, meshName, verbosity );
@@ -161,9 +145,9 @@ void MeshReader::readMeshFromMedFile( MeshPtr &toReturn, const std::filesystem::
 }
 
 #ifdef ASTER_HAVE_MPI
-void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
-                                                const std::filesystem::path &filename,
-                                                const std::string &meshName, int verbosity ) {
+void MedToAsterReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
+                                                      const std::filesystem::path &filename,
+                                                      const std::string &meshName, int verbosity ) {
     auto fr = MedFileReader();
     fr.openParallel( filename, MedReadOnly );
     _readMesh( toReturn, fr, meshName, verbosity );
@@ -182,9 +166,9 @@ void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
     }
 }
 
-void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
-                                              const std::filesystem::path &filename,
-                                              const std::string &meshName, int verbosity ) {
+void MedToAsterReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
+                                                    const std::filesystem::path &filename,
+                                                    const std::string &meshName, int verbosity ) {
     auto fr = MedFileReader();
     fr.open( filename, MedReadOnly );
     _readMesh( toReturn, fr, meshName, verbosity );
@@ -253,8 +237,8 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
 }
 #endif
 
-void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::string &meshName,
-                            int verbosity ) {
+void MedToAsterReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr,
+                                  const std::string &meshName, int verbosity ) {
 #ifdef ASTER_HAVE_MPI
     const auto iM = std::dynamic_pointer_cast< IncompleteMesh >( toReturn );
     const bool incompleteMesh = ( iM ? true : false );

@@ -1,6 +1,6 @@
 /**
- * @file MeshReaderInterface.cxx
- * @brief Interface python de MeshReader
+ * @file MedToAsterReaderInterface.cxx
+ * @brief Interface python de MedToAsterReader
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
@@ -21,21 +21,24 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PythonBindings/MeshReaderInterface.h"
+/* person_in_charge: nicolas.sellenet at edf.fr */
+
+#include "PythonBindings/MedToAsterReaderInterface.h"
 
 #include "aster_pybind.h"
 
 // Not DataStructures
 // aslint: disable=C3006
 
-void exportMeshReaderToPython( py::module_ &mod ) {
+void exportMedToAsterReaderToPython( py::module_ &mod ) {
 
-    py::class_< MeshReader, MeshReader::MeshReaderPtr > c1( mod, "MeshReader" );
-    c1.def( py::init( &initFactoryPtr< MeshReader > ) );
-    c1.def( "__pickling_disabled__", disable_pickling< MeshReader >() );
+    py::class_< MedToAsterReader, MedToAsterReader::MedToAsterReaderPtr > c1( mod,
+        "MedToAsterReader" );
+    c1.def( py::init( &initFactoryPtr< MedToAsterReader > ) );
+    c1.def( "__pickling_disabled__", disable_pickling< MedToAsterReader >() );
 
 #ifdef ASTER_HAVE_MED
-    c1.def( "readMeshFromMedFile", &MeshReader::readMeshFromMedFile,
+    c1.def( "readMeshFromMedFile", &MedToAsterReader::readMeshFromMedFile,
             R"(
 Open med file
 
@@ -48,7 +51,7 @@ Arguments:
             py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
             py::arg( "verbosity" ) = 0 );
 #ifdef ASTER_HAVE_MPI
-    c1.def( "readIncompleteMeshFromMedFile", &MeshReader::readIncompleteMeshFromMedFile,
+    c1.def( "readIncompleteMeshFromMedFile", &MedToAsterReader::readIncompleteMeshFromMedFile,
             R"(
       Open med file
 
@@ -60,7 +63,7 @@ Arguments:
                   )",
             py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
             py::arg( "verbosity" ) = 0 );
-    c1.def( "readParallelMeshFromMedFile", &MeshReader::readParallelMeshFromMedFile,
+    c1.def( "readParallelMeshFromMedFile", &MedToAsterReader::readParallelMeshFromMedFile,
             R"(
       Open med file
 

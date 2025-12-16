@@ -206,7 +206,16 @@ Arguments:
 Returns:
     list: coordinates list
             )",
-              py::arg( "numdt" ), py::arg( "numit" ) );
+              py::arg( "numdt" ), py::arg( "numit" ) )
+        .def( "addFamily", &MedMesh::addFamily, R"(
+Add family to mesh
+
+Arguments:
+    name (str): family name
+    num (int): family id
+    grps (list): group list
+    )",
+              py::arg( "name" ), py::arg( "num" ), py::arg( "grps" ) );
 };
 
 #endif

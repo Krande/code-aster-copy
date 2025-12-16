@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vector_ghosts_comm(vector, mesh)
+subroutine vector_ghosts_comm(mesh, vect_size, v_vect)
     implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_sendrecv_i.h"
@@ -42,8 +42,9 @@ subroutine vector_ghosts_comm(vector, mesh)
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
-    character(len=*) :: vector
-    character(len=8) :: mesh
+    character(len=8), intent(in) :: mesh
+    integer(kind=8), intent(inout) :: vect_size
+    integer(kind=8), intent(inout) :: v_vect(*)
 
 #ifdef ASTER_HAVE_MPI
 !
@@ -63,7 +64,6 @@ subroutine vector_ghosts_comm(vector, mesh)
     integer(kind=8), pointer :: v_dom(:) => null()
     integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
-    integer(kind=8), pointer :: v_vect(:) => null()
 !
     character(len=8) :: k8bid
     character(len=19) :: comm_name, tag_name, meshj
@@ -95,8 +95,9 @@ subroutine vector_ghosts_comm(vector, mesh)
         mpicou = to_mpi_int(v_gco(1))
     end if
 !
-    call jeveuo(vector, 'L', vi=v_vect)
-    call jelira(vector, 'LONMAX', value_nb, k8bid)
+    ! call jeveuo(vector, 'L', vi=v_vect)
+    ! call jelira(vector, 'LONMAX', value_nb, k8bid)
+    value_nb = vect_size
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=node_nb)
     cmp_nb = value_nb/node_nb
     r_cmp_nb = value_nb/node_nb

@@ -1,9 +1,9 @@
-#ifndef MESHREADER_H_
-#define MESHREADER_H_
+#ifndef MEDTOASTERREADER_H_
+#define MEDTOASTERREADER_H_
 
 /**
- * @file MeshReader.h
- * @brief Fichier entete de la classe MeshReader
+ * @file MedToAsterReader.h
+ * @brief Fichier entete de la classe MedToAsterReader
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
@@ -32,11 +32,11 @@
 #include <filesystem>
 
 /**
- * @class MeshReader
+ * @class MedToAsterReader
  * @brief Med file interface
  * @author Nicolas Sellenet
  */
-class MeshReader {
+class MedToAsterReader {
   private:
 #ifdef ASTER_HAVE_MED
     void _readMesh( BaseMeshPtr, MedFileReader &, const std::string &, int verbosity = 0 );
@@ -44,15 +44,15 @@ class MeshReader {
 
   public:
     /**
-     * @typedef MeshReaderPtr
-     * @brief Pointeur intelligent vers un MeshReader
+     * @typedef MedToAsterReaderPtr
+     * @brief Pointeur intelligent vers un MedToAsterReader
      */
-    typedef std::shared_ptr< MeshReader > MeshReaderPtr;
+    typedef std::shared_ptr< MedToAsterReader > MedToAsterReaderPtr;
 
     /** @brief Constructor */
-    MeshReader() {};
+    MedToAsterReader() {};
 
-    ~MeshReader() {};
+    ~MedToAsterReader() {};
 
 #ifdef ASTER_HAVE_MED
     void readMeshFromMedFile( MeshPtr &, const std::filesystem::path &filename,
@@ -69,9 +69,9 @@ class MeshReader {
 };
 
 /**
- * @typedef MeshReaderPtr
- * @brief Pointeur intelligent vers un MeshReader
+ * @typedef MedToAsterReaderPtr
+ * @brief Pointeur intelligent vers un MedToAsterReader
  */
-typedef std::shared_ptr< MeshReader > MeshReaderPtr;
+typedef std::shared_ptr< MedToAsterReader > MedToAsterReaderPtr;
 
-#endif /* MESHREADER_H_ */
+#endif /* MEDTOASTERREADER_H_ */

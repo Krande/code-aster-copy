@@ -1,9 +1,9 @@
-#ifndef MESHREADERINTERFACE_H_
-#define MESHREADERINTERFACE_H_
+#ifndef ASTERTOMEDWRITERINTERFACE_H_
+#define ASTERTOMEDWRITERINTERFACE_H_
 
 /**
- * @file MeshReaderInterface.h
- * @brief Fichier entete de la classe MeshReaderInterface
+ * @file MedToAsterReaderInterface.h
+ * @brief Fichier entete de la classe MedToAsterReaderInterface
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
@@ -28,8 +28,8 @@
 
 #include "aster_pybind.h"
 
-#include "IOManager/MeshReader.h"
+#include "IOManager/MedToAsterReader.h"
 
-void exportMeshReaderToPython( py::module_ &mod );
+void exportMedToAsterReaderToPython( py::module_ &mod );
 
-#endif /* MESHREADERINTERFACE_H_ */
+#endif /* ASTERTOMEDWRITERINTERFACE_H_ */

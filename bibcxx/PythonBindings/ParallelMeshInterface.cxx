@@ -342,7 +342,20 @@ Returns:
 Return all Med types available in mesh (for all processors).
 
 Returns:
-    list[int]: List of Med types.)" );
+    list[int]: List of Med types.)" )
+        .def( "printMedFile", &ParallelMesh::printMedFile, R"(
+Print the mesh in the MED format
+
+Arguments:
+    filename (Path|str): Name of the file
+    local (bool=True) : print local values only (relevant for a ParallelMesh only)
+    version (list): list of size 3 ([major, minor, release])
+
+Returns:
+    Bool: True if of
+            )",
+              py::arg( "fileName" ), py::arg( "local" ) = true,
+              py::arg( "version" ) = std::array< int, 3 >( { 0, 0, 0 } ) );
 };
 
 #endif /* ASTER_HAVE_MPI */

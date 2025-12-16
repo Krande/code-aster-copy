@@ -28,7 +28,7 @@ import tempfile
 
 from ..CodeCommands import CREA_MAILLAGE
 from ..MedUtils.MedConverter import convertMesh2MedCoupling
-from ..Objects import Mesh, MeshReader, PythonBool
+from ..Objects import Mesh, MedToAsterReader, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ExecutionParameter, force_list, injector
 from . import mesh_builder
@@ -354,7 +354,7 @@ class ExtendedMesh:
         Returns:
             ParallelMesh: the object itself
         """
-        mr = MeshReader()
+        mr = MedToAsterReader()
         mr.readMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
         return self
 

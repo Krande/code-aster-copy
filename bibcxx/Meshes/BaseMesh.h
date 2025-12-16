@@ -339,6 +339,15 @@ class BaseMesh : public DataStructure, public ListOfTables {
     }
 
     /**
+     * @brief Returns the nodes indexes of inner nodes
+     * @return VectorLong
+     */
+    virtual VectorLong getInnerCells() const {
+        AS_ASSERT( false );
+        return {};
+    }
+
+    /**
      * @brief Returns the nodes indexes of outer nodes
      * @return VectorLong
      */
@@ -413,8 +422,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @param fileName Nom du fichier MED à imprimer
      * @return true
      */
-    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
-                       std::string version = std::string() ) const;
+    virtual bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                               std::array< int, 3 > version = { 0, 0, 0 } ) const;
 
     /**
      * @brief Get the mapping between local and global numbering of nodes

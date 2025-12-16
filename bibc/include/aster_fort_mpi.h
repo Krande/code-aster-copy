@@ -39,6 +39,11 @@ extern void DEFP( ASMPI_CHECK, asmpi_check, ASTERINTEGER * );
 #define CALL_ASMPI_WARN( a ) CALLP( ASMPI_WARN, asmpi_warn, a )
 extern void DEFP( ASMPI_WARN, asmpi_warn, ASTERINTEGER * );
 
+#define CALL_VECTOR_GHOSTS_COMM( a, b, c )                                                         \
+    CALLOPP( VECTOR_GHOSTS_COMM, vector_ghosts_comm, a, b, c )
+extern void DEFSPP( VECTOR_GHOSTS_COMM, vector_ghosts_comm, const char *, STRING_SIZE,
+                    ASTERINTEGER *, ASTERINTEGER * );
+
 #ifdef __cplusplus
 }
 #endif

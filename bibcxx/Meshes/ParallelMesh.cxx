@@ -28,6 +28,7 @@
 #include "aster_fort_mesh.h"
 #include "aster_fort_utils.h"
 
+#include "IOManager/AsterToMedWriter.h"
 #include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
@@ -657,5 +658,11 @@ const VectorLong ParallelMesh::getAllMedCellsTypes() const {
     }
     return out2;
 }
+
+bool ParallelMesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                                 std::array< int, 3 > version ) const {
+    auto aTMWriter = AsterToMedWriter();
+    return aTMWriter.printMesh( *this, fileName, local );
+};
 
 #endif /* ASTER_HAVE_MPI */

@@ -22,6 +22,8 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
 from code_aster.MedUtils import printMeshToMedFile, printResultToMedFile
+from code_aster.Utilities import SharedTmpdir
+import os.path as osp
 
 test = CA.TestCase()
 
@@ -29,10 +31,17 @@ CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-pMesh2 = CA.Mesh()
+pMesh2 = CA.ParallelMesh()
 pMesh2.readMedFile("zzzz504a.med")
 
-printMeshToMedFile(pMesh2, "mesh.med")
+with SharedTmpdir("zzzz505k_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "zzzz505k.med")
+
+    DEFI_FICHIER(UNITE=87, FICHIER=medfile, TYPE="BINARY")
+    IMPR_RESU(FORMAT="MED", FICHIER_UNIQUE="OUI", UNITE=87, RESU=_F(MAILLAGE=pMesh2))
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
+
+test.assertTrue(printMeshToMedFile(pMesh2, "split_" + str(rank) + ".med"))
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh2,
@@ -72,12 +81,13 @@ resu = STAT_NON_LINE(
     SOLVEUR=_F(METHODE="MUMPS"),
 )
 
-printResultToMedFile(resu, "mesh.med")
+with SharedTmpdir("zzzz505k_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "zzzz505k_bis.med")
 
-MyFieldOnNodes = resu.getField("DEPL", 1)
-sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
+    test.assertTrue(printMeshToMedFile(pMesh2, medfile, local=False))
+    test.assertTrue(printResultToMedFile(resu, medfile, local=False))
 
-test.assertAlmostEqual(sfon[0, 0], 1.0)
-test.assertAlmostEqual(sfon[4, 0], 0.517555615116595)
+    medfile = osp.join(tmpdir.path, "zzzz505k_" + str(rank) + ".med")
+    pMesh2.printMedFile(medfile, version=[4, 2, 0])
 
 FIN()

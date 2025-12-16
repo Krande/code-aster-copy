@@ -25,6 +25,7 @@
 
 #include "aster_fort_mesh.h"
 
+#include "IOManager/AsterToMedWriter.h"
 #include "ParallelUtilities/AsterMPI.h"
 
 #include <algorithm>
@@ -692,6 +693,12 @@ VectorLong ConnectionMesh::getNodesFromCells( const VectorString &names, const b
 VectorLong ConnectionMesh::getNodesFromCells( const std::string name, const bool,
                                               const ASTERINTEGER ) const {
     return getNodesFromCells( this->getCells( name ), true );
+};
+
+bool ConnectionMesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                                   std::array< int, 3 > version ) const {
+    auto aTMWriter = AsterToMedWriter();
+    return aTMWriter.printMesh( *this, fileName, local );
 };
 
 #endif /* ASTER_HAVE_MPI */

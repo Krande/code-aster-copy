@@ -121,6 +121,14 @@ class ConnectionMesh : public BaseMesh {
      * @return retourne true si le maillage est partiel
      */
     virtual bool isConnection() const { return true; };
+
+    /**
+     * @brief Impression du maillage au format MED
+     * @param fileName Nom du fichier MED à imprimer
+     * @return true
+     */
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::array< int, 3 > version = { 0, 0, 0 } ) const;
 };
 
 /**

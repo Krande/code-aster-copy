@@ -24,15 +24,40 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
+#include "med.h"
+
 #include <string>
 #include <vector>
+
+static const VectorInt asterTypeList = { 1,  2,  4,  6,  7,  9,  11, 12, 14, 16,
+                                         18, 19, 20, 21, 22, 23, 24, 25, 26, 27 };
+
+static const std::map< int, med_geometry_type > asterMedMatching = {
+    { 1, 1 },    { 2, 102 },  { 4, 103 },  { 6, 104 },  { 7, 203 },  { 9, 206 },  { 11, 207 },
+    { 12, 204 }, { 14, 208 }, { 16, 209 }, { 18, 304 }, { 19, 310 }, { 20, 306 }, { 21, 315 },
+    { 22, 318 }, { 23, 305 }, { 24, 313 }, { 25, 308 }, { 26, 320 }, { 27, 327 }
+};
+
+const std::set< med_int > medTypeToRenumber = { 304, 308, 305, 306, 310, 320, 313, 315, 318, 327 };
 
 // aslint: disable=C3012
 
 /** @brief split char* in nbElem std::string of size size */
 std::vector< std::string > splitChar( char *toSplit, int nbElem, int size );
 
+/** @brief copy VectorString to fixed size char* */
+char *stringVectorToChar( const VectorString &vec, int fixedSize );
+
 /** @brief parallel split a set of element (used for med filters) */
 std::pair< int, int > splitEntitySet( int nbElemT, int rank, int nbProcs );
+
+template < std::size_t N, const int indices[N] >
+void applyPermutation( const med_int *in, med_int *out ) {
+    for ( size_t i = 0; i < N; i++ ) {
+        out[i] = in[indices[i]];
+    }
+};
 
 #endif /* MEDUTILITIES_H_ */
