@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,6 +74,10 @@ Le champ STRX_ELGA n'est pas possible sur une modélisation XFEM.
     ),
     8: _(
         """Il y a des chargements pilotées dans le résultat, mais on ne peut pas récupérer la valeur du coefficient de pilotage."""
+    ),
+    9: _(
+        """Le champ SIEF_ELGA n'est pas disponible dans le résultat. Pour le non-linéaire, on ne le calcule pas automatiquement.
+Il faut soit compléter le résultat en entrée, soit demander explicitement le calcul de SIEF_ELGA dans CALC_CHAMP. Dans ce dernier cas, vous aurez des contraintes calculées avec l'hypothèse de l'élasticité linéaire !"""
     ),
     19: _(
         """

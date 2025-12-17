@@ -378,6 +378,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                             iret2)
 !
                 if (iret2 .ne. 0) then
+                    if (resultType .eq. "EVOL_NOLI") then
+                        call utmess("F", "CALCCHAMP_9")
+                    end if
                     optio2 = 'SIEF_ELGA'
                     if (ldist) then
                         call calcop(optio2, ' ', resuin, resuou, lisori, &
