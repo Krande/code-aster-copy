@@ -79,6 +79,10 @@ Le champ STRX_ELGA n'est pas possible sur une modélisation XFEM.
         """Le champ SIEF_ELGA n'est pas disponible dans le résultat. Pour le non-linéaire, on ne le calcule pas automatiquement.
 Il faut soit compléter le résultat en entrée, soit demander explicitement le calcul de SIEF_ELGA dans CALC_CHAMP. Dans ce dernier cas, vous aurez des contraintes calculées avec l'hypothèse de l'élasticité linéaire !"""
     ),
+    10: _(
+        """La numérotation produite par le modèle (%(i1)d équations) est incohérente avec la dimension des champs nodaux (%(i2)d équations).
+    L'erreur provient en général d'un incohérence au niveau d'une commande comme LIRE_RESU ou LIRE_CHAMP."""
+    ),
     19: _(
         """
 Problème lors de l'appel de l'option %(k1)s.

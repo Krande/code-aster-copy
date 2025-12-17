@@ -88,6 +88,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     integer :: neq, jfo, lonch, lonnew, jfr, jfi, rang, nbproc, nbpas, nbordi
     integer :: lonc2, ltrav, j, inume, jddl, jddr, lacce, p, irelat, jordi
     integer :: cret, jldist, iaux1, k, jcnoch, ideb, ifin, ipas, jvcham, iaux2
+    integer :: numeNbEqua
     character(len=1) :: stop, ktyp, kbid
     character(len=2) :: codret
     character(len=6) :: nompro
@@ -100,6 +101,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     character(len=24) :: vafono, vreno, vareno, chdepl, valk(3), nume, chdepk, numk
     character(len=24) :: sigmaPrev, sigma
     character(len=24) :: mateco, mater, vafonr, vafoni, k24b, numnew, basemo
+    character(len=24) :: numeEqua
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno, chamnk
     character(len=24) :: strx, vldist, vcnoch, vcham, lisori
     character(len=24) :: bidon, chacce, modele, kstr, modnew
@@ -135,6 +137,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     call infniv(ifm, niv)
     blanc8 = '        '
     sigmaPrev = ' '
+
 ! SI PARALLELISME EN TEMPS: INITIALISATION CONTEXTE
     call pcptcc(1, ldist, dbg_ob, dbgv_ob, lcpu, &
                 ltest, rang, nbproc, mpicou, nbordr, &
@@ -519,6 +522,20 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 
             sigmaPrev = sigma
             timePrev = time
+
+!       --- AJUSTEMENT SI BESOIN DE LA NUMEROTATION ---
+
+            call dismoi('NB_EQUA', nume, 'NUME_DDL', repi=numeNbEqua)
+            if (numeNbEqua .ne. nbddl) then
+                call dismoi('NUME_EQUA', chdep2, 'CHAM_NO', repk=numeEqua)
+                nume = numeEqua(1:14)
+            end if
+
+            call dismoi('NB_EQUA', nume, 'NUME_DDL', repi=numeNbEqua)
+            if (numeNbEqua .ne. nbddl) then
+                call utmess("F", "CALCCHAMP_10", &
+                            ni=2, vali=[numeNbEqua, nbddl])
+            end if
 
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
             if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
