@@ -10,6 +10,7 @@ variables:
   ASTER_BUILD: mpi
   # BUILDTYPE: ci, nightly, nightly-coverage, nightly-sanitize, code-checking, docker
   BUILDTYPE: ci
+  RUNNER_TAG_TEST: hulk
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 12
@@ -153,8 +154,13 @@ minimal_test:
 .verification_test:
   interruptible: true
   stage: test
+  rules:
+    - if: $BUILDTYPE == "nightly-coverage" || $BUILDTYPE == "nightly-sanitize"
+      variables:
+        RUNNER_TAG_TEST: long
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
   tags:
-    - hulk
+    - $RUNNER_TAG_TEST
   script:
     - .gitlabci/test.sh
         -L verification
@@ -166,8 +172,6 @@ minimal_test:
     expire_in: 3 days
     reports:
       junit: results/run_testcases.xml
-  rules:
-    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
 known_failures_test:
   interruptible: true
