@@ -109,7 +109,7 @@ class MedField {
      * @param numit iteration id
      * @param dt time step value
      */
-    void addSequence( int numdt, int numit, float dt ) {
+    void addSequence( int numdt, int numit, const med_float &dt ) {
         _sequences.emplace_back( numdt, numit, dt );
         _numdtNumitToSeq[numdt][numit] = curSeq;
         ++curSeq;
@@ -138,7 +138,7 @@ class MedField {
     };
 
     /** @brief Get time from id */
-    med_float getTime( int index ) const { return _sequences[index].getDt(); };
+    const med_float &getTime( int index ) const { return _sequences[index].getDt(); };
 
     /** @brief Get sequence number */
     int getSequenceNumber() const { return _sequences.size(); };
