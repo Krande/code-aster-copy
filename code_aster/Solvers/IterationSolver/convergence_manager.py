@@ -533,21 +533,24 @@ class ConvergenceManager(ContextMixin):
         else:
             resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
-    def _check_resi_glob_rela(self):
+    def _trigger_check_resi_glob_maxi(self):
         name = "RESI_GLOB_RELA"
         para = self._param[name]
-        if not para.isDefined():
-            # If not defined, return True
+        if not para.hasRef():
+            # NOTE: By default resi_glob_rela has a reference, if not return true
             return True
 
-        if para.isConverged():
-            # Special case only
+        if para.value is ConvergenceManager.undef:
+            # NOTE: By default this function deals with the special case
             return True
-        return True
+
+        # NOTE: if not, verify wheter resi_glob_rela has converged or not
+        # If not converged, check resi_glob_maxi
+        return not para.isConverged()
 
     @property
     def _tiny_value(self):
-        return np.finfo(float).tiny
+        return np.finfo(np.float16).tiny  # or 1e-7
 
     def _check_resi_glob_maxi(self):
         name_maxi = "RESI_GLOB_MAXI"
@@ -602,7 +605,7 @@ class ConvergenceManager(ContextMixin):
             return False
 
         for name, para in self._param.items():
-            if name == "RESI_GLOB_RELA" and para.value == ConvergenceManager.undef:
+            if name == "RESI_GLOB_RELA" and para.value is ConvergenceManager.undef:
                 # See special case, pass next name, para
                 continue
             if not para.isConverged():
@@ -610,10 +613,9 @@ class ConvergenceManager(ContextMixin):
                 return False
 
         # Special case
-        if self._check_resi_glob_rela():
-            return True
-        if not self._check_resi_glob_maxi():
-            return False
+        if self._trigger_check_resi_glob_maxi():
+            return self._check_resi_glob_maxi()
+
         return True
 
     def isPrediction(self):
