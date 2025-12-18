@@ -45,7 +45,7 @@ phen.add(
             (AT.EFGE, "OUI"),
             (AT.SOUS_POINT, "OUI"),
         ),
-        elements=((MT.QUAD9, EL.PLAQ_MITC),),
+        elements=((MT.QUAD9, EL.PLAQ_MITC_QUAD9), (MT.TRIA6, EL.PLAQ_MITC_TRIA6)),
     ),
 )
 

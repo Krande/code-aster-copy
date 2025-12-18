@@ -32,27 +32,27 @@
 
 VectorReal B_p1_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
                      const VectorInt &entity_local_index, const VectorReal &c ) {
-    VectorReal A( 42 * 42, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
+    VectorReal A( 21, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
     // Quadrature rules
     static const double weights_48e[3] = { 0.1666666666666667, 0.1666666666666667,
                                            0.1666666666666667 };
     // Precomputed values of basis functions and precomputations
     // FE* dimensions: [permutation][entities][points][dofs]
     static const double FE4_C1_D01_Q48e[1][1][3][6] = {
-        { { { -1.666666666666667, 0.0, -0.3333333333333333, 0.6666666666666667, 2.0,
-              -0.6666666666666669 },
-            { 0.3333333333333328, 0.0, 1.666666666666666, 0.6666666666666669, -2.0,
-              -0.6666666666666662 },
-            { 0.333333333333333, 0.0, -0.3333333333333335, 2.666666666666667, 0.0,
+        { { { -1.666666666666667, 0.0, -0.3333333333333331, 0.6666666666666666, 2.0,
+              -0.666666666666667 },
+            { 0.3333333333333325, 0.0, 1.666666666666666, 0.6666666666666667, -2.0,
+              -0.6666666666666666 },
+            { 0.3333333333333324, 0.0, -0.3333333333333334, 2.666666666666667, 0.0,
               -2.666666666666666 } } }
     };
     static const double FE4_C1_D10_Q48e[1][1][3][6] = {
-        { { { -1.666666666666667, -0.333333333333333, 0.0, 0.6666666666666664, -0.6666666666666667,
+        { { { -1.666666666666667, -0.3333333333333334, 0.0, 0.6666666666666667, -0.6666666666666662,
               2.0 },
-            { 0.3333333333333325, -0.3333333333333328, 0.0, 2.666666666666667, -2.666666666666667,
+            { 0.3333333333333323, -0.3333333333333329, 0.0, 2.666666666666667, -2.666666666666667,
               0.0 },
-            { 0.3333333333333331, 1.666666666666667, 0.0, 0.6666666666666666, -0.6666666666666663,
-              -1.999999999999999 } } }
+            { 0.3333333333333328, 1.666666666666667, 0.0, 0.6666666666666663, -0.6666666666666669,
+              -2.0 } } }
     };
     static const double FE4_C2_Q48e[1][1][3][3] = {
         { { { 0.6666666666666667, 0.1666666666666666, 0.1666666666666667 },
@@ -69,22 +69,22 @@ VectorReal B_p1_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
             { 0.1666666666666666, 0.8333333333333335, 0.1666666666666666 },
             { 0.6666666666666667, 0.3333333333333333, 0.6666666666666667 } } }
     };
-    static const double FE6_C0_D10_Q48e[1][1][1][3] = { { { { -1.0, 1.0, 0.0 } } } };
-    static const double FE6_C1_D01_Q48e[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
+    static const double FE5_C0_D10_Q48e[1][1][1][3] = { { { { -1.0, 1.0, 0.0 } } } };
+    static const double FE5_C1_D01_Q48e[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
     // ------------------------
     // Section: Jacobian
-    // Inputs: FE6_C0_D10_Q48e, FE6_C1_D01_Q48e, coordinate_dofs
-    // Outputs: J_c2, J_c3, J_c0, J_c1
+    // Inputs: FE5_C0_D10_Q48e, coordinate_dofs, FE5_C1_D01_Q48e
+    // Outputs: J_c3, J_c1, J_c2, J_c0
     double J_c0 = 0.0;
     double J_c3 = 0.0;
     double J_c1 = 0.0;
     double J_c2 = 0.0;
     {
         for ( int ic = 0; ic < 3; ++ic ) {
-            J_c0 += coordinate_dofs[(ic)*3] * FE6_C0_D10_Q48e[0][0][0][ic];
-            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE6_C1_D01_Q48e[0][0][0][ic];
-            J_c1 += coordinate_dofs[(ic)*3] * FE6_C1_D01_Q48e[0][0][0][ic];
-            J_c2 += coordinate_dofs[(ic)*3 + 1] * FE6_C0_D10_Q48e[0][0][0][ic];
+            J_c0 += coordinate_dofs[(ic)*3] * FE5_C0_D10_Q48e[0][0][0][ic];
+            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE5_C1_D01_Q48e[0][0][0][ic];
+            J_c1 += coordinate_dofs[(ic)*3] * FE5_C1_D01_Q48e[0][0][0][ic];
+            J_c2 += coordinate_dofs[(ic)*3 + 1] * FE5_C0_D10_Q48e[0][0][0][ic];
         }
     }
     // ------------------------
@@ -309,7 +309,7 @@ VectorReal B_p1_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw3, fw2, fw1, FE4_C1_D01_Q48e, fw0, FE4_C1_D10_Q48e
+        // Inputs: fw0, FE4_C1_D01_Q48e, FE4_C1_D10_Q48e, fw1, fw3, fw2
         // Outputs: A
         {
             for ( int i = 0; i < 6; ++i ) {
@@ -322,7 +322,7 @@ VectorReal B_p1_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw4, FE4_C4_Q48e, fw6, FE4_C3_Q48e, FE4_C2_Q48e, fw5
+        // Inputs: FE4_C4_Q48e, fw6, FE4_C2_Q48e, FE4_C3_Q48e, fw5, fw4
         // Outputs: A
         {
             for ( int i = 0; i < 3; ++i ) {
@@ -339,35 +339,35 @@ VectorReal B_p1_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
 
 VectorReal B_p2_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
                      const VectorInt &entity_local_index, const VectorReal &c ) {
-    VectorReal A( 42 * 42, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
+    VectorReal A( 21, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
     // Quadrature rules
     static const double weights_4a8[2] = { 0.5, 0.5 };
     // Precomputed values of basis functions and precomputations
     // FE* dimensions: [permutation][entities][points][dofs]
-    static const double FE1_C1_D01_F_Q4a8[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
-    static const double FE5_C0_F_Q4a8[1][3][2][6] = {
-        { { { 0.0, 0.4553418012614797, -0.1220084679281462, 0.6666666666666667, 0.0, 0.0 },
+    static const double FE4_C0_F_Q4a8[1][3][2][6] = {
+        { { { 0.0, 0.4553418012614797, -0.1220084679281462, 0.6666666666666669, 0.0, 0.0 },
             { 0.0, -0.1220084679281461, 0.4553418012614795, 0.6666666666666667, 0.0, 0.0 } },
-          { { 0.4553418012614797, 0.0, -0.1220084679281462, 0.0, 0.6666666666666669, 0.0 },
-            { -0.1220084679281461, 0.0, 0.4553418012614795, 0.0, 0.6666666666666667, 0.0 } },
-          { { 0.4553418012614794, -0.1220084679281462, 0.0, 0.0, 0.0, 0.6666666666666665 },
-            { -0.1220084679281462, 0.4553418012614795, 0.0, 0.0, 0.0, 0.6666666666666665 } } }
+          { { 0.4553418012614796, 0.0, -0.1220084679281462, 0.0, 0.6666666666666667, 0.0 },
+            { -0.1220084679281462, 0.0, 0.4553418012614795, 0.0, 0.6666666666666667, 0.0 } },
+          { { 0.4553418012614795, -0.1220084679281462, 0.0, 0.0, 0.0, 0.6666666666666667 },
+            { -0.1220084679281461, 0.4553418012614794, 0.0, 0.0, 0.0, 0.6666666666666667 } } }
     };
-    static const double FE5_C2_D10_F_Q4a8[1][1][1][3] = { { { { -1.0, 1.0, 0.0 } } } };
-    static const double FE5_C3_F_Q4a8[1][3][2][3] = {
+    static const double FE4_C2_D10_F_Q4a8[1][1][1][3] = { { { { -1.0, 1.0, 0.0 } } } };
+    static const double FE4_C3_F_Q4a8[1][3][2][3] = {
         { { { -0.211324865405187, 0.211324865405187, 0.788675134594813 },
             { -0.7886751345948131, 0.7886751345948131, 0.211324865405187 } },
           { { -0.2113248654051873, 0.2113248654051873, 0.7886751345948128 },
             { -0.7886751345948131, 0.7886751345948131, 0.2113248654051869 } },
           { { 0.0, 0.0, 1.0 }, { 0.0, 0.0, 1.0 } } }
     };
-    static const double FE5_C4_F_Q4a8[1][3][2][3] = {
+    static const double FE4_C4_F_Q4a8[1][3][2][3] = {
         { { { 0.788675134594813, 0.211324865405187, 0.788675134594813 },
             { 0.211324865405187, 0.788675134594813, 0.211324865405187 } },
           { { 0.0, 1.0, 0.0 }, { 0.0, 1.0, 0.0 } },
           { { 0.2113248654051872, 0.7886751345948128, 0.2113248654051872 },
             { 0.788675134594813, 0.211324865405187, 0.788675134594813 } } }
     };
+    static const double FE5_C1_D01_F_Q4a8[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
     static const double triangle_reference_facet_jacobian[3][2][1] = { { { -1.0 }, { 1.0 } },
                                                                        { { 0.0 }, { 1.0 } },
                                                                        { { 1.0 }, { 0.0 } } };
@@ -376,40 +376,40 @@ VectorReal B_p2_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
     };
     // ------------------------
     // Section: Function
-    // Inputs: w, FE5_C2_D10_F_Q4a8
+    // Inputs: w, FE4_C2_D10_F_Q4a8
     // Outputs: w0_d10_c2
     double w0_d10_c2 = 0.0;
     {
         for ( int ic = 0; ic < 3; ++ic ) {
-            w0_d10_c2 += w[( ic ) + 12] * FE5_C2_D10_F_Q4a8[0][0][0][ic];
+            w0_d10_c2 += w[( ic ) + 12] * FE4_C2_D10_F_Q4a8[0][0][0][ic];
         }
     }
     // ------------------------
     // ------------------------
     // Section: Jacobian
-    // Inputs: coordinate_dofs, FE1_C1_D01_F_Q4a8, FE5_C2_D10_F_Q4a8
-    // Outputs: J_c1, J_c2, J_c0, J_c3
+    // Inputs: FE4_C2_D10_F_Q4a8, coordinate_dofs, FE5_C1_D01_F_Q4a8
+    // Outputs: J_c1, J_c0, J_c2, J_c3
     double J_c3 = 0.0;
     double J_c0 = 0.0;
     double J_c1 = 0.0;
     double J_c2 = 0.0;
     {
         for ( int ic = 0; ic < 3; ++ic ) {
-            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE1_C1_D01_F_Q4a8[0][0][0][ic];
-            J_c0 += coordinate_dofs[(ic)*3] * FE5_C2_D10_F_Q4a8[0][0][0][ic];
-            J_c1 += coordinate_dofs[(ic)*3] * FE1_C1_D01_F_Q4a8[0][0][0][ic];
-            J_c2 += coordinate_dofs[(ic)*3 + 1] * FE5_C2_D10_F_Q4a8[0][0][0][ic];
+            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE5_C1_D01_F_Q4a8[0][0][0][ic];
+            J_c0 += coordinate_dofs[(ic)*3] * FE4_C2_D10_F_Q4a8[0][0][0][ic];
+            J_c1 += coordinate_dofs[(ic)*3] * FE5_C1_D01_F_Q4a8[0][0][0][ic];
+            J_c2 += coordinate_dofs[(ic)*3 + 1] * FE4_C2_D10_F_Q4a8[0][0][0][ic];
         }
     }
     // ------------------------
     // ------------------------
     // Section: Function
-    // Inputs: w, FE1_C1_D01_F_Q4a8
+    // Inputs: w, FE5_C1_D01_F_Q4a8
     // Outputs: w0_d01_c2
     double w0_d01_c2 = 0.0;
     {
         for ( int ic = 0; ic < 3; ++ic ) {
-            w0_d01_c2 += w[( ic ) + 12] * FE1_C1_D01_F_Q4a8[0][0][0][ic];
+            w0_d01_c2 += w[( ic ) + 12] * FE5_C1_D01_F_Q4a8[0][0][0][ic];
         }
     }
     // ------------------------
@@ -473,67 +473,67 @@ VectorReal B_p2_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
     for ( int iq = 0; iq < 2; ++iq ) {
         // ------------------------
         // Section: Function
-        // Inputs: w, FE5_C0_F_Q4a8
+        // Inputs: w, FE4_C0_F_Q4a8
         // Outputs: w0_c0
         double w0_c0 = 0.0;
         {
             for ( int ic = 0; ic < 6; ++ic ) {
-                w0_c0 += w[(ic)*2] * FE5_C0_F_Q4a8[0][entity_local_index[0]][iq][ic];
+                w0_c0 += w[(ic)*2] * FE4_C0_F_Q4a8[0][entity_local_index[0]][iq][ic];
             }
         }
         // ------------------------
         // ------------------------
         // Section: Function
-        // Inputs: w, FE5_C3_F_Q4a8
+        // Inputs: w, FE4_C3_F_Q4a8
         // Outputs: w0_c3
         double w0_c3 = 0.0;
         {
             for ( int ic = 0; ic < 3; ++ic ) {
-                w0_c3 += w[( ic ) + 15] * FE5_C3_F_Q4a8[0][entity_local_index[0]][iq][ic];
+                w0_c3 += w[( ic ) + 15] * FE4_C3_F_Q4a8[0][entity_local_index[0]][iq][ic];
             }
         }
         // ------------------------
         // ------------------------
         // Section: Function
-        // Inputs: w, FE5_C4_F_Q4a8
+        // Inputs: w, FE4_C4_F_Q4a8
         // Outputs: w0_c4
         double w0_c4 = 0.0;
         {
             for ( int ic = 0; ic < 3; ++ic ) {
-                w0_c4 += w[( ic ) + 15] * FE5_C4_F_Q4a8[0][entity_local_index[0]][iq][ic];
+                w0_c4 += w[( ic ) + 15] * FE4_C4_F_Q4a8[0][entity_local_index[0]][iq][ic];
             }
         }
         // ------------------------
         // ------------------------
         // Section: Function
-        // Inputs: w, FE5_C0_F_Q4a8
+        // Inputs: w, FE4_C0_F_Q4a8
         // Outputs: w0_c1
         double w0_c1 = 0.0;
         {
             for ( int ic = 0; ic < 6; ++ic ) {
-                w0_c1 += w[(ic)*2 + 1] * FE5_C0_F_Q4a8[0][entity_local_index[0]][iq][ic];
+                w0_c1 += w[(ic)*2 + 1] * FE4_C0_F_Q4a8[0][entity_local_index[0]][iq][ic];
             }
         }
         // ------------------------
         // ------------------------
         // Section: Function
-        // Inputs: w, FE5_C3_F_Q4a8
+        // Inputs: w, FE4_C3_F_Q4a8
         // Outputs: w0_c5
         double w0_c5 = 0.0;
         {
             for ( int ic = 0; ic < 3; ++ic ) {
-                w0_c5 += w[( ic ) + 18] * FE5_C3_F_Q4a8[0][entity_local_index[0]][iq][ic];
+                w0_c5 += w[( ic ) + 18] * FE4_C3_F_Q4a8[0][entity_local_index[0]][iq][ic];
             }
         }
         // ------------------------
         // ------------------------
         // Section: Function
-        // Inputs: w, FE5_C4_F_Q4a8
+        // Inputs: w, FE4_C4_F_Q4a8
         // Outputs: w0_c6
         double w0_c6 = 0.0;
         {
             for ( int ic = 0; ic < 3; ++ic ) {
-                w0_c6 += w[( ic ) + 18] * FE5_C4_F_Q4a8[0][entity_local_index[0]][iq][ic];
+                w0_c6 += w[( ic ) + 18] * FE4_C4_F_Q4a8[0][entity_local_index[0]][iq][ic];
             }
         }
         // ------------------------
@@ -604,58 +604,57 @@ VectorReal B_p2_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw1, fw0, FE5_C0_F_Q4a8
+        // Inputs: fw1, fw0, FE4_C0_F_Q4a8
         // Outputs: A
         {
             for ( int i = 0; i < 6; ++i ) {
-                A[2 * ( i )] += fw0 * FE5_C0_F_Q4a8[0][entity_local_index[0]][iq][i];
-                A[( 2 * ( i ) + 1 )] += fw1 * FE5_C0_F_Q4a8[0][entity_local_index[0]][iq][i];
+                A[2 * ( i )] += fw0 * FE4_C0_F_Q4a8[0][entity_local_index[0]][iq][i];
+                A[( 2 * ( i ) + 1 )] += fw1 * FE4_C0_F_Q4a8[0][entity_local_index[0]][iq][i];
             }
         }
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw2, fw7, fw5, FE5_C3_F_Q4a8, FE5_C4_F_Q4a8, fw4, fw6, fw3, FE5_C2_D10_F_Q4a8,
-        // FE1_C1_D01_F_Q4a8 Outputs: A
+        // Inputs: FE5_C1_D01_F_Q4a8, fw6, FE4_C4_F_Q4a8, fw3, fw7, fw2, fw5, FE4_C2_D10_F_Q4a8,
+        // FE4_C3_F_Q4a8, fw4 Outputs: A
         {
             for ( int i = 0; i < 3; ++i ) {
-                A[( ( i ) + 12 )] += fw2 * FE5_C2_D10_F_Q4a8[0][0][0][i];
-                A[( ( i ) + 12 )] += fw3 * FE1_C1_D01_F_Q4a8[0][0][0][i];
-                A[( ( i ) + 15 )] += fw4 * FE5_C3_F_Q4a8[0][entity_local_index[0]][iq][i];
-                A[( ( i ) + 15 )] += fw5 * FE5_C4_F_Q4a8[0][entity_local_index[0]][iq][i];
-                A[( ( i ) + 18 )] += fw6 * FE5_C3_F_Q4a8[0][entity_local_index[0]][iq][i];
-                A[( ( i ) + 18 )] += fw7 * FE5_C4_F_Q4a8[0][entity_local_index[0]][iq][i];
+                A[( ( i ) + 12 )] += fw2 * FE4_C2_D10_F_Q4a8[0][0][0][i];
+                A[( ( i ) + 12 )] += fw3 * FE5_C1_D01_F_Q4a8[0][0][0][i];
+                A[( ( i ) + 15 )] += fw4 * FE4_C3_F_Q4a8[0][entity_local_index[0]][iq][i];
+                A[( ( i ) + 15 )] += fw5 * FE4_C4_F_Q4a8[0][entity_local_index[0]][iq][i];
+                A[( ( i ) + 18 )] += fw6 * FE4_C3_F_Q4a8[0][entity_local_index[0]][iq][i];
+                A[( ( i ) + 18 )] += fw7 * FE4_C4_F_Q4a8[0][entity_local_index[0]][iq][i];
             }
         }
         // ------------------------
     }
-
     return A;
 }
 
 VectorReal B_p4_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
                      const VectorInt &entity_local_index, const VectorReal &c ) {
-    VectorReal A( 42 * 42, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
+    VectorReal A( 21 * 21, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
     // Quadrature rules
     static const double weights_48e[3] = { 0.1666666666666667, 0.1666666666666667,
                                            0.1666666666666667 };
     // Precomputed values of basis functions and precomputations
     // FE* dimensions: [permutation][entities][points][dofs]
     static const double FE4_C1_D01_Q48e[1][1][3][6] = {
-        { { { -1.666666666666667, 0.0, -0.3333333333333333, 0.6666666666666667, 2.0,
-              -0.6666666666666669 },
-            { 0.3333333333333328, 0.0, 1.666666666666666, 0.6666666666666669, -2.0,
-              -0.6666666666666662 },
-            { 0.333333333333333, 0.0, -0.3333333333333335, 2.666666666666667, 0.0,
+        { { { -1.666666666666667, 0.0, -0.3333333333333331, 0.6666666666666666, 2.0,
+              -0.666666666666667 },
+            { 0.3333333333333325, 0.0, 1.666666666666666, 0.6666666666666667, -2.0,
+              -0.6666666666666666 },
+            { 0.3333333333333324, 0.0, -0.3333333333333334, 2.666666666666667, 0.0,
               -2.666666666666666 } } }
     };
     static const double FE4_C1_D10_Q48e[1][1][3][6] = {
-        { { { -1.666666666666667, -0.333333333333333, 0.0, 0.6666666666666664, -0.6666666666666667,
+        { { { -1.666666666666667, -0.3333333333333334, 0.0, 0.6666666666666667, -0.6666666666666662,
               2.0 },
-            { 0.3333333333333325, -0.3333333333333328, 0.0, 2.666666666666667, -2.666666666666667,
+            { 0.3333333333333323, -0.3333333333333329, 0.0, 2.666666666666667, -2.666666666666667,
               0.0 },
-            { 0.3333333333333331, 1.666666666666667, 0.0, 0.6666666666666666, -0.6666666666666663,
-              -1.999999999999999 } } }
+            { 0.3333333333333328, 1.666666666666667, 0.0, 0.6666666666666663, -0.6666666666666669,
+              -2.0 } } }
     };
     static const double FE4_C3_Q48e[1][1][3][3] = {
         { { { -0.1666666666666667, 0.1666666666666667, 0.8333333333333333 },
@@ -667,22 +666,22 @@ VectorReal B_p4_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
             { 0.1666666666666666, 0.8333333333333335, 0.1666666666666666 },
             { 0.6666666666666667, 0.3333333333333333, 0.6666666666666667 } } }
     };
-    static const double FE6_C0_D10_Q48e[1][1][1][3] = { { { { -1.0, 1.0, 0.0 } } } };
-    static const double FE6_C1_D01_Q48e[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
+    static const double FE5_C0_D10_Q48e[1][1][1][3] = { { { { -1.0, 1.0, 0.0 } } } };
+    static const double FE5_C1_D01_Q48e[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
     // ------------------------
     // Section: Jacobian
-    // Inputs: FE6_C0_D10_Q48e, FE6_C1_D01_Q48e, coordinate_dofs
-    // Outputs: J_c2, J_c3, J_c0, J_c1
+    // Inputs: FE5_C0_D10_Q48e, coordinate_dofs, FE5_C1_D01_Q48e
+    // Outputs: J_c3, J_c1, J_c2, J_c0
     double J_c0 = 0.0;
     double J_c3 = 0.0;
     double J_c1 = 0.0;
     double J_c2 = 0.0;
     {
         for ( int ic = 0; ic < 3; ++ic ) {
-            J_c0 += coordinate_dofs[(ic)*3] * FE6_C0_D10_Q48e[0][0][0][ic];
-            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE6_C1_D01_Q48e[0][0][0][ic];
-            J_c1 += coordinate_dofs[(ic)*3] * FE6_C1_D01_Q48e[0][0][0][ic];
-            J_c2 += coordinate_dofs[(ic)*3 + 1] * FE6_C0_D10_Q48e[0][0][0][ic];
+            J_c0 += coordinate_dofs[(ic)*3] * FE5_C0_D10_Q48e[0][0][0][ic];
+            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE5_C1_D01_Q48e[0][0][0][ic];
+            J_c1 += coordinate_dofs[(ic)*3] * FE5_C1_D01_Q48e[0][0][0][ic];
+            J_c2 += coordinate_dofs[(ic)*3 + 1] * FE5_C0_D10_Q48e[0][0][0][ic];
         }
     }
     // ------------------------
@@ -935,8 +934,8 @@ VectorReal B_p4_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw3, fw12, fw2, fw9, fw4, fw14, fw13, fw6, fw8, fw1, fw7, fw11, fw15,
-        // FE4_C1_D01_Q48e, fw5, fw10, fw0, FE4_C1_D10_Q48e Outputs: A
+        // Inputs: fw8, fw0, fw6, FE4_C1_D01_Q48e, fw13, fw10, fw14, FE4_C1_D10_Q48e, fw1, fw3, fw7,
+        // fw2, fw5, fw9, fw12, fw11, fw4, fw15 Outputs: A
         {
             double temp_0[6] = { 0 };
             for ( int j = 0; j < 6; ++j ) {
@@ -1038,7 +1037,7 @@ VectorReal B_p4_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: FE4_C4_Q48e, fw16, FE4_C3_Q48e, fw17, fw18
+        // Inputs: FE4_C4_Q48e, FE4_C3_Q48e, fw18, fw17, fw16
         // Outputs: A
         {
             double temp_0[3] = { 0 };
@@ -1073,19 +1072,18 @@ VectorReal B_p4_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
 
 VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
                      const VectorInt &entity_local_index, const VectorReal &c ) {
-    VectorReal A( 42 * 42, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
-
+    VectorReal A( 21 * 21, 0.0 ); // Vecteur 1D pour stocker les valeurs (size = nbddl)
     // Quadrature rules
     static const double weights_4a8[2] = { 0.5, 0.5 };
     // Precomputed values of basis functions and precomputations
     // FE* dimensions: [permutation][entities][points][dofs]
     static const double FE4_C0_F_Q4a8[1][3][2][6] = {
-        { { { 0.0, 0.4553418012614797, -0.1220084679281462, 0.6666666666666667, 0.0, 0.0 },
+        { { { 0.0, 0.4553418012614797, -0.1220084679281462, 0.6666666666666669, 0.0, 0.0 },
             { 0.0, -0.1220084679281461, 0.4553418012614795, 0.6666666666666667, 0.0, 0.0 } },
-          { { 0.4553418012614797, 0.0, -0.1220084679281462, 0.0, 0.6666666666666669, 0.0 },
-            { -0.1220084679281461, 0.0, 0.4553418012614795, 0.0, 0.6666666666666667, 0.0 } },
-          { { 0.4553418012614794, -0.1220084679281462, 0.0, 0.0, 0.0, 0.6666666666666665 },
-            { -0.1220084679281462, 0.4553418012614795, 0.0, 0.0, 0.0, 0.6666666666666665 } } }
+          { { 0.4553418012614796, 0.0, -0.1220084679281462, 0.0, 0.6666666666666667, 0.0 },
+            { -0.1220084679281462, 0.0, 0.4553418012614795, 0.0, 0.6666666666666667, 0.0 } },
+          { { 0.4553418012614795, -0.1220084679281462, 0.0, 0.0, 0.0, 0.6666666666666667 },
+            { -0.1220084679281461, 0.4553418012614794, 0.0, 0.0, 0.0, 0.6666666666666667 } } }
     };
     static const double FE4_C2_D10_F_Q4a8[1][1][1][3] = { { { { -1.0, 1.0, 0.0 } } } };
     static const double FE4_C3_F_Q4a8[1][3][2][3] = {
@@ -1102,7 +1100,7 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
           { { 0.2113248654051872, 0.7886751345948128, 0.2113248654051872 },
             { 0.788675134594813, 0.211324865405187, 0.788675134594813 } } }
     };
-    static const double FE6_C1_D01_F_Q4a8[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
+    static const double FE5_C1_D01_F_Q4a8[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
     static const double triangle_reference_facet_jacobian[3][2][1] = { { { -1.0 }, { 1.0 } },
                                                                        { { 0.0 }, { 1.0 } },
                                                                        { { 1.0 }, { 0.0 } } };
@@ -1111,17 +1109,17 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
     };
     // ------------------------
     // Section: Jacobian
-    // Inputs: FE6_C1_D01_F_Q4a8, FE4_C2_D10_F_Q4a8, coordinate_dofs
-    // Outputs: J_c2, J_c3, J_c0, J_c1
+    // Inputs: FE4_C2_D10_F_Q4a8, coordinate_dofs, FE5_C1_D01_F_Q4a8
+    // Outputs: J_c1, J_c0, J_c2, J_c3
     double J_c3 = 0.0;
     double J_c0 = 0.0;
     double J_c1 = 0.0;
     double J_c2 = 0.0;
     {
         for ( int ic = 0; ic < 3; ++ic ) {
-            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE6_C1_D01_F_Q4a8[0][0][0][ic];
+            J_c3 += coordinate_dofs[(ic)*3 + 1] * FE5_C1_D01_F_Q4a8[0][0][0][ic];
             J_c0 += coordinate_dofs[(ic)*3] * FE4_C2_D10_F_Q4a8[0][0][0][ic];
-            J_c1 += coordinate_dofs[(ic)*3] * FE6_C1_D01_F_Q4a8[0][0][0][ic];
+            J_c1 += coordinate_dofs[(ic)*3] * FE5_C1_D01_F_Q4a8[0][0][0][ic];
             J_c2 += coordinate_dofs[(ic)*3 + 1] * FE4_C2_D10_F_Q4a8[0][0][0][ic];
         }
     }
@@ -1231,7 +1229,7 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw3, fw2, FE4_C0_F_Q4a8, FE4_C4_F_Q4a8, fw1, FE4_C3_F_Q4a8, fw0
+        // Inputs: fw0, FE4_C4_F_Q4a8, fw1, fw3, fw2, FE4_C3_F_Q4a8, FE4_C0_F_Q4a8
         // Outputs: A
         {
             double temp_0[3] = { 0 };
@@ -1266,8 +1264,8 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw9, fw4, FE4_C4_F_Q4a8, fw6, fw8, FE4_C3_F_Q4a8, FE6_C1_D01_F_Q4a8, fw7, fw5,
-        // fw10, FE4_C2_D10_F_Q4a8 Outputs: A
+        // Inputs: fw8, FE5_C1_D01_F_Q4a8, fw6, FE4_C4_F_Q4a8, fw10, fw7, fw5, fw9,
+        // FE4_C2_D10_F_Q4a8, FE4_C3_F_Q4a8, fw4 Outputs: A
         {
             double temp_0[3] = { 0 };
             for ( int j = 0; j < 3; ++j ) {
@@ -1307,7 +1305,7 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
             }
             double temp_9[3] = { 0 };
             for ( int j = 0; j < 3; ++j ) {
-                temp_9[j] = fw5 * FE6_C1_D01_F_Q4a8[0][0][0][j];
+                temp_9[j] = fw5 * FE5_C1_D01_F_Q4a8[0][0][0][j];
             }
             double temp_10[3] = { 0 };
             for ( int j = 0; j < 3; ++j ) {
@@ -1315,7 +1313,7 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
             }
             double temp_11[3] = { 0 };
             for ( int j = 0; j < 3; ++j ) {
-                temp_11[j] = fw6 * FE6_C1_D01_F_Q4a8[0][0][0][j];
+                temp_11[j] = fw6 * FE5_C1_D01_F_Q4a8[0][0][0][j];
             }
             double temp_12[3] = { 0 };
             for ( int j = 0; j < 3; ++j ) {
@@ -1340,9 +1338,9 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
                     A[21 * ( ( i ) + 12 ) + ( ( j ) + 18 )] +=
                         FE4_C2_D10_F_Q4a8[0][0][0][i] * temp_1[j];
                     A[21 * ( ( i ) + 12 ) + ( ( j ) + 18 )] +=
-                        FE6_C1_D01_F_Q4a8[0][0][0][i] * temp_2[j];
+                        FE5_C1_D01_F_Q4a8[0][0][0][i] * temp_2[j];
                     A[21 * ( ( i ) + 12 ) + ( ( j ) + 18 )] +=
-                        FE6_C1_D01_F_Q4a8[0][0][0][i] * temp_3[j];
+                        FE5_C1_D01_F_Q4a8[0][0][0][i] * temp_3[j];
                     A[21 * ( ( i ) + 15 ) + ( ( j ) + 18 )] +=
                         FE4_C3_F_Q4a8[0][entity_local_index[0]][iq][i] * temp_4[j];
                     A[21 * ( ( i ) + 15 ) + ( ( j ) + 18 )] +=
@@ -1373,7 +1371,7 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         // ------------------------
         // ------------------------
         // Section: Tensor Computation
-        // Inputs: fw3, fw2, FE4_C0_F_Q4a8, FE4_C4_F_Q4a8, fw1, FE4_C3_F_Q4a8, fw0
+        // Inputs: fw0, FE4_C4_F_Q4a8, fw1, fw3, fw2, FE4_C3_F_Q4a8, FE4_C0_F_Q4a8
         // Outputs: A
         {
             double temp_0[6] = { 0 };
@@ -1407,7 +1405,6 @@ VectorReal B_p5_tr6( const VectorReal &w, const VectorReal &coordinate_dofs,
         }
         // ------------------------
     }
-
     return A;
 }
 
