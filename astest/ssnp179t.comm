@@ -117,6 +117,8 @@ resnonl = CALC_CHAMP(
     reuse=resnonl, FORCE=("FORC_NODA", "REAC_NODA"), CRITERES=("SIEQ_NOEU",), RESULTAT=resnonl
 )
 
+resnonl = CALC_PRESSION(reuse=resnonl, RESULTAT=resnonl, GEOMETRIE="DEFORMEE", GROUP_MA=("load",))
+
 
 # same result than ssnp179k since C_GRAD_VARI=0.0
 TEST_RESU(
@@ -219,6 +221,18 @@ TEST_RESU(
         NOM_CHAM="SIEQ_NOEU",
         NOM_CMP="TRSIG",
         VALE_CALC=0.8138417340120463,
+        CRITERE="RELATIF",
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("A",),
+        RESULTAT=resnonl,
+        NOM_CHAM="PRES_NOEU",
+        NOM_CMP="PRES",
+        VALE_CALC=-0.24129663534225904,
         CRITERE="RELATIF",
     )
 )

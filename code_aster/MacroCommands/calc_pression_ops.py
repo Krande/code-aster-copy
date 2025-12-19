@@ -131,15 +131,27 @@ def calc_pression_ops(self, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PRECISION, *
         )
 
         if GEOMETRIE == "DEFORMEE":
-            __depl = CREA_CHAMP(
-                TYPE_CHAM="NOEU_DEPL_R",
-                OPERATION="EXTR",
-                RESULTAT=RESULTAT,
-                NOM_CHAM="DEPL",
-                INST=inst,
-                PRECISION=PRECISION,
-                CRITERE=CRITERE,
-            )
+            if model.existsHHO():
+                __depl = CREA_CHAMP(
+                    TYPE_CHAM="NOEU_DEPL_R",
+                    OPERATION="EXTR",
+                    RESULTAT=RESULTAT,
+                    NOM_CHAM="HHO_DEPL",
+                    INST=inst,
+                    PRECISION=PRECISION,
+                    CRITERE=CRITERE,
+                )
+            else:
+                __depl = CREA_CHAMP(
+                    TYPE_CHAM="NOEU_DEPL_R",
+                    OPERATION="EXTR",
+                    RESULTAT=RESULTAT,
+                    NOM_CHAM="DEPL",
+                    INST=inst,
+                    PRECISION=PRECISION,
+                    CRITERE=CRITERE,
+                )
+
             __mdepl = CREA_CHAMP(
                 TYPE_CHAM="NOEU_DEPL_R", OPERATION="COMB", COMB=_F(CHAM_GD=__depl, COEF_R=-1.0)
             )
