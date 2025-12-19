@@ -95,11 +95,6 @@ E1NEUTK = LocatedComponents(phys=PHY.NEUT_K24, type="ELEM", components=("Z1",))
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(
-    phys=PHY.PREC_R, type="ELEM", components=("SIGM", "EPSI", "FHYDR[2]", "FTHERM", "LAG_GV")
-)
-
-
 ESIGMPC = LocatedComponents(
     phys=PHY.SIEF_C,
     type="ELGA",
@@ -412,7 +407,7 @@ class HM_HEXA20S_DIL(Element):
         ),
         OP.REFE_FORC_NODA(
             te=600,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, LC.CRESTHD)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_ELAS(

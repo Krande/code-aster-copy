@@ -169,6 +169,11 @@ CRESEFM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT", 
 # Field for RESI_REFE_RELA/THM
 CRESTHM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "FHYDR[2]", "FTHERM"))
 
+# Field for RESI_REFE_RELA/THM_DIL
+CRESTHD = LocatedComponents(
+    phys=PHY.PREC_R, type="ELEM", components=("SIGM", "EPSI", "FHYDR[2]", "FTHERM", "LAG_GV")
+)
+
 # Field for RESI_REFE_RELA/STRESS
 CRESSIG = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM"))
 

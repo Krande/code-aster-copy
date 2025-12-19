@@ -103,6 +103,8 @@ subroutine dilcar(option, compor, icontm, ivarim, ideplm, ideplp, &
     else if (option .eq. 'FORC_NODA') then
         call jevech('PSIEFR', 'L', icontm)
         call jevech('PGEOMER', 'L', igeom)
+    else if (option .eq. 'REFE_FORC_NODA') then
+        call jevech('PGEOMER', 'L', igeom)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -118,7 +120,7 @@ subroutine dilcar(option, compor, icontm, ivarim, ideplm, ideplp, &
 ! - Output fields
 !
 
-    if (option .eq. 'FORC_NODA') then
+    if ((option .eq. 'FORC_NODA') .or. (option .eq. 'REFE_FORC_NODA')) then
         call jevech('PVECTUR', 'E', ivectu)
     else
         if (lMatr) then
