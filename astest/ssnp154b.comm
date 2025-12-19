@@ -125,7 +125,6 @@ PRES = RECU_FONCTION(TABLE=RELE, PARA_X="ABSC_CURV", PARA_Y="MLAGS_C")
 
 # champ de contraintes de Cauchy aux noeuds
 RESU = CALC_PRESSION(
-    MAILLAGE=MESH,
     reuse=RESU,
     RESULTAT=RESU,
     PRECISION=1.0e-05,
