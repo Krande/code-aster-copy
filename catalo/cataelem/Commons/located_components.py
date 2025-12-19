@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -168,6 +168,11 @@ CRESEFM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT", 
 
 # Field for RESI_REFE_RELA/THM
 CRESTHM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "FHYDR[2]", "FTHERM"))
+
+# Field for RESI_REFE_RELA/THM_DIL
+CRESTHD = LocatedComponents(
+    phys=PHY.PREC_R, type="ELEM", components=("SIGM", "EPSI", "FHYDR[2]", "FTHERM", "LAG_GV")
+)
 
 # Field for RESI_REFE_RELA/STRESS
 CRESSIG = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM"))

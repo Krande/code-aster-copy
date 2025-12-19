@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ subroutine dilini(option, ivf, ivf2, idfde, &
 ! ======================================================================
 ! --- RECUPERATION DU NOMBRE DE VARIABLES INTERNES
 ! ======================================================================
-    if (option(1:9) .ne. 'FORC_NODA') then
+    if ((option(1:9) .ne. 'FORC_NODA') .and. ((option .ne. 'REFE_FORC_NODA'))) then
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
         lgpg = max(itab(6), 1)*itab(7)
     end if
