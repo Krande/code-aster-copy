@@ -594,16 +594,16 @@ contains
 !   Out matrix     : symmetrix matrix to transform (XX, YY, ZZ, XY, XZ, YZ)
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
 ! --------------------------------------------------------------------------------------------------
 !
         select case (ndim)
         case (3)
             mat(1:3) = mat_sym(1:3)
-            mat(4:6) = mat_sym(4:6)/rac2
+            mat(4:6) = mat_sym(4:6)*un_rac2
         case (2)
             mat(1:3) = mat_sym(1:3)
-            mat(4) = mat_sym(4)/rac2
+            mat(4) = mat_sym(4)*un_rac2
         case default
             ASSERT(ASTER_FALSE)
         end select

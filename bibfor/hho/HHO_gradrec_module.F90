@@ -633,7 +633,7 @@ contains
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCSGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
-        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
         integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat
         integer(kind=8):: cbs_comp, fbs_comp, gbs_sym, gbs_comp, max_deg
@@ -789,14 +789,14 @@ contains
                     b_lda = to_blas_int(dimMassMat)
                     b_m = to_blas_int(dimMassMat)
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = jbegCell+cbs_comp
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -804,14 +804,14 @@ contains
                     jbegFace = (iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
@@ -826,14 +826,14 @@ contains
                     b_lda = to_blas_int(dimMassMat)
                     b_m = to_blas_int(dimMassMat)
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = jbegCell+cbs_comp
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -841,14 +841,14 @@ contains
                     jbegFace = (iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 13
@@ -859,13 +859,13 @@ contains
                     jbegCell = faces_dofs+1
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = faces_dofs+2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -873,14 +873,14 @@ contains
                     jbegFace = (iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = (iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 23
@@ -891,14 +891,14 @@ contains
                     jbegCell = faces_dofs+cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = faces_dofs+2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -906,14 +906,14 @@ contains
                     jbegFace = (iface-1)*fbs+1+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = (iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
