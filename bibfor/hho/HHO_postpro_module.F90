@@ -152,7 +152,7 @@ contains
 !
         integer(kind=8), parameter :: max_comp = 9
         type(HHO_basis_face) :: hhoBasisFace
-        integer(kind=8) :: fbs, jvect, i, ino, ndim, idim
+        integer(kind=8) :: fbs, jvect, i, ino, ndim, idim, numloc
         real(kind=8), dimension(MSIZE_FACE_VEC) :: sol_F
         real(kind=8), dimension(3, max_comp) :: post_sol_F
 !
@@ -176,9 +176,10 @@ contains
 ! --- Compute the solution in the face nodes
 !
         do ino = 1, nbnodes
-            post_sol_F(1:3, ino) = hhoEvalVecFace( &
-                                   hhoBasisFace, hhoData%face_degree(), &
-                                   hhoFace%coorno(1:3, ino), sol_F)
+            numloc = hhoFace%nodes_loc(ino)
+            post_sol_F(1:3, numloc) = hhoEvalVecFace( &
+                                      hhoBasisFace, hhoData%face_degree(), &
+                                      hhoFace%coorno(1:3, ino), sol_F)
         end do
 !
 ! --- Copy of post_sol in PDEPL_R ('OUT' to fill)
@@ -593,7 +594,7 @@ contains
 !
         integer(kind=8), parameter :: max_comp = 9
         type(HHO_basis_face) :: hhoBasisFace
-        integer(kind=8) :: fbs, ino
+        integer(kind=8) :: fbs, ino, numloc
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: sol_F
         real(kind=8), dimension(max_comp) :: post_sol_F
 !
@@ -616,8 +617,9 @@ contains
 ! --- Compute the solution in the face nodes
 !
         do ino = 1, nbnodes
-            post_sol_F(ino) = hhoEvalScalFace(hhoBasisFace, hhoData%face_degree(), &
-                                              hhoFace%coorno(1:3, ino), sol_F)
+            numloc = hhoFace%nodes_loc(ino)
+            post_sol_F(numloc) = hhoEvalScalFace(hhoBasisFace, hhoData%face_degree(), &
+                                                 hhoFace%coorno(1:3, ino), sol_F)
         end do
 !
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)

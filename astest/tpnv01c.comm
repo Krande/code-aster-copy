@@ -348,7 +348,7 @@ TEST_RESU(
             GROUP_NO="N184",
             NOM_CMP="TEMP",
             VALE_REFE=91.77,
-            VALE_CALC=91.70844021442477,
+            VALE_CALC=91.70896084971525,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -370,7 +370,7 @@ TEST_RESU(
             GROUP_NO="N145",
             NOM_CMP="TEMP",
             VALE_REFE=91.77,
-            VALE_CALC=91.70676014423765,
+            VALE_CALC=91.70743051479161,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -392,7 +392,7 @@ TEST_RESU(
             GROUP_NO="N38",
             NOM_CMP="TEMP",
             VALE_REFE=91.77,
-            VALE_CALC=91.68336528122730,
+            VALE_CALC=91.68402226503316,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -403,7 +403,7 @@ TEST_RESU(
             GROUP_NO="N459",
             NOM_CMP="TEMP",
             VALE_REFE=71.22,
-            VALE_CALC=71.13220432490179,
+            VALE_CALC=71.13192002658964,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -414,7 +414,7 @@ TEST_RESU(
             GROUP_NO="N443",
             NOM_CMP="TEMP",
             VALE_REFE=71.22,
-            VALE_CALC=71.20749063630603,
+            VALE_CALC=71.20720631233192,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -425,7 +425,7 @@ TEST_RESU(
             GROUP_NO="N450",
             NOM_CMP="TEMP",
             VALE_REFE=71.22,
-            VALE_CALC=71.14176628497201,
+            VALE_CALC=71.14156206688185,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -436,7 +436,7 @@ TEST_RESU(
             GROUP_NO="N463",
             NOM_CMP="TEMP",
             VALE_REFE=71.22,
-            VALE_CALC=71.17832359644365,
+            VALE_CALC=71.17677475790546,
             PRECISION=5.0e-3,
         ),
     )
@@ -454,7 +454,7 @@ TEST_RESU(
             GROUP_NO="N184",
             NOM_CMP="TEMP",
             VALE_REFE=91.77,
-            VALE_CALC=91.70844021442477,
+            VALE_CALC=91.70896084971525,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -465,7 +465,7 @@ TEST_RESU(
             GROUP_NO="N145",
             NOM_CMP="TEMP",
             VALE_REFE=91.77,
-            VALE_CALC=91.70676014423765,
+            VALE_CALC=91.70743051479161,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -487,7 +487,7 @@ TEST_RESU(
             GROUP_NO="N46",
             NOM_CMP="TEMP",
             VALE_REFE=91.77,
-            VALE_CALC=91.68959240153914,
+            VALE_CALC=91.68990680402848,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -509,7 +509,7 @@ TEST_RESU(
             GROUP_NO="N443",
             NOM_CMP="TEMP",
             VALE_REFE=71.22,
-            VALE_CALC=71.20749063630603,
+            VALE_CALC=71.20720631233192,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -520,7 +520,7 @@ TEST_RESU(
             GROUP_NO="N450",
             NOM_CMP="TEMP",
             VALE_REFE=71.22,
-            VALE_CALC=71.14176628497201,
+            VALE_CALC=71.14156206688185,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -531,7 +531,7 @@ TEST_RESU(
             GROUP_NO="N463",
             NOM_CMP="TEMP",
             VALE_REFE=71.22,
-            VALE_CALC=71.17832359644365,
+            VALE_CALC=71.17677475790546,
             PRECISION=5.0e-3,
         ),
     )
@@ -683,7 +683,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPB2,
             VALE_REFE=91.77,
-            VALE_CALC=91.70844021442477,
+            VALE_CALC=91.70896084971525,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -692,7 +692,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPB2,
             VALE_REFE=91.77,
-            VALE_CALC=91.70676014423765,
+            VALE_CALC=91.70743051479161,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -710,7 +710,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPB2,
             VALE_REFE=91.77,
-            VALE_CALC=91.68336528122730,
+            VALE_CALC=91.68402226503316,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -728,7 +728,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPB2,
             VALE_REFE=71.22,
-            VALE_CALC=71.12991361875285,
+            VALE_CALC=71.12911538880869,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -737,7 +737,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPB2,
             VALE_REFE=71.22,
-            VALE_CALC=71.19025734140544,
+            VALE_CALC=71.19009574943910,
             PRECISION=5.0e-3,
         ),
     )
@@ -765,7 +765,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPR2,
             VALE_REFE=91.77,
-            VALE_CALC=91.69923747571120,
+            VALE_CALC=91.69742104654593,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -783,7 +783,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPR2,
             VALE_REFE=91.77,
-            VALE_CALC=91.68336528122730,
+            VALE_CALC=91.68402226503316,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -792,7 +792,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPR2,
             VALE_REFE=71.22,
-            VALE_CALC=71.12991361875285,
+            VALE_CALC=71.12911538880869,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -801,7 +801,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPR2,
             VALE_REFE=71.22,
-            VALE_CALC=71.20198453405877,
+            VALE_CALC=71.20135008627291,
             PRECISION=5.0e-3,
         ),
         _F(
@@ -810,7 +810,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             CHAM_GD=TEMPR2,
             VALE_REFE=71.22,
-            VALE_CALC=71.14176628497201,
+            VALE_CALC=71.14156206688185,
             PRECISION=5.0e-3,
         ),
     )

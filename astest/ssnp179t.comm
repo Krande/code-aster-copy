@@ -144,7 +144,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-6.2059596788488784,
+        VALE_CALC=-6.2072392918821642,
         VALE_REFE=-6.23907,
         CRITERE="RELATIF",
         PRECISION=3.0e-2,
@@ -232,7 +232,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="PRES_NOEU",
         NOM_CMP="PRES",
-        VALE_CALC=-0.24129663534225904,
+        VALE_CALC=-0.24089604191956326,
         CRITERE="RELATIF",
     )
 )
@@ -260,7 +260,7 @@ hho = CA.HHO(phys_pb)
 reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
 # use only face DoFs
 reac_proj = hho.projectOnLagrangeSpace(reac_noda, ["Encast"])
-reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, ["Encast"])
+reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, ["Encast"], False)
 
 
 TEST_RESU(
@@ -268,7 +268,7 @@ TEST_RESU(
         GROUP_NO="Encast",
         CHAM_GD=reac_proj,
         NOM_CMP="DY",
-        VALE_CALC=8.283208933262936,
+        VALE_CALC=12.454707810405672,
         TYPE_TEST="SOMM_ABS",
         CRITERE="RELATIF",
     )
@@ -279,7 +279,7 @@ TEST_RESU(
         GROUP_NO="Encast",
         CHAM_GD=reac_proj2,
         NOM_CMP="DY",
-        VALE_CALC=10.416834096753952,
+        VALE_CALC=16.72195238415277,
         TYPE_TEST="SOMM_ABS",
         CRITERE="RELATIF",
     )

@@ -136,7 +136,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-6.20435067157568,
+        VALE_CALC=-6.20560539331898,
         VALE_REFE=-6.23907,
         CRITERE="RELATIF",
         PRECISION=3.0e-2,

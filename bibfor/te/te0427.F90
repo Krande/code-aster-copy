@@ -50,11 +50,7 @@ subroutine te0427(nomopt, nomte)
     call elrefe_info(fami='RIGI', nno=nbnodes)
 !
     if (nomopt == 'HHO_DEPL_MECA') then
-        if (lteatt('TYPMOD2', 'HHO_GRAD')) then
-            ASSERT(ASTER_FALSE)
-        else
-            call hhoPostMecaFace(hhoFace, hhoData, nbnodes)
-        end if
+        call hhoPostMecaFace(hhoFace, hhoData, nbnodes)
     else if (nomopt == 'HHO_TEMP_THER') then
         call hhoPostTherFace(hhoFace, hhoData, nbnodes)
     else

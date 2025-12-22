@@ -5731,7 +5731,7 @@ phen.add(
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO111),
             (MT.TRIA7, EL.MECA_DGVT_HHO111),
-            (MT.SEG3, EL.MECA_2D_HHO1_F),
+            (MT.SEG3, EL.MECA_2DGV_HHO1_F),
         ),
     ),
 )
@@ -5752,7 +5752,7 @@ phen.add(
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO222),
             (MT.TRIA7, EL.MECA_DGVT_HHO222),
-            (MT.SEG3, EL.MECA_2D_HHO2_F),
+            (MT.SEG3, EL.MECA_2DGV_HHO2_F),
         ),
     ),
 )
@@ -5774,8 +5774,8 @@ phen.add(
             (MT.TETRA15, EL.MECA3DGVT_HHO111),
             (MT.PENTA21, EL.MECA3GVPE_HHO111),
             (MT.PYRAM19, EL.MECA3GVPY_HHO111),
-            (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
-            (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
+            (MT.QUAD9, EL.MECA3DGVQ_HHO1_F),
+            (MT.TRIA7, EL.MECA3DGVT_HHO1_F),
         ),
     ),
 )
@@ -5797,8 +5797,8 @@ phen.add(
             (MT.TETRA15, EL.MECA3DGVT_HHO222),
             (MT.PENTA21, EL.MECA3GVPE_HHO222),
             (MT.PYRAM19, EL.MECA3GVPY_HHO222),
-            (MT.QUAD9, EL.MECA3DQU9_HHO2_F),
-            (MT.TRIA7, EL.MECA3DTR7_HHO2_F),
+            (MT.QUAD9, EL.MECA3DGVQ_HHO2_F),
+            (MT.TRIA7, EL.MECA3DGVT_HHO2_F),
         ),
     ),
 )

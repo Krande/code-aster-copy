@@ -115,6 +115,7 @@ ECONTNO = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")
 )
 
+DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -171,14 +172,14 @@ class MECA3DQU9_HHO1_F(Element):
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
-        OP.HHO_FORC_MECA(
+        OP.HHO_DEPL_MECA(
             te=427,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (OP.HHO_FORC_MECA.PFORCPR, DDL_MECA),
-                (OP.HHO_FORC_MECA.PCHHOBS, CHHOBS),
+                (SP.PDEPLPR, DDL_MECA),
+                (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.HHO_FORC_MECA.PFORC_R, FORCHHO),),
+            para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
@@ -222,3 +223,13 @@ class MECA3DTR7_HHO1_F(MECA3DQU9_HHO1_F):
     nodes = (SetOfNodes("EN1", (7,)), SetOfNodes("EN2", (1, 2, 3, 4, 5, 6)))
     attrs = ((AT.BORD_ISO, "OUI"),)
     elrefe = (ElrefeLoc(MT.TR7, gauss=("RIGI=FPG3",), mater=("RIGI",)),)
+
+
+# ------------------------------------------------------------
+class MECA3DGVT_HHO1_F(MECA3DTR7_HHO1_F):
+    """Please document this element"""
+
+
+# ------------------------------------------------------------
+class MECA3DGVQ_HHO1_F(MECA3DQU9_HHO1_F):
+    """Please document this element"""

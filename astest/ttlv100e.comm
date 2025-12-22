@@ -92,7 +92,7 @@ TEST_RESU(
             GROUP_NO="M1",
             PRECISION=0.02,
             CHAM_GD=TEMP_1,
-            VALE_CALC=288.67870476831297,
+            VALE_CALC=288.63737300297174,
             VALE_REFE=288.63999999999999,
         ),
         _F(
@@ -101,7 +101,7 @@ TEST_RESU(
             GROUP_NO="M1",
             CHAM_GD=TEMP_2,
             PRECISION=0.05,
-            VALE_CALC=207.23510623982449,
+            VALE_CALC=203.30077115148933,
             VALE_REFE=202.75999999999999,
         ),
         _F(
@@ -110,8 +110,8 @@ TEST_RESU(
             GROUP_NO="M1",
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
-            VALE_CALC=95.43651347015361,
-            VALE_REFE=95.436513470153614,
+            VALE_CALC=93.29557358306990,
+            VALE_REFE=93.295573583069896,
         ),
         _F(
             REFERENCE="AUTRE_ASTER",
@@ -119,7 +119,7 @@ TEST_RESU(
             GROUP_NO="M1",
             CHAM_GD=TEMP_4,
             PRECISION=0.02,
-            VALE_CALC=29.728279491217670,
+            VALE_CALC=29.452407453904907,
             VALE_REFE=29.419,
         ),
         _F(
@@ -136,7 +136,7 @@ TEST_RESU(
             GROUP_NO="M2",
             PRECISION=0.02,
             CHAM_GD=TEMP_2,
-            VALE_CALC=275.90735388142349,
+            VALE_CALC=275.06626094757036,
             VALE_REFE=275.04000000000002,
         ),
         _F(
@@ -145,7 +145,7 @@ TEST_RESU(
             GROUP_NO="M2",
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
-            VALE_CALC=144.12075708296467,
+            VALE_CALC=143.02171516612717,
             VALE_REFE=143.0,
         ),
         _F(
@@ -154,7 +154,7 @@ TEST_RESU(
             GROUP_NO="M2",
             PRECISION=0.02,
             CHAM_GD=TEMP_4,
-            VALE_CALC=35.999946273751718,
+            VALE_CALC=35.858469473666453,
             VALE_REFE=35.857999999999997,
         ),
         _F(
@@ -163,7 +163,7 @@ TEST_RESU(
             GROUP_NO="M1P",
             PRECISION=0.02,
             CHAM_GD=TEMP_1,
-            VALE_CALC=288.0240865998525,
+            VALE_CALC=288.6373730029753,
             VALE_REFE=288.63999999999999,
         ),
         _F(
@@ -172,7 +172,7 @@ TEST_RESU(
             GROUP_NO="M1P",
             CHAM_GD=TEMP_2,
             PRECISION=0.04,
-            VALE_CALC=197.11139198261426,
+            VALE_CALC=203.30077115149626,
             VALE_REFE=202.75999999999999,
         ),
         _F(
@@ -181,8 +181,8 @@ TEST_RESU(
             GROUP_NO="M1P",
             CHAM_GD=TEMP_3,
             PRECISION=0.05,
-            VALE_CALC=90.72871603468472,
-            VALE_REFE=95.436513470153614,
+            VALE_CALC=93.29557358307082,
+            VALE_REFE=93.295573583069896,
         ),
         _F(
             REFERENCE="AUTRE_ASTER",
@@ -190,7 +190,7 @@ TEST_RESU(
             GROUP_NO="M1P",
             CHAM_GD=TEMP_4,
             PRECISION=0.02,
-            VALE_CALC=29.121110726809686,
+            VALE_CALC=29.452407453905728,
             VALE_REFE=29.419,
         ),
         _F(
@@ -208,7 +208,7 @@ TEST_RESU(
             GROUP_NO="M2P",
             PRECISION=0.02,
             CHAM_GD=TEMP_2,
-            VALE_CALC=273.20706120254215,
+            VALE_CALC=275.06626094757519,
             VALE_REFE=275.04000000000002,
         ),
         _F(
@@ -217,7 +217,7 @@ TEST_RESU(
             GROUP_NO="M2P",
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
-            VALE_CALC=141.3453059102943,
+            VALE_CALC=143.0217151661302,
             VALE_REFE=143.0,
         ),
         _F(
@@ -226,7 +226,7 @@ TEST_RESU(
             GROUP_NO="M2P",
             PRECISION=0.02,
             CHAM_GD=TEMP_4,
-            VALE_CALC=35.64254779323944,
+            VALE_CALC=35.85846947366746,
             VALE_REFE=35.857999999999997,
         ),
     )
