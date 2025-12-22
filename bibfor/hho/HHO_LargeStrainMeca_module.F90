@@ -58,7 +58,7 @@ module HHO_LargeStrainMeca_module
 ! --------------------------------------------------------------------------------------------------
     public :: hhoLargeStrainLCMeca, hhoCalculF
     public :: hhoComputeLhsLarge, hhoComputeRhsLarge, hhoAddAxisGrad
-    private :: hhoComputeAgphi, transfo_A
+    private :: hhoComputeAgphi
     private :: select_behavior, gdeflog, nbsigm_cmp, greenlagr
 !
 contains
@@ -350,7 +350,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
 !
-!   Compute the scalar product AT += (module_tang:gphi, gphi)_T at a quadrature point
+!   Compute the scalar product AT += (gphi, module_tang:gphi)_T at a quadrature point
 !   In hhoCell      : the current HHO Cell
 !   In module_tang  : elasto-plastic tangent moduli
 !   In weight       : quadrature weight
@@ -359,69 +359,29 @@ contains
 !   Out AT          : contribution of bt
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT, 9)
-        integer(kind=8) :: deca, i, j, k, gbs_cmp, col
+        real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT, 3, 3)
+        integer(kind=8) :: gbs_cmp, d1, d2, ig, row
 ! --------------------------------------------------------------------------------------------------
 !
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
 ! --------- Eval (A : gphi)_T
-        call hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, &
-                             qp_Agphi)
+        call hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, qp_Agphi)
 !
-! -------- Compute scalar_product of (A_gphi, gphi)_T
-! On doit pouvoir l'optimise un peu car c'est symétrique
-        deca = 1
-        col = 1
-        do i = 1, hhoCell%ndim
-            do j = 1, hhoCell%ndim
-                do k = 1, gbs_cmp
-                    call daxpy_1(gbs, BSCEval(k), qp_Agphi(:, deca), AT%m(:, col))
-                    col = col+1
+! -------- Compute scalar_product of (gphi, A:gphi)_T
+!
+! ----- Gradient is saved by component with row-major - [XX, XY, YX, YY]
+        row = 0
+        do d1 = 1, hhoCell%ndim
+            do d2 = 1, hhoCell%ndim
+                do ig = 1, gbs_cmp
+                    row = row+1
+                    ! only component G_phi(d1,d2) .ne. 0 and G_phi(d1,d2) = BSCEval(ig)
+                    call daxpy_1(gbs, BSCEval(ig), qp_Agphi(:, d1, d2), AT%m(row, :))
                 end do
-                deca = deca+1
             end do
         end do
 !
     end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    function transfo_A(ndim, A, row, col)
-!
-        implicit none
-!
-        integer(kind=8), intent(in) :: ndim
-        real(kind=8), intent(in) :: A(3, 3, 3, 3)
-        integer(kind=8), intent(in) :: row
-        integer(kind=8), intent(in) :: col
-        real(kind=8) :: transfo_A(9)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO - mechanics
-!
-!   Extract the matrix A(:,:,row,col) and tranform in vector form
-!   In ndim         : the current HHO Cell
-!   In A            : elasto_plastic moduli
-!   In row, col     : index
-!   Out transfo_A   : vector extracted
-! --------------------------------------------------------------------------------------------------
-!
-        integer(kind=8) :: i, j, ind
-! --------------------------------------------------------------------------------------------------
-!
-        transfo_A = 0.d0
-        ind = 1
-!
-        do i = 1, ndim
-            do j = 1, ndim
-                transfo_A(ind) = A(i, j, row, col)
-                ind = ind+1
-            end do
-        end do
-!
-    end function
 !
 !===================================================================================================
 !
@@ -456,8 +416,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, &
-                               Agphi)
+    subroutine hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, Agphi)
 !
         implicit none
 !
@@ -466,7 +425,7 @@ contains
         real(kind=8), intent(in) :: module_tang(3, 3, 3, 3)
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: weight
-        real(kind=8), intent(out) :: Agphi(MSIZE_CELL_MAT, 9)
+        real(kind=8), intent(out) :: Agphi(MSIZE_CELL_MAT, 3, 3)
 !
 ! -----------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -482,8 +441,8 @@ contains
 !   Out Agphi       : matriw of scalar product
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_module_tang(3, 3, 3, 3), qp_mod_vec(9)
-        integer(kind=8) :: i, j, row, gbs_cmp, dim2, k, l
+        real(kind=8) :: qp_module_tang(3, 3, 3, 3)
+        integer(kind=8) :: i, j, row, gbs_cmp, dim2, ig, d1, d2
 ! --------------------------------------------------------------------------------------------------
 !
         Agphi = 0.d0
@@ -491,17 +450,19 @@ contains
         gbs_cmp = gbs/dim2
         qp_module_tang = weight*module_tang
 !
+! ----- Gradient is saved by component with row-major - [XX, XY, YX, YY]
         row = 0
-        do i = 1, hhoCell%ndim
-            do j = 1, hhoCell%ndim
-! ------------- Extract and transform the tangent moduli
-                qp_mod_vec = transfo_A(hhoCell%ndim, qp_module_tang, i, j)
-                do l = 1, dim2
-                    do k = 1, gbs_cmp
-                        Agphi(row+k, l) = BSCEval(k)*qp_mod_vec(l)
+        do d1 = 1, hhoCell%ndim
+            do d2 = 1, hhoCell%ndim
+                do ig = 1, gbs_cmp
+                    row = row+1
+                    do i = 1, hhoCell%ndim
+                        do j = 1, hhoCell%ndim
+                            ! only component G_phi(d1,d2) .ne. 0 and G_phi(d1,d2) = BSCEval(ig)
+                            Agphi(row, i, j) = qp_module_tang(i, j, d1, d2)*BSCEval(ig)
+                        end do
                     end do
                 end do
-                row = row+gbs_cmp
             end do
         end do
 !
@@ -573,7 +534,7 @@ contains
                 do k = 1, 3
                     GL_(i, j) = GL_(i, j)+F(k, i)*F(k, j)
                 end do
-                GL_(i, j) = GL_(i, j)/2.d0
+                GL_(i, j) = 0.5d0*GL_(i, j)
                 GL_(j, i) = GL_(i, j)
             end do
         end do

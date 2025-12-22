@@ -36,7 +36,7 @@ subroutine lagmodtonommod(Cmod, PK2, F, Amod)
 ! Out Amod  : Nominal modulus
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
     real(kind=8), dimension(3, 3) :: PK2mat
     integer(kind=8) :: i, J, k, L, M, N
     real(kind=8) :: sum, sum1
@@ -47,16 +47,16 @@ subroutine lagmodtonommod(Cmod, PK2, F, Amod)
     PK2mat(2, 2) = PK2(2)
     PK2mat(3, 3) = PK2(3)
 !
-    PK2mat(1, 2) = PK2(4)/rac2
+    PK2mat(1, 2) = PK2(4)*un_rac2
     PK2mat(2, 1) = PK2mat(1, 2)
 !
-    PK2mat(1, 3) = PK2(5)/rac2
+    PK2mat(1, 3) = PK2(5)*un_rac2
     PK2mat(3, 1) = PK2mat(1, 3)
 !
-    PK2mat(2, 3) = PK2(6)/rac2
+    PK2mat(2, 3) = PK2(6)*un_rac2
     PK2mat(3, 2) = PK2mat(2, 3)
 !
-! - Amod(i,J,k,L) = Cmod(M,J,N,L) * F(k,N) * F(i,M) + PK2(J,L) * delta(i,k)
+! - Amod(i,J,k,L) = Cmod(M,J,N,L) * F(k,N) * F(i,M) + PK2(L,J) * delta(i,k)
 !
     Amod = 0.d0
 !
@@ -75,12 +75,10 @@ subroutine lagmodtonommod(Cmod, PK2, F, Amod)
                     end do
 !
                     if (i == k) then
-                        sum = sum+PK2mat(J, L)
+                        sum = sum+PK2mat(L, J)
                     end if
 !
-! Like A has major symmetry Aijkl = Aklij, we could save CPU time
                     Amod(i, J, k, L) = sum
-                    Amod(k, L, i, J) = sum
                 end do
             end do
         end do
