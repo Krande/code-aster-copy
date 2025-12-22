@@ -10,6 +10,7 @@ variables:
   ASTER_BUILD: mpi
   # BUILDTYPE: ci, nightly, nightly-coverage, nightly-sanitize, code-checking, docker
   BUILDTYPE: ci
+  # RUNNER_TAG_TEST: allow to override the runner for running tests (in schedule parameters)
   RUNNER_TAG_TEST: hulk
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
@@ -155,9 +156,6 @@ minimal_test:
   interruptible: true
   stage: test
   rules:
-    - if: $BUILDTYPE == "nightly-coverage" || $BUILDTYPE == "nightly-sanitize"
-      variables:
-        RUNNER_TAG_TEST: long
     - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
   tags:
     - $RUNNER_TAG_TEST
