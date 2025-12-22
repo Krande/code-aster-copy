@@ -134,7 +134,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
             VALE_CALC=181.00097802855100,
-            VALE_REFE=181.00097802855100,
+            VALE_REFE=181.13390582720243,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -143,7 +143,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
             VALE_CALC=155.65895337220701,
-            VALE_REFE=155.65895337220701,
+            VALE_REFE=156.63616859886153,
             REFERENCE="NON_DEFINI",
         ),
         _F(

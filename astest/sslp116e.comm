@@ -146,7 +146,7 @@ resuLinearSNL = CALC_CHAMP(
 )
 
 # Tests
-deplRefe = 0.1000
+deplRefe = 0.1033
 epvcRefe = -alpha * 70.0
 
 # For STAT_NON_LINE

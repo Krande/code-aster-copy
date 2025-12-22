@@ -88,7 +88,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_1,
             VALE_CALC=65.29449361476598,
-            VALE_REFE=65.294493614765983,
+            VALE_REFE=65.480000000000004,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -97,7 +97,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_2,
             VALE_CALC=75.81429450569613,
-            VALE_REFE=75.814294505696125,
+            VALE_REFE=75.579999999999998,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -124,7 +124,7 @@ TEST_RESU(
             PRECISION=0.01,
             CHAM_GD=TEMP_1,
             VALE_CALC=8.035642062112796,
-            VALE_REFE=8.0356420621127960,
+            VALE_REFE=8.0899999999999999,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -133,7 +133,7 @@ TEST_RESU(
             PRECISION=0.03,
             CHAM_GD=TEMP_2,
             VALE_CALC=25.789720445439990,
-            VALE_REFE=25.789720445439990,
+            VALE_REFE=26.370000000000001,
             REFERENCE="NON_DEFINI",
         ),
         _F(

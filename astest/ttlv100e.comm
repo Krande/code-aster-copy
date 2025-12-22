@@ -111,7 +111,7 @@ TEST_RESU(
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
             VALE_CALC=93.29557358306990,
-            VALE_REFE=93.295573583069896,
+            VALE_REFE=93.027000000000001,
         ),
         _F(
             REFERENCE="AUTRE_ASTER",
@@ -182,7 +182,7 @@ TEST_RESU(
             CHAM_GD=TEMP_3,
             PRECISION=0.05,
             VALE_CALC=93.29557358307082,
-            VALE_REFE=93.295573583069896,
+            VALE_REFE=93.027000000000001,
         ),
         _F(
             REFERENCE="AUTRE_ASTER",
