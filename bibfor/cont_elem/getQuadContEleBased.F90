@@ -20,6 +20,7 @@ subroutine getQuadContEleBased(elem_dime, &
                                elem_slav_code, &
                                nbPoinInte, poinInteSlav, &
                                nb_qp, coor_qp, &
+                               l_axis_, nb_node_slav_, elem_slav_coor_, &
                                weight_qp_)
 !
     implicit none
@@ -28,6 +29,9 @@ subroutine getQuadContEleBased(elem_dime, &
 #include "asterfort/assert.h"
 #include "asterfort/mesh_pairing_type.h"
 #include "asterfort/elraga.h"
+#include "asterfort/mmdonf.h"
+#include "asterfort/mmmjac.h"
+#include "asterfort/mmnonf.h"
 #include "jeveux.h"
 !
     integer(kind=8), intent(in) :: elem_dime
@@ -36,6 +40,9 @@ subroutine getQuadContEleBased(elem_dime, &
     real(kind=8), intent(in) :: poinInteSlav(2, MAX_NB_INTE)
     real(kind=8), intent(out) :: coor_qp(2, MAX_NB_QUAD)
     integer(kind=8), intent(out) :: nb_qp
+    integer(kind=8), optional, intent(in) :: nb_node_slav_
+    real(kind=8), optional, intent(in) :: elem_slav_coor_(3, 9)
+    aster_logical, optional, intent(in) :: l_axis_
     real(kind=8), optional, intent(out) :: weight_qp_(MAX_NB_QUAD)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,6 +70,7 @@ subroutine getQuadContEleBased(elem_dime, &
     real(kind=8) :: gausWeightSlav(12), gausCoorSlav(2, 12)
     real(kind=8) :: tol, xi, yi, xj, yj, ai
     integer(kind=8)      :: iqp, ipt, jpt, s_init, s_i, nbGaussSlav
+    real(kind=8) :: shape_func(9), shape_dfunc(2, 9), jacobian_sl
 !
 
 ! - Hyperparameters of the numerical method
@@ -132,7 +140,18 @@ subroutine getQuadContEleBased(elem_dime, &
             nb_qp = nb_qp+1
             coor_qp(1:2, nb_qp) = gausCoorSlav(1:2, iqp)
             if (present(weight_qp_)) then
-                weight_qp_(nb_qp) = gausWeightSlav(iqp)
+                ! ------------- Get shape functions and first derivative only (for perf)
+                call mmnonf(elem_dime, nb_node_slav_, elem_slav_code, &
+                            gausCoorSlav(1, iqp), gausCoorSlav(2, iqp), &
+                            shape_func)
+                call mmdonf(elem_dime, nb_node_slav_, elem_slav_code, &
+                            gausCoorSlav(1, iqp), gausCoorSlav(2, iqp), &
+                            shape_dfunc)
+! ------------- Compute jacobian
+                call mmmjac(l_axis_, nb_node_slav_, elem_dime, &
+                            elem_slav_code, elem_slav_coor_, &
+                            shape_func, shape_dfunc, jacobian_sl)
+                weight_qp_(nb_qp) = jacobian_sl*gausWeightSlav(iqp)
             end if
         end if
     end do

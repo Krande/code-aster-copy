@@ -79,6 +79,7 @@ subroutine getQuadCont(elem_dime, &
                                  elem_slav_code, &
                                  nbPoinInte, poinInteSlav, &
                                  nb_qp, coor_qp, &
+                                 l_axis_, nb_node_slav_, elem_slav_coor_, &
                                  weight_qp_)
     end if
 end subroutine
