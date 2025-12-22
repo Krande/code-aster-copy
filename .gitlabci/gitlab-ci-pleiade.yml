@@ -315,13 +315,11 @@ verification_test_debian-next:
 # --- variant using code-aster-reqs package for nightly build / weekly testing
 prepare_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pkg
   extends: .prepare
   script:
-    - apt-get update
-    - apt-get install -y binutils curl git make patch
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -331,7 +329,7 @@ prepare_pkg:
 
 compile_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pkg
     ASTER_REQS_CONFIRM: y
@@ -340,13 +338,11 @@ compile_pkg:
     - job: prepare_pkg
       optional: true
   script:
-    - apt-get update
-    - apt-get install -y binutils curl git make patch
     - !reference [.compile, script]
 
 verification_test_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pkg
     OMPI_MCA_plm: ^rsh
@@ -358,9 +354,6 @@ verification_test_pkg:
       optional: true
   script:
     - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
-    - apt-get update
-    - apt-get install -y cmake git wget
-    - .gitlabci/add-allow-run-as-root.sh
     - !reference [.verification_test, script]
   allow_failure: true
 
@@ -404,7 +397,7 @@ verification_test_win:
 # --- variant using pixi for nightly build / weekly testing
 prepare_pixi:
   image:
-    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pixi
   extends: .prepare
@@ -418,7 +411,7 @@ prepare_pixi:
 
 compile_pixi:
   image:
-    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pixi
   extends: .compile
@@ -432,7 +425,7 @@ compile_pixi:
 
 verification_test_pixi:
   image:
-    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pixi
   extends: .verification_test

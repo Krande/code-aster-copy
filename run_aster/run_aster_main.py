@@ -468,7 +468,12 @@ def main(argv=None):
                         ncpus=export.get("ncpus", 1),
                         program=cmd,
                     )
+                    memnode = os.environ.get("SLURM_MEM_PER_NODE")
+                    if memnode and export.get("memory_limit"):
+                        memcpu = float(memnode) / float(os.environ.get("SLURM_CPUS_ON_NODE", 1))
+                        args_cmd["mem-per-cpu"] = int(memcpu)
                     cmd = CFG.get("mpiexec").format(**args_cmd)
+                    logger.debug("Args: %s", args_cmd)
                 logger.info("Running: %s", cmd)
                 proc = run(cmd, shell=True, check=False)
                 status = Status.load(statfile)
