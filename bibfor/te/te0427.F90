@@ -15,10 +15,50 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0427(nomopt, nomte)
+!
+    use HHO_type
+    use HHO_postpro_module, only: hhoPostMecaFace, hhoPostTherFace
+    use HHO_init_module, only: hhoInfoInitFace
+!
     implicit none
-#include "asterfort/utmess.h"
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/lteatt.h"
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Post-Processing for a face
+! --------------------------------------------------------------------------------------------------
+!
     character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+!
+! --- Local variables
+!
+    type(HHO_Data) :: hhoData
+    type(HHO_Face) :: hhoFace
+    integer(kind=8) :: nbnodes
+! --------------------------------------------------------------------------------------------------
+!
+! --- Retrieve HHO informations
+!
+    call hhoInfoInitFace(hhoFace, hhoData)
+!
+    call elrefe_info(fami='RIGI', nno=nbnodes)
+!
+    if (nomopt == 'HHO_DEPL_MECA') then
+        if (lteatt('TYPMOD2', 'HHO_GRAD')) then
+            ASSERT(ASTER_FALSE)
+        else
+            call hhoPostMecaFace(hhoFace, hhoData, nbnodes)
+        end if
+    else if (nomopt == 'HHO_TEMP_THER') then
+        call hhoPostTherFace(hhoFace, hhoData, nbnodes)
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+!
 end subroutine

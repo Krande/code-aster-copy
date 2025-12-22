@@ -60,6 +60,7 @@ module HHO_postpro_module
 ! --------------------------------------------------------------------------------------------------
     public :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher, hhoPostTherElga
     public :: hhoPostMecaGradVari, hhoPostMecaElga
+    public :: hhoPostTherFace, hhoPostMecaFace
     private :: hhoPostDeplMecaOP
 !
 contains
@@ -123,6 +124,71 @@ contains
         do ino = 1, nbnodes
             do idim = 1, ndim
                 zr(jvect-1+i) = post_sol_T(idim, ino)
+                i = i+1
+            end do
+        end do
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostMecaFace(hhoFace, hhoData, nbnodes)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Data), intent(in) :: hhoData
+        integer(kind=8), intent(in) :: nbnodes
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Evaluate HHO face unknowns at the nodes
+!   In hhoFace         : a HHO Face
+!   In hhoData         : information on HHO methods
+!   In nbnodes         : number of nodes
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8), parameter :: max_comp = 9
+        type(HHO_basis_face) :: hhoBasisFace
+        integer(kind=8) :: fbs, jvect, i, ino, ndim, idim
+        real(kind=8), dimension(MSIZE_FACE_VEC) :: sol_F
+        real(kind=8), dimension(3, max_comp) :: post_sol_F
+!
+        ndim = hhoFace%ndim+1
+        sol_F = 0.d0
+        post_sol_F = 0.d0
+!
+! --- number of dofs
+!
+        call hhoMecaFaceDofs(hhoFace, hhoData, fbs)
+        ASSERT(nbnodes .le. max_comp)
+!
+! --- We get the solution on the face
+!
+        call readVector('PDEPLPR', fbs, sol_F)
+!
+! --- init face basis
+!
+        call hhoBasisFace%initialize(hhoFace)
+!
+! --- Compute the solution in the face nodes
+!
+        do ino = 1, nbnodes
+            post_sol_F(1:3, ino) = hhoEvalVecFace( &
+                                   hhoBasisFace, hhoData%face_degree(), &
+                                   hhoFace%coorno(1:3, ino), sol_F)
+        end do
+!
+! --- Copy of post_sol in PDEPL_R ('OUT' to fill)
+!
+        call jevech('PDEPL_R', 'E', jvect)
+!
+        i = 1
+        do ino = 1, nbnodes
+            do idim = 1, ndim
+                zr(jvect-1+i) = post_sol_F(idim, ino)
                 i = i+1
             end do
         end do
@@ -502,6 +568,61 @@ contains
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
 !
         call writeVector("PTEMP_R", nbnodes, post_sol_T)
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostTherFace(hhoFace, hhoData, nbnodes)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Data), intent(in) :: hhoData
+        integer(kind=8), intent(in) :: nbnodes
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - thermics
+!
+!   Evaluate HHO face unknowns at the nodes
+!   In hhoFace         : a HHO Face
+!   In hhoData         : information on HHO methods
+!   In nbnodes         : number of nodes
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8), parameter :: max_comp = 9
+        type(HHO_basis_face) :: hhoBasisFace
+        integer(kind=8) :: fbs, ino
+        real(kind=8), dimension(MSIZE_FACE_SCAL) :: sol_F
+        real(kind=8), dimension(max_comp) :: post_sol_F
+!
+        sol_F = 0.d0
+        post_sol_F = 0.d0
+!
+! --- number of dofs
+!
+        call hhoTherFaceDofs(hhoFace, hhoData, fbs)
+        ASSERT(nbnodes .le. max_comp)
+!
+! --- We get the solution on the face
+!
+        call readVector('PTMPCHF', fbs, sol_F)
+!
+! --- init face basis
+!
+        call hhoBasisFace%initialize(hhoFace)
+!
+! --- Compute the solution in the face nodes
+!
+        do ino = 1, nbnodes
+            post_sol_F(ino) = hhoEvalScalFace(hhoBasisFace, hhoData%face_degree(), &
+                                              hhoFace%coorno(1:3, ino), sol_F)
+        end do
+!
+! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
+!
+        call writeVector("PTEMP_R", nbnodes, post_sol_F)
 !
     end subroutine
 !

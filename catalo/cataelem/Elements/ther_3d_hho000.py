@@ -35,7 +35,7 @@ DDL_THER = LocatedComponents(
     components=(("EN1", ("HHO_FT[1]",)), ("EN2", ()), ("EN3", ("HHO_CT[1]"))),
 )
 
-CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
+
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[21]",))

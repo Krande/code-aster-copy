@@ -350,7 +350,7 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
 )
 
-CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
+
 DEPLHHO = LocatedComponents(
     phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "VARI", "LAG_GV")
 )

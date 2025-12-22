@@ -259,8 +259,8 @@ hho = CA.HHO(phys_pb)
 
 reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
 # use only face DoFs
-reac_proj = hho.projectOnLagrangeSpace(reac_noda, 2)
-reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, 2, False)
+reac_proj = hho.projectOnLagrangeSpace(reac_noda, ["Encast"])
+reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, ["Encast"])
 
 
 TEST_RESU(

@@ -71,7 +71,7 @@ diri_grma = ["BAS_CG", "BAS_HHO"]
 temp_grma = ["HAUT_CG", "HAUT_HHO"]
 
 nom_cham = ["TEMP", "HHO_TEMP"]
-A = [225.8910546187782, 225.12457845023954]
+A = [225.8910546187782, 225.41969160915653]
 
 # compute cG and HHO separately
 
