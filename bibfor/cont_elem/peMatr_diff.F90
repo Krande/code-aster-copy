@@ -63,6 +63,7 @@ subroutine peMatr_diff(parameters, geom, matr_cont, matr_fric)
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     character(len=8), dimension(3) :: l_dof
     character(len=8) :: ref
+    aster_logical :: use_segbased
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +87,8 @@ subroutine peMatr_diff(parameters, geom, matr_cont, matr_fric)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(geom%elem_dime, &
+    use_segbased = (parameters%inte_type .gt. 0)
+    call getQuadCont(use_segbased, geom%elem_dime, &
                      geom%elem_slav_code, geom%elem_mast_code, &
                      nbPoinInte, poinInteSlav, &
                      nb_qp, coor_qp, &

@@ -41,6 +41,7 @@ module contact_type
         integer(kind=8)                             :: type_cont = 0
         integer(kind=8)                             :: vari_cont = 0
         integer(kind=8)                             :: jac_type = 0
+        integer(kind=8)                             :: inte_type = 0
         real(kind=8)                        :: vari_cont_coef = 0.d0
         real(kind=8), dimension(9)          :: coef_cont = 0.d0
 

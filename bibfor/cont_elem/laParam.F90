@@ -48,6 +48,7 @@ subroutine laParam(parameters)
     parameters%type_cont = nint(zr(jcont+24))
     parameters%vari_cont = nint(zr(jcont+25))
     parameters%jac_type = nint(zr(jcont+26))
+    parameters%inte_type = nint(zr(jcont+27))
 !
     select case (parameters%vari_cont)
     case (CONT_VARI_NONE)

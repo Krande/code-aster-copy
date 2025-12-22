@@ -19,12 +19,13 @@
 #include "asterfort/mesh_pairing_type.h"
 !
 interface
-    subroutine getQuadCont(elem_dime, &
+    subroutine getQuadCont(use_segbased, elem_dime, &
                            elem_slav_code, elem_mast_code, &
                            nbPoinInte, poinInteSlav, &
                            nb_qp, coor_qp, &
                            l_axis_, nb_node_slav_, elem_slav_coor_, &
                            weight_qp_)
+        aster_logical, intent(in) :: use_segbased                   
         integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_slav_code, elem_mast_code
         integer(kind=8), intent(in) :: nbPoinInte

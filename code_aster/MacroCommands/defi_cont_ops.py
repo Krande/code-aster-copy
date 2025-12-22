@@ -31,6 +31,7 @@ from ..Objects import (
     FrictionType,
     InitialState,
     JacobianType,
+    IntegrationType,
     PairingAlgo,
     PairingParameter,
     ParallelContactNew,
@@ -107,7 +108,7 @@ def defi_cont_ops(self, **keywords):
         "OUI": InitialState.Yes,
     }
     _jac_type = {"ANALYTIQUE": JacobianType.Analytical, "PERTURBATION": JacobianType.Perturbation}
-
+    _inte_type = {"ELEM_BASE": IntegrationType.Elembased, "SEG_BASE": IntegrationType.Segbased}
     # add global informations
     result.setVerbosity(verbosity)
 
@@ -151,6 +152,7 @@ def defi_cont_ops(self, **keywords):
 
         contParam.setType(_type_cont[zone["TYPE_CONT"]])
         contParam.setCoefficient(zone["COEF_CONT"])
+        contParam.setIntegrationType(_inte_type[zone["TYPE_INTE"]])
         contZone.setContactParameter(contParam)
 
         # friction parameters

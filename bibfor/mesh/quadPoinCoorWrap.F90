@@ -62,6 +62,7 @@ subroutine quadPoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
     integer(kind=8) :: modelDime
     type(CELL_GEOM) :: cellSlav, cellMast
     real(kind=8), pointer :: nodeCoor(:) => null()
+    aster_logical :: use_segbased
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,7 +82,8 @@ subroutine quadPoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
     call getInteJV(baseName, iPair+1, nbPoinInte, poinInteSlav)
 
 ! - Get quadrature points
-    call getQuadCont(modelDime, &
+    use_segbased = .True.
+    call getQuadCont(use_segbased, modelDime, &
                      cellSlav%cellCode, cellMast%cellCode, &
                      nbPoinInte, poinInteSlav, &
                      nbPoinQuad, poinQuadSlav)

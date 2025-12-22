@@ -72,7 +72,6 @@ subroutine getQuadContEleBased(elem_dime, &
     integer(kind=8)      :: iqp, ipt, jpt, s_init, s_i, nbGaussSlav
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9), jacobian_sl
 !
-
 ! - Hyperparameters of the numerical method
     if (elem_slav_code .eq. 'SE2') then
         elga_fami = 'FPG3'

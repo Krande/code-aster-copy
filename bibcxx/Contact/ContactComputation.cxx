@@ -169,6 +169,8 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
             ( *data )[shift + 25] = double( cont->getVariant() );
             //  Value for TYPE_MATR_TANG
             ( *data )[shift + 26] = double( cont->getJacobianType() );
+            //  Value for INTE_TYPE
+            ( *data )[shift + 27] = double( cont->getIntegrationType() );
 
             //  Value for FROTTEMENT
             ( *data )[shift + 30] = fric->hasFriction();

@@ -67,6 +67,7 @@ subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_1, b_nb_dofs, b_dime
     blas_int :: b_MAX_LAGA_DOFS
+    aster_logical :: use_segbased
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,7 +103,8 @@ subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(geom%elem_dime, &
+    use_segbased = (parameters%inte_type .gt. 0)
+    call getQuadCont(use_segbased, geom%elem_dime, &
                      geom%elem_slav_code, geom%elem_mast_code, &
                      nbPoinInte, poinInteSlav, &
                      nb_qp, coor_qp, &

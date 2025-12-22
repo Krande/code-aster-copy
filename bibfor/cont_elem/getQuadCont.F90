@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getQuadCont(elem_dime, &
+subroutine getQuadCont(use_segbased, elem_dime, &
                        elem_slav_code, elem_mast_code, &
                        nbPoinInte, poinInteSlav, &
                        nb_qp, coor_qp, &
@@ -32,6 +32,7 @@ subroutine getQuadCont(elem_dime, &
 #include "asterfort/getQuadContEleBased.h"
 #include "jeveux.h"
 !
+    aster_logical, intent(in) :: use_segbased
     integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_slav_code, elem_mast_code
     integer(kind=8), intent(in) :: nbPoinInte
@@ -62,11 +63,10 @@ subroutine getQuadCont(elem_dime, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: use_segbased
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    use_segbased = .False.
+    !use_segbased = .False.
     if (use_segbased) then
         call getQuadContSegBased(elem_dime, &
                                  elem_slav_code, elem_mast_code, &

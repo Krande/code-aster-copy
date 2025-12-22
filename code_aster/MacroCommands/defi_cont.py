@@ -139,6 +139,14 @@ DEFI_CONT_CATA = MACRO(
             into=("UNILATERAL", "BILATERAL"),
             fr=tr("Choix d'un modèle de contact"),
         ),
+        # le choix du type de methode d integration
+        TYPE_INTE=SIMP(
+            statut="f",
+            typ="TXM",
+            defaut="SEG_BASE",
+            into=("ELEM_BASE", "SEG_BASE"),
+            fr=tr("Choix d'une méthode d'intégration"),
+        ),
         # coefficient de nitche, pénalisation ou augmentation en fonction de la méthode de contact
         COEF_CONT=SIMP(statut="f", typ="R", defaut=100.0, val_min=0.0),
         # Pairing options (for segment to segment contact)

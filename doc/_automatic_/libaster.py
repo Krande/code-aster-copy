@@ -6103,6 +6103,70 @@ class JacobianType:
 
     Perturbation = 1
 
+# class IngrationType in libaster
+
+
+class IntegrationType:
+    """Enumeration for contact type."""
+
+    # Method resolution order:
+    #     IntegrationType
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Readonly properties defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: object) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Elembased = 1
+
+    Segbased = 0
 
 # class ContactParameter in libaster
 
