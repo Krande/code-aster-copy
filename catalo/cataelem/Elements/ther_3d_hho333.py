@@ -191,7 +191,6 @@ class THER3DH27_HHO333(Element):
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PTMPCHF, DDL_THER),
                 (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
-                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),

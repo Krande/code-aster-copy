@@ -71,6 +71,7 @@ EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
 )
 
+FORCHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y"))
 
@@ -167,6 +168,15 @@ class MECA_2D_HHO1_F(Element):
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
+        ),
+        OP.HHO_FORC_MECA(
+            te=427,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (OP.HHO_FORC_MECA.PFORCPR, DDL_MECA),
+                (OP.HHO_FORC_MECA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_FORC_MECA.PFORC_R, FORCHHO),),
         ),
         OP.NSPG_NBVA(
             te=496,

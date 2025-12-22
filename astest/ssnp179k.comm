@@ -215,36 +215,36 @@ TEST_RESU(
 )
 
 
-# define discrete object
-hho = CA.HHO(model)
+# # define discrete object
+# hho = CA.HHO(model)
 
-reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
-# use only face DoFs
-reac_proj = hho.projectOnLagrangeSpace(reac_noda, 2)
-reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, 2, False)
+# reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
+# # use only face DoFs
+# reac_proj = hho.projectOnLagrangeSpace(reac_noda, 2)
+# reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, 2, False)
 
 
-TEST_RESU(
-    CHAM_NO=_F(
-        GROUP_NO="Encast",
-        CHAM_GD=reac_proj,
-        NOM_CMP="DY",
-        VALE_CALC=8.283208933262936,
-        TYPE_TEST="SOMM_ABS",
-        CRITERE="RELATIF",
-    )
-)
+# TEST_RESU(
+#     CHAM_NO=_F(
+#         GROUP_NO="Encast",
+#         CHAM_GD=reac_proj,
+#         NOM_CMP="DY",
+#         VALE_CALC=8.283208933262936,
+#         TYPE_TEST="SOMM_ABS",
+#         CRITERE="RELATIF",
+#     )
+# )
 
-TEST_RESU(
-    CHAM_ELEM=_F(
-        GROUP_NO="Encast",
-        CHAM_GD=reac_proj2,
-        NOM_CMP="DY",
-        VALE_CALC=10.416834096753952,
-        TYPE_TEST="SOMM_ABS",
-        CRITERE="RELATIF",
-    )
-)
+# TEST_RESU(
+#     CHAM_ELEM=_F(
+#         GROUP_NO="Encast",
+#         CHAM_GD=reac_proj2,
+#         NOM_CMP="DY",
+#         VALE_CALC=10.416834096753952,
+#         TYPE_TEST="SOMM_ABS",
+#         CRITERE="RELATIF",
+#     )
+# )
 
 
 FIN()

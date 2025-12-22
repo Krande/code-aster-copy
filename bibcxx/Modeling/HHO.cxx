@@ -46,9 +46,8 @@ FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
 };
 
 std::variant< FieldOnNodesRealPtr, FieldOnCellsRealPtr >
-HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field, const ASTERINTEGER opt,
+HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field, const VectorString &groupsOfCells,
                              const bool average ) const {
-
     std::string option, para_name_in, para_name_out;
 
     auto model = this->getModel();
@@ -66,26 +65,23 @@ HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field, const ASTERINT
         AS_ABORT( "Not implemented for HHO" );
     }
 
-    auto optField = std::make_shared< ConstantFieldOnCellsLong >( mesh );
-    const std::string physicalName( "NEUT_I" );
-    optField->allocate( physicalName );
-    ConstantFieldOnZone a( mesh );
-    ConstantFieldValues< ASTERINTEGER > b( { "X1" }, { opt } );
-    optField->setValueOnZone( a, b );
+    auto fed = model->getFiniteElementDescriptor();
+    if ( !groupsOfCells.empty() ) {
+        fed = fed->restrict( groupsOfCells );
+    }
 
     // Main object
     CalculPtr calcul = std::make_unique< Calcul >( option );
-    calcul->setModel( model );
+    calcul->setFiniteElementDescriptor( fed );
 
     // Add input fields
     calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
     calcul->addInputField( para_name_in, hho_field );
-    calcul->addInputField( "POPPOST", optField );
 
     calcul->addHHOField( model->getHHOModel() );
 
     // Add output terms
-    auto exitField = std::make_shared< FieldOnCellsReal >( model );
+    auto exitField = std::make_shared< FieldOnCellsReal >( fed );
     calcul->addOutputField( para_name_out, exitField );
 
     // Compute

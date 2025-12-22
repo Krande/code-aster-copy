@@ -465,7 +465,6 @@ class MECA3DH27_HHO444(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PDEPLPR, DDL_MECA),
                 (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
-                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),

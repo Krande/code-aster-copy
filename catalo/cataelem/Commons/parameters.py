@@ -954,11 +954,6 @@ PONDPLR = InputParameter(
 """,
 )
 
-POPPOST = InputParameter(
-    phys=PHY.NEUT_I,
-    comment="""  HHO - Option for post-process
-""",
-)
 
 PORIGFI = InputParameter(phys=PHY.GEOM_R, comment="""""")
 

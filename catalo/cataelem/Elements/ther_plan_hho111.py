@@ -192,7 +192,6 @@ class THER2DQ9_HHO111(Element):
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTMPCHF, DDL_THER),
                 (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
-                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),

@@ -68,6 +68,8 @@ NFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY"
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
+FORCHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
+
 
 EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
@@ -168,6 +170,15 @@ class MECA3DQU9_HHO1_F(Element):
         ),
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+        ),
+        OP.HHO_FORC_MECA(
+            te=427,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (OP.HHO_FORC_MECA.PFORCPR, DDL_MECA),
+                (OP.HHO_FORC_MECA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_FORC_MECA.PFORC_R, FORCHHO),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
