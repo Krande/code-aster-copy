@@ -318,7 +318,7 @@ contains
 ! ----- compute lhs += gradrec**T * AT * gradrec
 !
 ! ----- Copy symetric part of AT
-        ! call AT%copySymU()
+        call AT%copySymU()
 ! ----- step1: TMP = AT * gradrec
         call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
 !
