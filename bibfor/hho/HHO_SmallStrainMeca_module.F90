@@ -199,8 +199,8 @@ contains
 !
             if (l_rhs) call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
 !
-            if (l_lhs) call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, &
-                                               gbs_cmp, AT)
+            if (l_lhs) call hhoComputeLhsSmall(hhoCell, dsidep, hhoCS%matsym, weight, BSCEval, &
+                                               gbs_sym, gbs_cmp, AT)
         end do
 !
 ! ----- compute rhs += Gradrec**T * bT
@@ -212,7 +212,9 @@ contains
         if (l_lhs) then
 !
 ! ----- Copy symetric part of AT
-            call AT%copySymU()
+            if (hhoCS%matsym) then
+                call AT%copySymU()
+            end if
             call TMP%initialize(gbs_sym, total_dofs, 0.d0)
 ! ----- step1: TMP = AT * gradrec
             call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
@@ -309,14 +311,14 @@ contains
                         1, hhoCS%angl_naut, nb_sig, dsidep)
             call tranfoTensToSym(nb_sig, dsidep, dsidep3D)
 !
-            call hhoComputeLhsSmall(hhoCell, dsidep3D, weight, BSCEval, gbs_sym, &
+            call hhoComputeLhsSmall(hhoCell, dsidep3D, ASTER_TRUE, weight, BSCEval, gbs_sym, &
                                     gbs_cmp, AT)
         end do
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
 !
 ! ----- Copy symetric part of AT
-        call AT%copySymU()
+        ! call AT%copySymU()
 ! ----- step1: TMP = AT * gradrec
         call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
 !
@@ -389,13 +391,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsSmall(hhoCell, module_tang, weight, BSCEval, gbs_sym, &
+    subroutine hhoComputeLhsSmall(hhoCell, module_tang, matsym, weight, BSCEval, gbs_sym, &
                                   gbs_cmp, AT)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         real(kind=8), intent(in) :: module_tang(6, 6)
+        aster_logical, intent(in) :: matsym
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gbs_sym
@@ -431,7 +434,7 @@ contains
                 do k = 1, gbs_cmp
                     AT%m(row, j) = AT%m(row, j)+qp_Cgphi(i, j)*BSCEval(k)
                     row = row+1
-                    if (row > j) then
+                    if (matsym .and. row > j) then
                         go to 100
                     end if
                 end do
@@ -444,7 +447,7 @@ contains
                     do k = 1, gbs_cmp
                         AT%m(row, j) = AT%m(row, j)+qp_Cgphi(3+i, j)*BSCEval(k)
                         row = row+1
-                        if (row > j) then
+                        if (matsym .and. row > j) then
                             go to 100
                         end if
                     end do
@@ -453,7 +456,7 @@ contains
                 do k = 1, gbs_cmp
                     AT%m(row, j) = AT%m(row, j)+qp_Cgphi(4, j)*BSCEval(k)
                     row = row+1
-                    if (row > j) then
+                    if (matsym .and. row > j) then
                         go to 100
                     end if
                 end do

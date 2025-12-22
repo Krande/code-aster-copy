@@ -382,8 +382,8 @@ contains
                                               mk_gbs, lm_AT)
                 else
 ! ---------- += weight * (dSig_deps : gs_phi, gs_phi)
-                    call hhoComputeLhsSmall(hhoCell, dSig_deps, weight, BSCEval, mk_gbs_sym, &
-                                            mk_gbs_cmp, mk_AT)
+                    call hhoComputeLhsSmall(hhoCell, dSig_deps, hhoComporState%matsym, weight, &
+                                            BSCEval, mk_gbs_sym, mk_gbs_cmp, mk_AT)
 ! ---------- += weight * (gs_phi, dSig_dv : c_phi) -> lhs_mv
                     call hhoComputeLhsSmallMV(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
                                               mk_gbs_cmp, mv_AT)
@@ -425,7 +425,7 @@ contains
         call hhoCalcStabCoeffMeca(hhoData, hhoComporState%fami, hhoMecaState%time_curr, &
                                   hhoQuadCellRigi)
         mk_stab = hhoData%coeff_stab()
-        gv_stab = hhoCalcStabCoeffGV(hhoComporState%fami, hhoQuadCellRigi%nbQuadPoints)
+        gv_stab = hhoCalcStabCoeffGV(hhoComporState%fami)
 !
 ! ------- Compute rhs
 !
@@ -1778,12 +1778,11 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8) function hhoCalcStabCoeffGV(fami, npg)
+    real(kind=8) function hhoCalcStabCoeffGV(fami)
 !
         implicit none
 !
         character(len=4) :: fami
-        integer(kind=8), intent(in) :: npg
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -1793,7 +1792,7 @@ contains
 ! --- Local variables
 !
         integer(kind=8) :: jmate, imate
-        integer(kind=8) :: ipg, iok(1)
+        integer(kind=8) :: iok(1)
         real(kind=8) :: vale(1)
 !
         call jevech('PMATERC', 'L', jmate)
