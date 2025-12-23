@@ -125,12 +125,6 @@ class ExtendedDataStructure:
         """
         return isinstance(other, DataStructure) and self.id() == other.id()
 
-    # transitional functions - to remove later
-    @property
-    @deprecated(case=1, help="Use 'getName()' instead.")
-    def nom(self):
-        return self.getName()
-
 
 # This dictionnary avoids to add the DataStructure "_ext.py" file just
 # to define the SD definition.
