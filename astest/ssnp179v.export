@@ -7,3 +7,4 @@ P testlist verification parallel
 
 F comm ssnp179v.comm D 1
 F mmed ssnp178n.med D 20
+F nom ssnp179k_forc.py D 0

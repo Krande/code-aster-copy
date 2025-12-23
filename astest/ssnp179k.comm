@@ -25,6 +25,8 @@
 from code_aster.Commands import *
 from code_aster import CA
 
+from ssnp179k_forc import compute_loadVSdisplacement
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
@@ -123,6 +125,14 @@ resnonl = CALC_CHAMP(
     reuse=resnonl, FORCE=("FORC_NODA", "REAC_NODA"), CRITERES=("SIEQ_NOEU",), RESULTAT=resnonl
 )
 
+TAB = compute_loadVSdisplacement(resnonl, ["Encast"], NOM_CMP="DY")
+
+# comparaison with ssnp179a
+TEST_TABLE(
+    NOM_PARA="FDY", TABLE=TAB, VALE_CALC=-0.15151515151515, FILTRE=_F(NOM_PARA="INST", VALE=1.0)
+)
+
+
 TEST_RESU(
     RESU=_F(
         INST=1.0,
@@ -213,38 +223,5 @@ TEST_RESU(
         CRITERE="RELATIF",
     )
 )
-
-
-# # define discrete object
-# hho = CA.HHO(model)
-
-# reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
-# # use only face DoFs
-# reac_proj = hho.projectOnLagrangeSpace(reac_noda, 2)
-# reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, 2, False)
-
-
-# TEST_RESU(
-#     CHAM_NO=_F(
-#         GROUP_NO="Encast",
-#         CHAM_GD=reac_proj,
-#         NOM_CMP="DY",
-#         VALE_CALC=8.283208933262936,
-#         TYPE_TEST="SOMM_ABS",
-#         CRITERE="RELATIF",
-#     )
-# )
-
-# TEST_RESU(
-#     CHAM_ELEM=_F(
-#         GROUP_NO="Encast",
-#         CHAM_GD=reac_proj2,
-#         NOM_CMP="DY",
-#         VALE_CALC=10.416834096753952,
-#         TYPE_TEST="SOMM_ABS",
-#         CRITERE="RELATIF",
-#     )
-# )
-
 
 FIN()

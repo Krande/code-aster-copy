@@ -24,6 +24,8 @@
 from code_aster.Commands import *
 from code_aster import CA
 
+from ssnp179k_forc import compute_loadVSdisplacement
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
@@ -119,8 +121,16 @@ resnonl = CALC_CHAMP(
 
 resnonl = CALC_PRESSION(reuse=resnonl, RESULTAT=resnonl, GEOMETRIE="DEFORMEE", GROUP_MA=("load",))
 
+TAB = compute_loadVSdisplacement(resnonl, ["Encast"], NOM_CMP="DY")
+
 
 # same result than ssnp179k since C_GRAD_VARI=0.0
+
+TEST_TABLE(
+    NOM_PARA="FDY", TABLE=TAB, VALE_CALC=-0.15151515151515, FILTRE=_F(NOM_PARA="INST", VALE=1.0)
+)
+
+
 TEST_RESU(
     RESU=_F(
         INST=1.0,

@@ -22,6 +22,11 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
+from code_aster.Commands import *
+from code_aster import CA
+
+from ssnp179k_forc import compute_loadVSdisplacement
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
@@ -117,6 +122,7 @@ resnonl = CALC_CHAMP(
     PROPRIETES=("MATE_ELEM", "MATE_ELGA"),
     CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
     DEFORMATION=("EPSI_ELNO", "EPSI_ELGA"),
+    FORCE=("FORC_NODA", "REAC_NODA"),
     VARI_INTERNE=("VARC_ELGA"),
     MODELE=model,
     RESULTAT=resnonl,
@@ -126,6 +132,14 @@ rescoor = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA", GROUP_MA="MA3D")
 
 IMPR_RESU(UNITE=80, RESU=_F(RESULTAT=resnonl, IMPR_NOM_VARI="OUI"), FORMAT="MED", INFO=1)
 
+
+TAB = compute_loadVSdisplacement(resnonl, ["Encast"], NOM_CMP="DY")
+
+IMPR_TABLE(TABLE=TAB, UNITE=6)
+
+TEST_TABLE(
+    NOM_PARA="FDY", TABLE=TAB, VALE_CALC=-0.05050505050447655, FILTRE=_F(NOM_PARA="INST", VALE=1.0)
+)
 
 TEST_RESU(
     RESU=_F(

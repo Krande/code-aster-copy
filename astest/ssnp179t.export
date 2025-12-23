@@ -8,3 +8,4 @@ P testlist submit verification sequential
 F comm ssnp179t.comm D 1
 F mmed ssnp178a.mmed D 20
 F libr ssnp179k.21 D 21
+F nom ssnp179k_forc.py D 0
