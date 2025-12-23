@@ -716,7 +716,7 @@ TEST_RESU(
 import numpy as np
 
 M = MASSC.toNumpy()
-data, rows, cols, dim = MASSC.EXTR_MATR(sparse=True)
+data, rows, cols, dim = MASSC.getValuesWithDescription()
 
 # Comparaison des matrices creuse et pleine
 # -------------------------------------------------------------

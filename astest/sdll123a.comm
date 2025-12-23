@@ -81,9 +81,9 @@ ASSEMBLAGE(
     ),
 )
 
-mas = MASSE.EXTR_MATR()
+mas = MASSE.toNumpy()
 # ESSAI D'EXTRACTION DE MATRICE CREUSE
-data_rig, lignes, colonnes, dim = RIGIDITE.EXTR_MATR(sparse=True)
+data_rig, lignes, colonnes, dim = RIGIDITE.getValuesWithDescription()
 rig = NP.zeros((dim, dim))
 nnz = len(data_rig)
 for kterm in range(nnz):
@@ -288,7 +288,7 @@ TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=0, VALE_REFE_I=0, NOM_PARA="NB_MO
 TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=4, VALE_REFE_I=4, NOM_PARA="NB_MODE", TABLE=NBMOD4G)
 
 
-gyro = GYOM.EXTR_MATR()
+gyro = GYOM.toNumpy()
 
 
 # -----------------------------------------------------#
