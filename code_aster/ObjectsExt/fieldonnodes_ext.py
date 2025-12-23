@@ -144,29 +144,6 @@ class ExtendedFieldOnNodesReal:
         values = self.getValues(dofs)
         return values, description
 
-    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
-    def EXTR_COMP(self, comp, lgma=[], topo=0):
-        """Deprecated: Use 'getValuesWithDescription()' instead.
-
-        Examples:
-
-        .. code-block:: python
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
-            values = extrcmp.valeurs
-            nodes = extrcmp.noeud
-            components = extrcmp.comp
-            # replaced by:
-            values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
-            values = extrcmp.valeurs
-            # replaced by:
-            values, _ = chamno.getValuesWithDescription(cmp, groups)
-        """
-
     @property
     @functools.lru_cache()
     def __NodeDOF2Row(self):
@@ -413,26 +390,3 @@ class ExtendedFieldOnNodesComplex:
         )
         values = self.getValues(dofs)
         return values, description
-
-    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
-    def EXTR_COMP(self, comp, lgma=[], topo=0):
-        """Deprecated: Use 'getValuesWithDescription()' instead.
-
-        Examples:
-
-        .. code-block:: python
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
-            values = extrcmp.valeurs
-            nodes = extrcmp.noeud
-            components = extrcmp.comp
-            # replaced by:
-            values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
-            values = extrcmp.valeurs
-            # replaced by:
-            values, _ = chamno.getValuesWithDescription(cmp, groups)
-        """

@@ -155,36 +155,6 @@ class ExtendedFieldOnCellsReal:
             ligrel = fed
         return fcs.toFieldOnCells(ligrel)
 
-    # <16.4.0
-    @deprecated(case=1, help="Use 'asLocalization()' instead, it returns a new field.")
-    def changeLocalization(self, loc):
-        return self.asLocalization(loc)
-
-    # <16.4.0
-    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
-    def EXTR_COMP(self, comp, lgma=[], topo=0):
-        """Deprecated: Use 'getValuesWithDescription()' instead.
-
-        Examples:
-
-        .. code-block:: python
-
-            # previously:
-            extrcmp = chamele.EXTR_COMP(cmp, groups, 1)
-            values = extrcmp.valeurs
-            cells = extrcmp.maille
-            points = extrcmp.point
-            subpoints = extrcmp.sous_point
-            # replaced by:
-            values, (cells, points, subpoints) = chamele.getValuesWithDescription(cmp, groups)
-
-            # previously:
-            extrcmp = chamele.EXTR_COMP(cmp, groups, 0)
-            values = extrcmp.valeurs
-            # replaced by:
-            values, _  = chamele.getValuesWithDescription(cmp, groups)
-        """
-
 
 @injector(FieldOnCellsLong)
 class ExtendedFieldOnCellsLong:
