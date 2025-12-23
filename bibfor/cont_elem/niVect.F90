@@ -64,7 +64,6 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
-    aster_logical :: use_segbased
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,8 +77,7 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
     call getInterCont(nbPoinInte, poinInteSlav)
 
 ! - Get quadrature (slave side)
-    use_segbased = (parameters%inte_type .gt. 0)
-    call getQuadCont(use_segbased, geom%elem_dime, &
+    call getQuadCont(parameters, geom%elem_dime, &
                      geom%elem_slav_code, geom%elem_mast_code, &
                      nbPoinInte, poinInteSlav, &
                      nb_qp, coor_qp, &

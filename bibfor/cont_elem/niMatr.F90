@@ -64,7 +64,6 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
     integer(kind=8) :: nbPoinInte
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
-    aster_logical :: use_segbased
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,8 +78,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
     call getInterCont(nbPoinInte, poinInteSlav)
 
 ! - Get quadrature (slave side)
-    use_segbased = (parameters%inte_type .gt. 0)
-    call getQuadCont(use_segbased, geom%elem_dime, &
+    call getQuadCont(parameters, geom%elem_dime, &
                      geom%elem_slav_code, geom%elem_mast_code, &
                      nbPoinInte, poinInteSlav, &
                      nb_qp, coor_qp, &
