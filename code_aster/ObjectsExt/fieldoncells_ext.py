@@ -27,13 +27,12 @@ strings (:py:class:`FieldOnCellsChar8`) and
 complex numbers (:py:class:`FieldOnCellsComplex`).
 """
 
-import numpy
 import os.path as osp
 import subprocess
 
 from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector, deprecated, force_list
+from ..Utilities import injector, force_list
 from ..Utilities import MPI, ExecutionParameter, SharedTmpdir
 
 

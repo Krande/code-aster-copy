@@ -27,7 +27,7 @@ from libaster import GeneralizedAssemblyMatrixComplex, GeneralizedAssemblyMatrix
 
 from ..Objects.Serialization import InternalStateBuilder
 from ..Supervis import AsterError
-from ..Utilities import deprecated, injector
+from ..Utilities import injector
 
 
 class GeneralizedAssemblyMatrixStateBuilder(InternalStateBuilder):

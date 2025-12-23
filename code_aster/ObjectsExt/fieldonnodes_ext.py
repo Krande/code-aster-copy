@@ -29,12 +29,9 @@ complex numbers (:py:class:`FieldOnNodesComplex`).
 
 import functools
 import operator
-import os
 import os.path as osp
 import subprocess
-import tempfile
 
-import numpy as np
 from libaster import (
     DOFNumbering,
     FieldOnNodesChar8,
@@ -45,16 +42,7 @@ from libaster import (
 
 from ..Objects import PythonBool
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import (
-    MPI,
-    ExecutionParameter,
-    PETSc,
-    config,
-    deprecated,
-    force_list,
-    injector,
-    SharedTmpdir,
-)
+from ..Utilities import MPI, ExecutionParameter, PETSc, config, force_list, injector, SharedTmpdir
 from ..Utilities import medcoupling as medc
 
 

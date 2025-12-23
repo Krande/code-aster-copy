@@ -27,7 +27,7 @@ from libaster import DataStructure
 
 from ..CodeCommands import COPIER
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import deprecated, import_object, injector
+from ..Utilities import import_object, injector
 
 
 @injector(DataStructure)

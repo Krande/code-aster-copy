@@ -32,7 +32,7 @@ from ..Cata.Syntax import _F
 from ..Cata.SyntaxUtils import old_complex
 from ..Messages import UTMESS
 from ..Supervis.visitors import EnumVisitor
-from ..Utilities import deprecated, injector, logger
+from ..Utilities import injector, logger
 
 
 @injector(Material)

@@ -35,7 +35,7 @@ from libaster import (
 )
 
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import PETSc, deprecated, injector, profile
+from ..Utilities import PETSc, injector, profile
 
 
 class AssemblyMatrixStateBuilder(InternalStateBuilder):

@@ -32,7 +32,7 @@ import numpy as np
 
 from libaster import ListOfFloats
 
-from ..Utilities import deprecated, injector
+from ..Utilities import injector
 
 
 @injector(ListOfFloats)
