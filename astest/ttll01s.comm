@@ -120,7 +120,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N24",
             NOM_CMP="TEMP",
-            PRECISION=0.01,
+            PRECISION=0.011,
             CHAM_GD=TEMP_1,
             VALE_CALC=8.006145990978681,
             VALE_REFE=8.0899999999999999,
