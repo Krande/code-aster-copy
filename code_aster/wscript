@@ -191,7 +191,7 @@ def get_revision_info_hg(self, depth):
     date = "/".join([d, m, Y])
     brs = [i.split(":")[3] for i in logs]
     # search official branch
-    BR = ["default"] + ["v%d" % i for i in range(10, 30)]
+    BR = ["main"] + ["v%d" % i for i in range(10, 30)]
     frbr = "?"
     while brs:
         br_i = brs.pop()
