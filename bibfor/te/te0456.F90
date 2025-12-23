@@ -23,6 +23,7 @@ subroutine te0456(nomopt, nomte)
     use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga, hhoPostMecaGradVari, &
                                   hhoPostMecaElga
     use HHO_init_module, only: hhoInfoInitCell, hhoInitFacesOfCell
+    use HHO_GV_module, only: hhoDataGVinit
 !
     implicit none
 !
@@ -40,7 +41,7 @@ subroutine te0456(nomopt, nomte)
 !
 ! --- Local variables
 !
-    type(HHO_Data) :: hhoData
+    type(HHO_Data) :: hhoData, hhoDataGv
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuad
     integer(kind=8) :: nbnodes, npg
@@ -56,7 +57,8 @@ subroutine te0456(nomopt, nomte)
 ! --- post-traitement
         call hhoInitFacesOfCell(hhoCell)
         if (lteatt('TYPMOD2', 'HHO_GRAD')) then
-            call hhoPostMecaGradVari(hhoCell, hhoData, nbnodes)
+            call hhoDataGVinit(hhoDataGv)
+            call hhoPostMecaGradVari(hhoCell, hhoData, hhoDataGv, nbnodes)
         else
             call hhoPostMeca(hhoCell, hhoData, nbnodes)
         end if

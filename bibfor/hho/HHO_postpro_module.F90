@@ -268,12 +268,12 @@ contains
 ! ==================================================================================================
 ! ==================================================================================================
 !
-    subroutine hhoPostMecaGradVari(hhoCell, hhoData, nbnodes)
+    subroutine hhoPostMecaGradVari(hhoCell, hhoDataMk, hhoDataGv, nbnodes)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Data), intent(in) :: hhoDataMk, hhoDataGv
         integer(kind=8), intent(in) :: nbnodes
 !
 ! --------------------------------------------------------------------------------------------------
@@ -286,7 +286,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer(kind=8) :: mk_total_dofs, mk_cbs, mk_fbs, jvect, i, ino, ndim, idim, mk_cbs_cmp
+        integer(kind=8) :: mk_total_dofs, mk_cbs, mk_fbs, jvect, i, ino, ndim, idim
         integer(kind=8) :: faces_dofs, gv_cbs, gv_fbs, gv_total_dofs
         real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_U
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_V, sol_L
@@ -300,10 +300,8 @@ contains
 !
 ! --- number of dofs
 !
-        call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-        call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
-        mk_cbs_cmp = mk_cbs/ndim
-        ASSERT(mk_cbs_cmp == gv_cbs)
+        call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
         faces_dofs = mk_total_dofs-mk_cbs+gv_total_dofs-gv_cbs
 !
 ! --- We get the solution on the cell
@@ -320,15 +318,15 @@ contains
 !
         do ino = 1, nbnodes
             post_sol_T(1:3, ino) = hhoEvalVecCell2( &
-                                   hhoBasisCell, hhoData%cell_degree(), &
+                                   hhoBasisCell, hhoDataMk%cell_degree(), &
                                    hhoCell%coorno(1:3, ino), sol_U)
         end do
         do ino = 1, nbnodes
             post_sol_T(ndim+1, ino) = hhoEvalScalCell2( &
-                                      hhoBasisCell, hhoData%cell_degree(), &
+                                      hhoBasisCell, hhoDataGv%cell_degree(), &
                                       hhoCell%coorno(1:3, ino), sol_V)
             post_sol_T(ndim+2, ino) = hhoEvalScalCell2( &
-                                      hhoBasisCell, hhoData%cell_degree(), &
+                                      hhoBasisCell, hhoDataGv%cell_degree(), &
                                       hhoCell%coorno(1:3, ino), sol_L)
         end do
 !

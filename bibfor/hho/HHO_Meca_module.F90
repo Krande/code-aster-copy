@@ -450,13 +450,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine initialize_meca(this, hhoCell, hhoData, hhoComporState)
+    subroutine initialize_meca(this, hhoCell, hhoDataMk, hhoComporState, hhoDataGv)
 !
         implicit none
 !
         class(HHO_Meca_State), intent(inout) :: this
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(inout) :: hhoData
+        type(HHO_Data), intent(in) :: hhoDataMk
+        type(HHO_Data), intent(in), optional :: hhoDataGv
         type(HHO_Compor_State), intent(in) :: hhoComporState
 !
 ! --------------------------------------------------------------------------------------------------
@@ -481,7 +482,7 @@ contains
                 this%time_incr = this%time_curr-this%time_prev
             end if
 !
-            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
+            call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
 !
             if (hhoComporState%typmod(2) == "HHO") then
                 if (forc_noda) then
@@ -498,7 +499,7 @@ contains
                 end if
             else
                 ! GRAD_VARI
-                call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+                call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
                 total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
                 if (forc_noda) then
                     call readVector('PDEPLAR', total_dofs, tmp_prev)
