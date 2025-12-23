@@ -2068,7 +2068,7 @@ def get_result(
     TPFISS[NP + 1] = "GLOBAL"
 
     mcfact = []
-    mcfact.append(_F(PARA="FOND_FISS", LISTE_K=[FOND_FISS.nom]))
+    mcfact.append(_F(PARA="FOND_FISS", LISTE_K=[FOND_FISS.getName()]))
     mcfact.append(_F(PARA="NUME_FOND", LISTE_I=[1]))
     mcfact.append(_F(PARA="NOEUD_FOND", LISTE_K=[TPFISS[iNP + 1]]))
     mcfact.append(_F(PARA="NUM_PT", LISTE_I=[iNP + 1]))
