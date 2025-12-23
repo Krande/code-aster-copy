@@ -108,7 +108,10 @@ def parse_args(argv):
         argv (list): List of command line arguments.
     """
     parser = argparse.ArgumentParser(
-        usage=USAGE, epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter
+        usage=USAGE,
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        allow_abbrev=False,
     )
     parser.add_argument(
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
@@ -223,9 +226,9 @@ def main(argv=None):
     if args.dry_run:
         logger.info("+ filename: %s", script)
         return 0
-    else:
-        with open(params["output"].replace("-%j", "") + ".sbatch", "w") as fscr:
-            fscr.write(content)
+    with open(params["output"].replace("-%j", "") + ".sbatch", "w") as fscr:
+        logger.info("+ filename: %s", fscr.name)
+        fscr.write(content)
     try:
         proc = _run(["sbatch"] + sbatch_args + [script])
     finally:
