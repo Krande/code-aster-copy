@@ -163,10 +163,6 @@ class ExtendedMaterial:
             logger.debug('NOMRC.append("%s")', name)
             mater._addProperties(name, len(seen), valR, valC, valK, ordr, kord)
 
-    @deprecated(case=1, help="Use 'size()' instead.")
-    def getNumberOfMaterialProperties(self):
-        return self.size()
-
     def addProperties(self, name, context=None, **kwargs):
         """Define properties for a behaviour.
 
