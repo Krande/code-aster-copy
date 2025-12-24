@@ -94,7 +94,7 @@ subroutine thmGetPermeabilityTensor(ds_thm, ndim, angl_naut, j_mater, phi, endo,
                 aniso = 1
                 call rcvala(j_mater, ' ', 'THM_DIFFU', &
                             1, 'PORO', [phi], &
-                            2, para_name(2), para_vale(2), &
+                            1, para_name(2), para_vale(2), &
                             icodre, 0, nan='NON')
             else
                 aniso = 2

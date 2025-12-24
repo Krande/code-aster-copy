@@ -168,7 +168,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     end if
 
 ! - Coordinates of current Gauss point
-    coords(ndim+1:) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:ndim)
+    coords(1:3) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:3)
 
 ! - Get material properties
     call mat_proto(BEHinteg, fami, kpg, ksp, '+', &

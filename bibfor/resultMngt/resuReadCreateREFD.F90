@@ -58,7 +58,8 @@ subroutine resuReadCreateREFD(resultName, resultType, matrRigi, matrMass)
         resultType(1:9) .eq. 'MODE_MECA') then
         call jeexin(resultName//'           .REFD', iret)
         if (iret .eq. 0) then
-            call refdaj(' ', resultName, -1, ' ', 'INIT', ' ', iret)
+            matric = ' '
+            call refdaj(' ', resultName, -1, ' ', 'INIT', matric, iret)
         end if
     end if
 !

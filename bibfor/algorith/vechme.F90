@@ -101,7 +101,7 @@ subroutine vechme(stop, &
     model = modelZ(1:8)
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrelCalc)
     if (present(ligrelCalcZ_)) then
-        ligrelCalc = ligrelCalcZ_(1:24)
+        ligrelCalc = ligrelCalcZ_
     end if
     jvBase = 'V'
     if (present(jvBase_)) then

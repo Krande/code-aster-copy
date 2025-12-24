@@ -30,7 +30,7 @@ subroutine vermot(icl, iv, cv, cnl, ier, &
 !       OUT     IER     =       0       > VRAI  ( RETURN )
 !                       =       1       > FAUX  ( RETURN 1 )
 !       ----------------------------------------------------------------
-    integer(kind=8) :: icl, iv, ier
+    integer(kind=8) :: icl, iv, ier, iv2
     character(len=14) :: cnl
     character(len=16) :: nom
     character(len=8) :: mcl
@@ -60,8 +60,9 @@ subroutine vermot(icl, iv, cv, cnl, ier, &
         goto 9999
     end if
 !
+    iv2 = min(iv, 8)
     mcl = '        '
-    mcl(1:iv) = cv(1:iv)
+    mcl(1:iv2) = cv(1:iv2)
     if (mcl .eq. 'FIN     ') then
         call utmess('E', 'MODELISA7_83', sk=cnl)
         ier = 1

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ssvalm(statut, option, mo, ma, isma, &
+subroutine ssvalm(statutz, option, mo, ma, isma, &
                   jresl, nbvel)
 !
     implicit none
@@ -36,7 +36,7 @@ subroutine ssvalm(statut, option, mo, ma, isma, &
 #include "asterfort/ssvaro.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: mo, ma
-    character(len=*) :: option, statut
+    character(len=*) :: option, statutz
     integer(kind=8) :: isma, jresl
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -71,7 +71,7 @@ subroutine ssvalm(statut, option, mo, ma, isma, &
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: rota
+    character(len=8) :: rota, statut
     character(len=16) :: optio2
     character(len=8) :: nomacr
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
@@ -84,6 +84,7 @@ subroutine ssvalm(statut, option, mo, ma, isma, &
     real(kind=8), pointer :: para_r(:) => null()
 !-----------------------------------------------------------------------
     optio2 = option
+    statut = statutz
 !
 !     -- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
 !     ----------------------------------------------------

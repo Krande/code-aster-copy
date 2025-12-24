@@ -468,11 +468,6 @@ class PhysicalQuantity {
      */
     PhysicalQuantity() {};
 
-    /**
-     * @brief Destructor
-     */
-    ~PhysicalQuantity() {};
-
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
     PhysicalQuantity( const py::tuple &tup ) : PhysicalQuantity() {
         _compAndVal = tup[0].cast< MapOfCompAndVal >();

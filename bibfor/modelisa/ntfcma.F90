@@ -17,13 +17,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntfcma(compo, jmat, aniso, ifon)
+subroutine ntfcma(compoz, jmat, aniso, ifon)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer(kind=8) :: imate, jmat, ifon(6)
-    character(len=*) :: compo
+    character(len=*) :: compoz
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
 !     OBTENTION DES ADRESSES DES FONCTIONS BETA ET LAMBDA DANS LE
@@ -45,12 +45,13 @@ subroutine ntfcma(compo, jmat, aniso, ifon)
 !
 !-----------------------------------------------------------------------
     integer(kind=8) :: idf, lfct, lmat
-    character(len=16) :: valk(2), compo2
+    character(len=16) :: valk(2), compo2, compo
 !-----------------------------------------------------------------------
     parameter(lmat=9, lfct=10)
 ! DEB ------------------------------------------------------------------
 !
 !
+    compo = compoz
     nbmat = zi(jmat)
     ASSERT(nbmat .eq. 1)
     imate = jmat+zi(jmat+nbmat+1)
