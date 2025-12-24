@@ -430,7 +430,7 @@ class MECA3DGVH_HHO222(Element):
             te=448,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PDEPLAR, DDL_MECA),
+                (SP.PDEPLAR, DDL_DEPL),
                 (SP.PGEOMER, NGEOMER),
                 (OP.EPSI_ELGA.PCHHOBS, CHHOBS),
             ),
@@ -519,7 +519,7 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_PROJ_MECA.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
+            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_DEPL),),
         ),
         OP.HHO_DEPL_MECA(
             te=456,
