@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
-                  typpar, vi, vr, vc, vk)
+                  typparz, vi, vr, vc, vk)
     implicit none
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
@@ -35,7 +35,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
     integer(kind=8) :: ntab, vi(*)
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
-    character(len=*) :: tabout, basout, ltabin(*), para, typpar, vk(*)
+    character(len=*) :: tabout, basout, ltabin(*), para, typparz, vk(*)
 !     FUSIONNER PLUSIEURS TABLES EN UNE SEULE TABLE.
 ! ----------------------------------------------------------------------
 ! IN  : TABOUT : NOM DE LA TABLE QUE L'ON VEUT OBTENIR
@@ -55,7 +55,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
     integer(kind=8) :: ki, kr, kc, kk, jvall
 !
     character(len=1) :: base
-    character(len=4) :: type, ktype
+    character(len=4) :: type, ktype, typpar
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar, knpar
     character(len=24) :: valk(3)
@@ -70,6 +70,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
     call jemarq()
 !
     base = basout(1:1)
+    typpar = typparz
 !
 !     --- VERIFICATION DE LA BASE ---
 !
