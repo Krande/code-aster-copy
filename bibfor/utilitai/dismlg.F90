@@ -272,7 +272,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
                             lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
-                            if (formul .eq. 'HHO_LINE') then
+                            if (formul .eq. 'HHO_LINE' .or. formul .eq. 'HHO_VLINE') then
                                 repk = 'OUI'
                             else
                                 repk = 'NON'
@@ -298,7 +298,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
                             lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
-                            if (formul .eq. 'HHO_QUAD') then
+                            if (formul .eq. 'HHO_QUAD' .or. formul .eq. 'HHO_VQUAD') then
                                 repk = 'OUI'
                             else
                                 repk = 'NON'

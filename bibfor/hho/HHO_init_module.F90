@@ -434,11 +434,11 @@ contains
             face_deg = 0
             cell_deg = 0
             grad_deg = 0
-        elseif (lteatt('FORMULATION', 'HHO_LINE')) then
+        elseif (lteatt('FORMULATION', 'HHO_LINE') .or. lteatt('FORMULATION', 'HHO_VLINE')) then
             face_deg = 1
             cell_deg = 1
             grad_deg = 1
-        elseif (lteatt('FORMULATION', 'HHO_QUAD')) then
+        elseif (lteatt('FORMULATION', 'HHO_QUAD') .or. lteatt('FORMULATION', 'HHO_VQUAD')) then
             face_deg = 2
             cell_deg = 2
             grad_deg = 2

@@ -50,7 +50,7 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: formul
+    character(len=24) :: formul
     character(len=19), parameter :: keywordfact = 'AFFE'
     integer(kind=8) :: nbret
 !

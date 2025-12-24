@@ -598,8 +598,6 @@ contains
 !   Out cod         : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(6), parameter  :: vrac2 = (/1.d0, 1.d0, 1.d0, &
-                                                            sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)/)
         real(kind=8) :: gn(3, 3), lamb(3), logl(3), epslPrev(6), epslIncr(6)
         real(kind=8) :: tlogPrev(6), tlogCurr(6)
         real(kind=8) :: dtde(6, 6), PK2_prev(6), PK2_curr(6), sig(6)
@@ -645,7 +643,7 @@ contains
         eplcm(neu+2+1:neu+2+ndim) = GV_prev(1:ndim)
         eplci(neu+2+1:neu+2+ndim) = GV_curr(1:ndim)-GV_prev(1:ndim)
 ! Preparation des contraintes generalisees de ldc en t-
-        silcm(1:neu) = viPrev(lgpg-5:lgpg-6+neu)*vrac2(1:neu)
+        silcm(1:neu) = tlogPrev(1:neu)
         silcm(neu+1:ntot) = sigPrev(neu+1:ntot)
 
 ! ----- Compute Stress and module_tangent
@@ -662,19 +660,12 @@ contains
 !
         if (cod .eq. 1) goto 999
 !
-! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
-        tlogCurr = 0.d0
-        tlogCurr(1:neu) = silcp(1:neu)
-        if (lVari) then
-            viCurr(lgpg-1:lgpg) = 0.d0
-            viCurr(lgpg-5:lgpg-6+neu) = tlogCurr(1:neu)/vrac2(1:neu)
-            hhoCS%vari_curr((ipg-1)*lgpg+1:ipg*lgpg) = viCurr
-        end if
-!
 ! ----- Compute post-processing Elog
 !
         dtde = 0.d0
         dtde(1:neu, 1:neu) = dsde(1:neu, 1:neu)
+        tlogCurr = 0.d0
+        tlogCurr(1:neu) = silcp(1:neu)
 !
         call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
                     tlogCurr, F_prev, lgpg, viCurr, ndim, &
@@ -682,6 +673,12 @@ contains
                     hhoCS%fami, imate, time_curr, hhoCS%angl_naut, gn, &
                     lamb, logl, sig, dpk2dc, PK2_prev, &
                     PK2_curr, cod)
+!
+! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
+
+        if (lVari) then
+            hhoCS%vari_curr((ipg-1)*lgpg+1:ipg*lgpg) = viCurr
+        end if
 !
 ! ----- Test the code of the LDC
 !
@@ -756,9 +753,13 @@ contains
             ASSERT(abs(dsv_dl-dsl_dv) < 1d-10*norm)
         end if
 ! print *, hhoCS%option
-! print *, ipg, lgpg, ntot
+! print *, ipg, lgpg, ntot, viCurr(1)
 ! print *, eplcm
 ! print *, eplci
+! print*, var_curr, lag_curr, sig_gv
+! print*, lag_curr + (var_curr-viCurr(1)) , " vs ", sig_vari
+! print*, (var_curr-viCurr(1)) , " vs ", sig_lagv
+! print*, GV_curr, " vs ", sig_gv
 ! print *, sig_vari, sig_lagv, sig_gv
 ! print *, dsv_dv, dsv_dl, dsl_dl, dsgv_dgv
 ! print*, ipg, dsv_dv, dsv_dl, dsl_dl
@@ -1855,6 +1856,10 @@ contains
             face_deg = 2
             cell_deg = 2
             grad_deg = 2
+        elseif (lteatt('FORMULATION', 'HHO_VQUAD')) then
+            face_deg = 1
+            cell_deg = 1
+            grad_deg = 1
         else
             ASSERT(ASTER_FALSE)
         end if

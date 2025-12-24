@@ -201,6 +201,12 @@ contains
         elseif (formulation == 'HHO_MQUIN') then
             face_deg = 5
             cell_deg = 6
+        elseif (formulation == 'HHO_VLINE') then
+            face_deg = 1
+            cell_deg = 2
+        elseif (formulation == 'HHO_VQUAD') then
+            face_deg = 2
+            cell_deg = 3
         else
             ASSERT(ASTER_FALSE)
         end if
