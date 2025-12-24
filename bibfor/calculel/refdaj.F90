@@ -110,7 +110,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre, &
     data lonref/3, 1, 1, 1/
 !
     typref = typre
-    conref = conre
+    conref(1) = conre(1)
+    conref(2) = conre(2)
+    conref(3) = conre(3)
     numer1 = numer
     codret = 0
     bl24 = '                        '

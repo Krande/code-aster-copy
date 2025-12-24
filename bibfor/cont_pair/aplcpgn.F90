@@ -410,15 +410,16 @@ subroutine aplcpgn(mesh, newgeo, &
                     do i_mast_neigh = 1, nb_mast_neigh
                         elem_mast_neigh = v_sdappa_mane((elem_mast_indx-1)*4+i_mast_neigh)
                         elem_neigh_indx = elem_mast_neigh+1-mast_indx_mini
-                        if (elem_mast_neigh .ne. 0 .and. &
-                            mast_find_flag(elem_neigh_indx) == 0) then
-                            list_find_mast(nb_find_mast+1) = elem_mast_neigh
-                            nb_find_mast = nb_find_mast+1
-                            if (debug) then
-                                WRITE (6, *) " => added: ", nb_find_mast, &
-                                    list_find_mast(nb_find_mast)
+                        if (elem_mast_neigh .ne. 0) then
+                            if (mast_find_flag(elem_neigh_indx) == 0) then
+                                list_find_mast(nb_find_mast+1) = elem_mast_neigh
+                                nb_find_mast = nb_find_mast+1
+                                if (debug) then
+                                    WRITE (6, *) " => added: ", nb_find_mast, &
+                                        list_find_mast(nb_find_mast)
+                                end if
+                                mast_find_flag(elem_neigh_indx) = 1
                             end if
-                            mast_find_flag(elem_neigh_indx) = 1
                         end if
                     end do
 
@@ -438,24 +439,24 @@ subroutine aplcpgn(mesh, newgeo, &
                             WRITE (6, *) " < cellSlavFlag: ", elem_slav_flag(elem_neigh_indx)
                             WRITE (6, *) " < inteNeigh: ", inte_neigh(i_slav_neigh)
                         end if
-                        if (elem_slav_neigh .ne. 0 .and. &
-                            inte_neigh(i_slav_neigh) == 1 &
-                            .and. elem_slav_flag(elem_neigh_indx) .ne. 1 &
-                            .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
-                            weight_test = 0.d0
-                            ! IS IT NECESSARY WITH RAY_TRACING ?
-                            !call testvois(jv_geom       , elem_slav_type,&
-                            !                elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                            !                pair_tole     , weight_test,    v_mesh_connex ,&
-                            !                v_connex_lcum)
-                            !if (weight_test > list_slav_weight(i_slav_neigh).and.&
-                            !    weight_test > pair_tole) then
-                            list_slav_master(i_slav_neigh) = elem_mast_nume
-                            if (debug) then
-                                WRITE (6, *) " => added: ", elem_mast_nume
+                        if (elem_slav_neigh .ne. 0) then
+                            if (inte_neigh(i_slav_neigh) == 1 &
+                                .and. elem_slav_flag(elem_neigh_indx) .ne. 1 &
+                                .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
+                                weight_test = 0.d0
+                                ! IS IT NECESSARY WITH RAY_TRACING ?
+                                !call testvois(jv_geom       , elem_slav_type,&
+                                !                elem_mast_coor, elem_mast_code, elem_slav_nume,&
+                                !                pair_tole     , weight_test,    v_mesh_connex ,&
+                                !                v_connex_lcum)
+                                !if (weight_test > list_slav_weight(i_slav_neigh).and.&
+                                !    weight_test > pair_tole) then
+                                list_slav_master(i_slav_neigh) = elem_mast_nume
+                                if (debug) then
+                                    WRITE (6, *) " => added: ", elem_mast_nume
+                                end if
+                                !   list_slav_weight(i_slav_neigh) = weight_test
                             end if
-                            !   list_slav_weight(i_slav_neigh) = weight_test
-                            !end if
                         end if
                     end do
                     l_recup = ASTER_FALSE
@@ -475,14 +476,15 @@ subroutine aplcpgn(mesh, newgeo, &
                     write (*, *) 'Next elements - Current: ', i_slav_neigh, elem_slav_neigh, &
                         list_slav_master(i_slav_neigh), elem_slav_flag(elem_neigh_indx)
                 end if
-                if (elem_slav_neigh .ne. 0 .and. &
-                    list_slav_master(i_slav_neigh) .ne. 0 .and. &
-                    elem_slav_flag(elem_neigh_indx) .ne. 1) then
-                    elem_slav_start(nb_slav_start+1) = elem_slav_neigh
-                    nb_slav_start = nb_slav_start+1
-                    elem_slav_flag(elem_neigh_indx) = 1
-                    elem_mast_start(nb_mast_start+1) = list_slav_master(i_slav_neigh)
-                    nb_mast_start = nb_mast_start+1
+                if (elem_slav_neigh .ne. 0) then
+                    if (list_slav_master(i_slav_neigh) .ne. 0 .and. &
+                        elem_slav_flag(elem_neigh_indx) .ne. 1) then
+                        elem_slav_start(nb_slav_start+1) = elem_slav_neigh
+                        nb_slav_start = nb_slav_start+1
+                        elem_slav_flag(elem_neigh_indx) = 1
+                        elem_mast_start(nb_mast_start+1) = list_slav_master(i_slav_neigh)
+                        nb_mast_start = nb_mast_start+1
+                    end if
                 end if
             end do
             mast_find_flag(1:mast_indx_maxi+1-mast_indx_mini) = 0

@@ -454,6 +454,9 @@ contains
             call lhs_vv%copySymU(gv_faces_dofs, gv_faces_dofs)
             call lhs_vl%copySymU(gv_faces_dofs, 0)
             call lhs_ll%copySymU()
+            if ((.not. hhoComporState%l_largestrain) .and. hhoComporState%matsym) then
+                call mk_AT%copySymU()
+            end if
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec

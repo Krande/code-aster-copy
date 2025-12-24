@@ -107,11 +107,11 @@ subroutine te0480(option, nomte)
 ! RECUP VAL THM_INIT
 !
         call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                    3, 'PRE1', valres(1), icodre, 0, nan='OUI')
+                    1, 'PRE1', valres(1), icodre, 0, nan='OUI')
         call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                    3, 'PRE2', valres(2), icodre, 0, nan='OUI')
+                    1, 'PRE2', valres(2), icodre, 0, nan='OUI')
         call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                    3, 'TEMP', valres(3), icodre, 0, nan='OUI')
+                    1, 'TEMP', valres(3), icodre, 0, nan='OUI')
         p1ref = valres(1)
         p2ref = valres(2)
         tref = valres(3)

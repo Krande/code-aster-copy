@@ -358,7 +358,7 @@ subroutine op0077()
 !     -------------------------------------------
     call jeexin(nomres//'           .REFD', iret)
     if (iret .eq. 0) call refdaj(' ', nomres, -1, nume_equa, 'INIT', &
-                                 ' ', iret)
+                                 [' ', ' ', ' '], iret)
 
     if (base == 'G') then
         call jeexin(nume_equa//'.NUEQ', iret)

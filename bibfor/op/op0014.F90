@@ -239,7 +239,7 @@ subroutine op0014()
         ASSERT(lch .lt. 2500)
         lslvo = int(lch/80)+1
         do i = 1, lslvo
-            zk80(jslvo-1+i) = myopt(80*(i-1):80*i)
+            zk80(jslvo-1+i) = myopt(80*(i-1)+1:80*i)
         end do
         !
 

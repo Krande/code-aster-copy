@@ -56,7 +56,7 @@ subroutine mmctan(numema, alias, nno, ndim, coorma, &
 !
     integer(kind=8) :: ifm, niv
     integer(kind=8) :: niverr
-    real(kind=8) :: ksi(2)
+    real(kind=8) :: ksi(3)
     real(kind=8) :: dff(2, 9)
 !
 ! ----------------------------------------------------------------------

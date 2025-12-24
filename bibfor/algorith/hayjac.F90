@@ -57,7 +57,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed, &
     real(kind=8) :: biga, sig0, pkc, alphad, sequid, dt, theta, epsi, coef
     real(kind=8) :: h1, h2, h, d, dp, cosh1, cosh2, sinh1, sinh2, dmgmi, grj0
     real(kind=8) :: seq, seq0, sequi, shmax, sinn, terme1, trsig, trsig0, ddmg
-    real(kind=8) :: sigf(6), equi(16), dm1, epsef(6), young, poiss, deuxmu, dmg
+    real(kind=8) :: sigf(6), equi(17), dm1, epsef(6), young, poiss, deuxmu, dmg
     real(kind=8) :: id(6, 6), nxn(6, 6), dfedee(6, 6), dh1
     real(kind=8) :: dh2
     real(kind=8) :: un, zero, d23, d13, dseqde(6), hookf(6, 6), troisk, gh1, gh2

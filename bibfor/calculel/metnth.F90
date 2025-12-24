@@ -144,7 +144,7 @@ subroutine metnth(model, loadNameJv, caraElem, mateco, time, &
             ilires = 0
             ilires = ilires+1
             call codent(ilires, 'D0', lchout(1) (12:14))
-            call calcul('S', option, ligrmo, 7, lchin, &
+            call calcul('S', option, ligrmo, 6, lchin, &
                         lpain, 1, lchout, lpaout, 'V', &
                         'OUI')
             call reajre(metrnl, lchout(1), 'V')

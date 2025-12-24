@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ssvalv(statut, nomcas, mo, ma, isma, &
+subroutine ssvalv(statutz, nomcas, mo, ma, isma, &
                   idresl, long, instap)
 !
 ! INSPI  SSVALM
@@ -40,7 +40,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma, &
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: mo, ma
-    character(len=*) :: statut
+    character(len=*) :: statutz
     character(len=8) :: nomcas
     integer(kind=8) :: isma, idresl
     real(kind=8), optional :: instap
@@ -76,7 +76,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma, &
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: nomacr, rota
+    character(len=8) :: nomacr, rota, statut
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
 !
 !
@@ -93,6 +93,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma, &
     real(kind=8), pointer :: para_r(:) => null()
     integer(kind=8), pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
+    statut = statutz
     if (statut(1:5) .eq. 'DEBUT') then
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
         call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
