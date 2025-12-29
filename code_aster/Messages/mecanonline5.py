@@ -331,7 +331,6 @@ Il n'y a aucun degré de liberté de déplacement sur le modèle.
     ),
     60: _("""La formulation HHO est incompatible avec le contact."""),
     61: _("""La formulation HHO est incompatible avec les liaisons unilatérales."""),
-    62: _("""La formulation HHO est incompatible avec le pilotage."""),
     63: _("""La formulation HHO est incompatible avec la recherche linéaire."""),
     65: _("""La formulation HHO est incompatible avec la réduction de modèle."""),
     66: _("""La formulation HHO est incompatible avec XFEM."""),

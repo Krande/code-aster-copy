@@ -407,9 +407,6 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
         if (l_unil) then
             call utmess('F', 'MECANONLINE5_61')
         end if
-        if (l_pilo) then
-            call utmess('F', 'MECANONLINE5_62')
-        end if
         if (l_line_search) then
             call utmess('F', 'MECANONLINE5_63')
         end if

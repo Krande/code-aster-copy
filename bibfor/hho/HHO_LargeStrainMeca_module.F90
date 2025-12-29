@@ -34,13 +34,13 @@ module HHO_LargeStrainMeca_module
     implicit none
 !
     private
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/HHO_size_module.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/codere.h"
 #include "asterfort/desymt46.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/lagmodtonommod.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
@@ -56,7 +56,7 @@ module HHO_LargeStrainMeca_module
 ! Module for large deformations with hho
 !
 ! --------------------------------------------------------------------------------------------------
-    public :: hhoLargeStrainLCMeca, hhoCalculF
+    public :: hhoLargeStrainLCMeca, hhoCalculF, hhoCalculGreenLagrange
     public :: hhoComputeLhsLarge, hhoComputeRhsLarge, hhoAddAxisGrad
     private :: hhoComputeAgphi
     private :: select_behavior, gdeflog, nbsigm_cmp, greenlagr
@@ -177,7 +177,6 @@ contains
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-            BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1:3) = coorpg(1:3)
             weight = hhoQuadCellRigi%weights(ipg)
 !print*, ipg, "qp", coorpg(1:3), weight
 !
@@ -512,7 +511,7 @@ contains
 !
         integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: F(3, 3)
-        real(kind=8), intent(out), optional :: GLvec(6)
+        real(kind=8), intent(out) :: GLvec(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -520,7 +519,6 @@ contains
 !   Compute the matrix F = G +I
 !   In ndim         : dimension
 !   In F            : deformation gradient
-!   In GL           : Green-Lagrange
 !   In GLvec        : Green-Lagrange using Voigt Notation (XX, YY, ZZ, XY*rac2, XZ*rac2, YZ*rac2)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -554,15 +552,13 @@ contains
 !
 ! ---- convert GL in (XX, YY, ZZ, XY*rac2, XZ*rac2, YZ*rac2)
 !
-        if (present(GLvec)) then
-            if (ndim == 2) then
-                GLvec = [GL_(1, 1), GL_(2, 2), 0.d0, GL_(1, 2)*rac2, 0.d0, 0.d0]
-            else if (ndim == 3) then
-                GLvec = [GL_(1, 1), GL_(2, 2), GL_(3, 3), GL_(1, 2)*rac2, GL_(1, 3)*rac2, &
-                         GL_(2, 3)*rac2]
-            else
-                ASSERT(ASTER_FALSE)
-            end if
+        if (ndim == 2) then
+            GLvec = [GL_(1, 1), GL_(2, 2), 0.d0, GL_(1, 2)*rac2, 0.d0, 0.d0]
+        else if (ndim == 3) then
+            GLvec = [GL_(1, 1), GL_(2, 2), GL_(3, 3), GL_(1, 2)*rac2, GL_(1, 3)*rac2, &
+                     GL_(2, 3)*rac2]
+        else
+            ASSERT(ASTER_FALSE)
         end if
 !
     end subroutine

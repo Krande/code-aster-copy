@@ -162,7 +162,7 @@ contains
         type(HHO_Cell), intent(inout) :: hhoCell
         aster_logical, intent(in) :: l_largestrains
         type(HHO_matrix), intent(out) :: gradfull
-        type(HHO_matrix), intent(out) :: stab
+        type(HHO_matrix), intent(out), optional :: stab
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -196,10 +196,12 @@ contains
         end if
 !
 ! -------- Reload stabilization
-        call stabvec%initialize(total_dofs, total_dofs)
-        call stabvec%read('PCHHOST', ASTER_TRUE)
-        call MatScal2Vec(hhoCell, hhoData, stabvec, stab)
-        call stabvec%free()
+        if (present(stab)) then
+            call stabvec%initialize(total_dofs, total_dofs)
+            call stabvec%read('PCHHOST', ASTER_TRUE)
+            call MatScal2Vec(hhoCell, hhoData, stabvec, stab)
+            call stabvec%free()
+        end if
 !
     end subroutine
 !
@@ -469,12 +471,13 @@ contains
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, iFace, iDof
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
-        aster_logical :: forc_noda
+        aster_logical :: forc_noda, pilo
 !
         forc_noda = hhoComporState%option == "FORC_NODA"
+        pilo = hhoComporState%option(1:4) == "PILO"
         if (hhoComporState%option .ne. "RIGI_MECA" &
             .and. hhoComporState%option .ne. "REFE_FORC_NODA") then
-            if (.not. forc_noda) then
+            if (.not. forc_noda .and. .not. pilo) then
                 call jevech('PINSTMR', 'L', iinstm)
                 call jevech('PINSTPR', 'L', iinstp)
                 this%time_curr = zr(iinstp)
@@ -495,7 +498,11 @@ contains
 !
 ! --- get increment displacement beetween T- and T+
 !
-                    call readVector('PDEPLPR', mk_total_dofs, this%depl_incr)
+                    if (pilo) then
+                        call readVector('PDDEPLR', mk_total_dofs, this%depl_incr)
+                    else
+                        call readVector('PDEPLPR', mk_total_dofs, this%depl_incr)
+                    end if
                 end if
             else
                 ! GRAD_VARI

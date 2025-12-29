@@ -21,15 +21,15 @@ module HHO_compor_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
-#include "asterfort/tecach.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "jeveux.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,12 +120,14 @@ contains
             call jevech('PCARCRI', 'L', vr=this%carcri)
             call jevech('PCONTMR', 'L', vr=this%sig_prev)
             call jevech('PVARIMR', 'L', vr=this%vari_prev)
-            call jevech('PMULCOM', 'L', vk16=v_mult)
+            if (this%option(1:4) .ne. "PILO") then
+                call jevech('PMULCOM', 'L', vk16=v_mult)
+                this%mult_comp = v_mult(1)
+            end if
 !
             call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
             ASSERT(iret .eq. 0)
             this%lgpg = max(jtab(6), 1)*jtab(7)
-            this%mult_comp = v_mult(1)
             this%l_largestrain = isLargeStrain(this%compor(DEFO))
             call rcangm(ndim, bary, this%angl_naut)
             this%matsym = nint(this%carcri(CARCRI_MATRSYME)) .le. 0
