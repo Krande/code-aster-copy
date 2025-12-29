@@ -49,6 +49,8 @@ class PairingObject:
         self._listPairs = None
         self._listIntersectionPts = None
         self._listQuadraturePts = None
+        self._listPairsBasicInfo = None
+        self._listPairsDict = None
         # - Flag for functionnalities
         self._flag_MeshInfos = False
         self._flag_PairingInfos = False
@@ -76,7 +78,6 @@ class PairingObject:
 
     def plotMatplotlib(
         self,
-        # dimMatPlot,
         optionMesh,
         suboptionMesh,
         optionPair,
@@ -90,7 +91,7 @@ class PairingObject:
         self.checkInfosForPlot()
         fig = MMFig(
             self,
-            self._dim - 1,  # WRONG :: to understand and modify
+            self._dim,
             optionMesh,
             suboptionMesh,
             optionPair,
@@ -101,6 +102,33 @@ class PairingObject:
             indexPlaneProjected=indexPlaneProjected,
         )
         fig.plot(s)
+
+    def computebasicInfosFromPairs(self):
+        # - Step 1: Compute unique indices for the first column
+        unique_indices, counts = np.unique(self._listPairs[:, 0], return_counts=True)
+        # Result as list [[index, number of occurrences]]
+        result_counts = list(zip(unique_indices, counts))
+        # - Step 2
+        index_dict = {}
+
+        for i, unique_index in enumerate(unique_indices):
+            # Find all pairs where unique_index is present in the first column
+            indices_pairs = np.where(self._listPairs[:, 0] == unique_index)[0]
+            indices_cell = self._listPairs[indices_pairs, 1].tolist()
+            # Fill dictionnary
+            index_dict[unique_index] = {
+                "indicesCell": indices_cell,
+                "indicesPairs": indices_pairs.tolist(),
+            }
+
+        # - Save data
+        self._listPairsBasicInfo = np.copy(result_counts)
+        self._listPairsDict = index_dict
+
+    def getSlaveCellsPaired(self):
+        if self._listPairsBasicInfo is None:
+            self.computebasicInfosFromPairs()
+        return self._listPairsBasicInfo[:, 0]
 
     @abstractmethod
     def setMeshInfos(self, *args, **kwargs):

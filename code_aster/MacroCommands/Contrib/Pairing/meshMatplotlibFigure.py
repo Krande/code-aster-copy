@@ -29,6 +29,8 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
+DEFAULT_FIGURE_SIZE = (11, 9)
+DEFAULT_TICKS_SIZE = 12
 ## -----------------------------------------------------------
 #   OPTION AVAILABLE FOR THE VISUALISATION
 ## -----------------------------------------------------------
@@ -73,6 +75,7 @@ class meshMatplotlibFigure:
         # - Precomputation
         self.checkConsistency()
         self.computeDimCodim()
+        self.setIndicesProjected()
 
     def checkConsistency(self):
         r"""Consistency check of the options"""
@@ -110,7 +113,7 @@ class meshMatplotlibFigure:
             self._indexPPx = 0
             self._indexPPy = 1
             self._indexPPz = 2  # - coordinates removed
-        elif self.indexPlaneProjected is None:
+        elif self._indexPlaneProjected is None:
             self._indexPPx = None
             self._indexPPy = None
             self._indexPPz = None  # - coordinates removed
@@ -122,14 +125,18 @@ class meshMatplotlibFigure:
     def generateAxis(self):
         r"""Axis generation for plot"""
         if self._dimMatPlot == 2:
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=DEFAULT_FIGURE_SIZE)
             self._fig = fig
             self._ax = ax
+            plt.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
         elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
-            self._fig = plt.figure()
+            plt.ion()
+            self._fig = plt.figure(figsize=DEFAULT_FIGURE_SIZE)
             self._ax = plt.axes(projection="3d")
+            plt.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
         elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=DEFAULT_FIGURE_SIZE)
+            plt.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
             self._fig = fig
             self._ax = ax
         else:
@@ -365,7 +372,7 @@ class meshMatplotlibFigure:
                 raise ValueError("not implemented")
 
     def plotIntePts(self, pairIndex, s):
-        if self.indexPlaneProjected is None:
+        if self._indexPlaneProjected is None:
             # - Intersection points
             inteConvexSet = [
                 list(tu) for tu in self._pairingAnalysis._listIntersectionPts[pairIndex]
@@ -494,8 +501,8 @@ class meshMatplotlibFigure:
                     plotParams = {
                         "Slv": {"color": "blue", "linestyle": "-", "alpha": 0.15},
                         "Mas": {"color": "red", "linestyle": "-", "alpha": 0.15},
-                        "SlvInt": {"color": "magenta", "linestyle": "-", "alpha": 1.0},
-                        "MasInt": {"color": "cyan", "linestyle": "-", "alpha": 1.0},
+                        "SlvInt": {"color": "orange", "linestyle": "-", "alpha": 1.0},
+                        "MasInt": {"color": "green", "linestyle": "-", "alpha": 1.0},
                     }
 
                 if self._optionPair == "meshOnly":
@@ -518,9 +525,9 @@ class meshMatplotlibFigure:
                             self.plotPair(
                                 pairSlvInd, pairMasInd, pairIndex, plotParams, False, False
                             )
-                            if self._optionPair == "IntePoints":
+                            if self._optionPair == "intePoints":
                                 self.plotIntePts(pairIndex, s)
-                            if self._optionPair == "QuadPoints":
+                            if self._optionPair == "quadPoints":
                                 self.plotQuadPts(pairIndex, int(s / 3))
                             self.setLegend()
                             plt.show(block=True)
@@ -528,11 +535,11 @@ class meshMatplotlibFigure:
                     elif self._suboptionMesh == "givenPair":
                         self.generateAxis()
                         self.plotMeshStructure(plotParams, s)
-                        pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[self.index]
+                        pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[self._index]
                         self.plotPair(pairSlvInd, pairMasInd, self._index, plotParams, False, False)
-                        if self._optionPair == "IntePoints":
+                        if self._optionPair == "intePoints":
                             self.plotIntePts(self._index, s)
-                        if self.optionPair == "QuadPoints":
+                        if self._optionPair == "quadPoints":
                             self.plotQuadPts(self._index, int(s / 3))
                         self.setLegend()
                         plt.show(block=True)
@@ -546,9 +553,9 @@ class meshMatplotlibFigure:
                                 self.plotPair(
                                     pairSlvInd, pairMasInd, pairIndex, plotParams, False, False
                                 )
-                                if self._optionPair == "IntePoints":
+                                if self._optionPair == "intePoints":
                                     self.plotIntePts(pairIndex, s)
-                                if self._optionPair == "QuadPoints":
+                                if self._optionPair == "quadPoints":
                                     self.plotQuadPts(pairIndex, int(s / 3))
                                 self.setLegend()
                                 plt.show(block=True)
@@ -593,9 +600,9 @@ class meshMatplotlibFigure:
                 for pairIndex in range(len(self._pairingAnalysis._listPairs)):
                     pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[pairIndex]
                     if pairSlvInd == self._index:
-                        if self._optionPair == "IntePoints":
+                        if self._optionPair == "intePoints":
                             self.plotIntePts(pairIndex, s)
-                        if self._optionPair == "QuadPoints":
+                        if self._optionPair == "quadPoints":
                             self.plotQuadPts(pairIndex, int(s / 3))
                 self.setLegend()
                 plt.show(block=True)
