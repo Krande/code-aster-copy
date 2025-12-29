@@ -288,7 +288,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 ! --- RESOLUTION DE L'EQUATION DE PILOTAGE P(U(ETA)) = TAU
 !
     call pipere(npg, zr(ja0a1), tau, nbeffe, eta)
-    print*, tau, nbeffe, eta
+    print *, tau, nbeffe, eta
 !
     if (nbeffe .eq. 0) then
         pilcvg = 1
