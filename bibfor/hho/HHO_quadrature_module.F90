@@ -23,6 +23,7 @@ module HHO_quadrature_module
     use HHO_measure_module
     use HHO_geometry_module
     use HHO_utils_module, only: CellNameL2S
+    use compensated_ops_module, only: sum, dot_product
 !
     implicit none
 !
@@ -311,7 +312,7 @@ contains
         integer(kind=8), parameter :: max_order = 14
         integer(kind=8), parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) ::rules
-        integer(kind=8) :: dimp, nbpg, ipg, ino
+        integer(kind=8) :: dimp, nbpg, ipg, idim
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
 !
 ! ----- check order of integration
@@ -335,8 +336,8 @@ contains
             y = coorpg(dimp*(ipg-1)+2)
             coorac = 0.d0
             call hhoGeomBasis(MT_TRIA3, (/x, y, 0.d0/), basis)
-            do ino = 1, 3
-                coorac(1:3) = coorac(1:3)+coorno(1:3, ino)*basis(ino)
+            do idim = 1, 3
+                coorac(idim) = dot_product(coorno(idim, 1:3), basis(1:3))
             end do
             this%points_param(1:2, ipg) = (/x, y/)
             this%points(1:3, ipg) = coorac
@@ -373,7 +374,7 @@ contains
         integer(kind=8), parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) :: rules
         character(len=8) :: typma_s
-        integer(kind=8) :: dimp, nbpg, ipg, ino, iret
+        integer(kind=8) :: dimp, nbpg, ipg, ino, iret, idim
         integer(kind=8) :: itri, n_simp, ind_simp(6, 4)
         real(kind=8) :: coor_tri(3, 3), xe(3)
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
@@ -409,8 +410,8 @@ contains
                 y = coorpg(dimp*(ipg-1)+2)
                 coorac = 0.d0
                 call hhoGeomBasis(MT_TRIA3, (/x, y, 0.d0/), basis)
-                do ino = 1, 3
-                    coorac(1:3) = coorac(1:3)+coor_tri(1:3, ino)*basis(ino)
+                do idim = 1, 3
+                    coorac(idim) = dot_product(coor_tri(idim, 1:3), basis(1:3))
                 end do
                 this%points(1:3, this%nbQuadPoints+ipg) = coorac
                 this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)

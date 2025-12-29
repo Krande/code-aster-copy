@@ -18,16 +18,20 @@
 
 module compensated_ops_module
 
+    use, intrinsic :: iso_fortran_env, only: real128
+
     implicit none
 #include "asterc/fma_double.h"
 #include "asterfort/assert.h"
 
     interface dot_product
         module procedure dot2FMA
+        module procedure dot2FMA16
     end interface dot_product
 
     interface norm2
         module procedure norm2FMA
+        module procedure norm2FMA16
     end interface norm2
 
     interface sum
@@ -65,6 +69,18 @@ contains
 
     end subroutine twosum
 
+    subroutine twosum16(a, b, x, y)
+        implicit none
+        real(kind=real128), intent(in) :: a, b
+        real(kind=real128), intent(out) :: x, y
+        real(kind=real128) :: z
+
+        x = a+b
+        z = x-a
+        y = (a-(x-z))+(b-z)
+
+    end subroutine twosum16
+
     subroutine split(a, x, y)
         implicit none
         real(kind=8), intent(in) :: a
@@ -101,6 +117,16 @@ contains
         y = fma_double(a, b, -x)
 
     end subroutine twoproductFMA
+
+    subroutine twoproductFMA16(a, b, x, y)
+        implicit none
+        real(kind=real128), intent(in) :: a, b
+        real(kind=real128), intent(out) :: x, y
+
+        x = a*b
+        y = fma_double(real(a, 8), real(b, 8), -real(x, 8))
+
+    end subroutine twoproductFMA16
 
     function sum2s(vt) result(t)
         implicit none
@@ -155,6 +181,24 @@ contains
 
     end function dot2FMA
 
+    function dot2FMA16(vx, vy) result(t)
+        implicit none
+        real(kind=real128), intent(in) :: vx(:)
+        real(kind=real128), intent(in) :: vy(size(vx))
+        real(kind=real128) :: p, s, h, r, q, pp, t
+        integer(kind=8) :: i
+
+        call twoproductFMA16(vx(1), vy(1), p, s)
+        do i = 2, size(vx)
+            call twoproductFMA16(vx(i), vy(i), h, r)
+            pp = p
+            call twosum16(pp, h, p, q)
+            s = s+(q+r)
+        end do
+        t = p+s
+
+    end function dot2FMA16
+
     function norm2FMA(vx) result(t)
         implicit none
         real(kind=8), intent(in) :: vx(:)
@@ -164,6 +208,16 @@ contains
         t = sqrt(s)
 
     end function norm2FMA
+
+    function norm2FMA16(vx) result(t)
+        implicit none
+        real(kind=real128), intent(in) :: vx(:)
+        real(kind=real128) :: s, t
+
+        s = dot2FMA16(vx, vx)
+        t = sqrt(s)
+
+    end function norm2FMA16
 
     function matmul2(A, B) result(C)
         implicit none

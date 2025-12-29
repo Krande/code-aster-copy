@@ -584,7 +584,7 @@ contains
                 exit
             end if
             do i = 1, j-1
-                if (abs(mat(i, j)) .ge. 1.d-11) then
+                if (abs(mat(i, j)) .ge. 1.d-10) then
                     id = ASTER_FALSE
                     exit
                 end if

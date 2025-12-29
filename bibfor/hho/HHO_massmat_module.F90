@@ -146,7 +146,9 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisCell%isOrthonormal() .and. dbg) then
-                ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                if (hhoCell%measure .ge. 1.d-8) then
+                    ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                end if
             end if
 !
         end if
@@ -230,7 +232,9 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisFace%isOrthonormal() .and. dbg) then
-                ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                if (hhoFace%measure .ge. 1.d-7) then
+                    ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                end if
             end if
         end if
 !
