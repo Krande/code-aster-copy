@@ -49,6 +49,7 @@ class AsterPairingProcess:
         self._listPairs = None
         self._intePointsList = None
         self._quadPointsList = None
+        self._hasRun = False
 
     def setMethod(self, method="BrutForce"):
         r"""Choose the pairing method. Mandatory to run the computation.
@@ -60,6 +61,7 @@ class AsterPairingProcess:
         """
         if method in availablePairingMethod:
             self._method = method
+            self._hasRun = False  # the method has changed, then no pairing has been computed
         else:
             raise NameError("method not available: choose between Fast-Legacy-BrutForce")
 
@@ -114,6 +116,8 @@ class AsterPairingProcess:
         self.computePairing()
         # - Extract available data
         self.extractData()
+        # - Flag to show that one pairing process has been computed
+        self._hasRun = True
 
     def extractMeshInfosFromAsterMesh(self):
         r"""Extract the connecitivity and the node coordinates from the mesh"""
