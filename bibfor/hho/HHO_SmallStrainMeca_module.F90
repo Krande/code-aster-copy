@@ -141,6 +141,9 @@ contains
                                   hhoCS%fami, hhoCS%imater, &
                                   BEHinteg)
 !
+! ----- Prepare external state variables (geometry)
+        call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, BEHinteg)
+!
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
 !

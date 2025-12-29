@@ -144,7 +144,10 @@ contains
                                   time_prev, time_curr, &
                                   hhoCS%fami, hhoCS%imater, &
                                   BEHinteg)
-
+!
+! ----- Prepare external state variables (geometry)
+        call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, BEHinteg)
+!
 ! ----- Vector and/or matrix
         l_lhs = L_MATR(hhoCS%option)
         l_rhs = L_VECT(hhoCS%option)

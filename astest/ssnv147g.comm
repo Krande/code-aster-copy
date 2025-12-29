@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,15 @@
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-MA = LIRE_MAILLAGE(FORMAT="MED")
+MA0 = LIRE_MAILLAGE(FORMAT="MED")
+
+MA = CREA_MAILLAGE(MAILLAGE=MA0, MODI_HHO=_F(TOUT="OUI"))
 
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
 MO = AFFE_MODELE(
     MAILLAGE=MA,
-    AFFE=_F(GROUP_MA=("BLOC", "FIXE", "TRAC"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+    AFFE=_F(GROUP_MA=("BLOC", "FIXE", "TRAC"), PHENOMENE="MECANIQUE", MODELISATION="3D_HHO"),
 )
 FC = DEFI_CONSTANTE(NOM_RESU="F_C", VALE=38.3)
 FT1 = DEFI_CONSTANTE(NOM_RESU="F_T", VALE=4.0)
@@ -73,7 +75,7 @@ L_INST = DEFI_LIST_REEL(
     DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1), _F(JUSQU_A=15.0, NOMBRE=280))
 )
 
-LIAISON = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="FIXE", DX=0.0, DY=0.0, DZ=0.0))
+LIAISON = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_MA="FIXE", DX=0.0, DY=0.0, DZ=0.0))
 
 TRACTION = AFFE_CHAR_MECA(MODELE=MO, FORCE_FACE=_F(GROUP_MA="TRAC", FZ=1.0))
 
@@ -94,15 +96,19 @@ REPONSE = STAT_NON_LINE(
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
 )
 
+# comparaison with ssnp179f
 TEST_RESU(
     RESU=(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="E",
             RESULTAT=REPONSE,
-            NOM_CHAM="DEPL",
+            NOM_CHAM="HHO_DEPL",
             NOM_CMP="DZ",
-            VALE_CALC=3.211836117262761e-05,
+            VALE_CALC=3.2201859022758185e-05,
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=0.5e-2,
+            VALE_REFE=3.211836117262761e-05,
         ),
         _F(
             NUME_ORDRE=1,
@@ -110,7 +116,10 @@ TEST_RESU(
             RESULTAT=REPONSE,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIZZ",
-            VALE_CALC=1.048177546686575,
+            VALE_CALC=1.000000000000013,
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=5.0e-2,
+            VALE_REFE=1.048177546686575,
             GROUP_MA="M1",
         ),
     )

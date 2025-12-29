@@ -242,6 +242,10 @@ contains
                                       hhoMecaState%time_prev, hhoMecaState%time_curr, &
                                       hhoComporState%fami, hhoComporState%imater, &
                                       BEHinteg)
+!
+! ---------- Prepare external state variables (geometry)
+            call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, BEHinteg)
+!
         end if
 !
 ! ----- init basis
