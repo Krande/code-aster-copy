@@ -512,7 +512,11 @@ contains
                     call readVector('PDEPLAR', total_dofs, tmp_prev)
                 else
                     call readVector('PDEPLMR', total_dofs, tmp_prev)
-                    call readVector('PDEPLPR', total_dofs, tmp_incr)
+                    if (pilo) then
+                        call readVector('PDDEPLR', total_dofs, tmp_incr)
+                    else
+                        call readVector('PDEPLPR', total_dofs, tmp_incr)
+                    end if
                 end if
                 !
                 num_tot = 0

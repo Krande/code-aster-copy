@@ -71,8 +71,8 @@ subroutine te0495(nomopt, nomte)
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_0r, depl_1r
     real(kind=8), dimension(MSIZE_CELL_MAT) :: E_prev_coeff, E_incr_coeff
     real(kind=8), dimension(MSIZE_CELL_MAT) :: E_0r_coeff, E_1r_coeff
-    real(kind=8) :: tau, etamin, etamax, time_prev, time_curr
-    real(kind=8) :: coorpg(3), E_prev(6), E_curr(6), E_1(6), E_0(6), E_incr(6)
+    real(kind=8) :: tau, etamin, etamax, time_prev, time_pilo
+    real(kind=8) :: coorpg(3), E_prev(6), E_pilo(6), E_1(6), E_0(6), E_incr(6)
     real(kind=8) :: copilo(5, MAX_QP_CELL), sigma(6)
     real(kind=8) :: G_prev(3, 3), G_incr(3, 3), G_1(3, 3), G_0(3, 3)
     real(kind=8) :: F_prev(3, 3), F_incr(3, 3), F_1(3, 3), F_0(3, 3)
@@ -135,7 +135,7 @@ subroutine te0495(nomopt, nomte)
 !
 ! - Continuation method: no time !
     time_prev = r8vide()
-    time_curr = r8vide()
+    time_pilo = r8vide()
 !
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
@@ -143,7 +143,7 @@ subroutine te0495(nomopt, nomte)
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(hhoCell%ndim, hhoCS%typmod, hhoCS%option, &
                               hhoCS%compor, hhoCS%carcri, &
-                              time_prev, time_curr, &
+                              time_prev, time_pilo, &
                               hhoCS%fami, hhoCS%imater, &
                               BEHinteg)
 !
@@ -158,6 +158,7 @@ subroutine te0495(nomopt, nomte)
 !
     call matfpe(-1)
     copilo = r8vide()
+    sigma = 0.d0
 !
     do ipg = 1, hhoQuadCellRigi%nbQuadPoints
         coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
@@ -177,7 +178,7 @@ subroutine te0495(nomopt, nomte)
             call hhoCalculF(G_0, F_0)
             call hhoCalculGreenLagrange(hhoCell%ndim, F_0, E_0)
 !
-            E_curr = E_incr+E_0
+            E_pilo = E_incr+E_0
 !
             G_1 = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, E_1r_coeff)
             call hhoCalculF(G_1, F_1)
@@ -187,7 +188,7 @@ subroutine te0495(nomopt, nomte)
             E_prev = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_prev_coeff)
             E_incr = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_incr_coeff)
             E_0 = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_0r_coeff)
-            E_curr = E_incr+E_0
+            E_pilo = E_incr+E_0
             E_1 = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_1r_coeff)
         end if
 !
@@ -197,7 +198,7 @@ subroutine te0495(nomopt, nomte)
 !
             call pidefo(hhoCell%ndim, npg, ipg, &
                         hhoCS%compor, F_prev, &
-                        E_prev, E_curr, E_1, copilo)
+                        E_prev, E_pilo, E_1, copilo)
 !
 ! --- PILOTAGE PAR LA PREDICTION ELASTIQUE
 !
@@ -208,7 +209,7 @@ subroutine te0495(nomopt, nomte)
             end do
             call pielas(BEHinteg, hhoCell%ndim, npg, ipg, hhoCS%compor, &
                         hhoCS%typmod, zi(imate), hhoCS%lgpg, hhoCS%vari_prev, &
-                        E_prev, E_curr, E_1, sigma, etamin, etamax, &
+                        E_prev, E_pilo, E_1, sigma, etamin, etamax, &
                         tau, copilo)
         else
             ASSERT(ASTER_FALSE)

@@ -65,6 +65,7 @@ module HHO_GV_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/readVector.h"
 #include "asterfort/sigtopk1.h"
+#include "asterfort/tecach.h"
 #include "blas/dsyr.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -77,7 +78,7 @@ module HHO_GV_module
 !
 !
     public :: HHO_GV_State
-    public :: hhoGradVariLC, hhoCalcOpGv, hhoDataGVinit
+    public :: hhoGradVariLC, hhoCalcOpGv, hhoDataGVinit, hhoExtrField
     private :: check_behavior, gdef_log, hhoAssGVRhs, hhoAssGVLhs, numGVMap
     private :: initialize_gv, hhoCalcStabCoeffGV
     private :: hhoComputeLhsLargeLM, hhoComputeLhsLargeML
@@ -1156,13 +1157,13 @@ contains
 !  initialize HHO_GV_STATE
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: num_tot, num_gv, iFace, idof
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
-        aster_logical :: forc_noda
+        aster_logical :: forc_noda, pilo
 !
         forc_noda = hhoComporState%option == "FORC_NODA"
+        pilo = hhoComporState%option(1:4) == "PILO"
         if (hhoComporState%option .ne. "RIGI_MECA") then
             if (hhoComporState%typmod(2) .ne. "GRADVARI") then
                 ASSERT(ASTER_FALSE)
@@ -1176,38 +1177,19 @@ contains
                 call readVector('PDEPLAR', total_dofs, tmp_prev)
             else
                 call readVector('PDEPLMR', total_dofs, tmp_prev)
-                call readVector('PDEPLPR', total_dofs, tmp_incr)
+                if (pilo) then
+                    call readVector('PDDEPLR', total_dofs, tmp_incr)
+                else
+                    call readVector('PDEPLPR', total_dofs, tmp_incr)
+                end if
             end if
 !
-            num_tot = 0
-            num_gv = 0
-            do iFace = 1, hhoCell%nbfaces
-                num_tot = num_tot+mk_fbs
-                do iDof = 1, gv_fbs
-                    num_tot = num_tot+1
-                    num_gv = num_gv+1
-                    this%vari_prev(num_gv) = tmp_prev(num_tot)
-                    if (.not. forc_noda) then
-                        this%vari_incr(num_gv) = tmp_incr(num_tot)
-                    end if
-                end do
-            end do
-            num_tot = num_tot+mk_cbs
-            do iDof = 1, gv_cbs
-                num_tot = num_tot+1
-                num_gv = num_gv+1
-                this%vari_prev(num_gv) = tmp_prev(num_tot)
-                if (.not. forc_noda) then
-                    this%vari_incr(num_gv) = tmp_incr(num_tot)
-                end if
-            end do
-            do iDof = 1, gv_cbs
-                num_tot = num_tot+1
-                this%lagv_prev(iDof) = tmp_prev(num_tot)
-                if (.not. forc_noda) then
-                    this%lagv_incr(iDof) = tmp_incr(num_tot)
-                end if
-            end do
+            call hhoExtrField(hhoCell, hhoDataMk, hhoDataGv, &
+                              tmp_prev, vari=this%vari_prev, lagv=this%lagv_prev)
+            if (.not. forc_noda) then
+                call hhoExtrField(hhoCell, hhoDataMk, hhoDataGv, &
+                                  tmp_incr, vari=this%vari_incr, lagv=this%lagv_incr)
+            end if
         end if
 !
 ! --- compute in T+
@@ -1270,20 +1252,30 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, iret, iad
+        aster_logical :: l_stab
+!
+        call tecach('NNN', 'PCHHOST', 'L', iret, iad=iad)
+        l_stab = iret == 0
 !
         if (ASTER_TRUE) then
 !
-            call hhoReloadPreCalcMeca(hhoCell, hhoDataMk, l_largestrains, hhoMecaState%grad, &
-                                      hhoMecaState%stab)
+            if (l_stab) then
+                call hhoReloadPreCalcMeca(hhoCell, hhoDataMk, l_largestrains, hhoMecaState%grad, &
+                                          hhoMecaState%stab)
+            else
+                call hhoReloadPreCalcMeca(hhoCell, hhoDataMk, l_largestrains, hhoMecaState%grad)
+            end if
 !
             if (hhoDataMk%grad_degree() == hhoDataGv%grad_degree()) then
                 call hhoTherNLDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
 
                 call hhoGVState%grad%initialize(gv_gbs, gv_total_dofs, 0.d0)
                 call hhoGVState%grad%read('PCHHOGT', ASTER_FALSE)
-                call hhoGVState%stab%initialize(gv_total_dofs, gv_total_dofs, 0.d0)
-                call hhoGVState%stab%read('PCHHOST', ASTER_TRUE)
+                if (l_stab) then
+                    call hhoGVState%stab%initialize(gv_total_dofs, gv_total_dofs, 0.d0)
+                    call hhoGVState%stab%read('PCHHOST', ASTER_TRUE)
+                end if
             else
                 call hhoCalcOpTher(hhoCell, hhoDataGv, hhoGVState%grad, hhoGVState%stab)
             end if
@@ -1829,7 +1821,7 @@ contains
 !
     end function
 !
-    !
+!
 !===================================================================================================
 !
 !===================================================================================================
@@ -1878,6 +1870,96 @@ contains
         if (hhoDataGv%debug()) then
             call hhoDataGv%print()
         end if
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoExtrField(hhoCell, hhoDataMk, hhoDataGv, &
+                            field, depl, vari, lagv)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(inout) :: hhoDataMk, hhoDataGv
+        real(kind=8), intent(in) :: field(MSIZE_TDOFS_MIX)
+        real(kind=8), intent(out), optional :: depl(MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out), optional :: vari(MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out), optional :: lagv(MSIZE_CELL_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Extract each component
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
+        integer(kind=8) :: num_tot, num_gv, iFace, iDof, num_mk
+! --------------------------------------------------------------------------------------------------
+!
+        call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
+        total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
+!
+        num_tot = 0
+        num_gv = 0
+        num_mk = 0
+        do iFace = 1, hhoCell%nbfaces
+            if (present(depl)) then
+                do iDof = 1, mk_fbs
+                    num_tot = num_tot+1
+                    num_mk = num_mk+1
+                    depl(num_mk) = field(num_tot)
+                end do
+            else
+                num_tot = num_tot+mk_fbs
+            end if
+!
+            if (present(vari)) then
+                do iDof = 1, gv_fbs
+                    num_tot = num_tot+1
+                    num_gv = num_gv+1
+                    vari(num_gv) = field(num_tot)
+                end do
+            else
+                num_tot = num_tot+gv_fbs
+            end if
+        end do
+!
+        if (present(depl)) then
+            do iDof = 1, mk_cbs
+                num_tot = num_tot+1
+                num_mk = num_mk+1
+                depl(num_mk) = field(num_tot)
+            end do
+        else
+            num_tot = num_tot+mk_cbs
+        end if
+!
+        if (present(vari)) then
+            do iDof = 1, gv_cbs
+                num_tot = num_tot+1
+                num_gv = num_gv+1
+                vari(num_gv) = field(num_tot)
+            end do
+        else
+            num_tot = num_tot+gv_cbs
+        end if
+!
+        if (present(lagv)) then
+            do iDof = 1, gv_cbs
+                num_tot = num_tot+1
+                lagv(iDof) = field(num_tot)
+            end do
+        else
+            num_tot = num_tot+gv_cbs
+        end if
+!
+        ASSERT(num_tot == total_dofs)
 !
     end subroutine
 !
