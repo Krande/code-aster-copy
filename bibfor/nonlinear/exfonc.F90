@@ -413,9 +413,6 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
                 call utmess('F', 'MECANONLINE5_62')
             end if
         end if
-        if (l_line_search) then
-            call utmess('F', 'MECANONLINE5_63')
-        end if
         if (l_rom) then
             call utmess('F', 'MECANONLINE5_65')
         end if
