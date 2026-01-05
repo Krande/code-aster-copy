@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine burftm(cmp, ndim, vim, epsfm)
-! person_in_charge: alexandre.foucault at edf.fr
 ! ----------------------------------------------------------------------
 ! ROUTINE DE COMPORTEMENT DE FLUAGE BETON_BURGER
 ! PASSAGE DES VARIABLES INTERNES AU VECTEUR DE DEFORMATIONS DE FLUAGE

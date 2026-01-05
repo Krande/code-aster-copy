@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,6 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
     character(len=16) :: motcle(*), typmcl(*)
     character(len=*) :: motfac
     real(kind=8) :: vecori(3)
-! person_in_charge: jacques.pellet at edf.fr
 !-----------------------------------------------------------------------
 !  CETTE ROUTINE EST UTILISEE DANS DEFI_GROUP ET DEFI_FOND_FISS
 !

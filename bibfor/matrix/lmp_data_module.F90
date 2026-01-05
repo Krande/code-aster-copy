@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 module lmp_data_module
 !
 !
-! person_in_charge: natacha.bereux at edf.fr
 ! aslint: disable=W1403
 !
     use lmp_context_type

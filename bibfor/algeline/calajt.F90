@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine calajt(j1, j, diag, col, n, &
                   itab, deb, tab, suiv, lt, &
                   ier)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
     integer(kind=8) :: j1, j, n, diag(0:n), col(*), itab, deb(1:n)
     integer(kind=8) :: tab(*), suiv(*), lt, ier

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent, &
                   frere, local, global, adress, lfront, &
                   nblign, lgsn, debfac, debfsn, chaine, &
                   place, nbass, delg, lgind, ier)
-! person_in_charge: olivier.boiteau at edf.fr
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"

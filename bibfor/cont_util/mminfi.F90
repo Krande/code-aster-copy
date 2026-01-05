@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ function mminfi(sdcont_defi_, question_, i_zone_)
 #include "asterf_types.h"
 #include "asterfort/mminfp.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: mminfi
     character(len=*), intent(in) :: sdcont_defi_

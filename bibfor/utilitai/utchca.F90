@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez, &
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=*) :: cartez, maz, nomaiz, nocmp, typrez
-! person_in_charge: jacques.pellet at edf.fr
 !     EXTRAIRE UNE VALEUR (R/I/C) DANS UNE CARTE
 ! ----------------------------------------------------------------------
 ! IN  : CARTEZ : NOM DE LA CARTE DONT ON DESIRE EXTRAIRE 1 COMPOSANTE

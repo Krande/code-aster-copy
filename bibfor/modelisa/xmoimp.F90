@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,6 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5, &
     integer(kind=8) :: npys13(7), npyd13(7), nte10(17), ntes10(7)
     integer(kind=8) :: nted10(7), ntem10(7), nbhm(17), nchm(17)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !
 ! ----------------------------------------------------------------------

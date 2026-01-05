@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine mltfc1(nbloc, ncbloc, decal, supnd, fils, &
                   typsym, ad, eps, ier, nbb, &
                   cl, cu, diag)
 !
-! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE, ET AINSI
 !      ADPER LES COLONNES FORMENT UN BLOC RECTANGULAIRE

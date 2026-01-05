@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
 #include "asterfort/rrlds.h"
 #include "asterfort/trlds.h"
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     integer(kind=8) :: imate, iret
     real(kind=8) :: epsm(6), deps(6), vim(*), ep

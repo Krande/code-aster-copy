@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 !
 subroutine pmdrdy(dsidep, coef, cimpo, valimp, y, &
                   sigp, r, drdy)
-! person_in_charge: jean-michel.proix at edf.fr
 !-----------------------------------------------------------------------
 !     OPERATEUR CALC_POINT_MAT : CONSTRUCTION RESIDU ET JACOBIENNE
 !-----------------------------------------------------------------------

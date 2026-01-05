@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine iniMat0(l, x1, x2, x3, x4, x5, &
                    x6, x7, x8, x9, x10, x11, x12, x13, x14, &
                    x15, x16, x17, x18, x19)
-! person_in_charge: etienne.grimal@edf.fr
 !-----------------------------------------------------------------------
 !   initialisation des arguments à 0.d0
 !-----------------------------------------------------------------------

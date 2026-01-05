@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !
     integer(kind=8) :: jadd, nbval, n1, j1
     character(len=*) :: nomsd, nopara, nomobj
-! person_in_charge: jacques.pellet at edf.fr
 !
 ! ----------------------------------------------------------------------
 !   extraire d'une sd_resultat, la liste des valeurs d'un parametre

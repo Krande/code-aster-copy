@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine uterfl(ndim, iflup, iflum, ino, mno, &
                   ltheta, valthe, valunt, niv, ifm, &
                   xn, yn, zn, valfp, valfm, &
                   ityp, noe)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE: UTILITAIRE DE CALCUL DE L'ERREUR DUE A LA
 !                         CONDITION DE FLUX. POUR AERER TE0003.

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel, &
     real(kind=8) :: excen, reffin(*), reffou(*)
     complex(kind=8) :: ceffin(*), ceffou(*)
     aster_logical :: lreel
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !  BUT : TENIR COMPTE DE L'EXCENTREMENT D'UNE COQUE POUR CHANGER
 !        LE "PLAN" DE CALCUL DES EFFORTS

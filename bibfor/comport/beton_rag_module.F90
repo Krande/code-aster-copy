@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ module beton_rag_module
     use tenseur_meca_module
     implicit None
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 #include "asterf_types.h"
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 !
 subroutine ccl21j(fronti, frontj, frn, j, l, &
                   n, n1, t1, t2)
-! person_in_charge: olivier.boiteau at edf.fr
 ! VERSION COMPLEXE DE COL21J
 !     VERSION MODIFIEE POUR L' APPEL A CGEMV (PRODUITS MATRICE VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE

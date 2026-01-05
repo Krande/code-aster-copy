@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ révision %(k3)s - branche '%(k4)s'"""
     },
     9: {
         "message": _(
-            """Copyright EDF R&D %(k1)s - %(k2)s
+            """Copyright EDF %(k1)s - %(k2)s
 
 Exécution du : %(k3)s
 Nom de la machine : %(k4)s

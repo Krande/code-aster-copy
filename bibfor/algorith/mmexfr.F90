@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
 #include "blas/ddot.h"
 #include "blas/dscal.h"
 !
-! person_in_charge: thomas.de-soza at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1, &
                   inst, nx, ny, nz, sig11, &
                   sig22, sig33, sig12, sig13, sig23, &
                   chx, chy, chz)
-! person_in_charge: josselin.delmas at edf.fr
 ! =====================================================================
 !  ERREUR EN MECANIQUE - TERME DE BORD - DIMENSION 3
 !  **        **                   *                *

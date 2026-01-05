@@ -3,7 +3,7 @@
  * @brief Implementation de TimesList
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,7 +23,6 @@
 
 #include "Steppers/TimesList.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 bool TimesList::setValues( const VectorReal &values ) {
     _values->clear();

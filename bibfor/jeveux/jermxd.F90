@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine jermxd(rval, iret)
 #include "asterfort/utmess.h"
     real(kind=8) :: rval
     integer(kind=8) :: iret
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ----------------------------------------------------------------------
 ! REDUIT LA VALEUR LIMITE MAXIMUM DE LA MEMOIRE ALLOUEE DYNAMIQUEMENT
 ! PAR JEVEUX

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr, &
     character(len=*), intent(in) :: nomsd, lpara(*)
     character(len=*), intent(out), optional :: styp, ttyp(*)
     integer(kind=8), intent(in), optional :: istop
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! Recuperation des adresses jeveux des parametres d'une sd_resultat
 ! pour le numero d'ordre : iordr

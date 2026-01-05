@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine extrai(nin, lchin, lpain, init)
 
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "asterfort/assert.h"
 #include "asterfort/extra1.h"

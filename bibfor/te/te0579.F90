@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine te0579(option, nomte)
 !
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
 !          CORRESPONDANT A UN FLUX REPARTI SUR LES BORDS

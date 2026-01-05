@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf, &
                   sigd, epstr)
 ! aslint: disable=W1504
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 !       MONOCRISTAL : CALCUL SOLUTION INITIALE
 !
 !       IN  ESSAI  :  VALEUR DE LA SOLUTION D ESSAI

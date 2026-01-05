@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine preml0(n1, n2, diag, col, delg, &
                   prno, deeq, nec, p, q, &
                   lbd1, lbd2, rl, rl1, rl2, &
                   nrl, lt, lmat)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"

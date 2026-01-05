@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine xprmil(noma, cnslt, cnsln)
     character(len=19) :: cnslt, cnsln
     character(len=8) :: noma
 !
-! person_in_charge: patrick.massin at edf.fr
 !     ------------------------------------------------------------------
 !
 !       XPRMIL   : X-FEM PROPAGATION ; EXTENSION AUX NOEUDS MILIEUX

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine def3d(ppas, tdef, nrjd, tref0, def0, &
                  M1, E1, M2, E2, AtF, &
                  StF, M1F, E1F, M2F, E2F, &
                  ttkf, nrjf)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !    sous programme de calcul de l avancement chimique de DEF
 !

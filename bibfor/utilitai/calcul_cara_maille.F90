@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, &
 !       normale     : si topologie=2 ==> vecteur normal à la face, normé
 !                                 =1 ==> vecteur tangent au segment, normé
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
     real(kind=8), intent(in) :: coord(*)

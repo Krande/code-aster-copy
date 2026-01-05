@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine xoripe(modele)
     character(len=8) :: modele
 !
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !        ORIENTER LES SOUS-ELEMENTS DE PEAU DES ELEMENTS X-FEM
 !      (ET CALCUL DE HEAV SUR LES BORDS COINCIDANT AVEC INTERACE)

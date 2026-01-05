@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine utmess_core(typ, idmess, nk, valk, ni, &
                        vali, nr, valr, nexcep, fname)
-! person_in_charge: mathieu.courtois at edf.fr
 !
     use message_module, only: Message, init_message, free_message
     use superv_module, only: superv_after

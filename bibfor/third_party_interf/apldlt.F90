@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
     use petsc_data_module
     implicit none
 !
-! person_in_charge: natacha.bereux@edf.fr
 
 #include "jeveux.h"
 #include "asterfort/assert.h"

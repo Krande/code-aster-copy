@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine rsutro(nomsd, iordg, iordr, ierr)
 #include "asterfort/jeveuo.h"
     integer(kind=8) :: iordg, iordr, ierr
     character(len=*) :: nomsd
-! person_in_charge: jacques.pellet at edf.fr
 !      CORRESPONDANCE NUMERO D'ORDRE UTILISATEUR (IORDR) AVEC LE
 !      NUMERO DE RANGEMENT (IORDG).
 ! ----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval, cycling_type)
 !
 #include "asterc/r8prem.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     real(kind=8), intent(in) :: dist_cont
     real(kind=8), intent(in) :: pres_cont

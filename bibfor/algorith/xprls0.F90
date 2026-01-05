@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ subroutine xprls0(noma, noesom, armin, cnsln, &
     character(len=8) :: noma
     character(len=19) :: cnsln, cnslt, isozro, noesom, nodtor, eletor
 !
-! person_in_charge: patrick.massin at edf.fr
 !     ------------------------------------------------------------------
 !
 !       XPRLS0   : X-FEM PROPAGATION : CALCUL DES LS PROCHE DES ISO-0

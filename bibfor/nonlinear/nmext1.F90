@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine nmext1(mesh, field, field_disc, field_type, field_s, &
 #include "asterfort/nmext2.h"
 #include "asterfort/nmext3.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
     character(len=8), intent(in) :: mesh

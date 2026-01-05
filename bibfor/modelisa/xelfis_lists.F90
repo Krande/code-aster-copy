@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav, &
     character(len=24) :: elfiss_heav, elfiss_ctip, elfiss_hect
 !
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
 !
 !  Routine utiiltaire XFEM

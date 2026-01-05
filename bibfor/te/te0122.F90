@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine te0122(option, nomte)
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 !
-! person_in_charge: jerome.laverne at edf.fr
 !......................................................................
 !     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
 !     VALEURS AUX POINTS DE GAUSS ( SIEF_ELNO ET VARI_ELNO )

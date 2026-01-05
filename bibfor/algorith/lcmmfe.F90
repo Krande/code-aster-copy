@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat, &
     character(len=16) :: necoul
     integer(kind=8) :: irr, decirr, nums, decal, gdef
     common/polycr/irr, decirr, nums, decal, gdef
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !  COMPORTEMENT MONOCRISTALLIN : ECOULEMENT (VISCO)PLASTIQUE
 !  INTEGRATION DES LOIS MONOCRISTALLINES

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine rsagsd(nomsd, ilong)
 !
     integer(kind=8) :: ilong
     character(len=*) :: nomsd
-! person_in_charge: jacques.pellet at edf.fr
 !       REDIMENSIONNEMENT D'UNE STRUCTURE DE DONNEES "RESULTAT-COMPOSE"
 !       (LA TAILLE EST DOUBLEE SI LA LONGEUR VAUT 0)
 !       LA SD RESTE INCHANGEE SI ELLE EXISTE ET SI LA TAILLE DEMANDEE

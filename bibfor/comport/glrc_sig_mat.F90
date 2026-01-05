@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf, &
                         resi, option, dsidep, sig, cof2, &
                         dq2d)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
 ! --  IN

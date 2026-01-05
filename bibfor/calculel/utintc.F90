@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine utintc(zrino2, zrino1, zrjno2, zrjno1, x3, &
                   y3, inst, insold, k8cart, ltheta, &
                   nsomm, valfp, valfm, ifm, niv, &
                   option)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  UTILITAIRE D'INTERPOLATION 2D DE CHARGE
 !                          POUR AERER TE0003

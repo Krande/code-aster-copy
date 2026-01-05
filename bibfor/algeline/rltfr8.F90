@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
     character(len=*) :: nommat
     real(kind=8) :: xsol(neq, *)
 !     ------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !     RESOLUTION DU SYSTEME A COEFFICIENTS REELS:  A * X = B
 !     LA MATRICE EST SYMETRIQUE ET A ETE FACTORISEE SOUS FORME L*D*LT
 !     LA RESOLUTION EST EN PLACE

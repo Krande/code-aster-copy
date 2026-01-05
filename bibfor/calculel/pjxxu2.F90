@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
     character(len=8) :: moa
     character(len=16) :: klino
     integer(kind=8) :: nbma, lima(*), nbnoOut
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! BUT :
 !   ANALYSER LA LISTE DES MAILLES AVANT CONSTRUCTION DE LA LISTE DE NOEUDS

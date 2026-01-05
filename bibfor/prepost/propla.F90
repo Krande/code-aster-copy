@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr, &
     real(kind=8) :: vwork(tdisp), fatsoc
     aster_logical :: fordef
     character(len=16) :: nomcri, nomfor
-! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: CONSTRUIRE LES COMPOSANTES u ET v DU VECTEUR DE CISAILLEMENT TAU
 !      DANS LE REPERE LOCAL PERPENDICULAIRE AU VECTEUR NORMAL, POUR

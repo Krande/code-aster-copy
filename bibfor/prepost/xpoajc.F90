@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise, &
     integer(kind=8) :: nnm, inm, inmtot, nbmac, ise, ndime, npg
     integer(kind=8) :: jcesd1, jcesd2, ima, ndim, iadc, jcesv1, jcesl2, jcesv2
     integer(kind=8) :: jcvid1, jcvid2, jcviv1, jcvil2, jcviv2, idcalv, iadv
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !   ON AJOUTE UN CHAMP DE CONTRAINTES AU NOUVEAU RESU X-FEM
 !

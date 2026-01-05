@@ -4,7 +4,7 @@ Copyright
 
 code_aster and this documentation is:
 
-Copyright © 1989-|today| EDF R&D - www.code-aster.org
+Copyright © 1989-|today| EDF - www.code-aster.org
 
 Copyright © 2018 Aether Engineering Solutions - www.aethereng.com
 

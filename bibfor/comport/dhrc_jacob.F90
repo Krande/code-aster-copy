@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine dhrc_jacob(eps, vint, c, bp1, &
                       cs1, as2, bs2, cs2, indi, &
                       neta1, neta2, cstseu, jacob)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 !

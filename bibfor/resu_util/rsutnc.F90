@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord, &
     character(len=*), intent(out) :: tabnom(*)
     integer(kind=8), intent(out) :: tabord(*)
     integer(kind=8), intent(out) :: nbtrou
-! person_in_charge: jacques.pellet at edf.fr
 !      RECUPERATION DES CHAMPS NOTES ET DE LEURS NUMEROS D'ORDRE DANS
 !      UNE STRUCTURE DE DONNEES NOMSD ET DE NOM SYMBOLIQUE NOMSY.
 ! ----------------------------------------------------------------------

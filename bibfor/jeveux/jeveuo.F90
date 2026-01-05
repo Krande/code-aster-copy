@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine jeveuo(nomlu, cel, jadr, vl, vi, &
                   vi4, vr, vc, vk8, vk16, &
                   vk24, vk32, vk80)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=W0405,C1002
     use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
     implicit none

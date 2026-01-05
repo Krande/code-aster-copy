@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine xdecou(ndim, elp, nnop, nnose, it, &
     integer(kind=8) :: ndim, nnop, nnose, it, cnset(*), ninter, igeom, npts
     integer(kind=8) :: nfiss, ifiss, fisco(*), nfisc
     character(len=8) :: elp
-! person_in_charge: samuel.geniaut at edf.fr
 !                      TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 !                      ET LE PLAN DE FISSURE
 !

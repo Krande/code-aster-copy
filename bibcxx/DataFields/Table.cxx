@@ -3,7 +3,7 @@
  * @brief Implementation de Table
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,7 +23,6 @@
 
 #include "DataFields/Table.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 Table::Table( const std::string &name, const std::string type )
     : DataStructure( name, 19, type ),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine premlc(n1, diag, col, parent, parend, &
                   ancsn, p, q, lbd1, lbd2, &
                   rl, rl1, rl2, nrl, invp, &
                   perm, lgind, ddlmoy, nbsnd)
-! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION O2000 AVEC CREATION D'UN NOUVEAU SN POUR
 !     CHAQUE LAMBDA1 DE LAGRANGE
 !     11/12/98

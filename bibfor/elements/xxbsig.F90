@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
     real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
     character(len=8) :: elrefp, elrese
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !.......................................................................
 !

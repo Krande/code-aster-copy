@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,6 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
     character(len=19) :: cnslt, cnsln, cnxinv, listpt
     aster_logical :: orient, goinop
 !     ------------------------------------------------------------------
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !       RECHERCHE DES POINTS DU FOND DE FISSURE DANS LE CADRE DE XFEM
 !

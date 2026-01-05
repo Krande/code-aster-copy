@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,6 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez, &
     character(len=5) :: elim
     real(kind=8) :: const(*)
 !     ------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !     combinaison lineaire de matrices  :
 !     -------------------------------------
 !     mat_res= somme(alpha_i*mat_i)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai, &
     integer(kind=8), intent(out) :: nbtrou
     integer(kind=8), intent(out) :: tatrou(nbma)
 
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       FILTRER UNE LISTE DE MAILLE D'APRES LEUR DIMENSION VERSION 2

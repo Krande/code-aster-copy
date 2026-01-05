@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine majw3d(epspt60, epspt6, t33, &
                   wplt06, wplt6, wpltx06, wpltx6, wpl3, vwpl33, vwpl33t, &
                   wplx3, vwplx33, vwplx33t, local, dim3, ndim, ifour)
 
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
     implicit none
 #include "asterf_types.h"

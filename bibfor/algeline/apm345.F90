@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,6 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk, &
 ! IN LC     : LOG: FLAG THAT INDICATES IF THE PB IS QUADRATIC OR NOT
 ! IN IMPR/IFAPM: IN/K3 : PRINT PARAMETERS FOR DEBBUGING
 !     ------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 !
     integer(kind=8) :: i, jcont, jtheta, ifm, niv

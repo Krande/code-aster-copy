@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine dikpkt(imater, nomphe, kp, kt1, kt2)
 !        kt2    : raideur selon l'axe z du repère local de l'élément
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: donatien.rossat at edf.fr
 !
     integer(kind=8), parameter :: nbres = 4
     integer(kind=8) :: codres(nbres)

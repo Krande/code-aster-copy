@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine dimax2(jdom, nbpt, cuon, cvon, rayon, &
 #include "asterfort/jemarq.h"
     integer(kind=8) :: jdom, nbpt, iret
     real(kind=8) :: cuon, cvon, rayon, cupn, cvpn
-! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: PARMI UNE LISTE DE POINTS, DETERMINER LE POINT QUI EST LE PLUS
 !      ELOIGNE D'UN POINT DONNE.

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno, &
                   nfiss, he, nnn, inn, inntot, &
                   nbnoc, nbnofi, inofi, co, iacoo2)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

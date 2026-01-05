@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, &
     real(kind=8), intent(in), optional :: c(ndim)
 !
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
 !             DETERMINER LES NOEUDS SOMMETS DE L'ELEMENT PARENT
 !             QUI VOIENT UNE JONCTION (POUR LE CONTACT MULTI)
 !
