@@ -28,7 +28,6 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris, &
     character(len=16) :: necris
     integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
-! person_in_charge: jean-michel.proix at edf.fr
 !  COMPORTEMENT MONOCRISTALLIN : ECROUISSAGE ISOTROPE
 !     IN  COEFT   :  PARAMETRES MATERIAU
 !         IFA     :  NUMERO DE FAMILLE

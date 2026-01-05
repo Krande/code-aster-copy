@@ -20,7 +20,6 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, &
                   iw, vff2, vff3, ivf1, idff1, &
                   vu, vg, vp, igeom, mate, &
                   matr)
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"

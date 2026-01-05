@@ -18,7 +18,6 @@
 
 subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

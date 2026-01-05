@@ -24,7 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: mathieu.courtois@edf.fr */
 #include "aster_pybind.h"
 
 void exportMatrixToPetscToPython( py::module_ &mod );

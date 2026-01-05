@@ -18,7 +18,6 @@
 !
 subroutine nmjalo(sddisc, inst, prec, jalon)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

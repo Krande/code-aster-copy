@@ -18,7 +18,6 @@
 
 subroutine xkamat(imate, ndim, axi, ka, mu, famiz)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
     implicit none

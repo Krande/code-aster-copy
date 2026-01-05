@@ -18,7 +18,6 @@
 !
 subroutine vdxrep(nomte, epais, xi)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !
 ! BUT : REMPLIR L'OBJET .DESR DANS LES ZONES 1090 ET 2000

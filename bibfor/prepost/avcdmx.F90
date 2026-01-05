@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"

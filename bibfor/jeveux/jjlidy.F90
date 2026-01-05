@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jjlidy(iadyn, iadmi)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "jeveux_private.h"
 #include "asterc/hpdeallc.h"

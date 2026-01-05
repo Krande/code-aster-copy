@@ -18,7 +18,6 @@
 
 subroutine op0113()
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

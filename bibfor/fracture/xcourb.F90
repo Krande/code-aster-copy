@@ -34,7 +34,6 @@ subroutine xcourb(basloc, noma, modele, courb)
     character(len=24) :: basloc, courb
 !
 !
-! person_in_charge: samuel.geniaut at edf.fr
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE LA COURBURE (DERIVÉE DE LA MATRICE
 !                       DE PASSAGE LOCAL-GLOBAL)

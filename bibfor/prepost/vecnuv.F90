@@ -19,7 +19,6 @@
 subroutine vecnuv(ipre, ider, gamma, phinit, dphi, &
                   n, k, dim, vectn, vectu, &
                   vectv)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"

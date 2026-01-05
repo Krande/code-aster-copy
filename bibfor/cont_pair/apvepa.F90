@@ -29,7 +29,6 @@ subroutine apvepa(ds_contact)
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !

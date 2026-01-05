@@ -18,7 +18,6 @@
 
 subroutine cesred(ces1z, nbma, lima, nbcmp, licmp, &
                   base, ces2z)
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
 #include "asterf_types.h"

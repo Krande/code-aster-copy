@@ -18,7 +18,6 @@
 
 !
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
 interface
     subroutine testresu_print(refer, legend, llab, skip, rela, &

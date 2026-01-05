@@ -18,7 +18,6 @@
 
 subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 !     LECTURE D'UN CHAMP - FORMAT MED - PROFIL
 !     -    -       -              -     --

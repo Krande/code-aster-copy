@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine as_mpfprw(fid, pflval, nbval, pro, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

@@ -29,7 +29,6 @@ subroutine cazocd(sdcont, keywf, i_zone, nb_cont_zone)
 #include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer(kind=8), intent(in) :: i_zone

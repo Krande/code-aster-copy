@@ -20,7 +20,6 @@ subroutine poutre_modloc(modloc, lnomv, nbnomv, lvaleur, valeur, &
                          arret, retour)
 !
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
 #include "jeveux.h"

@@ -25,7 +25,6 @@ subroutine assert(cond, str_cond, fname, line)
     character(len=*) :: fname
     integer(kind=8) :: line
 !
-! person_in_charge: mathieu.courtois@edf.fr
 !
     character(len=256) :: valk(2)
     integer(kind=8) :: vali(1)

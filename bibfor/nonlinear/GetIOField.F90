@@ -26,7 +26,6 @@ subroutine GetIOField(ds_inout, field_type, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=*), intent(in) :: field_type

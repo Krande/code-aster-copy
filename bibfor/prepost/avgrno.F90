@@ -20,7 +20,6 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr, &
                   nnoini, nbnop, tspaq, nomcri, nomfor, &
                   grdvie, forvie, fordef, nommai, proaxe, &
                   nommap, cnsr, post, resu)
-! person_in_charge: van-xuan.tran at edf.fr
 !
     implicit none
 #include "asterf_types.h"

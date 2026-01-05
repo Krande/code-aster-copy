@@ -19,7 +19,6 @@
 subroutine alchml(ligrel_, option_, nompar_, base_, cel_, &
                   iret, dcel_)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
 #include "asterf_types.h"

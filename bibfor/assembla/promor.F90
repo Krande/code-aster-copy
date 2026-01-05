@@ -52,7 +52,6 @@ subroutine promor(nuz, base, printz)
     character(len=1) :: base
     aster_logical, optional :: printz
 !     ------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !     CALCUL DE LA STRUCTURE COMPACTE D'UNE MATRICE
 !     ------------------------------------------------------------------
 ! IN  K*14 NU     : NOM DE LA SD_UME_DDL A COMPLETER.

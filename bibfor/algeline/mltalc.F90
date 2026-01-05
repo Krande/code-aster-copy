@@ -18,7 +18,6 @@
 !
 subroutine mltalc(local, global, adress, sn, lgsn, &
                   place, sni, supnd, nbass)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
     integer(kind=4) :: local(*), global(*)
     integer(kind=8) :: sn, lgsn(*), place(*), adress(*)

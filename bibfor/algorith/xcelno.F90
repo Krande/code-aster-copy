@@ -18,7 +18,6 @@
 !
 subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

@@ -19,7 +19,6 @@
 subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat, &
                   nbrpas, dtmin, retdec)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterc/r8gaem.h"

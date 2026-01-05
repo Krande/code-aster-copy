@@ -18,7 +18,6 @@
 
 subroutine dismff(questi, nomobz, repi, repkz, ierd)
     implicit none
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     --     DISMOI(FOND_FISS)
 !     ARGUMENTS:

@@ -25,7 +25,6 @@ subroutine mmbouc(ds_contact, loop_type, operation_, &
 !
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=4), intent(in) :: loop_type

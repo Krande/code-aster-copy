@@ -20,7 +20,6 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl, &
                   jlnsv, jlnsl, noma, vect1, vect2, &
                   noeud, a, b, r, cote)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "asterf_types.h"

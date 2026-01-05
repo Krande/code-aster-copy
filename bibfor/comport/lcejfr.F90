@@ -21,7 +21,6 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
                   mate, option, epsm, deps, sigma, &
                   dsidep, vim, vip, typmod, instam, &
                   instap)
-! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
     use Behaviour_type
 !

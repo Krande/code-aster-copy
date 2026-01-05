@@ -39,7 +39,6 @@ subroutine rscopi(base, sd1, sd2)
 #include "asterfort/rsnopa.h"
 !
     character(len=*) :: base, sd1, sd2
-! person_in_charge: jacques.pellet at edf.fr
 !
 !   BUT:
 !   DUPLIQUER UNE STRUCTURE DE DONNEES "RESULTAT".

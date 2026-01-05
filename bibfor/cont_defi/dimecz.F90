@@ -29,7 +29,6 @@ subroutine dimecz(sdcont, mesh, nb_cont_zone)
 #include "asterfort/mmnbnz.h"
 #include "asterfort/mminfl.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine lkd2de(devsig, d2dets)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE 2NDE DE DET(S) PAR RAPPORT A DEVIATEUR SIGMA

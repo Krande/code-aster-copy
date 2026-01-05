@@ -34,7 +34,6 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 #include "asterfort/SetResi.h"
 #include "asterfort/nmcore_swap.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdcrit
     character(len=24), intent(in) :: sderro

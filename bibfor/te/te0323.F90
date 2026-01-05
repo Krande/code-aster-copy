@@ -18,7 +18,6 @@
 
 subroutine te0323(option, nomte)
 !
-! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
 #include "asterf_types.h"

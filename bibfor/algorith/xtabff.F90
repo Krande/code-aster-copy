@@ -18,7 +18,6 @@
 !
 subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

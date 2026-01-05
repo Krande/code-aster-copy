@@ -19,7 +19,6 @@
 subroutine dtmeigen_fsi(sd_dtm_, buffdtm)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmeigen_fsi : Update the damping C-matrix after a change in state is detected
 !                as to accomodate to the change in modal frequencies and shapes

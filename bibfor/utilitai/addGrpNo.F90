@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: nicolas.pignet at edf.fr
 !
 subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !

@@ -18,7 +18,6 @@
 !
 subroutine jelstc(clas, souch, ipos, maxval, klst, &
                   nbval)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux_private.h"

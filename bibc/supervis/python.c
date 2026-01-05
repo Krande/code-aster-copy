@@ -16,7 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-/* person_in_charge: mathieu.courtois@edf.fr */
 /* Minimal main program -- everything is loaded from the library */
 
 /*! \mainpage Code_Aster Index Page

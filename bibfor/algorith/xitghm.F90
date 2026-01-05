@@ -38,7 +38,6 @@ subroutine xitghm(modint, mecani, press1, ndim, nno, &
     data elrese/'SE3', 'TR6', 'T10'/
     data fami/'BID', 'XINT', 'XINT'/
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------

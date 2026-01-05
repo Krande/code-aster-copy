@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine jerazo(nomlu, ni, i1)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "jeveux.h"
 #include "jeveux_private.h"

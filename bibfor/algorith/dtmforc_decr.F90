@@ -20,7 +20,6 @@ subroutine dtmforc_decr(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
                         time, step, depl, vite, fext)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmforc_decr : Calculates a "discrete model with isotropic behavior's"
 !                force at the current step (t)

@@ -32,7 +32,6 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
 #include "asterfort/jni092.h"
 #include "asterfort/nuelrf.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     character(len=16), intent(in) :: nomte
     integer(kind=8), intent(in) :: nmax

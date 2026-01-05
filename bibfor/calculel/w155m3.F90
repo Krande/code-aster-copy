@@ -18,7 +18,6 @@
 
 subroutine w155m3(numa, jce2d, jce2l, jce2v, isp, &
                   nucou, nusec, nufib, posic, posis)
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
     implicit none
 #include "jeveux.h"

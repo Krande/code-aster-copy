@@ -25,7 +25,6 @@ subroutine geomco(noma, ds_contact, depplu)
 #include "asterfort/infdbg.h"
 #include "asterfort/vtgpld.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: noma
     type(NL_DS_Contact), intent(in) :: ds_contact

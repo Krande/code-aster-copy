@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, &
                         nb_vari_flua, nb_vari_plas, nb_vari_cpla, nb_vari_coup, &

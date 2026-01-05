@@ -27,7 +27,6 @@ subroutine pgpcal(sd_pgp)
 ! Saves the results into a standard Code_Aster table structure
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"

@@ -20,7 +20,6 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps, &
                   igeom, lonch, cnset, jpintt, lsn, &
                   lst, heavn, basloc, heavt, nfh, &
                   nfe, mattt)
-! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
     implicit none
 !

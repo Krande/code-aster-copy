@@ -32,7 +32,6 @@ subroutine te0481(option, nomte)
 #include "asterfort/ltequa.h"
     character(len=16) :: option, nomte
 !
-! person_in_charge: patrick.massin at edf.fr
 !
 !.......................................................................
 !

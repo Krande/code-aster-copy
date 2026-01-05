@@ -18,7 +18,6 @@
 
 function diinst(sddisc, numins)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     real(kind=8) :: diinst

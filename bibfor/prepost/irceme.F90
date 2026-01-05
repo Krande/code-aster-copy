@@ -21,7 +21,6 @@ subroutine irceme(ifi, nochmd, chanom, typech, ligrel, &
                   instan, numord, nbmaec, limaec, sdcarm, &
                   carael, field_type, nbCmpDyna, lfichUniq, codret)
 !_______________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 !        IMPRESSION DU CHAMP CHANOM ELEMENT ENTIER/REEL
 !        AU FORMAT MED
 !     ENTREES:

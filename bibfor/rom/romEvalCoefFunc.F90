@@ -27,7 +27,6 @@ subroutine romEvalCoefFunc(ds_evalcoef, ds_multicoef, i_coef_list)
 #include "asterfort/fointe.h"
 #include "asterfort/fointc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_EvalCoef), intent(in) :: ds_evalcoef
     type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef

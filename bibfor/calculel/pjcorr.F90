@@ -18,7 +18,6 @@
 
 subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel, &
                   corres, option, nompar, iret)
-! person_in_charge: jacques.pellet at edf.fr
 !
 !
     implicit none

@@ -18,7 +18,6 @@
 !
 subroutine lkdnds(nmat, materf, i1, devsig, bprimp, &
                   nvi, vint, val, para, dndsig)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE DE N PAR RAPPORT A SIGMA

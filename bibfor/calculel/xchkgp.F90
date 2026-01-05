@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine xchkgp(model)
-! person_in_charge: patrick.massin at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

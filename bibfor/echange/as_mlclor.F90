@@ -18,7 +18,6 @@
 
 subroutine as_mlclor(fid, tr1, tr2, tr3, nbt, &
                      k64, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

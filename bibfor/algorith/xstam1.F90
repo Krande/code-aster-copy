@@ -20,7 +20,6 @@ subroutine xstam1(noma, nbma, nmafis, mafis, stano, &
                   mafon, maen1, maen2, maen3, nmafon, &
                   nmaen1, nmaen2, nmaen3, typdis, cnslt)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

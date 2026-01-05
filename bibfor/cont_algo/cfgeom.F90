@@ -33,7 +33,6 @@ subroutine cfgeom(iter_newt, mesh, ds_measure, ds_contact, &
 #include "asterfort/nmtime.h"
 #include "asterfort/reajeu.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: iter_newt
     character(len=8), intent(in) :: mesh

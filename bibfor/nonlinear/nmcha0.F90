@@ -18,7 +18,6 @@
 !
 subroutine nmcha0(tychap, tyvarz, novarz, vachap)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/assert.h"

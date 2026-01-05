@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 function nmcri9(dp)
-! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 !
 !     ARGUMENTS:

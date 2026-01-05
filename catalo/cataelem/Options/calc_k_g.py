@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: matthieu.le-cren at edf.fr
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY

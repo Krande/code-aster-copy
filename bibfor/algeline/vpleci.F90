@@ -24,7 +24,6 @@ subroutine vpleci(eigsol, ktype, indice, &
 ! POUR LIRE BEAUCOUP DE VALEURS UTILISER PLUTOT VPLECS.
 ! CF VPINIS, VPLECS, VPLECI, VPECRI.
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 
 #include "jeveux.h"

@@ -21,7 +21,6 @@ subroutine xinils(noma, maiaux, grille, ndim, meth, &
                   r, noeud, cote, vect1, vect2, &
                   cnslt, cnsln)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "asterf_types.h"

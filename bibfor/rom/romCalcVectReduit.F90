@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type, &
                              l_vect_redu, mode_type, vc_mode, vr_mode)

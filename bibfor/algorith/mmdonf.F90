@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine mmdonf(ndim, nno, alias, ksi1, ksi2, dff)
 !

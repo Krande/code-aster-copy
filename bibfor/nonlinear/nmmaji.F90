@@ -19,7 +19,6 @@
 subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef, &
                   incmoz, ddincz, incplz, ordre)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

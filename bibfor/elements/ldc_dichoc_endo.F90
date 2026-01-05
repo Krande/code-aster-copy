@@ -19,7 +19,6 @@
 subroutine ldc_dichoc_endo(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 !        DISCRET POUR LE FLAMBEMENT DES GRILLES D'ASSEMBLAGE
 !

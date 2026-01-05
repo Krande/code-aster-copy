@@ -41,7 +41,6 @@
 subroutine amdapt(neq, nbnd, nbsn, pe, nv, &
                   invp, parent, supnd, adress, lgind, &
                   fctnzs, fctops, llist, nnv)
-! person_in_charge: olivier.boiteau at edf.fr
 !
 !     DONNEES
 !     NEQ : NBRE TOTAL D'INCONNUES (LAGRANGES INCLUS)

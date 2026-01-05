@@ -18,7 +18,6 @@
 !
 subroutine thermat3d(teta1, nrjm, tetas, tetar, dt80, &
                      dth0, dth, cthp, cthv)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   influence de la temperature sur les parametres de fluage
 !

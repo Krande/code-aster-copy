@@ -31,7 +31,6 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, i
 #include "asterfort/jeveuo.h"
 #include "blas/ddot.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer(kind=8), intent(in) :: i_cont_poin

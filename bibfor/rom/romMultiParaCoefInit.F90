@@ -28,7 +28,6 @@ subroutine romMultiParaCoefInit(ds_multipara)
 #include "asterfort/romEvalCoefInit.h"
 #include "asterfort/romMultiCoefInit.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
 !

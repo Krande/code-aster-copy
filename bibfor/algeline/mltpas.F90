@@ -20,7 +20,6 @@ subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy, &
                   anc, nouv, seq, global, adress, &
                   nblign, lgsn, nbloc, ncbloc, lgbloc, &
                   diag, col, lmat, place)
-! person_in_charge: olivier.boiteau at edf.fr
 !
     implicit none
     integer(kind=8) :: nbnd, nbsn, nbloc, ncbloc(*), lgbloc(*)

@@ -31,7 +31,6 @@ subroutine cfimp2(sdcont_defi, sdcont_solv, mesh, iliai, typeou)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: mesh
     character(len=24) :: sdcont_defi, sdcont_solv

@@ -23,7 +23,6 @@ subroutine caracc(sdcont, nb_cont_zone)
 #include "asterfort/cfmmvd.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer(kind=8), intent(in) :: nb_cont_zone

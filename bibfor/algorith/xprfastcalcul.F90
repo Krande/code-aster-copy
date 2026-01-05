@@ -43,7 +43,6 @@ subroutine xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
     character(len=19) :: cnxinv
     character(len=8)  :: noma
 
-! person_in_charge: patrick.massin at edf.fr
 
 !   nombre max de ss_element que l'on peut obtenir(hexa)
     integer(kind=8), parameter                :: ss_elem_max = 144

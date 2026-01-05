@@ -18,7 +18,6 @@
 
 subroutine uthk(nomte, geom, hk, ndim, niv, &
                 noe, nsomm, tymvol, ifa)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  UTILITAIRE DE CALCUL DU DIAMETRE D'UN
 !                          ELEMENT FINI K.

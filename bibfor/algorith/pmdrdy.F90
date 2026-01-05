@@ -18,7 +18,6 @@
 !
 subroutine pmdrdy(dsidep, coef, cimpo, valimp, y, &
                   sigp, r, drdy)
-! person_in_charge: jean-michel.proix at edf.fr
 !-----------------------------------------------------------------------
 !     OPERATEUR CALC_POINT_MAT : CONSTRUCTION RESIDU ET JACOBIENNE
 !-----------------------------------------------------------------------

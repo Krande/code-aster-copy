@@ -18,7 +18,6 @@
 !
 subroutine oriem1(ma, kdim, numa2d, numa3d)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/indiis.h"

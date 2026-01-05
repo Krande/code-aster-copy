@@ -19,7 +19,6 @@
 subroutine lkresi(typmod, nmat, materf, timed, timef, &
                   nvi, vind, vinf, yd, yf, &
                   deps, nr, r)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !       ----------------------------------------------------------------
 !       CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = -R(DY) POUR LETK

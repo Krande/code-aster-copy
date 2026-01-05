@@ -25,7 +25,6 @@ subroutine nmrtim(ds_measure, device_type_, time)
 #include "asterf_types.h"
 #include "asterfort/GetDevice.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=*), intent(in) :: device_type_

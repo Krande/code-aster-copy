@@ -33,7 +33,6 @@ subroutine mmelem_data_l(l_axi_, &
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     aster_logical, intent(in), optional :: l_axi_
     character(len=8), intent(in), optional :: typg_slav_name_

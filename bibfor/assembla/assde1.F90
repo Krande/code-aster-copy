@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine assde1(tych, champ)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

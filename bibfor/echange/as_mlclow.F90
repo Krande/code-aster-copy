@@ -19,7 +19,6 @@
 subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss, &
                      gscoo, wg, locname, ndim, nomasu, &
                      cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

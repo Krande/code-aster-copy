@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine b3d_valp33(x33, x3, v33)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   A.Sellier jeu. 02 sept. 2010 18:13:24 CEST
 !   diagonalisagion 33 a partir de jacobi + quelques controles

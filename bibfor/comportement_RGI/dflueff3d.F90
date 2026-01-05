@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine dflueff3d(ccmax, dflu0, dflu1, dfin)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
 !   endommagement par fluage

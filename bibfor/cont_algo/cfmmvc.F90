@@ -27,7 +27,6 @@ subroutine cfmmvc(ds_contact, v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_
 #include "asterfort/as_allocate.h"
 #include "asterfort/cfdisi.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8), pointer :: v_ncomp_jeux(:)

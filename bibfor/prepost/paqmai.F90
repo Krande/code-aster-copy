@@ -19,7 +19,6 @@
 subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri, &
                   nomfor, grdvie, forvie, forcri, fordef, &
                   typcha, proaxe, instic, inscri, prec)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

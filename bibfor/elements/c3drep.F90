@@ -27,7 +27,6 @@ subroutine c3drep(nomte, epais, alpha, beta, coord, &
     integer(kind=8) :: numnoe
     character(len=16) :: nomte
     real(kind=8) :: epais, alpha, beta, coord(3, 9), pgl(3, 3)
-! person_in_charge: nicolas.sellenet at edf.fr
 !     ------------------------------------------------------------------
 !
 !         CETTE ROUTINE REALISE LA MEME TACHE QUE COQREP MAIS POUR LES

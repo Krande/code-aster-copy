@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine ceseva(cesf, npara, lpara, cesr)
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
 #include "jeveux.h"

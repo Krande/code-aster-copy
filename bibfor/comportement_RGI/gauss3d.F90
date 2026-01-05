@@ -18,7 +18,6 @@
 !
 subroutine gauss3d(n, a, x, b, ngf, &
                    err1, ipzero)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !    resolution d une systeme lineaire
 !    n taille du syteme a resoudre

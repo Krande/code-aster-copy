@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: tanguy.mathieu at edf.fr
 !
 subroutine cgComputeMatrix(cgField, cgTheta, cgStat)
 !

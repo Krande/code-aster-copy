@@ -18,7 +18,6 @@
 
 subroutine as_msecre(fid, nomes, dim, nomms, tycell, &
                      tygems, tygees, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

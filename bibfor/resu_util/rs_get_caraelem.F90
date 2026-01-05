@@ -25,7 +25,6 @@ subroutine rs_get_caraelem(result_, nume, cara_elem, codret)
 #include "asterfort/getvid.h"
 #include "asterfort/rsadpa.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
     integer(kind=8), intent(in) :: nume

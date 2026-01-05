@@ -26,7 +26,6 @@ subroutine nmarce(ds_inout, result, sddisc, time, nume_store, &
 #include "asterf_types.h"
 #include "asterfort/nmeteo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=8), intent(in) :: result

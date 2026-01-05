@@ -35,7 +35,6 @@ subroutine aprema(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh

@@ -23,7 +23,6 @@ function mminfi(sdcont_defi_, question_, i_zone_)
 #include "asterf_types.h"
 #include "asterfort/mminfp.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: mminfi
     character(len=*), intent(in) :: sdcont_defi_

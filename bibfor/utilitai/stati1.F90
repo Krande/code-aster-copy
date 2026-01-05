@@ -21,7 +21,6 @@ subroutine stati1(nval, serie, moyenn, ectype)
 #include "asterfort/assert.h"
     integer(kind=8) :: nval
     real(kind=8) :: serie(nval), moyenn, ectype
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  CALCULE LA MOYENNE ET L'ECART-TYPE D'UNE SERIE DE VALEURS REELLES
 !  IN : NVAL  : NB DE VALEURS DE LA SERIE

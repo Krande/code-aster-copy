@@ -18,7 +18,6 @@
 
 subroutine evala1(fami, kpg, ksp, mod, relcom, &
                   sig, vin, imat, module, icode)
-! person_in_charge: alexandre.foucault at edf.fr
 ! =====================================================================
 !    - FONCTION REALISEE:  CALCUL DU MODULE DE RIGIDITE
 !                          DE MICRO-DILTATION CONTENU

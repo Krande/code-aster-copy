@@ -43,7 +43,6 @@ subroutine mmapre(mesh, ds_contact)
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact

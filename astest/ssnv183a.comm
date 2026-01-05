@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: david.haboussa at edf.fr
 #    TEST MODELE VISCO-PLASTIQUE COUPLE AVEC L'ENDOMMAGEMENT
 #     ISOTROPE DE CHABOCHE EN ANISOTHERME ( VENDOCHAB)
 #    ESSAI EN TRACTION (RELAXATION) EXPLICITE

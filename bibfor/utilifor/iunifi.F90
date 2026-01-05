@@ -37,7 +37,6 @@ function iunifi(name)
 !     REMARQUE : SI L'INITIALISATION N'A PAS ETE FAITE LA ROUTINE S'EN
 !                CHARGERA (APPEL A ULINIT)
 !     ------------------------------------------------------------------
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
     integer(kind=8) :: mxf
     parameter(mxf=100)

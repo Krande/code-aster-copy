@@ -27,7 +27,6 @@ subroutine cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
     integer(kind=8), pointer :: v_list_excl(:)

@@ -40,7 +40,6 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 #include "asterfort/mmproj.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo

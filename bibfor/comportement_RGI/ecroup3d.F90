@@ -18,7 +18,6 @@
 
 subroutine ecroup3d(rp1, drp1_depl, rpic0, s11, epic0, epl0, epp1, &
                     r0, eps0, rmin, hpla, ekdc, beta, rpiceff, epeqpc)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !     sous programme de traitement de l ecrouissage parbolique pre pic
 

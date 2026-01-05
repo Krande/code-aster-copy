@@ -31,7 +31,6 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     integer(kind=8) :: iordr
     character(len=*) :: nomsd, nomsy, nomcha
     aster_logical :: lverif
-! person_in_charge: jacques.pellet at edf.fr
 !
 ! DETERMINATION DU NOM DU CHAMP19 CORRESPONDANT A NOMSD(IORDR,NOMSY)
 ! ----------------------------------------------------------------------

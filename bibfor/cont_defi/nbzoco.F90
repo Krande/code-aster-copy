@@ -23,7 +23,6 @@ subroutine nbzoco(keywf, mesh, i_zone, nb_cont_surf)
 #include "asterfort/getvtx.h"
 #include "asterfort/verima.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywf

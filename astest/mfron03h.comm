@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 # -*- coding: utf-8 -*-
-# person_in_charge: david.haboussa at edf.fr
 # Comparaison entre la loi MonoCrystalDDCC (MFront) et la loi MONOCRISTAL
 # (ECOULEMENT='MONO_DD_CC') (Code_Aster) sur un point materiel
 # Validation basée sur rho_5 en testant le maximum de la différence

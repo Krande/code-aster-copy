@@ -22,7 +22,6 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum, &
                   cartef, nomgdf, carteh, nomgdh, cartet, &
                   nomgdt, cartes, nomgds, chgeom, chsour, &
                   psourc, iaux)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 !                          SUR LE PROBLEME THERMIQUE

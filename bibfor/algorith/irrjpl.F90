@@ -33,7 +33,6 @@ subroutine irrjpl(model, nmat, mater, sigf, vind, &
     real(kind=8) :: mater(nmat, 2), dsde(6, 6), sigf(6)
     real(kind=8) :: vind(*), vinf(*)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !       ----------------------------------------------------------------
 !       IRRAD3M   :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
 !                     ELASTO_PLASTIQUE EN VITESSE A T OU T+DT

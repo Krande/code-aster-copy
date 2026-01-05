@@ -18,7 +18,6 @@
 !
 subroutine ulinit()
     implicit none
-! person_in_charge: j-pierre.lefebvre at edf.fr
     integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)

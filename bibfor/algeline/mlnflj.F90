@@ -19,7 +19,6 @@
 subroutine mlnflj(nb, n, ll, m, it, &
                   p, frontl, frontu, frnl, frnu, &
                   adper, travl, travu, cl, cu)
-! person_in_charge: olivier.boiteau at edf.fr
     use superv_module
     implicit none
 ! aslint: disable=C1513

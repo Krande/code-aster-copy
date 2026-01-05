@@ -35,7 +35,6 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
     character(len=24) :: nvit, nbeta
     integer(kind=8) :: numfon
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !       XPRFON   : X-FEM PROPAGATION :RENUMEROTATION DU FRONT DE FISSURE
 !       ------     -     --                                  ---

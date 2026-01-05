@@ -29,7 +29,6 @@ subroutine cfmmco(ds_contact, i_zone, coef_type_, action, valr)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=*), intent(in) :: coef_type_

@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: francesco.bettonte at edf.fr */
 
 #include "aster_pybind.h"
 

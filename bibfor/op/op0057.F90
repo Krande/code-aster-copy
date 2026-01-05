@@ -19,7 +19,6 @@
 subroutine op0057()
     implicit none
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !.......................................................................
 !       OPERATEUR DEFI_GLRC
 !       DETERMINE LES PARAMETRES HOMOGENEISEES DES LOIS GLRC_DAMAGE

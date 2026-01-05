@@ -19,7 +19,6 @@
 subroutine nmdcrg(depart, iterat, vresi, xa0, xa1, &
                   xdet)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

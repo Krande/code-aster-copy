@@ -18,7 +18,6 @@
 
 subroutine as_mmhaaw(fid, maa, fam, n, filter, &
                      typent, typgeo, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
     implicit none
 #include "asterf_types.h"

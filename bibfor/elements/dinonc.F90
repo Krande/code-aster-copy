@@ -27,7 +27,6 @@ subroutine dinonc(nomte, icodre, valre, klv, raide, &
     real(kind=8) :: valre(*), klv(*), raide(*), param(6, nbpar)
     aster_logical :: okdire(6)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !           AFFECTATION DES VALEURS ISSUES DU COMPORTEMENT
 !

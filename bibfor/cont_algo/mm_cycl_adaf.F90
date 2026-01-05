@@ -25,7 +25,6 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 #include "asterfort/assert.h"
 #include "asterfort/mm_cycl_laugf.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: adap_type
     real(kind=8), intent(in) :: tole_stick

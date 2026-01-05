@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: nicolas.pignet at edf.fr
 !
 function asmpi_all(ibool, test) result(obool)
 !

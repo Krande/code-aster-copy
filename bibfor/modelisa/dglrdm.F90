@@ -19,7 +19,6 @@
 subroutine dglrdm()
     implicit none
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! BUT : DETERMINATION DES PARAMETRES MATERIAU POUR LE MODELE GLRC_DM

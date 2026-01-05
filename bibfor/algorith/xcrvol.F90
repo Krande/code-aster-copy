@@ -22,7 +22,6 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint, &
                   vhea, jcesd8, jcesl8, jcesv8, lfiss, &
                   vtot)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1306
     implicit none

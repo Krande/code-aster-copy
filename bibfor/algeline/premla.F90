@@ -18,7 +18,6 @@
 !
 subroutine premla(neq, diag, col, lt, nrl, &
                   rl, deb, vois, suit, ier)
-! person_in_charge: olivier.boiteau at edf.fr
 !
     implicit none
 #include "asterfort/calajt.h"

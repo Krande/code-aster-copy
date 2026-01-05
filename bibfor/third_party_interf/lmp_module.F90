@@ -22,7 +22,6 @@ module lmp_module
 #include "asterf_petsc.h"
 !
 !
-! person_in_charge: natacha.bereux at edf.fr
 !
     use aster_petsc_module
     use lmp_context_type

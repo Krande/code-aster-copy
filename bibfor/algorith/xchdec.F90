@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine xchdec(modelx, decou, chdec)
-! person_in_charge: patrick.massin at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/cescel.h"

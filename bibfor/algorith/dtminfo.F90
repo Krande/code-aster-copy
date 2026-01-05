@@ -19,7 +19,6 @@
 subroutine dtminfo(sd_dtm_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtminfo : Prints out general information about the transient calculation to
 !           be undertaken, before any integration taking place, but after all

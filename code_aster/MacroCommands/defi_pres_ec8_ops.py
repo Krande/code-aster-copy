@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: adrien.guilloux at edf.fr
 
 """Commande DEFI_PRES_EC8"""
 

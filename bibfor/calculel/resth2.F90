@@ -20,7 +20,6 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma, &
                   cartef, nomgdf, carteh, nomgdh, cartet, &
                   nomgdt, cartes, nomgds, chgeom, chsour, &
                   psourc)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  PREPARATION DU CALCUL DE L'ESTIMATEUR
 !                          D'ERREUR EN RESIDU SUR LE PROBLEME THERMIQUE.

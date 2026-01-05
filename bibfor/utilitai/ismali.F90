@@ -22,7 +22,6 @@ function ismali(typma)
 #include "asterfort/assert.h"
     aster_logical :: ismali
     character(len=8) :: typma
-! person_in_charge: samuel.geniaut at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! FONCTION VALANT TRUE SI LE TYPE DE MAILLE EST LINEAIRE

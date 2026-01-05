@@ -19,7 +19,6 @@
 subroutine chligr(chel1z, ligr2z, optioz, paramz, base2, &
                   chel2z)
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
 #include "jeveux.h"

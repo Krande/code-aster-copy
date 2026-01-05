@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 function xxishm(mailc, mailx, mo)
-! person_in_charge: daniele.colombo at ifpen.fr
 !
     implicit none
 #include "jeveux.h"

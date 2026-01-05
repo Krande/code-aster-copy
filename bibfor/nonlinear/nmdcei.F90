@@ -19,7 +19,6 @@
 subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins, &
                   typext, dt0)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

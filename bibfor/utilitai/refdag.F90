@@ -33,7 +33,6 @@ subroutine refdag(resin)
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: resin
-! person_in_charge: hassan.berro at edf.fr
 ! ----------------------------------------------------------------------
 !
 !   DOUBLER LA TAILLE DES OBJETS CONTENEURS DES REFERENCES DYNAMIQUES (.REFD ET INDI)

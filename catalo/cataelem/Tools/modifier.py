@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 #
-# person_in_charge: mathieu.courtois at edf.fr
 
 """
 This module provides helper objects to easily apply changes between elements

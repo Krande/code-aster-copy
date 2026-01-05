@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine tldlg2(lmat, nprec, nmrig, vemrig)
-! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
 #include "jeveux.h"

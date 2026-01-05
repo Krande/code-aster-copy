@@ -31,7 +31,6 @@ subroutine lcloca(coeft, nmat, nbcomm, nphas, sigi, &
     character(len=16) :: loca
     real(kind=8) :: mu, dev(6), norme, evpcum, granb(6)
     integer(kind=8) :: ievpg, i
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !       in
 !           coeft    :  coef materiau

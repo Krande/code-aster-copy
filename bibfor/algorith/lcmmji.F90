@@ -23,7 +23,6 @@ subroutine lcmmji(coeft, ifa, nmat, nbcomm, necris, &
     integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), ir, is, nfs, nsg
     real(kind=8) :: coeft(nmat), drdps, hsr(nsg, nsg)
     character(len=16) :: necris
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !  CALCUL DE LA DERIVEE DE LA FONCTION D'ECROUISSAGE dRS/dPR
 !       IN  COEFT   :  PARAMETRES MATERIAU

@@ -19,7 +19,6 @@
 
 #       VALIDATION DE AFFE_CHAR_CINE/EVOL_IMPO
 
-# person_in_charge: jacques.pellet at edf.fr
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 # -------------------------------------------------------------------------------------

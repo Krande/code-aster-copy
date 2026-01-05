@@ -24,7 +24,6 @@ subroutine get_jvbasename(bas_, numext, path)
     character(len=*), intent(out) :: path
 ! aslint: disable=W1303
 ! for the path name
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 ! Return the path name to the file of the base of class `bas_`
 ! `bas_` is one of 'globale', 'volatile', 'elembase'

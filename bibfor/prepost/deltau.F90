@@ -20,7 +20,6 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini, &
                   nmaini, nbmap, numpaq, tspaq, nommet, &
                   nomcri, nomfor, grdvie, forvie, forcri, &
                   cesr)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/acgrdo.h"

@@ -19,7 +19,6 @@
 subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
                   typent, typmai)
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !  ECRITURE D'UN CHAMP - FORMAT MED - PROFIL
 !     -  -       -              -     -  -

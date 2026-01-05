@@ -32,7 +32,6 @@ subroutine lrvemo(modele)
 !
 !   ENTREE: MODELE(K8)  = NOM DU MODELE
 !-----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !
     integer(kind=8) :: n1
 !

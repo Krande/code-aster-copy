@@ -21,7 +21,6 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp, &
                   coefpa, ncycl, jvmin, jvmax, jomin, &
                   jomax, nomcri, nomfor, jgdreq)
 !
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

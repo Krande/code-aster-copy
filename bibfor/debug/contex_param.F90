@@ -19,7 +19,6 @@
 subroutine contex_param(nomop, nompar)
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"

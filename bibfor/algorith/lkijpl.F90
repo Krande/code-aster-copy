@@ -19,7 +19,6 @@
 subroutine lkijpl(nmat, mater, sigf, nr, drdy, &
                   dsde)
     implicit none
-! person_in_charge: alexandre.foucault at edf.fr
 !       ----------------------------------------------------------------
 !       MATRICE COHERENTE DE LETK A T+DT
 !       IN  NMAT   :  DIMENSION MATER

@@ -19,7 +19,6 @@
 subroutine jgetptc(jad, pteur_c, vl, vi, vi4, &
                    vr, vc, vk8, vk16, vk24, &
                    vk32, vk80)
-! person_in_charge: jacques.pellet at edf.fr
 !
 !-----------------------------------------------------------------------
 !     But : masquer la non presence de "target" sur zi, zr, ...

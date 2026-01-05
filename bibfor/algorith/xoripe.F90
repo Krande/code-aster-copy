@@ -48,7 +48,6 @@ subroutine xoripe(modele)
     character(len=8) :: modele
 !
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !        ORIENTER LES SOUS-ELEMENTS DE PEAU DES ELEMENTS X-FEM
 !      (ET CALCUL DE HEAV SUR LES BORDS COINCIDANT AVEC INTERACE)

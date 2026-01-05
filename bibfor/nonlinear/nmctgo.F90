@@ -37,7 +37,6 @@ subroutine nmctgo(mesh, sderro, hval_incr, ds_print, ds_contact)
 #include "asterfort/nmimcr.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sderro

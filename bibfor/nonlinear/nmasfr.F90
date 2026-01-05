@@ -31,7 +31,6 @@ subroutine nmasfr(ds_contact, matass)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: matass

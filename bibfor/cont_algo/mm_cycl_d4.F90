@@ -31,7 +31,6 @@ subroutine mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval, indi_cont_prev, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/cfdisi.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer(kind=8), intent(in) :: i_cont_poin

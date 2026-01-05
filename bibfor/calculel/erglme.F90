@@ -36,7 +36,6 @@ subroutine erglme(jceld, iavale, option, iord, ligrel, &
     character(len=*) :: resuco
     character(len=19) :: resuc1, ligrel
     character(len=*) :: option
-! person_in_charge: josselin.delmas at edf.fr
 ! =====================================================================
 ! ERREUR GLOBALE AU MAILLAGE - MECANIQUE
 ! **     **                    **

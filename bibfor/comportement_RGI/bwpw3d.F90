@@ -18,7 +18,6 @@
 
 subroutine bwpw3d(mfr, biotw, poro, vw, xnsat, &
                   mw, pw, bw, srw)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   calcul de la pression hydrique en saturé et non saturé
     implicit none

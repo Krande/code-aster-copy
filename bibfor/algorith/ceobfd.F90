@@ -18,7 +18,6 @@
 !
 subroutine ceobfd(dm, epsm, lambda, mu, ecrod, &
                   fd)
-! person_in_charge: ludovic.idoux at edf.fr
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/diago3.h"

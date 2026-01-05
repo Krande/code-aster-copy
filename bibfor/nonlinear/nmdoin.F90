@@ -30,7 +30,6 @@ subroutine nmdoin(ds_inout)
 #include "asterfort/rs_getlast.h"
 #include "asterfort/rs_getnume.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
 !

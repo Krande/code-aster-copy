@@ -20,7 +20,6 @@
 !
 module superv_module
 !
-! person_in_charge: mathieu.courtois@edf.fr
 
 ! warning on dummy argument (W0104) may occur because of ifdef
 

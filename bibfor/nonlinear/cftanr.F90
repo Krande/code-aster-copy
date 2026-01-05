@@ -40,7 +40,6 @@ subroutine cftanr(noma, ndimg, ds_contact, izone, &
 #include "asterfort/mminfr.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: noma
     integer(kind=8) :: posenm, posnoe, numenm

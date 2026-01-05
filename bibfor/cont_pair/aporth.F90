@@ -31,7 +31,6 @@ subroutine aporth(mesh, sdcont_defi, model_ndim, elem_mast_indx, poin_coor, &
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi

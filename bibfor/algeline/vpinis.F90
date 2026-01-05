@@ -22,7 +22,6 @@ subroutine vpinis(eigsol)
 ! RQ1. ON CREE LES OBJETS GLOBAUX LIES A EIGSOL SUR BASE VOLATILE.
 !      ILS SONT DETRUITS DANS VPPOST.
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 
 #include "jeveux.h"

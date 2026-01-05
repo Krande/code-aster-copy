@@ -19,7 +19,6 @@
 subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz, &
                   nbout, lpaouz, lchouz)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/jelstc.h"

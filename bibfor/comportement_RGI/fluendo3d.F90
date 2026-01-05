@@ -22,7 +22,6 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
                      iso, mfr, end3d, fl3d, local, &
                      ndim, nmatbe2, iteflumax, sech, matrEndo, &
                      matdech)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !
     implicit none

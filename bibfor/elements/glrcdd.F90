@@ -41,7 +41,6 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep, &
 ! OUT ECR : TABLEAU DES VARIABLES INTERNES
 ! OUT DELAS : MATRICE ELASTIQUE
 ! OUT DSIDEP : MATRICE TANGENTE
-! person_in_charge: sebastien.fayolle at edf.fr
 !
 #include "asterfort/glrcad.h"
 #include "asterfort/multsy.h"

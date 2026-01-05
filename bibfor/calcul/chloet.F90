@@ -20,7 +20,6 @@ subroutine chloet(iparg, etendu, jceld)
     use calcul_module, only: ca_iachii_, ca_iachik_, ca_iachoi_, ca_iachok_, &
                              ca_iawloc_, ca_nparin_, ca_iachid_
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !------------------------------------------------------------------
 !     But : determiner si le champ local associe a iparg
 !           est "etendu"

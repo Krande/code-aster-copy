@@ -34,7 +34,6 @@ subroutine cazocm(sdcont, keywf, i_zone)
 #include "asterfort/asmpi_info.h"
 #include "asterc/asmpi_comm.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer(kind=8), intent(in) :: i_zone

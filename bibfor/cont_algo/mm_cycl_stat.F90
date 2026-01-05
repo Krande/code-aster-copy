@@ -28,7 +28,6 @@ subroutine mm_cycl_stat(ds_measure, ds_contact)
 #include "asterfort/nmrvai.h"
 #include "asterfort/mm_cycl_erase.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact

@@ -28,7 +28,6 @@ subroutine load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(out) :: nb_load
     aster_logical, intent(out) :: load_empty

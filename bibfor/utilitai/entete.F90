@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine entete()
-! person_in_charge: mathieu.courtois at edf.fr
 !
 !
     use superv_module, only: asthread_getmax

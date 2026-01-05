@@ -19,7 +19,6 @@
 subroutine dtminit(sd_dtm_, sd_int_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtminit : Initialize a transitory calculation over a modal basis.
 !

@@ -18,7 +18,6 @@
 !
 subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1, &
                   jconx2, jstnl, jstnv, nbheav)
-! person_in_charge: patrick.massin at edf.fr
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"

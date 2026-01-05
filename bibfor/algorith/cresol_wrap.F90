@@ -23,7 +23,6 @@ subroutine cresol_wrap(solveu, base, xfem)
     character(len=19) :: solveu
     character(len=1) :: base
     character(len=3) :: xfem
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ----------------------------------------------------------------------
 !
 !     CREATION D'UNE SD_SOLVEUR PAR LECTURE DU MOT CLE SOLVEUR

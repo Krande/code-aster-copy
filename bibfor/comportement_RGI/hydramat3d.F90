@@ -25,7 +25,6 @@ subroutine hydramat3d(hyd0, hydr, hyds, young00, young, &
                       krgi00, krgi, iso, lambda, mu, &
                       rt33, rtg33, ref33, raideur66, souplesse66, &
                       xmt, dtiso, err1)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   actualisation des parametres materiaux en fonction du degre
 !   d hydratation

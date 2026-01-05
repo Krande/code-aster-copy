@@ -18,7 +18,6 @@
 
 subroutine jxlocs(itab, gen1, lty1, lon1, jadm, &
                   ldeps, jitab)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
     implicit none
 #include "asterf_types.h"

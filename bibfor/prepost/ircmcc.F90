@@ -18,7 +18,6 @@
 
 subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve, &
                   ntncmp, ntucmp, codret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !     ECRITURE D'UN CHAMP -  FORMAT MED - CREATION DU CHAMP
 !        -  -       -               -     -           -

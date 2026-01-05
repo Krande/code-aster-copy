@@ -19,7 +19,6 @@
 subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! intruku54 : Integrate from t_i to t_i+1 the differential equations of motion
 !             using a Runge-Kutta type order 5/4 scheme.

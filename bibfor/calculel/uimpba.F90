@@ -38,7 +38,6 @@ subroutine uimpba(clas, iunmes)
 #include "asterfort/split_string.h"
     character(len=*) :: clas
     integer(kind=8) :: iunmes
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 ! BUT:
 !   IMPRIMER LA TAILLE DES CONCEPTS STOCKES SUR UNE BASE

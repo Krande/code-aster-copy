@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 # METHODE PAR PROJECTION SUR UN MAILLAGE - FISSURE DROITE EN MODE 1 PUR
-# person_in_charge: samuel.geniaut at edf.fr
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 

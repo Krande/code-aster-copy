@@ -23,7 +23,6 @@ subroutine pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf, nbassfi)
 !
 !           Informations sur les PMF
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 !   OUT

@@ -27,7 +27,6 @@ subroutine apforc(mesh, ds_contact, err_appa)
 #include "asterfort/infdbg.h"
 #include "asterfort/sdmpic.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact

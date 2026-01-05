@@ -18,7 +18,6 @@
 
 subroutine xfem_pc_sol(matas1, nsolu, solu)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"

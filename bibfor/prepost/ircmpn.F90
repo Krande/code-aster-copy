@@ -20,7 +20,6 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp, &
                   nbvato, nbnoec, linoec, adsl, caimpi, &
                   caimpk, profas, innoce, nosdfu)
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !  ECRITURE D'UN CHAMP - FORMAT MED - PROFIL POUR LES NOEUDS
 !     -  -       -              -     -               -

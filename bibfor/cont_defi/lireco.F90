@@ -24,7 +24,6 @@ subroutine lireco(keywf, mesh, model, i_zone, list_elem_slav, &
 !
 #include "asterfort/reliem.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model

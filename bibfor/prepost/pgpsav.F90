@@ -44,7 +44,6 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal, &
 !            call pgpsav('&&OP0058','NOM_CMP ',1, iobs=2, kvect=('DX','DY'))
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"

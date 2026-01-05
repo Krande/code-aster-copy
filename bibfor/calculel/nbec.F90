@@ -20,7 +20,6 @@ function nbec(gd)
     implicit none
     integer(kind=8) :: nbec
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     ALTERATION SANS CHANGEMENT POUR TEST PROC MAJCODE!!  (3)
 !     RETOURNE LE NOMBRE D ENTIERS CODES POUR UN GRANDEUR DU TYPE :

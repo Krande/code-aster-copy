@@ -32,7 +32,6 @@ subroutine cglecc(typfis, resu, vecord, calsig)
     character(len=8) :: typfis, resu, calsig
     character(len=19) :: vecord
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

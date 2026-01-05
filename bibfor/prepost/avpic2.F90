@@ -19,7 +19,6 @@
 subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv, &
                   npoin, jvalpo, jvalor, npic, jpic, &
                   jordpi)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

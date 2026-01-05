@@ -24,7 +24,6 @@ subroutine romVariParaInfo(ds_varipara)
 !
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_VariPara), intent(in) :: ds_varipara
 !

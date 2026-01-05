@@ -36,7 +36,6 @@ subroutine refdaj(arret, result, nbordr, numer, typre, &
 #include "asterfort/jexnum.h"
 #include "asterfort/refdag.h"
 #include "asterfort/wkvect.h"
-! person_in_charge: hassan.berro at edf.fr
 !     ------------------------------------------------------------------
 !                              FONCTION
 !     _______________________________________________________________

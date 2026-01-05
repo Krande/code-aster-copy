@@ -20,7 +20,6 @@ subroutine op0082()
 !
     implicit none
 !
-! person_in_charge: patrick.massin at edf.fr
 !
 !
 ! ----------------------------------------------------------------------

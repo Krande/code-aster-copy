@@ -18,7 +18,6 @@
 !
 subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex, &
                   nomfam)
-! person_in_charge: nicolas.sellenet at edf.fr
 !  ENTREES :
 !     NUMFAM = NUMERO DE LA FAMILLE
 !     NOGRF  = NOMS DES GROUPES D ENTITES DE LA FAMILLE

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0382(option, nomte)
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !         CALCUL DE L'INDICATEUR D'ERREUR SUR UN ELEMENT 2D

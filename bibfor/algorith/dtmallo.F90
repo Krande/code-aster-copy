@@ -19,7 +19,6 @@
 subroutine dtmallo(sd_dtm_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmallo : Memory allocation for a dynamic simulation on a projected basis.
 !

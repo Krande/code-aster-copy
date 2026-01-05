@@ -35,7 +35,6 @@ subroutine xcalculfmm(nbno, jcalculs, jcopiels, jnodto, ndim, nodvois, &
     character(len=2)  :: levset
     character(len=3)  :: signls
     real(kind=8)      :: vale(:)
-! person_in_charge: patrick.massin at edf.fr
 !
 !       XCALCULFMM  : CALCUL EXPLICITE DES LEVEL SETS PAR FMM
 

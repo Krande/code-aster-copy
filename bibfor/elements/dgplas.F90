@@ -41,7 +41,6 @@ subroutine dgplas(ea, sya, eb, nub, ftj, fcj, &
     real(kind=8) :: pendt, pendf
 !
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! BUT : DETERMINATION DES PENTES POST ENDOMMAGEMENT

@@ -18,7 +18,6 @@
 
 subroutine deffk(kappa, mu, r, theta, ndim, fkpo)
 !
-! person_in_charge: matthieu-m.le-cren at edf.fr
 !
     implicit none
 #include "jeveux.h"

@@ -18,7 +18,6 @@
 
 subroutine uttcpr(nommes, nbv, temps)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"

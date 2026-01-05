@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sam.cuvilliez at edf.fr
 # CATALOGUES DES ELEMENTS AXIS X-FEM CRACKTIP DE BORD SANS CONTACT
 
 

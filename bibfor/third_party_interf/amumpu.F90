@@ -49,7 +49,6 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
 ! SI OPTION=4
 ! RAS
 !---------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf_types.h"
 #include "asterf.h"

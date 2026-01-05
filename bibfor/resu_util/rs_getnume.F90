@@ -23,7 +23,6 @@ subroutine rs_getnume(result_, inst, criter_, prec, nume, &
 !
 #include "asterfort/rsorac.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
     real(kind=8), intent(in) :: inst

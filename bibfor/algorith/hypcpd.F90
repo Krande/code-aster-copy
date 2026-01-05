@@ -20,7 +20,6 @@
 subroutine hypcpd(c11, c22, c33, c12, k, &
                   c10, c01, c20, dsidep, codret)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     real(kind=8) :: c11, c22, c33, c12

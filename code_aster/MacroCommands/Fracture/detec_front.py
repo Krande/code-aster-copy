@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: samuel.geniaut at edf.fr
 
 from ...Cata.DataStructure import evol_noli, fiss_xfem, table_sdaster
 from ...Cata.Syntax import OPER, SIMP

@@ -31,7 +31,6 @@ subroutine te0046(option, nomte)
 #include "asterfort/xteini.h"
     character(len=16) :: option, nomte
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !.......................................................................
 !

@@ -27,7 +27,6 @@ subroutine cfdism(ds_contact, l_dist_beam, l_dist_shell, node_slav_indx, gap_str
 #include "asterfort/cfnben.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(in) :: l_dist_beam

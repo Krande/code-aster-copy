@@ -31,7 +31,6 @@ module message_type
 !       valr, nr    floats and number of floats
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: mathieu.courtois@edf.fr
 !
     implicit none
 !

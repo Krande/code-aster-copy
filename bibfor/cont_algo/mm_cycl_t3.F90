@@ -22,7 +22,6 @@ subroutine mm_cycl_t3(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
     implicit none
 !
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8), intent(in) :: pres_frot_prev(3)
     real(kind=8), intent(in) :: dist_frot_prev(3)

@@ -65,7 +65,6 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
 !           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
 !           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
 !----------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
 #include "asterf_types.h"

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: gerald.nicolas at edf.fr
 # REMARQUE GENERALE : IL FAUDRA FAIRE EVOLUER CE CAS-TEST POUR QU'IL
 #                     PRENNE EN COMPTE LE SUIVI DES FRONTIERES COURBES
 #                     AU COURS DE L'ADAPTATION (CF ZZZZ175A)

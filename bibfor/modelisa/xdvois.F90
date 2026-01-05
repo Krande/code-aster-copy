@@ -39,7 +39,6 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2, &
     character(len=19) :: ch2
     real(kind=8) :: lsno(3), lsn(4)
     aster_logical :: coupee, milieu
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !     DETERMINATION DE L'ENVIRONNEMENT DU NOEUD COURANT
 !

@@ -19,7 +19,6 @@
 subroutine mmtole(alias, nno, ndim, coorma, toleou, &
                   ksi1, ksi2, tau1, tau2, iproj)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/cfadju.h"

@@ -40,7 +40,6 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
     character(len=*) :: champ, nocmp, lcmp(*)
     integer(kind=8) :: nbcmp, nbmail, numail(*)
     real(kind=8) :: vr(*)
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 ! BUT :  EXTRAIRE LE "MIN/MAX" DE COMPOSANTES
 !        D'UN CHAMP (CHAM_ELEM OU CARTE) SUIVANT LA COMPOSANTE NOCMP

@@ -18,7 +18,6 @@
 !
 subroutine op0003()
     implicit none
-! person_in_charge: mathieu.courtois at edf.fr
 !     LECTURE DE LA DEFINITION D'UNE FONCTION
 !     STOCKAGE DANS UN OBJET DE TYPE FONCTION
 ! ----------------------------------------------------------------------

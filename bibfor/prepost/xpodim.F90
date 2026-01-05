@@ -23,7 +23,6 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
                   dirgrm, maxfem, ngfon, comps1, comps2, &
                   pre1, mo)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1504
     implicit none

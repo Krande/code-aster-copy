@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: irmela.zentner at edf.fr
 
 # Routines for correlated signals ground motion spatial variability
 """spatial_variability.py

@@ -20,7 +20,6 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate, &
                   option, am, da, sigma, dsidep, &
                   vim, vip)
 !
-! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
 #include "asterf_types.h"

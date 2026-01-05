@@ -23,7 +23,6 @@ subroutine quadco(sdcont, l_node_q8)
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     aster_logical, intent(out) :: l_node_q8

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 from code_aster.Cata.DataStructure import CO as typCO
 from code_aster.Cata.DataStructure import table_sdaster

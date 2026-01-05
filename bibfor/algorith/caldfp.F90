@@ -19,7 +19,6 @@
 subroutine caldfp(msns, gamsns, dfpmdg, iret)
     implicit none
 !
-! person_in_charge: jean-michel.proix at edf.fr
 !     ----------------------------------------------------------------
 !
 !     MONOCRISTAL : calcul des derivees de Fe en GDEF

@@ -19,7 +19,6 @@
 subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec, &
                   nbordr, umin, umax, vmin, vmax, &
                   axeini)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

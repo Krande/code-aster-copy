@@ -22,7 +22,6 @@ subroutine sanscc(sdcont, keywf, mesh)
 !
 #include "asterfort/sansno.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

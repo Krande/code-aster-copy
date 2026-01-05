@@ -19,7 +19,6 @@
 subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmintg : Integrate from t_i to t_i+1 the differential equations of motion
 !           using the integration method specified in the sd_int.

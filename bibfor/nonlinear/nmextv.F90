@@ -23,7 +23,6 @@ subroutine nmextv(nb_cmp_vale, func_name, v_cmp_name, v_cmp_vale, nb_vale, &
 !
 #include "asterfort/fointe.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: nb_cmp_vale
     character(len=8), intent(in) :: func_name

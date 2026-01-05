@@ -19,7 +19,6 @@
 subroutine mcomce(noma, newgeo, nummai, coor, alias, &
                   nno)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

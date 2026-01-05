@@ -25,7 +25,6 @@ subroutine dfc_read_zone(sdcont, keywf, mesh, model, nb_cont_zone, &
 #include "asterfort/poinco.h"
 #include "asterfort/listco.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

@@ -35,7 +35,6 @@ subroutine nurenu(nu, base)
 #include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=2) :: base
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ----------------------------------------------------------------------
 !  NUME_DDL - RENUMEROTATION POUR MATR_DISTR AVEC PETSC
 !  --         ----

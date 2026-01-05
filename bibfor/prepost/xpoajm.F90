@@ -30,7 +30,6 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im, &
                   jcnsl2, lmeca, pre1, heavno, fisco, &
                   nlachm, lacthm, jbaslo, jstno, ka, &
                   mu)
-! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1306,W1504
     implicit none

@@ -33,7 +33,6 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
     character(len=8) :: fisref, fisdis
     real(kind=8) :: dist, tol, lcmin
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     ------------------------------------------------------------------
 !

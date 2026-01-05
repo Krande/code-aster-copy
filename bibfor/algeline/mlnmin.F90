@@ -22,7 +22,6 @@ subroutine mlnmin(nu, nomp01, nomp02, nomp03, nomp04, &
                   nomp15, nomp16, nomp17, nomp18, nomp19, &
                   nomp20)
 !     ------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 ! aslint: disable=W1504
     implicit none
     character(len=14) :: nu

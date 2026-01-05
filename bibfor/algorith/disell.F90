@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine disell(pz, az, bz, h)
-! person_in_charge: samuel.geniaut at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

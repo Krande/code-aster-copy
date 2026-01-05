@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1403
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine romGreedyAlgoClean(ds_algoGreedy)
 !

@@ -19,7 +19,6 @@
 subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym, &
                   codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 !_____________________________________________________________________
 !        FORMAT MED : ELABORATION D'UN NOM DE CHAMP DANS LE FICHIER
 !               - -                    --     --

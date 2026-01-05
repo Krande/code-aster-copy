@@ -42,7 +42,6 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai, &
     integer(kind=8), intent(out) :: nbtrou
     integer(kind=8), intent(out) :: tatrou(nbma)
 
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       FILTRER UNE LISTE DE MAILLE D'APRES LEUR DIMENSION VERSION 2

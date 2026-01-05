@@ -18,7 +18,6 @@
 !
 subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag, &
                   npoin, jvalpo, jvalor)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"

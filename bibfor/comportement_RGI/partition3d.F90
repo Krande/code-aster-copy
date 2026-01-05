@@ -19,7 +19,6 @@
 !************************************************************************
 subroutine partition3d(sige6, sige3, vsige33, vsige33t, siget6, &
                        sigec6, sigec3, siget3)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   declaration des varibles externes
     implicit none

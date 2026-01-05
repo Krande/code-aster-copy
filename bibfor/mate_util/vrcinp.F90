@@ -34,7 +34,6 @@ subroutine vrcinp(ind, instam, instap)
 #include "asterfort/jeveut.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: ind
     real(kind=8), intent(in) :: instam

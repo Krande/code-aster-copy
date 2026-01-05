@@ -41,7 +41,6 @@
 # 1) Modal analysis of the beam
 # 2) Stability analysis using Connor's model for the fluid forces
 # -------------------------------------------------------------------
-# person_in_charge: yannick.tampango at edf.fr
 
 L = 1.000  # Tube length    = 1  m (used for velocity profile definition and
 #                                  coherent with the associated mesh file)

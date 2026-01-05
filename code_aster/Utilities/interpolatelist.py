@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte@edf.fr
 
 """
 :py:mod:`interpolatelist` --- General purpose utilities for search lists

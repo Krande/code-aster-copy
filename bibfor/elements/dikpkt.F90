@@ -40,7 +40,6 @@ subroutine dikpkt(imater, nomphe, kp, kt1, kt2)
 !        kt2    : raideur selon l'axe z du repère local de l'élément
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: donatien.rossat at edf.fr
 !
     integer(kind=8), parameter :: nbres = 4
     integer(kind=8) :: codres(nbres)

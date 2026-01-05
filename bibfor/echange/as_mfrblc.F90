@@ -19,7 +19,6 @@
 subroutine as_mfrblc(fid, nent, nvent, ncent, cs, &
                      swm, stm, pname, start, stride, &
                      count, bsize, lbsize, flt, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
     implicit none
 #include "asterf_types.h"

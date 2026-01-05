@@ -19,7 +19,6 @@
 subroutine alresl(opt, ligrel, nochou, nompar, base)
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 !     arguments:
 !     ----------
 #include "asterf_types.h"

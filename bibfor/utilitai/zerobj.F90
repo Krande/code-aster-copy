@@ -30,7 +30,6 @@ function zerobj(obj)
 #include "asterfort/jexnum.h"
     aster_logical :: zerobj
     character(len=*) :: obj
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : DETERMINER SI UN OBJET JEVEUX EST NUL (OU PAS)
 !       OBJ     : NOM DE L'OBJET JEVEUX à TESTER

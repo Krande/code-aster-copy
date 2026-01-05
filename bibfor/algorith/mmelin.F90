@@ -18,7 +18,6 @@
 
 subroutine mmelin(noma, numa, typint, nnint)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/assert.h"

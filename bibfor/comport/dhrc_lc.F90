@@ -23,7 +23,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option, &
                    dsidep, debug)
 ! aslint: disable=W1504
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 #include "asterf_types.h"

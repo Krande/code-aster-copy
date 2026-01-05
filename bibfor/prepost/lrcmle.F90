@@ -20,7 +20,6 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt, &
                   numord, typent, typgeo, iprof, ntvale, &
                   nomprf, codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 !     LECTURE D'UN CHAMP - FORMAT MED - LECTURE
 !     -    -       -              -     --

@@ -19,7 +19,6 @@
 #ifndef MFRONTBEHAVIOUR_H_
 #define MFRONTBEHAVIOUR_H_
 
-/* person_in_charge: mathieu.courtois@edf.fr */
 
 #ifdef __cplusplus
 

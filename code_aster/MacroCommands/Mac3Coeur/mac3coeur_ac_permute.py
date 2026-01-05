@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte at edf.fr
 
 from ...Cata.DataStructure import maillage_sdaster, modele_sdaster, evol_noli
 from ...Cata.Syntax import _F, NoRepeat, SIMP, MACRO

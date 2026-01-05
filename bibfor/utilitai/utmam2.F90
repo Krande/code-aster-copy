@@ -31,7 +31,6 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
     integer(kind=8) :: nbma, nbtrou, tatrou(nbma)
     character(len=8) :: modele
 !
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       FILTRER LES MAILLES AFFECTEES PAR LE MODELE

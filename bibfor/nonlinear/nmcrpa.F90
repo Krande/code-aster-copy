@@ -19,7 +19,6 @@
 subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst, &
                   dtmin)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

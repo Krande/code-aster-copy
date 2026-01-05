@@ -19,7 +19,6 @@
 subroutine mdexma(nofimd, idfimd, nomamd, option, existm, &
                   ndim, codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 !        FORMAT MED : EXISTENCE D'UN MAILLAGE DANS UN FICHIER
 !               - -   --             --
 ! ______________________________________________________________________

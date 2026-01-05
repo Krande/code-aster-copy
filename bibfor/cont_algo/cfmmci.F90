@@ -29,7 +29,6 @@ subroutine cfmmci(ds_contact)
 #include "asterfort/cfmmco.h"
 #include "asterfort/mminfr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !

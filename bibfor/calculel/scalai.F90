@@ -20,7 +20,6 @@ function scalai(gd)
     implicit none
     character(len=8) :: scalai
 !
-! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"

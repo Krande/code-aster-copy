@@ -19,7 +19,6 @@
 subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmforc : Calculate the forces at the current step, specified by the argument
 !           "index".

@@ -19,7 +19,6 @@
 subroutine parti0(nbmat, tlimat, partit)
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"

@@ -30,7 +30,6 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !
     integer(kind=8) :: jadd, nbval, n1, j1
     character(len=*) :: nomsd, nopara, nomobj
-! person_in_charge: jacques.pellet at edf.fr
 !
 ! ----------------------------------------------------------------------
 !   extraire d'une sd_resultat, la liste des valeurs d'un parametre

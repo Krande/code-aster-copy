@@ -49,7 +49,6 @@ subroutine te0037(option, nomte)
 !
     character(len=16) :: option, nomte
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !.......................................................................
 !

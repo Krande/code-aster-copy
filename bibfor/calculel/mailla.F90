@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 function mailla(ligrel)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
     character(len=8) :: mailla
 #include "jeveux.h"

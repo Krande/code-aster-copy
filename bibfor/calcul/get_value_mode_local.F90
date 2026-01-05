@@ -51,7 +51,6 @@ subroutine get_value_mode_local(nmparz, listepara, valepara, iret, retpara_, nbp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 #include "asterf_types.h"
 #include "jeveux.h"

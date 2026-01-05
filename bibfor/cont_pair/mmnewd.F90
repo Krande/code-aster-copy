@@ -28,7 +28,6 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmtang.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: type_elem
     integer(kind=8), intent(in) :: nb_node

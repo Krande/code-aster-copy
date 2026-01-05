@@ -23,7 +23,6 @@ function mminfr(sdcont_defi_, question_, i_zone_)
 #include "asterf_types.h"
 #include "asterfort/mminfp.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8) :: mminfr
     character(len=*), intent(in) :: sdcont_defi_

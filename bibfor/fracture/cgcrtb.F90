@@ -31,7 +31,6 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara, &
     character(len=8) :: table, typfis
     character(len=16) :: option
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

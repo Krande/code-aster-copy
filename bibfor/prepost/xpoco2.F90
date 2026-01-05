@@ -20,7 +20,6 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma, &
                   cns1, cns2, ces1, ces2, cesvi1, &
                   cesvi2, resuco, comps1, comps2, pre1)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

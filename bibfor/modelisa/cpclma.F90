@@ -37,7 +37,6 @@ subroutine cpclma(nomain, nomaou, typcol, base)
     character(len=1) :: base
     character(len=8) :: nomain, nomaou, typcol
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
 !   But :  Recopie des collections .GROUPEMA ET .GROUPENO

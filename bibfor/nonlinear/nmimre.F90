@@ -26,7 +26,6 @@ subroutine nmimre(ds_conv, ds_print)
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Conv), intent(in) :: ds_conv
     type(NL_DS_Print), intent(inout) :: ds_print

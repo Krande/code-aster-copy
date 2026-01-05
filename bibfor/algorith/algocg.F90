@@ -19,7 +19,6 @@
 subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
                   ctccvg)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
 !
     use NonLin_Datastructure_type

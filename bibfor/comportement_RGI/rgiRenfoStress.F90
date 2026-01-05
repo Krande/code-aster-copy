@@ -20,7 +20,6 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
                           teta1, teta2, dt, ppas, theta, fl3d, &
                           end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, ipzero, &
                           ngf, rc00, var0, varf, sigf6d, matdechac, rhov, ierr1)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !
     implicit none

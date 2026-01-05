@@ -18,7 +18,6 @@
 
 subroutine carces(cartz, typces, cesmoz, base, cesz, &
                   kstop, iret)
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
 #include "jeveux.h"

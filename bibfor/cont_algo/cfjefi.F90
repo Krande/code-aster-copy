@@ -33,7 +33,6 @@ subroutine cfjefi(mesh, disp_iter, ds_contact)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: disp_iter

@@ -20,7 +20,6 @@ subroutine caundf(code, opt, te)
     use calcul_module, only: ca_iaoppa_, ca_iawlo2_, ca_iawloc_, &
                              ca_iawtyp_, ca_igr_, ca_nbgr_, ca_npario_
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "asterf_types.h"
 #include "jeveux.h"

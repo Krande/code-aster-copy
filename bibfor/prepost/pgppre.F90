@@ -23,7 +23,6 @@ subroutine pgppre(sd_pgp)
 ! 2 - Establish a list of *observations* to be calculated, to be saved
 !     in a dedicated developper data structure (sd_pgp)
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getres.h"

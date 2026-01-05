@@ -19,7 +19,6 @@
 subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
                   nbvari, epsilo, varia, matper, dsidep, &
                   smatr, sdeps, ssigp, svip, iret)
-! person_in_charge: jean-michel.proix at edf.fr
 !-----------------------------------------------------------------------
 !     OPERATEUR CALC_POINT_MAT : MATRICE TANGENTE PAR PERTURBATION
 !     RESSEMBLE A TGVERI MAIS SANS ELEMENT FINI

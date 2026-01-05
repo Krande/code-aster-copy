@@ -24,7 +24,6 @@ subroutine mmvalp(nb_dim, elem_type, elem_nbno, nb_cmp, ksi1, &
 #include "asterfort/assert.h"
 #include "asterfort/mmnonf.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: nb_dim
     character(len=8), intent(in) :: elem_type

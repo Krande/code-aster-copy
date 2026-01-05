@@ -24,7 +24,6 @@ subroutine apcoma(mesh, newgeo, elem_nume, elem_nbnode, elem_coor)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo

@@ -20,7 +20,6 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmarch : Archive the current step.
 !

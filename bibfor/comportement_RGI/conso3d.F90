@@ -19,7 +19,6 @@
 subroutine conso3d(epsmk, epser, ccmin, ccmax, epsm6, &
                    epse6, cc3, vepsm33, vepsm33t, cwp, &
                    cmp, ctd, ctv)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   calcul coeff de consolidation principaux et de leur base
 !   pour le fluage non lineaire

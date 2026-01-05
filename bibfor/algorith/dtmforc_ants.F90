@@ -20,7 +20,6 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
                         time, depl, vite, fext)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmforc_ants : Calculates the anti-sismic device force at the current
 !                step (t)

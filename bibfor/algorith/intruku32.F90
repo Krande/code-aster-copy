@@ -19,7 +19,6 @@
 subroutine intruku32(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! intruku32 : Integrate from t_i to t_i+1 the differential equations of motion
 !             using a Runge-Kutta type order 3/2 scheme.

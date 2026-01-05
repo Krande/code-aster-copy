@@ -26,7 +26,6 @@ subroutine mm_cycl_flip(ds_contact, cycl_flip)
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(out) :: cycl_flip

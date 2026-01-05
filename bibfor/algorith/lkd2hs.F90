@@ -18,7 +18,6 @@
 !
 subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t, &
                   dhds, d2hds2)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE 2NDE DE H PAR RAPPORT A DEVIATEUR SIGMA

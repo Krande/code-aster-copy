@@ -32,7 +32,6 @@ subroutine ntnoli(model, mate, cara_elem, l_stat, l_evol, &
 #include "asterfort/rsrusd.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: mate

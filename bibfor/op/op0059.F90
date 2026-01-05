@@ -27,7 +27,6 @@ subroutine op0059()
 #include "asterfort/dc_polycristal.h"
 #include "asterfort/dc_multifibre.h"
 !
-! person_in_charge: jean-michel.proix at edf.fr
 !
 !
 ! --------------------------------------------------------------------------------------------------

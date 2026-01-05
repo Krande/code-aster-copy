@@ -19,7 +19,6 @@
 subroutine utin3d(igeom, nsomm, ino, ityp, inst, &
                   insold, k8cart, ltheta, niv, ifm, &
                   option, valfp, valfm, noe)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  UTILITAIRE D'INTERPOLATION 3D DE CHARGE
 !                          POUR AERER TE0003

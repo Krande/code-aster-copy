@@ -23,7 +23,6 @@ from subprocess import call
 
 from code_aster.Commands import *
 
-# person_in_charge: mathieu.courtois@edf.fr
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 # This testcase checks the import of the commands catalog as done by AsterStudy

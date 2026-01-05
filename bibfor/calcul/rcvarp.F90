@@ -29,7 +29,6 @@ subroutine rcvarp(arret, varc_name_, poum, varc_vale, iret)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=1), intent(in) :: arret
     character(len=*), intent(in) :: varc_name_

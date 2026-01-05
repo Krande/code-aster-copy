@@ -25,7 +25,6 @@ subroutine dimeco(sdcont, model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem, 
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer(kind=8), intent(in) :: model_ndim

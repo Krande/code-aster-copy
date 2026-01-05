@@ -18,7 +18,6 @@
 
 subroutine glrc_calc_cst(lamf, muf, alf, gf, efp, qff)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
     real(kind=8) :: lamf, muf, alf, gf, trot, trot2

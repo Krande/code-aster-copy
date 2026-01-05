@@ -25,7 +25,6 @@ subroutine nmvcle(modelz, matez, cara_elemz, time, varcz)
 #include "asterfort/mecact.h"
 #include "asterfort/vrcins.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: modelz
     character(len=*), intent(in) :: matez

@@ -18,7 +18,6 @@
 !
 subroutine lkd2sh(nmat, materf, varh, dhds, devsig, &
                   rcos3t, d2shds, iret)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE 2NDE DE SII*H PAR RAPPORT A SIGMA

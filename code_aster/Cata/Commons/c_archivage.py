@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
 
 from ..Language.DataStructure import listr8_sdaster
 from ..Language.Syntax import BLOC, FACT, SIMP, UN_PARMI, NoRepeat

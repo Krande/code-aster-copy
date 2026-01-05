@@ -18,7 +18,6 @@
 !
 subroutine te0362(option, nomte)
 !
-! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
 #include "jeveux.h"

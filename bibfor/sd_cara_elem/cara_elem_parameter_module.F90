@@ -25,7 +25,6 @@ module cara_elem_parameter_module
 !   Pour l'opérateur AFFE_CARA_ELEM
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 !&<
     implicit none

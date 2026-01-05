@@ -26,7 +26,6 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/reliem.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywordfact

@@ -18,7 +18,6 @@
 !
 subroutine jjalls(lonoi, ic, genri, typei, lty, &
                   ci, itab, jitab, iadmi, iadyn)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
     implicit none
 #include "asterf_types.h"

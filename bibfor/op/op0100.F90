@@ -22,7 +22,6 @@ subroutine op0100()
 !      BUT:CALCUL DU TAUX DE RESTITUTION D'ENERGIE PAR LA METHODE THETA
 !          CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES
 ! ======================================================================
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

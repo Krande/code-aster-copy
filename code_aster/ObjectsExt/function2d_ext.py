@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.sellenet@edf.fr
 """
 :py:class:`Function2D` --- Representation of Function2D
 **********************************************

@@ -22,7 +22,6 @@ subroutine apcond(newgeo, node_nume, node_coor)
 !
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: newgeo
     integer(kind=8), intent(in) :: node_nume

@@ -19,7 +19,6 @@
 subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
                             vi, vi4, vr, sci, sci4, &
                             scr)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
 !  FONCTION REALISEE : SUR-COUCHE MPI

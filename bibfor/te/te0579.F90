@@ -21,7 +21,6 @@ subroutine te0579(option, nomte)
 !
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
 !          CORRESPONDANT A UN FLUX REPARTI SUR LES BORDS

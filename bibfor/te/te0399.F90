@@ -18,7 +18,6 @@
 
 subroutine te0399(option, nomte)
 
-! person_in_charge: mohamed.torkhani at edf.fr
 
     implicit none
 #include "jeveux.h"

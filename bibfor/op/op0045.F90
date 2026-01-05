@@ -38,7 +38,6 @@ subroutine op0045()
 !          LES VALEURS PROPRES ET DES VECTEURS PROPRES SONT REELS OU
 !          COMPLEXES CONJUGUEES OU NON
 !-----------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 ! --- INCLUDES DE MODE_ITER_SIMULT

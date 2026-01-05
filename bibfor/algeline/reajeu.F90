@@ -24,7 +24,6 @@ subroutine reajeu(ds_contact)
 !
 #include "asterfort/jedupo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !

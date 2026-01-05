@@ -26,7 +26,6 @@ subroutine cfacat(indic, nbliac, ajliai, spliai, &
 #include "asterfort/cfaca1.h"
 #include "asterfort/cfaca2.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: nbliac
     integer(kind=8) :: indic, ajliai, spliai

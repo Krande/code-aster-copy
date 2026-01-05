@@ -43,7 +43,6 @@ subroutine apstos(mesh, ds_contact)
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
 
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact

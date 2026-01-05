@@ -23,7 +23,6 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
 ! order of curvilinear abscissas as defined in the mesh (maillage)
 ! ----------------------------------------------------------------------
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 #include "jeveux.h"
 #include "blas/dcopy.h"

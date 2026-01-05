@@ -19,7 +19,6 @@
 subroutine setValVect(vect, x1, x2, x3, x4, x5, &
                       x6, x7, x8, x9, x10, x11, x12, x13, x14, &
                       x15, x16, x17, ind1, vectInd)
-! person_in_charge: etienne.grimal@edf.fr
 !-----------------------------------------------------------------------
 !   copie de valeur dans un tableau
 !   soit on donne le premier indice ind1 et les autres suivent

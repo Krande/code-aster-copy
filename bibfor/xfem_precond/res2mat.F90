@@ -18,7 +18,6 @@
 
 subroutine res2mat(resu, inst, chmat, nommat, mu, ka, lvarc, varcns, cplan)
 !
-! person_in_charge: samuel.geniaut at edf.fr
     implicit none
 !
 #include "asterf_types.h"

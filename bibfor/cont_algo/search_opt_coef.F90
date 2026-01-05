@@ -25,7 +25,6 @@ subroutine search_opt_coef(coef, indi, pres_cont, dist_cont, &
 #include "asterfort/assert.h"
 #include "asterfort/mmstac.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     real(kind=8), intent(in) :: coef(2)
     integer(kind=8)       :: indi(2)

@@ -19,7 +19,6 @@
 subroutine lkijac(mod, nmat, materf, timed, timef, &
                   yf, deps, nr, nvi, vind, &
                   vinf, yd, dy, drdy, iret)
-! person_in_charge: alexandre.foucault at edf.fr
 ! aslint: disable=W1306
     implicit none
 !     --------------------------------------------------------------

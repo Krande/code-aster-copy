@@ -27,7 +27,6 @@ subroutine nmext1(mesh, field, field_disc, field_type, field_s, &
 #include "asterfort/nmext2.h"
 #include "asterfort/nmext3.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
     character(len=8), intent(in) :: mesh

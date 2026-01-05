@@ -19,7 +19,6 @@
 
 #                 ACIERS 300 SOUS IRRADIATIONS
 #
-# person_in_charge: jean-luc.flejou at edf.fr
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 

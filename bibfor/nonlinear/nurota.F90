@@ -28,7 +28,6 @@ subroutine nurota(modelz, nume_ddl, compor, sdnuro)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: modelz
     character(len=24), intent(in) :: nume_ddl

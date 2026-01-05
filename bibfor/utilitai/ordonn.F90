@@ -34,7 +34,6 @@ subroutine ordonn(nomfon, iret)
 !
     character(len=19) :: nomfon
     integer(kind=8) :: iret
-! person_in_charge: mathieu.courtois at edf.fr
 ! ----------------------------------------------------------------------
 !     1. DECLENCHE UNE ERREUR <F> SI LES ABSCISSES NE SONT PAS MONOTONES
 !        AU SENS LARGE, APPEL DE FOVERF POUR CELA

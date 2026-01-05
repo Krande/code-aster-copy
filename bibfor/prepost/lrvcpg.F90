@@ -20,7 +20,6 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo, &
                   elrefa, fapg, nloc, locnam, permu, &
                   nutyma, nbsp, codret)
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !     LECTURE FICHIER MED - VERIFICATION ET COMPARAISON DES PG ASTER/MED
 !     -    -                -               -               --
 !-----------------------------------------------------------------------

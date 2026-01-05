@@ -19,7 +19,6 @@
 module parameters_module
     implicit none
 !
-! person_in_charge: mathieu.courtois@edf.fr
 
 ! ------------------------------------------------------------------------------
 !   Define some constant values shared by several subroutines

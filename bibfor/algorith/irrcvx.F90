@@ -20,7 +20,6 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater, &
                   sig, vin, seuil)
     implicit none
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/rcvarc.h"

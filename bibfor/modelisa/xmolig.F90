@@ -35,7 +35,6 @@ subroutine xmolig(liel1, trav)
 !
     character(len=24) :: liel1, trav
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !
 ! ----------------------------------------------------------------------

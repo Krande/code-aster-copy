@@ -28,7 +28,6 @@ subroutine fointe_varc(codmes, fami, kpg, ksp, poum, &
 #include "asterfort/fointe.h"
 #include "asterfort/rcvarc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: codmes
     character(len=*), intent(in) :: fami

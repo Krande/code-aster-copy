@@ -18,7 +18,6 @@
 
 subroutine ejinit(nomte, iu, ip)
 !
-! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
 #include "asterf_types.h"

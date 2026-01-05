@@ -27,7 +27,6 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss, &
     character(len=8) :: typfis
     character(len=16) :: typdis
     character(len=24) :: liss
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

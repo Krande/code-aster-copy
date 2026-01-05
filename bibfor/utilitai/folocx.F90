@@ -26,7 +26,6 @@ subroutine folocx(vale, n, x, prolgd, i, &
     real(kind=8) :: valr(2)
     character(len=*) :: prolgd
     character(len=1) :: coli
-! person_in_charge: mathieu.courtois at edf.fr
 !     RECHERCHE DE LA PLACE DE X DANS LE VECTEUR VALE ORDONNE CROISSANT
 !     ON VERIFIE SI X EST DANS L'INTERVALLE (V(1),V(N))
 !                SINON, SUIVANT PROLGD, ON AGIT...

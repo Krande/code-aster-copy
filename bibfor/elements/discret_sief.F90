@@ -33,7 +33,6 @@ subroutine discret_sief(for_discret, klv, dul, sim, ilogic, sip, fono, force)
     real(kind=8)    :: klv(*), dul(*), sim(*)
     real(kind=8)    :: sip(*), fono(*), force(*)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALCUL DES EFFORTS GÉNÉRALISÉS (REPÈRE LOCAL)

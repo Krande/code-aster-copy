@@ -25,7 +25,6 @@
 
 #include <iostream>
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 void TableContainer::addObject( const std::string &a, ElementaryMatrixDisplacementRealPtr b ) {
     _mapEMDD[a] = b;

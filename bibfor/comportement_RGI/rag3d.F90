@@ -19,7 +19,6 @@
 subroutine rag3d(taar, nrjg, tref0, aar0, sr1, &
                  srsrag, teta1, dt, vrag00, aar1, &
                  vrag1, alat)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !    sous programme de calcul de l avancement chimique de rag
 !

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 function sdsolv(vect)
-! person_in_charge: thomas.de-soza at edf.fr
 !
     implicit none
     integer(kind=8) :: sdsolv

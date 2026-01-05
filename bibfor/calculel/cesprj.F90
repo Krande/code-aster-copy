@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine cesprj(ces1z, correz, basez, ces2z, iret)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

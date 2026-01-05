@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine jeveba(nomlu, base)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=W0405,C1002
     use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
     implicit none

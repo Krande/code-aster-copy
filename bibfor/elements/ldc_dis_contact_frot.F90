@@ -19,7 +19,6 @@
 subroutine ldc_dis_contact_frot(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 !        LOI DE COMPORTEMENT : DISCRET DE CHOC AVEC FROTTEMENT DE COULOMB
 !

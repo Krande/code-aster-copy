@@ -25,7 +25,6 @@ subroutine mm_cycl_print(ds_print, ds_measure)
 #include "asterfort/nmrvai.h"
 #include "asterfort/nmimcr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print

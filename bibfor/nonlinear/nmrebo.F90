@@ -20,7 +20,6 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt, &
                   ldcopt, ldccvg, fopt, fcvg, opt, &
                   act, rhomin, rhomax, rhoexm, rhoexp, &
                   stite, echec)
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

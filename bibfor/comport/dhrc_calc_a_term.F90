@@ -19,7 +19,6 @@
 subroutine dhrc_calc_a_term(i, j, sup_s, inf_s, a0, aa_t, ga_t, aa_c, ga_c, vint, &
                             a, ap1, ap2, as1, as2, rvp, sup_d, inf_d)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 !

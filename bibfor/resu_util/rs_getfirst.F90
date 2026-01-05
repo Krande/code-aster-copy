@@ -25,7 +25,6 @@ subroutine rs_getfirst(result_, nume_first, inst_first)
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
     integer(kind=8), intent(out) :: nume_first

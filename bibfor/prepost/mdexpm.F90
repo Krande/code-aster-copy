@@ -19,7 +19,6 @@
 subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim, &
                   codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 !        FORMAT MED : EXISTENCE DU PREMIER MAILLAGE DANS UN FICHIER
 !               - -   --           -       -
 ! ______________________________________________________________________

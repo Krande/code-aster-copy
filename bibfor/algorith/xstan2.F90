@@ -18,7 +18,6 @@
 
 subroutine xstan2(noma, modele, crit2, lfiss)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

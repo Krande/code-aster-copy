@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-! person_in_charge: sylvie.granet at edf.fr
 !
 subroutine thmCpl006(ds_thm, &
                      lMatr, lSigm, lVari, angl_naut, &

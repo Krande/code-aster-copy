@@ -18,7 +18,6 @@
 
 subroutine couplagf3d(a, b, ngf, kveve66, kmm66, &
                       kmve66, kvem66, bve6, bm6)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !      construction de la mattrice de couplage
 !      entre le fluage de kelvin et le fluage de maxwell

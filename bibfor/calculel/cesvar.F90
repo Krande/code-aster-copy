@@ -23,7 +23,6 @@ subroutine cesvar(carele, compor, ligrel, dcel)
 #include "asterfort/detrsd.h"
 #include "asterfort/jeexin.h"
     character(len=*) :: carele, compor, ligrel, dcel
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : CREER UN CHAM_ELEM_S (DCEL_I) PERMETTANT D'ETENDRE LES
 !        CHAM_ELEM(VARI_R) "OUT" DE CALCUL.

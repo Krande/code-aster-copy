@@ -23,7 +23,6 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
     character(len=1) :: prpal(dim)
     character(len=24) :: nomc(dim)
     character(len=80) :: noml(dim)
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  RETOURNE LA LISTE DES DIFFERENTES MESURES DE TEMPS GENERALES
 !

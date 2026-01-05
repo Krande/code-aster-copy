@@ -19,7 +19,6 @@
 subroutine xcalf2(he, lsng, lstg, baslog, fe, &
                   dgdgl, iret)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

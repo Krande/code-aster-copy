@@ -44,7 +44,6 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
     integer(kind=8) :: ndim
     aster_logical :: grille
 !
-! person_in_charge: patrick.massin at edf.fr
 !     ------------------------------------------------------------------
 !
 !       XPRINI   : X-FEM PROPAGATION

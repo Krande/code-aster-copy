@@ -18,7 +18,6 @@
 
 subroutine getvr8(motfac, motcle, iocc, nbval, vect, &
                   scal, nbret)
-! person_in_charge: mathieu.courtois at edf.fr
     implicit none
     character(len=*), intent(in) :: motfac
     character(len=*), intent(in) :: motcle

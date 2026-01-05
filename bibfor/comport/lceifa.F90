@@ -20,7 +20,6 @@ subroutine lceifa(fami, kpg, ksp, mat, option, &
                   mu, su, deltap, ddedt, vim, &
                   vip, r)
 !
-! person_in_charge: jerome.laverne at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "asterfort/r8inir.h"

@@ -18,7 +18,6 @@
 !
 subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec, &
                   nommet)
-! person_in_charge: van-xuan.tran at edf.fr
 ! aslint: disable=W1501
     implicit none
 #include "jeveux.h"

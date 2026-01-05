@@ -22,7 +22,6 @@ subroutine op0040()
 ! BUT       : FOURNIR LES COMPOSANTES DES CHAMPS PRESENTS DANS UNE SD
 !             DE DONNEES RESULTAT
 ! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 #include "jeveux.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/cmpcha.h"

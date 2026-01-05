@@ -20,7 +20,6 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi, &
                   indcon, indfri, indfrn, lfrot, &
                   lgliss, jeu, lambdc)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

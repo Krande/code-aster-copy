@@ -20,7 +20,6 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
                   iw, vff1, vff2, vff3, idff1, &
                   vu, vg, vp, typmod, geomi, &
                   sig, ddl, vect)
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
 !

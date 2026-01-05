@@ -21,7 +21,6 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
                   ncmpvm, prolz, iinst, numpt, numord, &
                   inst, crit, prec, nrofic, option, &
                   param, nbpgma, nbpgmm, nbspmm, codret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !     LECTURE D'UN CHAMP AUX ELEMENTS - FORMAT MED
 !     -    -       -         -               --
 !-----------------------------------------------------------------------

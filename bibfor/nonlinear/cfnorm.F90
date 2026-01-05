@@ -18,7 +18,6 @@
 
 subroutine cfnorm(ndim, tau1, tau2, norm, noor)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/assert.h"

@@ -38,7 +38,6 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, &
     real(kind=8), intent(in), optional :: c(ndim)
 !
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
 !             DETERMINER LES NOEUDS SOMMETS DE L'ELEMENT PARENT
 !             QUI VOIENT UNE JONCTION (POUR LE CONTACT MULTI)
 !

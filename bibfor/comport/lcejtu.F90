@@ -21,7 +21,6 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
                   sigp, dsidep, vim, vip, typmod, &
                   instam, instap)
 !
-! person_in_charge: astrid.filiot at edf.fr
 !
     use Behaviour_type
 !

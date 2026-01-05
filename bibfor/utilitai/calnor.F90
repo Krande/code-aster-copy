@@ -20,7 +20,6 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa, &
                   orien, nno, npg, noe, ifa, &
                   tymvol, idfde, jac, nx, ny, &
                   nz, tx, ty, hf)
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !         CALCUL DE LA NORMALE SORTANTE D'UN ELEMENT LINEAIRE

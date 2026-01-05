@@ -18,7 +18,6 @@
 !
 subroutine utjac(l2d, geom, ipg, idfde, niv, &
                  ifm, nno, jacob)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL LE JACOBIEN D'UN ELEMENT FINI K
 !                          POUR AERER TE0003

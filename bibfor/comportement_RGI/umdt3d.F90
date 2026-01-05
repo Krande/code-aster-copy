@@ -18,7 +18,6 @@
 
 subroutine umdt3d(souplesse66, dt3, umdt66, a, b, &
                   x, ipzero, ngf, errg, iso)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   calcul du tensseur d endommagement de traction directe
     implicit none

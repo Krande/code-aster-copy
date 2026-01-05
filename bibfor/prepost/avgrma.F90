@@ -20,7 +20,6 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr, &
                   nmaini, nbmap, numpaq, tspaq, nomcri, &
                   nomfor, grdvie, forvie, fordef, proaxe, &
                   cesr)
-! person_in_charge: van-xuan.tran at edf.fr
 !
     implicit none
 #include "asterf_types.h"

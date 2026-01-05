@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine matr_asse_set_values(matasz, dim, idx, jdx, values)
-! person_in_charge: nicolas.tardieu at edf.fr
     use sort_module
     implicit none
 #include "jeveux.h"

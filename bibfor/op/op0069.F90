@@ -36,7 +36,6 @@ subroutine op0069()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-! person_in_charge: natacha.bereux at edf.fr
 !     OPERATEUR ELIM_LAGR
 ! ======================================================================
     character(len=19) :: matass, matred, krigi, krigred, solv1, solv2

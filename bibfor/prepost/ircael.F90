@@ -25,7 +25,6 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai, &
     parameter(nmaxfi=10)
     integer(kind=8) :: jcesdi, jcesli, nummai, nbqcou, nbtcou, jcesvi
     integer(kind=8) :: nbrsec, nbrfib, nbrgrf, nugrfi(nmaxfi), jcesci
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ----------------------------------------------------------------------
 !  IMPR_RESU - CARACTERISTIQUE DE L'ELEMENT
 !  -    -      --                   --

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine as_mpfprr(fid, pflval, n, pro, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !     L'ARGUMENT N N'EST PAS DANS L'API MED
 !
 !

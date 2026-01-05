@@ -18,7 +18,6 @@
 !
 subroutine pipere(npg, a, tau, nsol, eta)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterc/r8maem.h"

@@ -34,7 +34,6 @@ subroutine creaco(nbmato, ma, nblien)
 !               NBMAMA : NOMBRE DE MAILLES RELIEES A CHAQUE MAILLE
 !
 !----------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
 !

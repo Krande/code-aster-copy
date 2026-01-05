@@ -20,7 +20,6 @@ subroutine hydravar3d(hyd0, hydr, hyds, phi00, phi0, dth00, dth0, &
                       epleq00, epleq0, epspt600, epspt60, epspg600, &
                       epspg60, epspc600, epspc60, epsk006, epsk06, epsm006, epsm06, &
                       dfl00, dfl0, ett600, ett60, wplt006, wplt06, wpltx006, wpltx06)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   actualisation des variables internes en fonction du degre
 !   d hydratation

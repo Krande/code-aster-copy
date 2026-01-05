@@ -25,7 +25,6 @@ subroutine nmimci(ds_print, col_name_, vali, l_affe)
 #include "asterf_types.h"
 #include "asterfort/SetTableColumn.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=*), intent(in) :: col_name_

@@ -31,7 +31,6 @@ subroutine ccvrpu(resuin, lisord, nbordr)
     integer(kind=8) :: nbordr
     character(len=8) :: resuin
     character(len=19) :: lisord
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ----------------------------------------------------------------------
 !  CALC_CHAMP - VERIFICATION DES PARAMETRES UTILISATEURS :
 !  -    -       - -              -          -

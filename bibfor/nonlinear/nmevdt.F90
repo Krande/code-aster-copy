@@ -30,7 +30,6 @@ subroutine nmevdt(ds_measure, sderro, timer)
 #include "asterfort/nmleeb.h"
 #include "asterfort/nmtima.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24), intent(in) :: sderro

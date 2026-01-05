@@ -18,7 +18,6 @@
 !
 subroutine ccl21j(fronti, frontj, frn, j, l, &
                   n, n1, t1, t2)
-! person_in_charge: olivier.boiteau at edf.fr
 ! VERSION COMPLEXE DE COL21J
 !     VERSION MODIFIEE POUR L' APPEL A CGEMV (PRODUITS MATRICE VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE

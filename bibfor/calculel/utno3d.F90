@@ -20,7 +20,6 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol, &
                   igeom, xn, yn, zn, jac, &
                   idfdx, idfdy, hf, poids3, npgf, &
                   noe)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  UTILITAIRE DE CALCUL DE LA NORMALE A UNE
 !                          FACE EN SES NOEUDS. POUR AERER TE0003

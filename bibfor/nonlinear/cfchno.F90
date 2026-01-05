@@ -37,7 +37,6 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 #include "blas/dcopy.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: noma
     character(len=4) :: typenm

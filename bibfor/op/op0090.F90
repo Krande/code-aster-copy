@@ -18,7 +18,6 @@
 
 subroutine op0090()
     implicit none
-! person_in_charge: mathieu.courtois at edf.fr
 !     OPERATEUR "RECU_FONCTION"
 !     ------------------------------------------------------------------
 #include "asterfort/chpve2.h"

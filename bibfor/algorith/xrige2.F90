@@ -44,7 +44,6 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom, &
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(48), matuu(*)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !.......................................................................
 !

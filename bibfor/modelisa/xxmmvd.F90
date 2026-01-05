@@ -18,7 +18,6 @@
 
 function xxmmvd(vect)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     integer(kind=8) :: xxmmvd

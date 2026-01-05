@@ -28,7 +28,6 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
     real(kind=8) :: pgl(3, 3), toutms(nbphas, nfs, nsg, 7), coeft(nmat)
     real(kind=8) :: q(3, 3)
 !
-! person_in_charge: jean-michel.proix at edf.fr
 !       IN
 !         NBCOMM :  NOMBRE DE COEF COEFTIAU PAR FAMILLE
 !         CPMONO :  NOMS DES LOIS COEFTIAU PAR FAMILLE

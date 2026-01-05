@@ -50,7 +50,6 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
     character(len=16) :: typdis
 !
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
 !                TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES,
 !                ET LE PLAN DE FISSURE, DECOUPAGE EN FACETTES,
 !                POINT MILIEU DE FISSURE DANS LE CAS QUADRATIQUE (2D ET 3D)

@@ -20,7 +20,6 @@ subroutine mocon2(dir, sigb, siga, hh, nlit, &
                   om, rr, nufsup, nufinf, nufsd1, &
                   nufid1, nufsd2, nufid2, prec)
     implicit none
-! person_in_charge: sebastien.fayolle at edf.fr
 !
 #include "jeveux.h"
 #include "asterfort/jelira.h"

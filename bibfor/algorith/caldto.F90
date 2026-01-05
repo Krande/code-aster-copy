@@ -19,7 +19,6 @@
 subroutine caldto(s6, fkooh, msns, dtods)
     implicit none
 !
-! person_in_charge: jean-michel.proix at edf.fr
 !     ----------------------------------------------------------------
 !
 !     MONOCRISTAL : calcul de la derivee de Tau en GDEF : dTau/dS_ab

@@ -21,7 +21,6 @@ subroutine montee(nout, lchout, lpaout, fin)
     use calcul_module, only: ca_calvoi_, ca_igr_, ca_nbgr_, ca_ligrel_
 !
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterfort/monte1.h"
 #include "asterfort/typele.h"

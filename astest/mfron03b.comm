@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: david.haboussa at edf.fr
 # Comparaison entre la loi MonoCrystal_CFC (MFront) et la loi MONOCRISTAL
 # (ECOULEMENT='MONO_VISC1',ECRO_ISOT='MONO_ISOT1',ECRO_CINE='MONO_CINE1')
 # pour les CFC (Code_Aster)

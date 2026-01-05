@@ -35,7 +35,6 @@ subroutine ccnett(nobase, nopout)
 !                CCLIOP ONT ETE CONSTRUITS
 !   NOPOUT  I    TAILLE DE LA LISTE OUT
 ! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !
     integer(kind=8) :: iop
 !

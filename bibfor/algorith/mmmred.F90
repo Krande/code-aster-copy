@@ -24,7 +24,6 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 #include "asterfort/assert.h"
 #include "asterfort/mmfield_prep.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: ndimg
     character(len=19) :: champ, champr

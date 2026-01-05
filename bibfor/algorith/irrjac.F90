@@ -32,7 +32,6 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat, &
     character(len=8) :: mod
     integer(kind=8) :: nmat, nmod, kpg, ksp
     real(kind=8) :: mater(nmat, 2), yf(*), dy(*), drdy(nmod, nmod)
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 !     ------------------------------------------------------------------
 !  IRRAD3M    : CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY

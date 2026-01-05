@@ -19,7 +19,6 @@
 subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0, &
                   ddepl1, eta, pilcvg, nbeffe)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

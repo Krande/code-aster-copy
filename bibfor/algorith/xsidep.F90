@@ -22,7 +22,6 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm, &
                   lsn, lst, sig, jpmilt, nfiss, &
                   jheavn, jstno)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 ! aslint: disable=W1306,W1504
     implicit none
 !

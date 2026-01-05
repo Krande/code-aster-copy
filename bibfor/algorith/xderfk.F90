@@ -18,7 +18,6 @@
 
 subroutine xderfk(kappa, mu, r, theta, ndim, dfkdpo)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

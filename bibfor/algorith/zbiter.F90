@@ -19,7 +19,6 @@
 subroutine zbiter(rho, f, rhoopt, fopt, mem, &
                   rhonew, echec)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

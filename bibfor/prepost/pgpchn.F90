@@ -21,7 +21,6 @@ subroutine pgpchn(sd_pgp, iobs)
 ! Extract a node field from the modal basis, reduced to the requested
 ! degrees of freedom (node,component)
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cnocns.h"

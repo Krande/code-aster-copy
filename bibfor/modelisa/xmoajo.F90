@@ -25,7 +25,6 @@ subroutine xmoajo(jj, nfiss, itypx, ntypx)
 #include "asterfort/jemarq.h"
     integer(kind=8) :: jj, nfiss, itypx(*), ntypx(*)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !
 ! ----------------------------------------------------------------------

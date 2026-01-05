@@ -26,7 +26,6 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
 #include "asterfort/mm_cycl_laugf.h"
 #include "asterfort/mm_cycl_zonf.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8), intent(in) :: pres_frot_prev(3)
     real(kind=8), intent(in) :: dist_frot_prev(3)

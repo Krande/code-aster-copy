@@ -20,7 +20,6 @@ subroutine norfpd(ndim, nno1, nno2, nno3, npg, &
                   iw, vff1, vff2, vff3, idff1, &
                   vu, vp, vpi, typmod, nomte, &
                   geomi, sigref, epsref, piref, vect)
-! person_in_charge: sebastien.fayolle at edf.fr
 !
 ! aslint: disable=W1306
     implicit none

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jeimpo(unit, nomlu, mess)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! IMPRIME LE CONTENU D'UN OBJET JEVEUX
 !
 ! IN  UNIT  : NUMERO D'UNITE LOGIQUE ASSOCIE AU FICHIER D'IMPRESSION

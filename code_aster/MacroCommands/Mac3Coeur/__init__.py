@@ -17,6 +17,5 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte at edf.fr
 
 """Package Mac3Coeur"""

@@ -20,7 +20,6 @@ subroutine lceiex(fami, kpg, ksp, mat, option, &
                   mu, su, de, ddedt, vim, &
                   vip, r, carcri, codret)
 !
-! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
     implicit none
 #include "asterf_types.h"

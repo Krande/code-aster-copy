@@ -37,7 +37,6 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
 #include "asterfort/nmvcex.h"
 #include "asterfort/xajcin.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=1), intent(in) :: type_comp
     character(len=24), intent(in) :: model

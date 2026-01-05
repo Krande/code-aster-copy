@@ -28,7 +28,6 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat, &
     real(kind=8) :: taus, coeft(nmat), dgamma, dp, dt, taumu, tauv
     real(kind=8) :: sgns, hsr(nsg, nsg), dy(*)
     real(kind=8) :: vind(*), dalpha
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !  COMPORTEMENT MONOCRISTALLIN : ECOULEMENT (VISCO)PLASTIQUE
 !  INTEGRATION DE LA LOIS MONOCRISTALLINES KOCKS-RAUCH. CALCUL DE DALPHA

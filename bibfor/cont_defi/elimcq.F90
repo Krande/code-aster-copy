@@ -25,7 +25,6 @@ subroutine elimcq(sdcont, mesh, nb_cont_zone, nb_cont_surf, nb_cont_node)
 #include "asterfort/cfleq8.h"
 #include "asterfort/cfmeno.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

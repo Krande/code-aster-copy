@@ -19,7 +19,6 @@
 subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
                   ma2, jnivgr)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

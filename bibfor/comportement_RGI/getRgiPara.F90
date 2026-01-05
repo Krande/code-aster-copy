@@ -18,7 +18,6 @@
 !
 subroutine getRgiPara(nomres, nmatbe2)
 !
-! person_in_charge: etienne.grimal@edf.fr
 
     implicit none
 

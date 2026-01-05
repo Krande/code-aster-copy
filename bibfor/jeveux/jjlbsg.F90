@@ -33,7 +33,6 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi, &
 ! OUT   LTOT  : LONGUEUR EN ENTIERS LIBEREE
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "jeveux_private.h"
 #include "asterc/hpdeallc.h"

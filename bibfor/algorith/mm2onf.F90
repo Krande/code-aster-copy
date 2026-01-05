@@ -19,7 +19,6 @@
 subroutine mm2onf(ndim, nno, alias, ksi1, ksi2, &
                   ddff)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/assert.h"

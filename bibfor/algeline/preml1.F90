@@ -24,7 +24,6 @@ subroutine preml1(neq, n2, diag, delg, col, &
                   vois, suit, ier, nec, prno, &
                   deeq, noeud, ddl, invpnd, permnd, &
                   spndnd, xadjd, matgen)
-! person_in_charge: olivier.boiteau at edf.fr
 ! aslint: disable=W1504
     implicit none
 !

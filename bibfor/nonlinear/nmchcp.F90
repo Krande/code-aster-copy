@@ -18,7 +18,6 @@
 !
 subroutine nmchcp(tychap, vachin, vachou)
 !
-! person_in_charge: sylvie.granet at edf.fr
 !
     implicit none
 #include "asterfort/nmchai.h"

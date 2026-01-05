@@ -28,7 +28,6 @@ subroutine apcalc(pair_category, mesh, ds_contact)
 #include "asterfort/apimpr.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=6), intent(in) :: pair_category
     character(len=8), intent(in) :: mesh

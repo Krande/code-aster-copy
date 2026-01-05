@@ -19,7 +19,6 @@
 subroutine dtminfo_choc(nlcase, nbnoli)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtminfo_choc : Print out information about the current choc state
 !

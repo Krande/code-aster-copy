@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte@edf.fr
 """
 :py:class:`SimpleFieldOnNodesReal`
 Simple Fields defined on nodes of elements

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
 # TEST DE LA VARIATION DU COEFFICIENT D'ECROUIISAGE C EN FONCTION
 # DE LA TEMPERATURE POUR LA RELATION DE COMPORTEMENT VMIS_CINE_LINE
 # ON FAIT 2 CALCULS AVEC STAT_NON_LINE :

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sam.cuvilliez at edf.fr
 
 from .cata_comportement import LoiComportement
 

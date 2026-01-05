@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """Ce module définit la classe `SYSTEM` et la fonction `ExecCommand`
 qui est présente uniquement pour commodité pour les Macros.

@@ -18,7 +18,6 @@
 
 subroutine op0010()
 !
-! person_in_charge: patrick.massin at edf.fr
 !
 ! aslint: disable=W1501
     implicit none

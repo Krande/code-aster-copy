@@ -21,7 +21,6 @@ subroutine op0032()
 !     EIGENVALUE-COUNTING METHODS FOR GEP OR QEP
 !     ------------------------------------------------------------------
 ! aslint: disable=W1501
-! person_in_charge: olivier.boiteau at edf.fr
 !
 !
 #include "asterf_types.h"

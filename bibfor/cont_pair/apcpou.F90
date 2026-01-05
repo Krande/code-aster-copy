@@ -29,7 +29,6 @@ subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type, tau1, &
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
     integer(kind=8), intent(in) :: i_zone

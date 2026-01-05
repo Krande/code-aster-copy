@@ -36,7 +36,6 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
     character(len=8) :: moa
     character(len=16) :: klino
     integer(kind=8) :: nbma, lima(*), nbnoOut
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! BUT :
 !   ANALYSER LA LISTE DES MAILLES AVANT CONSTRUCTION DE LA LISTE DE NOEUDS

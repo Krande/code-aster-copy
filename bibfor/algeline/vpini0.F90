@@ -21,7 +21,6 @@ subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag,
 
 ! INITIALISATIONS LIEES A L'OPERATEUR MODE_ITER_SIMULT.
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 
 #include "asterc/getres.h"

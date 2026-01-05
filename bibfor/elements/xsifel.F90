@@ -22,7 +22,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
                   lst, idecpg, igthet, fno, nfiss, &
                   jheavn, jstno)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1504
     implicit none

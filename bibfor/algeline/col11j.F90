@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine col11j(fronti, frn, n, t)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
     integer(kind=8) :: n
     real(kind=8) :: fronti(*), t(n), frn(*)

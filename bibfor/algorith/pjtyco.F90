@@ -18,7 +18,6 @@
 
 subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno, &
                   lelem, lelga)
-! person_in_charge: jacques.pellet at edf.fr
 !
 ! COMMANDE:  PROJ_CHAMP
 ! BUT : DETERMINER LES TYPES DE CHAMP A PROJETER

@@ -23,7 +23,6 @@ subroutine nlbuff(sd_nl, addrs, level)
 !
 !  sd_nl [Obl]: Name of the nl data structure requested [K24]
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/crevec.h"

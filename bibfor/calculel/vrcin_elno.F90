@@ -26,7 +26,6 @@ subroutine vrcin_elno(nomch, cesmod, chs)
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
     character(len=19), intent(in) :: nomch, cesmod, chs
-! person_in_charge: sam.cuvilliez at edf.fr
 !-----------------------------------------------------------------------
 !
 !   Sous-routine de vrcin1. Cas particulier ou l'on souhaite produire

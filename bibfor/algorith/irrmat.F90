@@ -20,7 +20,6 @@ subroutine irrmat(fami, kpg, ksp, model, imat, &
                   nmat, itmax, rela, materd, materf, &
                   matcst, ndt, ndi, nr, nvi)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/irrnvi.h"

@@ -24,7 +24,6 @@ function zerosd(typesd, sd)
 #include "asterfort/zerobj.h"
     aster_logical :: zerosd
     character(len=*) :: sd, typesd
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : DETERMINER SI UNE SD EST NULLE (OU PAS)
 !  IN   TYPESD : TYPE DE  SD

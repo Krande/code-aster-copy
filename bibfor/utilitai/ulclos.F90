@@ -18,7 +18,6 @@
 !
 subroutine ulclos()
     implicit none
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !     ------------------------------------------------------------------
 !     FERMETURE DE TOUS LES FICHIERS OUVERTS REFERENCES PAR ULDEFI
 !     SAUF UNITES 6 ET 8 POUR POUVOIR ENCORE LES UTILISER EN PYTHON

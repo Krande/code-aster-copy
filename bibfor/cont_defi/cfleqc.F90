@@ -30,7 +30,6 @@ subroutine cfleqc(mesh, sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf, &
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfl.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi

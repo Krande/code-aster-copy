@@ -38,7 +38,6 @@ subroutine xbsig(ndim, nnop, nfh, nfe, &
     real(kind=8) :: basloc(*), sigma(*), lsn(nnop), lst(nnop)
 !
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !      BSIGMC  -- CALCUL DES FORCES INTERNES B*SIGMA AUX NOEUDS
 !                 DE L'ELEMENT DUES AU CHAMP DE CONTRAINTES SIGMA

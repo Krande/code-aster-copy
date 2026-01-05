@@ -31,7 +31,6 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     character(len=*) :: nommat
     complex(kind=8) :: cxsol(neq, *)
 !     ------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !     RESOLUTION DU SYSTEME A COEFFICIENTS REELS:  A * X = B
 !     LA MATRICE EST SYMETRIQUE ET A ETE FACTORISEE SOUS FORME L*D*LT
 !     LA RESOLUTION EST EN PLACE

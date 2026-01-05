@@ -18,7 +18,6 @@
 
 subroutine onerrf(set, get, long)
     implicit none
-! person_in_charge: mathieu.courtois at edf.fr
 !     ----------------------------------------------------------------
 !     QUE FAIT-ON EN CAS D'ERREUR <F> ?
 !        VEXCF = 0 == ARRET AVEC ABORT

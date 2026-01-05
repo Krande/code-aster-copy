@@ -34,7 +34,6 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
 #include "asterfort/jeveuo.h"
 #include "blas/dcopy.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=24), intent(in) :: sdcont_defi

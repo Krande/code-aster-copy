@@ -30,7 +30,6 @@ subroutine cfleq8(mesh, sdcont_defi, nb_cont_zone, nb_cont_surf, nb_cont_node, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi

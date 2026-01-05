@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine mmreac(elem_dime, nb_node_slav, nb_node_mast, &
                   jv_disp, jv_disp_incr, ppe, &

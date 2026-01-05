@@ -21,7 +21,6 @@ subroutine pgpche(sd_pgp, iobs)
 ! Extract a per-element field from the modal basis, reduced to the
 ! requested elements and field components
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/celces.h"

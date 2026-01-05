@@ -20,7 +20,6 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj, &
                   cnsen, cnsenr, ndim, fiss, goinop, &
                   lismae, lisnoe, operation_opt)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "asterf_types.h"

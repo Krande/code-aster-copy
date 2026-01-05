@@ -19,7 +19,6 @@
 subroutine as_msesei(fid, imasup, nomaes, nvtymd, dimest, &
                      nomasu, medcel, nbnosu, nbmssu, tygems, &
                      nbattc, prespr, nbattv, codret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

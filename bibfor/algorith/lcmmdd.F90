@@ -30,7 +30,6 @@ subroutine lcmmdd(taus, coeft, ifa, nmat, nbcomm, &
     real(kind=8) :: rp, sgns, hsr(nsg, nsg), dy(12), dt
     real(kind=8) :: n, gamma0, rmin, alphar(12)
     real(kind=8) :: tauf, alpham(12), terme, rmax, hs, soms1, soms2, soms3
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !  COMPORTEMENT MONOCRISTALLIN : ECOULEMENT (VISCO)PLASTIQUE
 !  INTEGRATION DE LA LOI MONOCRISTALLINE DD-CFC. CALCUL DE DALPHA DGAMMA

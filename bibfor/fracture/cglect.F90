@@ -41,7 +41,6 @@ subroutine cglect(resu, modele, ndim, option, &
     character(len=16) :: option, typdis
     character(len=24) :: fonoeu, chfond, basfon, taillr, liss
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

@@ -34,7 +34,6 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc, &
     integer(kind=8) :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ddlm
     integer(kind=8) :: nfiss, contac
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !          BUT : INITIALISER LES DIMENSIONS DES DDL DANS UN TE
 !                POUR LES ELEMENTS X-FEM

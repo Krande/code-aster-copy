@@ -27,7 +27,6 @@ subroutine nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_fie
 #include "asterfort/as_allocate.h"
 #include "asterfort/nmextc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     integer(kind=8), intent(in) :: nb_keyw_fact

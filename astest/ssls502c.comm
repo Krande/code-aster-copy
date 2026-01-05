@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 #  - CALCUL QUASI-STATIQUE D'UN CYLINDRE LONG REPOSANT A SES
 #    EXTREMITES SUR DES DIAPHRAGMES RIGIDES
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'(TRIA3) '

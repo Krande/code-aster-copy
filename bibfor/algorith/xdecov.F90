@@ -41,7 +41,6 @@ subroutine xdecov(ndim, elp, nnop, nnose, it, &
     integer(kind=8) :: nsemax, nfisc
     real(kind=8) :: heav(*)
     character(len=8) :: elp
-! person_in_charge: samuel.geniaut at edf.fr
 !                      DÃCOUPER LE TETRA EN NSE SOUS-TETRAS
 !
 !     ENTREE

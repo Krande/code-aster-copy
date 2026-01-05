@@ -32,7 +32,6 @@ subroutine nmcoun(mesh, list_func_acti, solver, nume_dof_, matr_asse, &
 #include "asterfort/nmcofr.h"
 #include "asterfort/nmunil.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(in) :: list_func_acti(*)

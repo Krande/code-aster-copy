@@ -20,7 +20,6 @@ subroutine lceitc(fami, kpg, ksp, mat, option, &
                   mu, su, de, ddedt, vim, &
                   vip, r, pfluide)
 !
-! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
 #include "asterf_types.h"

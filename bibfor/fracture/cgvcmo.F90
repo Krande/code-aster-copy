@@ -28,7 +28,6 @@ subroutine cgvcmo(modele, nomfis, typfis, ndim)
     character(len=8), intent(in) :: modele, nomfis, typfis
     integer(kind=8), intent(in) :: ndim
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

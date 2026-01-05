@@ -24,7 +24,6 @@ subroutine ntobsv(meshz, sd_obsv, nume_time, time)
 #include "asterfort/lobs.h"
 #include "asterfort/nmobse.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: meshz
     character(len=19), intent(in) :: sd_obsv

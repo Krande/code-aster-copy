@@ -38,7 +38,6 @@ subroutine chckco(char, noma, ndimg)
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: char, noma
     integer(kind=8) :: ndimg

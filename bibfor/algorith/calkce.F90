@@ -18,7 +18,6 @@
 
 subroutine calkce(nno, ndim, kbp, kbb, pm, &
                   dp, kce, rce)
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
 !

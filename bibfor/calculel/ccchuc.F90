@@ -52,7 +52,6 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
     character(len=8), intent(in) :: sdresu_in
     character(len=8), intent(in) :: sdresu_out

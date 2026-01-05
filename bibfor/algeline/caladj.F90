@@ -19,7 +19,6 @@
 subroutine caladj(col, diag, xadj, adjncy, n, &
                   nnz, deb, tab, suiv, lmat, &
                   ladjn, nrl)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterfort/utmess.h"
 !      CALCUL DES VOISINS DE TOUS LES NOEUDS ( VERSION ASTER )

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine haslib(libraz, iret)
-! person_in_charge: mathieu.courtois at edf.fr
 !
 !
     implicit none

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine liglma(ligrel, nbma, linuma, linute)
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
     implicit none
 #include "jeveux.h"

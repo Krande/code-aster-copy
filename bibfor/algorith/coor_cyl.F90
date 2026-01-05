@@ -19,7 +19,6 @@
 subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
                     p_g, invp_g, rg, tg, l_not_zero, lcourb, pfond)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

@@ -48,7 +48,6 @@ subroutine algocu(ds_contact, solver, lmat, ldscon, cncine, &
 #include "asterfort/tldlg3.h"
 #include "blas/daxpy.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: solver

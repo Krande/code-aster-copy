@@ -43,7 +43,6 @@ subroutine pmfdef(typfib, nf, ncarf, vf, dege, deff)
 !   out
 !       deff(nf) : deformations axiales des fibres
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 

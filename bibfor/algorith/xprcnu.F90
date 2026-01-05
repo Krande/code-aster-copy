@@ -43,7 +43,6 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr, lcmin)
     character(len=1) :: base
     real(kind=8) :: lcmin
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     ------------------------------------------------------------------
 !

@@ -30,7 +30,6 @@ subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, &
 #include "asterfort/assert.h"
 #include "blas/dgemm.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: nb_snap
     integer(kind=8), intent(in) :: m

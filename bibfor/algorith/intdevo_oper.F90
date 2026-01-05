@@ -20,7 +20,6 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
                         dt, invm_c, op_h1, op_h2, invm_k)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! intnewm_oper : Calculate (or update) the operators for a Devogelaere integration
 !

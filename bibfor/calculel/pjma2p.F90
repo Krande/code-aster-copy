@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine pjma2p(ndim, moa2, ma2p, corres)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 ! ----------------------------------------------------------------------
 ! COMMANDE PROJ_CHAMP / METHODE='ECLA_PG'

@@ -18,7 +18,6 @@
 !
 subroutine lcmmjs(nomfam, nbsys, tbsys)
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 !      ----------------------------------------------------------------
 !     MONOCRISTAL : RECUPERATION DES SYSTEMES DE GLISSEMENT UTILISATEUR
 !       ----------------------------------------------------------------

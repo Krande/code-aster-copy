@@ -23,7 +23,6 @@ subroutine nmetob(ds_inout, field_type, i_field_obsv)
     implicit none
 !
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: field_type

@@ -21,7 +21,6 @@ function nucalc(opt, te, memoir)
     implicit none
     integer(kind=8) :: nucalc
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
 #include "asterfort/assert.h"

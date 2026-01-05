@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: david.haboussa at edf.fr
 #  - CALCUL QUASI-STATIQUE D'UNE POUTRE CONSTITUEE D'UN MATERIAU
 #    ELASTIQUE PARFAITEMENT PLASTIQUE
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'(TRIA3)

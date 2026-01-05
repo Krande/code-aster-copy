@@ -39,7 +39,6 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir, &
     real(kind=8) :: radimp, radtor, damax
     aster_logical :: locdom
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !
 !      XPRVIR   : X-FEM PROPAGATION :CREATION DU FOND DE FISSURE VIRTUEL

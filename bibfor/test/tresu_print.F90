@@ -27,7 +27,6 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
 #include "asterc/testresu_print.h"
 !
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
     character(len=16), intent(in) :: refer
     character(len=16), intent(in) :: legend

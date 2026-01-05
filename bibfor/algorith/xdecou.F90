@@ -37,7 +37,6 @@ subroutine xdecou(ndim, elp, nnop, nnose, it, &
     integer(kind=8) :: ndim, nnop, nnose, it, cnset(*), ninter, igeom, npts
     integer(kind=8) :: nfiss, ifiss, fisco(*), nfisc
     character(len=8) :: elp
-! person_in_charge: samuel.geniaut at edf.fr
 !                      TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 !                      ET LE PLAN DE FISSURE
 !

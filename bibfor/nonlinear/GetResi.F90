@@ -27,7 +27,6 @@ subroutine GetResi(ds_conv, type, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Conv), intent(in) :: ds_conv
     character(len=*), intent(in) :: type

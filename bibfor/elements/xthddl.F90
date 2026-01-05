@@ -18,7 +18,6 @@
 !
 subroutine xthddl(nfh, nddlno, nno, stano, option, &
                   nomte, mat, vect)
-! person_in_charge: sam.cuvilliez at edf.fr
 !
     implicit none
 #include "asterf_types.h"

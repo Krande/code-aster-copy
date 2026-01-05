@@ -26,7 +26,6 @@ subroutine ndxcfl(mate, mateco, cara_elem, sddyna, sddisc)
 #include "asterfort/pascom.h"
 #include "asterfort/pascou.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna

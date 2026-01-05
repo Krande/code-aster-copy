@@ -26,7 +26,6 @@ subroutine apimpr(pair_category, ifm, mesh, ds_contact)
 #include "asterfort/apimpr_l.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=6), intent(in) :: pair_category
     integer(kind=8), intent(in) :: ifm

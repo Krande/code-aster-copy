@@ -22,7 +22,6 @@ subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 !
 #include "asterfort/mmelty.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: numma
     integer(kind=8) :: nnosd, ndim

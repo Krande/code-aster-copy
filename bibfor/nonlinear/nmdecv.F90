@@ -18,7 +18,6 @@
 
 subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterc/r8prem.h"

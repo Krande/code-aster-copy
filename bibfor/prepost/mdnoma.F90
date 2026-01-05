@@ -18,7 +18,6 @@
 
 subroutine mdnoma(nomamd, lnomam, nomast, codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 !        FORMAT MED : ELABORATION D'UN NOM DE MAILLAGE DANS LE FICHIER
 !               - -                    --     --
 !_____________________________________________________________________

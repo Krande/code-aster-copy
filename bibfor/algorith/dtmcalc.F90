@@ -19,7 +19,6 @@
 subroutine dtmcalc(sd_dtm_, sd_int_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmcalc : Main subroutine for the integration of the dynamic equations of motion
 !           of a system in generalized coordinates (reduced -modal- basis).

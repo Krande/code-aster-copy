@@ -18,7 +18,6 @@
 !
 subroutine uttcp0(indi, para, nbv, temps)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "asterc/uttcsm.h"
 #include "asterc/uttrst.h"
 #include "asterfort/utmess.h"

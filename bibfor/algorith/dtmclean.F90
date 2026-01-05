@@ -21,7 +21,6 @@ subroutine dtmclean(sd_dtm_)
 
 !
 !
-! person_in_charge: hassan.berro@edf.fr
 !
 ! dtmclean : call all subroutines that need to be called to clean their
 !            own data

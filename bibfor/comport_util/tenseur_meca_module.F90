@@ -19,7 +19,6 @@
 module tenseur_meca_module
     implicit None
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     integer(kind=8), parameter :: dimspace = 3
 

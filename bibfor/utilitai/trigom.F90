@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 function trigom(fonc, x)
-! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=
     implicit none
     real(kind=8) :: trigom

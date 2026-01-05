@@ -22,7 +22,6 @@ function exisdg(dg, cmp)
 #include "asterf_types.h"
     aster_logical :: exisdg
     integer(kind=8) :: dg(*), cmp
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     INDIQUE L'EXISTENCE D'1 CMP DANS UN DESCRIPTEUR-GRANDEUR DG
 !     ------------------------------------------------------------------

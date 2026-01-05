@@ -22,5 +22,3 @@
  */
 
 #include "DataFields/ConstantFieldOnCells.h"
-
-/* person_in_charge: natacha.bereux at edf.fr */

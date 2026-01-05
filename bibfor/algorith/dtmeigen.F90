@@ -19,7 +19,6 @@
 subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmeigen : Calculate the new eigen values for the modified matrices in the
 !            implicit treatment of non linearities

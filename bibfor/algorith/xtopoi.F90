@@ -18,7 +18,6 @@
 
 subroutine xtopoi(noma, modele)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

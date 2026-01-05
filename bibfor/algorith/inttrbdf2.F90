@@ -19,7 +19,6 @@
 subroutine inttrbdf2(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: nicolas.tardieu at edf.fr
 !
 ! inttrbdf2 : Integrate from t_i to t_i+1 the differential equations of motion
 !             using the TR-BDF2 integration method.

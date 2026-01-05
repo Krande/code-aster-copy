@@ -48,7 +48,6 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
     real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
     character(len=8) :: elrefp, elrese
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !.......................................................................
 !

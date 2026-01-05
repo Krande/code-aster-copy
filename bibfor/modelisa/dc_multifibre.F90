@@ -24,7 +24,6 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 !
     implicit none

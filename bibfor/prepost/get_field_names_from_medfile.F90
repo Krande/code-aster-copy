@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine get_field_names_from_medfile(idfimd, field_name_vector)
-! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
 !    Read all field names in a med file
 !

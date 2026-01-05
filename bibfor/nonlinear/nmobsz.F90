@@ -28,7 +28,6 @@ subroutine nmobsz(sd_obsv, tabl_name, title, field_type, field_disc, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbajli.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sd_obsv
     character(len=19), intent(in) :: tabl_name

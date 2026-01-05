@@ -20,7 +20,6 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy, &
                   maxint, delta, invp, perm, nbsn, &
                   supnd, adress, parent, gssubs, fctnzs, &
                   fctops, dhead, qsize, llist, marker)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 !--- SPARSPAK-A (ANSI FORTRAN) RELEASE III --- NAME = GENMMD

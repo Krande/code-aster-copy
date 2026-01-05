@@ -23,7 +23,6 @@ subroutine pj6da2(ino2, geom2, i, geom1, seg2, &
 #include "asterfort/pj3da4.h"
     real(kind=8) :: cobary(2), geom1(*), geom2(*), d2, long
     integer(kind=8) :: ino2, i, seg2(*)
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !  but :
 !    determiner la distance d entre le noeud ino2 et le seg2 i.

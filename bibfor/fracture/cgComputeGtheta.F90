@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: matthieu.le-cren at edf.fr
 !
 subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !

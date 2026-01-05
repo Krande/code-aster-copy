@@ -22,7 +22,6 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
     implicit none
 
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmforc_choc : Calculates the stop/choc forces at the current step (t)
 !

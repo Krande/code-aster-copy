@@ -21,7 +21,6 @@ subroutine te0041(option, nomte)
     character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 !
 !        CALCUL DES MATRICES DE RAIDEUR, MASSE, AMORTISSEMENT

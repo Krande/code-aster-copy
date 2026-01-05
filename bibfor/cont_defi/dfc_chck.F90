@@ -26,7 +26,6 @@ subroutine dfc_chck(sdcont, mesh, model_ndim)
 #include "asterfort/chckco.h"
 #include "asterfort/cfdisi.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

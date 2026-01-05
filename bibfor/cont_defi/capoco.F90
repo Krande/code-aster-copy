@@ -36,7 +36,6 @@ subroutine capoco(sdcont, keywf)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=16), intent(in) :: keywf

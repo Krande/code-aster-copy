@@ -65,7 +65,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !       force   : efforts
 !       varpl   : variables internes (temps plus)
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     integer(kind=8), parameter :: nbre1 = 9
     real(kind=8) :: valre1(nbre1)

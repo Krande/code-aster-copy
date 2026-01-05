@@ -29,7 +29,6 @@ subroutine mmstat(mesh, iter_newt, nume_inst, &
 #include "asterfort/mmmbca.h"
 #include "asterfort/mmmbca_lac.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(in) :: iter_newt

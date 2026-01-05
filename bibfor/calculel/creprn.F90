@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
-! person_in_charge: jacques.pellet at edf.fr
 !
 ! aslint: disable=
     implicit none

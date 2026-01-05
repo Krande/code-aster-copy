@@ -30,7 +30,6 @@ subroutine nmeteo(result, sddisc, ds_inout, force, nume_store, &
 #include "asterfort/nmetnc.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: sddisc

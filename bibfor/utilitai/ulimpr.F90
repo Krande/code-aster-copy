@@ -19,7 +19,6 @@
 subroutine ulimpr(impr)
     implicit none
     integer(kind=8) :: impr
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 !     IMPRESSION DES TABLES DECRIVANT LES UNITES LOGIQUE OUVERTES
 !

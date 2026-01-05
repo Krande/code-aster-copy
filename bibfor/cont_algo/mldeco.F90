@@ -27,7 +27,6 @@ subroutine mldeco(ds_contact)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !

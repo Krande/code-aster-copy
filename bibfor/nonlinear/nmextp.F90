@@ -31,7 +31,6 @@ subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keyw_fact
     integer(kind=8), intent(in) :: i_keyw_fact

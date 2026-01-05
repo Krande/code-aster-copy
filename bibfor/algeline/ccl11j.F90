@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine ccl11j(fronti, frn, n, t)
-! person_in_charge: olivier.boiteau at edf.fr
 ! VERSION COMPLEXE DE COL11J
     implicit none
     integer(kind=8) :: n

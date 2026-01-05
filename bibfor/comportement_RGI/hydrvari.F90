@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine hydrvari(vari0, vari1, hydra0, hydra1, hydras)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   effets de l hydratation sur les varibles internes
 !   declaration externes

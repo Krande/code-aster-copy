@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine jecreo(nomlu, listat)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 ! ROUTINE UTILISATEUR DE CREATION D'UN OBJET JEVEUX
 !

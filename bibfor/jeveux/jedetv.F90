@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jedetv()
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 ! DETRUIT TOUS LES OBJETS JEVEUX PRESENTS SUR LA BASE VOLATILE A
 ! L'EXCEPTION DES OBJETS SYSTEME

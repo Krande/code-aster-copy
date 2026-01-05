@@ -46,7 +46,6 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
 !            call pgpget('&&OP0058','NOM_CMP ',iobs=2, kvect=cmp)
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"

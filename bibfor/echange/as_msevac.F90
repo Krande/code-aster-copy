@@ -18,7 +18,6 @@
 
 subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp, &
                      cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

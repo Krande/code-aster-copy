@@ -24,7 +24,6 @@ subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir, &
     integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), ir, is
     real(kind=8) :: coeft(nmat), daldgr, dgamms, alphmr, sgnr
     character(len=16) :: necrci
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !  CALCUL DES DERIVEES DES VARIABLES INTERNES DES LOIS MONOCRISTALLINES
 !  POUR L'ECROUISSAGE CINEMATIQUE

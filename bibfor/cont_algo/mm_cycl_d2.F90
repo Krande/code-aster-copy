@@ -39,7 +39,6 @@ subroutine mm_cycl_d2(ds_contact, i_cont_poin, &
 #include "asterfort/mm_cycl_shift.h"
 #include "asterfort/mm_cycl_laugf.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer(kind=8), intent(in) :: i_cont_poin

@@ -35,7 +35,6 @@ subroutine cfaca1(nbliac, ajliai, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24) :: sdcont_defi, sdcont_solv
     character(len=19) :: solveu

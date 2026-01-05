@@ -23,7 +23,6 @@ subroutine pmfitg(typfib, nf, ncarf, vf, vs)
 !
 !                           Intégrations sur la section des PMF
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 ! IN

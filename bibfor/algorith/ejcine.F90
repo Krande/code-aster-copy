@@ -19,7 +19,6 @@
 subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
                   vff2, wref, dffr2, geom, wg, &
                   kpg, ipg, idf2, rot, b)
-! person_in_charge: jerome.laverne at edf.fr
 ! aslint: disable=W1306
     implicit none
 #include "asterf_types.h"

@@ -19,7 +19,6 @@
 subroutine lkfsxi(nmat, materf, i1, devsig, dshds, &
                   plas, xi, para, vara, dfdsdx, &
                   dpardx)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     --------------------------------------------------------------
 !     CALCUL DU TERME DE LETK = D(DF/DS)/DXI

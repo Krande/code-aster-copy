@@ -27,7 +27,6 @@ subroutine nmetc0(model, cara_elem, compor, ds_inout)
 #include "asterfort/dismoi.h"
 #include "asterfort/alchml.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: cara_elem

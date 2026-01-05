@@ -32,7 +32,6 @@ subroutine tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

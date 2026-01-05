@@ -38,7 +38,6 @@ subroutine nmexso(mesh, ds_inout, sddyna, nume_dof)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_InOut), intent(in) :: ds_inout

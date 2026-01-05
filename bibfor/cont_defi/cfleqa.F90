@@ -28,7 +28,6 @@ subroutine cfleqa(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfl.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi

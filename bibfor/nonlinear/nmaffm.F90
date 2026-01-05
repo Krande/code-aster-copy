@@ -29,7 +29,6 @@ subroutine nmaffm(sderro, ds_print, loop_name)
 #include "asterfort/nmltev.h"
 #include "asterfort/nmimck.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sderro
     type(NL_DS_Print), intent(inout) :: ds_print

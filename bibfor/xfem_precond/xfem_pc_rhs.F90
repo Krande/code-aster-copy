@@ -18,7 +18,6 @@
 
 subroutine xfem_pc_rhs(matas1, nsecm, secm, trav)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"

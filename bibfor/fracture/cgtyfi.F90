@@ -27,7 +27,6 @@ subroutine cgtyfi(typfis, nomfis, typdis)
     character(len=8) :: typfis, nomfis
     character(len=16) :: typdis
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

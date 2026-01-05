@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501
 !
-! person_in_charge: vinicius.alves-fernandes at edf.fr
 ! contributor: cyril.borely at setec.com
 !
 subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax, dulmat, iret)

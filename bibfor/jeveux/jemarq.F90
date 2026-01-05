@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jemarq()
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 ! ----------------------------------------------------------------------
 ! INCREMENTE LA MARQUE COURANTE

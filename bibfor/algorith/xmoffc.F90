@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine xmoffc(lact, nlact, nno, ffe, ffc)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "asterfort/assert.h"
     integer(kind=8) :: lact(*), nlact, nno

@@ -23,7 +23,6 @@ subroutine vrcdec()
                              ca_nblfpg_, ca_nfpg_, ca_nomte_, ca_nfpgmx_
 
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !-----------------------------------------------------------------------
 ! But: calculer le decalage des differentes familles de PG utilisees
 !      dans la famille "liste" mater.

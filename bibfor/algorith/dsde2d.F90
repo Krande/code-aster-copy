@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine dsde2d(ndim, f, dsde, d)
-! person_in_charge: sebastien.fayolle at edf.fr
 !
 ! ----------------------------------------------------------------------
 !     CALCUL DU TERME D=2FF(dS/dE)F^TF^T POUR LES FORMULATIONS INCO_LOG

@@ -35,7 +35,6 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez, &
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=*) :: cartez, maz, nomaiz, nocmp, typrez
-! person_in_charge: jacques.pellet at edf.fr
 !     EXTRAIRE UNE VALEUR (R/I/C) DANS UNE CARTE
 ! ----------------------------------------------------------------------
 ! IN  : CARTEZ : NOM DE LA CARTE DONT ON DESIRE EXTRAIRE 1 COMPOSANTE

@@ -18,7 +18,6 @@
 
 subroutine as_mmhmii(fid, indice, maa, dim, type, &
                      desc, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

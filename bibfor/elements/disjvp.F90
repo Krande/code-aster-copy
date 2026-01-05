@@ -18,7 +18,6 @@
 !
 subroutine disjvp(for_discret, iret)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 !        MODELE ELASTO PLASTIQUE ENDOMMAGEANT EN FLEXION (1DDL=RZ)

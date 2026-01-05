@@ -29,7 +29,6 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !
     integer(kind=8) :: jgano, nbsp, ncmp
     real(kind=8) :: vno(*), vpg(*)
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     PASSAGE DES VALEURS POINTS DE GAUSS -> VALEURS AUX NOEUDS
 !     POUR LES TYPE_ELEM AYANT 1 ELREFA

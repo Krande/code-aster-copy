@@ -19,7 +19,6 @@
 subroutine mdlibe(nomres, nbnli, sd_index)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 !     Memory clearup of resulting vectors in a DYNA_VIBRA//TRAN/GENE calculation
 !     with a non-constant integration step

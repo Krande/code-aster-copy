@@ -18,7 +18,6 @@
 !
 subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat, &
                   factol, factou, typsym)
-! person_in_charge: olivier.boiteau at edf.fr
 ! COMPIL PARAL
 ! aslint: disable=
     implicit none

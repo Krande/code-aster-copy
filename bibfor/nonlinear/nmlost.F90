@@ -25,7 +25,6 @@ subroutine nmlost(ds_measure)
 #include "asterfort/nmrtim.h"
 #include "asterfort/nmtimr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
 !

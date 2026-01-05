@@ -23,7 +23,6 @@ subroutine romEvalCoefInit(nb_vari_para, vari_para, ds_evalcoef)
     implicit none
 !
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: nb_vari_para
     type(ROM_DS_VariPara), intent(in) :: vari_para(5)

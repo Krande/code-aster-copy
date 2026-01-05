@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 #
 # Cas Test pour la validation de l'outil de relachement de DDLs 'Rtool'
-# person_in_charge : stefano.cherubini@edf.fr
 #
 
 POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ALARME="EXCEPTION"))

@@ -35,7 +35,6 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr, &
 !
     integer(kind=8) :: iordr, icode
     character(len=*) :: kstop, nomsd, nomsy, chextr
-! person_in_charge: jacques.pellet at edf.fr
 !      RECUPERATION DU NOM DU CHAMP-GD  CORRESPONDANT A:
 !          NOMSD(IORDR,NOMSY).
 ! ----------------------------------------------------------------------

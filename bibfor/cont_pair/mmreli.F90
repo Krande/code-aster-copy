@@ -18,7 +18,6 @@
 !
 subroutine mmreli(alias, nno, ndim, coorma, coorpt, &
                   ksi1, ksi2, dksi1, dksi2, alpha)
-! person_in_charge: mickael.abbas at edf.fr
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"

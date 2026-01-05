@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine as_msdjcr(fid, lmname, jname, des, dom, rmname, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

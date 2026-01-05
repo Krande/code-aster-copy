@@ -18,7 +18,6 @@
 
 subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
                   cnsz, undf0_)
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
 #include "asterf_types.h"

@@ -26,7 +26,6 @@ subroutine xcesrd(ces, chsnpg)
 #include "asterfort/cesexi.h"
 
     character(len=19) :: ces, chsnpg
-! person_in_charge: patrick.massin at edf.fr
 ! -----------------------------------------------------------------
 !  BUT : reduire un champ elementaire simple (CHAM_ELEM_S), de type ELGA,
 !        defini sur la famille "XFEM", de sorte que parmis l'ensemble des

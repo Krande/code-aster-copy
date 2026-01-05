@@ -18,7 +18,6 @@
 !
 subroutine cclni1(col, n, d1, t, eps, &
                   ier)
-! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION COMPLEXE DE COLNI1
     implicit none
     integer(kind=8) :: n, ier

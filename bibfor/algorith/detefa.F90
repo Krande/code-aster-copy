@@ -28,7 +28,6 @@ subroutine detefa(nnose, pi1, pi2, it, typma, &
     integer(kind=8) :: nnose, it, pi1, pi2, cnset(*), n(3)
     real(kind=8) :: ainter(*)
     character(len=8) :: typma
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !                      DETERMINER LE FACE DANS L'ELEMENT DE REFERENCE
 !

@@ -24,7 +24,6 @@ subroutine nmexto(type_count, field_disc, type_extr_cmp, type_extr_elem, type_ex
 !
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=4), intent(in) :: type_count
     character(len=4), intent(in) :: field_disc

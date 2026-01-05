@@ -18,7 +18,6 @@
 
 subroutine nmch6p(measse)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/nmcha0.h"

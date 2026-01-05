@@ -26,7 +26,6 @@ subroutine ComputeTableHead(table, col_sep, table_head)
 #include "asterfort/assert.h"
 #include "asterfort/PrepareTableLine.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Table), intent(in) :: table
     character(len=1), intent(in) :: col_sep

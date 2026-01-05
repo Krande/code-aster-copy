@@ -18,7 +18,6 @@
 !
 subroutine cclni2(col1, col2, n, d1, d2, &
                   coef1, t1, t2, eps, ier)
-! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION COMPLEXE DE COLNI2
     implicit none
     integer(kind=8) :: n, ier

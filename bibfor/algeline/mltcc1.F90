@@ -23,7 +23,6 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils, &
                   typsym, ad, eps, ier, nbb, &
                   cl, cu)
 !
-! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE, ET AINSI
 !      ADPER LES COLONNES FORMENT UN BLOC RECTANGULAIRE

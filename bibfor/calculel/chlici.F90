@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine chlici(chaine, long)
-! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=
     implicit none
 #include "asterf_types.h"

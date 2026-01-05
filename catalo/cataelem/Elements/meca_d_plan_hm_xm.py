@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: daniele.colombo at ifpen.fr
 # CATALOGUES DES ELEMENTS 2D_DP HM-XFEM MULTI HEAVISIDE SANS CONTACT
 
 

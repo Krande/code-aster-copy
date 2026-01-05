@@ -33,7 +33,6 @@ function ulisop(unit, name)
 !                         UNIT SINON
 ! IN   UNIT     : IS    : NUMERO D'UNITE LOGIQUE ASSOCIE A "NAME"
 !
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
     integer(kind=8) :: mxf
     parameter(mxf=100)

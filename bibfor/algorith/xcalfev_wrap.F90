@@ -21,7 +21,6 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he, &
                         dfdi, dkdgl, face, elref, nnop2, &
                         ff2, dfdi2, kstop)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

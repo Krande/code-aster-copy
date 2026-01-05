@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine asmpi_checkalarm()
-! person_in_charge: mathieu.courtois at edf.fr
 !
 !
     use parameters_module

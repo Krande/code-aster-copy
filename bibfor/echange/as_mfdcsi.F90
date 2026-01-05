@@ -18,7 +18,6 @@
 
 subroutine as_mfdcsi(fid, cha, ind, numdt, numo, &
                      dt, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

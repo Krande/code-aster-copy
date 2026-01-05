@@ -27,7 +27,6 @@ subroutine xdecoupe(elp, cnset, nse, nnose)
     integer(kind=8)          :: cnset(:), nse, nnose
     character(len=8) :: elp
 
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !                      CONNECTIVITÉ DES ÉLÉMENTS TETRAS À PARTIR
 !                               D'UN ÉLÉMENT PARENT X-FEM

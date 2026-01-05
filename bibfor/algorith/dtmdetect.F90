@@ -19,7 +19,6 @@
 subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmdetect : Detects a change in the state of non-linearities between between
 !             instants i and i-1 by analyzing the saved internal variables and

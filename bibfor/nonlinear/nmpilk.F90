@@ -19,7 +19,6 @@
 subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta, &
                   rho, offset)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

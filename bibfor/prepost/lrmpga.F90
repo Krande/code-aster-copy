@@ -20,7 +20,6 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
                   pgmmil, spmmil, ntypel, npgmax, indpg, &
                   numpt, numord, option, param, nomaas)
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !     LECTURE FICHIER MED - LOCALISATION POINTS DE GAUSS
 !     -    -            -                  -         --
 !-----------------------------------------------------------------------

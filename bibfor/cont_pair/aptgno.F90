@@ -29,7 +29,6 @@ subroutine aptgno(sdappa, mesh, sdcont_defi)
 #include "asterfort/mminfr.h"
 #include "asterfort/infdbg.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh

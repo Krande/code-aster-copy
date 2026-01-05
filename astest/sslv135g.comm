@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sarah.plessis at edf.fr
 #
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("PREPOST4_27"))

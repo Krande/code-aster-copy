@@ -18,7 +18,6 @@
 
 subroutine mulfr8(nommat, npivot, neq, typsym, eps, &
                   renumz)
-! person_in_charge: olivier.boiteau at edf.fr
     use superv_module
     implicit none
 #include "jeveux.h"

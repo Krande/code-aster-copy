@@ -22,7 +22,6 @@ subroutine chrep3d(M, A, P)
 !   M, P, A sont des matrices 3*3
 
 ! ======================================================================
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
     implicit none
 #include "asterfort/matmat3d.h"

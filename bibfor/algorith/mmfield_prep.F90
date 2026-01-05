@@ -28,7 +28,6 @@ subroutine mmfield_prep(field_in, field_out, &
 #include "asterfort/cnsred.h"
 #include "asterfort/detrsd.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: field_in
     character(len=*), intent(in) :: field_out

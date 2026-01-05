@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine indice0(i, k, l)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
     implicit none
     integer(kind=8) :: i, k, l

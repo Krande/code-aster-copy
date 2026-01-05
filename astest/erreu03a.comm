@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: olivier.boiteau at edf.fr
 #########################################################################
 # VALIDATION DE LA DETECTION DE SINGULARITE SIMPLE (BLOCAGE ABSENT OU
 # SURABONDANT) AVEC LES SOLVEURS LINEAIRES DIRECTS: MUMPS, LDLT ET MF.

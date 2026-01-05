@@ -20,7 +20,6 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b, &
                         bp1, bp2, bocaj, neta1, neta2, &
                         indip, cstseu, eps, vint, dsidep)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
     integer(kind=8), intent(in) :: indip(6)

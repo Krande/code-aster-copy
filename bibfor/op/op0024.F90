@@ -18,7 +18,6 @@
 !
 subroutine op0024()
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !     ------------------------------------------------------------------
 !
 !     COMMANDE : DEFI_LIST_REEL

@@ -25,7 +25,6 @@ subroutine dgelas(eb, nub, h, b, a, em, num, ef, nuf, icisai)
     real(kind=8) :: eb, nub, b, a, h
     real(kind=8) :: em, num, ef, nuf
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! BUT : DETERMINATION DES PARAMETRES ELASTIQUES

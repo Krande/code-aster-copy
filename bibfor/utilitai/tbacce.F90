@@ -31,7 +31,6 @@ subroutine tbacce(nomta, numeli, para, mode, vi, &
     complex(kind=8) :: vc
     character(len=*) :: nomta, para, mode, vk
 ! ----------------------------------------------------------------------
-! person_in_charge: mathieu.courtois at edf.fr
 !      ACCES A UNE CELLULE D'UNE LIGNE DE LA TABLE
 !         EN MODE LECTURE , LE V. EST EN SORTIE
 !         EN MODE ECRITURE, LE V. EST EN DONNEE

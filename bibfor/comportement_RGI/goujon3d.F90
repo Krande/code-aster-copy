@@ -19,7 +19,6 @@
 subroutine goujon3d(endo, nbrenf, numr, numf, vecr, &
                     deq, rhor, wpl3, vwpl33, vwpl33t, &
                     rc, sigrf, sigrfissp)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
     implicit none

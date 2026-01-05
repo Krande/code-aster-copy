@@ -21,7 +21,6 @@ subroutine massup(option, ndim, dlns, nno, nnos, &
                   geom, vff1, imatuu, icodre, igeom, &
                   ivf)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DE LA MATRICE DE MASSE

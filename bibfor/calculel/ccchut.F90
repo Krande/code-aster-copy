@@ -33,7 +33,6 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
     character(len=8), intent(in) :: sdresu_in
     character(len=8), intent(in) :: sdresu_out

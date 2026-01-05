@@ -32,7 +32,6 @@ subroutine xcgfvo(option, ndim, nnop, fno)
     integer(kind=8) :: ndim, nnop
     real(kind=8) :: fno(ndim*nnop)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !    BUT : CALCUL DES CHARGES VOLUMIQUES AUX NOEUD DE L'ELEM PARENT
 !         POUR LES OPTIONS CALC_G, CALC_G_F, CALC_K_G, CALC_K_G_F

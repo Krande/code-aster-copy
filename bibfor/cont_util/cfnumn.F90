@@ -25,7 +25,6 @@ subroutine cfnumn(defico, nno, posnno, numnno)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: defico
     integer(kind=8), intent(in) :: nno

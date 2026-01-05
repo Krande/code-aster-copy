@@ -18,7 +18,6 @@
 !
 subroutine lkdbds(nmat, mater, i1, devsig, nvi, &
                   vint, para, val, dbetds, dbetdi)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE DE N PAR RAPPORT A SIGMA

@@ -18,7 +18,6 @@
 
 subroutine nmpro2(fonact, numedd, numfix)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

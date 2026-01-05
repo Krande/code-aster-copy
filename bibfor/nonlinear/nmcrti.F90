@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1303
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmcrti(list_func_acti, resultName, ds_contact, ds_measure)
 !

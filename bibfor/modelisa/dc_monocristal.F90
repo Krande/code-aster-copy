@@ -18,7 +18,6 @@
 !
 subroutine dc_monocristal(nboccm, sdcomp)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
 !

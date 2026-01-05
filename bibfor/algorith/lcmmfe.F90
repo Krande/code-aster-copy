@@ -38,7 +38,6 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat, &
     character(len=16) :: necoul
     integer(kind=8) :: irr, decirr, nums, decal, gdef
     common/polycr/irr, decirr, nums, decal, gdef
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !  COMPORTEMENT MONOCRISTALLIN : ECOULEMENT (VISCO)PLASTIQUE
 !  INTEGRATION DES LOIS MONOCRISTALLINES

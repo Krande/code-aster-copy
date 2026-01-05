@@ -26,7 +26,6 @@ subroutine renfort3d(istep, nbrenf, numr, epstf33, vecr, &
                      eprk0, eprkf, tokr, kr, plast_seule, &
                      ann, xn, bn, ngf, ipzero, &
                      epspmf33, epspmf, eps_nl, spre0, spref)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !
     implicit none

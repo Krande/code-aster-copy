@@ -50,7 +50,6 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara, &
 ! OUT DF : INCREMENT D EFFORT DANS LE REPERE ORTHO
 ! OUT DDISS : INCREMENT DE DISSIPATION
 ! OUT DSIDEP : MATRICE TANGENTE
-! person_in_charge: sebastien.fayolle at edf.fr
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"

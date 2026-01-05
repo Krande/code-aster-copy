@@ -47,7 +47,6 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
     character(len=19) :: cnsbl, cnsbet, listp, vpoint
     real(kind=8)      :: lcmin
 !
-! person_in_charge: patrick.massin at edf.fr
 !
 !     ------------------------------------------------------------------
 !

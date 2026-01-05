@@ -25,7 +25,6 @@ subroutine romVariParaClean(ds_varipara)
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1403
 !
     type(ROM_DS_VariPara), intent(inout) :: ds_varipara

@@ -36,7 +36,6 @@ subroutine cfapno(noma, newgeo, ds_contact, lctfd, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: noma
     type(NL_DS_Contact), intent(in) :: ds_contact

@@ -42,7 +42,6 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv, &
     character(len=19) :: dcnxin, disfr, cnxinv, ndomp, edomg
     real(kind=8) :: damax, radtor
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !     ------------------------------------------------------------------
 !

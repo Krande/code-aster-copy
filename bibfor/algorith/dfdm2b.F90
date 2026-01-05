@@ -18,7 +18,6 @@
 
 subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
     implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"

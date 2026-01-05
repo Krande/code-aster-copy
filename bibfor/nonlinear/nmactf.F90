@@ -31,7 +31,6 @@ subroutine nmactf(ds_print, sddisc, sderro, ds_contact, &
 #include "asterfort/nmleeb.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=24), intent(in) :: sderro

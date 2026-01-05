@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: daniele.colombo at ifpen.fr
 # CATALOGUE DES ELEMNTS 3D HM-X-FEM DE BORD MULTI HEAVISIDE
 
 

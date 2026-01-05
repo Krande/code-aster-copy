@@ -33,7 +33,6 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib, &
 !            dans les autres cas, ksp2=ksp1, c2=0., c1=1.
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
 #include "jeveux.h"

@@ -28,7 +28,6 @@ subroutine dgffibres(nboccfib, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
 !

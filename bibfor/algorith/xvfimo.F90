@@ -30,7 +30,6 @@ function xvfimo(modele, fiss)
     character(len=8) :: modele, fiss
     aster_logical :: xvfimo
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     ROUTINE UTILITAIRE POUR X-FEM
 !

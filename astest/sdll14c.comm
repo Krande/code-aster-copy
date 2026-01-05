@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 #  - ANALYSE DYNAMIQUE D'UNE TUYAUTERIE COMPORTANT UN COUDE
 #  - MODELISATION AVEC DES ELEMENTS 'TUYAU' SEG4 (3 MODES DE FOURIER)
 # ---------------------------------------------------------------------

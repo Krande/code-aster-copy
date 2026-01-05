@@ -20,7 +20,6 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord, &
                   nbcmpc, nomcmc, nbvato, typent, typgeo, &
                   existc, nbcmfi, nmcmfi, nbval, nbprof, &
                   codret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !_____________________________________________________________________
 !        FORMAT MED : EXISTENCE D'UN CHAMP DANS UN FICHIER
 !               - -   --             --

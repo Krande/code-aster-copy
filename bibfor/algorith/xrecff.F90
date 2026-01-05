@@ -36,7 +36,6 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, &
     character(len=24) :: chfond, basfon, fonoeu
 !
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !       RECUPERATION DE LA LISTE DES POINTS DU FOND DE FISSURE
 !       SUR LEQUEL ON VA EFFECTUER LE CALCUL + BASE LOCALE EN FOND

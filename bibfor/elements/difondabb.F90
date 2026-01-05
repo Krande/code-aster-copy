@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: vinicius.alves-fernandes at edf.fr
 ! contributor: cyril.borely at setec.com
 !
 subroutine difondabb(for_discret, iret)

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine utnbnv(typmav, nbsv, nbnv)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  UTILITAIRE CALCULANT LE TYPE DE FACE VOISINE
 !                          ET SON NBRE DE SOMMETS. POUR AERER TE0003

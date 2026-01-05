@@ -31,7 +31,6 @@ subroutine cfimp1(phase, noma, sdcont_defi, sdcont_solv, ifm)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: noma
     character(len=24) :: sdcont_defi, sdcont_solv

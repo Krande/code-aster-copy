@@ -18,7 +18,6 @@
 !
 subroutine mltflm(nb, n, p, front, adper, &
                   t1, ad, eps, ier, c)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterfort/mltfld.h"
 #include "asterfort/mltflj.h"

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jeundf(obj, undf0_)
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
 #include "asterf_types.h"

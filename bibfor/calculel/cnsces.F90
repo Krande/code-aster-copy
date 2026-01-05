@@ -18,7 +18,6 @@
 
 subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base, &
                   cesz)
-! person_in_charge: jacques.pellet at edf.fr
 
     use compensated_ops_module, only: sum, dot_product
 

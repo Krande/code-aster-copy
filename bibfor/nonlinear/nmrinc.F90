@@ -25,7 +25,6 @@ subroutine nmrinc(ds_measure, device_type_)
 #include "asterf_types.h"
 #include "asterfort/nmrvai.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=*), intent(in) :: device_type_

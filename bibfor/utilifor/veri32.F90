@@ -18,7 +18,6 @@
 
 subroutine veri32()
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 ! BUT : ARRETER LE CODE SI L'ON EST SUR UNE MACHINE OU LES ENTIERS
 !       SONT STOCKES SUR 32 BITS OU MOINS
 #include "asterc/loisem.h"

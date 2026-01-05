@@ -18,7 +18,6 @@
 !
 subroutine lkicvg(nr, itmax, toler, iter, r, &
                   nvi, vinf, dy, irtet)
-! person_in_charge: alexandre.foucault at edf.fr
 !     ------------------------------------------------------------------
 !       CONTROLE DE LA CONVERGENCE DU NEWTON LOCAL DE LETK
 !                     - CONTROLE DU NOMBRE D ITERATIONS

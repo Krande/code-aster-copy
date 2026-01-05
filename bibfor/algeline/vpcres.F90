@@ -27,7 +27,6 @@ subroutine vpcres(eigsol, typres, raide, masse, amor, optiof, method, modrig, ar
 ! CF VPINIS, VPLECS, VPLECI, VPECRI.
 !
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 
 #include "jeveux.h"

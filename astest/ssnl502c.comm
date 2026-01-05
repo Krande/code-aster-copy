@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jean-luc.flejou at edf.fr
 # - CALCUL DE LA STABILITE D'UNE POUTRE CONSOLE SOUMISE A UN EFFORT DE
 #  COMPRESSION A UNE EXTREMITE.
 # - VALIDATION DANS LE DOMAINE QUASI-STATIQUE NON-LINEAIRE GEOMETRIQUE

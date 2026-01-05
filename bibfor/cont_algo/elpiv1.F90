@@ -35,7 +35,6 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: noma
     character(len=24) :: sdcont_solv, sdcont_defi

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine te0221(option, nomte)
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     implicit none
 #include "jeveux.h"
 !

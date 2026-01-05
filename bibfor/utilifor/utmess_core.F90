@@ -18,7 +18,6 @@
 
 subroutine utmess_core(typ, idmess, nk, valk, ni, &
                        vali, nr, valr, nexcep, fname)
-! person_in_charge: mathieu.courtois at edf.fr
 !
     use message_module, only: Message, init_message, free_message
     use superv_module, only: superv_after

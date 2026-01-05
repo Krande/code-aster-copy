@@ -22,7 +22,6 @@ subroutine uterec(ndim, iflup, iflum, ino, mno, &
                   xn, yn, zn, valhp, valhm, &
                   valtp, valtm, ityp, itemp, itemm, &
                   noe)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE: UTILITAIRE DE CALCUL DE L'ERREUR DUE A LA
 !                         CONDITION D'ECHANGE. POUR AERER TE0003.

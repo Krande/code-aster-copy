@@ -32,7 +32,6 @@ subroutine romSolveDOMSystCreate(syst_matr_type, syst_2mbr_type, syst_type, &
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=1), intent(in) :: syst_matr_type
     character(len=1), intent(in) :: syst_2mbr_type

@@ -19,7 +19,6 @@
 
 # CONFIGURATION COQUES INTERNE ET EXTERNE SOUPLES
 # -------------------------------------------------
-# person_in_charge: andre.adobes at edf.fr
 #
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))

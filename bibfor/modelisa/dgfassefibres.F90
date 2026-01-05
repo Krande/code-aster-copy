@@ -28,7 +28,6 @@ subroutine dgfassefibres(nboccasf, iinbgf, tousgroupesnom, tousgroupesnbf, maxma
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
     !

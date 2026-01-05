@@ -25,7 +25,6 @@ subroutine romMultiCoefInit(nb_vari_coef, ds_multicoef)
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: nb_vari_coef
     type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef

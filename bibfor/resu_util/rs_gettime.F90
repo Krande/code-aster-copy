@@ -24,7 +24,6 @@ subroutine rs_gettime(result_, nume, inst)
 #include "asterc/r8vide.h"
 #include "asterfort/rsadpa.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
     integer(kind=8), intent(in) :: nume

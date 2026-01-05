@@ -29,7 +29,6 @@ subroutine mm_cycl_erase(ds_contact, cycl_type, point_curr)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer(kind=8), intent(in) :: cycl_type

@@ -49,7 +49,6 @@ subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
 #include "asterfort/nmrvai.h"
 #include "blas/daxpy.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=8) :: noma

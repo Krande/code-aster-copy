@@ -23,7 +23,6 @@ subroutine xsifle(ndim, ifa, jptint, cface, igeom, &
                   basloc, ithet, nompar, option, igthet, &
                   jbasec, contac)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1306,W1504
     implicit none

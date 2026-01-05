@@ -18,7 +18,6 @@
 
 subroutine xdeffk_wrap(kappa, mu, r, theta, ndim, fkpo, option, istano)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

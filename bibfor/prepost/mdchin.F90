@@ -19,7 +19,6 @@
 subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo, &
                   prefix, nbtv, codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 !     FORMAT MED - CHAMP - INFORMATIONS - FICHIER CONNU PAR NOM
 !            --    --      -                                -

@@ -20,7 +20,6 @@ function digde2(modelo)
     use calcul_module, only: ca_iamloc_, ca_ilmloc_
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
     integer(kind=8) :: modelo

@@ -18,7 +18,6 @@
 !
 subroutine nmlere(sddisc, action, infz, iterat, valr)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

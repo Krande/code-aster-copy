@@ -18,7 +18,6 @@
 
 subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 !

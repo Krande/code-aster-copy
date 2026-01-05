@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: albert.alarcon at edf.fr
 
 # Fichier comprenant une procédure de test de CALC_ESSAI avec les différentes
 # options de calcul.

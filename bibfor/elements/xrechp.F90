@@ -20,7 +20,6 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps, &
                   ihechp, jptint, jcface, jlonch, jlst, &
                   jbasec, nfh, nfe, fonree, imattt, &
                   heavn)
-! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
 ! aslint: disable=W1306
     implicit none

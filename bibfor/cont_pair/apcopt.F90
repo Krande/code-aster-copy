@@ -22,7 +22,6 @@ subroutine apcopt(sdappa, i_poin, poin_coor)
 !
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     integer(kind=8), intent(in) :: i_poin

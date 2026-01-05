@@ -20,7 +20,6 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam, &
                   deltat, nbrpas, dtmin, ldcext, durdec, &
                   retdec)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

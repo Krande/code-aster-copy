@@ -19,7 +19,6 @@
 subroutine as_mfdonp(fid, cha, numdt, numo, typent, &
                      typgeo, iterma, noma, nompro, nomloc, &
                      n, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

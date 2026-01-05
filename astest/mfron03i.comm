@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: david.haboussa at edf.fr
 # Comparaison entre la loi MonoDDCC_Irra (MFront) et la loi MONOCRISTAL
 # (ECOULEMENT='MONO_DD_CC_IRRA') (Code_Aster) sur un point materiel
 # Validation basée sur rho_5 et rho_8 en testant le maximum de la différence

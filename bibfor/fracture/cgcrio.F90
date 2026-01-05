@@ -29,7 +29,6 @@ subroutine cgcrio(resu, vecord, nbnume)
     character(len=19) :: vecord
     integer(kind=8), optional :: nbnume
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

@@ -25,7 +25,6 @@ subroutine nmetpl(ds_inout, sd_suiv, sd_obsv)
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=24), intent(in) :: sd_suiv

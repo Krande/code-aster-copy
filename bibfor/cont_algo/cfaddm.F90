@@ -32,7 +32,6 @@ subroutine cfaddm(ds_contact, l_frot, node_slav_indx, i_cont_link, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer(kind=8) :: node_slav_indx, i_cont_link

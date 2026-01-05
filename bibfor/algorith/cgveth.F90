@@ -23,7 +23,6 @@ subroutine cgveth(typfis, ndim)
     character(len=8) :: typfis
     integer(kind=8) :: ndim
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

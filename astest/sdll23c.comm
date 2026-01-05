@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sylvie.audebert at edf.fr
 # ----------------------------------------------------------------------
 # POUTRE ENCASTREE-LIBRE SOUMIS A UN SEISME
 # CORRECTION STATIQUE DE L'EFFET DES MODES PROPRES D'ORDRE ELEVE

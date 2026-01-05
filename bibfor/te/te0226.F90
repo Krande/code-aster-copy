@@ -40,7 +40,6 @@ subroutine te0226(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8) :: elrefe, fami, poum
     integer(kind=8) :: icodre(1), kpg, spt

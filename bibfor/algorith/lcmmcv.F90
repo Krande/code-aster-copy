@@ -19,7 +19,6 @@
 subroutine lcmmcv(yd, dy, ddy, nr, itmax, &
                   toler, iter, r, rini, epstr, &
                   irteti)
-! person_in_charge: jean-michel.proix at edf.fr
 ! aslint: disable=W1306
     implicit none
 !       MONOCRISTAL        : CONTROLE DE LA CONVERGENCE

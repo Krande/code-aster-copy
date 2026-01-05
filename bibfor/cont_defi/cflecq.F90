@@ -32,7 +32,6 @@ subroutine cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model

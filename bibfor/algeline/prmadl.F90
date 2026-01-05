@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine prmadl(ndj, deblis, liste)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
     integer(kind=8) :: deblis, liste(*), ndj
     integer(kind=8) :: nd, ndanc

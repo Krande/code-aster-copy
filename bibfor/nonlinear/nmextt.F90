@@ -25,7 +25,6 @@ subroutine nmextt(ds_inout, field_type, field_disc)
 #include "asterfort/assert.h"
 #include "asterfort/nmetob.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: field_type

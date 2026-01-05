@@ -38,7 +38,6 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
     character(len=8) :: ma
     character(len=*) :: ligrel, pheno, modeli
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !     BUT: CREER LE LIGREL LIGREL SUR TOUTES LES MAILLES DU MAILLAGE MA
 !     ON UTILISE LES E.F. DE LA MODELISATION MODELI DU PHENOMENE PHENO

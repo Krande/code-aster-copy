@@ -26,7 +26,6 @@ subroutine nmdifi(keywf, list_inst, tole, nb_inst, nume_end)
 #include "asterfort/utacli.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keywf
     character(len=19), intent(in) :: list_inst

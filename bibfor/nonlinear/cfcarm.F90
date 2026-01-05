@@ -20,7 +20,6 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai, &
                   nummai, alias, nommai, ndim, nnomam, &
                   coorma)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

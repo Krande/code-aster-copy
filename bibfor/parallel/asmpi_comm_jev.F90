@@ -32,7 +32,6 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
 ! IN NOMJEV : K24 : NOM JEVEUX DU VECTEUR A COMMUNIQUER
 !----------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !
 !
     implicit none

@@ -31,7 +31,6 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsvpar.h"
-! person_in_charge: hassan.berro at edf.fr
 !
 !     --     DISMOI(DYNA_PHYS/DYNA_GENE)
 !    IN:

@@ -25,7 +25,6 @@ subroutine dieven(sddisc, i_event, lacti)
 #include "asterfort/assert.h"
 #include "asterfort/utdidt.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sddisc
     integer(kind=8), intent(in) :: i_event

@@ -19,7 +19,6 @@
 subroutine nurfpd(ndim, nno1, nno2, npg, iw, &
                   vff1, vff2, idff1, vu, vp, &
                   typmod, geomi, sigref, epsref, vect)
-! person_in_charge: sebastien.fayolle at edf.fr
 !
 ! aslint: disable=W1306
     implicit none

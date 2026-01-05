@@ -21,7 +21,6 @@ subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
     implicit none
 !
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8), intent(in) :: laug_cont
     real(kind=8), intent(in) :: pres_near

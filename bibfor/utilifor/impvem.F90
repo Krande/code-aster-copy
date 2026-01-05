@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine impvem(ifi)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterc/ismaem.h"
 #include "asterc/isnnem.h"

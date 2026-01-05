@@ -21,7 +21,6 @@ subroutine zechlo(opt, te)
                              ca_iawtyp_, ca_igr_, ca_nbgr_, ca_npario_
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"

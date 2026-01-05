@@ -32,7 +32,6 @@ subroutine comp_comp_read(v_info_valk, v_info_vali)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(out) :: v_info_valk(:)
     integer(kind=8), intent(out) :: v_info_vali(:)

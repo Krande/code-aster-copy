@@ -21,7 +21,6 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod, &
                   deps, sigm, vim, option, sigp, &
                   vip, dsidep, demu, cinco, iret)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=
     implicit none
 #include "asterf_types.h"

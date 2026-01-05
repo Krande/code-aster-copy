@@ -20,7 +20,6 @@ subroutine lkdgds(nmat, materf, para, vara, devsig, &
                   i1, val, ds2hds, vecn, dfds, &
                   bprimp, nvi, vint, dhds, dgds, &
                   iret)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE DE G PAR RAPPORT A SIGMA

@@ -36,7 +36,6 @@ subroutine calipj(load, model)
 ! In  model            : model
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     use LoadKinematic_module
 !

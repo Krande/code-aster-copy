@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: nicolas.pignet at edf.fr
 !
 subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_absc, v_basf, v_cesv, &
                         jcesd, jcesl, i_theta, lpain, lchin, nchin)

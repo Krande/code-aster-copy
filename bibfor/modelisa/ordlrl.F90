@@ -44,7 +44,6 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterfort/ordrel.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     character(len=19), intent(in) :: lisrel
     character(len=8), intent(in) :: charge

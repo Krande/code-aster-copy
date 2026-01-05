@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine jereou(clas, pcent)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterc/rmfile.h"
 #include "asterfort/assert.h"

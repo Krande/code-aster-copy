@@ -25,7 +25,6 @@ subroutine apmamd(kptsc)
     use petsc_data_module
 
     implicit none
-! person_in_charge: nicolas.sellenet at edf.fr
 ! aslint:disable=
 #include "jeveux.h"
 #include "asterfort/assert.h"

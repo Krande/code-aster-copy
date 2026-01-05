@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine thm_kit_read(keywordfact, iocc, rela_comp, rela_thmc, rela_hydr, &
                         rela_meca, rela_ther)

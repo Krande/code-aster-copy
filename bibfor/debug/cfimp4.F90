@@ -44,7 +44,6 @@ subroutine cfimp4(ds_contact, mesh, ifm)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmnorm.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer(kind=8), intent(in) :: ifm

@@ -35,7 +35,6 @@ subroutine mmbclc(mesh, model, iter_newt, nume_inst, ds_measure, &
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model

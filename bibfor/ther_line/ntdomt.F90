@@ -24,7 +24,6 @@ subroutine ntdomt(theta)
 !
 #include "asterfort/getvr8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8), intent(out) :: theta
 !

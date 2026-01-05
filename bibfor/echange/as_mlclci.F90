@@ -18,7 +18,6 @@
 
 subroutine as_mlclci(fid, nordr, k64, ityp, nbn, &
                      ndim, nomasu, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

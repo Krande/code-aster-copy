@@ -24,7 +24,6 @@ function isdiri(list_load, load_type_2)
 #include "asterfort/assert.h"
 #include "asterfort/ischar.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     aster_logical :: isdiri
     character(len=19), intent(in) :: list_load

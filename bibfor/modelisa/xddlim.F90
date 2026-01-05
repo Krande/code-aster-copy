@@ -47,7 +47,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
     character(len=4) :: fonree
     character(len=8) :: modele, nomn, valimf, motcle
     character(len=19) :: lisrel, ch1, ch2, ch3, cnxinv, hea_no
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !      TRAITEMENT DE DDL_IMPO SUR UN NOEUD X-FEM
 !             (POUR MOTCLE = DX, DY ,DZ)

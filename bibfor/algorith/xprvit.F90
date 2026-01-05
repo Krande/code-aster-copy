@@ -58,7 +58,6 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     real(kind=8) :: lcmin, damax, rdimp, rdtor
     aster_logical :: locdom
 !
-! person_in_charge: patrick.massin at edf.fr
 !     ------------------------------------------------------------------
 !
 !       XPRVIT   : X-FEM PROPAGATION : EXTENSION DU CHAMP DE VITESSES

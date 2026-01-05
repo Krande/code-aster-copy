@@ -18,7 +18,6 @@
 !
 function nmchcr(dp)
 !.======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
     implicit none
 !
 !      NMCHCR   -- CETTE ROUTINE CONCERNE L'INTEGRATION DE LA LOI

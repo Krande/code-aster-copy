@@ -19,7 +19,6 @@
 subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw, &
                   dbakw, qsize, llist, marker, maxint, &
                   tag, parent)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 !--- SPARSPAK-A (ANSI FORTRAN) RELEASE III --- NAME = MMDELM

@@ -19,7 +19,6 @@
 subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus, &
                   ng, mg, ir, q)
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 !       IN  FAMSYS  :  NOM FAMILLE SYS GLIS
 !           NUSYS   :  NUMERO SYS GLIS (FACULTATIF)
 !           PGL2     :  MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL

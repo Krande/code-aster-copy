@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine chrep6(x6, vp33, controle, xp6)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   changement de base d'un pseudo vecteur de deformation
 !   contenant des gama si controle=vrai

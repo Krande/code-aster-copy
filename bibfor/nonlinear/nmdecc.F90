@@ -20,7 +20,6 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam, &
                   ratio, typdec, nbrpas, deltac, dtmin, &
                   retdec)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

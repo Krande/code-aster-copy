@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jjanal(condlu, nval, nvalo, lval, cval)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterfort/utmess.h"
     character(len=*) :: condlu, cval(*)

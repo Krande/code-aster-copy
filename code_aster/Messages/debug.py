@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: josselin.delmas at edf.fr
 # Catalogue de messages utiles en debug pour le developpeur
 # Dans ce catalogue les messages peuvent ne pas être formules
 # en francais

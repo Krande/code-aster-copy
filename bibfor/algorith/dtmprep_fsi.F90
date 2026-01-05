@@ -19,7 +19,6 @@
 subroutine dtmprep_fsi(sd_dtm_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmprep_fsi : Retreives information regarding the Fluid-Structure Interaction
 !               configuration if needed for the dynamic integration.

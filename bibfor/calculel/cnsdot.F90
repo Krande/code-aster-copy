@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine cnsdot(cns1z, cns2z, pscal, ier)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

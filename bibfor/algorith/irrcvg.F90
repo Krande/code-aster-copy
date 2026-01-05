@@ -21,7 +21,6 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater, &
                   irteti)
     implicit none
 #include "asterfort/utmess.h"
-! person_in_charge: jean-luc.flejou at edf.fr
 !       IRRAD3M        : CONTROLE DE LA CONVERGENCE
 !                        DE LA CONFORMITE DE LA SOLUTION DP
 !                        ET DE LA RE-INTEGRATION

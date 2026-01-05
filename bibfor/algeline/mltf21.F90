@@ -18,7 +18,6 @@
 !
 subroutine mltf21(p, front, frn, n, t1, &
                   t2, eps, ier)
-! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE
     implicit none

@@ -33,7 +33,6 @@ function mmmaxi(sdcont_defi, model, mesh)
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     aster_logical :: mmmaxi
     character(len=24), intent(in) :: sdcont_defi

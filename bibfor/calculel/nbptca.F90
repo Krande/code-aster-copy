@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/alchml.h"

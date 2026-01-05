@@ -36,7 +36,6 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !
     integer(kind=8) :: iordr
     character(len=*) :: nomsd, nomsy
-! person_in_charge: jacques.pellet at edf.fr
 !
 !  BUT : "NOTER" UN CHAMP DANS UNE SD_RESULTAT
 !        ON VERIFIE QUE :

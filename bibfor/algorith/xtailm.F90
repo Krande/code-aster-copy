@@ -29,7 +29,6 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor, &
     real(kind=8) :: vecdir(ndim)
     character(len=8) :: typma
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !       ----------------------------------------------------------------
 !       DETERMINATION DE LA TAILLE MAXIMALE DE LA MAILLE CONNECTEE AU
 !       POINT DU FOND IPT SUIVANT LA DIRECTION DU VECTEUR VECDIR

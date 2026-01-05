@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W0413
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine mb_pres()
 !

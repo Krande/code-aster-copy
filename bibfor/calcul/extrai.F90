@@ -23,7 +23,6 @@ subroutine extrai(nin, lchin, lpain, init)
 
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "asterfort/assert.h"
 #include "asterfort/extra1.h"

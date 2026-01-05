@@ -32,7 +32,6 @@ subroutine cfaca2(nbliac, spliai, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: nbliac
     integer(kind=8) :: spliai, indfac

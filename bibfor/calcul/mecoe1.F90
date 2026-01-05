@@ -23,7 +23,6 @@ subroutine mecoe1(opt, te)
 
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
 #include "asterc/indik8.h"

@@ -23,7 +23,6 @@ module message_module
 !   Manage the user messages
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: mathieu.courtois@edf.fr
 !
     implicit none
     private :: assert

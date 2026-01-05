@@ -22,7 +22,6 @@ function inpara(opt, te, statut, nopara)
 
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
     character(len=8) :: nopara

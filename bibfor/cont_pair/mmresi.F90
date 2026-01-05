@@ -18,7 +18,6 @@
 !
 subroutine mmresi(alias, nno, ndim, coorma, coorpt, &
                   ksi1, ksi2, valeur)
-! person_in_charge: mickael.abbas at edf.fr
     implicit none
 #include "asterfort/mmfonf.h"
 #include "asterfort/mmtang.h"

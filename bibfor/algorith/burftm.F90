@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine burftm(cmp, ndim, vim, epsfm)
-! person_in_charge: alexandre.foucault at edf.fr
 ! ----------------------------------------------------------------------
 ! ROUTINE DE COMPORTEMENT DE FLUAGE BETON_BURGER
 ! PASSAGE DES VARIABLES INTERNES AU VECTEUR DE DEFORMATIONS DE FLUAGE

@@ -18,7 +18,6 @@
 !
 subroutine rcevoa(typtab, nommat)
 !
-! person_in_charge: the-hiep.chau at edf.fr
 !
     implicit none
 #include "asterf_types.h"

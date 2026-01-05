@@ -24,7 +24,6 @@ subroutine te0004(option, nomte)
 #include "asterfort/ppgan2.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       !! ROUTINE GENERIQUE !!

@@ -19,7 +19,6 @@
 subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl, &
                   jgdeq, grdvie, forvie, post, jdomel, &
                   jnrupt)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

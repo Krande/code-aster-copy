@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: nicolas.pignet at edf.fr
 !
 subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !

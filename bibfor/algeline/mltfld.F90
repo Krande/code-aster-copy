@@ -18,7 +18,6 @@
 !
 subroutine mltfld(n, front, adper, t1, ad, &
                   eps, ier)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterfort/sspmvb.h"
 #include "blas/dgemv.h"

@@ -32,7 +32,6 @@ subroutine debca1(nin)
                              ca_nbelmx_, ca_option_, ca_ligrel_, ca_lparal_, ca_paral_, ca_nbgr_
 
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
 #include "asterc/r8nnem.h"

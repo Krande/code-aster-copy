@@ -19,7 +19,6 @@
 subroutine dbg_base()
     implicit none
 !
-! person_in_charge: mathieu.courtois@edf.fr
 !
 ! Check that the splitting of the results databases works as expected.
 !

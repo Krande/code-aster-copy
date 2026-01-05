@@ -21,7 +21,6 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac, &
                   ces2, cesvi1, cesvi2, resuco, comps1, &
                   comps2, pre1)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

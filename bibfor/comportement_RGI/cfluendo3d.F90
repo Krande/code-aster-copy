@@ -20,7 +20,6 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
                       compor, carcri, instam, instap, epsm, &
                       deps, sigm, vim, option, sigp, &
                       vip, typmod, dsidep, codret)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !      Ficher de base de FLUAGE ET ENDOMMAGEMENT
 !=====================================================================

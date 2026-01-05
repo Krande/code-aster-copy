@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmextr_read_2(sdextrz, ds_inout, nb_keyw_fact, list_field, rela_field_keyw, &
                          nb_field_comp)

@@ -23,7 +23,6 @@ subroutine monte1(te2, nout, lchout, lpaout, igr2)
                              ca_paral_, ca_lparal_, ca_nuop_, ca_iel_
 !
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterf_types.h"
 #include "jeveux.h"

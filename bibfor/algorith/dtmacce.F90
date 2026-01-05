@@ -19,7 +19,6 @@
 subroutine dtmacce(sd_dtm_, sd_int_, index, buffdtm, buffint, calcf)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmacce : Calculates the acceleration from the equilibrium of the equation of motion.
 !           The results are saved in the integration data structure.

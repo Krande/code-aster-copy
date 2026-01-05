@@ -18,7 +18,6 @@
 !
 subroutine inschn(andi, ndi, xadj, adjncy, chaine, &
                   nouv, place, debut)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
     integer(kind=8) :: andi, xadj(*), ndi, chaine(*), nouv(*), adjncy(*)
     integer(kind=8) :: place(*)

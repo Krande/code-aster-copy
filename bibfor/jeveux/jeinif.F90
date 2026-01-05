@@ -18,7 +18,6 @@
 !
 subroutine jeinif(sti, sto, nomf, clas, nrep, &
                   nbloc, lbloc)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
     implicit none
 #include "asterf_types.h"

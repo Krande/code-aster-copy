@@ -23,7 +23,6 @@ subroutine ccchci(questz, type_comp, crit, norm, nb_form, &
 !
 #include "asterfort/assert.h"
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
     character(len=*), intent(in) :: questz
     character(len=16), intent(in) :: type_comp

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 #
-# person_in_charge: jean-luc.flejou at edf.fr
 
 from code_aster.Commands import *
 from code_aster import CA

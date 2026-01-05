@@ -20,7 +20,6 @@ subroutine intnewm_oper(nbequ, par, mgen, kgen, agen, &
                         ktilda, ftild1, ftild2, ftild3)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! intnewm_oper : Calculate (or update) the operators for a Newmark integration
 !

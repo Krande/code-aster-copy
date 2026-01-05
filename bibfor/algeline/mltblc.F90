@@ -18,7 +18,6 @@
 !
 subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc, &
                   decal, lgbloc, ncbloc)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !       CALCUL DU NOMBRE DE BLOCS POUR LA MATRICE FACTORISEE
 !       DONNEES :

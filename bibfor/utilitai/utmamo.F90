@@ -31,7 +31,6 @@ subroutine utmamo(modele, nbtrou, litrou)
     character(len=8) :: modele
     character(len=*) :: litrou
 !
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       FILTRER LES MAILLES AFFECTEES PAR LE MODELE

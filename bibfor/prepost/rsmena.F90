@@ -42,7 +42,6 @@ subroutine rsmena(resu)
 #include "asterfort/as_allocate.h"
 !
     character(len=*) :: resu
-! person_in_charge: jacques.pellet at edf.fr
 !     ------------------------------------------------------------------
 ! BUT : DETRUIRE LES OBJETS JEVEUX INUTILISES DANS UNE SD_RESULTAT
 !     ------------------------------------------------------------------

@@ -31,7 +31,6 @@ subroutine add_ineq_conditions_matrix(matass, matr, nume_ddl)
 #include "asterfort/mtcmbl.h"
 #include "asterfort/sdmpic.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: matass, matr
     character(len=14) :: nume_ddl

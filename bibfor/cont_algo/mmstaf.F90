@@ -32,7 +32,6 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, &
 #include "asterfort/mmvalp_scal.h"
 #include "asterfort/mm_cycl_laugf.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(in) :: ndim

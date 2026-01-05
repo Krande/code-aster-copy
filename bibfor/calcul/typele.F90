@@ -21,7 +21,6 @@ function typele(ligrez, igrel, icalc)
     implicit none
     integer(kind=8) :: typele
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
 #include "asterfort/jedema.h"

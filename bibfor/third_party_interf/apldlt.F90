@@ -26,7 +26,6 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
     use petsc_data_module
     implicit none
 !
-! person_in_charge: natacha.bereux@edf.fr
 
 #include "jeveux.h"
 #include "asterfort/assert.h"

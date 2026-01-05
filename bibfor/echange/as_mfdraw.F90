@@ -19,7 +19,6 @@
 subroutine as_mfdraw(fid, cha, filter, val, locname, &
                      typent, typgeo, numdt, dt, numo, &
                      cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
     implicit none
 #include "asterf_types.h"

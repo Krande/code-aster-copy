@@ -18,7 +18,6 @@
 
 subroutine dbgobj(ojbz, perm, iunit, mess)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !     BUT : IMPRIMER SUR LE FICHIER "IUNIT"
 !           QUELQUES VALEURS QUI "RESUMENT" UN OBJET JEVEUX (OJB)

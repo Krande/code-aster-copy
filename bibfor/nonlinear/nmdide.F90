@@ -24,7 +24,6 @@ subroutine nmdide(l_reuse, result, nume_last, inst_last)
 #include "asterc/r8vide.h"
 #include "asterfort/rs_getlast.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: result
     aster_logical, intent(in) :: l_reuse

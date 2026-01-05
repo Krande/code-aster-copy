@@ -38,7 +38,6 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai, &
     character(len=8) :: sdcarm
     character(len=*) :: nofimd, typsec, nomase
     integer(kind=8) :: nbrcou, nbsect, nummai
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! --------------------------------------------------------------------------------------------------
 !

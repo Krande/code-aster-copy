@@ -18,7 +18,6 @@
 !
 function jjcodn(icre, nomrep, nomec, irep, crep, &
                 nmax, nuti)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "asterfort/jxhcod.h"

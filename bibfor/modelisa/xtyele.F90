@@ -18,7 +18,6 @@
 !
 subroutine xtyele(model, trav, nfiss, fiss, contac, &
                   ndim, linter)
-! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=W1306
     implicit none
 #include "asterf_types.h"

@@ -20,7 +20,6 @@
  * --------------------------------------------------------------------
  */
 
-/* person_in_charge: mathieu.courtois@edf.fr */
 
 #include "PythonBindings/ResultNamingInterface.h"
 

@@ -40,7 +40,6 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
     character(len=19) :: sens
     integer(kind=8) :: nbmaf, jdlima, jconx1, jconx2, jcoor
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !  ---------------------------------------------------------------------
 !

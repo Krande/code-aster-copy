@@ -18,7 +18,6 @@
 
 subroutine zbinte(rho, rhomin, rhomax, rhoexm, rhoexp)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     real(kind=8) :: rho

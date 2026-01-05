@@ -20,7 +20,6 @@
 # CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN
 # MODELISATION TUYAU 4 NOEUDS
 # REFERENCE : ESSAIS ELSA
-# person_in_charge: sylvie.audebert at edf.fr
 # ------------------------------------------------------------------
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))

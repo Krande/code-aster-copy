@@ -18,7 +18,6 @@
 
 subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2, &
                   base, chs2)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"

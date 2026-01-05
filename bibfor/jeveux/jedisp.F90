@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jedisp(n, tab)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "jeveux_private.h"
     integer(kind=8) :: n, tab(*)

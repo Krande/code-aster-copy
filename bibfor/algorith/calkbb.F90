@@ -18,7 +18,6 @@
 !
 subroutine calkbb(nno, ndim, w, def, dsidep, &
                   kbb)
-! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 !
 #include "asterfort/assert.h"

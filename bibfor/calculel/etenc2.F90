@@ -19,7 +19,6 @@
 subroutine etenc2(cartz, iret)
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"

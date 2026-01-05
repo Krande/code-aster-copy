@@ -18,7 +18,6 @@
 
 subroutine cfnewj(ndim, coorde, coordp, norm, jeu)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     integer(kind=8) :: ndim

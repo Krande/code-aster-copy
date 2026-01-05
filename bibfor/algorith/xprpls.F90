@@ -46,7 +46,6 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma, &
     character(len=19) :: dcnsln, dcnslt, cnsln, cnslt, grln, grlt, ndomp, edomg
     integer(kind=8) :: ndim
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     ------------------------------------------------------------------
 !

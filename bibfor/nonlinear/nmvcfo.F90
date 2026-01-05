@@ -31,7 +31,6 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
 #include "asterfort/nmchex.h"
 #include "asterfort/reajre.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=1), intent(in) :: type_comp
     character(len=24), intent(in) :: model

@@ -25,7 +25,6 @@ subroutine mmnorm(ndim, tau1, tau2, norm, noor_)
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: tau1(3)

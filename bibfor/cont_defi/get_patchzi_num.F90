@@ -26,7 +26,6 @@ subroutine get_patchzi_num(mesh, nmgrma, num)
 #include "asterfort/jelira.h"
 #include "asterfort/utmess.h"
 
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nmgrma

@@ -37,7 +37,6 @@ subroutine mmapma(mesh, ds_contact, model_ndim, i_zone, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: mesh
     character(len=8) :: aliase

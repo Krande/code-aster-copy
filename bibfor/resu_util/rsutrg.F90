@@ -27,7 +27,6 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
 #include "asterfort/jeveuo.h"
     integer(kind=8) :: iordr, irang
     character(len=*) :: nomsd
-! person_in_charge: jacques.pellet at edf.fr
 !      CORRESPONDANCE NUMERO D'ORDRE UTILISATEUR (IORDR) AVEC LE
 !      NUMERO DE RANGEMENT (IRANG).
 ! ----------------------------------------------------------------------

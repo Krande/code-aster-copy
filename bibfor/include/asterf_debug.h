@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 !
-! person_in_charge: mathieu.courtois@edf.fr
 !
 #ifndef ASTERF_DEBUG_H_
 #define ASTERF_DEBUG_H_

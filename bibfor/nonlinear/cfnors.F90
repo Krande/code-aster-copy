@@ -32,7 +32,6 @@ subroutine cfnors(noma, ds_contact, posmai, typent, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: posmai
     type(NL_DS_Contact), intent(in) :: ds_contact

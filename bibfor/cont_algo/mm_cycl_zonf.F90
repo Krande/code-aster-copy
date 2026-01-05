@@ -22,7 +22,6 @@ subroutine mm_cycl_zonf(lagr_frot_norm, tole_stick, tole_slide, zone_frot)
 !
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8), intent(in) :: lagr_frot_norm
     real(kind=8), intent(in) :: tole_stick

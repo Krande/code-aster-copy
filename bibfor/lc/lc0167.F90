@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: etienne.grimal at edf.fr
 !
 subroutine lc0167(fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, epsm, &

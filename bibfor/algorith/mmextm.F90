@@ -18,7 +18,6 @@
 
 subroutine mmextm(defico, cnsmul, posmae, mlagr)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

@@ -54,7 +54,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     character(len=*) :: corrn, corrm
     character(len=1) :: base, bascor
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! ======================================================================
 !     BUT: REDUIRE UN MAILLAGE SUR UNE LISTE DE MAILLES

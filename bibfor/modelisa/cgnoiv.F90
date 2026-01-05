@@ -37,7 +37,6 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !
     integer(kind=8) :: iocc, nbno
     character(len=*) :: nomaz, lisnoz
-! person_in_charge: jacques.pellet at edf.fr
 !
 !       CGNOIV -- TRAITEMENT DE L'OPTION INTERVALLE_VALE
 !                 DU MOT FACTEUR CREA_GROUP_NO DE

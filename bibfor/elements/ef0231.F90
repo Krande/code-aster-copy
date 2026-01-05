@@ -34,7 +34,6 @@ subroutine ef0231(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     character(len=8) :: elrefe
     character(len=16) :: nomres(3)
     integer(kind=8) :: icodre(3)

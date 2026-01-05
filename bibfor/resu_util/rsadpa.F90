@@ -43,7 +43,6 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr, &
     character(len=*), intent(in) :: nomsd, lpara(*)
     character(len=*), intent(out), optional :: styp, ttyp(*)
     integer(kind=8), intent(in), optional :: istop
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! Recuperation des adresses jeveux des parametres d'une sd_resultat
 ! pour le numero d'ordre : iordr

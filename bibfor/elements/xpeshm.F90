@@ -22,7 +22,6 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls, &
                   ipesa, heavt, lonch, cnset, rho, &
                   axi, yaenrm, nfiss, nfh, jfisno)
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 ! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE

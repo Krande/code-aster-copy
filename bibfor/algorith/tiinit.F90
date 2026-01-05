@@ -29,7 +29,6 @@ subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
 #include "asterfort/ntcra0.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: sddisc

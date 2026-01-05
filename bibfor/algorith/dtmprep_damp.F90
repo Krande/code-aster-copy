@@ -19,7 +19,6 @@
 subroutine dtmprep_damp(sd_dtm_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmprep_damp : Creation of a pseudo damping matrix from a list of damping coefficients
 !                given by the user under the keywords LIST_AMOR and AMOR_MODAL in the

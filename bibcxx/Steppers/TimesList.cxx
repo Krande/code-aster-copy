@@ -23,7 +23,6 @@
 
 #include "Steppers/TimesList.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 bool TimesList::setValues( const VectorReal &values ) {
     _values->clear();

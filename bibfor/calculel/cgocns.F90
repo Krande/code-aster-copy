@@ -33,7 +33,6 @@ subroutine cgocns(cnoz, basez, cnsz, meshz, undf0_)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     character(len=*), intent(in) :: cnoz
     character(len=*), intent(in) :: cnsz, meshz

@@ -34,7 +34,6 @@ subroutine nmext3(mesh, field, field_type, field_s, &
 #include "asterfort/nmextj.h"
 #include "asterfort/sdmpic.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: field

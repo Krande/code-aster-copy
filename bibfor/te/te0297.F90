@@ -39,7 +39,6 @@ subroutine te0297(option, nomte)
 !
     character(len=16) :: option, nomte
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT
 !                          EN MÉCANIQUE DE LA RUPTURE

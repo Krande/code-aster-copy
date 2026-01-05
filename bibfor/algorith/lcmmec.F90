@@ -20,7 +20,6 @@ subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci, &
                   itmax, toler, alpham, dgamma, dalpha, &
                   iret)
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 #include "asterc/r8miem.h"
 #include "asterfort/utmess.h"
     integer(kind=8) :: nmat, ifa, nbcomm(nmat, 3), iret, itmax

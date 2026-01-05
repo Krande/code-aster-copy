@@ -20,7 +20,6 @@ subroutine vmci1d(fami, kpg, ksp, imate, em, &
                   ep, sigm, deps, vim, option, &
                   materi, sigp, vip, dsde)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
     implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"

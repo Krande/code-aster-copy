@@ -37,7 +37,6 @@ subroutine utflmd(mailla, limail, nbmail, dim, typmai, &
     character(len=*), intent(in) :: typmai
     integer(kind=8), intent(out) :: nbtrou
     character(len=*), intent(out) :: litrou
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       FILTRER UNE LISTE DE MAILLE D'APRES LEUR DIMENSION

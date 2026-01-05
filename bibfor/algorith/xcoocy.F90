@@ -18,7 +18,6 @@
 
 subroutine xcoocy(ndim, xg, pfon, p, rg, tg, l_not_zero)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

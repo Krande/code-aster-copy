@@ -18,7 +18,6 @@
 !
 subroutine jjecrs(iadmi, iclas, idos, idco, cus, &
                   jmarq)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/jjalls.h"

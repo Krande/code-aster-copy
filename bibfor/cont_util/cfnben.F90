@@ -23,7 +23,6 @@ subroutine cfnben(sdcont_defi, enti_indx, enti_type, enti_nb_, enti_jdec_)
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
     character(len=6), intent(in) :: enti_type

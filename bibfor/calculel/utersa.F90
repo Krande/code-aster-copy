@@ -22,7 +22,6 @@ subroutine utersa(ndim, iflup, iflum, ino, mno, &
                   ltheta, valthe, valunt, niv, ifm, &
                   ityp, xn, yn, zn, term22, &
                   aux, jad, jadv, noe)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE: UTILITAIRE DE CALCUL DE L'ERREUR DUE AU TERME
 !                         DE SAUT. POUR AERER TE0003.

@@ -29,7 +29,6 @@ subroutine te0291(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/uthk.h"
     character(len=16) :: option, nomte
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !         CALCUL DE L'INDICATEUR D'ERREUR EN ENERGIE

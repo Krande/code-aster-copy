@@ -19,7 +19,6 @@
 subroutine lkimat(mod, imat, nmat, materd, materf, &
                   matcst, ndt, ndi, nvi, nr)
     implicit none
-! person_in_charge: alexandre.foucault at edf.fr
 !       --------------------------------------------------------------
 !       RECUPERATION PROPRIETES MATERIAU POUR LETK ET DIMENSION NR
 !       IN  MOD    :  TYPE DE MODELISATION

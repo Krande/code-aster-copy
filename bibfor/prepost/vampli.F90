@@ -18,7 +18,6 @@
 !
 subroutine vampli(vwork, tdisp, liste, nbt, nbordr, &
                   numini, nbp, tspaq, nomopt, cxsr)
-! person_in_charge: jean-michel.proix at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

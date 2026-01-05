@@ -26,7 +26,6 @@ subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
     aster_logical, intent(in) :: l_temp_nonl

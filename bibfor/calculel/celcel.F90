@@ -35,7 +35,6 @@ subroutine celcel(transf, cel1, base, cel2)
 #include "asterfort/as_allocate.h"
 !
     character(len=*) :: transf, cel1, base, cel2
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : TRANSFORMER UN CHAM_ELEM (CEL1) EN UN CHAM_ELEM (CEL2) QUI
 !        A DE NOUVELLES PROPRIETES. PAR EXEMPLE POUR POUVOIR ETRE

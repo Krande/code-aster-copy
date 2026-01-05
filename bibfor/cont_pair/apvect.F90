@@ -23,7 +23,6 @@ subroutine apvect(sdappa, questi_, i_poin, valr)
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=*), intent(in) :: questi_

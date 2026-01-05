@@ -29,7 +29,6 @@ subroutine dgmmax(eb, nub, num, nuf, h, &
 ! PARAMETRES SORTANTS
     real(kind=8) :: d3, w, mp, c
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! BUT : CALCUL DES INFORMATIONS NECESSAIRES A LA DETERMINATION DES

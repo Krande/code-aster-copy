@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: irmela.zentner at edf.fr
 
 # Routines for random signal generation
 """random_signal_utils.py

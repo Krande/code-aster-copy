@@ -29,7 +29,6 @@ subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_sear_coef, line_sear
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(inout) :: ds_print
     integer(kind=8), intent(in) :: list_func_acti(*)

@@ -18,7 +18,6 @@
 
 subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
                   cvpn2, cuon, cvon, rayon)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"

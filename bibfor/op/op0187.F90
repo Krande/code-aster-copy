@@ -18,7 +18,6 @@
 
 subroutine op0187()
     implicit none
-! person_in_charge: samuel.geniaut at edf.fr
 !     =================================================================
 !                      OPERATEUR POST_MAIL_XFEM
 !                      ------------------------

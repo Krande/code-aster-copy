@@ -23,7 +23,6 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
                   nvi, dsidep, codret)
 ! aslint: disable=W1504,W0104
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! ----------------------------------------------------------------------
 !
 !              LOI BETON_RAG

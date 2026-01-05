@@ -47,7 +47,6 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc, &
 ! OUT NFREQ    : IN  : NBRE DE MODES DANS LA BANDE
 ! OUT EFFMIN/EFFMAX : R8  : BORNES DE LA BANDE FREQUENTIELLE EFFECTIVE
 !-----------------------------------------------------------------------
-! person_in_charge: albert.alarcon at edf.fr
 !
 ! VARIABLES LOCALES
     integer(kind=8) :: ier, nbval1, nbval2, nbval3, jobj1, jobj2, jobj3, jobj4, jobj5, i

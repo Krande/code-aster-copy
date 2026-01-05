@@ -26,7 +26,6 @@ subroutine nmexti(node_name, field, nb_cmp, list_cmp, type_extr_cmp, &
 #include "asterfort/nmextv.h"
 #include "asterfort/posddl.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: node_name
     character(len=19), intent(in) :: field

@@ -26,7 +26,6 @@ subroutine dfllli(listr8_sdaster, dtmin, nb_inst)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: listr8_sdaster
     real(kind=8), intent(out) :: dtmin

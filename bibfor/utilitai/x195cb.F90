@@ -36,7 +36,6 @@ subroutine x195cb(tychr, nomgd, chou)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
 !     BUT : TRAITER :
 !          - OPTION 'COMB' DE LA COMMANDE CREA_CHAMP
 !     -----------------------------------------------------------------

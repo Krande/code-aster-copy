@@ -19,7 +19,6 @@
 subroutine xpoini(maxfem, modele, malini, modvis, licham, &
                   resuco, resux, prefno, nogrfi)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

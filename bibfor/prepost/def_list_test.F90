@@ -18,7 +18,6 @@
 
 subroutine def_list_test(nbma, jcninv, lima, liout, nbout)
     implicit none
-! person_in_charge: guillaume.drouet at edf.fr
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"

@@ -33,7 +33,6 @@ subroutine cfsvmu(ds_contact, lconv)
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(in) :: lconv

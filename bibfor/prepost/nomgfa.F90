@@ -18,7 +18,6 @@
 !
 subroutine nomgfa(nogr, nbgr, dgf, nogrf, nbgf)
 !     ------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !  ENTREES :
 !     NOGR   = NOMS DES GROUPES D ENTITES
 !     NBGR   = NOMBRE DE GROUPES

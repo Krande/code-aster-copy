@@ -24,7 +24,6 @@ subroutine cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_
 #include "asterfort/jeecra.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
     integer(kind=8), intent(in) :: nb_cont_surf

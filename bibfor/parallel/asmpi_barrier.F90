@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine asmpi_barrier(comm)
-! person_in_charge: mathieu.courtois@edf.fr
 !
 !
     implicit none

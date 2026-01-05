@@ -27,7 +27,6 @@ subroutine trvocz(ndim, nbvmas, livmas, jrepmo, &
 #include "asterfort/fgequi.h"
 #include "asterfort/r8inir.h"
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 !
 ! operateur POST_VOIS_CZM : calcul (en 2D et 3D) de la moyenne du taux
 ! de triaxialite des contraintes dans les elements massifs voisins (1

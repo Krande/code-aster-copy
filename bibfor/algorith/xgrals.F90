@@ -29,7 +29,6 @@ subroutine xgrals(noma, ln, lt, grlt, grln)
     character(len=8) :: noma
     character(len=19) :: ln, lt, grlt, grln
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !                       CALCUL DES GRADIENTS DES LEVEL-SETS
 !

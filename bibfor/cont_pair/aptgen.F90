@@ -30,7 +30,6 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 #include "asterfort/jelira.h"
 #include "asterfort/jerazo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh

@@ -20,7 +20,6 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini, &
                   nnoini, nbnop, tspaq, nommet, nomcri, &
                   nomfor, grdvie, forvie, forcri, nommai, &
                   cnsr, nommap, post, valpar, vresu)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

@@ -27,7 +27,6 @@ subroutine nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
 #include "asterfort/getvtx.h"
 #include "asterfort/nmetob.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=16), intent(in) :: keyw_fact

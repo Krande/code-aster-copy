@@ -18,7 +18,6 @@
 !
 subroutine cncinv(mail, lima, nlima, base, nomz)
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
 !**********************************************************************
 !   OPERATION REALISEE

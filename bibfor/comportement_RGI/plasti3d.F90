@@ -21,7 +21,6 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI, &
                     A, B, X, ngf, varf, ipzero, &
                     outputR, outputVR6, outputMat33, &
                     outputI)
-! person_in_charge: etienne.grimal@edf.fr
 !-----------------------------------------------------------------------
 !       verification des criteres de plasticite et ecoulements
 !-----------------------------------------------------------------------

@@ -29,7 +29,6 @@ subroutine surfll(sdcont_defi, mesh, unit_msg, nb_cont_zone, nb_cont_elem, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
     character(len=8), intent(in) :: mesh

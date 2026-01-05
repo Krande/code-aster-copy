@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine nugllo(nu, base)
-! person_in_charge: nicolas.sellenet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterf_types.h"

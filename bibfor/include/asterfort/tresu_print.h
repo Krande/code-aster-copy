@@ -18,7 +18,6 @@
 
 !
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
 #include "asterf_types.h"
 !

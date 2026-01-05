@@ -50,7 +50,6 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez, &
     character(len=5) :: elim
     real(kind=8) :: const(*)
 !     ------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !     combinaison lineaire de matrices  :
 !     -------------------------------------
 !     mat_res= somme(alpha_i*mat_i)

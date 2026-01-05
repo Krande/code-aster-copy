@@ -21,7 +21,6 @@ subroutine ejfore(ndim, nddl, axi, nno1, nno2, &
                   idf2, dffr2, geom, iu, ip, &
                   sigref, fhyref, vect)
 !
-! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
 #include "asterf_types.h"

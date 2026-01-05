@@ -19,7 +19,6 @@
 subroutine avrain(nbvec, nbordr, jitrv, npic, jpic, &
                   jopic, fatsoc, ncycl, jvmin, jvmax, &
                   jomin, jomax)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

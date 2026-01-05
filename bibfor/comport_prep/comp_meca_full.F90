@@ -29,7 +29,6 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
 #include "asterfort/exisd.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: model
     character(len=19), intent(in) :: comp_elas

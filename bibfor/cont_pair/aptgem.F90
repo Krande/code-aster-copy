@@ -43,7 +43,6 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 #include "asterfort/mmtann.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh

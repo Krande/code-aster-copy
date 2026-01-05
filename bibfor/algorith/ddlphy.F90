@@ -18,7 +18,6 @@
 
 subroutine ddlphy(depplu, neq, vect, desc)
 !
-! person_in_charge: ludovic.idoux at edf.fr
 ! ----------------------------------------------------------------------
 !     CALCUL DES ENERGIES
 ! ----------------------------------------------------------------------

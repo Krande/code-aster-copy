@@ -26,7 +26,6 @@ function compr8(a, comp, b, eps, crit)
     integer(kind=8) :: crit
     character(len=2) :: comp
 !
-! person_in_charge: samuel.geniaut at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! FONCTION COMPARANT 2 REELS (REAL*8) ENTRE EUX

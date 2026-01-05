@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine SetResi(ds_conv, type_, &
                    col_name_, col_name_locus_, vale_calc_, locus_calc_, user_para_, &

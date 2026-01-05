@@ -26,7 +26,6 @@ subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
 #include "asterc/r8prem.h"
 #include "blas/dcopy.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: proj_stat
     integer(kind=8), intent(inout) :: proj_stat_mini

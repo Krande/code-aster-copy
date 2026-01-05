@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine crevec(nom, carac, dim, jadr)
-! person_in_charge: hassan.berro at edf.fr
 !
 ! Create a jeveux vector using a similar syntax to wkvect, but with persistent
 ! memory allocation, (jeveut). This utility is used in DYNA_VIBRA // mdallo.F90

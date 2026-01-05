@@ -27,7 +27,6 @@ subroutine te0293(option, nomte)
 #include "asterfort/lteatt.h"
 !
     character(len=16) :: option, nomte
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !         CALCUL DES VECTEURS ELEMENTAIRES

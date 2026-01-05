@@ -26,7 +26,6 @@ subroutine romCoefInfo(object_type, object_name_, i_coef, ds_multicoef)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=1), intent(in)       :: object_type
     character(len=8), intent(in)       :: object_name_

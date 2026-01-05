@@ -25,7 +25,6 @@ subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf, &
                         resi, option, dsidep, sig, cof2, &
                         dq2d)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
 ! --  IN

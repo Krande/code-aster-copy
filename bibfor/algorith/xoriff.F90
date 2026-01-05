@@ -20,7 +20,6 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo, &
                   nmafon, listpt, goinop, jfon, jnofaf, &
                   jbas, jtail, fonmul, nbfond)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "asterf_types.h"

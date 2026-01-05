@@ -21,7 +21,6 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab, &
 ! aslint: disable=
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     ARGUMENTS:
 !     ----------

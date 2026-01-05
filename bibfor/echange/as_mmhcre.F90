@@ -18,7 +18,6 @@
 
 subroutine as_mmhcre(fid, nom, dim, type, desc, &
                      descdt, typrep, nocomp, unit, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

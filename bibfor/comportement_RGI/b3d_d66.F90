@@ -18,7 +18,6 @@
 
 subroutine b3d_d66(nu, sn3, d66, prog1, &
                    comp)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !    calcul de la matrice d'endommagement 6*6 en base principale des endommagements
 !    hypothese du materiau orthotrope dans les directions principales de fissuration

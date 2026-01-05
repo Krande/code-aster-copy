@@ -55,7 +55,6 @@ subroutine pmfdgedef(typfib, b, gg, depl, alicom, nbfibr, nbcarm, &
 !   OUT
 !       defffib(nf) : deformations axiales des fibres
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 

@@ -46,7 +46,6 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
     integer(kind=8) :: jltsv, jltsl, jlnsv, jlnsl, nbno, jcoor, jcoorg
     aster_logical :: callst, grille
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !
     real(kind=8) :: dmin, eps, eps1, eps2, eps3

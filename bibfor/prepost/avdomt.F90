@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"

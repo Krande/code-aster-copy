@@ -19,7 +19,6 @@
 subroutine irrnvi(model, ndt, ndi, nr, nvi)
     implicit none
 #include "asterfort/utmess.h"
-! person_in_charge: jean-luc.flejou at edf.fr
 ! ----------------------------------------------------------------
 ! IRRAD3M  :  NOMBRE DE COMPOSANTES DES CONTRAINTES ET
 !             NOMBRE VARIABLES

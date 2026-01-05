@@ -45,7 +45,6 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     character(len=19) :: ligrel
     character(len=*) :: carte, titre, form
     integer(kind=8) :: ifi
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !     BUT:
 !       IMPRIMER UNE "CARTE" D'1 CONCEPT CHAM_MATER, CARA_ELE, ...

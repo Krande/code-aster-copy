@@ -25,7 +25,6 @@ subroutine sdmail(nomu, cooval, coodsc, &
     character(len=24) :: nommai, nomnoe, cooval, coodsc, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 #include "jeveux.h"
 !

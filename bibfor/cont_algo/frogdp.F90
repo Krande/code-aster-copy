@@ -41,7 +41,6 @@ subroutine frogdp(ds_measure, resoco, numedd, matass, resigr)
 #include "asterfort/mtdscr.h"
 #include "asterfort/nmrvai.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8) :: resigr
     type(NL_DS_Measure), intent(inout) :: ds_measure

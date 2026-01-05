@@ -19,7 +19,6 @@
 subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi, &
                            vi4, vr, vc, sci, sci4, &
                            scr, scc)
-! person_in_charge: jacques.pellet at edf.fr
 !
 !
 !  FONCTION REALISEE : SUR-COUCHE MPI

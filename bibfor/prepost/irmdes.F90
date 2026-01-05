@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine irmdes(idfimd, titre, nbtitr, infmed)
-! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
 !     ECRITURE FORMAT MED - LA DESCRIPTION
 !        -  -         -        ---

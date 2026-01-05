@@ -18,7 +18,6 @@
 
 subroutine disrec(pz, az, bz, r, h)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "asterfort/assert.h"

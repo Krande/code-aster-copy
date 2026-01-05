@@ -29,7 +29,6 @@ subroutine nmextl(mesh, model, keyw_fact, i_keyw_fact, field_type, &
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: mesh
     character(len=*), intent(in) :: model

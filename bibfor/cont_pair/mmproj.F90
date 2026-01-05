@@ -21,7 +21,6 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt, &
                   ksi1, ksi2, tau1, tau2, iproj, &
                   niverr)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

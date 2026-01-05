@@ -29,7 +29,6 @@ subroutine cfmmvs(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_loca, v_ncomp
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer(kind=8), intent(in) :: nt_ncomp_poin

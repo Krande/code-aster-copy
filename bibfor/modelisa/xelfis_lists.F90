@@ -31,7 +31,6 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav, &
     character(len=24) :: elfiss_heav, elfiss_ctip, elfiss_hect
 !
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
 !
 !  Routine utiiltaire XFEM

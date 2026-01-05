@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jjvern(noml32, icre, iret)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
     implicit none
 #include "jeveux_private.h"

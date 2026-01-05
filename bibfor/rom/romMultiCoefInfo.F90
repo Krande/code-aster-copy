@@ -25,7 +25,6 @@ subroutine romMultiCoefInfo(ds_multicoef)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_MultiCoef), intent(in) :: ds_multicoef
 !

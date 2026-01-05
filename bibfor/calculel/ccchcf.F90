@@ -23,7 +23,6 @@ subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out, &
 !
 #include "asterfort/fointe.h"
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
     integer(kind=8), intent(in) :: nb_cmp_out
     character(len=8), intent(in) :: name_form(nb_cmp_out)

@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
                   list_load, sdnume, sddyna, ds_errorindic, mater, &

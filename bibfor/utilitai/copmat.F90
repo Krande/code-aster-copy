@@ -26,7 +26,6 @@ subroutine copmat(mat_in, mat_out)
 !    | Extract, inside a temporary work vector, all terms of a given matrix  |
 !    |_______________________________________________________________________|
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"

@@ -43,7 +43,6 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 #include "blas/dcopy.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh

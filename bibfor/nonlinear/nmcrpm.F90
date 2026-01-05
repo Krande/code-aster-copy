@@ -18,7 +18,6 @@
 !
 subroutine nmcrpm(list, nbinst, dtmin)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     real(kind=8) :: list(*), dtmin

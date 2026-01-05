@@ -29,7 +29,6 @@ subroutine mmtanr(mesh, model_ndim, ds_contact, i_zone, &
 #include "asterfort/cftanr.h"
 #include "asterfort/mmexfr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: mesh
     integer(kind=8) :: i_zone

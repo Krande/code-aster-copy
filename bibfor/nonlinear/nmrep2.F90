@@ -19,7 +19,6 @@
 subroutine nmrep2(n, r, g, gu, rmin, &
                   rmax, rexm, rexp, posopt)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

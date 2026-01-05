@@ -25,7 +25,6 @@
 
 #include "DataFields/FieldOnNodes.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 void MeshCoordinatesField::assign( const JeveuxVectorReal &values ) {
     buildDescriptor();
     *_valuesList = *values;

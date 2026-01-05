@@ -22,7 +22,6 @@ subroutine glrc_lc(epsm, deps, vim, option, sig, &
                    alf, alfmc, crit, &
                    epsic, epsiels, epsilim, codret, &
                    ep, is_param_opt, val_param_opt, t2iu)
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 !

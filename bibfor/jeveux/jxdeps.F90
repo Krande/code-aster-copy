@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jxdeps(iadini, iadfin, lso)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !     DEPLACEMENT D'UNE ZONE MEMOIRE
 !     ------------------------------------------------------------------
 ! IN  IADINI : ADRESSE INITIALE

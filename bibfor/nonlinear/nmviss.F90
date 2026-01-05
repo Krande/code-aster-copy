@@ -44,7 +44,6 @@ subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
 #include "asterfort/as_allocate.h"
 #include "blas/dsymv.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: sddyna
     character(len=24) :: numedd

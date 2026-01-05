@@ -25,7 +25,6 @@ subroutine lc0169(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/cfluendo3d.h"
 
 !
-! person_in_charge: etienne.grimal at edf.fr
 ! ======================================================================
 !.......................................................................
 !     BUT: LOI DE RGI_BETON_BA

@@ -50,7 +50,6 @@ subroutine amumpz(actionz, kxmps, csolu, vcine, nbsol, &
 ! IN  : PCENTP  VECTEUR D'ENTIER GERE PAR AMUMPH POUR PARAMETRER LES
 !                STRATEGIES D'ADAPTATION EN CAS DE PB PCENT_PIVOT
 !---------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterc/matfpe.h"
 #include "asterf_types.h"

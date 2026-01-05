@@ -31,7 +31,6 @@
 !> @param[in]   imode   interruption mode
 !
 subroutine asmpi_stop(imode)
-! person_in_charge: mathieu.courtois at edf.fr
 
 !
 

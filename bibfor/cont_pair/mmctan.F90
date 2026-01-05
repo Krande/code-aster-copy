@@ -19,7 +19,6 @@
 subroutine mmctan(numema, alias, nno, ndim, coorma, &
                   coorno, epsmax, tau1, tau2, err_appa)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

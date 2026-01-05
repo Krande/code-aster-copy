@@ -18,7 +18,6 @@
 !
 subroutine massdir(massmat, dir, dmass)
     implicit none
-! person_in_charge: hassan.berro at edf.fr
 !
 !    Calculates the structural (total) mass along a given direction
 !    "dir" defined as a vector of 3 real coordinates

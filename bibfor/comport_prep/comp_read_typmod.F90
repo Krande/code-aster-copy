@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
                             keywf, i_comp, rela_comp, type_cpla_in, &

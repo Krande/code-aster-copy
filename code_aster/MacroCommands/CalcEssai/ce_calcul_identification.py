@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: albert.alarcon at edf.fr
 
 import numpy.linalg as linalg
 from numpy import array, conjugate, dot, identity, pi, transpose, zeros

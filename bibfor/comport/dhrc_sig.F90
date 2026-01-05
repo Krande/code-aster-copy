@@ -18,7 +18,6 @@
 
 subroutine dhrc_sig(eps, vint, a, b, sig)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 !

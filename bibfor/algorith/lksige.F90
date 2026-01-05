@@ -19,7 +19,6 @@
 subroutine lksige(mod, nmat, materd, deps, sigd, &
                   sigf)
     implicit none
-! person_in_charge: alexandre.foucault at edf.fr
 !       --------------------------------------------------------------
 !       INTEGRATION ELASTIQUE NON LINEAIRE SUR DT POUR LETK
 !       IN  MOD    :  MODELISATION

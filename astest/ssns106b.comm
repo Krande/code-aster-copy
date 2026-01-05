@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sebastien.fayolle at edf.fr
 #  DETAILS : MODELISATION : MULTI-COUCHES
 #                          (DKT- ENDO_ISOT_BETON+2*GRILLE ACIER)
 #                                           VS.

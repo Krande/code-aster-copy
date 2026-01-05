@@ -22,7 +22,6 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
                   svect, ncont, contp, scont, nvari, &
                   varip, svari, matuu, smatr, matsym, &
                   epsilo, epsilp, epsilg, varia, iret)
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"

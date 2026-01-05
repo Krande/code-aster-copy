@@ -18,7 +18,6 @@
 
 subroutine couplagfp3d(a, ngf, na, nc, &
                        dpfa_ds, dpfa_dpg, dpg_depsa6, raideur66p)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   autres couplages : fluage -> plasticite
 

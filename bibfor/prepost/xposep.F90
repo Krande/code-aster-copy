@@ -19,7 +19,6 @@
 subroutine xposep(mo, malini, mailc, mailx, nsetot, &
                   nnntot, ncotot, logrma, listgr)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

@@ -25,7 +25,6 @@ subroutine nmextd(field_type, ds_inout, field_algo)
 #include "asterfort/nmetnc.h"
 #include "asterfort/nmetob.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: field_type
     type(NL_DS_InOut), intent(in) :: ds_inout

@@ -19,7 +19,6 @@
 subroutine hydracomp3d(we0, we0s, epse06, souplesse66, sig06, &
                        deps6r, deps6r2, sigke06, &
                        epsk06, psik, fl3d)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   compatibilites des deformations elastique et de kelvin
 !   avec le materiau ayant subi un increment d hydratation

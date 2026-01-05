@@ -27,7 +27,6 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, &
     character(len=*) :: para, notype, litypa(nxpara), linopa(nxpara)
 !
 !
-! person_in_charge: emricka.julan at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

@@ -18,7 +18,6 @@
 
 subroutine chpeva(chou)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !     BUT : TRAITER :
 !      -  OPTION:'EVAL' DE LA COMMANDE CREA_CHAMP
 !      -  COMMANDE CALC_CHAMP

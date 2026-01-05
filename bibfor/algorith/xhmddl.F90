@@ -21,7 +21,6 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, &
                   mat, vect, ddlm, nfiss, jfisno, &
                   lcontx, contac)
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
     implicit none
 #include "asterf_types.h"

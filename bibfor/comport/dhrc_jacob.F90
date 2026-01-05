@@ -21,7 +21,6 @@ subroutine dhrc_jacob(eps, vint, c, bp1, &
                       cs1, as2, bs2, cs2, indi, &
                       neta1, neta2, cstseu, jacob)
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 !

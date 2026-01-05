@@ -18,7 +18,6 @@
 
 !
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
     subroutine aceadi(nbocc, infoconcept, infcarte, mcf)

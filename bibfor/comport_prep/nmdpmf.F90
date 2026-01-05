@@ -34,7 +34,6 @@ subroutine nmdpmf(compor, chmate)
 #include "asterfort/utmess.h"
 #include "asterfort/tecart.h"
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     character(len=19), intent(in) :: compor
     character(len=8), intent(in) :: chmate

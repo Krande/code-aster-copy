@@ -19,7 +19,6 @@
 subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmproj : Project the integration state onto the basis for the non-linear case
 !           in sd_dtm/NL_CASE, given that the preceding case is oldcase

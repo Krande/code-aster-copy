@@ -18,7 +18,6 @@
 
 subroutine irrlnf(nmat, materf, yf, eloupl, vinf)
     implicit none
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --- -------------------------------------------------------------
 !
 !    IRRAD3M  : CORRESPONDANCE ENTRE LES VARIABLES INTERNES ET LES

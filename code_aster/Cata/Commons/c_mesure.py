@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
 
 from ..Language.DataStructure import UnitType
 from ..Language.Syntax import FACT, SIMP

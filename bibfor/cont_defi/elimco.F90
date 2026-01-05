@@ -29,7 +29,6 @@ subroutine elimco(sdcont, mesh, model, nb_cont_surf, &
 #include "asterfort/cfmema.h"
 #include "asterfort/cfmeno.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

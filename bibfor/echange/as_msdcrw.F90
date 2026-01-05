@@ -18,7 +18,6 @@
 
 subroutine as_msdcrw(fid, lmname, jname, numdt, numit, entlcl, &
                      geolcl, entdst, geodst, ncorr, corrtab, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

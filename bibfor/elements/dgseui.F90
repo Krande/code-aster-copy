@@ -31,7 +31,6 @@ subroutine dgseui(em, num, ef, nuf, eb, &
 ! PARAMETRES SORTANTS
     real(kind=8) :: syt, dxd, syf, drd, pelast, pelasf
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! BUT : DETERMINATION DES SEUIL D ENDOMMAGEMENT

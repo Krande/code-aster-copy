@@ -20,7 +20,6 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf, &
                   nomcmr, nbcmfi, nmcmfi, nbcmpv, ncmpvm, &
                   numcmp, nochmd, adsl, adsv, codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 !     LECTURE D'UN CHAMP - FORMAT MED - CREATION DES VALEURS AUX NOEUDS
 !     -    -       -              -                  --

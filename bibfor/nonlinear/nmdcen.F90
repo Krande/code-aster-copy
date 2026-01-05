@@ -18,7 +18,6 @@
 !
 subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

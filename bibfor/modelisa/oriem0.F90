@@ -20,7 +20,6 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1, &
                   lino2, nbno2, lino3, nbno3, ipos, &
                   indmai)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "asterfort/assert.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"

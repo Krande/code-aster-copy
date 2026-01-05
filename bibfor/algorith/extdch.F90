@@ -18,7 +18,6 @@
 !
 subroutine extdch(typext, valinc, nocham, nocmp, dval, lst_loca)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "asterf_types.h"

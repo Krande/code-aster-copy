@@ -18,7 +18,6 @@
 !
 subroutine matrq9(mat)
     implicit none
-! person_in_charge: xavier.desroches at edf.fr
 !
 ! CALCUL DE LA MATRICE DE PASSAGE GAUSS NOEUDS POUR LES MECQQU9
 !

@@ -22,7 +22,6 @@ subroutine vpvers(eigsol, modes, checksd)
 ! RQ . SI OPTION='PLUS_GRANDE' ON MODIFIE LES VALEURS RAIDE/MASSE DE LA SD EIGENSOLVER
 !      VIA VPECRI.
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 #include "asterf_types.h"

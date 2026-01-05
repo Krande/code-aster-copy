@@ -22,7 +22,6 @@ subroutine delete_matrix(matas, typsol)
 !
 #include "asterf_types.h"
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !
     implicit none
     character(len=19) :: matas

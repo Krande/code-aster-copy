@@ -33,7 +33,6 @@ subroutine jeccta(colle1)
 #include "asterfort/jexnum.h"
 !
     character(len=*) :: colle1
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !     RETASSAGE D'UNE COLLECTION CONTIGUE ALLOUEE TROP GRANDE
 !     ------------------------------------------------------------------

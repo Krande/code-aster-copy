@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine vrcom2(compop, varmoi, ligrep, from_lire_resu)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/alchml.h"

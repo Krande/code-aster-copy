@@ -31,7 +31,6 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, &
 ! RQ3. ON CREE LES OBJETS GLOBAUX VECBLO, VECLAG ET, SUIVANT LES CAS, VECRIG, SUR BASE VOLATILE.
 !      ILS SONT DETRUITS DANS VPPOST POUR LES PREMIERS ET VPCALT POUR LE DERNIER.
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

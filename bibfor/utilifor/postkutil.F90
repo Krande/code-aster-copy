@@ -46,7 +46,6 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     character(len=*), intent(out) :: repmat
     character(len=*), intent(out) :: repmod
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! in:

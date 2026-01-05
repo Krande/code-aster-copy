@@ -18,7 +18,6 @@
 !
 module constraint_module
 !
-! person_in_charge: natacha.bereux at edf.fr
 !
     use csc_matrix_type
     use csc_store_type

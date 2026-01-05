@@ -20,7 +20,6 @@ function nbgrel(ligrlz)
     implicit none
     integer(kind=8) :: nbgrel
 !
-! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
 #include "asterfort/jelira.h"

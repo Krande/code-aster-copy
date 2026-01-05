@@ -23,7 +23,6 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat, &
                   dksdbr, iret)
 ! aslint: disable=,W1504
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 !       MONOCRISTAL : DERIVEES DES TERMES UTILES POUR LE CALCUL
 !                    DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY
 !                    cf. R5.03.11, COMPO DD_KR

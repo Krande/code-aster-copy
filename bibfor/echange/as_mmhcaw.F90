@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine as_mmhcaw(fid, maa, filter, coo, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

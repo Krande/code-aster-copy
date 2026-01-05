@@ -19,7 +19,6 @@
 subroutine dtmconc(sd_dtm_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmconc : Append several dyna_gene data structures saved by an adaptative time-step
 !           integration algorithm into a single result.

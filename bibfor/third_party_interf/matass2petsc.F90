@@ -19,7 +19,6 @@
 subroutine matass2petsc(matasz, local, petscMatz, iret)
 !
 !
-! person_in_charge: natacha.bereux at edf.fr
 !
 #include "asterf_types.h"
 #ifdef ASTER_HAVE_PETSC

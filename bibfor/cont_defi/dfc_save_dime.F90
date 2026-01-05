@@ -25,7 +25,6 @@ subroutine dfc_save_dime(sdcont, mesh, model_ndim, nb_cont_zone, nb_cont_surf, &
 #include "asterfort/dimeco.h"
 #include "asterfort/dimecz.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: sdcont

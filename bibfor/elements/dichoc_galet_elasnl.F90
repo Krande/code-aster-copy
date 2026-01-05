@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge:jean-luc.flejou@edf.fr
 !
 subroutine dichoc_galet_elasnl(for_discret, iret)
 !

@@ -24,7 +24,6 @@ function dinins(sddisc, nume_inst)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: dinins
     integer(kind=8), intent(in) :: nume_inst

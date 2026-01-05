@@ -41,7 +41,6 @@ subroutine cresol(solveu, basz, xfem)
     character(len=19) :: solveu
     character(len=1), optional :: basz
     character(len=3), optional :: xfem
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !
 !     CREATION D'UNE SD_SOLVEUR PAR LECTURE DU MOT CLE SOLVEUR

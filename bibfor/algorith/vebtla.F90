@@ -33,7 +33,6 @@ subroutine vebtla(base, model_, disp_, &
 #include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: model_

@@ -21,7 +21,6 @@ subroutine xstama(noma, nbma, nmafis, jmafis, &
                   jmafon, jmaen1, jmaen2, jmaen3, nmafon, &
                   nmaen1, nmaen2, nmaen3, typdis)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

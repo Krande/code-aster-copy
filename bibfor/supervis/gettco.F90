@@ -27,7 +27,6 @@
 !> @param[in]  errstop  Interrupt the execution if the type is unknown (optional).
 
 subroutine gettco(name, typeco, errstop)
-! person_in_charge: mathieu.courtois@edf.fr
 
     implicit none
 

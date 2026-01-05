@@ -21,7 +21,6 @@ subroutine alrslt(nout, lchout, lpaout, base)
                              ca_ligrel_, ca_option_, ca_ldist_, ca_nuop_
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "asterf_types.h"
 #include "jeveux.h"

@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume, &
                               ds_material, ds_constitutive, ds_system)

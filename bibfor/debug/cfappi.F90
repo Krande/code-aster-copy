@@ -18,7 +18,6 @@
 
 subroutine cfappi(noma, defico, nomnoe, typapp, posapp)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

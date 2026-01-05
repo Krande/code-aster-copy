@@ -28,7 +28,6 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
 #include "asterfort/dismoi.h"
 #include "asterfort/reajre.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: model
     integer(kind=8), intent(in) :: nbout

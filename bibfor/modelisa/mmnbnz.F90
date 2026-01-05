@@ -27,7 +27,6 @@ subroutine mmnbnz(mesh, sdcont_defi, i_zone, nb_cont_poin)
 #include "asterfort/mminfi.h"
 #include "asterfort/mmelin.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi

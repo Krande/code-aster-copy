@@ -49,7 +49,6 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
 !            call dtmget('&&OP0074', NOM_CMP, iocc=2, kvect=cmp)
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"

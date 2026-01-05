@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: astrid.filiot at edf.fr
 !
 subroutine comp_meca_deflc(rela_comp, defo_comp, defo_ldc)
 !

@@ -20,7 +20,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
                   imate, compor, crit, instam, instap, &
                   deps, sigm, vim, option, sigp, &
                   vip, dsidep, iret)
-! person_in_charge: jean-michel.proix at edf.fr
 !.======================================================================
 !
 !

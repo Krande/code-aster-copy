@@ -18,7 +18,6 @@
 
 subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
                   nomnoe, nosdfu)
-! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
 !     ECRITURE DU MAILLAGE -  FORMAT MED - LES NOEUDS
 !        -  -     -                  -         --

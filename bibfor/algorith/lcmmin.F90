@@ -23,7 +23,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf, &
                   sigd, epstr)
 ! aslint: disable=W1504
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 !       MONOCRISTAL : CALCUL SOLUTION INITIALE
 !
 !       IN  ESSAI  :  VALEUR DE LA SOLUTION D ESSAI

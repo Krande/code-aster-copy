@@ -24,7 +24,6 @@ subroutine nxreso(matass, maprec, solver, cnchci, cn2mbr, &
 #include "asterf_types.h"
 #include "asterfort/resoud.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: maprec
     character(len=24), intent(in) :: matass

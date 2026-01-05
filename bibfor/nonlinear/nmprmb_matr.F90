@@ -27,7 +27,6 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff, &
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: nno
     integer(kind=8), intent(in) :: npg, kpg

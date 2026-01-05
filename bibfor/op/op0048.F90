@@ -41,7 +41,6 @@ subroutine op0048()
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
-! person_in_charge: sam.cuvilliez at edf.fr
 !-----------------------------------------------------------------------
 !
 !     Operateur cache POST_K_VARC, appele depuis la macro POST_K1_K2_K3

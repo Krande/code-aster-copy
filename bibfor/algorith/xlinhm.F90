@@ -23,7 +23,6 @@ subroutine xlinhm(elrefp, elref2)
 #   include "asterfort/elref1.h"
     character(len=8) :: elrefp, elref2
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !          BUT : RECUPERER L'ELEMENT LINEAIRE ASSOCIE A L'ELEMENT
 !                QUADRATIQUE HM-XFEM

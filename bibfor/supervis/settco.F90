@@ -27,7 +27,6 @@
 !> @param[in]  typeco   name of the supervisor type.
 
 subroutine settco(name, typeco)
-! person_in_charge: mathieu.courtois@edf.fr
 
     implicit none
 

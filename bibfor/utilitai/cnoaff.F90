@@ -48,7 +48,6 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
     character(len=1) :: base
     character(len=8) :: nomgd, noma, cno
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     COMMANDE   :  CREA_CHAMP/OPERATION:'AFFE', TYPE DE CHAMP : 'NOEU'
 !

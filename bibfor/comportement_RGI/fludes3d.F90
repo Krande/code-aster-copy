@@ -18,7 +18,6 @@
 
 subroutine fludes3d(bw0, pw0, bw, pw, sfld, &
                     sig0, dsw6, nstrs)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
     implicit none
 #include "asterc/r8prem.h"

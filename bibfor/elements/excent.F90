@@ -26,7 +26,6 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel, &
     real(kind=8) :: excen, reffin(*), reffou(*)
     complex(kind=8) :: ceffin(*), ceffou(*)
     aster_logical :: lreel
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !  BUT : TENIR COMPTE DE L'EXCENTREMENT D'UNE COQUE POUR CHANGER
 !        LE "PLAN" DE CALCUL DES EFFORTS

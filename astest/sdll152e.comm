@@ -20,7 +20,6 @@
 # Simple test of FSI calculations with transverse flow on an array
 # a clamped-clamped steel tubes (beam model).
 # -------------------------------------------------------------------
-# person_in_charge: yannick.tampango at edf.fr
 
 D = 0.040  # Tube diameter  = 4 cm
 t = 0.005  # Tube thickness = 5 mm

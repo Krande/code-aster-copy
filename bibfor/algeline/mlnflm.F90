@@ -19,7 +19,6 @@
 subroutine mlnflm(nb, n, p, frontl, frontu, &
                   adper, tu, tl, ad, eps, &
                   ier, cl, cu)
-! person_in_charge: olivier.boiteau at edf.fr
 !
     implicit none
 #include "asterfort/mlnfld.h"

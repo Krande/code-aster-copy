@@ -20,7 +20,6 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt, &
                   instan, numord, val, ncmpve, nbenty, &
                   nbrepg, nvalec, typent, typgeo, nosdfu, &
                   tymast, codret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !     ECRITURE D'UN CHAMP -  FORMAT MED - ECRITURE
 !        -  -       -               -     --

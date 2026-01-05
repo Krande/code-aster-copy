@@ -18,7 +18,6 @@
 !
 subroutine jjimpo(unit, iadmi, ideci, idatoc, genri, &
                   typei, lt, lonoi, mess)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
     implicit none
 #include "jeveux_private.h"

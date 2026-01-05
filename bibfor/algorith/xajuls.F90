@@ -38,7 +38,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1, &
     character(len=19) :: cnslt, cnsln
     real(kind=8), optional :: critlst
 !
-! person_in_charge: patrick.massin at edf.fr
 !
 !     ------------------------------------------------------------------
 !     XFEM : REAJUSTEMENT DES LEVEL SETS (BOOK III 06/02/04)

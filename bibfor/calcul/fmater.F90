@@ -21,7 +21,6 @@ subroutine fmater(nbfmax, nftab, tab)
     use calcul_module, only: ca_jfpgl_, ca_nfpg_
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
 #include "asterfort/assert.h"

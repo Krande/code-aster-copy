@@ -22,7 +22,6 @@ subroutine bussetta_algorithm(dist_cont_curr, dist_cont_prev, dist_max, coef_bus
     implicit none
 !
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
 
     real(kind=8), intent(in) :: dist_cont_curr

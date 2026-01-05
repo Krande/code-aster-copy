@@ -20,7 +20,6 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno, &
                   nfiss, he, nnn, inn, inntot, &
                   nbnoc, nbnofi, inofi, co, iacoo2)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

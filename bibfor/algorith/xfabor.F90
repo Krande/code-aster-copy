@@ -34,7 +34,6 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc, &
     character(len=19) :: cnxinv
     aster_logical :: fabord
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !     ------------------------------------------------------------------
 !
 !      ON VERIFIE SI LES TROIS POINTS APPARTIENNENT A UNE FACE DE BORD

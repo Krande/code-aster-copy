@@ -25,7 +25,6 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr, &
 #include "asterfort/jemarq.h"
     integer(kind=8) :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
     integer(kind=8) :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma, dectau
-! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: CONSTRUIRE LES COMPOSANTES u ET v DU VECTEUR DE CISAILLEMENT TAU
 !      DANS LE REPERE LOCAL PERPENDICULAIRE AU VECTEUR NORMAL, POUR

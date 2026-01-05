@@ -18,7 +18,6 @@
 !
 subroutine chveva(nbma, ligr1, ligr2, iret)
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
 #include "jeveux.h"

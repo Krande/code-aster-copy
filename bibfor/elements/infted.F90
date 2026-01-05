@@ -18,7 +18,6 @@
 
 subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp, ndimen, itype)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 ! --------------------------------------------------------------------------------------------------
 !

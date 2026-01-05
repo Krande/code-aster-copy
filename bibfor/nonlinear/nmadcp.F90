@@ -33,7 +33,6 @@ subroutine nmadcp(sddisc, ds_contact, i_event_acti, retpen)
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: i_event_acti
     type(NL_DS_Contact), intent(in) :: ds_contact

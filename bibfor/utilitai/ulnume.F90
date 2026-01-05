@@ -23,7 +23,6 @@ function ulnume()
 !     RETOURNE UN NUMERO D'UNITE LOGIQUE NON UTILISE
 !              -1 SI AUCUN DE DISPONIBLE
 !     LA RECHERCHE EST LIMITEE A L'INTERVALLE 70-99
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 #include "asterfort/ulinit.h"
 #include "asterfort/utmess.h"

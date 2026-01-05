@@ -18,7 +18,6 @@
 !
 subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc, &
                   existc, nbcmfi, nmcmfi, codret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !_____________________________________________________________________
 !        FORMAT MED : EXISTENCE D'UN CHAMP - EST-IL CREE DANS UN FICHIER
 !               - -   --             -              -

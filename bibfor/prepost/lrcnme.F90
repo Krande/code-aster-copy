@@ -22,7 +22,6 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
                   nrofic, codret, base, nonu)
 !_____________________________________________________________________
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !     LECTURE D'UN CHAMP AUX NOEUDS - FORMAT MED
 !     -    -       -         -               --
 !-----------------------------------------------------------------------

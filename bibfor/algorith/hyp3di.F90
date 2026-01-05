@@ -21,7 +21,6 @@ subroutine hyp3di(c11, c22, c33, c12, c13, &
                   c23, c10, c01, c20, ciso, &
                   codret)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     real(kind=8) :: c11, c22, c33

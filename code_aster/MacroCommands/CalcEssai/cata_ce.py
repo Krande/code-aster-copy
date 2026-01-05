@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: albert.alarcon at edf.fr
 
 # On definit dans ce module python des classes associees a des objets aster,
 # permettant leur manipulation en python (pour le calcul numerique).

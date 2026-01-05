@@ -34,7 +34,6 @@ subroutine exlim4(motfaz, base, ligrel, ligrelOut)
 #include "asterfort/wkvect.h"
     character(len=*) :: motfaz, base
     character(len=19) :: ligrel, ligrelOut
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! BUT  :  SCRUTER LES MOTS CLE TOUT/GROUP_MA/MAILLE POUR CREER
 !         UN LIGREL "REDUIT" A PARTIR DU LIGREL

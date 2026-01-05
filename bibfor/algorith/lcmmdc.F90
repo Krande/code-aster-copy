@@ -21,7 +21,6 @@ subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap, &
     implicit none
     integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), is
     real(kind=8) :: coeft(*), alphap(12), ceff, dcdals
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !  CALCUL DE LA FONCTION Ceffectif POUR LA LOI D'ECOULEMENT  DD-CFC
 !       IN  COEFT   :  PARAMETRES MATERIAU

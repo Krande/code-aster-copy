@@ -18,7 +18,6 @@
 !
 subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat, &
                   factol, factou, typsym)
-! person_in_charge: olivier.boiteau at edf.fr
 ! COMPIL PARAL
 ! VERSION COMPLEXE DE MLTASA
     implicit none

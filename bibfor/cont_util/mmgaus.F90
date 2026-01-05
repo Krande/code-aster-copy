@@ -24,7 +24,6 @@ subroutine mmgaus(elem_type, type_inte, gauss_indx, xpg, ypg, &
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: elem_type
     integer(kind=8), intent(in) :: type_inte

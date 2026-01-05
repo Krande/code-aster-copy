@@ -18,7 +18,6 @@
 !
 subroutine lkdndx(nmat, mater, i1, devsig, bprime, &
                   val, para, xi, dpardx, dndxi)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     --------------------------------------------------------------
 !     CALCUL DU TERME DE LETK = DN/DXI

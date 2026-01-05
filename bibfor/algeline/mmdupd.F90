@@ -19,7 +19,6 @@
 subroutine mmdupd(ehead, neqns, xadj, adjncy, delta, &
                   mdeg, dhead, dforw, dbakw, qsize, &
                   llist, marker, maxint, tag)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 !--- SPARSPAK-A (ANSI FORTRAN) RELEASE III --- NAME = MMDUPD

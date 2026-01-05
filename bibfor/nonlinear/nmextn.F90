@@ -23,7 +23,6 @@ subroutine nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node,
 !
 #include "asterfort/nmexto.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=4), intent(in) :: field_disc
     integer(kind=8), intent(in) :: nb_node

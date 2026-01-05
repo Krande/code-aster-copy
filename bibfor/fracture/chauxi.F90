@@ -20,7 +20,6 @@ subroutine chauxi(ndim, mu, ka, r, t, &
                   invp, lcour, courb, du1dm, du2dm, &
                   du3dm, u1l, u2l, u3l, r_courb)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "asterf_types.h"

@@ -19,7 +19,6 @@
 subroutine premld(n1, diag, col, xadj1, adjnc1, &
                   nnz, deb, voisin, suiv, ladjn, &
                   nrl)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterfort/caladj.h"
     integer(kind=8) :: n1, diag(0:*), col(*)

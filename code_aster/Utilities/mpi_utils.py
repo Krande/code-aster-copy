@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.pignet@edf.fr
 
 """
 This module gives common utilities for MPI.

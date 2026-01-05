@@ -30,7 +30,6 @@ subroutine preres(solveu, base, iret, matpre, matass, &
     character(len=1) :: base
     character(len=*) :: matass, matpre, solveu
 !-----------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 ! BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT/MUMPS)
 !       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC,PETSC)
 !

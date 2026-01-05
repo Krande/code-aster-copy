@@ -22,7 +22,6 @@ module Material_Datastructure_type
 !
 #include "asterf_types.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
 
 !

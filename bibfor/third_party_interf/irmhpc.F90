@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
-! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
 !     ECRITURE DU MAILLAGE -  FORMAT MED - IMPRESSION POUR UN MAILLAGE PARALLELE
 !        -  -     -                  -         --

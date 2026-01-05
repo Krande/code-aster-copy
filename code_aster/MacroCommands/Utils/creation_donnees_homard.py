@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: gerald.nicolas at edf.fr
 """
 Cette classe crée le fichier de configuration permettant de lancer HOMARD
 depuis Code_Aster.

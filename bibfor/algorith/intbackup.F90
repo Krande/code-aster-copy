@@ -28,7 +28,6 @@ subroutine intbackup(sd_int_, sd_int_backup_)
 !            call intbackup('&&INTEGR','&&INTBAK')
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/intget.h"

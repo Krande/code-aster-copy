@@ -23,7 +23,6 @@ subroutine pmfite(typfib, nf, ncarf, vf, ve, vs)
 !
 !       INTEGRATIONS SUR LA SECTION (TENANT COMPTE DU MODULE DE CHAQUE FIBRE)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 !   IN

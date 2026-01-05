@@ -19,7 +19,6 @@
 subroutine dtmfext(sd_dtm_, time, fext, buffdtm)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmfext : Calculate the external forces at instant "time"
 !

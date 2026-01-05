@@ -29,7 +29,6 @@ subroutine romMultiCoefRead(ds_multicoef, keywfact, iocc)
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
     character(len=16), intent(in) :: keywfact

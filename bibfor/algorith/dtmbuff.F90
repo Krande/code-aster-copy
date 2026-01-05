@@ -23,7 +23,6 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 !
 !  sd_dtm [Obl]: Name of the dtm data structure requested [K24]
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/crevec.h"

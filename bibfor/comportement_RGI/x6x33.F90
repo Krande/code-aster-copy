@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine x6x33(x6, x33)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
     implicit none
 #include "asterfort/indice0.h"

@@ -18,7 +18,6 @@
 !
 subroutine plastMult(na, nf0, ngf, x, irr, nc, indic2, ipla2, imax, ig, &
                      a, b, dgfa_ds, goto20)
-! person_in_charge: etienne.grimal@edf.fr
 !-----------------------------------------------------------------------
 !       verif positivite des multiplicateurs plastiques
 !-----------------------------------------------------------------------

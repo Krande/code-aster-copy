@@ -35,7 +35,6 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
 ! IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 ! IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 !---------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf_types.h"
 #include "asterf.h"

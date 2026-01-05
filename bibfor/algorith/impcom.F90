@@ -18,7 +18,6 @@
 !
 subroutine impcom(inoda, nomddl, chaine)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     character(len=8) :: nomddl

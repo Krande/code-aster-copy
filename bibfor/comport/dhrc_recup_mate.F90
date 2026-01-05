@@ -18,7 +18,6 @@
 
 subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb, &
                            ac, gc, aa_c, ga_c, cstseu)
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
 #include "jeveux.h"

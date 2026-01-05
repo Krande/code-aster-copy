@@ -19,7 +19,6 @@
 subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmforeq : Calculate the equilibrium forces for a given step specified by the argument
 !           "index".

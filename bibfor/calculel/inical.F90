@@ -19,7 +19,6 @@
 subroutine inical(nbin, lpain, lchin, nbout, lpaout, &
                   lchout)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
     integer(kind=8) :: nbin, nbout

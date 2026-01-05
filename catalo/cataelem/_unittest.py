@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 #
-# person_in_charge: mathieu.courtois at edf.fr
 
 """
 This module provides unittests for the cataelem package

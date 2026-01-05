@@ -31,7 +31,6 @@ subroutine sdmpic(typesd, nomsd)
 #include "asterfort/jeveuo.h"
 !
     character(len=*) :: nomsd, typesd
-! person_in_charge: jacques.pellet at edf.fr
 !
 ! ----------------------------------------------------------------------
 !  BUT : "COMPLETER" LE CALCUL D'UNE STRUCTURE DE DONNEES INCOMPLETEMENT

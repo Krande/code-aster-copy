@@ -18,7 +18,6 @@
 
 subroutine hydrxmat(xmat0, xmat1, hydra1, hydras, n, &
                     erreur)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   effet de l hydratation sur les caracteristiques materiau
 !   declaration externe

@@ -18,7 +18,6 @@
 
 subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

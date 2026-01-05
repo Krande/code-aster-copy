@@ -19,7 +19,6 @@
 subroutine dtmcase_coder(input_, koutput)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmcase_coder : Code, inside a string, a given non-linearity case given
 !                 as an integer. 63 ASCII characters are used for the encoding.

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: albert.alarcon at edf.fr
 
 from ..Cata.SyntaxUtils import remove_none
 from ..CodeCommands import ASSE_MATRICE, ASSE_VECTEUR, CALC_MATR_ELEM, CALC_VECT_ELEM, NUME_DDL

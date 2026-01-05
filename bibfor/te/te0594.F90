@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine te0594(option, nomte)
-! person_in_charge: sam.cuvilliez at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"

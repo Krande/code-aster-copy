@@ -32,7 +32,6 @@ subroutine numchc(nu, ccid, nbchc, lchci, base)
     character(len=1) :: base
     integer(kind=8) :: nbchc
 !-----------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !  BUT : ON NOTE LES DDLS ELIMINES PAR LES CHARGES CINEMATIQUES
 !
 !  REMARQUE : LE RESTE DU TRAITEMENT DES CHARGES CINEMATIQUES EST FAIT

@@ -27,7 +27,6 @@ subroutine nmimps(ds_print, ds_conv, sderro)
 #include "asterfort/GetResi.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(in) :: ds_print
     type(NL_DS_Conv), intent(in) :: ds_conv

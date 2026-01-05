@@ -35,7 +35,6 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     character(len=*), intent(in) :: cnoz
     character(len=*), intent(in) :: cnsz

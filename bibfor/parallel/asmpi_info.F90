@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine asmpi_info(comm, rank, size)
-! person_in_charge: mathieu.courtois@edf.fr
 !
 !
     implicit none

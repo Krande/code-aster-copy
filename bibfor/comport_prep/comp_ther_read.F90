@@ -29,7 +29,6 @@ subroutine comp_ther_read(list_vale)
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: list_vale
 !

@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_nbvari_kit(kit_comp, &
                            l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg, &

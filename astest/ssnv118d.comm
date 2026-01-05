@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: david.haboussa at edf.fr
 #         ELEMENT 3D CUBE A 8 NOEUDS EN TRACTION - COMPRESSION
 #              ETAT UNIAXIAL DE CONTRAINTE DEFORMATION
 #       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)

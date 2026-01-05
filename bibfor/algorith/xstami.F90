@@ -19,7 +19,6 @@
 subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3, &
                   jmafon, jmaen1, jmaen2, jmaen3)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

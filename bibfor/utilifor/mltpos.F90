@@ -19,7 +19,6 @@
 subroutine mltpos(nbsn, parent, fils, frere, pile, &
                   lfront, seq, flag, estim, u, &
                   w, tab, liste)
-! person_in_charge: olivier.boiteau at edf.fr
 ! aslint: disable=
     implicit none
 #include "asterfort/blimax.h"

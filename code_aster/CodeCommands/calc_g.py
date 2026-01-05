@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.pignet@edf.fr
 
 from ..Objects import TableContainer
 from .extr_table import EXTR_TABLE

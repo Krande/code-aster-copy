@@ -28,7 +28,6 @@ subroutine ndxdec(ds_print, sddisc, sderro, numins)
 #include "asterfort/nmevac.h"
 #include "asterfort/nmleeb.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=19), intent(in) :: sddisc

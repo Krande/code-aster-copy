@@ -25,7 +25,6 @@ subroutine matdis(matd, verbose)
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! out K3 matd  : 'OUI' / 'NON'  (MATR_DISTRIBUEE)

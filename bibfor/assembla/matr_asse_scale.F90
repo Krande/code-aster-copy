@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine matr_asse_scale(matasz, lvect, rvect)
-! person_in_charge: nicolas.tardieu at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

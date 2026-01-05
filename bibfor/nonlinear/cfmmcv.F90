@@ -35,7 +35,6 @@ subroutine cfmmcv(mesh, model_, list_func_acti, iter_newt, nume_inst, &
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model_

@@ -18,7 +18,6 @@
 
 subroutine xbasgl(ndim, basloc, ipt, p, invp)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

@@ -18,7 +18,6 @@
 
 subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
                   c1, jvalm, jtmp2, lgtmp2)
-! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
 

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 #    - CALCUL QUASI-STATIQUE D'UNE PLAQUE SOUMISE A 4 CHARGES
 #    - MOMENT MX  UNITAIRE ET UNIFORME
 #    - MOMENT MY UNITAIRE ET UNIFORME

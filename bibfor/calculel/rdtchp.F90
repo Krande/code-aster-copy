@@ -39,7 +39,6 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base, &
     character(len=24) :: corrn, corrm
     character(len=19) :: ch1, ch2, ligrel
 !
-! person_in_charge: jacques.pellet at edf.fr
 !-------------------------------------------------------------------
 ! BUT: REDUIRE UNE SD_CHAMP SUR UN MAILLAGE REDUIT
 !

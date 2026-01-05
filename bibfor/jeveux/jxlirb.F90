@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jxlirb(ic, iaddi, iadmo, lso)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=W1303
 ! for the path name
     implicit none

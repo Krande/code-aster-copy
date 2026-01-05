@@ -26,7 +26,6 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 !                    SDLOC (I) = 1 SI LE SOUS-DOMAINE I EST TRAITE
 !                                  LOCALEMENT
 !----------------------------------------------------------------------
-! person_in_charge: thomas.de-soza at edf.fr
 ! CORPS DU PROGRAMME
     implicit none
 ! aslint: disable=W1306

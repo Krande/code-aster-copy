@@ -46,7 +46,6 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
 ! IN  LPRECO :  LOG   : MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 !-----------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf_types.h"
 #include "asterf.h"

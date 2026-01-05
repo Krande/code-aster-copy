@@ -19,7 +19,6 @@
 subroutine jevecd(nompar, jad, valdef)
     use calcul_module, only: ca_option_
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !----------------------------------------------------------------
 ! but : rendre l'adresse du champ local (jad) correspondant
 !       au parametre nompar (comme le fait jevech).

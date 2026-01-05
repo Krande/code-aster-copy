@@ -42,7 +42,6 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt, &
     character(len=19) :: cnsln, cnslt, grln, grlt, cnsbl, nodtor, liggrd, cnsbet
     character(len=19) :: listp, vpoint
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !
 !     ------------------------------------------------------------------

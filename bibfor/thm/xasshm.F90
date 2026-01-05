@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W1306
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 subroutine xasshm(ds_thm, &
                   nno, npg, npi, ipoids, ivf, &

@@ -19,7 +19,6 @@
 subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1, &
                   elref2)
 !
-! person_in_charge: gerald.nicolas at edf.fr
 !
     implicit none
 #include "asterfort/utmess.h"

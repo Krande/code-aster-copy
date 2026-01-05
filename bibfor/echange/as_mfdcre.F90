@@ -18,7 +18,6 @@
 
 subroutine as_mfdcre(fid, cha, nomamd, type, comp, &
                      unit, ncomp, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine masyns(matas)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 !
 !  BUT :

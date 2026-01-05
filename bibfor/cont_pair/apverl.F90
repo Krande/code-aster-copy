@@ -41,7 +41,6 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
 #include "blas/ddot.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh

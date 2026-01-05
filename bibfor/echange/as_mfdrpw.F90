@@ -19,7 +19,6 @@
 subroutine as_mfdrpw(fid, cha, val, intlac, n, &
                      locname, numco, profil, pflmod, typent, &
                      typgeo, numdt, dt, numo, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

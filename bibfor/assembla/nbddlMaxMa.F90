@@ -46,7 +46,6 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
     character(len=*), intent(in) :: v_name_mat(nbmat)
     integer(kind=8)              :: maxDDLMa
 !     ------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !     RETOURNE LE NOMBRE DE DDL MAXIMUM POUR UN ELEMENT
 !     ------------------------------------------------------------------
 ! IN  K14 nume_ddlz     : NOM DE LA SD_NUME_DDL

@@ -29,7 +29,6 @@ subroutine apcpoi(sdcont_defi, model_ndim, i_zone, elem_name, &
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
     integer(kind=8), intent(in) :: model_ndim

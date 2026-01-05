@@ -19,7 +19,6 @@
 subroutine lkd2fs(nmat, materf, para, vara, varh, &
                   i1, devsig, ds2hds, d2shds, d2fds2, &
                   iret)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE 2NDE DE F PAR RAPPORT A SIGMA

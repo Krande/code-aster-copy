@@ -27,7 +27,6 @@ subroutine refdcp(resin, resout)
 #include "asterfort/jemarq.h"
 !
     character(len=8) :: resin, resout
-! person_in_charge: hassan.berro at edf.fr
 ! ----------------------------------------------------------------------
 !
 !   COPIER LE CONTENU DE REFERENCES DYNAMIQUE DE resin DANS resout

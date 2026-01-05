@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine jjagod(iclas, nblnew)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
     implicit none
 #include "asterfort/assert.h"

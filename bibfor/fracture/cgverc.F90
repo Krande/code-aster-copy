@@ -26,7 +26,6 @@ subroutine cgverc(resu, nexci)
     integer(kind=8) :: nexci
     character(len=8) :: resu
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     SOUS-ROUTINE DE L'OPERATEUR CALC_G
 !

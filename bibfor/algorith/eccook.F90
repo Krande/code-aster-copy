@@ -19,7 +19,6 @@
 subroutine eccook(acook, bcook, ccook, npuis, mpuis, &
                   epsp0, troom, tmelt, tp, dinst, &
                   pm, dp, rp, rprim)
-! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 !
 !     ARGUMENTS:

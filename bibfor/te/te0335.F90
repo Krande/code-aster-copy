@@ -24,7 +24,6 @@ subroutine te0335(option, nomte)
 #include "asterfort/fgequi.h"
 #include "asterfort/tecach.h"
     character(len=16) :: nomte, option
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       CALCULER LES GRANDEURS EQUIVALENTES SUIVANTES

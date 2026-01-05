@@ -28,7 +28,6 @@ subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keywf
     integer(kind=8), intent(in) :: nb_cont_zone

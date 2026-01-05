@@ -42,7 +42,6 @@ subroutine mmreas(mesh, ds_contact, hval_incr)
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact

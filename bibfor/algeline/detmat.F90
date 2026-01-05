@@ -25,7 +25,6 @@ subroutine detmat()
 !       DETRUIT AUSSI LES EVENTUELLES INSTANCES MUMPS OU PETSC
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterfort/assert.h"
 #include "asterfort/detmatrix.h"

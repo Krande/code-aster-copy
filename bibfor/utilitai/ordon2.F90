@@ -23,7 +23,6 @@ subroutine ordon2(vale, nb)
 #include "blas/dcopy.h"
     integer(kind=8) :: nb
     real(kind=8) :: vale(*)
-! person_in_charge: mathieu.courtois at edf.fr
 ! ----------------------------------------------------------------------
 !     APPELEE PAR ORDONN : ON SAIT DEJA QU'IL FAUT INVERSER L'ORDRE
 !     ORDON2 POUR LES FONCTIONS A VALEURS COMPLEXES

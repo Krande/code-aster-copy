@@ -25,7 +25,6 @@ subroutine GetEnergy(ds_energy, energy_type_, vale_r)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Energy), intent(in) :: ds_energy
     character(len=*), intent(in) :: energy_type_

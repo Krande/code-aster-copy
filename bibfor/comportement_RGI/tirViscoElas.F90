@@ -20,7 +20,6 @@ subroutine tirViscoElas(fl3d, var0, xmat, inputR, inputVR6, ngf, &
                         deltam, avean, A, B, X, ipzero, &
                         epsk16, epsm16, epse16, &
                         sig16, sigke16, raideur66, we1)
-! person_in_charge: etienne.grimal@edf.fr
 !-----------------------------------------------------------------------
 !   tir visco-élastique
 !-----------------------------------------------------------------------

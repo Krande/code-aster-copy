@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: joaquin.cornejo-fuentes at edf.fr
 !     RMQU9 - MODULE DE LA MATRICE J
 ! interface c++
 ! aslint: disable=W1403

@@ -24,7 +24,6 @@ subroutine listco(sdcont, keywf, mesh, model, nb_cont_zone, &
 #include "asterfort/liexco.h"
 #include "asterfort/nbsuco.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

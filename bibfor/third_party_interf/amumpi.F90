@@ -30,7 +30,6 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 ! IN  TYPE  :   K1   : TYPE DU POINTEUR R OU C
 ! IN  LBLOC :  LOG   : LOGIQUE PRECISANT SI ON EFFECTUE L ANALYSE PAR BLOCS
 !---------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterc/asmpi_comm.h"
 #include "asterc/r4maem.h"

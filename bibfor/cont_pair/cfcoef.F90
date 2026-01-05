@@ -28,7 +28,6 @@ subroutine cfcoef(ds_contact, model_ndim, nb_node_mast, nods_mast_indx, coef_nod
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer(kind=8), intent(in) :: model_ndim

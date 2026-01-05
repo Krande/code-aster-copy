@@ -19,7 +19,6 @@
 subroutine etenca(chinz, ligrlz, iret)
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
 #include "asterf_types.h"

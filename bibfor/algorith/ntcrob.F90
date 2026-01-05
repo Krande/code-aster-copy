@@ -32,7 +32,6 @@ subroutine ntcrob(meshz, modelz, result, sddisc, ds_inout, &
 #include "asterfort/nmobno.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: modelz

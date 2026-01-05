@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.brie at edf.fr
 
 from ...Cata.Syntax import _F
 from .mode_iter_simult import MODE_ITER_SIMULT

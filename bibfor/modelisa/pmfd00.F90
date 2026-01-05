@@ -33,7 +33,6 @@ subroutine pmfd00()
 !     LES INFORMATIONS DE "DECOUPAGE" DES ELEMENTS DE STRUCTURE :
 !     NBRE DE COUCHES (COQUE), DE SECTEURS (TUYAU), "FIBRES" (PMF),..
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none

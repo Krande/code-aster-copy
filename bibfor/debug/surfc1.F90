@@ -27,7 +27,6 @@ subroutine surfc1(sdcont, unit_msg)
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer(kind=8), intent(in) :: unit_msg

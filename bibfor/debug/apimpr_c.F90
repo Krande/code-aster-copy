@@ -35,7 +35,6 @@ subroutine apimpr_c(ifm, mesh, ds_contact)
 #include "asterfort/jemarq.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: ifm
     character(len=8), intent(in) :: mesh

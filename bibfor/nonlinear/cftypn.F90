@@ -18,7 +18,6 @@
 
 subroutine cftypn(defico, posno, typno)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

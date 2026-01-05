@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: david.haboussa at edf.fr
 import numpy as np
 
 POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="NON"), IGNORE_ALARM=("COMPOR4_62"))

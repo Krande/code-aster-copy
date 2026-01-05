@@ -23,7 +23,6 @@
 
 #include "DataFields/Table.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 Table::Table( const std::string &name, const std::string type )
     : DataStructure( name, 19, type ),

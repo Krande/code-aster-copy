@@ -23,7 +23,6 @@ subroutine pmfasseinfo(tygrfi, nbfibr, nbcarm, cara, mxfiass, nbfiass, gxjxpou)
 !
 !           Informations sur les PMF :  assemblage de groupes de fibres
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 !   OUT

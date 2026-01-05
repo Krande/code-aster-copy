@@ -18,7 +18,6 @@
 
 subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

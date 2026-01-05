@@ -30,7 +30,6 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnom.h"
     integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     --     DISMOI(CHAM_ELEM_S)
 !

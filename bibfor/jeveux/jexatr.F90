@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 function jexatr(nomc, noma)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
     character(len=32) :: jexatr
 #include "jeveux_private.h"

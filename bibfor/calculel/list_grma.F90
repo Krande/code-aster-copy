@@ -19,7 +19,6 @@
 subroutine list_grma(mailla, ima, n1, lgrma, nbgrma)
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterf_types.h"
 #include "jeveux.h"

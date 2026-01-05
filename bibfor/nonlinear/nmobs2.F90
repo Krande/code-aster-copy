@@ -35,7 +35,6 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
     character(len=*), intent(in) :: meshz

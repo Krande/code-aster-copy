@@ -18,7 +18,6 @@
 
 subroutine as_mmhfnw(fid, maa, fam, n, typent, &
                      typgeo, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

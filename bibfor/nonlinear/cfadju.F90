@@ -18,7 +18,6 @@
 
 subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/assert.h"

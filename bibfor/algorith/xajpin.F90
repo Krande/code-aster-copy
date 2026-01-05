@@ -29,7 +29,6 @@ subroutine xajpin(ndim, list, long, ipt, cpt, &
     aster_logical :: ajout
     integer(kind=8) :: ndim, long, ipt, cpt, ia, in
     real(kind=8) :: newpt(3), longar, al, list(*), ainter(*)
-! person_in_charge: samuel.geniaut at edf.fr
 !         AJOUTER UN POINT D'INTERSECTION DANS UNE LISTE
 !              ET INFORMATIONS COMPLÉMENTAIRES SUR LES ARETES
 !

@@ -22,7 +22,6 @@ subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_, &
 !
 ! ROUTINE ORGANISANT LE PARALLELISME MULTI-NIVEAUX DANS MODE_ITER_SIMULT (+ APPELS DS VPPARA).
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 #include "asterf_types.h"

@@ -32,7 +32,6 @@ subroutine mmelem_data_c(l_axi_, model_ndim_, &
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     aster_logical, intent(in), optional :: l_axi_
     integer(kind=8), intent(in), optional :: model_ndim_

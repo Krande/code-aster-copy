@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jacopo(long, tpscaz, iad1, iad2)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

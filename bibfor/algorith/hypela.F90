@@ -33,7 +33,6 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/utmess.h"
 #include "blas/dscal.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
 !
     character(len=*), intent(in) :: fami

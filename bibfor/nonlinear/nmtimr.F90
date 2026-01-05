@@ -26,7 +26,6 @@ subroutine nmtimr(ds_measure, device_type_, phasis, time)
 #include "asterfort/assert.h"
 #include "asterfort/GetDevice.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(in) :: ds_measure
     character(len=*), intent(in) :: device_type_

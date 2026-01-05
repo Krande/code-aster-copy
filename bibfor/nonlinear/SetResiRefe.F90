@@ -26,7 +26,6 @@ subroutine SetResiRefe(ds_conv, type_, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=*), optional, intent(in) :: type_

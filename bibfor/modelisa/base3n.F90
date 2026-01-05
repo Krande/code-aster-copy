@@ -23,7 +23,6 @@ subroutine base3n(x1, mat33)
 #include "asterfort/provec.h"
     real(kind=8) :: x1(3), mat33(3, 3)
     real(kind=8) :: norme
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !     BUT : CALCULE UNE MATRICE ORTHORMEE MAT33 DONT LE 1ER VECTEUR
 !           EST COLINEAIRE A X1

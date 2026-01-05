@@ -18,7 +18,6 @@
 !
 subroutine uldefi(unit, ficnom, ddnom, typf, acces, &
                   autor)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterfort/codent.h"
 #include "asterfort/ulinit.h"

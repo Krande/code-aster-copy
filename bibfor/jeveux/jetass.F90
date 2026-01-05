@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jetass(clas)
-! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux_private.h"

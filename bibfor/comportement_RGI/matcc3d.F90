@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine matcc3d(cc3, vcc33, vcc33t, v33, v33t, cc6)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !     matrice de consolidation dans une base quelconque v33 presentation
 !     en coeff cc6 dans la base v33

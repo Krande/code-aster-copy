@@ -54,7 +54,6 @@ subroutine dis_choc_frot(DD, iret)
     type(te0047_dscr), intent(in) :: DD
     integer(kind=8), intent(out) :: iret
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip, fdnc

@@ -19,7 +19,6 @@
 subroutine nopar2(nomopt, nomgd, statut, nompar, istop, &
                   iret)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"

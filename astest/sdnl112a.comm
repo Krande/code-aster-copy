@@ -20,7 +20,6 @@
 # CEINTREE D'UN TUBE DE GV SOUMISE A UNE EXCITATION ALEATOIRE.
 # FICHIER MODELE GEVIBUS
 # -------------------------------------------------------------------
-# person_in_charge: andre.adobes at edf.fr
 #
 
 from code_aster.Commands import *

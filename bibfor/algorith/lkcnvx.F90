@@ -19,7 +19,6 @@
 subroutine lkcnvx(sigd, sigf, nvi, vind, nmat, &
                   mater, seuil, vinf)
     implicit none
-! person_in_charge: alexandre.foucault at edf.fr
 ! ----------------------------------------------------------------------
 ! --- BUT : CONVEXE ELASTO-VISCO-PLASTIQUE DE LETK A T+DT --------------
 ! ---       POUR (SIGF , VINT) DONNES ----------------------------------

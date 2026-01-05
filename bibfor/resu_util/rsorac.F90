@@ -39,7 +39,6 @@ subroutine rsorac(nomsd, acces, ival, rval, kval, &
     real(kind=8), intent(in) :: rval, epsi
     character(len=*), intent(in) :: nomsd, acces, kval, crit
     complex(kind=8), intent(in) :: cval
-! person_in_charge: jacques.pellet at edf.fr
 !      RECUPERATION DU NUMERO D'ORDRE
 !      D'UNE STRUCTURE DE DONNEES "SD_RESULTAT".
 !      A PARTIR D'UNE VARIABLE D'ACCES.

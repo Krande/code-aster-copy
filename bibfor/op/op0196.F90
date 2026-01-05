@@ -18,7 +18,6 @@
 !
 subroutine op0196()
     implicit none
-! person_in_charge: samuel.geniaut at edf.fr
 !     =================================================================
 !                      OPERATEUR POST_CHAM_XFEM
 !                      ------------------------

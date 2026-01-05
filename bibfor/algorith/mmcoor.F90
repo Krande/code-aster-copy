@@ -19,7 +19,6 @@
 subroutine mmcoor(alias, nno, ndim, coorma, ksi1, &
                   ksi2, coorpt)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/mmnonf.h"

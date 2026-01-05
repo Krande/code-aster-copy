@@ -19,7 +19,6 @@
 subroutine mmfonf(ndim, nno, alias, ksi1, ksi2, &
                   ff, dff, ddff)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/mm2onf.h"

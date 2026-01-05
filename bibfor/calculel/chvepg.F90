@@ -18,7 +18,6 @@
 
 subroutine chvepg(chel1, chel2)
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
 #include "jeveux.h"

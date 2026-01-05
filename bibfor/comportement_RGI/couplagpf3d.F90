@@ -18,7 +18,6 @@
 
 subroutine couplagpf3d(a, b, ngf, na, avean, &
                        nc, dgfa_ds, deltam, kmve66)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   complement de la matrice de couplage pour la plasticite
 !   autres couplages : plasticite -> fluage

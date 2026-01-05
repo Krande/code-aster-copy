@@ -28,7 +28,6 @@ subroutine te0122(option, nomte)
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 !
-! person_in_charge: jerome.laverne at edf.fr
 !......................................................................
 !     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
 !     VALEURS AUX POINTS DE GAUSS ( SIEF_ELNO ET VARI_ELNO )

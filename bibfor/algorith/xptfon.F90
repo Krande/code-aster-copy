@@ -59,7 +59,6 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
     character(len=19) :: cnslt, cnsln, cnxinv, listpt
     aster_logical :: orient, goinop
 !     ------------------------------------------------------------------
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !       RECHERCHE DES POINTS DU FOND DE FISSURE DANS LE CADRE DE XFEM
 !

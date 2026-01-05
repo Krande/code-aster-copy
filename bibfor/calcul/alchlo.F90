@@ -22,7 +22,6 @@ subroutine alchlo(nin, lpain, nout, lpaout)
                              ca_npario_, ca_ligrel_, ca_nuop_
     implicit none
 
-! person_in_charge: jacques.pellet at edf.fr
 !     arguments:
 !     ----------
 #include "jeveux.h"

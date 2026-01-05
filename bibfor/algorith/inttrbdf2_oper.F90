@@ -20,7 +20,6 @@ subroutine inttrbdf2_oper(nbequ, par, mgen, kgen, cgen, &
                           ktilda, ftild1, ftild2)
     implicit none
 !
-! person_in_charge: nicolas.tardieu at edf.fr
 !
 ! inttrbdf2_oper : Calculate (or update) the operators for TR-BDF2 integration
 !

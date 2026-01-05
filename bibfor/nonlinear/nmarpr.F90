@@ -19,7 +19,6 @@
 subroutine nmarpr(result, sddisc, lreuse, numder, insder, &
                   numarc)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

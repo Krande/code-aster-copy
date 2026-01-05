@@ -24,7 +24,6 @@ subroutine nmdivr(sddisc, sderro, iter_newt)
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmlere.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sddisc
     character(len=24), intent(in) :: sderro

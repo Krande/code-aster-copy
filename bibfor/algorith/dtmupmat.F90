@@ -20,7 +20,6 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                     reinteg)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmupmat : Update the stiffness K and Damping C-matrices for the current step
 !            This is necessary in particular for gyroscopic effects where the

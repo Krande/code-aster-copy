@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine matr_asse_compute_kinematic_rhs(matasz, vcinez, vrhsz)
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

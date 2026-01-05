@@ -33,10 +33,6 @@ module petsc_data_module
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !--------------------------------------------------------------------
-!
-!
-! person_in_charge natacha.bereux at edf.fr
-!
 ! Variables globales PETSc pour la définition d'un système linéaire
 ! au format PETSc
 !

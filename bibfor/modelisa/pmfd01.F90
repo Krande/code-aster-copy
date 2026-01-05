@@ -29,7 +29,6 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
 !   Transformation des objets vmailfib
 !   Prise en compte de cesdec
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none

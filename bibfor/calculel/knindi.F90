@@ -19,7 +19,6 @@
 function knindi(long, kn, lkn, nbkn)
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"

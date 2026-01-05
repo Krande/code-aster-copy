@@ -20,7 +20,6 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, &
                   fe, dfpdbs, msdgdt, drdy)
 !
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 !     ----------------------------------------------------------------
 !
 !     MONOCRISTAL : calcul des derivees de Fe en GDEF

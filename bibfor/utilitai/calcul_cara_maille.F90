@@ -32,7 +32,6 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, &
 !       normale     : si topologie=2 ==> vecteur normal à la face, normé
 !                                 =1 ==> vecteur tangent au segment, normé
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
     real(kind=8), intent(in) :: coord(*)

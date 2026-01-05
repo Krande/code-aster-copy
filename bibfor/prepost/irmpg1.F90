@@ -20,7 +20,6 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
                   ndim, typgeo, refcoo, gscoo, wg, &
                   raux1, raux2, raux3, nolopg, nomasu, &
                   lfichUniq, codret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !     ECRITURE AU FORMAT MED - LOCALISATION POINTS DE GAUSS - PHASE 1
 !        -  -            -                  -         -             -

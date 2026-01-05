@@ -38,7 +38,6 @@ subroutine vecdid(model, list_load, nume_dof, veelem, veasse)
 #include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: model
     character(len=19), intent(in) :: list_load

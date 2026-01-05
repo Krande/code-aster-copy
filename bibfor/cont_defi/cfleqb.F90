@@ -29,7 +29,6 @@ subroutine cfleqb(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 #include "asterfort/mminfl.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi

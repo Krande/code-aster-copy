@@ -20,7 +20,6 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
                   ilfin, ndigit, ndeci, isingu, npvneg, &
                   iret, solvop)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !    BUT  FACTORISER UNE MATRICE ASSEMBLEE
 !         DIAGNOSTIQUER LES SINGULARITES OU LE NBRE DE PIVOTS NEGATIFS
 !         POUR LES SOLVEURS LINEAIRES: LDLT, MULT_FRONT, MUMPS

@@ -23,7 +23,6 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
 #include "asterfort/jeexin.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: elrefe
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !
     integer(kind=8) :: iret, npg1

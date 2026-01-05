@@ -39,7 +39,6 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
     integer(kind=8) :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
     aster_logical :: callst, grille
 !
-! person_in_charge: samuel.geniaut at edf.fr
     integer(kind=8) :: ino, imafis, nmaabs, inoma, nuno(2), jcrd
     real(kind=8) :: p(2), dmin, a(2), b(2), m(2), ap(2), ab(2), norcab, ps, eps
     real(kind=8) :: d, oriabp, xln, ps1, xlt, tole

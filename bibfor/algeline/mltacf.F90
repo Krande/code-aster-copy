@@ -18,7 +18,6 @@
 !
 subroutine mltacf(n, ncol, adper, matper, matfi, &
                   local, p)
-! person_in_charge: olivier.boiteau at edf.fr
 ! VERSION COMPLEXE DE MLTAFF
     implicit none
     integer(kind=4) :: local(*)

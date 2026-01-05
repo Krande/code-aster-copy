@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte at edf.fr
 
 """
 Ce module définit des fonctions permettant de manipuler un résultat issu de THYC

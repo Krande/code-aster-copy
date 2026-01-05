@@ -28,7 +28,6 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
 #include "asterfort/SetResi.h"
 #include "asterfort/nmcrel.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sderro
     integer(kind=8), intent(in) :: nume_inst

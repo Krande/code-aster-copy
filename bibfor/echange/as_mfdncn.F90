@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine as_mfdncn(fid, cha, n, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

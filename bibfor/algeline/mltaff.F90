@@ -18,7 +18,6 @@
 !
 subroutine mltaff(n, ncol, adper, matper, matfi, &
                   local, p)
-! person_in_charge: olivier.boiteau at edf.fr
 ! ASSEMBLAGE DES MATRICES FRONTALES VERSION SIMPLIFIEE
 !  LA VERSION PRECEDENTE ASSEMBLAIT PAR 2 COLONES
 ! POUR UNE MEILLEURE UTILISATION DES REGISTRES SUR CRAY

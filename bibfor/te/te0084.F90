@@ -31,7 +31,6 @@ subroutine te0084(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: option
     character(len=16), intent(in) :: nomte

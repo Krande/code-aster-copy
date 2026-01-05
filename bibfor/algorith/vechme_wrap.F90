@@ -25,7 +25,6 @@ subroutine vechme_wrap(stop, modelz, lload_namez, lload_infoz, &
 #include "asterf_types.h"
 #include "asterfort/vechme.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
     character(len=1), intent(in) :: stop
     character(len=*), intent(in) :: modelz

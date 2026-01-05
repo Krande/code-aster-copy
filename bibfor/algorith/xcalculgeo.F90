@@ -28,7 +28,6 @@ subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
     real(kind=8)        :: newlsn, newlst, deltat
     real(kind=8)        :: vale(:)
 !
-! person_in_charge: patrick.massin at edf.fr
 !
 !
 !     ------------------------------------------------------------------

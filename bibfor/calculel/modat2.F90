@@ -20,7 +20,6 @@ function modat2(iopt, ite, nompar)
     implicit none
     integer(kind=8) :: modat2
 !
-! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 !
 #include "asterfort/jeveuo.h"

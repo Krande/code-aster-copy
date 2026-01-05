@@ -26,7 +26,6 @@ subroutine detrsd_vide(typesd, nomsd)
 #include "asterfort/utmess.h"
 #include "asterfort/detrsd.h"
     character(len=*), intent(in) :: typesd, nomsd
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  but : detruire une structure de donnee si elle est vide
 !

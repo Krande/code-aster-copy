@@ -34,7 +34,6 @@ subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc, &
 #include "asterfort/nmlecv.h"
 #include "asterfort/nmltev.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Conv), intent(in) :: ds_conv

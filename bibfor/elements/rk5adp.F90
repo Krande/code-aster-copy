@@ -47,7 +47,6 @@ subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax, &
         end subroutine rk5fct
     end interface
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 !          INTÉGRATION PAR MÉTHODE DE RUNGE KUTTA D'ORDRE 5

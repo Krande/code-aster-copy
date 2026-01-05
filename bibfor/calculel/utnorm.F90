@@ -21,7 +21,6 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1, &
                   zrjno2, zrjno1, x3, y3, hf, &
                   xn, yn, jac, laxi, jacob, &
                   ifm, niv)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  UTILITAIRE DE CALCUL DE LA NORMALE A UN
 !                          SEGMENT EN SES NOEUDS. POUR AERER TE0003

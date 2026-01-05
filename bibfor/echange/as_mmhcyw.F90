@@ -18,7 +18,6 @@
 
 subroutine as_mmhcyw(fid, maa, conn, csize, switch, &
                      n, typent, typgeo, typcon, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !     L'ARGUMENT CSIZE N'EST PAS DANS L'API MED
 !
 !

@@ -18,7 +18,6 @@
 !
 subroutine nmchdp(crit, seuil, dp, iret, iter)
 !.======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
     implicit none
 !
 !      NMCHDP   -- CETTE ROUTINE CONCERNE L'INTEGRATION DE LA LOI

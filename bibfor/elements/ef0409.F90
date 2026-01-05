@@ -28,7 +28,6 @@ subroutine ef0409()
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"
-! person_in_charge: sebastien.fayolle at edf.fr
 !
     integer(kind=8) :: nnos, ipoids, ivf, idfdx, jgano, jtab(7), ipg, npg
     integer(kind=8) :: ichn, icontm, nno, igeom, ndim, iret

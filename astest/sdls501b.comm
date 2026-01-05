@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: patrick.massin at edf.fr
 #  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE TOLE EN LIBRE-LIBRE
 #
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'

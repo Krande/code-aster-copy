@@ -24,7 +24,6 @@ subroutine pgpext(sd_pgp)
 ! - MULT_APPUI : multiple pinning (seismic studies)
 ! - ACCE_MONO_APPUI : entraining acceleration
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"

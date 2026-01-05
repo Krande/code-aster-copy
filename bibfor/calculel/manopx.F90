@@ -18,7 +18,6 @@
 
 subroutine manopx(model, ligrel, option, param, chsgeo, exixfm, &
                   kecono)
-! person_in_charge: samuel.geniaut at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"

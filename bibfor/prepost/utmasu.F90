@@ -19,7 +19,6 @@
 subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
                   coor, nbmavo, mailvo, coince)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"

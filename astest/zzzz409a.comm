@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: astrid.billon at edf.fr
 #
 # UNIDIRECTIONNAL TENSILE TEST WITH TEMPERATURE ON A SINGLE ELEMENT,
 # USING A UMAT DAMAGE BEHAVIOUR LAW WITH POSITIVE HARDENING

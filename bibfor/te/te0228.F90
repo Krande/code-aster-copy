@@ -37,7 +37,6 @@ subroutine te0228(option, nomte)
 ! .                    NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     integer(kind=8) :: i, k, kp, igeom, idepl, idefor, nno, nnos, jgano, ndim, npg
     integer(kind=8) :: ivf, idfdk, ipoids, idefpg
     character(len=8) :: elrefe

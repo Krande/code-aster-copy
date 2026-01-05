@@ -32,7 +32,6 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis, &
     character(len=8) :: noma
     character(len=19) :: cnsln
     character(len=24) :: mafis, lisma
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !                      TROUVER LES MAILLES OÙ LSN CHANGE DE SIGNE
 !

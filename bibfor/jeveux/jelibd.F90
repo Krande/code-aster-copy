@@ -25,7 +25,6 @@ subroutine jelibd(nomlu, ltot)
 ! OUT  LTOT  : LONGUEUR EN ENTIERS LIBEREE
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! POUR LES VARS I4ZON, LSZON, R8ZON QUI DANS UN COMMON MAIS UNIQUEMENT
 ! PAR EQUIVALENCE
 ! aslint: disable=

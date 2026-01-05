@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine tail_reel(l3, vss33, dim3, ndim, ifour)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !---------------------------------------------------------------------
 !     BUT: DONNER LES TAILLES DE L'ELEMENT DANS LES DIRECTIONS PRINCIPALES

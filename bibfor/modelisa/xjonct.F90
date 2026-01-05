@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine xjonct(noma, modelx)
-! person_in_charge: daniele.colombo at ifpen.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

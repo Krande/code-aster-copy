@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: sofiane.hendili at edf.fr
 
 subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 !
@@ -31,7 +30,6 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
 !
-! person_in_charge: sofiane.hendili at edf.fr
 !
     character(len=*), intent(in) :: model_
     character(len=*), intent(in) :: mate_

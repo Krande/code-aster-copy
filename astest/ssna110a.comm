@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 #  A DIFFERENTES VITESSES DE DEFORMATION, A 550 DEGRES
-# person_in_charge: thomas.de-soza at edf.fr
 import numpy as NP
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))

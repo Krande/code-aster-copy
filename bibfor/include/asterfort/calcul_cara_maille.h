@@ -18,7 +18,6 @@
 
 !
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
     subroutine calcul_cara_maille( coord, noeuds, topologie, surface, centre, normale )

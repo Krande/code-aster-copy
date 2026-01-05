@@ -30,7 +30,6 @@ subroutine rs_get_listload(result_, nume, list_load, iexcit)
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
     integer(kind=8), intent(in) :: nume

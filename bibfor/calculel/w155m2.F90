@@ -18,7 +18,6 @@
 
 subroutine w155m2(chin, carele, ligrel, chextr, nomsym, &
                   nocmp, tymaxi)
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
     implicit none
 #include "jeveux.h"

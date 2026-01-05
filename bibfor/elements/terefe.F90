@@ -26,7 +26,6 @@ subroutine terefe(refe_name, type_elem, refe_vale)
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: refe_name
     character(len=*), intent(in) :: type_elem

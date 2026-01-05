@@ -35,7 +35,6 @@ subroutine cfcrli(mesh, nume_dof, ds_contact)
 #include "asterfort/posddl.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nume_dof

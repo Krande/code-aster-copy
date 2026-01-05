@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine pjefca(moa1, lima1, iocc, ncas)
-! person_in_charge: jacques.pellet at edf.fr
 !---------------------------------------------------------------------
 ! BUT : DETERMINER LE "CAS DE FIGURE" DE LA PROJECTION :
 ! ----

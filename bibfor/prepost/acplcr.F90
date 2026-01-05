@@ -33,7 +33,6 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
     aster_logical :: rayon
     integer(kind=8) :: dectau, jresun, jdtaum, jtauma, jsgnma, jdsgma
     character(len=16) :: nommet
-! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: CONSTRUIRE LES COMPOSANTES u ET v DU VECTEUR DE CISAILLEMENT TAU
 !      DANS LE REPERE LOCAL PERPENDICULAIRE AU VECTEUR NORMAL, POUR

@@ -38,7 +38,6 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     integer(kind=8), intent(in) :: jconx2
     integer(kind=8), intent(in) :: ima
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 !
 ! ---------------------------------------------------------------------
 !

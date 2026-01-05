@@ -19,7 +19,6 @@
 subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai, &
                   spavan, deficu, resocu)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

@@ -30,7 +30,6 @@ subroutine liexco(sdcont, keywf, mesh, model, nb_cont_zone, &
 #include "asterfort/lireco.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh

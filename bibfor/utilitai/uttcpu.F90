@@ -18,7 +18,6 @@
 
 subroutine uttcpu(nommes, action, nomlon)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"

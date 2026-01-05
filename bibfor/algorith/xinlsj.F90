@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
-! person_in_charge: patrick.massin at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"

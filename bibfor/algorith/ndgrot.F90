@@ -19,7 +19,6 @@
 subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1, &
                   theta2, iran)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

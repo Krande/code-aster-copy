@@ -24,7 +24,6 @@ subroutine aptypm(mesh, elem_nume, elem_ndim, elem_nbnode, elem_type, &
 #include "asterfort/mmtypm.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(in) :: elem_nume

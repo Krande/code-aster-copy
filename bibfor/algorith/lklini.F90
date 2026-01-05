@@ -18,7 +18,6 @@
 !
 subroutine lklini(sigf, nr, yd, dy)
     implicit none
-! person_in_charge: alexandre.foucault at edf.fr
 !       ----------------------------------------------------------------
 !       ROUTINE INITIALISANT DY POUR LE MODELE LETK IMPLICITE
 !       ----------------------------------------------------------------

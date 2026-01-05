@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: marina.bottoni at edf.fr
 # ---------------------------------------------------------------------------
 #                  POST_ENDO_FISS
 # PROCEDURE PYTHON DU RECHERCHE DU TRAJET DE FISSURATION

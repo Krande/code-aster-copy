@@ -29,7 +29,6 @@ subroutine nmextj(field_type, nb_cmp, list_cmp, type_extr_cmp, type_sele_cmp, &
 #include "asterfort/lxliis.h"
 #include "asterfort/nmextv.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: field_type
     integer(kind=8), intent(in) :: nb_cmp

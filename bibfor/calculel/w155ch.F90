@@ -18,7 +18,6 @@
 
 subroutine w155ch(chin, carele, ligrel, chextr, motfac, &
                   nucou, nicou, nangl, nufib)
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
     implicit none
 #include "asterf_types.h"

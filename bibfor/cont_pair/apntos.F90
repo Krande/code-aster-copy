@@ -29,7 +29,6 @@ subroutine apntos(mesh, ds_contact)
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact

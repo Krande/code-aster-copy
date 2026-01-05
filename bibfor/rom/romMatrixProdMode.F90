@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine romMatrixProdMode(nb_matr, l_matr_name, l_matr_type, matr_mode_curr, &
                              prod_matr_mode, i_mode, mode_type, vc_mode, vr_mode)

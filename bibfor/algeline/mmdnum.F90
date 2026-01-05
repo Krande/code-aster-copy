@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine mmdnum(neqns, perm, invp, qsize)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 !--- SPARSPAK-A (ANSI FORTRAN) RELEASE III --- NAME = MMDNUM

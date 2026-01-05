@@ -18,7 +18,6 @@
 !
 subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 #include "jeveux.h"

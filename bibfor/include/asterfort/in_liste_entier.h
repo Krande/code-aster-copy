@@ -18,7 +18,6 @@
 
 !
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
     function in_liste_entier(val,liste,indx)

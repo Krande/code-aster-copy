@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
-! person_in_charge: samuel.geniaut at edf.fr
 !
 subroutine xnmel(nnop, nfh, nfe, ddlc, &
                  ddlm, igeom, typmod, option, imate, &

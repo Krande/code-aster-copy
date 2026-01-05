@@ -19,7 +19,6 @@
 subroutine mcopco(noma, newgeo, ndim, nummai, ksi1, &
                   ksi2, geom)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"

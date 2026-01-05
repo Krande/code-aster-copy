@@ -20,7 +20,6 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf, &
                   nbaf, valatt, nbnofa, nbelfa, ifm, &
                   codret)
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !     ------------------------------------------------------------------
 !  ENTREES :
 !     TYPENT = TYPE D'ENTITES DANS LA FAMILLE

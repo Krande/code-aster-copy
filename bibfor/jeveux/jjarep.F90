@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine jjarep(iclas, nrmax)
-! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
     implicit none
 #include "jeveux_private.h"

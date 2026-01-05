@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0378(option, nomte)
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       CALCUL DE L'INDICATEUR D'ERREUR EN MECANIQUE 2D AVEC LA

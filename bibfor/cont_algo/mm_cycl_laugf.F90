@@ -20,7 +20,6 @@ subroutine mm_cycl_laugf(pres, dist, coef_augm, lagr_norm)
 !
     implicit none
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8), intent(in) :: pres(3)
     real(kind=8), intent(in) :: dist(3)

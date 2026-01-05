@@ -23,7 +23,6 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
     implicit none
 !
 !
-! person_in_charge: mathieu.courtois at edf.fr
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"

@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine xthini(nomte, nfh, nfe)
-! person_in_charge: sam.cuvilliez at edf.fr
 !
     implicit none
 !

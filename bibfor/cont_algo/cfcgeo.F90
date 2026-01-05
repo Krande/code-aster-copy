@@ -36,7 +36,6 @@ subroutine cfcgeo(mesh, hval_algo, ds_contact)
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: hval_algo(*)

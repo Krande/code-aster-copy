@@ -23,7 +23,6 @@ subroutine elg_allocvr(vect1, n1)
 !
     use aster_petsc_module
     implicit none
-! person_in_charge: natacha.bereux@edf.fr
 !
 ! BUT : allouer un vecteur PETSc réel de longueur n1
 !---------------------------------------------------------------

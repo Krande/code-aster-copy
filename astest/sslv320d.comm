@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: daniele.colombo at ifpen.fr
 
 DEBUT(CODE="OUI", IGNORE_ALARM=("HOMARD0_9"), DEBUG=_F(SDVERI="OUI"))
 

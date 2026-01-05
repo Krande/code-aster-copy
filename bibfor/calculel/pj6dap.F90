@@ -29,7 +29,6 @@ subroutine pj6dap(ino2, geom2, geom1, seg2, cobary, &
 !
     real(kind=8) :: cobary(2), geom1(*), geom2(*), btvr(*)
     integer(kind=8) :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), seg2(*)
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !  but :
 !    trouver le seg2 qui servira a interpoler le noeud ino2

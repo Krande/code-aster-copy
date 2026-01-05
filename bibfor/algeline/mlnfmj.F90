@@ -19,7 +19,6 @@
 subroutine mlnfmj(nb, n, p, frontl, frontu, &
                   frnl, frnu, adper, t1, t2, &
                   cl, cu)
-! person_in_charge: olivier.boiteau at edf.fr
 !
     use superv_module
     implicit none

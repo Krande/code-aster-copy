@@ -19,7 +19,6 @@
 subroutine dtmprep(sd_dtm_)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmprep : Preparation of a DYNA_VIBRA//TRAN/GENE calculation, by reading
 !           and saving the all information regarding the transient calculation

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: albert.alarcon at edf.fr
 
 # La classe CalcEssaiModifStruct permet de gerer les calculs de modification structurale
 #

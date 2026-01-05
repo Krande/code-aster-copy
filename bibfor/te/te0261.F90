@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine te0261(option, nomte)
-! person_in_charge: samuel.geniaut at edf.fr
 !.......................................................................
 !
 !     BUT: CALCUL DES CONTRAINTES AUX POINTS DE GAUSS

@@ -35,7 +35,6 @@ subroutine celfpg(celz, nomobj, iret)
 !
     character(len=*) :: celz, nomobj
     integer(kind=8) :: iret
-! person_in_charge: jacques.pellet at edf.fr
 ! ------------------------------------------------------------------
 ! BUT : EXTRAIRE DU CHAM_ELEM (ELGA) CELZ UN OBJET JEVEUX CONTENANT
 !       LE SCHEMA DE POINT DE GAUSS DES MAILLES

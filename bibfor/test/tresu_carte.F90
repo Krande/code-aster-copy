@@ -39,7 +39,6 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi, &
     aster_logical, intent(in) :: llab
     aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
-! person_in_charge: jacques.pellet at edf.fr
 ! IN  : CHAM19 : NOM DE LA CARTE DONT ON DESIRE VERIFIER 1 COMPOSANTE
 ! IN  : NOMAIL : NOM DE LA MAILLE A TESTER
 ! IN  : NOCMP  : NOM DU DDL A TESTER

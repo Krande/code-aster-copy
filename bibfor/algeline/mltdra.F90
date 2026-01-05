@@ -20,7 +20,6 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq, &
                   nbsn, nbnd, supnd, adress, global, &
                   lgsn, factol, factou, sm, x, &
                   invp, perm, ad, trav, typsym)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"

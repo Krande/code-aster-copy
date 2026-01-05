@@ -18,7 +18,6 @@
 
 subroutine dflufin3d(sige6, bw, pw, bg, pg, dsw6, delta, rc, &
                      xflu, dfin, cmp1, dfmx2)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
 !   endommagement par fluage

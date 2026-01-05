@@ -18,7 +18,6 @@
 
 subroutine mmtann(ndim, tau1, tau2, iret)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterc/r8prem.h"

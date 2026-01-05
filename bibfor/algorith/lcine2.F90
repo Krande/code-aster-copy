@@ -22,7 +22,6 @@ function lcine2(d, gm, pm, c, dgamma, &
 #include "asterc/r8prem.h"
     real(kind=8) :: d, gm, pm, c, dgamma, alpham, absdga, lcine2, x, alpha
     real(kind=8) :: signe
-! person_in_charge: jean-michel.proix at edf.fr
     absdga = abs(dgamma)
     lcine2 = x*(1.d0+d*absdga)+d*alpham*absdga-dgamma
     alpha = alpham+x

@@ -31,7 +31,6 @@ subroutine cfparz(ds_contact, iliai, coefff, coefpn, coefpt, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: coefff, coefpn, coefpt, coefte, dissup

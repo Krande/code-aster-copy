@@ -25,7 +25,6 @@ subroutine GetDevice(ds_measure, device_type_, device, device_indx_)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(in) :: ds_measure
     character(len=*), intent(in) :: device_type_

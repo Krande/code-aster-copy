@@ -18,7 +18,6 @@
 
 subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1, &
                   poinc2, elrefe, ndegre)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES CARACTERISTIQUES DES MAILLES
 !                          VOISINES POUR AERER TE0003 ET RECUPERATION

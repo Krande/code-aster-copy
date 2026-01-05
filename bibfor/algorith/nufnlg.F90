@@ -20,7 +20,6 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw, &
                   vff1, vff2, idff1, vu, vp, &
                   typmod, mate, compor, geomi, sig, &
                   ddl, vect)
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
 !

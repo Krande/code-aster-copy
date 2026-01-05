@@ -48,7 +48,6 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo, &
     aster_logical, intent(in), optional :: nogranz
 ! ----------------------------------------------------------------------
 !
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTILI
 !
 ! BUT: RECUPERER UN NUMERO DE DDL DANS UN CHAM_ELEM

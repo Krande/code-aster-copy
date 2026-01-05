@@ -27,7 +27,6 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1, &
     integer(kind=8) :: nbmac, ima, inmtot, jresd1, jresv1, jresl1, nbcmpc
     integer(kind=8) :: jresd2, jresv2, jresl2
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !   ECRITURE DU COMPORTEMENT SUR LE RESU X-FEM POUR LES MAILLES X-FEM
 !

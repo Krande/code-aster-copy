@@ -18,7 +18,6 @@
 !
 subroutine gnoms2(noojb, k1, k2)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 ! BUT :
 !  TROUVER UN NOM POSSIBLE POUR UN OBJET JEVEUX QUI RESPECTE :
 !     - CE NOM VAUT NOOJB (DONNE EN ENTREE) SAUF POUR LA SOUS-CHAINE

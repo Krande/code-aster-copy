@@ -26,7 +26,6 @@ subroutine nmext2(mesh, field, nb_cmp, nb_node, type_extr, &
 #include "asterfort/nmexti.h"
 #include "asterfort/int_to_char8.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(in) :: nb_node

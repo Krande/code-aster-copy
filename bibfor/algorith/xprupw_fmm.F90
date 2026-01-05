@@ -52,7 +52,6 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr, &
     real(kind=8)      :: deltat
     integer(kind=8)           :: nbrinit
 !
-! person_in_charge: patrick.massin at edf.fr
 !
 !     ------------------------------------------------------------------
 !

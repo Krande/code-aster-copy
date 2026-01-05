@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 function sdeiso(vect)
-! person_in_charge: olivier.boiteau at edf.fr
 !
     implicit none
     integer(kind=8) :: sdeiso

@@ -37,7 +37,6 @@ subroutine nupodd(nu, base, rang, nbproc)
     character(len=14) :: nu
     character(len=2) :: base
     integer(kind=8) :: rang, nbproc
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ----------------------------------------------------------------------
 !  NUME_DDL - CREATION DES TABLEAUX DE POSSESSION DES DDL
 !  --                                  --             --

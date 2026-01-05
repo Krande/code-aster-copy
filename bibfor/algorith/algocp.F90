@@ -18,7 +18,6 @@
 
 subroutine algocp(ds_measure, resoco, numedd, matass)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
 !
     use NonLin_Datastructure_type

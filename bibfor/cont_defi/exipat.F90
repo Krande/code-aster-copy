@@ -22,7 +22,6 @@ subroutine exipat(mesh, iret)
 !
 #include "asterfort/jeexin.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(out) :: iret

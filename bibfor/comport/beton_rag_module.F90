@@ -20,7 +20,6 @@ module beton_rag_module
     use tenseur_meca_module
     implicit None
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 #include "asterf_types.h"
 !

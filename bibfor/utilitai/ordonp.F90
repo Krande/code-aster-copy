@@ -32,7 +32,6 @@ subroutine ordonp(nomfon)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: nomfon
-! person_in_charge: mathieu.courtois at edf.fr
 ! ----------------------------------------------------------------------
 !     APPELE PAR ORDONN POUR REORDONNER LES FONCTIONS D UNE NAPPE
 !     PAR ORDRE CROISSANT DES PARAMETRES

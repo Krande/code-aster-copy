@@ -26,7 +26,6 @@ subroutine nmext0(field_disc, nb_elem, nb_node, nb_poin, nb_spoi, &
 #include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=4), intent(in) :: field_disc
     integer(kind=8), intent(in) :: nb_node

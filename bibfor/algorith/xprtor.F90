@@ -55,7 +55,6 @@ subroutine xprtor(method, noma, cnxinv, fispre, &
     aster_logical :: tore
     real(kind=8) :: radtor, radimp
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !     ------------------------------------------------------------------
 !

@@ -18,7 +18,6 @@
 
 subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
 !

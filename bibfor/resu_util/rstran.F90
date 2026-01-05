@@ -45,7 +45,6 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
 #include "asterfort/wkvect.h"
     character(len=*) :: interp, motcle
     character(len=*) :: resu, kdisc, krang
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     POUR INTERP = 'NON'
 !        RECUPERATION DES DISCRETISATIONS ET DES NUMEROS DE RANGEMENT

@@ -18,7 +18,6 @@
 
 subroutine as_mfacre(fid, maa, fam, num, ngro, &
                      gro, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

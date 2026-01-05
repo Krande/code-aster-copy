@@ -28,7 +28,6 @@ subroutine cfpost(mesh, disp_iter, ds_contact, ctccvg)
 #include "asterfort/copisd.h"
 #include "asterfort/infdbg.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: disp_iter

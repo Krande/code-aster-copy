@@ -20,7 +20,6 @@ function digdel(modelo)
     implicit none
     integer(kind=8) :: digdel
 !
-! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"

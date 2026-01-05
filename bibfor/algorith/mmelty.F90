@@ -25,7 +25,6 @@ subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(in) :: elem_nume

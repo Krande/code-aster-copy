@@ -18,7 +18,6 @@
 
 subroutine as_mfdfdi(fid, ind, cha, type, comp, &
                      unit, nseqca, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
     implicit none

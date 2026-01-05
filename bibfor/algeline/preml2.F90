@@ -24,7 +24,6 @@ subroutine preml2(n1, diag, col, delg, xadj1, &
                   debfac, debfsn, seq, lmat, adpile, &
                   chaine, suiv, place, nbass, ncbloc, &
                   lgbloc, nbloc, lgind, nbsnd, ier)
-! person_in_charge: olivier.boiteau at edf.fr
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/facsmb.h"

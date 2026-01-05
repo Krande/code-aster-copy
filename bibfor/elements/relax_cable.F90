@@ -31,7 +31,6 @@ subroutine relax_cable(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     real(kind=8)     :: dyy(*)
     aster_logical    :: decoup
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! ----------------------------------------------------------------------
 !
 !        MODÈLE DE D'AMORTISSEUR DE ZENER GÉNÉRALISÉ

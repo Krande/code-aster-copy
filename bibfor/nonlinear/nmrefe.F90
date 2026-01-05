@@ -41,7 +41,6 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 #include "asterfort/vemare.h"
 #include "asterfort/xajcin.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: compor

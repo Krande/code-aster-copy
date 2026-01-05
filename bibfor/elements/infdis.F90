@@ -56,7 +56,6 @@ subroutine infdis(quest, ivale, rvale, kvale)
 !     RVALE : SI ETAK : COEFFICIENT AMORTISSEMENT HYSTERETIQUE
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
 !

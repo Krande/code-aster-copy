@@ -47,7 +47,6 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
     character(len=8), intent(in) :: cara
     character(len=8), intent(in) :: chmat
     aster_logical :: lrest
-! person_in_charge: nicolas.sellenet at edf.fr
 !     OPERATEUR D'EXTRACTION
 !     ------------------------------------------------------------------
 !

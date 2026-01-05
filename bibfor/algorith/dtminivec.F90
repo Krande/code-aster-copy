@@ -36,7 +36,6 @@ subroutine dtminivec(sd_dtm_, ip, lonvec, iocc, vi, &
 ! Examples : call dtminivec('&&OP0074', IND_ARCH, 5, vi=indarch)
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"

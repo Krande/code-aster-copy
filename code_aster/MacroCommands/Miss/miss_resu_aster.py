@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """Module permettant de lire le fichier produit par IMPR_MACR_ELEM
 et de produire une structure pour écrire les fichiers en entrées de Miss.

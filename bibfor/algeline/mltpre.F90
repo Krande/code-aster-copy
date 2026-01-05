@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine mltpre(mat19, renumz)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

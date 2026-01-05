@@ -24,7 +24,6 @@ subroutine ulaffe(unit, fichie, name, acces, autor)
 #include "asterfort/utmess.h"
     integer(kind=8) :: unit
     character(len=*) :: fichie, name, acces, autor
-! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 !     AFFECTATION DE L'UNITE LOGIQUE ASSOCIE AU FICHIER DE NOM FICHIE DE
 !     TYPE BINAIRE, SI LE NOM EST VIDE, IL EST AFFECTE A fort.UNIT

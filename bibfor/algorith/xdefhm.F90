@@ -21,7 +21,6 @@ subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1, &
 !
     implicit none
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !          BUT : ASSEMBLER LES DEFORMATIONS GENERALISEES DU MODELE
 !                HM EN XFEM

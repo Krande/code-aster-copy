@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: samuel.jules at edf.fr
 
 from ..Commons import *
 from ..Language.DataStructure import *

@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mathieu.courtois@edf.fr
 
 subroutine as_mfivop(fid, nom, acces, major, minor, rel, cret)
 !

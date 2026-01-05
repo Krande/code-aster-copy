@@ -23,7 +23,6 @@ subroutine vpecri(eigsol, ktype, indice, &
 ! LA VALEUR A ECRIRE EST DONNEE DANS VALK, VALI OU VALR.
 ! CF VPINIS, VPLECS, VPLECI, VPECRI.
 ! -------------------------------------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 
 #include "jeveux.h"

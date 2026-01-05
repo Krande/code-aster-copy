@@ -18,7 +18,6 @@
 
 subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp, &
                   base, cns2z)
-! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
 #include "asterf_types.h"

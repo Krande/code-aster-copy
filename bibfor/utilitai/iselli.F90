@@ -22,7 +22,6 @@ function iselli(elrefz)
 #include "asterfort/assert.h"
     aster_logical :: iselli
     character(len=*) :: elrefz
-! person_in_charge: samuel.geniaut at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! FONCTION VALANT TRUE SI L'ELEMENT DE REFERENCE EST LINEAIRE

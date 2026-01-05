@@ -19,7 +19,6 @@
 subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh, &
                   nsg, hsr)
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 !     ----------------------------------------------------------------
 !     MONOCRISTAL : CALCUL DE LA MATRICE D'INTERACTION HSR
 !     ----------------------------------------------------------------

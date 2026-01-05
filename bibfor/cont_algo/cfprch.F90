@@ -34,7 +34,6 @@ subroutine cfprch(ds_contact, ddepla, depdel)
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: ddepla, depdel

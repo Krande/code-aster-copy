@@ -43,7 +43,6 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
 ! Examples : call dtmsav('&&OP0074','RESU_IN ',1, kscal=resuin)
 !            call dtmsav('&&OP0074','NOM_CMP ',1, iocc=2, kvect=('DX','DY'))
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"

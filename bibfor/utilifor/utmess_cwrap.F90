@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine utmess_cwrap(typ, idmess)
-! person_in_charge: mathieu.courtois at edf.fr
 !
 ! Just a wrapper to call utmess from C
 !

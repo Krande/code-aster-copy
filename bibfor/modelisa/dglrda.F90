@@ -18,7 +18,6 @@
 
 subroutine dglrda()
 ! aslint: disable=W1501
-! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"

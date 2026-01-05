@@ -33,7 +33,6 @@ subroutine w039ca(ifi, form)
 #include "asterfort/w039c3.h"
     integer(kind=8) :: ifi
     character(len=*) :: form
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !     BUT:
 !       IMPRIMER LES "CARTES" DE DONNEES DES CHAM_MATER, CARA_ELE, ...

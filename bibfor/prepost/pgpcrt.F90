@@ -21,7 +21,6 @@ subroutine pgpcrt(sd_pgp)
 ! Initialzes a table data structure as a result of the POST_GENE_PHYS
 ! command
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"

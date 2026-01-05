@@ -53,7 +53,6 @@ subroutine op0116()
 #include "asterfort/wkvect.h"
 !
 !
-! person_in_charge: hassan.berro at edf.fr
 ! OPERATEUR CALCULANT LE CHAMP DE PRESSION DANS UN FLUIDE SELON LES
 ! HYPOTHESES D'UN ECOULEMENT POTENTIEL
 !

@@ -19,7 +19,6 @@
 subroutine utlcal(typque, algo, valr)
     implicit none
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 #include "asterfort/assert.h"
     character(len=8) :: typque

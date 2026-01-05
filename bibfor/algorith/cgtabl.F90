@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: nicolas.pignet@edf.fr
 !
 subroutine cgtabl(table_container, nb_obje, obje_name, obje_sdname, nb_cham_theta)
 !

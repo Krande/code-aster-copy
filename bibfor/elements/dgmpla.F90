@@ -32,7 +32,6 @@ subroutine dgmpla(eb, nub, ea, sya, num, &
 ! - PARAMETRES SORTANTS
     real(kind=8) :: drp, d3, w
 !
-! person_in_charge: sebastien.fayolle at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! BUT : CALCUL DES INFORMATIONS NECESSAIRES A LA DETERMINATION DES

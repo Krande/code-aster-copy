@@ -23,7 +23,6 @@ subroutine uttcpg(action, typimp)
 #include "asterfort/uttcpl.h"
 #include "asterfort/uttcpu.h"
     character(len=*) :: action, typimp
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : GERER LES MESURES DE TEMPS "GENERALES" : CELLES DONT LA LISTE
 !        EST DONNEE DANS UTTCPL ET QUI SONT PILOTEES GRACE AU MOT CLE

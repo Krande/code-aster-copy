@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 #          POUR LE CALCUL DES LAMES D'EAU.
-# person_in_charge: pierre.badel at edf.fr
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), IMPR_MACRO="NON")
 

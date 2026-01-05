@@ -35,7 +35,6 @@ subroutine mmconv(noma, ds_contact, valinc, solalg, vfrot, &
 #include "asterfort/nmchex.h"
 #include "asterfort/mmbouc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: noma
     type(NL_DS_Contact), intent(inout) :: ds_contact

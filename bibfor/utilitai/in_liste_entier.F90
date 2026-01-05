@@ -26,7 +26,6 @@ function in_liste_entier(val, liste, indx)
 !     si indx présent ==> index de la valeur dans la liste
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
     integer(kind=8) :: val, liste(:)

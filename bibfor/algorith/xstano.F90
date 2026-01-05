@@ -48,7 +48,6 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
     character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln, cnslj, cnxinv
     character(len=24) :: lisno, stano
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !                DETERMINER LE STATUT (ENRICHISSEMENT) DES NOEUDS
 !                    1 : ENRICHISSEMENT HEAVISIDE

@@ -26,7 +26,6 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 #include "asterfort/utgtme.h"
     character(len=*) :: titre, limpr, ldyn
     real(kind=8) :: tmax, prec
-! person_in_charge: jacques.pellet at edf.fr
 !   BUT: CALCULER LA QUANTITE DE MEMOIRE ENCORE LIBRE
 !-------------------------------------------------------------
 ! IN  LIMPR: /'NON' : ON SE CONTENTE DE CALCULER TMAX
