@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
@@ -227,7 +226,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_AXIS_QU8(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -539,7 +537,6 @@ class HM_AXIS_QU8(Element):
 
 # ------------------------------------------------------------
 class HM_AXIS_TR6(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -553,7 +550,6 @@ class HM_AXIS_TR6(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_QU8D(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -569,7 +565,6 @@ class HM_AXIS_QU8D(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_TR6D(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -585,7 +580,6 @@ class HM_AXIS_TR6D(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_QU8S(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -603,7 +597,6 @@ class HM_AXIS_QU8S(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_TR6S(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

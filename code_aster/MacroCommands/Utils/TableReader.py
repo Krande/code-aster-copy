@@ -55,7 +55,6 @@ def convert(valk):
 
 
 class TableReader:
-
     """Standard reader of a Table."""
 
     id_vide = ""
@@ -98,7 +97,6 @@ class TableReader:
 
 
 class TableReaderFree(TableReader):
-
     """Table reader in a free format."""
 
     def split_tab(self, nblock):
@@ -173,7 +171,6 @@ class TableReaderFree(TableReader):
 
 
 class TableReaderTableau(TableReaderFree):
-
     """Table reader in TABLEAU format."""
 
     id_vide = "-"
@@ -185,7 +182,6 @@ class TableReaderTableau(TableReaderFree):
 
 
 class TableReaderAster(TableReader):
-
     """Table reader in ASTER format."""
 
     idt_deb = "#DEBUT_TABLE\n"

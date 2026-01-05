@@ -201,6 +201,7 @@ U1 = FORMULE(VALE="Vx(X,Y)", Vx=Vx, NOM_PARA=["X", "Y"])
 
 U2 = FORMULE(VALE="Vy(X,Y)", Vy=Vy, NOM_PARA=["X", "Y"])
 
+
 # TENSEUR DES CONTTRAINTES ANALYTIQUE ::
 def SIGMA(X, Y, IND):
     SIGMAREF = [None] * 3

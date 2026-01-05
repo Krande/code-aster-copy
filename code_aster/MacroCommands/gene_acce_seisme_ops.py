@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 """Commande GENE_ACCE_SEISME"""
 
 import sys
@@ -787,7 +786,7 @@ class SimulatorDSPScalar(Simulator):
             _f_out = DEFI_FONCTION(
                 ABSCISSE=tuple(generator.sampler.liste_temps),
                 ORDONNEE=tuple(Xt),
-                **self.para_fonc_traj
+                **self.para_fonc_traj,
             )
             generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
             generator.tab.referenceToDataStructure.append(_f_out)
@@ -832,7 +831,7 @@ class SimulatorDSPVector(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(accef),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 if self.TYPE == "COEF_CORR":
@@ -876,7 +875,7 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     if self.TYPE == "COEF_CORR":
@@ -1001,7 +1000,7 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     if self.TYPE == "COEF_CORR":
                         nom_acce = "ACCE" + str(nba)
@@ -1036,7 +1035,7 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     if self.TYPE == "COEF_CORR":
@@ -1075,7 +1074,7 @@ class SimulatorSPECScalar(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(Xt),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
                 generator.tab.referenceToDataStructure.append(_f_out)
@@ -1150,7 +1149,7 @@ class SimulatorSPECScalar(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(Xt),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
@@ -1165,7 +1164,7 @@ class SimulatorSPECScalar(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(Xt),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
@@ -1197,7 +1196,7 @@ class SimulatorSPECPhase(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     nom_no = self.liste_nom[nba - 1]
@@ -1283,7 +1282,7 @@ class SimulatorSPECPhase(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     nom_no = self.liste_nom[nba - 1]
@@ -1305,7 +1304,7 @@ class SimulatorSPECPhase(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(acce),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     nom_no = self.liste_nom[nba - 1]
@@ -1336,7 +1335,7 @@ class SimulatorDSPPhase(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(accef),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 nom_no = liste_nom[nba - 1]

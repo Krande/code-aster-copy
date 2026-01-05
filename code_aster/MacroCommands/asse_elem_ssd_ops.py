@@ -42,7 +42,7 @@ def asse_elem_ssd_ops(self, RESU_ASSE_SSD, SOUS_STRUC, LIAISON, VERIF, **args):
             _F(
                 NOM=SOUS_STRUC[i]["NOM"],
                 MACR_ELEM_DYNA=SOUS_STRUC[i]["MACR_ELEM_DYNA"],
-                **arg_sstruc
+                **arg_sstruc,
             )
         )
     modl_gene["SOUS_STRUC"] = mcfact
@@ -64,7 +64,7 @@ def asse_elem_ssd_ops(self, RESU_ASSE_SSD, SOUS_STRUC, LIAISON, VERIF, **args):
                 INTERFACE_1=LIAISON[i]["INTERFACE_1"],
                 SOUS_STRUC_2=LIAISON[i]["SOUS_STRUC_2"],
                 INTERFACE_2=LIAISON[i]["INTERFACE_2"],
-                **arg_liaison
+                **arg_liaison,
             )
         )
     modl_gene["LIAISON"] = mcfact

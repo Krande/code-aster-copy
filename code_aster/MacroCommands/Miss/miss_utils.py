@@ -42,7 +42,6 @@ dict_format = {"R": "15.6E", "sR": "%15.6E", "I": "6d", "sI": "%6d", "F": "6.6f"
 
 
 class MISS_PARAMETER:
-
     """Stocke les paramètres nécessaires au calcul à partir des mots-clés."""
 
     def __init__(self, initial_dir, **kwargs):

@@ -122,7 +122,7 @@ for modele in ["POU_D_T", "POU_D_E", "POU_D_EM", "POU_D_TGM", "POU_D_TG"]:
             POUTRE=(_F(SECTION="CERCLE", GROUP_MA="TOUT", CARA=("R", "EP"), VALE=(0.10, 0.05)),),
             GEOM_FIBRE=Fibres,
             MULTIFIBRE=_F(GROUP_MA=("TOUT"), GROUP_FIBRE=("SACIER",), PREC_INERTIE=1.2e-01),
-            **cara_motclefs
+            **cara_motclefs,
         )
 
         compor = DEFI_COMPOR(
@@ -141,7 +141,7 @@ for modele in ["POU_D_T", "POU_D_E", "POU_D_EM", "POU_D_TGM", "POU_D_TG"]:
         CaraP = AFFE_CARA_ELEM(
             MODELE=ModeleP,
             POUTRE=(_F(SECTION="CERCLE", GROUP_MA="TOUT", CARA=("R", "EP"), VALE=(0.10, 0.05)),),
-            **cara_motclefs
+            **cara_motclefs,
         )
         CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MAT))
         stnl_motclefs["COMPORTEMENT"] = [_F(TOUT="OUI", RELATION="ELAS", DEFORMATION="PETIT")]
@@ -161,7 +161,7 @@ for modele in ["POU_D_T", "POU_D_E", "POU_D_EM", "POU_D_TGM", "POU_D_TG"]:
         INCREMENT=_F(LIST_INST=L_INIT),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-07),
         TITRE=Titre,
-        **stnl_motclefs
+        **stnl_motclefs,
     )
 
     ResPDT = CALC_CHAMP(

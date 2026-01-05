@@ -33,7 +33,6 @@ EnumTypes = (list, tuple)
 
 
 class creation_donnees_homard:
-
     """
     Cette classe crée les données permettant de lancer HOMARD depuis Code_Aster.
         Ce sont :

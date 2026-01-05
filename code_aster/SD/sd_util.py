@@ -19,7 +19,7 @@
 
 
 """
-   Utilitaires pour la vérification des SD
+Utilitaires pour la vérification des SD
 """
 
 import copy
@@ -31,6 +31,7 @@ from ..Objects import PhysicalQuantityManager
 #  1) Utilitaires pour vérifier certaines propriétés.
 #     Ces utilitaires ne provoquent pas d'arret mais écrivent des messages dans un "checker"
 #  -----------------------------------------------------------------------
+
 
 #   1.1 Utilitaires pour des scalaires :
 #   ------------------------------------

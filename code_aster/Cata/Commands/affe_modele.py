@@ -340,12 +340,7 @@ AFFE_MODELE = OPER(
                 typ="TXM",
                 validators=NoRepeat(),
                 max=1,
-                into=(
-                    "3D",
-                    "PLAN",
-                    "3D_ABSO",
-                    "PLAN_ABSO",
-                ),
+                into=("3D", "PLAN", "3D_ABSO", "PLAN_ABSO"),
             ),
         ),
     ),

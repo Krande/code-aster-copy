@@ -29,7 +29,7 @@ def calc_essai_geomeca_ops(
     CONVERGENCE,
     INFO,
     # ESSAI_XXX,
-    **args
+    **args,
 ):
     """
     Objet : Programme principal CALC_ESSAI_GEOMECA

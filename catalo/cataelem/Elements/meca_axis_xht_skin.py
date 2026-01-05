@@ -76,7 +76,6 @@ NTHETAR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"
 
 # ------------------------------------------------------------
 class MEAXSE2_XHT(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2
@@ -226,7 +225,6 @@ class MEAXSE2_XHT(Element):
 
 # ------------------------------------------------------------
 class MEAXSE3_XHT(MEAXSE2_XHT):
-
     """Please document this element"""
 
     meshType = MT.SEG3

@@ -303,11 +303,9 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         # |------------------------------------|
         # | 2 - Coefficients table resu        |
         # |------------------------------------|
-        (
-            expanded_coefficients_table,
-            expanded_combination_names,
-            expanded_parameters_names,
-        ) = expand_table(coefficients_table, nb_orders)
+        (expanded_coefficients_table, expanded_combination_names, expanded_parameters_names) = (
+            expand_table(coefficients_table, nb_orders)
+        )
         # |------------------------------------------|
         # | 3 - multiplication by the coefficients   |
         # |------------------------------------------|
@@ -358,9 +356,11 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         else:
             filter_action = None
         filtered_tables = [
-            CALC_TABLE(TABLE=tables_by_name[table_name], ACTION=filter_action)
-            if filter_action is not None
-            else tables_by_name[table_name]
+            (
+                CALC_TABLE(TABLE=tables_by_name[table_name], ACTION=filter_action)
+                if filter_action is not None
+                else tables_by_name[table_name]
+            )
             for table_name in coefficients_column_names
         ]
         # # Check all columns are the same between tables
@@ -432,11 +432,9 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         # |------------------------------------|
         # | 2 - Coefficients table resu        |
         # |------------------------------------|
-        (
-            expanded_coefficients_table,
-            expanded_combination_names,
-            expanded_parameters_names,
-        ) = expand_table(coefficients_table, orders)
+        (expanded_coefficients_table, expanded_combination_names, expanded_parameters_names) = (
+            expand_table(coefficients_table, orders)
+        )
 
         # |------------------------------------|
         # | 3 - Matrix multiplication          |

@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 hayhurst = CREA_LIB_MFRONT(NOM_COMPOR="Hayhurst", UNITE_MFRONT=38)

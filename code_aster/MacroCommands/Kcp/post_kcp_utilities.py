@@ -150,14 +150,10 @@ def cart_cyl(table_meca):
 
     # Contrainte dans la base cylindrique
     sigma_rr = (
-        cos_theta**2 * sixx_values
-        + 2 * sin_cos_theta * sixy_values
-        + sin_theta**2 * siyy_values
+        cos_theta**2 * sixx_values + 2 * sin_cos_theta * sixy_values + sin_theta**2 * siyy_values
     )
     sigma_thethet = (
-        sin_theta**2 * sixx_values
-        - 2 * sin_cos_theta * sixy_values
-        + cos_theta**2 * siyy_values
+        sin_theta**2 * sixx_values - 2 * sin_cos_theta * sixy_values + cos_theta**2 * siyy_values
     )
     sigma_rtheta = (
         -sin_cos_theta * sixx_values

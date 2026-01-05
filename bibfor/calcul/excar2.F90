@@ -23,7 +23,6 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
 
     implicit none
 
-
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/trigd.h"

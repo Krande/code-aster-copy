@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from ...Cata.Syntax import _F
 from ...Objects import PhysicalProblem, FieldOnCellsReal, FieldOnNodesReal
 from ...CodeCommands import CREA_RESU

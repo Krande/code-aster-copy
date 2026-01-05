@@ -97,19 +97,19 @@ def raff_gp_ops(self, **args):
             __seuil = FORMULE(
                 VALE="""SEUIL(X,Y,origine[0]-3.*rayon*ccos,origine[1]-3*rayon*ssin,3*rayon,taille,nbcop+4,ccos,ssin)""",
                 NOM_PARA=("X", "Y"),
-                **const_context
+                **const_context,
             )
         elif num_calc % 3 == 1:
             __seuil = FORMULE(
                 VALE="""SEUIL(X,Y,origine[0]-2.*rayon*ccos,origine[1]-2.*rayon*ssin,2.*rayon,taille,nbcop+2,ccos,ssin)""",
                 NOM_PARA=("X", "Y"),
-                **const_context
+                **const_context,
             )
         elif num_calc % 3 == 2:
             __seuil = FORMULE(
                 VALE="""SEUIL(X,Y,origine[0]-1.2*rayon*ccos,origine[1]-1.2*rayon*ssin,1.2*rayon,taille,nbcop,ccos,ssin)""",
                 NOM_PARA=("X", "Y"),
-                **const_context
+                **const_context,
             )
 
         __MO = AFFE_MODELE(

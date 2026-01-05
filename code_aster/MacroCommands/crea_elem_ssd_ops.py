@@ -116,7 +116,7 @@ def crea_elem_ssd_ops(self, **args):
             MATR_MASS=_matmass,
             OPTION=CALC_FREQ["OPTION"],
             INFO=args["INFO"],
-            **motscit
+            **motscit,
         )
 
         motfilt["FILTRE_MODE"].append(_F(MODE=__modes, TOUT_ORDRE="OUI"))

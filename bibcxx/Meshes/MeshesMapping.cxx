@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "Meshes/MeshesMapping.h"
 
 MeshesMapping::MeshesMapping( const std::string name )

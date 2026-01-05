@@ -16,7 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-
 #ifndef DLL_MFRONT_H_
 #define DLL_MFRONT_H_
 

@@ -38,7 +38,7 @@ TEST_FONCTION = MACRO(
         NOM_PARA=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max=2),
         VALE_PARA=SIMP(statut="f", typ="R", validators=NoRepeat(), max=2),
         INTERVALLE=SIMP(statut="f", typ="R", validators=NoRepeat(), min=2, max=2),
-        **C_TEST_REFERENCE("FONCTION", max="**")
+        **C_TEST_REFERENCE("FONCTION", max="**"),
     ),
     ATTRIBUT=FACT(
         statut="f",

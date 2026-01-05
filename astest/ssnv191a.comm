@@ -172,6 +172,7 @@ CH3 = AFFE_CHAR_MECA(
     FORCE_FACE=(_F(GROUP_MA="SURFGAU", FY=10000.0), _F(GROUP_MA="SURFDRO", FY=-10000.0)),
 )
 
+
 # pour tester l'option CHAR_MECA_FF2D3D
 def prinv(z):
     if z < 1.5:

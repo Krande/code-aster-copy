@@ -102,6 +102,7 @@ DIFF = [None] * len(alphaREF)
 tab_du = [None] * len(alphaREF)
 tab_u = [None] * len(alphaREF)
 
+
 # Definition des fonctions globales :: alpha passe en argument, cela evite une ambiguite dans le calcul
 def r(X, Y):
     return ((X - 0.5) ** 2 + (Y - 0.5) ** 2) ** 0.5

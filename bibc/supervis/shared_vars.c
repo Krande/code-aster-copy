@@ -16,7 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-
 /*
  * Because of "cyclic" dependencies between the python modules (aster, aster_core)
  * and libaster, libaster.so contains `modules`.o and `modules`.o are linked

@@ -48,6 +48,7 @@ MGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", 
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
+
 # ------------------------------------------------------------
 class FORCE_NOD_2DDL(Element):
     """Please document this element"""

@@ -81,7 +81,7 @@ def calc_fonction_prod(
     INTEGRE_FREQ=None,
     DERIVE_FREQ=None,
     INTERPOL_FFT=None,
-    **args
+    **args,
 ):
     if INTEGRE is not None:
         return Function

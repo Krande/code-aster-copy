@@ -53,5 +53,5 @@ subroutine impfn0(isor, ibl, fnmoyt, fnmoyc, fnrmst, &
     write (isor, 10) ibl, fnmoyt, fnmoyc, fnrmst, fnrmsc, fmax
 !
 10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !',&
-      &        1pe12.5, ' !', 1pe12.5, ' !')
+        &        1pe12.5, ' !', 1pe12.5, ' !')
 end subroutine

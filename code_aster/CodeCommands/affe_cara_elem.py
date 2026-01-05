@@ -25,7 +25,6 @@ import numpy as np
 
 
 class EltCharacteristicsAssignment(ExecuteCommand):
-
     """Command that assigns
     :class:`~code_aster.Objects.ElementaryCharacteristics` on a model.
     """

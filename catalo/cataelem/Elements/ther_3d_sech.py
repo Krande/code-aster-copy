@@ -36,6 +36,7 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
+
 # --------------------------------------------------------------------------------------------------
 class SECH_HEXA20(Element):
     """Drying - 3D - HEXA20"""

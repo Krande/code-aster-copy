@@ -100,7 +100,6 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MEFS_POU_D_T(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2

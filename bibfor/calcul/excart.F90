@@ -24,7 +24,6 @@ subroutine excart(imodat, iparg)
 
     implicit none
 
-
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"

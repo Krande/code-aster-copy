@@ -35,6 +35,7 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
+
 # ----------------------------------------------------------------------------------------------
 class MEFS_FACE3(Element):
     """Element for FSI interaction (U,P,PHI) - 3D - On TR3"""

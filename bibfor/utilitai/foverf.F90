@@ -131,8 +131,8 @@ subroutine foverf(v, nc, ier)
 !
 1000 format('EGALITE       I=', i6, '   VALEUR(I)   :', 1pe16.9)
 1001 format('CROISSANT     I=', i6, '   VALEUR(I-1) :', 1pe16.9,&
-   &       '   VALEUR(I)   :', 1pe16.9)
+ &       '   VALEUR(I)   :', 1pe16.9)
 1002 format('DECROISSANT   I=', i6, '   VALEUR(I-1) :', 1pe16.9,&
-   &       '   VALEUR(I)   :', 1pe16.9)
+ &       '   VALEUR(I)   :', 1pe16.9)
 !
 end subroutine

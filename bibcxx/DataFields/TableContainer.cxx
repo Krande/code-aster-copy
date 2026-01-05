@@ -25,7 +25,6 @@
 
 #include <iostream>
 
-
 void TableContainer::addObject( const std::string &a, ElementaryMatrixDisplacementRealPtr b ) {
     _mapEMDD[a] = b;
 };

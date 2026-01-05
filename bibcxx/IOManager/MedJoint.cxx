@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "IOManager/MedJoint.h"
 
 #ifdef ASTER_HAVE_MED

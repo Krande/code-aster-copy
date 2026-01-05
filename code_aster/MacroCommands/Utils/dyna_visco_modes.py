@@ -41,7 +41,7 @@ def dyna_visco_modes(
     e0,
     eta0,
     ltrv,
-    **args
+    **args,
 ):
     """
     Macro-command DYNA_VISCO,
@@ -75,7 +75,7 @@ def dyna_visco_modes(
         trKg,
         ltrv,
         TYPE_RESU,
-        **args
+        **args,
     )
 
     # search for following eigenfrequencies
@@ -102,7 +102,7 @@ def dyna_visco_modes(
             TYPE_RESU,
             reuse="oui",
             co_reuse=_modes,
-            **args
+            **args,
         )
 
     if TYPE_MODE in ["REEL", "BETA_REEL"]:

@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 

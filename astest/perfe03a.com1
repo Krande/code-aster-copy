@@ -60,6 +60,7 @@ SIGMOY2 = LIRE_FONCTION(
 
 listcar = []
 
+
 # sigma(Griffith)
 def SIG_GRIFFITH(X):
     # n cardibes suit une loi normale tronquée de moyenne 0.603 et d'écart type 4

@@ -175,7 +175,7 @@ void DEFSPPPP( READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
 #else
     nbseek = fseek( fpfile[iu], offset, SEEK_SET );
 #endif
-    nbval = (ASTERINTEGER)fread( buf, 1, ( size_t )( *nbytes ), fpfile[iu] );
+    nbval = (ASTERINTEGER)fread( buf, 1, (size_t)( *nbytes ), fpfile[iu] );
     if ( nbval != *nbytes ) {
         *ierr = -4;
     }
@@ -216,7 +216,7 @@ void DEFSPPPP( WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
 #else
     nbseek = fseek( fpfile[iu], offset, SEEK_SET );
 #endif
-    nbval = (ASTERINTEGER)fwrite( buf, 1, ( size_t )( *nbytes ), fpfile[iu] );
+    nbval = (ASTERINTEGER)fwrite( buf, 1, (size_t)( *nbytes ), fpfile[iu] );
 
     if ( nbval != *nbytes ) {
         *ierr = -4;

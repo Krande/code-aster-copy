@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from cataelem.Tools.base_objects import Option, CondCalcul
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT

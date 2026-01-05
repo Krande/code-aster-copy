@@ -61,7 +61,7 @@ def simu_point_mat_ops(
     INFO=None,
     ARCHIVAGE=None,
     SUPPORT=None,
-    **args
+    **args,
 ):
     """Simulation de la reponse d'un point materiel"""
 
@@ -1053,7 +1053,7 @@ def simu_point_mat_ops(
                     CHAM_MATER=__CHMAT,
                     ETAT_INIT=init_dico,
                     EXCIT=l_char,
-                    **motscles
+                    **motscles,
                 )
             else:
                 __EVOL1 = STAT_NON_LINE(
@@ -1062,7 +1062,7 @@ def simu_point_mat_ops(
                     CHAM_MATER=__CHMAT,
                     ETAT_INIT=init_dico,
                     EXCIT=l_char,
-                    **motscles
+                    **motscles,
                 )
 
         else:
@@ -1073,7 +1073,7 @@ def simu_point_mat_ops(
                     CARA_ELEM=__CARA,
                     CHAM_MATER=__CHMAT,
                     EXCIT=l_char,
-                    **motscles
+                    **motscles,
                 )
             else:
                 __EVOL1 = STAT_NON_LINE(

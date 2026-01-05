@@ -225,7 +225,7 @@ LINST = DEFI_LIST_REEL(
         _F(JUSQU_A=1000000.0, NOMBRE=10),
         _F(JUSQU_A=1600000.0, NOMBRE=10),
         _F(JUSQU_A=1700000.0, NOMBRE=10),
-    )
+    ),
     #                           ( JUSQU_A: 1625000.  NOMBRE :  5    )
     #                           ( JUSQU_A: 1635000.  NOMBRE :  5    )
     #                           ( JUSQU_A: 1640000.  NOMBRE :  5    )

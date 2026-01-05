@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
@@ -254,7 +253,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_HEXA20S_DIL(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -522,7 +520,6 @@ class HM_HEXA20S_DIL(Element):
 
 # ------------------------------------------------------------
 class HM_PENTA15S_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -544,7 +541,6 @@ class HM_PENTA15S_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_PYRAM13S_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PYRAM13
@@ -563,7 +559,6 @@ class HM_PYRAM13S_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_TETRA10S_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -581,7 +576,6 @@ class HM_TETRA10S_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_HEXA20M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -602,7 +596,6 @@ class HM_HEXA20M_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_PENTA15M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -624,7 +617,6 @@ class HM_PENTA15M_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_PYRAM13M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PYRAM13
@@ -643,7 +635,6 @@ class HM_PYRAM13M_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_TETRA10M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

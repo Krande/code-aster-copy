@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "Functions/Function2D.h"
 
 std::string Function2D::getResultName() {

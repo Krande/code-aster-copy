@@ -23,7 +23,6 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul, ino, nno)
 
     implicit none
 
-
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"

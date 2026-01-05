@@ -16,7 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-
 #ifndef ASTER_UTILS_H_
 #define ASTER_UTILS_H_
 

@@ -129,7 +129,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HH2_AXIS_QU8D(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -280,7 +279,6 @@ class HH2_AXIS_QU8D(Element):
 
 # ------------------------------------------------------------
 class HH2_AXIS_TR6D(HH2_AXIS_QU8D):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -294,7 +292,6 @@ class HH2_AXIS_TR6D(HH2_AXIS_QU8D):
 
 # ------------------------------------------------------------
 class HH2_AXIS_QU8S(HH2_AXIS_QU8D):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -312,7 +309,6 @@ class HH2_AXIS_QU8S(HH2_AXIS_QU8D):
 
 # ------------------------------------------------------------
 class HH2_AXIS_TR6S(HH2_AXIS_QU8D):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

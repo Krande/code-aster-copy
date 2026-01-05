@@ -44,7 +44,6 @@ __docformat__ = "restructuredtext"
 
 
 class MetaType(type):
-
     """Métaclasse d'un type représentant une structure de données.
     Les méthodes spéciales __new__ et __call__ sont réimplémentées
     """

@@ -213,6 +213,7 @@ MODCRA = PROJ_CHAMP(
 # FONCTION MUL DE LA FORME GAUSSIENNE
 # =============================================
 
+
 # fonction gaussienne
 def gauss(mu, sigma, freq):
     from numpy import sqrt, pi

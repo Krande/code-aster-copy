@@ -101,7 +101,7 @@ def macro_bascule_schema_ops(self, **args):
             OBSERVATION=dobs,
             ARCHIVAGE=darch,
             ETAT_INIT=dini,
-            **motscles
+            **motscles,
         )
         __prc = "IMPLICITE"
     #
@@ -121,7 +121,7 @@ def macro_bascule_schema_ops(self, **args):
             OBSERVATION=dobs,
             ARCHIVAGE=darch,
             ETAT_INIT=dini,
-            **motscles
+            **motscles,
         )
 
         __prc = "EXPLICITE"
@@ -197,7 +197,7 @@ def macro_bascule_schema_ops(self, **args):
                 ARCHIVAGE=darch,
                 NEWTON=dnew,
                 CONVERGENCE=dconv,
-                **motscles
+                **motscles,
             )
             #
             __prc = "EXPLICITE"
@@ -280,7 +280,7 @@ def macro_bascule_schema_ops(self, **args):
                 ARCHIVAGE=darch,
                 NEWTON=dnew,
                 CONVERGENCE=dconv,
-                **motscles
+                **motscles,
             )
             #
             __Ui = CREA_CHAMP(
@@ -328,7 +328,7 @@ def macro_bascule_schema_ops(self, **args):
                 ARCHIVAGE=darch,
                 NEWTON=dnew,
                 CONVERGENCE=dconv,
-                **motscles
+                **motscles,
             )
             #
             __Ui = CREA_CHAMP(
@@ -396,7 +396,7 @@ def macro_bascule_schema_ops(self, **args):
                 ARCHIVAGE=darch,
                 NEWTON=dnew,
                 CONVERGENCE=dconv,
-                **motscles
+                **motscles,
             )
             #
             __prc = "IMPLICITE"

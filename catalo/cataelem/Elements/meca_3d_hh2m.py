@@ -264,7 +264,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HH2M_HEXA20M(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -591,7 +590,6 @@ class HH2M_HEXA20M(Element):
 
 # ------------------------------------------------------------
 class HH2M_PENTA15M(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -613,7 +611,6 @@ class HH2M_PENTA15M(HH2M_HEXA20M):
 
 # ------------------------------------------------------------
 class HH2M_TETRA10M(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -631,7 +628,6 @@ class HH2M_TETRA10M(HH2M_HEXA20M):
 
 # ------------------------------------------------------------
 class HH2M_HEXA20D(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -650,7 +646,6 @@ class HH2M_HEXA20D(HH2M_HEXA20M):
 
 # ------------------------------------------------------------
 class HH2M_PENTA15D(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -670,7 +665,6 @@ class HH2M_PENTA15D(HH2M_HEXA20M):
 
 # ------------------------------------------------------------
 class HH2M_TETRA10D(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -686,7 +680,6 @@ class HH2M_TETRA10D(HH2M_HEXA20M):
 
 # ------------------------------------------------------------
 class HH2M_HEXA20S(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -707,7 +700,6 @@ class HH2M_HEXA20S(HH2M_HEXA20M):
 
 # ------------------------------------------------------------
 class HH2M_PENTA15S(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -729,7 +721,6 @@ class HH2M_PENTA15S(HH2M_HEXA20M):
 
 # ------------------------------------------------------------
 class HH2M_TETRA10S(HH2M_HEXA20M):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

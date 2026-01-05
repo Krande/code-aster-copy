@@ -72,11 +72,11 @@ subroutine dbgobj(ojbz, perm, iunit, mess)
 9999 continue
 !
 1002 format(a, ' | ', a24, ' | LONMAX=', i12, ' | LONUTI=', i12,&
-   &        ' | TYPE=', a4, ' | IRET=', i7, ' | SOMMI=', i24)
+ &        ' | TYPE=', a4, ' | IRET=', i7, ' | SOMMI=', i24)
 !
 1003 format(a, ' | ', a24, ' | LONMAX=', i12, ' | LONUTI=', i12,&
-   &        ' | TYPE=', a4, ' | IRET=', i7, ' | IGNORE=', i7,&
-   &        ' | SOMMR=', e20.11)
+ &        ' | TYPE=', a4, ' | IRET=', i7, ' | IGNORE=', i7,&
+ &        ' | SOMMR=', e20.11)
 !
 1004 format(a, ' | ', a24, ' | TYPE=', a4, ' | IRET=', i7)
 !

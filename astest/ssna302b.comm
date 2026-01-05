@@ -619,7 +619,7 @@ CONDLIM = AFFE_CHAR_MECA(
         _F(
             GROUP_NO=("NO001214", "NO000774"), DDL=("DY", "DY"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0.0
         ),
-    )
+    ),
     #
 )
 

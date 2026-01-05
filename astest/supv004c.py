@@ -26,7 +26,6 @@ CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 
 class MyCalc:
-
     """Example where commands calls are encapsulated in a Python objet."""
 
     _list = _formula = None

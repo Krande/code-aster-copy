@@ -336,6 +336,7 @@ CHNUL = CREA_CHAMP(
 # Hauteur successive de la colonne au fur et a mesure de la construction
 Height = [5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25]
 
+
 # DEFINITION FONCTION PROJECTION SUIVANT Y
 def PROJ(x, Hauteur):
     if x <= Hauteur:

@@ -258,7 +258,7 @@ def lire_fonction_ops(
     VERIF=None,
     INFO=None,
     TITRE=None,
-    **args
+    **args,
 ):
     """Méthode corps de la macro"""
 
@@ -366,7 +366,7 @@ def lire_fonction_ops(
             INFO=INFO,
             TITRE=TITRE,
             VERIF=VERIF,
-            **motscles
+            **motscles,
         )
     # remet UNITE dans son état initial
     ReservedUnitUsed(UNITE)

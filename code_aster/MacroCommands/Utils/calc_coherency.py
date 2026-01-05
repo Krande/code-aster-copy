@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 """
-    Maquette calcul de fonctions de coherence
+Maquette calcul de fonctions de coherence
 
 """
 
@@ -34,12 +34,12 @@ def calc_cohefromdata(acce1, acce2, dt, Mm):
     acce_size = np.array(acce1).shape
     nbval = acce_size[0]
     Nf = acce_size[1]
-    TT = Nf * dt  #%duree du signal  (5s pour N=1000)
-    OM = pi / dt  #% frequence de coupure
+    TT = Nf * dt  # %duree du signal  (5s pour N=1000)
+    OM = pi / dt  # % frequence de coupure
     dw = 2.0 * OM / Nf  # % pas de frequence
-    #% discretisation freq
+    # % discretisation freq
     w = np.arange(-OM + 0.5 * dw, OM, dw)
-    #%  smoothening parameters and filter
+    # %  smoothening parameters and filter
     m = np.arange(-Mm, Mm + 1, 1)
     wm = w[Mm : Nf - Mm]
     N2 = len(wm)
@@ -54,7 +54,7 @@ def calc_cohefromdata(acce1, acce2, dt, Mm):
     SX1 = []
     SX2 = []
     SX12 = []
-    #%spectral estimate
+    # %spectral estimate
     fact = 1.0 / (2.0 * pi) / TT
     for iii in range(nbval):
         SX12.append(fact * Xw1[iii] * np.conj(Xw2[iii]))

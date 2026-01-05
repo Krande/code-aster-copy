@@ -200,6 +200,7 @@ TABDEPM = CALC_TABLE(
 
 IMPR_TABLE(TABLE=TABDEPM, TRI=_F(NOM_PARA=("COOR_Y", "COOR_X"), ORDRE="CROISSANT"))
 
+
 # solution analytique :
 #    - deplacement
 def ux(X, Y):
@@ -207,6 +208,7 @@ def ux(X, Y):
 
 
 UX = FORMULE(VALE="ux(X,Y)", ux=ux, NOM_PARA=["X", "Y"])
+
 
 #    - contraintes
 def Sxx(X, Y):

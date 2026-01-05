@@ -41,7 +41,6 @@ ETIQUETTES = {
 
 class OAR_EF:
     def __init__(self, **args):
-
         """donnes d entrees : tables issues de la commande MACR_LIGN_COU"""
 
         self.charg = {

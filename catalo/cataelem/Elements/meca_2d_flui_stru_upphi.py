@@ -35,6 +35,7 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
+
 # ----------------------------------------------------------------------------------------------
 class MEFSSE2(Element):
     """Element for FSI interaction (U,P,PHI) - 2D - On SE2"""

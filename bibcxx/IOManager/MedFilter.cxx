@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "IOManager/MedFilter.h"
 
 #ifdef ASTER_HAVE_MED

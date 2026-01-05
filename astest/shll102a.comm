@@ -208,13 +208,9 @@ for NTRIM in tours:
     reponsy[i] = repons[25]
     reponsz[i] = repons[26]
 
-    bal_FY = AFFE_CHAR_MECA(
-        MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="N_DIS2", FY=(balou * (OM**2)))
-    )
+    bal_FY = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="N_DIS2", FY=(balou * (OM**2))))
 
-    bal_FZ = AFFE_CHAR_MECA(
-        MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="N_DIS2", FZ=(balou * (OM**2)))
-    )
+    bal_FZ = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="N_DIS2", FZ=(balou * (OM**2))))
     bal_FYe = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=bal_FY)
 
     bal_FZe = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=bal_FZ)

@@ -52,7 +52,6 @@ def _exitcode(status, default=0):
 
 
 class SYSTEM:
-
     """
     Class to encapsultate "system" commands (this a simplified version of
     ASTER_SYSTEM class defined in ASTK_SERV part).

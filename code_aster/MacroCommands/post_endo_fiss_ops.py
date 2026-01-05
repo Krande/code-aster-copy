@@ -101,7 +101,7 @@ def cherche_trajet(
             OPERATION="ASSE",
             TYPE_CHAM=typeChampTrajet,
             ASSE=_F(CHAM_GD=__ENDO, GROUP_MA=groupma, NOM_CMP=NOM_CMP),
-            **motclefs1
+            **motclefs1,
         )
     else:
         __ENDOGM = __ENDO
@@ -165,7 +165,7 @@ def cherche_trajet(
         TYPE_CHAM="NOEU",
         NOM_CHAM=NOM_CHAM,
         NUME_ORDRE=1,
-        **motclefs2
+        **motclefs2,
     )
 
     __YBARCH = CREA_CHAMP(
@@ -250,7 +250,7 @@ def cherche_trajet(
         TYPE_CHAM="NOEU",
         NOM_CHAM=NOM_CHAM,
         NUME_ORDRE=1,
-        **motclefs2
+        **motclefs2,
     )
 
     __YBARCH = CREA_CHAMP(
@@ -372,7 +372,7 @@ def cherche_trajet(
                 TYPE_CHAM="NOEU",
                 NOM_CHAM=NOM_CHAM,
                 NUME_ORDRE=1,
-                **motclefs2
+                **motclefs2,
             )
 
         except libaster.AsterError as e:
@@ -610,7 +610,7 @@ def calcul_ouverture(
             INST=inst,
             REPERE="UTILISATEUR",
             AFFE=_F(ANGL_NAUT=(alpha, beta, gamma), TOUT="OUI"),
-            **motclefs
+            **motclefs,
         )
 
         # Projection of displ. or strain field on the orthogonal profile
@@ -627,7 +627,7 @@ def calcul_ouverture(
                 DISTANCE_MAX=distMax,
                 NOM_CHAM=champ,
                 INST=inst,
-                **motclefs2
+                **motclefs2,
             )
         except:
             lstOuvFiss.append("-")
@@ -659,7 +659,7 @@ def calcul_ouverture(
                     DISTANCE_MAX=distMax,
                     NOM_CHAM=champEndo,
                     INST=inst,
-                    **motclefs2
+                    **motclefs2,
                 )
             except:
                 if except1:
@@ -864,7 +864,7 @@ def post_endo_fiss_ops(
             OPERATION="EXTR",
             RESULTAT=__RESUIN,
             NOM_CHAM=NOM_CHAM,
-            **motscles
+            **motscles,
         )
 
     # --------------------------------------------------

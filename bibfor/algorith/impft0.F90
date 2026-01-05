@@ -77,6 +77,6 @@ subroutine impft0(isor, ift, ibl, fmoy, fetyp, &
     end if
 !
 10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !',&
-      &        1pe12.5, ' !', 1pe12.5, ' !')
+        &        1pe12.5, ' !', 1pe12.5, ' !')
 !
 end subroutine

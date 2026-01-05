@@ -70,7 +70,7 @@ subroutine impc0(isor, ibl, nbc, tcm, tcmax, &
      &                  (100.d0*tct/tacqui)
 !
 8   format(' !', i2, '!', i5, '   !', i5, '   !', 1pd12.5, ' !',&
-       &          1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' %!')
+           &          1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' %!')
 9   format(' !', 1pd12.5, ' !', 1pd12.5, ' !')
 !
 end subroutine

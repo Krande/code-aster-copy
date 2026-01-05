@@ -107,7 +107,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_J_AXQ8S(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8

@@ -19,9 +19,9 @@
 
 
 """Module permettant de produire les fichiers :
-    - de données de Miss (.in),
-    - de maillage de l'interface (.mvol),
-    - des modes d'interface (.chp).
+- de données de Miss (.in),
+- de maillage de l'interface (.mvol),
+- des modes d'interface (.chp).
 """
 
 import os

@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
@@ -92,7 +91,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HHM_FACE8(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -145,7 +143,6 @@ class HHM_FACE8(Element):
 
 # ------------------------------------------------------------
 class HHM_FACE6(HHM_FACE8):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

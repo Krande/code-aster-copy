@@ -38,7 +38,6 @@ from .basetype import Type
 
 
 class SDNom(Type):
-
     """Objet représentant une sous-partie de nom
     d'objet jeveux"""
 

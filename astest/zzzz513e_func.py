@@ -108,7 +108,7 @@ class MecaSolver:
             INCREMENT=_F(LIST_INST=timeList),
             METHODE="NEWTON",
             EXCIT=self.loads,
-            **opt
+            **opt,
         )
 
         return (

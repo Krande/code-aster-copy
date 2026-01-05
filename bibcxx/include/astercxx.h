@@ -20,7 +20,6 @@
 /* along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* ==================================================================== */
 
-
 #include "aster.h"
 
 #include "asterc_config.h"

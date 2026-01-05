@@ -29,7 +29,6 @@ from cataelem.Tools.base_objects import Element
 
 
 class TestCataElem(unittest.TestCase):
-
     """Checked classes: LocatedComponents, Element"""
 
     def setUp(self):

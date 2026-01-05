@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from ...Cata.Commons import *
 from ...Cata.DataStructure import *
 from ...Cata.Syntax import *

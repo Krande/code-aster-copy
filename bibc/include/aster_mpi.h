@@ -16,7 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-
 #ifndef ASTER_MPI_H_
 #define ASTER_MPI_H_
 

@@ -435,7 +435,7 @@ MODE_CB2 = MODE_STATIQUE(
     PSEUDO_MODE=_F(
         GROUP_NO="P1P4",
         # AVEC_CMP = ( 'DX', ),
-        SANS_CMP=("DY", "DZ")
+        SANS_CMP=("DY", "DZ"),
         # TOUT_CMP = 'OUI'
     ),
 )

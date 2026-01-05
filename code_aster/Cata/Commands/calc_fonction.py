@@ -50,7 +50,7 @@ def calc_fonction_prod(
     INTEGRE_FREQ,
     DERIVE_FREQ,
     INTERPOL_FFT,
-    **args
+    **args,
 ):
     if args.get("__all__"):
         return (fonction_sdaster, fonction_c, nappe_sdaster)

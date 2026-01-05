@@ -294,7 +294,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
             __formul = FORMULE(
                 NOM_PARA=("ABSC_CURV", "NUME_FOND"),
                 VALE="fonc_norm(ABSC_CURV, NUME_FOND, nume_fond, max_absc_fond)",
-                **const_context
+                **const_context,
             )
 
             tabout = CALC_TABLE(
@@ -593,7 +593,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                         _F(OPERATION="OPER", FORMULE=__delta_unit, NOM_PARA="DELTA_" + q),
                         _F(OPERATION="SUPPRIME", NOM_PARA=q),
                     ),
-                    **mostcles
+                    **mostcles,
                 )
 
             # suppression des colonnes INST et NUME_ORDRE si elles existent
@@ -758,7 +758,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
             __da = FORMULE(
                 NOM_PARA=(str(dkeq)),
                 VALE="paris_seuil(" + dkeq + ", C, M, DELTA_K_SEUIL)",
-                **const_context
+                **const_context,
             )
 
         tabout = CALC_TABLE(
@@ -919,7 +919,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                 __formul_G = FORMULE(
                     NOM_PARA=("K2", "K3"),
                     VALE="(K2**2)*(1.-nu**2)/E+(K3**2)*(1.+nu)/E",
-                    **const_context
+                    **const_context,
                 )
             elif args["MODELISATION"] == "D_PLAN" or args["MODELISATION"] == "AXIS":
                 __formul_G = FORMULE(NOM_PARA=("K2"), VALE="(K2**2)*(1.-nu**2)/E", **const_context)

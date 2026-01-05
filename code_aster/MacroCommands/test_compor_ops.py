@@ -412,7 +412,7 @@ def test_compor_ops(self, **args):
             AFFE_VARC=(_F(NOM_VARC="TEMP", VALE_FONC=__TIMP, VALE_REF=TEMP_INIT),),
             INCREMENT=_F(LIST_INST=__LINST),
             EPSI_IMPOSE=_F(EPXX=__zero),
-            **motscles
+            **motscles,
         )
         # On ne garde pas les valeurs initiales (NUME_ORDRE = 0 exclu)
 
@@ -482,7 +482,7 @@ def test_compor_ops(self, **args):
                     SIGM_INIT=_F(SIXX=SXM),
                     VARI_INIT=_F(VALE=[Vim[j] for j in range(NB_VARI)]),
                     EPSI_INIT=_F(EPXX=EXM, EPYY=0.0, EPZZ=0.0, EPXY=0.0, EPXZ=0.0, EPYZ=0.0),
-                    **motscles
+                    **motscles,
                 )
 
             else:
@@ -493,7 +493,7 @@ def test_compor_ops(self, **args):
                     EPSI_IMPOSE=_F(EPXX=__epsimp),
                     SIGM_INIT=_F(SIXX=SXM),
                     EPSI_INIT=_F(EPXX=EXM, EPYY=0.0, EPZZ=0.0, EPXY=0.0, EPXZ=0.0, EPYZ=0.0),
-                    **motscles
+                    **motscles,
                 )
 
             # On ne teste pas les valeurs initiales (NUME_ORDRE = 0 exclu)
@@ -695,7 +695,7 @@ def test_compor_ops(self, **args):
                 MATER=LIST_MATER[imat],
                 ARCHIVAGE=_F(LIST_INST=__tempsar),
                 INCREMENT=_F(LIST_INST=__DEFLIST),
-                **motscles
+                **motscles,
             )
 
             # On renomme les composantes en fonction de  l'ordre de discretisation
@@ -771,7 +771,7 @@ def test_compor_ops(self, **args):
                     MATER=LIST_MATER[imat],
                     ARCHIVAGE=_F(LIST_INST=__tempsar),
                     INCREMENT=_F(LIST_INST=__DEFLIS2),
-                    **motscles
+                    **motscles,
                 )
                 DEBUG(SDVERI="OUI")
                 motscles = {}

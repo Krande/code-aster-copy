@@ -19,7 +19,6 @@
 #ifndef MFRONTBEHAVIOUR_H_
 #define MFRONTBEHAVIOUR_H_
 
-
 #ifdef __cplusplus
 
 #include "astercxx.h"

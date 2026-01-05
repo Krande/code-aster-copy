@@ -30,7 +30,7 @@ subroutine lcdetf(ndim, fr, det)
 !
     if (ndim .eq. 3) then
     det = fr(1, 1)*(fr(2, 2)*fr(3, 3)-fr(2, 3)*fr(3, 2))-fr(2, 1)*(fr(1, 2)*fr(3, 3)-fr(1, 3)*fr(3,&
-                      &2))+fr(3, 1)*(fr(1, 2)*fr(2, 3)-fr(1, 3)*fr(2, 2))
+                              &2))+fr(3, 1)*(fr(1, 2)*fr(2, 3)-fr(1, 3)*fr(2, 2))
     else if (ndim .eq. 2) then
         det = fr(3, 3)*(fr(1, 1)*fr(2, 2)-fr(1, 2)*fr(2, 1))
     else

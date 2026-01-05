@@ -28,7 +28,6 @@ class FEMCrackDefinition(ExecuteCommand):
     command_name = "DEFI_FOND_FISS"
 
     def create_result(self, keywords):
-
         """Create the result.
 
         Arguments:

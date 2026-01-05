@@ -32,7 +32,6 @@ from .miss_utils import dict_format
 
 
 class MissCmdeGenerator:
-
     """Construit un fichier de commandes Miss"""
 
     _dbg = False
@@ -599,7 +598,6 @@ class MissCmdeGenerator:
 
 
 class MissCmdeGeneratorInci(MissCmdeGenerator):
-
     """Construit un fichier de commandes Miss
     Calcul du champ incident pour la methode Laplace-temps"""
 
@@ -627,7 +625,6 @@ class MissCmdeGeneratorInci(MissCmdeGenerator):
 
 
 class MissCmdeGeneratorISSF(MissCmdeGenerator):
-
     """Construit un fichier de commandes Miss dans le cas ISSF"""
 
     def bloc_domain(self):

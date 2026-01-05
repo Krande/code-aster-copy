@@ -16,7 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-
 #ifndef ASTER_EXCEPTIONS_H_
 #define ASTER_EXCEPTIONS_H_
 
@@ -35,7 +34,9 @@
 
 #define NIVMAX 10
 
-#define try _new_try(); DEBUG_EXCEPT( "try: level=%d", gExcLvl );                                  \
+#define try                                                                                        \
+    _new_try();                                                                                    \
+    DEBUG_EXCEPT( "try: level=%d", gExcLvl );                                                      \
     if ( ( gExcNumb = setjmp( gExcEnv[gExcLvl] ) ) == 0 )
 #define interruptTry( val )                                                                        \
     if ( gExcLvl > 0 ) {                                                                           \

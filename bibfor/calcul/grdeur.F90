@@ -22,7 +22,6 @@ function grdeur(nompar)
 
     implicit none
 
-
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/utmess.h"

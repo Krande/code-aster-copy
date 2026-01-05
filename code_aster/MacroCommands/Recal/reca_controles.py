@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from ...Utilities import is_float, is_sequence, is_str
 
 # Nom de la routine
@@ -29,6 +28,7 @@ nompro = "MACR_RECAL"
 #
 # CONTROLE DES ENTREES UTILISATEUR
 # _____________________________________________
+
 
 # ------------------------------------------------------------------------
 def erreur_de_type(code_erreur, X):

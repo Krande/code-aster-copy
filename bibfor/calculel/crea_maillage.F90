@@ -40,7 +40,6 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     character(len=1) :: base
     integer(kind=8) :: nbno, lino(*)
 
-
 ! ======================================================================
 !  But: creer un "petit" maillage contenant une liste de noeuds
 

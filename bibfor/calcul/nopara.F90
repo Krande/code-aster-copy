@@ -22,7 +22,6 @@ function nopara(opt, te, statut, ipar)
 
     implicit none
 
-
 #include "jeveux.h"
 #include "asterfort/assert.h"
 

@@ -58,7 +58,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 
 class FORCE_NOD_6DDL(Element):
-
     """Please document this element"""
 
     meshType = MT.POI1

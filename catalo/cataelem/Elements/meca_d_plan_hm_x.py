@@ -181,7 +181,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_DPQ8_XH(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -509,7 +508,6 @@ class HM_DPQ8_XH(Element):
 
 # ------------------------------------------------------------
 class HM_DPTR6_XH(HM_DPQ8_XH):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -528,7 +526,6 @@ class HM_DPTR6_XH(HM_DPQ8_XH):
 
 # ------------------------------------------------------------
 class HM_DPQ8M_XH(HM_DPQ8_XH):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -544,7 +541,6 @@ class HM_DPQ8M_XH(HM_DPQ8_XH):
 
 # ------------------------------------------------------------
 class HM_DPTR6M_XH(HM_DPQ8_XH):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -560,7 +556,6 @@ class HM_DPTR6M_XH(HM_DPQ8_XH):
 
 # ------------------------------------------------------------
 class HM_DPQ8D_XH(HM_DPQ8_XH):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -578,7 +573,6 @@ class HM_DPQ8D_XH(HM_DPQ8_XH):
 
 # ------------------------------------------------------------
 class HM_DPTR6D_XH(HM_DPQ8_XH):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -596,7 +590,6 @@ class HM_DPTR6D_XH(HM_DPQ8_XH):
 
 # ------------------------------------------------------------
 class HM_DPQ8S_XH(HM_DPQ8_XH):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -614,7 +607,6 @@ class HM_DPQ8S_XH(HM_DPQ8_XH):
 
 # ------------------------------------------------------------
 class HM_DPTR6S_XH(HM_DPQ8_XH):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

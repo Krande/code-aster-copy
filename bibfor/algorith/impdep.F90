@@ -148,5 +148,5 @@ subroutine impdep(isor, idep, ibl, dmoy, detyp, &
 !
 !
 10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !',&
-      &         1pe12.5, ' !', 1pe12.5, ' !')
+        &         1pe12.5, ' !', 1pe12.5, ' !')
 end subroutine

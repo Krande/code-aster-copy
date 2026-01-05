@@ -26,7 +26,6 @@ subroutine xvaleurmin(jcalculs, jvtemp, jnodto, nbno, minlo)
     integer(kind=8) :: jcalculs, jnodto, jvtemp
     integer(kind=8) :: nbno, minlo
 
-
 ! XVALEURMIN : RECHERCHE LE MINIMUM DANS UN VECTEUR
 
 !ENTREE

@@ -96,7 +96,7 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
         write (ifm, 4101) nomprf, lgprom
     end if
 4101 format('. LECTURE DU PROFIL : ', a,&
-   &     /, '... LONGUEUR : ', i8)
+ &     /, '... LONGUEUR : ', i8)
 !
 !====
 ! 3. LECTURE DES VALEURS DU PROFIL MED

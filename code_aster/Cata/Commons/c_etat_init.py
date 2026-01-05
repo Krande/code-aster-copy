@@ -68,7 +68,7 @@ def C_ETAT_INIT(command, statut):
                 ),
             ),
         ),
-        **kwargs
+        **kwargs,
     )
 
     return mcfact

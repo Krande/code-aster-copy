@@ -73,6 +73,7 @@ BLOQ2 = AFFE_CHAR_CINE(
     MODELE=MO2, MECA_IMPO=(_F(GROUP_MA="AB", DX=0.0), _F(GROUP_MA=("BAS2", "HAUT2"), DY=0.0))
 )
 
+
 # chargement lineique selon x reparti sur la poutre :
 def reparti(x):
     x2 = x * 2 * pi / 10.0
@@ -328,7 +329,7 @@ if 0:
         l1.sort()
         vx = []
         vy = []
-        for (x, y) in l1:
+        for x, y in l1:
             vx.append(x)
             vy.append(y)
 

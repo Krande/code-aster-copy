@@ -52,7 +52,6 @@ Kdef = "K24"
 
 
 class TableBase:
-
     """Classe pour partager les méthodes d'impression entre Table et Colonne
     (c'est surtout utile pour vérifier que l'extraction et les filtres sur les
     colonnes sont corrects).
@@ -318,7 +317,6 @@ class TableBase:
 
 
 class Table(TableBase):
-
     """Une table est construite comme une liste de lignes, chaque ligne est
     un dictionnaire.
     On crée puis on ajoute les lignes avec la méthode append :
@@ -737,7 +735,6 @@ class Table(TableBase):
 
 
 class Colonne(TableBase):
-
     """Classe intermédiaire pour mémoriser un couple (table, nom de colonne)
     et exprimer les critères d'extraction sous une forme naturelle en python
     en surchargeant les operateurs <, >, != et =.

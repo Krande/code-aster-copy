@@ -36,6 +36,7 @@ MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
+
 # --------------------------------------------------------------------------------------------------
 class SEAXSE2(Element):
     """Drying - Skin element AXIS - SEG2"""

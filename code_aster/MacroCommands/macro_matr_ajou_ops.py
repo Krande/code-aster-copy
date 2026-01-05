@@ -57,7 +57,7 @@ def macro_matr_ajou_ops(
     MONO_APPUI=None,
     FORC_AJOU=None,
     ECOULEMENT=None,
-    **args
+    **args,
 ):
     """
     Ecriture de la macro MACRO_MATR_AJOU
@@ -184,7 +184,7 @@ def macro_matr_ajou_ops(
             CHAM_MATER=__NOMCMA,
             OPTION="MASS_AJOU",
             SOLVEUR=solveur,
-            **mostcles
+            **mostcles,
         )
         self.register_result(MASSAJ, MATR_MASS_AJOU)
 
@@ -255,7 +255,7 @@ def macro_matr_ajou_ops(
             OPTION="AMOR_AJOU",
             SOLVEUR=solveur,
             POTENTIEL=__POTEN,
-            **mostcles
+            **mostcles,
         )
         self.register_result(AMORAJ, MATR_AMOR_AJOU)
 
@@ -283,7 +283,7 @@ def macro_matr_ajou_ops(
             OPTION="RIGI_AJOU",
             SOLVEUR=solveur,
             POTENTIEL=__POTEN,
-            **mostcles
+            **mostcles,
         )
         self.register_result(RIGIAJ, MATR_RIGI_AJOU)
 
@@ -319,7 +319,7 @@ def macro_matr_ajou_ops(
                 CHARGE=__CHARGE,
                 CHAM_MATER=__NOMCMA,
                 SOLVEUR=solveur,
-                **mostcles
+                **mostcles,
             )
             self.register_result(VECTAJ, FORCAJ["VECTEUR"])
 
