@@ -207,3 +207,8 @@ class MECA_2D_HHO4_F(Element):
             ),
         ),
     )
+
+
+# ------------------------------------------------------------
+class MECA_2DAX_HHO4_F(MECA_2D_HHO4_F):
+    """Please document this element"""

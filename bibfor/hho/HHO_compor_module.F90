@@ -204,7 +204,6 @@ contains
             typmod = '3D'
         case (2)
             if (lteatt('AXIS', 'OUI')) then
-                ASSERT(ASTER_FALSE)
                 typmod = 'AXIS'
             else if (lteatt('C_PLAN', 'OUI')) then
                 ASSERT(ASTER_FALSE)

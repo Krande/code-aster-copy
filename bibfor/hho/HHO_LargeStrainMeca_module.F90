@@ -193,8 +193,10 @@ contains
             G_curr = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
 !
             if (hhoCS%axis) then
-                call hhoAddAxisGrad(hhoCell%ndim, cbs, BSCEval, depl_prev, coorpg, G_prev)
-                call hhoAddAxisGrad(hhoCell%ndim, cbs, BSCEval, depl_curr, coorpg, G_curr)
+                call hhoAddAxisGrad(hhoCell%ndim, cbs, BSCEval, depl_prev(faces_dofs+1:), &
+                                    coorpg, G_prev)
+                call hhoAddAxisGrad(hhoCell%ndim, cbs, BSCEval, depl_curr(faces_dofs+1:), &
+                                    coorpg, G_curr)
             end if
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -846,7 +848,7 @@ contains
 !
     end subroutine
 !
-    !
+!
 !===================================================================================================
 !
 !===================================================================================================

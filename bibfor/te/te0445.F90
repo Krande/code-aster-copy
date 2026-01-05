@@ -59,7 +59,6 @@ subroutine te0445(nomopt, nomte)
     type(HHO_matrix) :: gradfull, stab
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs_rigi, rhs_mass, rhs
     real(kind=8) :: theta, dtime
-    aster_logical :: laxis
 !
 ! --- Get HHO informations
 !
@@ -80,9 +79,8 @@ subroutine te0445(nomopt, nomte)
 !
 ! --- Initialize quadrature for the rigidity
 !
-    laxis = lteatt('TYPMOD', 'AXIS')
-    call hhoQuadCellRigi%initCell(hhoCell, npg_rigi, laxis)
-    call hhoQuadCellMass%initCell(hhoCell, npg_mass, laxis)
+    call hhoQuadCellRigi%initCell(hhoCell, npg_rigi)
+    call hhoQuadCellMass%initCell(hhoCell, npg_mass)
 !
 ! --- Compute Operators
 !

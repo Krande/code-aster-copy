@@ -243,7 +243,7 @@ contains
         l_rigi_meca = (hhoCS%option == "RIGI_MECA")
         l_vari = L_VARI(hhoCS%option)
 !
-        ASSERT(.not. (hhoCS%axis .or. hhoCS%c_plan))
+        ASSERT(.not. hhoCS%c_plan)
 !
 ! --- number of dofs
 !
@@ -701,21 +701,24 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym
-        integer(kind=8) :: ipg, ncomp, gbs_curr, gbs_cmp
-        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8) :: ipg, ncomp, gbs_curr, gbs_cmp, cbs_cmp, faces_dofs
+        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), rhs_axis(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: Cauchy_curr(6), PK1_curr(3, 3), G_curr(3, 3), F_curr(3, 3)
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
 !
         rhs = 0.d0
         bT = 0.d0
+        rhs_axis = 0.d0
         ncomp = hhoCS%nbsigm
 !
 ! ----- init basis
 !
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                            gbs, gbs_sym)
+        faces_dofs = total_dofs-cbs
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        cbs_cmp = cbs/hhoCell%ndim
         call hhoBasisCell%initialize(hhoCell)
 !
 ! --- Compute local contribution
@@ -764,10 +767,17 @@ contains
             else
 !
                 call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
+                if (hhoCS%axis) then
+                    call hhoComputeRhsSmallAxis(hhoCell, Cauchy_curr, weight, coorpg(1), &
+                                                BSCEval, cbs_cmp, rhs_axis)
+                end if
             end if
         end do
 !
         call hho_dgemv_T(1.d0, hhoMecaState%grad, bT, 0.d0, rhs)
+        if (hhoCS%axis) then
+            call daxpy_1(cbs_cmp, 1.d0, rhs_axis, rhs(faces_dofs+1:))
+        end if
 !
 ! --- add stabilization
 !

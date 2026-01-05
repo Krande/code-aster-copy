@@ -304,6 +304,7 @@ contains
         ! Last node is the index of barycenter
         hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes_post)
         hhoFace%l_jaco_cst = hhoIsJacobCst(hhoFace%typema, hhoFace%coorno, hhoFace%ndim+1)
+        hhoFace%axis = lteatt("TYPMOD", "AXIS")
 !
     end subroutine
 !
@@ -366,12 +367,14 @@ contains
             hhoCell%ndim = 2
             hhoCell%nbfaces = 4
             hhoCell%node_bar_loc = 9
+            hhoCell%axis = lteatt("TYPMOD", "AXIS")
         else if (typma == 'TRIA7') then
             hhoCell%typema = MT_TRIA3
             hhoCell%nbnodes = 3
             hhoCell%ndim = 2
             hhoCell%nbfaces = 3
             hhoCell%node_bar_loc = 7
+            hhoCell%axis = lteatt("TYPMOD", "AXIS")
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -540,7 +543,6 @@ contains
         integer(kind=8) :: nbnodes, elem_dim
         character(len=8) :: typma
         real(kind=8) :: coor(3, 27)
-        aster_logical :: laxis
 !
         coor = 0.d0
 !
@@ -555,12 +557,11 @@ contains
 ! --- Get quadrature (optional)
 !
         if (present(hhoQuad)) then
-            laxis = lteatt("TYPMOD", "AXIS")
             if (present(npg)) then
-                call hhoQuad%initCell(hhoCell, npg, laxis)
+                call hhoQuad%initCell(hhoCell, npg)
             else
-                call hhoQuad%getQuadCell(hhoCell, 2*hhoData%cell_degree(), &
-                                         laxis, param=ASTER_TRUE)
+                call hhoQuad%getQuadCell(hhoCell, 2*hhoData%cell_degree(), hhoCell%axis, &
+                                         param=ASTER_TRUE)
             end if
         end if
 !
@@ -639,7 +640,6 @@ contains
         integer(kind=8) :: nbnodes, elem_dim, numnodes(9), enumf, nbnodes_post
         real(kind=8) :: nodes_coor(3, 9)
         character(len=8) :: typma
-        aster_logical :: laxis
 !
 ! --- Get HHO informations
 !
@@ -668,12 +668,11 @@ contains
 ! --- Get quadrature (optional)
 !
         if (present(hhoQuadFace)) then
-            laxis = lteatt("TYPMOD", "AXIS")
             if (present(npg)) then
-                call hhoQuadFace%initFace(hhoFace, npg, laxis)
+                call hhoQuadFace%initFace(hhoFace, npg)
             else
-                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), &
-                                             laxis, param=ASTER_TRUE)
+                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), hhoFace%axis, &
+                                             param=ASTER_TRUE)
             end if
         end if
 !

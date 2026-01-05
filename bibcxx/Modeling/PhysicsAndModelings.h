@@ -248,7 +248,7 @@ const int nbModelings = 197;
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 184;
+const int nbModelingsMechanics = 185;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;

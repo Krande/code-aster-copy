@@ -250,13 +250,14 @@ AFFE_MODELE = OPER(
                     "AXIS_JHMS",
                     "3D_HHO",
                     "D_PLAN_HHO",
+                    "AXIS_HHO",
                     "3D_GRAD_HHO",
                     "D_PLAN_GRAD_HHO",
                     "PLAQ_MITC",
                 ),
             ),
             b_formu_hho=BLOC(
-                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO' ))""",
+                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO', 'AXIS_HHO' ))""",
                 fr=tr("HHO formulation"),
                 FORMULATION=SIMP(
                     statut="f",

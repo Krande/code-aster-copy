@@ -5758,6 +5758,91 @@ phen.add(
 )
 
 phen.add(
+    "AXIS_HHO#1",
+    Modelisation(
+        dim=(2, 2),
+        code="HA1",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO111),
+            (MT.TRIA7, EL.MECA_AXT7_HHO111),
+            (MT.SEG3, EL.MECA_2DAX_HHO1_F),
+        ),
+    ),
+)
+
+
+phen.add(
+    "AXIS_HHO#2",
+    Modelisation(
+        dim=(2, 2),
+        code="HA2",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO222),
+            (MT.TRIA7, EL.MECA_AXT7_HHO222),
+            (MT.SEG3, EL.MECA_2DAX_HHO2_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#3",
+    Modelisation(
+        dim=(2, 2),
+        code="HA3",
+        attrs=(
+            (AT.FORMULATION, "HHO_CUBI"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO333),
+            (MT.TRIA7, EL.MECA_AXT7_HHO333),
+            (MT.SEG3, EL.MECA_2DAX_HHO3_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#4",
+    Modelisation(
+        dim=(2, 2),
+        code="HA3",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAR"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO444),
+            (MT.TRIA7, EL.MECA_AXT7_HHO444),
+            (MT.SEG3, EL.MECA_2DAX_HHO4_F),
+        ),
+    ),
+)
+
+phen.add(
     "3D_GRAD_HHO#1",
     Modelisation(
         dim=(3, 3),
