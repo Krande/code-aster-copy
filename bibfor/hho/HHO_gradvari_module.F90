@@ -163,13 +163,15 @@ contains
         real(kind=8) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
         real(kind=8) ::  BSCEval(MSIZE_CELL_SCAL)
-        type(HHO_matrix) :: mk_AT, mk_TMP, gv_AT, gv_TMP, mv_AT, ml_AT, vm_AT, lm_AT
+        type(HHO_matrix) :: mk_AT, gv_AT, gv_TMP, mv_AT, ml_AT, vm_AT, lm_AT
         type(HHO_matrix) :: lhs_mv, lhs_ml, lhs_mm, lhs_ll, lhs_vm, lhs_vv, lhs_vl, lhs_lm, lhs_lv
+        type(HHO_matrix) :: mk_lhs_axis, mk_AT_ax1, mk_AT_ax2
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
         real(kind=8) :: rhs_mk(MSIZE_TDOFS_VEC)
         integer(kind=8) :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL)
         integer(kind=8) :: mapLagv(MSIZE_CELL_SCAL)
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
+        integer(kind=8) :: mk_cbs_cmp, mk_faces_dofs
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs, gv_cell_offset
         integer(kind=8) :: cod(MAX_QP_CELL), ipg, mk_gbs_tot
         aster_logical :: l_lhs, l_rhs, forc_noda
@@ -202,7 +204,9 @@ contains
         else
             mk_gbs_tot = mk_gbs_sym
         end if
+        mk_faces_dofs = mk_total_dofs-mk_cbs
         mk_gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
+        mk_cbs_cmp = mk_cbs/hhoCell%ndim
 !
 ! ------ initialization
 !
@@ -217,13 +221,18 @@ contains
             call lhs_lm%initialize(gv_cbs, mk_total_dofs, 0.d0)
             call lhs_lv%initialize(gv_cbs, gv_total_dofs, 0.d0)
             call mk_AT%initialize(mk_gbs_tot, mk_gbs_tot, 0.d0)
-            call mk_TMP%initialize(mk_gbs_tot, mk_total_dofs, 0.d0)
             call gv_AT%initialize(gv_gbs, gv_gbs, 0.d0)
             call gv_TMP%initialize(gv_gbs, gv_total_dofs, 0.d0)
             call mv_AT%initialize(mk_gbs_tot, gv_total_dofs, 0.d0)
             call ml_AT%initialize(mk_gbs_tot, gv_cbs, 0.d0)
             call vm_AT%initialize(gv_total_dofs, mk_gbs_tot, 0.d0)
             call lm_AT%initialize(gv_cbs, mk_gbs_tot, 0.d0)
+!
+            if (hhoComporState%axis) then
+                call mk_lhs_axis%initialize(mk_cbs_cmp, mk_cbs_cmp, 0.d0)
+                call mk_AT_ax1%initialize(mk_gbs_tot, mk_cbs_cmp, 0.d0)
+                call mk_AT_ax2%initialize(mk_cbs_cmp, mk_gbs_tot, 0.d0)
+            end if
         end if
 !
         mk_bT = 0.d0
@@ -288,10 +297,12 @@ contains
                 G_curr = hhoEvalMatCell(hhoCell%ndim, mk_gbs, BSCEval, G_curr_coeff)
 !
                 if (hhoComporState%axis) then
-                    call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_prev, &
-                                        coorpg, G_prev)
-                    call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_curr, &
-                                        coorpg, G_curr)
+                    call hhoAddAxisGrad(hhoCell%ndim, BSCEval, &
+                                        hhoMecaState%depl_prev(mk_faces_dofs+1:), &
+                                        coorpg, mk_cbs_cmp, G_prev)
+                    call hhoAddAxisGrad(hhoCell%ndim, BSCEval, &
+                                        hhoMecaState%depl_curr(mk_faces_dofs+1:), &
+                                        coorpg, mk_cbs_cmp, G_curr)
                 end if
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -312,6 +323,15 @@ contains
             else
                 Eps_prev = hhoEvalSymMatCell(hhoCell%ndim, mk_gbs_sym, BSCEval, G_prev_coeff)
                 Eps_curr = hhoEvalSymMatCell(hhoCell%ndim, mk_gbs_sym, BSCEval, G_curr_coeff)
+!
+                if (hhoComporState%axis) then
+                    call hhoAddAxisGradSym(hhoCell, BSCEval, &
+                                           hhoMecaState%depl_prev(mk_faces_dofs+1:), &
+                                           coorpg, mk_cbs_cmp, Eps_prev)
+                    call hhoAddAxisGradSym(hhoCell, BSCEval, &
+                                           hhoMecaState%depl_curr(mk_faces_dofs+1:), &
+                                           coorpg, mk_cbs_cmp, Eps_curr)
+                end if
             end if
 !
             GV_prev = hhoEvalVecCell(hhoCell%ndim, gv_gbs, BSCEval, GV_prev_coeff)
@@ -356,9 +376,17 @@ contains
                 if (hhoComporState%l_largestrain) then
 ! ---------- += weight * (PK1, g_phi)
                     call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEval, mk_gbs, mk_bT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeRhsLargeAxis(hhoCell, Pk1, weight, coorpg(1), &
+                                                    BSCEval, mk_cbs_cmp, rhs_mk(mk_faces_dofs+1:))
+                    end if
                 else
 ! ---------- += weight * (Cauchy, gs_phi)
                     call hhoComputeRhsSmall(hhoCell, Cauchy, weight, BSCEval, mk_gbs_cmp, mk_bT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeRhsSmallAxis(hhoCell, Cauchy, weight, coorpg(1), &
+                                                    BSCEval, mk_cbs_cmp, rhs_mk(mk_faces_dofs+1:))
+                    end if
                 end if
 ! ---------- += weight * (sig_gv, g_phi)
                 call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEval, gv_gbs, gv_bT)
@@ -439,7 +467,7 @@ contains
 !
         if (l_rhs) then
 ! ----- compute rhs += Gradrec**T * bT
-            call hho_dgemv_T(1.d0, hhoMecaState%grad, mk_bT, 0.d0, rhs_mk)
+            call hho_dgemv_T(1.d0, hhoMecaState%grad, mk_bT, 1.d0, rhs_mk)
 ! ----- compute rhs += stab
             call hho_dsymv_U(mk_stab, hhoMecaState%stab, hhoMecaState%depl_curr, 1.d0, rhs_mk)
 ! ----- compute rhs += Gradrec**T * bT
@@ -459,17 +487,19 @@ contains
             call lhs_vv%copySymU(gv_faces_dofs, gv_faces_dofs)
             call lhs_vl%copySymU(gv_faces_dofs, 0)
             call lhs_ll%copySymU()
-            if ((.not. hhoComporState%l_largestrain) .and. hhoComporState%matsym) then
-                call mk_AT%copySymU()
-            end if
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
-            call hho_dgemm_NN(1.d0, mk_AT, hhoMecaState%grad, 0.d0, mk_TMP)
+            if (hhoComporState%l_largestrain) then
+                call hhoAssembleLhsLarge(hhoCell, hhoComporState, hhoMecaState%grad, &
+                                         mk_AT, mk_lhs_axis, mk_AT_ax1, mk_AT_ax2, lhs_mm)
+            else
+                call hhoAssembleLhsSmall(hhoCell, hhoComporState, hhoMecaState%grad, &
+                                         mk_AT, mk_lhs_axis, mk_AT_ax1, mk_AT_ax2, lhs_mm)
+            end if
 !
             call hho_dgemm_NN(1.d0, gv_AT, hhoGVState%grad, 0.d0, gv_TMP)
 ! ----- step2: lhs += gradrec**T * TMP
-            call hho_dgemm_TN(1.d0, hhoMecaState%grad, mk_TMP, 0.d0, lhs_mm)
 !
             call hho_dgemm_TN(1.d0, hhoGVState%grad, gv_TMP, 1.d0, lhs_vv)
 !
@@ -504,8 +534,6 @@ contains
         call lhs_vl%free()
         call lhs_lm%free()
         call lhs_lv%free()
-        call mk_AT%free()
-        call mk_TMP%free()
         call gv_AT%free()
         call gv_TMP%free()
         call mv_AT%free()

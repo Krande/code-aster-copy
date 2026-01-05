@@ -752,9 +752,9 @@ contains
                 G_curr = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
 !
                 if (hhoCS%axis) then
-                    ASSERT(ASTER_FALSE)
-                    call hhoAddAxisGrad(hhoCell%ndim, cbs, BSCEval, hhoMecaState%depl_curr, &
-                                        coorpg, G_curr)
+                    call hhoAddAxisGrad(hhoCell%ndim, BSCEval, &
+                                        hhoMecaState%depl_curr(faces_dofs+1:), &
+                                        coorpg, cbs_cmp, G_curr)
                 end if
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -764,6 +764,10 @@ contains
                 call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
 !
                 call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, bT)
+                if (hhoCS%axis) then
+                    call hhoComputeRhsLargeAxis(hhoCell, Pk1_curr, weight, coorpg(1), &
+                                                BSCEval, cbs_cmp, rhs_axis)
+                end if
             else
 !
                 call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
