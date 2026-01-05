@@ -73,7 +73,7 @@ révision %(k3)s - branche '%(k4)s'"""
     },
     9: {
         "message": _(
-            """Copyright EDF R&D %(k1)s - %(k2)s
+            """Copyright EDF %(k1)s - %(k2)s
 
 Exécution du : %(k3)s
 Nom de la machine : %(k4)s
