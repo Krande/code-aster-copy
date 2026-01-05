@@ -2,7 +2,7 @@
  * @file ParallelContactNew.h
  * @brief Fichier entete de la class ContactNew
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *

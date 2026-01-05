@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! Copyright (C) 2022 - Anthony McDonald - anthony.mcdonald .at. wave-venture.com
 ! This file is part of code_aster.
 !
