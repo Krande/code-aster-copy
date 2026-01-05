@@ -60,12 +60,13 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 ! --- AFFECTATION DES VARIABLES ---------------------------------------
 ! =====================================================================
     a0 = dsidep(1, 1)*dsidep(4, 4)-dsidep(1, 4)*dsidep(4, 1)
-   a1 = dsidep(1, 1)*(dsidep(4, 2)+dsidep(2, 4))-dsidep(1, 4)*dsidep(2, 1)-dsidep(1, 2)*dsidep(4, 1&
-             &)
-    a2 = dsidep(1, 1)*dsidep(2, 2)+dsidep(1, 4)*dsidep(4, 2)+dsidep(4, 1)*dsidep(2, 4)-dsidep(1, 2&
-         &)*dsidep(4, 4)-dsidep(1, 2)*dsidep(2, 1)-dsidep(4, 4)*dsidep(2, 1)
-    a3 = dsidep(2, 2)*(dsidep(1, 4)+dsidep(4, 1))-dsidep(1, 2)*dsidep(2, 4)-dsidep(4, 2)*dsidep(2&
-         &, 1)
+    a1 = dsidep(1, 1)*(dsidep(4, 2)+dsidep(2, 4))-dsidep(1, 4)*dsidep(2, 1)- &
+         dsidep(1, 2)*dsidep(4, 1)
+    a2 = dsidep(1, 1)*dsidep(2, 2)+dsidep(1, 4)*dsidep(4, 2)+ &
+         dsidep(4, 1)*dsidep(2, 4)-dsidep(1, 2)*dsidep(4, 4)-dsidep(1, 2)*dsidep(2, 1)- &
+         dsidep(4, 4)*dsidep(2, 1)
+    a3 = dsidep(2, 2)*(dsidep(1, 4)+dsidep(4, 1))-dsidep(1, 2)*dsidep(2, 4)- &
+         dsidep(4, 2)*dsidep(2, 1)
     a4 = dsidep(4, 4)*dsidep(2, 2)-dsidep(4, 2)*dsidep(2, 4)
     if (a4 .lt. -r8prem()) then
         signe = -1.0d0

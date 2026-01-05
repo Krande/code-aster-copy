@@ -77,10 +77,10 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij, &
         write (ifm, 1010) (nocc(2*(l-1)+1), nocc(2*(l-1)+2), l=1, nbsigr)
         do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
-            write (ifm, 1000) situ(2*(k-1)+1), nocc(2*(k-1)+1), (saltij( &
-                                                   i1+4*(l-1)+1), saltij(i1+4*(l-1)+3), l=1, nbsigr)
-            write (ifm, 1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), (saltij( &
-                                                   i1+4*(l-1)+2), saltij(i1+4*(l-1)+4), l=1, nbsigr)
+            write (ifm, 1000) situ(2*(k-1)+1), nocc(2*(k-1)+1), &
+                (saltij(i1+4*(l-1)+1), saltij(i1+4*(l-1)+3), l=1, nbsigr)
+            write (ifm, 1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), &
+                (saltij(i1+4*(l-1)+2), saltij(i1+4*(l-1)+4), l=1, nbsigr)
         end do
     end if
 !
@@ -189,10 +189,10 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij, &
         write (ifm, 1010) (nocc(2*(l-1)+1), nocc(2*(l-1)+2), l=1, nbsigr)
         do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
-            write (ifm, 1000) situ(2*(k-1)+1), nocc(2*(k-1)+1), (saltij( &
-                                                   i1+4*(l-1)+1), saltij(i1+4*(l-1)+3), l=1, nbsigr)
-            write (ifm, 1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), (saltij( &
-                                                   i1+4*(l-1)+2), saltij(i1+4*(l-1)+4), l=1, nbsigr)
+            write (ifm, 1000) situ(2*(k-1)+1), nocc(2*(k-1)+1), &
+                (saltij(i1+4*(l-1)+1), saltij(i1+4*(l-1)+3), l=1, nbsigr)
+            write (ifm, 1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), &
+                (saltij(i1+4*(l-1)+2), saltij(i1+4*(l-1)+4), l=1, nbsigr)
         end do
     end if
 !
@@ -206,7 +206,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij, &
 1010 format(1p, 9x, 'NB_OCCUR ', '|', 40(i9, 1x, i9, '|'))
 1012 format(1p, 9x, 'SITUATION', '|', 40(i7, '_A', 1x, i7, '_B|'))
 1040 format(1p, a15, e12.5, ', LIGNE:', i4, a2, ', COLONNE:', i4, a2,&
- &       ', PASSAGE: ', a3, ', SITUATION DE PASSAGE: ', i4)
+&       ', PASSAGE: ', a3, ', SITUATION DE PASSAGE: ', i4)
 1042 format(1p, a15, e12.5, ', LIGNE:', i4, a2, ', COLONNE:', i4, a2)
 1030 format(1p, a15, i12)
 1020 format(1p, a15, e12.5)

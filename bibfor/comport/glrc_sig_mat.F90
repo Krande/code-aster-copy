@@ -273,17 +273,20 @@ subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf, &
                 do i = 1, 2
                     do k = 1, 2
                         do l = 1, 2
-                          dspdep(l, k) = dspdep(l, k)-dndd(l, i)*(dndd(k, 1)*ainv(i, 1)+dndd(k, 2)*&
-                                                  &ainv(i, 2))
+                            dspdep(l, k) = dspdep(l, k)-dndd(l, i)*(dndd(k, 1)*ainv(i, 1)+ &
+                                                                    dndd(k, 2)*ainv(i, 2))
 !
-                           dspdep(l+3, k+3) = dspdep(l+3, k+3)-dmdd(l, i)*(dmdd(k, 1)*ainv(i, 1)+dm&
-                                                  &dd(k, 2)*ainv(i, 2))
+                            dspdep(l+3, k+3) = dspdep(l+3, k+3)- &
+                                               dmdd(l, i)*(dmdd(k, 1)*ainv(i, 1)+ &
+                                                           dmdd(k, 2)*ainv(i, 2))
 !
-                            dspdep(l+3, k) = dspdep(l+3, k)-dmdd(l, i)*(dndd(k, 1)*ainv(i, 1)+dndd(&
-                                            &k, 2)*ainv(i, 2))
+                            dspdep(l+3, k) = dspdep(l+3, k)- &
+                                             dmdd(l, i)*(dndd(k, 1)*ainv(i, 1)+ &
+                                                         dndd(k, 2)*ainv(i, 2))
 !
-                            dspdep(l, k+3) = dspdep(l, k+3)-dndd(l, i)*(dmdd(k, 1)*ainv(i, 1)+dmdd(&
-                                            &k, 2)*ainv(i, 2))
+                            dspdep(l, k+3) = dspdep(l, k+3)- &
+                                             dndd(l, i)*(dmdd(k, 1)*ainv(i, 1)+ &
+                                                         dmdd(k, 2)*ainv(i, 2))
                         end do
                     end do
                 end do

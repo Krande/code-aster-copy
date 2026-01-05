@@ -36,47 +36,47 @@ subroutine impft0(isor, ift, ibl, fmoy, fetyp, &
         if (ibl .eq. 1) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES FORCE TANGENTE 1 *****'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
-            write (isor, *) '!IB! FT1 MOY     ! FT1 E.TYPE  ! FT1 RMS     !',&
-     &               ' FT1 MIN     ! FT1 MAX     !'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
+            write (isor, *) '!IB! FT1 MOY     ! FT1 E.TYPE  ! FT1 RMS     !', &
+                ' FT1 MIN     ! FT1 MAX     !'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
         else if (ibl .eq. 0) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES GLOBALES FTANG1 *****'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
-            write (isor, *) '!IB! FT1 MOY     ! FT1 E.TYPE  ! FT1 RMS     !',&
-     &               ' FT1 MIN     ! FT1 MAX     !'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
+            write (isor, *) '!IB! FT1 MOY     ! FT1 E.TYPE  ! FT1 RMS     !', &
+                ' FT1 MIN     ! FT1 MAX     !'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
         end if
         write (isor, 10) ibl, fmoy, fetyp, frms, fmin, fmax
     else if (ift .eq. 2) then
         if (ibl .eq. 1) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES FORCE TANGENTE 2 *****'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
-            write (isor, *) '!IB! FT2 MOY     ! FT2 E.TYPE  ! FT2 RMS     !',&
-     &               ' FT2 MIN     ! FT2 MAX     !'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
+            write (isor, *) '!IB! FT2 MOY     ! FT2 E.TYPE  ! FT2 RMS     !', &
+                ' FT2 MIN     ! FT2 MAX     !'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
         else if (ibl .eq. 0) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES GLOBALES FTANG2 *****'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
-            write (isor, *) '!IB! FT2 MOY     ! FT2 E.TYPE  ! FT2 RMS     !',&
-     &               ' FT2 MIN     ! FT2 MAX     !'
-            write (isor, *) '+--+-------------+-------------+-------------+'//&
-     &               '-------------+-------------+'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
+            write (isor, *) '!IB! FT2 MOY     ! FT2 E.TYPE  ! FT2 RMS     !', &
+                ' FT2 MIN     ! FT2 MAX     !'
+            write (isor, *) '+--+-------------+-------------+-------------+'// &
+                '-------------+-------------+'
         end if
         write (isor, 10) ibl, fmoy, fetyp, frms, fmin, fmax
     end if
 !
-10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !',&
-        &        1pe12.5, ' !', 1pe12.5, ' !')
+10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !', &
+           1pe12.5, ' !', 1pe12.5, ' !')
 !
 end subroutine

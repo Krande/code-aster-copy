@@ -104,6 +104,6 @@ subroutine impvoi(texte, nbma, iaddvo, iadvoi)
 !
 9000 format(' MAILLE ', i8, ' NB VOIS ', i2)
 9010 format(' VOISIN ', i2, ' TYPE ', i2, ' MAILLE ', i8, ' NB NOEUDS ', i2,&
- &       ' NB SOMMETS COMMUN ', i2)
+&       ' NB SOMMETS COMMUN ', i2)
 9020 format(' IS ', i2, ' NUMLOC ', i2, ' NUMLOC DANS VOISIN ', i2)
 end subroutine

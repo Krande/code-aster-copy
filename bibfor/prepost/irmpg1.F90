@@ -117,8 +117,8 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
         call cpu_time(start)
         write (ifm, 201) 'DEBUT DE '//nompro
         write (ifm, 202) nomfpg
-202     format(/, 'ECRITURE D''UNE LOCALISATION DES POINTS DE GAUSS',&
-                 &       /, '==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ', a)
+202     format(/, 'ECRITURE D''UNE LOCALISATION DES POINTS DE GAUSS', &
+                /, '==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ', a)
     end if
 201 format(/, 4x, 10('='), a, 10('='),/)
 !
@@ -173,10 +173,10 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
             write (ifm, 204) nblopg
         end if
     end if
-203 format(/, 2x, 'LE FICHIER NE CONTIENT PAS DE',&
-     &' LOCALISATION DE POINTS DE GAUSS.')
-204 format(/, 2x, 'LE FICHIER CONTIENT DEJA', i8,&
-     &' LOCALISATION(S) DE POINTS DE GAUSS : ')
+203 format(/, 2x, 'LE FICHIER NE CONTIENT PAS DE', &
+            ' LOCALISATION DE POINTS DE GAUSS.')
+204 format(/, 2x, 'LE FICHIER CONTIENT DEJA', i8, &
+            ' LOCALISATION(S) DE POINTS DE GAUSS : ')
 !
 ! 2.2. ==> PARCOURS DES LOCALISATIONS DEJA ENREGISTREES
 !
@@ -199,11 +199,10 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
         if (nivinf .gt. 1) then
             write (ifm, 205) iaux, saux64, typgel, nbrepl
         end if
-205     format(&
-                    & /, 2x, '. CARACTERISTIQUES DE LA LOCALISATION NUMERO', i4, ' : ',&
-                    & /, 2x, '... NOM    : ', a,&
-                    & /, 2x, '... TYPGEO :', i4,&
-                    & /, 2x, '... NBREPG :', i4)
+205     format(/, 2x, '. CARACTERISTIQUES DE LA LOCALISATION NUMERO', i4, ' : ', &
+                /, 2x, '... NOM    : ', a, &
+                /, 2x, '... TYPGEO :', i4, &
+                /, 2x, '... NBREPG :', i4)
 !
 ! 2.2.2. ==> ON REPERE SI LA LOCALISATION EST BATIE SUR LA MEME
 !            FAMILLE D'ELEMENT FINI ASTER.
@@ -336,32 +335,32 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
 !
     end if
 !
-209 format(&
-     &/, 28('*'),&
-     &/, '*      COORDONNEES DES     *',&
-     &/, '*      ', a15, '     *',&
-     &/, 28('*'),&
-     &/, '*  NUMERO  *       X       *',&
-     &/, 28('*'))
-212 format(&
-     &/, 44('*'),&
-     &/, '*       COORDONNEES DES ', a15, '    *',&
-     &/, 44('*'),&
-     &/, '*  NUMERO  *       X       *       Y       *',&
-     &/, 44('*'))
-215 format(&
-     &/, 60('*'),&
-     &/, '*            COORDONNEES DES ', a15,&
-     &'               *',&
-     &/, 60('*'),&
-     &/, '*  NUMERO  *       X       *       Y       *',&
-     &'       Z       *',&
-     &/, 60('*'))
-218 format(&
-     &/, 28('*'),&
-     &/, '*      POINTS DE GAUSS     *',&
-     &/, '*  NUMERO  *     POIDS     *',&
-     &/, 28('*'))
+209 format( &
+        /, 28('*'), &
+        /, '*      COORDONNEES DES     *', &
+        /, '*      ', a15, '     *', &
+        /, 28('*'), &
+        /, '*  NUMERO  *       X       *', &
+        /, 28('*'))
+212 format( &
+        /, 44('*'), &
+        /, '*       COORDONNEES DES ', a15, '    *', &
+        /, 44('*'), &
+        /, '*  NUMERO  *       X       *       Y       *', &
+        /, 44('*'))
+215 format( &
+        /, 60('*'), &
+        /, '*            COORDONNEES DES ', a15, &
+        '               *', &
+        /, 60('*'), &
+        /, '*  NUMERO  *       X       *       Y       *', &
+        '       Z       *', &
+        /, 60('*'))
+218 format( &
+        /, 28('*'), &
+        /, '*      POINTS DE GAUSS     *', &
+        /, '*  NUMERO  *     POIDS     *', &
+        /, 28('*'))
 210 format('* ', i5, '    *', 1pg12.5, '    *')
 213 format('* ', i5, 2('    *', 1pg12.5), '    *')
 217 format('* ', i5, 3('    *', 1pg12.5), '    *')
@@ -454,12 +453,12 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
     if (nivinf .gt. 1) then
 !
         write (ifm, 219) typgeo, nbnoto, nbrepg, nolopg
-219     format(&
-                    &/, 'TYPE DE MAILLES MED :', i4,&
-                    &/, 'NOMBRE DE NOEUDS          :', i4&
-                    &/, 'NOMBRE DE POINTS DE GAUSS :', i4,&
-                    &/, 'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ',&
-                    &  'NOMMEE : ', /, a,/)
+219     format( &
+            /, 'TYPE DE MAILLES MED :', i4, &
+            /, 'NOMBRE DE NOEUDS          :', i4 &
+            /, 'NOMBRE DE POINTS DE GAUSS :', i4, &
+            /, 'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ', &
+            'NOMMEE : ', /, a,/)
 !
     end if
 !

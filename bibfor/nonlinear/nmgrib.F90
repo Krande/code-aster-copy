@@ -64,8 +64,9 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc, &
             do alpha = 1, 2
                 do beta = 1, 2
                     do gamma = 1, 2
-                       b(i, n) = b(i, n)+r1(alpha)*r1(gamma)*a(beta, gamma)*dff(beta, n)*cnva(i, al&
-                                     &pha)/denomi
+                        b(i, n) = b(i, n)+ &
+                                  r1(alpha)*r1(gamma)*a(beta, gamma)* &
+                                  dff(beta, n)*cnva(i, alpha)/denomi
                     end do
                 end do
             end do

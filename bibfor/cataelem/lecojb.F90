@@ -153,8 +153,8 @@ subroutine lecojb(ob, unite, base, iret)
 1001 format(a13, a6)
 1002 format(a5, a24, a6, a3, a8, i12)
 1004 format(a5, a24, a6, a3, a8, i12, a8, i12,&
- &        a7, a2, a10, a8, a10, a8,&
- &        a8, i12, a6, i12)
+&        a7, a2, a10, a8, a10, a8,&
+&        a8, i12, a6, i12)
 1005 format(a5, a8, a8, i12)
 1006 format(a8, i12)
 end subroutine
