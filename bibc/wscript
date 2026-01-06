@@ -260,9 +260,9 @@ def check_c_compiler_options(self, options):
 
 @Configure.conf
 def check_optimization_cflags(self):
+    self.remove_optflags("CFLAGS")
     self.setenv("debug")
     self.start_msg("Setting C debug flags")
-    self.remove_optflags("CFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["CFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:
         flags.append("--coverage")

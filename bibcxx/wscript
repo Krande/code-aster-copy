@@ -136,10 +136,10 @@ def check_cxx_compiler_options(self, options, optional=True):
 
 @Configure.conf
 def check_optimization_cxxflags(self):
+    self.remove_optflags("CXXFLAGS")
     self.setenv("debug")
     self.start_msg("Setting C++ debug flags")
     self.define("ASTER_DEBUG_CXX", 1)
-    self.remove_optflags("CXXFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["CXXFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:
         flags.append("--coverage")
