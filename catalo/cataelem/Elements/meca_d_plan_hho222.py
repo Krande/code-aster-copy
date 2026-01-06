@@ -647,6 +647,20 @@ class MECA_DPQ9_HHO222(Element):
                 (SP.PCOPRED, LC.ECODRET),
             ),
         ),
+        OP.SIEF_ELGA(
+            te=504,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PDEPLAR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.SIEF_ELGA.PCHHOGT, CHHOGT),
+                (OP.SIEF_ELGA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PCONTRC, LC.EGIG2DC), (OP.SIEF_ELGA.PCONTRR, LC.EGIG2DR)),
+        ),
         OP.SIEF_ELNO(
             te=4,
             para_in=((OP.SIEF_ELNO.PCONTRR, ECONTPG), (OP.SIEF_ELNO.PVARCPR, LC.ZVARCPG)),

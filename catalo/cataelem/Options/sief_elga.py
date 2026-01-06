@@ -123,6 +123,10 @@ PSTRXRR = InputParameter(
 
 PCONTRR = OutputParameter(phys=PHY.SIEF_R, type="ELGA")
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
+
 
 SIEF_ELGA = Option(
     para_in=(
@@ -157,6 +161,8 @@ SIEF_ELGA = Option(
         SP.PINSTR,
         PVARCPR,
         SP.PVARCRR,
+        PCHHOGT,
+        PCHHOBS,
     ),
     para_out=(SP.PCONTRC, PCONTRR),
     condition=(

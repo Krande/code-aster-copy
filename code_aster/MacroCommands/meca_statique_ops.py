@@ -35,6 +35,7 @@ from ..ObjectsExt import PhysicalProblem
 from ..Utilities import logger, print_stats, profile, reset_stats
 from ..Solvers import PhysicalState, StorageManager, TimeStepper
 from ..Solvers import ProblemType as PBT
+from ..Solvers.Post import ComputeDisplFromHHO
 
 
 @profile
@@ -180,6 +181,20 @@ def _computeStress(phys_pb, result):
     return result
 
 
+class OperatorMockup:
+    """Simulate a NonLinearOperator object."""
+
+    def __init__(self, phys_pb, phys_state) -> None:
+        self.problem = phys_pb
+        self.state = phys_state
+
+
+def _post_hooks(lin_operator, hooks):
+    """Call hooks"""
+    for hook in hooks:
+        hook(lin_operator)
+
+
 def meca_statique_ops(self, **args):
     """Execute the command MECA_STATIQUE.
 
@@ -232,6 +247,8 @@ def meca_statique_ops(self, **args):
     # Define main objects
     phys_state = PhysicalState(PBT.MecaStat)
     disc_comp = DiscreteComputation(phys_pb)
+    lin_operator = OperatorMockup(phys_pb, phys_state)
+    hooks = [ComputeDisplFromHHO()]
 
     # we define the matrix before to have an unique name
     # because of a bug with LDLT_SP
@@ -264,6 +281,8 @@ def meca_statique_ops(self, **args):
         # solve linear system
         diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
         phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
+
+        _post_hooks(lin_operator, hooks)
         phys_state.commit()
 
         # store field

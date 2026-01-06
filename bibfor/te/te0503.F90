@@ -74,9 +74,6 @@ subroutine te0503(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami=fami, npg=npg)
-    nbsig = nbsigm()
-!
 ! --- Get HHO informations
 !
     call elrefe_info(fami=fami, npg=npg)
@@ -87,6 +84,7 @@ subroutine te0503(option, nomte)
     faces_dofs = total_dofs-cbs
     gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     cbs_cmp = cbs/hhoCell%ndim
+    nbsig = nbsigm()
 !
 ! --- Type of finite element
 !
@@ -127,13 +125,14 @@ subroutine te0503(option, nomte)
 !
     call rcangm(hhoCell%ndim, hhoCell%barycenter, anglNaut)
 !
+    sigmVarc = 0.d0
+!
 ! ----- Calcul des contraintes anélastiques
     call sigtmc(fami, nbsig, npg, hhoCell%ndim, &
                 time, zi(jvMater), anglNaut, &
                 indxVarcStrain, sigmVarc)
 !
     rhs = 0.d0
-    sigmVarc = 0.d0
     bT = 0.d0
 !
 ! ----- Loop on quadrature point

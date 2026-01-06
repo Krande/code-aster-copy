@@ -348,6 +348,20 @@ class MECA_DPQ9_HHO333(Element):
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
+        OP.SIEF_ELGA(
+            te=504,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PDEPLAR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.SIEF_ELGA.PCHHOGT, CHHOGT),
+                (OP.SIEF_ELGA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PCONTRC, LC.EGIG2DC), (OP.SIEF_ELGA.PCONTRR, LC.EGIG2DR)),
+        ),
         OP.COOR_ELGA(
             te=479,
             para_in=((SP.PGEOMER, LC.EGEOM2D),),

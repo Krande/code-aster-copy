@@ -709,6 +709,20 @@ class MECA3DH27_HHO333(Element):
                 (SP.PCOPRED, LC.ECODRET),
             ),
         ),
+        OP.SIEF_ELGA(
+            te=504,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PDEPLAR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.SIEF_ELGA.PCHHOGT, CHHOGT),
+                (OP.SIEF_ELGA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PCONTRC, LC.EGIG3DC), (OP.SIEF_ELGA.PCONTRR, LC.EGIG3DR)),
+        ),
         OP.SIEF_ELNO(
             te=4,
             para_in=((OP.SIEF_ELNO.PCONTRR, ECONTPG), (OP.SIEF_ELNO.PVARCPR, LC.ZVARCPG)),

@@ -65,7 +65,6 @@ subroutine sigtmc(fami, nbsig, npg, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(nbsig .le. 6)
-    ASSERT(npg .le. 27)
     sigmVarc = 0.d0
 
 ! - Loop on Gauss points

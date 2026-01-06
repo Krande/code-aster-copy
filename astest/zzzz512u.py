@@ -47,7 +47,7 @@ coeff = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
 
-for form in ("LINEAIRE", "QUADRATIQUE"):
+for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"):
 
     model = AFFE_MODELE(
         MAILLAGE=mesh,
@@ -73,19 +73,37 @@ for form in ("LINEAIRE", "QUADRATIQUE"):
     # solve linear system
     LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
 
-    resu = STAT_NON_LINE(
+    resu_stat = STAT_NON_LINE(
         MODELE=model,
         CHAM_MATER=mater,
         INCREMENT=_F(LIST_INST=LREEL),
         EXCIT=(_F(CHARGE=bc),),
-        SOLVEUR=_F(RENUM="SCOTCH", GESTION_MEMOIRE="IN_CORE"),
+        SOLVEUR=_F(RENUM="SCOTCH", GESTION_MEMOIRE="IN_CORE", POSTTRAITEMENTS="FORCE"),
     )
 
-    u_sol = resu.getField("DEPL", para="INST", value=1.0)
+    resu_meca = MECA_STATIQUE(
+        MODELE=model,
+        CHAM_MATER=mater,
+        EXCIT=(_F(CHARGE=bc),),
+        OPTION="SIEF_ELGA",
+        SOLVEUR=_F(RENUM="SCOTCH", GESTION_MEMOIRE="IN_CORE", POSTTRAITEMENTS="FORCE"),
+    )
+
+    u_sol = resu_meca.getField("DEPL", para="INST", value=0.0)
 
     u_diff = u_hho - u_sol
+    test.assertAlmostEqual(u_diff.norm("NORM_INFINITY"), 0.0, delta=1e-8)
 
-    test.assertAlmostEqual(u_diff.norm("NORM_2"), 0.0, delta=1e-8)
+    u_stat = resu_stat.getField("HHO_DEPL", para="INST", value=1.0)
+    u_meca = resu_meca.getField("HHO_DEPL", para="INST", value=0.0)
+    u_diff2 = u_stat - u_meca
+    test.assertAlmostEqual(u_diff2.norm("NORM_INFINITY"), 0.0, delta=1e-7)
+
+    sief_stat = resu_stat.getField("SIEF_ELGA", para="INST", value=1.0)
+    sief_meca = resu_meca.getField("SIEF_ELGA", para="INST", value=0.0)
+    sief_diff = sief_meca - sief_stat
+    test.assertAlmostEqual(sief_diff.norm("NORM_INFINITY"), 0.0, delta=5e-6)
+
 
 # print("f=", f_hho.getValues())
 # print("u=", u_hho.getValues())
