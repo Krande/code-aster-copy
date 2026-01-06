@@ -653,18 +653,18 @@ contains
             cbs_cmp = lhs_axis%nrows
             faces_dofs = total_dofs-hhoCell%ndim*cbs_cmp
             call lhs_axis%copySymU()
-            call lhs%addSubPart(lhs_axis, faces_dofs, faces_dofs)
+            call lhs%addBlock(lhs_axis, faces_dofs, faces_dofs)
             call lhs_axis%free()
 !
             call TMP%initialize(total_dofs, cbs_cmp, 0.d0)
             call hho_dgemm_TN(1.d0, gradrec, AT_ax1, 0.d0, TMP)
-            call lhs%addSubPart(TMP, 0, faces_dofs)
+            call lhs%addBlock(TMP, 0, faces_dofs)
             call TMP%free()
             call AT_ax1%free()
 !
             call TMP%initialize(cbs_cmp, total_dofs, 0.d0)
             call hho_dgemm_NN(1.d0, AT_ax2, gradrec, 0.d0, TMP)
-            call lhs%addSubPart(TMP, faces_dofs, 0)
+            call lhs%addBlock(TMP, faces_dofs, 0)
             call TMP%free()
             call AT_ax2%free()
         end if

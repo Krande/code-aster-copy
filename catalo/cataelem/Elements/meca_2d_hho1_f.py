@@ -227,3 +227,8 @@ class MECA_2DGV_HHO1_F(MECA_2D_HHO1_F):
 # ------------------------------------------------------------
 class MECA_2DAX_HHO1_F(MECA_2D_HHO1_F):
     """Please document this element"""
+
+
+# ------------------------------------------------------------
+class MECA_AXGV_HHO1_F(MECA_2D_HHO1_F):
+    """Please document this element"""

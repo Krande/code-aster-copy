@@ -56,7 +56,7 @@ module HHO_matrix_module
         procedure, pass :: copySymU => hhoMatriceCopySymU
         procedure, pass :: copy => hhoMatriceCopy
         procedure, pass :: add => hhoMatriceAdd
-        procedure, pass :: addSubPart => hhoMatriceAddSub
+        procedure, pass :: addBlock => hhoMatriceAddSub
         procedure, pass :: prune => hhoMatricePrune
         procedure, pass :: dot => hhoMatriceDot
 !

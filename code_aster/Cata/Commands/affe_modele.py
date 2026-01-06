@@ -255,6 +255,7 @@ AFFE_MODELE = OPER(
                     "AXIS_HHO",
                     "3D_GRAD_HHO",
                     "D_PLAN_GRAD_HHO",
+                    "AXIS_GRAD_HHO",
                     "PLAQ_MITC",
                 ),
             ),
@@ -270,7 +271,7 @@ AFFE_MODELE = OPER(
                 ),
             ),
             b_formu_hho_grad=BLOC(
-                condition="""equal_to('MODELISATION', ("D_PLAN_GRAD_HHO", "3D_GRAD_HHO" ))""",
+                condition="""equal_to('MODELISATION', ("D_PLAN_GRAD_HHO", "3D_GRAD_HHO", "AXIS_GRAD_HHO" ))""",
                 fr=tr("HHO formulation with GRAD_VARI"),
                 FORMULATION=SIMP(
                     statut="f",

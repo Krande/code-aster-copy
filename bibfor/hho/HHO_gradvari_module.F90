@@ -165,7 +165,8 @@ contains
         real(kind=8) ::  BSCEval(MSIZE_CELL_SCAL)
         type(HHO_matrix) :: mk_AT, gv_AT, gv_TMP, mv_AT, ml_AT, vm_AT, lm_AT
         type(HHO_matrix) :: lhs_mv, lhs_ml, lhs_mm, lhs_ll, lhs_vm, lhs_vv, lhs_vl, lhs_lm, lhs_lv
-        type(HHO_matrix) :: mk_lhs_axis, mk_AT_ax1, mk_AT_ax2
+        type(HHO_matrix) :: mk_lhs_axis, mk_AT_ax1, mk_AT_ax2, mv_lhs_ax, ml_lhs_ax
+        type(HHO_matrix) :: vm_lhs_ax, lm_lhs_ax
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
         real(kind=8) :: rhs_mk(MSIZE_TDOFS_VEC)
         integer(kind=8) :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL)
@@ -232,6 +233,10 @@ contains
                 call mk_lhs_axis%initialize(mk_cbs_cmp, mk_cbs_cmp, 0.d0)
                 call mk_AT_ax1%initialize(mk_gbs_tot, mk_cbs_cmp, 0.d0)
                 call mk_AT_ax2%initialize(mk_cbs_cmp, mk_gbs_tot, 0.d0)
+                call mv_lhs_ax%initialize(mk_cbs_cmp, gv_cbs, 0.d0)
+                call ml_lhs_ax%initialize(mk_cbs_cmp, gv_cbs, 0.d0)
+                call vm_lhs_ax%initialize(gv_cbs, mk_cbs_cmp, 0.d0)
+                call lm_lhs_ax%initialize(gv_cbs, mk_cbs_cmp, 0.d0)
             end if
         end if
 !
@@ -404,6 +409,12 @@ contains
 ! ---------- += weight * (dPK1_dF : g_phi, g_phi)
                     call hhoComputeLhsLarge(hhoCell, dPK1_dF, weight, BSCEval, mk_gbs, &
                                             mk_AT)
+!
+                    if (hhoComporState%axis) then
+                        call hhoComputeLhsLargeAxis(hhoCell, dPK1_dF, weight, coorpg(1), &
+                                                    BSCEval, mk_gbs_cmp, mk_cbs_cmp, &
+                                                    mk_lhs_axis, mk_AT_ax1, mk_AT_ax2)
+                    end if
 ! ---------- += weight * (g_phi, dPK1_dv : c_phi) -> lhs_mv
                     call hhoComputeLhsLargeMV(hhoCell, dPK1_dv, weight, BSCEval, gv_cbs, &
                                               mk_gbs, mv_AT)
@@ -420,18 +431,40 @@ contains
 ! ---------- += weight * (dSig_deps : gs_phi, gs_phi)
                     call hhoComputeLhsSmall(hhoCell, dSig_deps, hhoComporState%matsym, weight, &
                                             BSCEval, mk_gbs_sym, mk_gbs_cmp, mk_AT)
+!
+                    if (hhoComporState%axis) then
+                        call hhoComputeLhsSmallAxis(hhoCell, dSig_deps, weight, coorpg(1), &
+                                                    BSCEval, mk_gbs_cmp, mk_cbs_cmp, &
+                                                    mk_lhs_axis, mk_AT_ax1, mk_AT_ax2)
+                    end if
 ! ---------- += weight * (gs_phi, dSig_dv : c_phi) -> lhs_mv
                     call hhoComputeLhsSmallMV(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
                                               mk_gbs_cmp, mv_AT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeLhsAxisMS(hhoCell, dSig_dv(3), weight, coorpg(1), &
+                                                 BSCEval, gv_cbs, mk_cbs_cmp, mv_lhs_ax)
+                    end if
 ! ---------- += weight * (gs_phi, dSig_dl : c_phi) -> lhs_ml
                     call hhoComputeLhsSmallML(hhoCell, dSig_dl, weight, BSCEval, gv_cbs, &
                                               mk_gbs_cmp, ml_AT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeLhsAxisMS(hhoCell, dSig_dl(3), weight, coorpg(1), &
+                                                 BSCEval, gv_cbs, mk_cbs_cmp, ml_lhs_ax)
+                    end if
 ! ---------- += weight * (dsv_dEps : gs_phi, c_phi) -> lhs_vm
                     call hhoComputeLhsSmallVM(hhoCell, dsv_dEps, weight, BSCEval, gv_cbs, &
                                               mk_gbs_sym, mk_gbs_cmp, vm_AT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeLhsAxisSM(hhoCell, dsv_dEps(3), weight, coorpg(1), &
+                                                 BSCEval, gv_cbs, mk_cbs_cmp, vm_lhs_ax)
+                    end if
 ! ---------- += weight * (dsl_dEps : gs_phi, c_phi) -> lhs_lm
                     call hhoComputeLhsSmallLM(hhoCell, dsl_dEps, weight, BSCEval, gv_cbs, &
                                               mk_gbs_sym, mk_gbs_cmp, lm_AT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeLhsAxisSM(hhoCell, dsl_dEps(3), weight, coorpg(1), &
+                                                 BSCEval, gv_cbs, mk_cbs_cmp, lm_lhs_ax)
+                    end if
                 end if
 ! ---------- += weight * (dgv_dv : g_phi, g_phi)
                 call hhoComputeLhsRigiTher(hhoCell, dsgv_dgv, weight, BSCEval, gv_gbs, gv_AT)
@@ -505,11 +538,28 @@ contains
 !
             call hho_dgemm_TN(1.d0, hhoMecaState%grad, mv_AT, 0.d0, lhs_mv)
 !
+            if (hhoComporState%axis) then
+                call lhs_mv%addBlock(mv_lhs_ax, mk_faces_dofs, gv_faces_dofs)
+            end if
+!
             call hho_dgemm_TN(1.d0, hhoMecaState%grad, ml_AT, 0.d0, lhs_ml)
+!
+            if (hhoComporState%axis) then
+                call lhs_ml%addBlock(ml_lhs_ax, mk_faces_dofs, 0)
+            end if
 !
             call hho_dgemm_NN(1.d0, vm_AT, hhoMecaState%grad, 0.d0, lhs_vm)
 !
+            if (hhoComporState%axis) then
+                call lhs_vm%addBlock(vm_lhs_ax, gv_faces_dofs, mk_faces_dofs)
+            end if
+!
             call hho_dgemm_NN(1.d0, lm_AT, hhoMecaState%grad, 0.d0, lhs_lm)
+!
+            if (hhoComporState%axis) then
+                call lhs_lm%addBlock(lm_lhs_ax, 0, mk_faces_dofs)
+            end if
+!
 ! ----- Add stabilization
 ! ----- += coeff * stab_mk
             call lhs_mm%add(hhoMecaState%stab, mk_stab)
@@ -540,6 +590,10 @@ contains
         call ml_AT%free()
         call vm_AT%free()
         call lm_AT%free()
+        call mv_lhs_ax%free()
+        call ml_lhs_ax%free()
+        call vm_lhs_ax%free()
+        call lm_lhs_ax%free()
 !
     end subroutine
 !
@@ -565,7 +619,6 @@ contains
             ASSERT(hhoComporState%l_largestrain)
         case ('PETIT')
             ASSERT(.not. hhoComporState%l_largestrain)
-            ASSERT(.not. hhoComporState%axis)
         case default
             ASSERT(ASTER_FALSE)
         end select
@@ -1573,6 +1626,94 @@ contains
             end select
 !
             col = col+1
+        end do
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsAxisMS(hhoCell, dstress_rr, weight, r, BSCEval, gv_cbs, &
+                                   mk_cbs_cmp, lhs_axis)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: dstress_rr
+        real(kind=8), intent(in) :: weight, r
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: gv_cbs, mk_cbs_cmp
+        type(HHO_matrix), intent(inout) :: lhs_axis
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (dstress_rr*cphi, ur/r)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In dSig_dv      : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out lhs_axis    : contribution of lhs_axis
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Acphi_sr
+        integer(kind=8) :: j
+! --------------------------------------------------------------------------------------------------
+!
+        ASSERT(hhoCell%ndim == 2)
+! -------- Compute scalar_product of (qp_Acphi, ur/r)_T
+        do j = 1, gv_cbs
+! --------- Eval (dSig_dv:cphi : ur/r)_T
+            qp_Acphi_sr = weight*dstress_rr*BSCEval(j)/r
+            call daxpy_1(mk_cbs_cmp, qp_Acphi_sr, BSCEval, lhs_axis%m(:, j))
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsAxisSM(hhoCell, ds_dr, weight, r, BSCEval, gv_cbs, &
+                                   mk_cbs_cmp, lhs_axis)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: ds_dr
+        real(kind=8), intent(in) :: weight, r
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: gv_cbs, mk_cbs_cmp
+        type(HHO_matrix), intent(inout) :: lhs_axis
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (cphi, ds_dr*ur/r)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In ds_dr      : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out lhs_axis    : contribution of lhs_axis
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Acphi_sr
+        integer(kind=8) :: i, j
+! --------------------------------------------------------------------------------------------------
+!
+        ASSERT(hhoCell%ndim == 2)
+! -------- Compute scalar_product of (cphi, ds_dr*ur/r)_T
+        do j = 1, mk_cbs_cmp
+            qp_Acphi_sr = weight*ds_dr*BSCEval(j)/r
+            do i = 1, gv_cbs
+                lhs_axis%m(i, j) = lhs_axis%m(i, j)+qp_Acphi_sr*BSCEval(i)
+            end do
         end do
 !
     end subroutine
