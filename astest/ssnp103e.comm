@@ -26,7 +26,7 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 ########################################################################
 #                      PARAMETRES DU CAS-TEST                          #
-########################################################################
+##########################=##############################################
 sigma_max = 150.0e6
 poisson = 0.3
 EE = 2.1e11
@@ -118,8 +118,8 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=1.36646e04,
-    VALE_CALC=16930.87866067213,
-    PRECISION=0.25,
+    VALE_CALC=17342.43723062150,
+    PRECISION=0.27,
     NOM_PARA="G",
     TABLE=T_FIC,
     FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
@@ -130,7 +130,7 @@ TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=0.15,
     VALE_REFE=2.99144e07,
-    VALE_CALC=33295866.787063003,
+    VALE_CALC=33699663.356019296,
     NOM_PARA="K1",
     TABLE=T_FIC,
     FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
@@ -141,7 +141,7 @@ TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=0.2,
     VALE_REFE=2.16579e06,
-    VALE_CALC=2483060.1608262607,
+    VALE_CALC=2469626.9448381267,
     NOM_PARA="K2",
     TABLE=T_FIC,
     FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),

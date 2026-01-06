@@ -21,15 +21,15 @@ module HHO_compor_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
-#include "asterfort/tecach.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "jeveux.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,11 +55,12 @@ module HHO_compor_module
         aster_logical       :: l_largestrain = ASTER_FALSE
         aster_logical       :: c_plan = ASTER_FALSE
         aster_logical       :: axis = ASTER_FALSE
+        aster_logical       :: matsym = ASTER_FALSE
 !
-        integer(kind=8)             :: nbsigm = 0
-        integer(kind=8)             :: lgpg = 0
-        integer(kind=8)             :: codret = 0
-        integer(kind=8)             :: imater = 0
+        integer(kind=8)     :: nbsigm = 0
+        integer(kind=8)     :: lgpg = 0
+        integer(kind=8)     :: codret = 0
+        integer(kind=8)     :: imater = 0
 !
         real(kind=8)        :: angl_naut(3)
 ! --- pointer
@@ -119,15 +120,19 @@ contains
             call jevech('PCARCRI', 'L', vr=this%carcri)
             call jevech('PCONTMR', 'L', vr=this%sig_prev)
             call jevech('PVARIMR', 'L', vr=this%vari_prev)
-            call jevech('PMULCOM', 'L', vk16=v_mult)
+            if (this%option(1:4) .ne. "PILO") then
+                call jevech('PMULCOM', 'L', vk16=v_mult)
+                this%mult_comp = v_mult(1)
+            end if
 !
             call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
             ASSERT(iret .eq. 0)
             this%lgpg = max(jtab(6), 1)*jtab(7)
-            this%mult_comp = v_mult(1)
             this%l_largestrain = isLargeStrain(this%compor(DEFO))
             call rcangm(ndim, bary, this%angl_naut)
+            this%matsym = nint(this%carcri(CARCRI_MATRSYME)) .le. 0
         else
+            this%matsym = ASTER_TRUE
             this%l_largestrain = ASTER_FALSE
             if (this%option == "FORC_NODA") then
                 call jevech('PSIEFR', 'L', vr=this%sig_prev)
@@ -199,7 +204,6 @@ contains
             typmod = '3D'
         case (2)
             if (lteatt('AXIS', 'OUI')) then
-                ASSERT(ASTER_FALSE)
                 typmod = 'AXIS'
             else if (lteatt('C_PLAN', 'OUI')) then
                 ASSERT(ASTER_FALSE)

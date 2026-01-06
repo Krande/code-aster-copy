@@ -146,7 +146,7 @@ DEP2 = STAT_NON_LINE(
 
 CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, GROUP_MA=("Volume1",), CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"))
 
-DEP2 = CALC_PRESSION(MAILLAGE=MA, reuse=DEP2, RESULTAT=DEP2, GROUP_MA=("Face1", "Face2"), INST=1.0)
+DEP2 = CALC_PRESSION(reuse=DEP2, RESULTAT=DEP2, GROUP_MA=("Face1", "Face2"), INST=1.0)
 
 # -----------------------------------------
 

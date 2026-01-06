@@ -1,0 +1,9 @@
+P ncpus 1
+P mpi_nbcpu 4
+P mpi_nbnoeud 1
+P time_limit 120
+P memory_limit 1024.0
+P testlist verification parallel
+
+F comm ssnp179u.comm D 1
+F mmed ssnp178q.med D 20

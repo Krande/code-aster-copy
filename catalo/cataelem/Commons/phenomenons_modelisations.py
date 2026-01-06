@@ -5731,7 +5731,7 @@ phen.add(
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO111),
             (MT.TRIA7, EL.MECA_DGVT_HHO111),
-            (MT.SEG3, EL.MECA_2D_HHO1_F),
+            (MT.SEG3, EL.MECA_2DGV_HHO1_F),
         ),
     ),
 )
@@ -5752,7 +5752,92 @@ phen.add(
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO222),
             (MT.TRIA7, EL.MECA_DGVT_HHO222),
-            (MT.SEG3, EL.MECA_2D_HHO2_F),
+            (MT.SEG3, EL.MECA_2DGV_HHO2_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#1",
+    Modelisation(
+        dim=(2, 2),
+        code="HA1",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO111),
+            (MT.TRIA7, EL.MECA_AXT7_HHO111),
+            (MT.SEG3, EL.MECA_2DAX_HHO1_F),
+        ),
+    ),
+)
+
+
+phen.add(
+    "AXIS_HHO#2",
+    Modelisation(
+        dim=(2, 2),
+        code="HA2",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO222),
+            (MT.TRIA7, EL.MECA_AXT7_HHO222),
+            (MT.SEG3, EL.MECA_2DAX_HHO2_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#3",
+    Modelisation(
+        dim=(2, 2),
+        code="HA3",
+        attrs=(
+            (AT.FORMULATION, "HHO_CUBI"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO333),
+            (MT.TRIA7, EL.MECA_AXT7_HHO333),
+            (MT.SEG3, EL.MECA_2DAX_HHO3_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#4",
+    Modelisation(
+        dim=(2, 2),
+        code="HA3",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAR"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO444),
+            (MT.TRIA7, EL.MECA_AXT7_HHO444),
+            (MT.SEG3, EL.MECA_2DAX_HHO4_F),
         ),
     ),
 )
@@ -5772,8 +5857,10 @@ phen.add(
         elements=(
             (MT.HEXA27, EL.MECA3DGVH_HHO111),
             (MT.TETRA15, EL.MECA3DGVT_HHO111),
-            (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
-            (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
+            (MT.PENTA21, EL.MECA3GVPE_HHO111),
+            (MT.PYRAM19, EL.MECA3GVPY_HHO111),
+            (MT.QUAD9, EL.MECA3DGVQ_HHO1_F),
+            (MT.TRIA7, EL.MECA3DGVT_HHO1_F),
         ),
     ),
 )
@@ -5793,8 +5880,10 @@ phen.add(
         elements=(
             (MT.HEXA27, EL.MECA3DGVH_HHO222),
             (MT.TETRA15, EL.MECA3DGVT_HHO222),
-            (MT.QUAD9, EL.MECA3DQU9_HHO2_F),
-            (MT.TRIA7, EL.MECA3DTR7_HHO2_F),
+            (MT.PENTA21, EL.MECA3GVPE_HHO222),
+            (MT.PYRAM19, EL.MECA3GVPY_HHO222),
+            (MT.QUAD9, EL.MECA3DGVQ_HHO2_F),
+            (MT.TRIA7, EL.MECA3DGVT_HHO2_F),
         ),
     ),
 )

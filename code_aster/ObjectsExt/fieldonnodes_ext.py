@@ -29,12 +29,9 @@ complex numbers (:py:class:`FieldOnNodesComplex`).
 
 import functools
 import operator
-import os
 import os.path as osp
 import subprocess
-import tempfile
 
-import numpy as np
 from libaster import (
     DOFNumbering,
     FieldOnNodesChar8,
@@ -45,16 +42,7 @@ from libaster import (
 
 from ..Objects import PythonBool
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import (
-    MPI,
-    ExecutionParameter,
-    PETSc,
-    config,
-    deprecated,
-    force_list,
-    injector,
-    SharedTmpdir,
-)
+from ..Utilities import MPI, ExecutionParameter, PETSc, config, force_list, injector, SharedTmpdir
 from ..Utilities import medcoupling as medc
 
 
@@ -143,29 +131,6 @@ class ExtendedFieldOnNodesReal:
         )
         values = self.getValues(dofs)
         return values, description
-
-    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
-    def EXTR_COMP(self, comp, lgma=[], topo=0):
-        """Deprecated: Use 'getValuesWithDescription()' instead.
-
-        Examples:
-
-        .. code-block:: python
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
-            values = extrcmp.valeurs
-            nodes = extrcmp.noeud
-            components = extrcmp.comp
-            # replaced by:
-            values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
-            values = extrcmp.valeurs
-            # replaced by:
-            values, _ = chamno.getValuesWithDescription(cmp, groups)
-        """
 
     @property
     @functools.lru_cache()
@@ -413,26 +378,3 @@ class ExtendedFieldOnNodesComplex:
         )
         values = self.getValues(dofs)
         return values, description
-
-    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
-    def EXTR_COMP(self, comp, lgma=[], topo=0):
-        """Deprecated: Use 'getValuesWithDescription()' instead.
-
-        Examples:
-
-        .. code-block:: python
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
-            values = extrcmp.valeurs
-            nodes = extrcmp.noeud
-            components = extrcmp.comp
-            # replaced by:
-            values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
-
-            # previously:
-            extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
-            values = extrcmp.valeurs
-            # replaced by:
-            values, _ = chamno.getValuesWithDescription(cmp, groups)
-        """

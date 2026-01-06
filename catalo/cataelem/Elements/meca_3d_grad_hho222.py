@@ -338,10 +338,6 @@ ECOEQPG = LocatedComponents(
 
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
-
-ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
-
-
 CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[1380]",))
 
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[1081]",))
@@ -353,7 +349,7 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[210]"))),
 )
 
-CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
+
 DEPLHHO = LocatedComponents(
     phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "VARI", "LAG_GV")
 )
@@ -430,7 +426,7 @@ class MECA3DGVH_HHO222(Element):
             te=448,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PDEPLAR, DDL_MECA),
+                (SP.PDEPLAR, DDL_DEPL),
                 (SP.PGEOMER, NGEOMER),
                 (OP.EPSI_ELGA.PCHHOBS, CHHOBS),
             ),
@@ -486,8 +482,8 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.FULL_MECA.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (SP.PVARIMP, ZVARIPG),
-                (OP.FULL_MECA.PVARIMR, ZVARIPG),
+                (SP.PVARIMP, LC.ZVARIPG),
+                (OP.FULL_MECA.PVARIMR, LC.ZVARIPG),
                 (OP.FULL_MECA.PCHHOGT, CHHOGT),
                 (OP.FULL_MECA.PCHHOST, CHHOST),
                 (OP.FULL_MECA.PCHHOBS, CHHOBS),
@@ -497,7 +493,7 @@ class MECA3DGVH_HHO222(Element):
                 (OP.FULL_MECA.PCONTPR, ECONTPG),
                 (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
-                (OP.FULL_MECA.PVARIPR, ZVARIPG),
+                (OP.FULL_MECA.PVARIPR, LC.ZVARIPG),
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
@@ -519,7 +515,7 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_PROJ_MECA.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
+            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_DEPL),),
         ),
         OP.HHO_DEPL_MECA(
             te=456,
@@ -527,7 +523,6 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PDEPLPR, DDL_MECA),
                 (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
-                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),
@@ -586,6 +581,46 @@ class MECA3DGVH_HHO222(Element):
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
             para_out=((SP.PDCEL_I, LC.EDCEL_I),),
         ),
+        OP.PILO_PRED_DEFO(
+            te=425,
+            para_in=(
+                (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
+                (OP.PILO_PRED_DEFO.PCONTMR, ECONTPG),
+                (SP.PDDEPLR, DDL_MECA),
+                (SP.PDEPL0R, DDL_MECA),
+                (SP.PCARCRI, LC.CCARCRI),
+                (SP.PDEPL1R, DDL_MECA),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTYPEPI, LC.CTYPEPI),
+                (OP.PILO_PRED_DEFO.PVARIMR, LC.ZVARIPG),
+                (OP.PILO_PRED_DEFO.PCHHOGT, CHHOGT),
+                (OP.PILO_PRED_DEFO.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.PILO_PRED_DEFO.PCOPILO, LC.ECOPILO),),
+        ),
+        OP.PILO_PRED_ELAS(
+            te=425,
+            para_in=(
+                (SP.PBORNPI, LC.CBORNPI),
+                (SP.PCDTAU, LC.CCDTAU),
+                (OP.PILO_PRED_ELAS.PCOMPOR, LC.CCOMPOR),
+                (OP.PILO_PRED_ELAS.PCONTMR, ECONTPG),
+                (SP.PDDEPLR, DDL_MECA),
+                (SP.PDEPL0R, DDL_MECA),
+                (SP.PCARCRI, LC.CCARCRI),
+                (SP.PDEPL1R, DDL_MECA),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTYPEPI, LC.CTYPEPI),
+                (OP.PILO_PRED_ELAS.PVARIMR, LC.ZVARIPG),
+                (OP.PILO_PRED_ELAS.PCHHOGT, CHHOGT),
+                (OP.PILO_PRED_ELAS.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.PILO_PRED_ELAS.PCOPILO, LC.ECOPILO),),
+        ),
         OP.RAPH_MECA(
             te=485,
             para_in=(
@@ -604,7 +639,7 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RAPH_MECA.PVARIMR, ZVARIPG),
+                (OP.RAPH_MECA.PVARIMR, LC.ZVARIPG),
                 (OP.RAPH_MECA.PCHHOGT, CHHOGT),
                 (OP.RAPH_MECA.PCHHOST, CHHOST),
                 (OP.RAPH_MECA.PCHHOBS, CHHOBS),
@@ -612,7 +647,7 @@ class MECA3DGVH_HHO222(Element):
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
                 (OP.RAPH_MECA.PCONTPR, ECONTPG),
-                (OP.RAPH_MECA.PVARIPR, ZVARIPG),
+                (OP.RAPH_MECA.PVARIPR, LC.ZVARIPG),
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
@@ -645,7 +680,7 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RIGI_MECA_ELAS.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RIGI_MECA_ELAS.PVARIMR, ZVARIPG),
+                (OP.RIGI_MECA_ELAS.PVARIMR, LC.ZVARIPG),
                 (OP.RIGI_MECA_ELAS.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
@@ -668,7 +703,7 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RIGI_MECA_TANG.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
+                (OP.RIGI_MECA_TANG.PVARIMR, LC.ZVARIPG),
                 (OP.RIGI_MECA_TANG.PCHHOGT, CHHOGT),
                 (OP.RIGI_MECA_TANG.PCHHOST, CHHOST),
                 (OP.RIGI_MECA_TANG.PCHHOBS, CHHOBS),
@@ -721,7 +756,7 @@ class MECA3DGVH_HHO222(Element):
                 (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
                 (OP.TOU_INI_ELGA.PSIEF_R, ECONTPG),
                 (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR),
-                (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
+                (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
             ),
         ),
         OP.TOU_INI_ELNO(
@@ -743,7 +778,9 @@ class MECA3DGVH_HHO222(Element):
             para_out=((SP.PVARC_R, LC.EVARC_R),),
         ),
         OP.VARI_ELNO(
-            te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
+            te=4,
+            para_in=((SP.PVARIGR, LC.ZVARIPG),),
+            para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),),
         ),
         OP.VERI_JACOBIEN(
             te=328, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PCODRET, LC.ECODRET),)
@@ -767,6 +804,42 @@ class MECA3DGVT_HHO222(MECA3DGVH_HHO222):
         ElrefeLoc(
             MT.T15,
             gauss=("RIGI=FPG11", "FPG1=FPG1", "MTGA=FPG11", "MASS=FPG11"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+        ),
+    )
+
+
+class MECA3GVPE_HHO222(MECA3DGVH_HHO222):
+    """Maille pentaèdre / prisme à 21 noeuds pour HHO en quadratique"""
+
+    meshType = MT.PENTA21
+    nodes = (
+        SetOfNodes("EN1", (16, 17, 18, 19, 20)),
+        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)),
+        SetOfNodes("EN3", (21,)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.P21,
+            gauss=("RIGI=FPG21", "FPG1=FPG1", "MTGA=FPG21", "MASS=FPG21"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+        ),
+    )
+
+
+class MECA3GVPY_HHO222(MECA3DGVH_HHO222):
+    """Maille pyramide à 19 noeuds pour HHO en quadratique"""
+
+    meshType = MT.PYRAM19
+    nodes = (
+        SetOfNodes("EN1", (14, 15, 16, 17, 18)),
+        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)),
+        SetOfNodes("EN3", (19,)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.P19,
+            gauss=("RIGI=FPG10", "FPG1=FPG1", "MTGA=FPG10", "MASS=FPG10"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
     )

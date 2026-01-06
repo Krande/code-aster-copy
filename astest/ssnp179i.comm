@@ -97,7 +97,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DY",
-        VALE_CALC=7.008553295062805,
+        VALE_CALC=7.007316702946355,
         VALE_REFE=7.00031,
         CRITERE="RELATIF",
         PRECISION=2.0e-3,
@@ -112,7 +112,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-6.213903011405943,
+        VALE_CALC=-6.217573330134226,
         VALE_REFE=-6.23907,
         CRITERE="RELATIF",
         PRECISION=1.0e-2,
@@ -138,7 +138,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DY",
-        VALE_CALC=1.4776466721085686,
+        VALE_CALC=1.4772763270784899,
         CRITERE="RELATIF",
     )
 )
@@ -150,7 +150,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-0.19904136283793836,
+        VALE_CALC=-0.19941309573856089,
         CRITERE="RELATIF",
     )
 )

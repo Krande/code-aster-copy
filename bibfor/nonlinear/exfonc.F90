@@ -408,10 +408,10 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
             call utmess('F', 'MECANONLINE5_61')
         end if
         if (l_pilo) then
-            call utmess('F', 'MECANONLINE5_62')
-        end if
-        if (l_line_search) then
-            call utmess('F', 'MECANONLINE5_63')
+            call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=typilo)
+            if (typilo .ne. 'DEFORMATION' .and. typilo .ne. "PRED_ELAS") then
+                call utmess('F', 'MECANONLINE5_62')
+            end if
         end if
         if (l_rom) then
             call utmess('F', 'MECANONLINE5_65')

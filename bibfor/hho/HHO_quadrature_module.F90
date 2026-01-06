@@ -23,6 +23,7 @@ module HHO_quadrature_module
     use HHO_measure_module
     use HHO_geometry_module
     use HHO_utils_module, only: CellNameL2S
+    use compensated_ops_module, only: sum, dot_product
 !
     implicit none
 !
@@ -46,8 +47,8 @@ module HHO_quadrature_module
 ! --------------------------------------------------------------------------------------------------
 !
     type HHO_Quadrature
-        integer(kind=8)                             :: order = 0
-        integer(kind=8)                             :: nbQuadPoints = 0
+        integer(kind=8)                     :: order = 0
+        integer(kind=8)                     :: nbQuadPoints = 0
         real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
         real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
@@ -182,8 +183,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)        :: coorno
-        integer(kind=8), intent(in)                             :: ndim
+        real(kind=8), dimension(3, 4), intent(in)       :: coorno
+        integer(kind=8), intent(in)                     :: ndim
         class(HHO_quadrature), intent(inout)            :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -311,7 +312,7 @@ contains
         integer(kind=8), parameter :: max_order = 14
         integer(kind=8), parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) ::rules
-        integer(kind=8) :: dimp, nbpg, ipg, ino
+        integer(kind=8) :: dimp, nbpg, ipg, idim
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
 !
 ! ----- check order of integration
@@ -335,8 +336,8 @@ contains
             y = coorpg(dimp*(ipg-1)+2)
             coorac = 0.d0
             call hhoGeomBasis(MT_TRIA3, (/x, y, 0.d0/), basis)
-            do ino = 1, 3
-                coorac(1:3) = coorac(1:3)+coorno(1:3, ino)*basis(ino)
+            do idim = 1, 3
+                coorac(idim) = dot_product(coorno(idim, 1:3), basis(1:3))
             end do
             this%points_param(1:2, ipg) = (/x, y/)
             this%points(1:3, ipg) = coorac
@@ -373,7 +374,7 @@ contains
         integer(kind=8), parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) :: rules
         character(len=8) :: typma_s
-        integer(kind=8) :: dimp, nbpg, ipg, ino, iret
+        integer(kind=8) :: dimp, nbpg, ipg, ino, iret, idim
         integer(kind=8) :: itri, n_simp, ind_simp(6, 4)
         real(kind=8) :: coor_tri(3, 3), xe(3)
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
@@ -409,8 +410,8 @@ contains
                 y = coorpg(dimp*(ipg-1)+2)
                 coorac = 0.d0
                 call hhoGeomBasis(MT_TRIA3, (/x, y, 0.d0/), basis)
-                do ino = 1, 3
-                    coorac(1:3) = coorac(1:3)+coor_tri(1:3, ino)*basis(ino)
+                do idim = 1, 3
+                    coorac(idim) = dot_product(coor_tri(idim, 1:3), basis(1:3))
                 end do
                 this%points(1:3, this%nbQuadPoints+ipg) = coorac
                 this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)
@@ -672,13 +673,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadCell(this, hhoCell, order, axis, split, param)
+    subroutine hhoGetQuadCell(this, hhoCell, order, axis, split, param, adapt)
 !
         implicit none
 !
         type(HHO_cell), intent(in)            :: hhoCell
-        integer(kind=8), intent(in)                   :: order
-        aster_logical, intent(in), optional   :: axis, split, param
+        integer(kind=8), intent(in)           :: order
+        aster_logical, intent(in), optional   :: split, param, adapt, axis
         class(HHO_quadrature), intent(out)    :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -693,9 +694,23 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: ipg
-        aster_logical :: split_simpl, param_
+        aster_logical :: split_simpl, param_, adapt_, axis_
 !
         this%order = order
+!
+        adapt_ = ASTER_TRUE
+        if (present(adapt)) then
+            adapt_ = adapt
+        end if
+!
+        axis_ = ASTER_FALSE
+        if (present(adapt)) then
+            axis_ = axis
+        end if
+!
+        if (axis_ .and. adapt_) then
+            this%order = this%order+1
+        end if
 !
         if (present(split)) then
             split_simpl = split
@@ -743,14 +758,12 @@ contains
             end select
         end if
 !
-        if (present(axis)) then
-            if (axis) then
-                do ipg = 1, this%nbQuadPoints
-                    this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
-                end do
-            end if
+        if (axis_) then
+            do ipg = 1, this%nbQuadPoints
+                this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
+            end do
         end if
-
+!
         ASSERT(this%nbQuadPoints <= MAX_QP)
 !
     end subroutine
@@ -759,13 +772,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadFace(this, hhoFace, order, axis, split, param)
+    subroutine hhoGetQuadFace(this, hhoFace, order, axis, split, param, adapt)
 !
         implicit none
 !
         type(HHO_face), intent(in)          :: hhoFace
-        integer(kind=8), intent(in)                 :: order
-        aster_logical, intent(in), optional :: axis, split, param
+        integer(kind=8), intent(in)         :: order
+        aster_logical, intent(in), optional :: adapt, split, param, axis
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -780,9 +793,23 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: ipg
-        aster_logical :: split_simpl, param_
+        aster_logical :: split_simpl, param_, adapt_, axis_
 !
         this%order = order
+!
+        adapt_ = ASTER_TRUE
+        if (present(adapt)) then
+            adapt_ = adapt
+        end if
+!
+        axis_ = ASTER_FALSE
+        if (present(adapt)) then
+            axis_ = axis
+        end if
+!
+        if (axis_ .and. adapt_) then
+            this%order = this%order+1
+        end if
 !
         if (present(split)) then
             split_simpl = split
@@ -822,14 +849,12 @@ contains
             end select
         end if
 !
-        if (present(axis)) then
-            if (axis) then
-                do ipg = 1, this%nbQuadPoints
-                    this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
-                end do
-            end if
+        if (axis_) then
+            do ipg = 1, this%nbQuadPoints
+                this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
+            end do
         end if
-
+!
         ASSERT(this%nbQuadPoints <= MAX_QP)
 !
     end subroutine
@@ -1030,13 +1055,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoinitCellFamiQ(this, hhoCell, npg, axis)
+    subroutine hhoinitCellFamiQ(this, hhoCell, npg)
 !
         implicit none
 !
         type(HHO_cell), intent(in)          :: hhoCell
-        integer(kind=8), intent(in)                 :: npg
-        aster_logical, intent(in), optional :: axis
+        integer(kind=8), intent(in)         :: npg
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1045,32 +1069,17 @@ contains
 !   Get the quadrature rules from a familly definied in the catalogue of code_aster
 !   In hhoCell  : hhoCell
 !   In npg      : number of quadrature points
-!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this    : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
-        integer(kind=8) :: order, ipg
-        aster_logical :: laxis
+        integer(kind=8) :: order
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
-        laxis = ASTER_FALSE
-        if (present(axis)) then
-            laxis = axis
-        end if
-!
         call hhoSelectOrder(hhoCell%typema, npg, order)
 !
-        call hhoGetQuadCell(this, hhoCell, order, laxis, ASTER_FALSE)
-!
-        if (present(axis)) then
-            if (axis) then
-                do ipg = 1, this%nbQuadPoints
-                    this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
-                end do
-            end if
-        end if
+        call hhoGetQuadCell(this, hhoCell, order, hhoCell%axis, ASTER_FALSE, adapt=ASTER_FALSE)
 !
     end subroutine
 !
@@ -1078,13 +1087,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoinitFaceFamiQ(this, hhoFace, npg, axis)
+    subroutine hhoinitFaceFamiQ(this, hhoFace, npg)
 !
         implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
-        integer(kind=8), intent(in)                 :: npg
-        aster_logical, intent(in), optional :: axis
+        integer(kind=8), intent(in)         :: npg
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1093,25 +1101,19 @@ contains
 !   Get the quadrature rules from a familly definied in the catalogue of code_aster
 !   In hhoFace  : hhoFace
 !   In npg      : number of quadrature points
-!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this    : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: order
-        aster_logical :: laxis
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
-        laxis = ASTER_FALSE
-        if (present(axis)) then
-            laxis = axis
-        end if
-!
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
-        call hhoGetQuadFace(this, hhoFace, order, laxis, ASTER_FALSE)
+        call hhoGetQuadFace(this, hhoFace, order, hhoFace%axis, &
+                            ASTER_FALSE, adapt=ASTER_FALSE)
 !
     end subroutine
 !

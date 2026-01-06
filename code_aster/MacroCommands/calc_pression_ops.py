@@ -24,7 +24,7 @@ from ..CodeCommands import CALC_CHAMP, CREA_CHAMP, CREA_RESU, FORMULE, MODI_MAIL
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 
-def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PRECISION, **args):
+def calc_pression_ops(self, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PRECISION, **args):
     """
     Macro permettant le calcul des pressions aux interfaces d'un solide
     à partir du champ de contraintes sigma_n. Elle fonctionne
@@ -36,6 +36,7 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
     insts = args.get("INST") or RESULTAT.LIST_VARI_ACCES()["INST"]
 
     model = RESULTAT.getModel()
+    MAILLAGE = RESULTAT.getMesh()
 
     # BLINDAGE : on poursuit le calcul uniquement que si le groupe n'a pas
     # d'élément de structure
@@ -130,15 +131,27 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
         )
 
         if GEOMETRIE == "DEFORMEE":
-            __depl = CREA_CHAMP(
-                TYPE_CHAM="NOEU_DEPL_R",
-                OPERATION="EXTR",
-                RESULTAT=RESULTAT,
-                NOM_CHAM="DEPL",
-                INST=inst,
-                PRECISION=PRECISION,
-                CRITERE=CRITERE,
-            )
+            if model.existsHHO():
+                __depl = CREA_CHAMP(
+                    TYPE_CHAM="NOEU_DEPL_R",
+                    OPERATION="EXTR",
+                    RESULTAT=RESULTAT,
+                    NOM_CHAM="HHO_DEPL",
+                    INST=inst,
+                    PRECISION=PRECISION,
+                    CRITERE=CRITERE,
+                )
+            else:
+                __depl = CREA_CHAMP(
+                    TYPE_CHAM="NOEU_DEPL_R",
+                    OPERATION="EXTR",
+                    RESULTAT=RESULTAT,
+                    NOM_CHAM="DEPL",
+                    INST=inst,
+                    PRECISION=PRECISION,
+                    CRITERE=CRITERE,
+                )
+
             __mdepl = CREA_CHAMP(
                 TYPE_CHAM="NOEU_DEPL_R", OPERATION="COMB", COMB=_F(CHAM_GD=__depl, COEF_R=-1.0)
             )

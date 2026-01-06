@@ -109,6 +109,7 @@ ECONTNO = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY")
 )
 
+DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -165,6 +166,15 @@ class MECA_2D_HHO2_F(Element):
         OP.COOR_ELGA(
             te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
+        OP.HHO_DEPL_MECA(
+            te=427,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PDEPLPR, DDL_MECA),
+                (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
+        ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
         ),
@@ -197,3 +207,13 @@ class MECA_2D_HHO2_F(Element):
             ),
         ),
     )
+
+
+# ------------------------------------------------------------
+class MECA_2DGV_HHO2_F(MECA_2D_HHO2_F):
+    """Please document this element"""
+
+
+# ------------------------------------------------------------
+class MECA_2DAX_HHO2_F(MECA_2D_HHO2_F):
+    """Please document this element"""

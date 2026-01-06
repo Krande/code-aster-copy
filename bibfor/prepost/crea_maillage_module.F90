@@ -1913,7 +1913,7 @@ contains
         integer(ip), intent(in), optional :: parent, isub, face_id
         integer(ip) :: edge_id
 ! ----------------------------------------------------------------------
-        integer(ip) :: nno, nno_sort(3), old_size
+        integer(ip) :: nno, nno_sort(4), old_size
         integer(ip), allocatable :: new_edges(:)
         aster_logical :: find
 !

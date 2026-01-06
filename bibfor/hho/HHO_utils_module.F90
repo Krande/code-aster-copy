@@ -417,17 +417,17 @@ contains
 !   Out resu        : result of the product
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
 !
         resu = 0.d0
 !
         if (ndim == 2) then
-            resu(1) = SymMat(1)*vect(1)+SymMat(4)/rac2*vect(2)
-            resu(2) = SymMat(2)*vect(2)+SymMat(4)/rac2*vect(1)
+            resu(1) = SymMat(1)*vect(1)+SymMat(4)*un_rac2*vect(2)
+            resu(2) = SymMat(2)*vect(2)+SymMat(4)*un_rac2*vect(1)
         else if (ndim == 3) then
-            resu(1) = SymMat(1)*vect(1)+(SymMat(4)*vect(2)+SymMat(5)*vect(3))/rac2
-            resu(2) = SymMat(2)*vect(2)+(SymMat(4)*vect(1)+SymMat(6)*vect(3))/rac2
-            resu(3) = SymMat(3)*vect(3)+(SymMat(5)*vect(1)+SymMat(6)*vect(2))/rac2
+            resu(1) = SymMat(1)*vect(1)+(SymMat(4)*vect(2)+SymMat(5)*vect(3))*un_rac2
+            resu(2) = SymMat(2)*vect(2)+(SymMat(4)*vect(1)+SymMat(6)*vect(3))*un_rac2
+            resu(3) = SymMat(3)*vect(3)+(SymMat(5)*vect(1)+SymMat(6)*vect(2))*un_rac2
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -584,7 +584,7 @@ contains
                 exit
             end if
             do i = 1, j-1
-                if (abs(mat(i, j)) .ge. 1.d-11) then
+                if (abs(mat(i, j)) .ge. 1.d-10) then
                     id = ASTER_FALSE
                     exit
                 end if

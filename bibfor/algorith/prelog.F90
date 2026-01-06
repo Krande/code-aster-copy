@@ -99,7 +99,7 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb, &
     end if
 
 ! - Get previous stress from internal state variables
-    tlogPrev(1:2*ndim) = vim(lgpg-6+1:lgpg-6+1+2*ndim)*vrac2
+    tlogPrev(1:2*ndim) = vim(lgpg-6+1:lgpg-6+2*ndim)*vrac2(1:2*ndim)
 !
 999 continue
 !

@@ -130,7 +130,7 @@ TEST_RESU(
             NOM_CHAM="HHO_DEPL",
             NOM_CMP="DZ",
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=0.10091044871518653,
+            VALE_CALC=0.10091197433287388,
             VALE_REFE=deplRefe,
             PRECISION=deplTole,
         ),

@@ -35,6 +35,10 @@ PVARIMR = InputParameter(phys=PHY.VARI_R)
 
 PCOPILO = OutputParameter(phys=PHY.PILO_R, type="ELGA")
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
+
 
 PILO_PRED_DEFO = Option(
     para_in=(
@@ -50,6 +54,8 @@ PILO_PRED_DEFO = Option(
         SP.PMATERC,
         SP.PTYPEPI,
         PVARIMR,
+        PCHHOGT,
+        PCHHOBS,
     ),
     para_out=(PCOPILO,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),

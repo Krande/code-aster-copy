@@ -220,8 +220,6 @@ ECOEQPG = LocatedComponents(
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
 
-ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
-
 # too large to be saved so used size 1
 CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[1]",))
 
@@ -234,7 +232,7 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[15]",)), ("EN2", ()), ("EN3", ("X[231]"))),
 )
 
-CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
+
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[10]",))
@@ -345,8 +343,8 @@ class MECA_DPQ9_HHO444(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.FULL_MECA.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (SP.PVARIMP, ZVARIPG),
-                (OP.FULL_MECA.PVARIMR, ZVARIPG),
+                (SP.PVARIMP, LC.ZVARIPG),
+                (OP.FULL_MECA.PVARIMR, LC.ZVARIPG),
                 (OP.FULL_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=(
@@ -354,7 +352,7 @@ class MECA_DPQ9_HHO444(Element):
                 (OP.FULL_MECA.PCONTPR, ECONTPG),
                 (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
-                (OP.FULL_MECA.PVARIPR, ZVARIPG),
+                (OP.FULL_MECA.PVARIPR, LC.ZVARIPG),
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
@@ -384,7 +382,6 @@ class MECA_DPQ9_HHO444(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PDEPLPR, DDL_MECA),
                 (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
-                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),
@@ -443,6 +440,46 @@ class MECA_DPQ9_HHO444(Element):
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
             para_out=((SP.PDCEL_I, LC.EDCEL_I),),
         ),
+        OP.PILO_PRED_DEFO(
+            te=495,
+            para_in=(
+                (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
+                (OP.PILO_PRED_DEFO.PCONTMR, LC.EGIG2DR),
+                (SP.PDDEPLR, DDL_MECA),
+                (SP.PDEPL0R, DDL_MECA),
+                (SP.PCARCRI, LC.CCARCRI),
+                (SP.PDEPL1R, DDL_MECA),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTYPEPI, LC.CTYPEPI),
+                (OP.PILO_PRED_DEFO.PVARIMR, LC.ZVARIPG),
+                (OP.PILO_PRED_DEFO.PCHHOGT, CHHOGT),
+                (OP.PILO_PRED_DEFO.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.PILO_PRED_DEFO.PCOPILO, LC.ECOPILO),),
+        ),
+        OP.PILO_PRED_ELAS(
+            te=495,
+            para_in=(
+                (SP.PBORNPI, LC.CBORNPI),
+                (SP.PCDTAU, LC.CCDTAU),
+                (OP.PILO_PRED_ELAS.PCOMPOR, LC.CCOMPOR),
+                (OP.PILO_PRED_ELAS.PCONTMR, LC.EGIG2DR),
+                (SP.PDDEPLR, DDL_MECA),
+                (SP.PDEPL0R, DDL_MECA),
+                (SP.PCARCRI, LC.CCARCRI),
+                (SP.PDEPL1R, DDL_MECA),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTYPEPI, LC.CTYPEPI),
+                (OP.PILO_PRED_ELAS.PVARIMR, LC.ZVARIPG),
+                (OP.PILO_PRED_ELAS.PCHHOGT, CHHOGT),
+                (OP.PILO_PRED_ELAS.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.PILO_PRED_ELAS.PCOPILO, LC.ECOPILO),),
+        ),
         OP.RAPH_MECA(
             te=455,
             para_in=(
@@ -461,13 +498,13 @@ class MECA_DPQ9_HHO444(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RAPH_MECA.PVARIMR, ZVARIPG),
+                (OP.RAPH_MECA.PVARIMR, LC.ZVARIPG),
                 (OP.RAPH_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
                 (OP.RAPH_MECA.PCONTPR, ECONTPG),
-                (OP.RAPH_MECA.PVARIPR, ZVARIPG),
+                (OP.RAPH_MECA.PVARIPR, LC.ZVARIPG),
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
@@ -510,7 +547,7 @@ class MECA_DPQ9_HHO444(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RIGI_MECA_ELAS.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RIGI_MECA_ELAS.PVARIMR, ZVARIPG),
+                (OP.RIGI_MECA_ELAS.PVARIMR, LC.ZVARIPG),
                 (OP.RIGI_MECA_ELAS.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
@@ -533,7 +570,7 @@ class MECA_DPQ9_HHO444(Element):
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RIGI_MECA_TANG.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
+                (OP.RIGI_MECA_TANG.PVARIMR, LC.ZVARIPG),
                 (OP.RIGI_MECA_TANG.PCHHOBS, CHHOBS),
             ),
             para_out=(
@@ -586,7 +623,7 @@ class MECA_DPQ9_HHO444(Element):
                 (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
                 (OP.TOU_INI_ELGA.PSIEF_R, ECONTPG),
                 (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR),
-                (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
+                (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
             ),
         ),
         OP.TOU_INI_ELNO(
@@ -608,7 +645,9 @@ class MECA_DPQ9_HHO444(Element):
             para_out=((SP.PVARC_R, LC.EVARC_R),),
         ),
         OP.VARI_ELNO(
-            te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
+            te=4,
+            para_in=((SP.PVARIGR, LC.ZVARIPG),),
+            para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),),
         ),
         OP.VERI_JACOBIEN(
             te=328, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PCODRET, LC.ECODRET),)

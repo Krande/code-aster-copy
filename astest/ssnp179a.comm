@@ -88,6 +88,25 @@ resnonl = CALC_CHAMP(
     RESULTAT=resnonl,
 )
 
+# compute nodale reaction
+TAB = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="reac_noda",
+        GROUP_MA="Encast",
+        RESULTAT=resnonl,
+        NOM_CHAM="FORC_NODA",
+        NOM_CMP="DY",
+        OPERATION="MOYENNE_ARITH",
+    )
+)
+
+
+# IMPR_TABLE(UNITE=6, TABLE=TAB)
+
+TEST_TABLE(
+    NOM_PARA="MOYENNE", TABLE=TAB, VALE_CALC=-0.15151515151515, FILTRE=_F(NOM_PARA="INST", VALE=1.0)
+)
+
 
 TEST_RESU(
     RESU=_F(

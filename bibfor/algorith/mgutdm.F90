@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi, &
+subroutine mgutdm(mdgenz, nmsstz, nusst, questiz, repi, &
                   repkz)
     implicit none
 !
@@ -65,7 +65,8 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi, &
 !
     integer(kind=8) :: repi, iret, llmcl, llref, nuss, nusst
     integer(kind=8) :: vali
-    character(len=*) :: questi
+    character(len=*) :: questiz
+    character(len=16) :: questi
     character(len=24) :: repk
     character(len=24) :: valk(2), nume
     character(len=8) :: modgen, nommcl, basmod, nomsst
@@ -80,6 +81,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi, &
     modgen = mdgenz
     nomsst = nmsstz
     repk = repkz
+    questi = questiz
 !
     if (nomsst(1:1) .ne. ' ') then
         call jenonu(jexnom(modgen//'      .MODG.SSNO', nomsst), nuss)
@@ -107,30 +109,30 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi, &
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
         nommcl = zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
-        repk(1:8) = zk24(llref)
+        repk(1:8) = zk24(llref) (1:8)
     else if (questi(1:12) .eq. 'NOM_MAILLAGE') then
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
         nommcl = zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
-        repk(1:8) = zk24(llref+1)
+        repk(1:8) = zk24(llref+1) (1:8)
     else if (questi(1:12) .eq. 'NOM_NUME_DDL') then
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
-        nommcl = zk8(llmcl)
+        nommcl = zk8(llmcl) (1:8)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
-        basmod(1:8) = zk24(llref)
+        basmod(1:8) = zk24(llref) (1:8)
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=repk)
     else if (questi(1:12) .eq. 'NOM_MODELE  ') then
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
         nommcl = zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
-        basmod(1:8) = zk24(llref)
+        basmod(1:8) = zk24(llref) (1:8)
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=nume)
         call dismoi('NOM_MODELE', nume, 'NUME_DDL', repk=repk)
     else if (questi(1:15) .eq. 'NOM_LIST_INTERF') then
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
         nommcl = zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
-        basmod(1:8) = zk24(llref)
+        basmod(1:8) = zk24(llref) (1:8)
 !       call utimsd(6, 2, .false._1, .true._1,basmod(1:8)//'           .REFD', 1, ' ')
         call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=repk, arret='C', &
                     ier=iret)

@@ -45,7 +45,7 @@ mater = DEFI_MATERIAU(
     ROUSSELIER_FO=_F(D=cst1, SIGM_1=cst2, PORO_INIT=cst1),
 )
 
-test.assertEqual(mater.getNumberOfMaterialProperties(), 6, msg="number of material properties")
+test.assertEqual(mater.size(), 6, msg="number of material properties")
 
 Kinv = 3.2841e-4
 Kv = 1.0 / Kinv
@@ -78,7 +78,7 @@ matvisco = DEFI_MATERIAU(
     ),
 )
 
-test.assertEqual(matvisco.getNumberOfMaterialProperties(), 2, msg="number of material properties")
+test.assertEqual(matvisco.size(), 2, msg="number of material properties")
 
 E = 2.0e05
 NU = 0.3
@@ -114,11 +114,11 @@ matord = DEFI_MATERIAU(
     )
 )
 
-test.assertEqual(matord.getNumberOfMaterialProperties(), 1, msg="number of material properties")
+test.assertEqual(matord.size(), 1, msg="number of material properties")
 
 matord = DEFI_MATERIAU(reuse=matord, MATER=matord, MONO_VISC1=_F(N=0.0, K=1.0e11, C=0.0))
 
-test.assertEqual(matord.getNumberOfMaterialProperties(), 2, msg="number of material properties")
+test.assertEqual(matord.size(), 2, msg="number of material properties")
 
 BIDON = DEFI_CONSTANTE(VALE=1.0)
 
@@ -167,7 +167,7 @@ matthm = DEFI_MATERIAU(
     THM_INIT=_F(TEMP=293.0, PRE1=1.0, PRE2=0.1e6, PORO=0.14, PRES_VAPE=2269.8),
 )
 
-test.assertEqual(matthm.getNumberOfMaterialProperties(), 7, msg="number of material properties")
+test.assertEqual(matthm.size(), 7, msg="number of material properties")
 
 matrag1 = DEFI_MATERIAU(
     ELAS=_F(E=32000.0e06, NU=0.25),
@@ -181,7 +181,7 @@ matrag1 = DEFI_MATERIAU(
     ),
 )
 
-test.assertEqual(matrag1.getNumberOfMaterialProperties(), 2, msg="number of material properties")
+test.assertEqual(matrag1.size(), 2, msg="number of material properties")
 
 matrag2 = DEFI_MATERIAU(
     ELAS=_F(E=32000.0e06, NU=0.25),
@@ -205,7 +205,7 @@ matrag2 = DEFI_MATERIAU(
     ),
 )
 
-test.assertEqual(matrag2.getNumberOfMaterialProperties(), 2, msg="number of material properties")
+test.assertEqual(matrag2.size(), 2, msg="number of material properties")
 
 matdis = DEFI_MATERIAU(
     DIS_CONTACT=_F(
@@ -217,7 +217,7 @@ matdis = DEFI_MATERIAU(
     )
 )
 
-test.assertEqual(matdis.getNumberOfMaterialProperties(), 1, msg="number of material properties")
+test.assertEqual(matdis.size(), 1, msg="number of material properties")
 
 G = 3176517.07 + 2344699.5j
 K = complex(2.22e9, 0)
@@ -226,7 +226,7 @@ rho_d = 1460
 
 matcmplx = DEFI_MATERIAU(ELAS_VISCO=_F(G=G, NU=nu, RHO=rho_d))
 
-test.assertEqual(matcmplx.getNumberOfMaterialProperties(), 1, msg="number of material properties")
+test.assertEqual(matcmplx.size(), 1, msg="number of material properties")
 
 TRCMNDA = DEFI_TRC(
     HIST_EXP=(

@@ -171,7 +171,6 @@ IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=STNL))
 # via la macro-commandes
 STNL = CALC_PRESSION(
     reuse=STNL,
-    MAILLAGE=MA,
     RESULTAT=STNL,
     GROUP_MA=("CONT1", "CONT2"),
     INST=(0.1, 0.1, 1.0),

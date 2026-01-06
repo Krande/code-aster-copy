@@ -29,6 +29,8 @@ module Behaviour_module
     use BehaviourStrain_module
     use BehaviourStrain_type
     use BehaviourMGIS_type
+    use HHO_quadrature_module
+    use HHO_type
     use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
 ! ==================================================================================================
     implicit none
@@ -38,7 +40,7 @@ module Behaviour_module
     public :: behaviourSetParaCell, behaviourSetParaPoin, setFromCompor
     public :: behaviourPrepESVAPoin, behaviourPrepStrain, behaviourPrepESVAExte
     public :: behaviourPrepESVAGeom, behaviourPrepModel, behaviourPredictionStress
-    public :: behaviourCoorGauss
+    public :: behaviourCoorGauss, behaviourPrepESVAGeomHHO
     private :: computeStrainESVA, computeStrainMeca
     private :: varcIsGEOM, isSolverIsExte
     private :: prepEltSize1, prepGradVelo
@@ -643,19 +645,93 @@ contains
 
 ! ----- Compute gradient of velocity
         if (BEHinteg%behavESVA%tabcod(GRADVELO) .eq. 1) then
-        if (.not. present(deplm_) .or. .not. present(ddepl_)) then
-            call utmess('F', 'COMPOR2_26')
-        end if
-        call prepGradVelo(nno, npg, ndim, &
-                          jv_poids, jv_func, jv_dfunc, &
-                          geom, deplm_, ddepl_, &
-                          BEHInteg%behavESVA%behavESVAGeom)
+            if (.not. present(deplm_) .or. .not. present(ddepl_)) then
+                call utmess('F', 'COMPOR2_26')
+            end if
+            call prepGradVelo(nno, npg, ndim, &
+                              jv_poids, jv_func, jv_dfunc, &
+                              geom, deplm_, ddepl_, &
+                              BEHInteg%behavESVA%behavESVAGeom)
         end if
 
 ! ----- Coordinates of Gauss points (always)
         call behaviourCoorGauss(nno, npg, ndim, &
                                 jv_func, geom, &
                                 BEHInteg%behavESVA%behavESVAGeom)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! behaviourPrepESVAGeom
+!
+! Prepare external state variables - Geometry
+!
+! In  nno              : number of nodes
+! In  npg              : number of Gauss points
+! In  ndim             : dimension of problem (2 or 3)
+! In  jv_poids         : JEVEUX adress for weight of Gauss points
+! In  jv_func          : JEVEUX adress for shape functions
+! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
+! In  geom             : initial coordinates of nodes
+! IO  BEHinteg         : main object for managing the integration of behavior laws
+! In  deplm            : displacements of nodes at beginning of time step
+! In  ddepl            : displacements of nodes since beginning of time step
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine behaviourPrepESVAGeomHHO(hhoCell, hhoQuad, BEHinteg)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+!   ------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: ndim, npg
+        real(kind=8) :: lc
+!
+        if (LDC_PREP_DEBUG .eq. 1) then
+            WRITE (6, *) '<DEBUG> Preparation of external state variable for each HHO element'
+        end if
+!
+        ndim = hhoCell%ndim
+        npg = hhoQuad%nbQuadPoints
+
+! ----- Compute element size 1
+        if (BEHinteg%behavESVA%tabcod(ELTSIZE1) .eq. 1) then
+            if (ndim == 3) then
+                if (npg .ge. 9) then
+                    lc = hhoCell%measure**0.33333333333333d0
+                else
+                    lc = sqrt(2.0)*hhoCell%measure**0.33333333333333d0
+                end if
+            else
+                if (npg .ge. 5) then
+                    lc = sqrt(hhoCell%measure)
+                else
+                    lc = sqrt(2.0*hhoCell%measure)
+                end if
+            end if
+            ! ------ Save values
+            BEHInteg%behavESVA%behavESVAGeom%lElemSize1 = ASTER_TRUE
+            BEHInteg%behavESVA%behavESVAGeom%elemSize1 = lc
+        end if
+
+! ----- Compute gradient of velocity
+        if (BEHinteg%behavESVA%tabcod(GRADVELO) .eq. 1) then
+            ASSERT(ASTER_FALSE)
+        end if
+
+! ----- Coordinates of Gauss points (always)
+        BEHInteg%behavESVA%behavESVAGeom%coorElga = 0.d0
+        ASSERT(npg .le. VARC_GEOM_NBMAXI)
+!
+        if (LDC_PREP_DEBUG .eq. 1) then
+            WRITE (6, *) '<DEBUG>  Compute coordinates of Gauss points'
+        end if
+
+        BEHInteg%behavESVA%behavESVAGeom%coorElga(1:npg, 1:ndim) = &
+            hhoQuad%points(1:npg, 1:ndim)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

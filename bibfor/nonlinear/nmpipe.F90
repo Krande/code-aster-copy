@@ -22,11 +22,12 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
                   typpil, carele)
 !
     use NonLin_Datastructure_type
+    use HHO_precalc_module, only: hhoAddInputField
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -88,14 +89,14 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: nbout, nbin
-    parameter(nbout=1, nbin=24)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
+    integer(kind=8) :: nbout, mxchin
+    parameter(nbout=1, mxchin=24)
+    character(len=8) :: lpaout(nbout), lpain(mxchin)
+    character(len=19) :: lchout(nbout), lchin(mxchin)
 !
     integer(kind=8) :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
     integer(kind=8) :: jcesd, jcesl, ja0a1, ja0, ja1, ja2, ja3, jtrav
-    integer(kind=8) :: iret, ja4
+    integer(kind=8) :: iret, ja4, nbin
     character(len=8) :: cpar
     character(len=19) :: copilo, copils, ctau
     character(len=24) :: a0a1, trav
@@ -134,7 +135,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout, &
+    call inical(mxchin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
@@ -189,6 +190,12 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
     lchin(13) = carele(1:8)//'.CARMASSI'
     lpain(14) = 'PCARCRI'
     lchin(14) = ds_constitutive%carcri(1:19)
+    nbin = 14
+!
+! - HHO
+!
+    call hhoAddInputField(modele, mxchin, lchin, lpain, nbin)
+!
 !
 ! --- REMPLISSAGE DU CHAMP DE SORTIE
 !

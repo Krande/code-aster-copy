@@ -56,6 +56,7 @@ module HHO_matrix_module
         procedure, pass :: copySymU => hhoMatriceCopySymU
         procedure, pass :: copy => hhoMatriceCopy
         procedure, pass :: add => hhoMatriceAdd
+        procedure, pass :: addSubPart => hhoMatriceAddSub
         procedure, pass :: prune => hhoMatricePrune
         procedure, pass :: dot => hhoMatriceDot
 !
@@ -65,6 +66,7 @@ module HHO_matrix_module
     private  :: hhoMatriceInit, hhoMatriceFree, hhoMatriceWrite, hhoMatriceSetValue
     private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU, hhoMatriceCopy
     private  :: hhoMatriceAdd, hhoMatricePrune, hhoMatriceDot
+    private  :: hhoMatriceAddSub
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -292,6 +294,41 @@ contains
 !
         do j = 1, this%ncols
             call daxpy_1(this%nrows, alpha, mat%m(:, j), this%m(:, j))
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatriceAddSub(this, mat, row_offset, col_offset, alpha_)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(inout) :: this
+        type(HHO_matrix), intent(in) :: mat
+        integer(kind=8), intent(in) :: row_offset, col_offset
+        real(kind=8), intent(in), optional :: alpha_
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print matrix
+!   In mat   : matrix to print
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: j, j2
+        real(kind=8) :: alpha
+!
+        alpha = 1.d0
+        if (present(alpha_)) alpha = alpha_
+!
+        ASSERT(this%nrows >= mat%nrows+row_offset)
+        ASSERT(this%ncols >= mat%ncols+col_offset)
+!
+        do j = 1, mat%ncols
+            j2 = col_offset+j
+            call daxpy_1(mat%nrows, alpha, mat%m(:, j), this%m(row_offset+1:, j2))
         end do
 !
     end subroutine

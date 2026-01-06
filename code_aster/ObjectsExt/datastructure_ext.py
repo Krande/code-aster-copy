@@ -27,7 +27,7 @@ from libaster import DataStructure
 
 from ..CodeCommands import COPIER
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import deprecated, import_object, injector
+from ..Utilities import import_object, injector
 
 
 @injector(DataStructure)
@@ -124,12 +124,6 @@ class ExtendedDataStructure:
             bool: *True* if the objects are the same.
         """
         return isinstance(other, DataStructure) and self.id() == other.id()
-
-    # transitional functions - to remove later
-    @property
-    @deprecated(case=1, help="Use 'getName()' instead.")
-    def nom(self):
-        return self.getName()
 
 
 # This dictionnary avoids to add the DataStructure "_ext.py" file just

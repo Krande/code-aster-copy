@@ -263,7 +263,7 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
 )
 
-CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
+
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "VARI", "LAG_GV"))
 
 DEPLCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
@@ -322,7 +322,7 @@ class MECA_DGVQ_HHO222(Element):
             te=448,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
-                (SP.PDEPLAR, DDL_MECA),
+                (SP.PDEPLAR, DDL_DEPL),
                 (SP.PGEOMER, NGEOMER),
                 (OP.EPSI_ELGA.PCHHOBS, CHHOBS),
             ),
@@ -395,7 +395,6 @@ class MECA_DGVQ_HHO222(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PDEPLPR, DDL_MECA),
                 (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
-                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),
@@ -426,7 +425,7 @@ class MECA_DGVQ_HHO222(Element):
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_PROJ_MECA.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
+            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_DEPL),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))

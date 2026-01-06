@@ -328,17 +328,17 @@ TEST_TABLE(
 DETRUIRE(NOM=(TAB1))
 
 # ***************************************************************************************************
-# 4) On verifie que les chargements cinématiques sont bien pris en compte par EXTR_MATR
+# 4) On verifie que les chargements cinématiques sont bien pris en compte par getValuesWithDescription
 # ***************************************************************************************************
 
-# 4.1) On compare les matrices pleine et creuse obtenues par EXTR_MATR
+# 4.1) On compare les matrices pleine et creuse obtenues par getValuesWithDescription
 # -------------------------------------------------------------------------------------------------
 
 nu4 = NUME_DDL(MATR_RIGI=rigiel)
 matas4 = ASSE_MATRICE(MATR_ELEM=rigiel, NUME_DDL=nu4, CHAR_CINE=chcine)
 
 Kf = matas4.toNumpy()
-data, rows, cols, dim = matas4.EXTR_MATR(sparse=True)
+data, rows, cols, dim = matas4.getValuesWithDescription()
 import numpy as np
 
 Kspf = np.zeros((dim, dim))
@@ -384,7 +384,7 @@ vecas42 = ASSE_VECTEUR(VECT_ELEM=vecel4, NUME_DDL=nu42)
 u4 = RESOUDRE(MATR=matas42, CHAM_NO=vecas42, CHAM_CINE=vcine42)
 
 vref4 = u4.getValues()
-K = matas42.EXTR_MATR()
+K = matas42.toNumpy()
 
 # Second membre
 F = np.array(

@@ -17121,15 +17121,12 @@ class HHO:
                     FieldOnNodesReal: HHO field
         """
 
-    def projectOnLagrangeSpace(self, hho_field, option=0, average=True):
+    def projectOnLagrangeSpace(self, hho_field, groupOfCells=[], average=True):
         """Project field from HHO-space to Lagrange-space
 
         Arguments:
               hho_field (FieldOnNodesReal): hho field like displacement or thermic
-              option (int): option to use for post-process.
-                            0: use cell DoFs only (default)
-                            1: use cell and face DoFs.
-                            2: use face DoFs only.
+              groupOfCells (list[str]): groups where to compute
               average (bool): average or not the field at nodes.
 
         Returns:

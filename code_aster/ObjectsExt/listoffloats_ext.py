@@ -32,7 +32,7 @@ import numpy as np
 
 from libaster import ListOfFloats
 
-from ..Utilities import deprecated, injector
+from ..Utilities import injector
 
 
 @injector(ListOfFloats)
@@ -62,8 +62,3 @@ class ExtendedListOfFloats:
                 reference).
         """
         return np.array(self.getValues())
-
-    @deprecated(case=3, help="Use 'getValues()' instead")
-    def Valeurs(self):
-        """Deprecated: Use 'getValues()' instead."""
-        return self.getValues()

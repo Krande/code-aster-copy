@@ -35,7 +35,7 @@ from libaster import (
 )
 
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import PETSc, deprecated, injector, profile
+from ..Utilities import PETSc, injector, profile
 
 
 class AssemblyMatrixStateBuilder(InternalStateBuilder):
@@ -230,29 +230,6 @@ class BaseAssemblyMatrix:
             cols = NP.concatenate((elim, cols))
             data = NP.concatenate((NP.ones(len(elim)), data))
         return data, rows, cols, dim
-
-    @deprecated(case=1, help="Use 'toNumpy() or getValuesWithDescription()' instead.")
-    def EXTR_MATR(self, sparse=False, epsilon=None):
-        """Returns the matrix values as `numpy.array`.
-
-        Arguments:
-            sparse (bool): By default, the returned matrix is dense. If *True*
-                the returned matrix is sparse.
-            epsilon (float): Terms less than this value is considered null.
-                By default, no filtering is done.
-                Only used if *sparse=True*.
-
-        Returns:
-            misc: A single `numpy.array` of the dense matrix if *sparse=False*.
-            Or if *sparse=True* a tuple `(data, rows, cols, dim)`. `data`
-            contains the values, `rows` the rows indices, `cols` the columns
-            indices and `dim` the number of terms.
-        """
-
-        if sparse:
-            return self.getValuesWithDescription(epsilon)
-
-        return self.toNumpy()
 
     def norm(self, norm_type):
         """Compute various norm as

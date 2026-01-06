@@ -24,6 +24,8 @@
 from code_aster.Commands import *
 from code_aster import CA
 
+from ssnp179k_forc import compute_loadVSdisplacement
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
@@ -117,8 +119,18 @@ resnonl = CALC_CHAMP(
     reuse=resnonl, FORCE=("FORC_NODA", "REAC_NODA"), CRITERES=("SIEQ_NOEU",), RESULTAT=resnonl
 )
 
+resnonl = CALC_PRESSION(reuse=resnonl, RESULTAT=resnonl, GEOMETRIE="DEFORMEE", GROUP_MA=("load",))
+
+TAB = compute_loadVSdisplacement(resnonl, ["Encast"], NOM_CMP="DY")
+
 
 # same result than ssnp179k since C_GRAD_VARI=0.0
+
+TEST_TABLE(
+    NOM_PARA="FDY", TABLE=TAB, VALE_CALC=-0.15151515151515, FILTRE=_F(NOM_PARA="INST", VALE=1.0)
+)
+
+
 TEST_RESU(
     RESU=_F(
         INST=1.0,
@@ -142,7 +154,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-6.2059596788488784,
+        VALE_CALC=-6.2072392918821642,
         VALE_REFE=-6.23907,
         CRITERE="RELATIF",
         PRECISION=3.0e-2,
@@ -226,6 +238,18 @@ TEST_RESU(
 TEST_RESU(
     RESU=_F(
         INST=1.0,
+        GROUP_NO=("A",),
+        RESULTAT=resnonl,
+        NOM_CHAM="PRES_NOEU",
+        NOM_CMP="PRES",
+        VALE_CALC=-0.24089604191956326,
+        CRITERE="RELATIF",
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
         GROUP_MA="load",
         RESULTAT=resnonl,
         NOM_CHAM="REAC_NODA",
@@ -245,8 +269,8 @@ hho = CA.HHO(phys_pb)
 
 reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
 # use only face DoFs
-reac_proj = hho.projectOnLagrangeSpace(reac_noda, 2)
-reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, 2, False)
+reac_proj = hho.projectOnLagrangeSpace(reac_noda, ["Encast"])
+reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, ["Encast"], False)
 
 
 TEST_RESU(
@@ -254,7 +278,7 @@ TEST_RESU(
         GROUP_NO="Encast",
         CHAM_GD=reac_proj,
         NOM_CMP="DY",
-        VALE_CALC=8.283208933262936,
+        VALE_CALC=12.454707810405672,
         TYPE_TEST="SOMM_ABS",
         CRITERE="RELATIF",
     )
@@ -265,7 +289,7 @@ TEST_RESU(
         GROUP_NO="Encast",
         CHAM_GD=reac_proj2,
         NOM_CMP="DY",
-        VALE_CALC=10.416834096753952,
+        VALE_CALC=16.72195238415277,
         TYPE_TEST="SOMM_ABS",
         CRITERE="RELATIF",
     )

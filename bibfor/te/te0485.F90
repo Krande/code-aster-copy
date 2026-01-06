@@ -52,7 +52,7 @@ subroutine te0485(nomopt, nomte)
 !
 ! --- Local variables
 !
-    type(HHO_Data) :: hhoData
+    type(HHO_Data) :: hhoDataMk, hhoDataGv
     type(HHO_Cell) :: hhoCell
     type(HHO_Meca_State) :: hhoMecaState
     type(HHO_GV_State) :: hhoGVState
@@ -68,15 +68,16 @@ subroutine te0485(nomopt, nomte)
 !
 ! --- Get HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCell(hhoCell, hhoDataMk)
+    call hhoDataGVInit(hhoDataGv)
 !
 ! --- Get element parameters
 !
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
-    call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-    call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+    call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+    call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
     total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
 !
     if (nomopt /= "RIGI_MECA_TANG" .and. &
@@ -97,17 +98,17 @@ subroutine te0485(nomopt, nomte)
 !
 ! --- Initialize displacement, vari, ...
 !
-    call hhoMecaState%initialize(hhoCell, hhoData, hhoComporState)
-    call hhoGVState%initialize(hhoCell, hhoData, hhoComporState)
+    call hhoMecaState%initialize(hhoCell, hhoDataMk, hhoComporState, hhoDataGv)
+    call hhoGVState%initialize(hhoCell, hhoDataMk, hhoDataGv, hhoComporState)
 !
 ! --- Compute Operators
 !
-    call hhoCalcOpGv(hhoCell, hhoData, hhoComporState%l_largestrain, &
+    call hhoCalcOpGv(hhoCell, hhoDataMk, hhoDataGv, hhoComporState%l_largestrain, &
                      hhoMecaState, hhoGvState)
 !
 ! --- Compute local contribution
 !
-    call hhoGradVariLC(hhoCell, hhoData, hhoQuadCellRigi, &
+    call hhoGradVariLC(hhoCell, hhoDataMk, hhoDataGv, hhoQuadCellRigi, &
                        hhoMecaState, hhoComporState, hhoGVState, lhs, rhs)
 !
     call behaviourOption(nomopt, hhoComporState%compor, lMatr, lVect, lVari, lSigm)

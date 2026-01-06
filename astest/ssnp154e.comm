@@ -103,9 +103,7 @@ IMPR_RESU(FORMAT="MED", UNITE=81, RESU=_F(RESULTAT=RESU, NOM_CHAM="DEPL", NOM_CM
 # ===========================================
 
 # champ de contraintes de Cauchy aux noeuds
-RESU = CALC_PRESSION(
-    MAILLAGE=MESH, reuse=RESU, RESULTAT=RESU, GROUP_MA=("Bottom_C", "Top_B"), INST=1.0
-)
+RESU = CALC_PRESSION(reuse=RESU, RESULTAT=RESU, GROUP_MA=("Bottom_C", "Top_B"), INST=1.0)
 
 depl = CREA_CHAMP(
     TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RESU, NOM_CHAM="DEPL", INST=1.0

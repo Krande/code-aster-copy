@@ -32,7 +32,7 @@ from ..Cata.Syntax import _F
 from ..Cata.SyntaxUtils import old_complex
 from ..Messages import UTMESS
 from ..Supervis.visitors import EnumVisitor
-from ..Utilities import deprecated, injector, logger
+from ..Utilities import injector, logger
 
 
 @injector(Material)
@@ -162,10 +162,6 @@ class ExtendedMaterial:
             name = re.sub("_FO$", "", name.strip())
             logger.debug('NOMRC.append("%s")', name)
             mater._addProperties(name, len(seen), valR, valC, valK, ordr, kord)
-
-    @deprecated(case=1, help="Use 'size()' instead.")
-    def getNumberOfMaterialProperties(self):
-        return self.size()
 
     def addProperties(self, name, context=None, **kwargs):
         """Define properties for a behaviour.

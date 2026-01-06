@@ -45,7 +45,7 @@ module HHO_geometry_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
+    public :: barycenter, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
     public :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
     public :: hhoSplitSimplex, hho_transfo_3d, hho_transfo_quad, hhoIsJacobCst, prod_vec
     private :: hho_jaco_cst_quad, hho_jaco_cst_3d
@@ -298,40 +298,6 @@ contains
             if (.not. well_oriented(vbar, normal)) then
                 normal = -normal
             end if
-        end if
-!
-    end function
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    function hhoNormalFace(hhoFace, qp_param) result(normal)
-!
-        implicit none
-!
-        type(HHO_Face), intent(in) :: hhoFace
-        real(kind=8), dimension(2), intent(in) :: qp_param
-        real(kind=8), dimension(3) :: normal
-!
-! --------------------------------------------------------------------------------------------------
-!  In HHO_Face           :: face HHO
-!  In qp_param           :: coordiantes of nodes
-!  In normal cell        :: normal to the cell (use for 2D cell)
-!  Out normal            :: outward normal of the face
-! --------------------------------------------------------------------------------------------------
-!
-! --------------------------------------------------------------------------------------------------
-        normal = 0.d0
-!
-        if (hhoFace%typema == MT_QUAD4) then
-            normal = hhoNormalFaceQP(hhoFace, qp_param)
-        else if (hhoFace%typema == MT_TRIA3) then
-            normal = hhoFace%normal
-        else if (hhoFace%typema == MT_SEG2) then
-            normal = hhoFace%normal
-        else
-            ASSERT(ASTER_FALSE)
         end if
 !
     end function

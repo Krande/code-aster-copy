@@ -74,7 +74,8 @@ class HHO {
      * @brief Project HHO field to H^1-field
      */
     std::variant< FieldOnNodesRealPtr, FieldOnCellsRealPtr >
-    projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field, const ASTERINTEGER opt = 0,
+    projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field,
+                            const VectorString &groupsOfCells = VectorString(),
                             const bool average = true ) const;
 
     /**

@@ -37,6 +37,9 @@ CHHOBS = LocatedComponents(
     phys=PHY.N3600R, type="ELNO", diff=True, components=(("EN1", ("X[6]",)), ("EN2", ()))
 )
 
+TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
+
+
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
@@ -127,6 +130,15 @@ class THER_2D_HHO2_F(Element):
                 (OP.CHAR_THER_RAYO_R.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+        OP.HHO_TEMP_THER(
+            te=427,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PTMPCHF, DDL_THER),
+                (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
         OP.RIGI_THER_ECHA_F(
             te=457,

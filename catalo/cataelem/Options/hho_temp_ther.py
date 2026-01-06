@@ -32,7 +32,7 @@ PTEMP_R = OutputParameter(
 
 
 HHO_TEMP_THER = Option(
-    para_in=(SP.PGEOMER, SP.PTMPCHF, PCHHOBS, SP.POPPOST),
+    para_in=(SP.PGEOMER, SP.PTMPCHF, PCHHOBS),
     para_out=(PTEMP_R,),
-    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.HHO, "OUI"))),),
 )

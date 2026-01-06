@@ -165,8 +165,11 @@ contains
         if (action .eq. 'NOTE') then
 !       La matrice mat1 a-t-elle déjà été enregistrée ?
             kpos = 1
-            do while ((trim(mat1) /= elg_context(kpos)%full_matas) .and. (kpos <= nmax_ctxt))
+            do while ((trim(mat1) /= elg_context(kpos)%full_matas))
                 kpos = kpos+1
+                if (kpos > nmax_ctxt) then
+                    exit
+                end if
             end do
             if (kpos <= nmax_ctxt) then
                 ke = to_petsc_int(kpos)

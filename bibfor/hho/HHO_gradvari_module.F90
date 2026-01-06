@@ -56,13 +56,16 @@ module HHO_GV_module
 #include "asterfort/jevech.h"
 #include "asterfort/lagmodtonommod.h"
 #include "asterfort/lcdetf.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/nmcomp.h"
+#include "asterfort/pk2topk1.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/prodmt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/readVector.h"
 #include "asterfort/sigtopk1.h"
+#include "asterfort/tecach.h"
 #include "blas/dsyr.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,7 +78,7 @@ module HHO_GV_module
 !
 !
     public :: HHO_GV_State
-    public :: hhoGradVariLC, hhoCalcOpGv
+    public :: hhoGradVariLC, hhoCalcOpGv, hhoDataGVinit, hhoExtrField
     private :: check_behavior, gdef_log, hhoAssGVRhs, hhoAssGVLhs, numGVMap
     private :: initialize_gv, hhoCalcStabCoeffGV
     private :: hhoComputeLhsLargeLM, hhoComputeLhsLargeML
@@ -111,13 +114,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGradVariLC(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoComporState, &
+    subroutine hhoGradVariLC(hhoCell, hhoDataMk, hhoDataGv, &
+                             hhoQuadCellRigi, hhoMecaState, hhoComporState, &
                              hhoGVState, lhs, rhs)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(inout) :: hhoData
+        type(HHO_Data), intent(inout) :: hhoDataMk, hhoDataGv
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
         type(HHO_Meca_State), intent(in) :: hhoMecaState
         type(HHO_Compor_State), intent(inout) :: hhoComporState
@@ -159,13 +163,15 @@ contains
         real(kind=8) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
         real(kind=8) ::  BSCEval(MSIZE_CELL_SCAL)
-        type(HHO_matrix) :: mk_AT, mk_TMP, gv_AT, gv_TMP, mv_AT, ml_AT, vm_AT, lm_AT
+        type(HHO_matrix) :: mk_AT, gv_AT, gv_TMP, mv_AT, ml_AT, vm_AT, lm_AT
         type(HHO_matrix) :: lhs_mv, lhs_ml, lhs_mm, lhs_ll, lhs_vm, lhs_vv, lhs_vl, lhs_lm, lhs_lv
+        type(HHO_matrix) :: mk_lhs_axis, mk_AT_ax1, mk_AT_ax2
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
         real(kind=8) :: rhs_mk(MSIZE_TDOFS_VEC)
         integer(kind=8) :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL)
         integer(kind=8) :: mapLagv(MSIZE_CELL_SCAL)
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
+        integer(kind=8) :: mk_cbs_cmp, mk_faces_dofs
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs, gv_cell_offset
         integer(kind=8) :: cod(MAX_QP_CELL), ipg, mk_gbs_tot
         aster_logical :: l_lhs, l_rhs, forc_noda
@@ -188,10 +194,9 @@ contains
 !
 ! ------ number of dofs
 !
-        call hhoMecaNLDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs, &
+        call hhoMecaNLDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs, &
                            mk_gbs, mk_gbs_sym)
-        call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
-        ASSERT(gv_gbs == mk_cbs)
+        call hhoTherNLDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
         gv_faces_dofs = gv_total_dofs-gv_cbs
         gv_cell_offset = gv_faces_dofs+1
         if (hhoComporState%l_largestrain) then
@@ -199,7 +204,9 @@ contains
         else
             mk_gbs_tot = mk_gbs_sym
         end if
-        mk_gbs_cmp = gv_gbs/hhoCell%ndim
+        mk_faces_dofs = mk_total_dofs-mk_cbs
+        mk_gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
+        mk_cbs_cmp = mk_cbs/hhoCell%ndim
 !
 ! ------ initialization
 !
@@ -214,13 +221,18 @@ contains
             call lhs_lm%initialize(gv_cbs, mk_total_dofs, 0.d0)
             call lhs_lv%initialize(gv_cbs, gv_total_dofs, 0.d0)
             call mk_AT%initialize(mk_gbs_tot, mk_gbs_tot, 0.d0)
-            call mk_TMP%initialize(mk_gbs_tot, mk_total_dofs, 0.d0)
             call gv_AT%initialize(gv_gbs, gv_gbs, 0.d0)
             call gv_TMP%initialize(gv_gbs, gv_total_dofs, 0.d0)
             call mv_AT%initialize(mk_gbs_tot, gv_total_dofs, 0.d0)
             call ml_AT%initialize(mk_gbs_tot, gv_cbs, 0.d0)
             call vm_AT%initialize(gv_total_dofs, mk_gbs_tot, 0.d0)
             call lm_AT%initialize(gv_cbs, mk_gbs_tot, 0.d0)
+!
+            if (hhoComporState%axis) then
+                call mk_lhs_axis%initialize(mk_cbs_cmp, mk_cbs_cmp, 0.d0)
+                call mk_AT_ax1%initialize(mk_gbs_tot, mk_cbs_cmp, 0.d0)
+                call mk_AT_ax2%initialize(mk_cbs_cmp, mk_gbs_tot, 0.d0)
+            end if
         end if
 !
         mk_bT = 0.d0
@@ -240,6 +252,10 @@ contains
                                       hhoMecaState%time_prev, hhoMecaState%time_curr, &
                                       hhoComporState%fami, hhoComporState%imater, &
                                       BEHinteg)
+!
+! ---------- Prepare external state variables (geometry)
+            call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, BEHinteg)
+!
         end if
 !
 ! ----- init basis
@@ -270,7 +286,8 @@ contains
 ! --------- Eval basis function at the quadrature point
 !
             call hhoBasisCell%BSEval(coorpg(1:3), 0, &
-                                     max(hhoData%grad_degree(), hhoData%cell_degree()), &
+                                     max(hhoDataMk%grad_degree(), hhoDataMk%cell_degree(), &
+                                         hhoDataGv%grad_degree(), hhoDataGv%cell_degree()), &
                                      BSCEval)
 !
 ! --------- Eval gradient at T- and T+
@@ -280,10 +297,12 @@ contains
                 G_curr = hhoEvalMatCell(hhoCell%ndim, mk_gbs, BSCEval, G_curr_coeff)
 !
                 if (hhoComporState%axis) then
-                    call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_prev, &
-                                        coorpg, G_prev)
-                    call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_curr, &
-                                        coorpg, G_curr)
+                    call hhoAddAxisGrad(hhoCell%ndim, BSCEval, &
+                                        hhoMecaState%depl_prev(mk_faces_dofs+1:), &
+                                        coorpg, mk_cbs_cmp, G_prev)
+                    call hhoAddAxisGrad(hhoCell%ndim, BSCEval, &
+                                        hhoMecaState%depl_curr(mk_faces_dofs+1:), &
+                                        coorpg, mk_cbs_cmp, G_curr)
                 end if
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -304,6 +323,15 @@ contains
             else
                 Eps_prev = hhoEvalSymMatCell(hhoCell%ndim, mk_gbs_sym, BSCEval, G_prev_coeff)
                 Eps_curr = hhoEvalSymMatCell(hhoCell%ndim, mk_gbs_sym, BSCEval, G_curr_coeff)
+!
+                if (hhoComporState%axis) then
+                    call hhoAddAxisGradSym(hhoCell, BSCEval, &
+                                           hhoMecaState%depl_prev(mk_faces_dofs+1:), &
+                                           coorpg, mk_cbs_cmp, Eps_prev)
+                    call hhoAddAxisGradSym(hhoCell, BSCEval, &
+                                           hhoMecaState%depl_curr(mk_faces_dofs+1:), &
+                                           coorpg, mk_cbs_cmp, Eps_curr)
+                end if
             end if
 !
             GV_prev = hhoEvalVecCell(hhoCell%ndim, gv_gbs, BSCEval, GV_prev_coeff)
@@ -348,9 +376,17 @@ contains
                 if (hhoComporState%l_largestrain) then
 ! ---------- += weight * (PK1, g_phi)
                     call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEval, mk_gbs, mk_bT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeRhsLargeAxis(hhoCell, Pk1, weight, coorpg(1), &
+                                                    BSCEval, mk_cbs_cmp, rhs_mk(mk_faces_dofs+1:))
+                    end if
                 else
 ! ---------- += weight * (Cauchy, gs_phi)
                     call hhoComputeRhsSmall(hhoCell, Cauchy, weight, BSCEval, mk_gbs_cmp, mk_bT)
+                    if (hhoComporState%axis) then
+                        call hhoComputeRhsSmallAxis(hhoCell, Cauchy, weight, coorpg(1), &
+                                                    BSCEval, mk_cbs_cmp, rhs_mk(mk_faces_dofs+1:))
+                    end if
                 end if
 ! ---------- += weight * (sig_gv, g_phi)
                 call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEval, gv_gbs, gv_bT)
@@ -382,8 +418,8 @@ contains
                                               mk_gbs, lm_AT)
                 else
 ! ---------- += weight * (dSig_deps : gs_phi, gs_phi)
-                    call hhoComputeLhsSmall(hhoCell, dSig_deps, weight, BSCEval, mk_gbs_sym, &
-                                            mk_gbs_cmp, mk_AT)
+                    call hhoComputeLhsSmall(hhoCell, dSig_deps, hhoComporState%matsym, weight, &
+                                            BSCEval, mk_gbs_sym, mk_gbs_cmp, mk_AT)
 ! ---------- += weight * (gs_phi, dSig_dv : c_phi) -> lhs_mv
                     call hhoComputeLhsSmallMV(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
                                               mk_gbs_cmp, mv_AT)
@@ -421,17 +457,17 @@ contains
 !
         call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoComporState%codret)
 !
-        call numGVMap(hhoCell, hhoData, mapMeca, mapVari, mapLagv)
-        call hhoCalcStabCoeffMeca(hhoData, hhoComporState%fami, hhoMecaState%time_curr, &
+        call numGVMap(hhoCell, hhoDataMk, hhoDataGv, mapMeca, mapVari, mapLagv)
+        call hhoCalcStabCoeffMeca(hhoDataMk, hhoComporState%fami, hhoMecaState%time_curr, &
                                   hhoQuadCellRigi)
-        mk_stab = hhoData%coeff_stab()
-        gv_stab = hhoCalcStabCoeffGV(hhoComporState%fami, hhoQuadCellRigi%nbQuadPoints)
+        mk_stab = hhoDataMk%coeff_stab()
+        gv_stab = hhoCalcStabCoeffGV(hhoComporState%fami)
 !
 ! ------- Compute rhs
 !
         if (l_rhs) then
 ! ----- compute rhs += Gradrec**T * bT
-            call hho_dgemv_T(1.d0, hhoMecaState%grad, mk_bT, 0.d0, rhs_mk)
+            call hho_dgemv_T(1.d0, hhoMecaState%grad, mk_bT, 1.d0, rhs_mk)
 ! ----- compute rhs += stab
             call hho_dsymv_U(mk_stab, hhoMecaState%stab, hhoMecaState%depl_curr, 1.d0, rhs_mk)
 ! ----- compute rhs += Gradrec**T * bT
@@ -439,7 +475,7 @@ contains
 ! ----- compute rhs += stab
             call hho_dsymv_U(gv_stab, hhoGVState%stab, hhoGVState%vari_curr, 1.d0, rhs_vari)
 ! ----- assembly
-            call hhoAssGVRhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
+            call hhoAssGVRhs(hhoCell, hhoDataMk, hhoDataGv, mapMeca, mapVari, mapLagv, &
                              rhs_mk, rhs_vari, rhs_lagv, rhs)
         end if
 !
@@ -454,11 +490,16 @@ contains
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
-            call hho_dgemm_NN(1.d0, mk_AT, hhoMecaState%grad, 0.d0, mk_TMP)
+            if (hhoComporState%l_largestrain) then
+                call hhoAssembleLhsLarge(hhoCell, hhoComporState, hhoMecaState%grad, &
+                                         mk_AT, mk_lhs_axis, mk_AT_ax1, mk_AT_ax2, lhs_mm)
+            else
+                call hhoAssembleLhsSmall(hhoCell, hhoComporState, hhoMecaState%grad, &
+                                         mk_AT, mk_lhs_axis, mk_AT_ax1, mk_AT_ax2, lhs_mm)
+            end if
 !
             call hho_dgemm_NN(1.d0, gv_AT, hhoGVState%grad, 0.d0, gv_TMP)
 ! ----- step2: lhs += gradrec**T * TMP
-            call hho_dgemm_TN(1.d0, hhoMecaState%grad, mk_TMP, 0.d0, lhs_mm)
 !
             call hho_dgemm_TN(1.d0, hhoGVState%grad, gv_TMP, 1.d0, lhs_vv)
 !
@@ -479,7 +520,7 @@ contains
             lhs_lv%m = transpose(lhs_vl%m)
 !
 ! ----- assembly
-            call hhoAssGVLhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
+            call hhoAssGVLhs(hhoCell, hhoDataMk, hhoDataGv, mapMeca, mapVari, mapLagv, &
                              lhs_mm, lhs_mv, lhs_ml, lhs_vm, lhs_vv, &
                              lhs_vl, lhs_lm, lhs_lv, lhs_ll, lhs)
         end if
@@ -493,8 +534,6 @@ contains
         call lhs_vl%free()
         call lhs_lm%free()
         call lhs_lv%free()
-        call mk_AT%free()
-        call mk_TMP%free()
         call gv_AT%free()
         call gv_TMP%free()
         call mv_AT%free()
@@ -640,7 +679,7 @@ contains
         eplcm(neu+2+1:neu+2+ndim) = GV_prev(1:ndim)
         eplci(neu+2+1:neu+2+ndim) = GV_curr(1:ndim)-GV_prev(1:ndim)
 ! Preparation des contraintes generalisees de ldc en t-
-        silcm(1:neu) = viPrev(lgpg-5:lgpg-6+neu)
+        silcm(1:neu) = tlogPrev(1:neu)
         silcm(neu+1:ntot) = sigPrev(neu+1:ntot)
 
 ! ----- Compute Stress and module_tangent
@@ -657,18 +696,12 @@ contains
 !
         if (cod .eq. 1) goto 999
 !
-! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
-        tlogCurr = 0.d0
-        tlogCurr(1:neu) = silcp(1:neu)
-        if (lVari) then
-            viCurr(lgpg-5:lgpg-6+neu) = tlogCurr(1:neu)
-            hhoCS%vari_curr((ipg-1)*lgpg+1:ipg*lgpg) = viCurr
-        end if
-!
 ! ----- Compute post-processing Elog
 !
         dtde = 0.d0
         dtde(1:neu, 1:neu) = dsde(1:neu, 1:neu)
+        tlogCurr = 0.d0
+        tlogCurr(1:neu) = silcp(1:neu)
 !
         call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
                     tlogCurr, F_prev, lgpg, viCurr, ndim, &
@@ -676,6 +709,12 @@ contains
                     hhoCS%fami, imate, time_curr, hhoCS%angl_naut, gn, &
                     lamb, logl, sig, dpk2dc, PK2_prev, &
                     PK2_curr, cod)
+!
+! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
+
+        if (lVari) then
+            hhoCS%vari_curr((ipg-1)*lgpg+1:ipg*lgpg) = viCurr
+        end if
 !
 ! ----- Test the code of the LDC
 !
@@ -693,8 +732,8 @@ contains
 !
 ! ----- Compute PK1
 !
-        call deflg4(gn, lamb, logl, F_curr, pe)
-        call prodmt(tlogCurr, pe, Pk1_curr)
+        call pk2topk1(ndim, PK2_curr, F_curr, Pk1_curr)
+!
         sig_vari = silcp(neu+1)
         sig_lagv = silcp(neu+2)
         sig_gv = 0.d0
@@ -735,7 +774,7 @@ contains
             dsl_de(1:neu) = dsde(neu+2, 1:neu)
             dsgv_dgv(1:ndim, 1:ndim) = dsde(neu+3:ntot, neu+3:ntot)
 !
-!call hhoPrintMat(dsde)
+            call deflg4(gn, lamb, logl, F_curr, pe)
 !
 !           dP_da = dT_da * dElog_dF
             call prodmt(dT_dv, pe, dPK1_dv)
@@ -750,9 +789,13 @@ contains
             ASSERT(abs(dsv_dl-dsl_dv) < 1d-10*norm)
         end if
 ! print *, hhoCS%option
-! print *, ipg, lgpg, ntot
+! print *, ipg, lgpg, ntot, viCurr(1)
 ! print *, eplcm
 ! print *, eplci
+! print*, var_curr, lag_curr, sig_gv
+! print*, lag_curr + (var_curr-viCurr(1)) , " vs ", sig_vari
+! print*, (var_curr-viCurr(1)) , " vs ", sig_lagv
+! print*, GV_curr, " vs ", sig_gv
 ! print *, sig_vari, sig_lagv, sig_gv
 ! print *, dsv_dv, dsv_dl, dsl_dl, dsgv_dgv
 ! print*, ipg, dsv_dv, dsv_dl, dsl_dl
@@ -953,11 +996,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine numGVMap(hhoCell, hhoData, mapMeca, mapVari, mapLagv)
+    subroutine numGVMap(hhoCell, hhoDataMk, hhoDataGv, mapMeca, mapVari, mapLagv)
 !
         implicit none
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Data), intent(in) :: hhoDataMk, hhoDataGv
         integer(kind=8), intent(out) :: mapMeca(MSIZE_TDOFS_VEC)
         integer(kind=8), intent(out) :: mapVari(MSIZE_TDOFS_SCAL)
         integer(kind=8), intent(out) :: mapLagv(MSIZE_CELL_SCAL)
@@ -970,8 +1013,8 @@ contains
         integer(kind=8) :: i_face, i_dof, num_tot, num_gv, num_vari, num_mk
 !
 !
-        call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-        call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+        call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
 !
         mapMeca = 0
         mapVari = 0
@@ -1016,12 +1059,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoAssGVRhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
+    subroutine hhoAssGVRhs(hhoCell, hhoDataMk, hhoDataGv, mapMeca, mapVari, mapLagv, &
                            rhs_meca, rhs_vari, rhs_lagv, rhs)
 !
         implicit none
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Data), intent(in) :: hhoDataMk, hhoDataGv
         integer(kind=8), intent(in) :: mapMeca(MSIZE_TDOFS_VEC)
         integer(kind=8), intent(in) :: mapVari(MSIZE_TDOFS_SCAL)
         integer(kind=8), intent(in) :: mapLagv(MSIZE_CELL_SCAL)
@@ -1036,8 +1079,8 @@ contains
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
         integer(kind=8) :: i_dof
 !
-        call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-        call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+        call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
 !
         rhs = 0.d0
 !
@@ -1057,13 +1100,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoAssGVLhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
+    subroutine hhoAssGVLhs(hhoCell, hhoDataMk, hhoDataGv, mapMeca, mapVari, mapLagv, &
                            lhs_mm, lhs_mv, lhs_ml, lhs_vm, lhs_vv, &
                            lhs_vl, lhs_lm, lhs_lv, lhs_ll, lhs)
 !
         implicit none
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Data), intent(in) :: hhoDataMk, hhoDataGv
         integer(kind=8), intent(in) :: mapMeca(MSIZE_TDOFS_VEC)
         integer(kind=8), intent(in) :: mapVari(MSIZE_TDOFS_SCAL)
         integer(kind=8), intent(in) :: mapLagv(MSIZE_CELL_SCAL)
@@ -1077,8 +1120,8 @@ contains
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
         integer(kind=8) :: i_row, i_col, total_dofs
 !
-        call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-        call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+        call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
 !
         total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
         call lhs%initialize(total_dofs, total_dofs, 0.d0)
@@ -1128,13 +1171,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine initialize_gv(this, hhoCell, hhoData, hhoComporState)
+    subroutine initialize_gv(this, hhoCell, hhoDataMk, hhoDataGv, hhoComporState)
 !
         implicit none
 !
         class(HHO_GV_State), intent(inout) :: this
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(inout) :: hhoData
+        type(HHO_Data), intent(inout) :: hhoDataMk, hhoDataGv
         type(HHO_Compor_State), intent(in) :: hhoComporState
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1142,58 +1185,39 @@ contains
 !  initialize HHO_GV_STATE
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: num_tot, num_gv, iFace, idof
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
-        aster_logical :: forc_noda
+        aster_logical :: forc_noda, pilo
 !
         forc_noda = hhoComporState%option == "FORC_NODA"
+        pilo = hhoComporState%option(1:4) == "PILO"
         if (hhoComporState%option .ne. "RIGI_MECA") then
             if (hhoComporState%typmod(2) .ne. "GRADVARI") then
                 ASSERT(ASTER_FALSE)
             end if
 !
-            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-            call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+            call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+            call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
             total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
 !
             if (forc_noda) then
                 call readVector('PDEPLAR', total_dofs, tmp_prev)
             else
                 call readVector('PDEPLMR', total_dofs, tmp_prev)
-                call readVector('PDEPLPR', total_dofs, tmp_incr)
+                if (pilo) then
+                    call readVector('PDDEPLR', total_dofs, tmp_incr)
+                else
+                    call readVector('PDEPLPR', total_dofs, tmp_incr)
+                end if
             end if
 !
-            num_tot = 0
-            num_gv = 0
-            do iFace = 1, hhoCell%nbfaces
-                num_tot = num_tot+mk_fbs
-                do iDof = 1, gv_fbs
-                    num_tot = num_tot+1
-                    num_gv = num_gv+1
-                    this%vari_prev(num_gv) = tmp_prev(num_tot)
-                    if (.not. forc_noda) then
-                        this%vari_incr(num_gv) = tmp_incr(num_tot)
-                    end if
-                end do
-            end do
-            num_tot = num_tot+mk_cbs
-            do iDof = 1, gv_cbs
-                num_tot = num_tot+1
-                num_gv = num_gv+1
-                this%vari_prev(num_gv) = tmp_prev(num_tot)
-                if (.not. forc_noda) then
-                    this%vari_incr(num_gv) = tmp_incr(num_tot)
-                end if
-            end do
-            do iDof = 1, gv_cbs
-                num_tot = num_tot+1
-                this%lagv_prev(iDof) = tmp_prev(num_tot)
-                if (.not. forc_noda) then
-                    this%lagv_incr(iDof) = tmp_incr(num_tot)
-                end if
-            end do
+            call hhoExtrField(hhoCell, hhoDataMk, hhoDataGv, &
+                              tmp_prev, vari=this%vari_prev, lagv=this%lagv_prev)
+            if (.not. forc_noda) then
+                call hhoExtrField(hhoCell, hhoDataMk, hhoDataGv, &
+                                  tmp_incr, vari=this%vari_incr, lagv=this%lagv_incr)
+            end if
         end if
 !
 ! --- compute in T+
@@ -1231,12 +1255,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCalcOpGv(hhoCell, hhoData, l_largestrains, hhoMecaState, hhoGvState)
+    subroutine hhoCalcOpGv(hhoCell, hhoDataMk, hhoDataGv, l_largestrains, hhoMecaState, hhoGvState)
 !
         implicit none
 !
         type(HHO_Cell), intent(inout) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Data), intent(in) :: hhoDataMk, hhoDataGv
         aster_logical, intent(in) :: l_largestrains
         type(HHO_Meca_State), intent(inout) :: hhoMecaState
         type(HHO_GV_State), intent(inout) :: hhoGvState
@@ -1256,24 +1280,38 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, iret, iad
+        aster_logical :: l_stab
+!
+        call tecach('NNN', 'PCHHOST', 'L', iret, iad=iad)
+        l_stab = iret == 0
 !
         if (ASTER_TRUE) then
 !
-            call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &
-                                      hhoMecaState%stab)
+            if (l_stab) then
+                call hhoReloadPreCalcMeca(hhoCell, hhoDataMk, l_largestrains, hhoMecaState%grad, &
+                                          hhoMecaState%stab)
+            else
+                call hhoReloadPreCalcMeca(hhoCell, hhoDataMk, l_largestrains, hhoMecaState%grad)
+            end if
 !
-            call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
+            if (hhoDataMk%grad_degree() == hhoDataGv%grad_degree()) then
+                call hhoTherNLDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
 
-            call hhoGVState%grad%initialize(gv_gbs, gv_total_dofs, 0.d0)
-            call hhoGVState%grad%read('PCHHOGT', ASTER_FALSE)
-            call hhoGVState%stab%initialize(gv_total_dofs, gv_total_dofs, 0.d0)
-            call hhoGVState%stab%read('PCHHOST', ASTER_TRUE)
+                call hhoGVState%grad%initialize(gv_gbs, gv_total_dofs, 0.d0)
+                call hhoGVState%grad%read('PCHHOGT', ASTER_FALSE)
+                if (l_stab) then
+                    call hhoGVState%stab%initialize(gv_total_dofs, gv_total_dofs, 0.d0)
+                    call hhoGVState%stab%read('PCHHOST', ASTER_TRUE)
+                end if
+            else
+                call hhoCalcOpTher(hhoCell, hhoDataGv, hhoGVState%grad, hhoGVState%stab)
+            end if
 !
         else
-            call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &
+            call hhoCalcOpMeca(hhoCell, hhoDataMk, l_largestrains, hhoMecaState%grad, &
                                hhoMecaState%stab)
-            call hhoCalcOpTher(hhoCell, hhoData, hhoGVState%grad, hhoGVState%stab)
+            call hhoCalcOpTher(hhoCell, hhoDataGv, hhoGVState%grad, hhoGVState%stab)
         end if
 !
     end subroutine
@@ -1778,12 +1816,11 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8) function hhoCalcStabCoeffGV(fami, npg)
+    real(kind=8) function hhoCalcStabCoeffGV(fami)
 !
         implicit none
 !
         character(len=4) :: fami
-        integer(kind=8), intent(in) :: npg
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -1793,7 +1830,7 @@ contains
 ! --- Local variables
 !
         integer(kind=8) :: jmate, imate
-        integer(kind=8) :: ipg, iok(1)
+        integer(kind=8) :: iok(1)
         real(kind=8) :: vale(1)
 !
         call jevech('PMATERC', 'L', jmate)
@@ -1811,5 +1848,147 @@ contains
         ASSERT(hhoCalcStabCoeffGV > 0.d0)
 !
     end function
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoDataGVInit(hhoDataGv)
+!
+        implicit none
+!
+        type(HHO_Data), intent(out) :: hhoDataGv
+
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Initi data for GV
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: grad_deg, face_deg, cell_deg
+!
+        ASSERT(lteatt('TYPMOD2', 'HHO') .or. lteatt('TYPMOD2', 'HHO_GRAD'))
+!
+        if (lteatt('FORMULATION', 'HHO_LINE')) then
+            face_deg = 1
+            cell_deg = 1
+            grad_deg = 1
+        elseif (lteatt('FORMULATION', 'HHO_VLINE')) then
+            face_deg = 0
+            cell_deg = 0
+            grad_deg = 0
+        elseif (lteatt('FORMULATION', 'HHO_QUAD')) then
+            face_deg = 2
+            cell_deg = 2
+            grad_deg = 2
+        elseif (lteatt('FORMULATION', 'HHO_VQUAD')) then
+            face_deg = 1
+            cell_deg = 1
+            grad_deg = 1
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+! --- Init
+!
+        call hhoDataGv%initialize(face_deg, cell_deg, grad_deg, 0.0, ASTER_FALSE, ASTER_FALSE)
+!
+        if (hhoDataGv%debug()) then
+            call hhoDataGv%print()
+        end if
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoExtrField(hhoCell, hhoDataMk, hhoDataGv, &
+                            field, depl, vari, lagv)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(inout) :: hhoDataMk, hhoDataGv
+        real(kind=8), intent(in) :: field(MSIZE_TDOFS_MIX)
+        real(kind=8), intent(out), optional :: depl(MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out), optional :: vari(MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out), optional :: lagv(MSIZE_CELL_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Extract each component
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
+        integer(kind=8) :: num_tot, num_gv, iFace, iDof, num_mk
+! --------------------------------------------------------------------------------------------------
+!
+        call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
+        total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
+!
+        num_tot = 0
+        num_gv = 0
+        num_mk = 0
+        do iFace = 1, hhoCell%nbfaces
+            if (present(depl)) then
+                do iDof = 1, mk_fbs
+                    num_tot = num_tot+1
+                    num_mk = num_mk+1
+                    depl(num_mk) = field(num_tot)
+                end do
+            else
+                num_tot = num_tot+mk_fbs
+            end if
+!
+            if (present(vari)) then
+                do iDof = 1, gv_fbs
+                    num_tot = num_tot+1
+                    num_gv = num_gv+1
+                    vari(num_gv) = field(num_tot)
+                end do
+            else
+                num_tot = num_tot+gv_fbs
+            end if
+        end do
+!
+        if (present(depl)) then
+            do iDof = 1, mk_cbs
+                num_tot = num_tot+1
+                num_mk = num_mk+1
+                depl(num_mk) = field(num_tot)
+            end do
+        else
+            num_tot = num_tot+mk_cbs
+        end if
+!
+        if (present(vari)) then
+            do iDof = 1, gv_cbs
+                num_tot = num_tot+1
+                num_gv = num_gv+1
+                vari(num_gv) = field(num_tot)
+            end do
+        else
+            num_tot = num_tot+gv_cbs
+        end if
+!
+        if (present(lagv)) then
+            do iDof = 1, gv_cbs
+                num_tot = num_tot+1
+                lagv(iDof) = field(num_tot)
+            end do
+        else
+            num_tot = num_tot+gv_cbs
+        end if
+!
+        ASSERT(num_tot == total_dofs)
+!
+    end subroutine
 !
 end module

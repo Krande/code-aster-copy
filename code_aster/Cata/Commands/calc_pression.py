@@ -29,6 +29,13 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
+def compat_syntax(keywords):
+    """Update keywords for compatibility"""
+
+    if "MAILLAGE" in keywords:
+        del keywords["MAILLAGE"]
+
+
 def calc_pression_prod(self, RESULTAT, **args):
     if args.get("__all__"):
         return (
@@ -55,13 +62,13 @@ CALC_PRESSION = MACRO(
     nom="CALC_PRESSION",
     op=OPS("code_aster.MacroCommands.calc_pression_ops.calc_pression_ops"),
     sd_prod=calc_pression_prod,
+    compat_syntax=compat_syntax,
     reentrant="o:RESULTAT",
     fr="Calcul de la pression nodale sur une interface a partir de SIEF_NOEU. Cette option n existe que pour les éléments isoparamétriques.",
     reuse=SIMP(statut="c", typ=CO),
-    MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
     RESULTAT=SIMP(statut="o", typ=(evol_elas, evol_noli)),
     GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
-    regles=(UN_PARMI("TOUT_ORDRE", "INST"),),
+    regles=(UN_PARMI("TOUT_ORDRE", "INST", TOUT_ORDRE="OUI"),),
     INST=SIMP(statut="f", typ="R", max="**"),
     TOUT_ORDRE=SIMP(statut="f", typ="TXM", into=("OUI",)),
     GEOMETRIE=SIMP(statut="f", typ="TXM", defaut="DEFORMEE", into=("INITIALE", "DEFORMEE")),

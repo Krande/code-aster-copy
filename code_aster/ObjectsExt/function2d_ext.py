@@ -23,9 +23,9 @@
 """
 
 from ..Objects.function_py import t_fonction, t_nappe
-from libaster import DataStructure, Function2D
+from libaster import Function2D
 
-from ..Utilities import injector, deprecated
+from ..Utilities import injector
 
 
 @injector(Function2D)

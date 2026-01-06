@@ -625,7 +625,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         call refdcp(basemo, nomres)
     else
         call refdaj(' ', nomres, -1, ' ', 'INIT', &
-                    ' ', ir)
+                    [' ', ' ', ' '], ir)
     end if
 !
 ! --- MENAGE

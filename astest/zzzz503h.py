@@ -286,7 +286,7 @@ matdis.addProperties(
     RIGI_TAN=1000000.0,
 )
 
-test.assertEqual(matdis.getNumberOfMaterialProperties(), 1, msg="number of material properties")
+test.assertEqual(matdis.size(), 1, msg="number of material properties")
 test.assertCountEqual(matdis.getMaterialNames(), ["DIS_CONTACT"])
 
 G = 3176517.07 + 2344699.5j
@@ -297,7 +297,7 @@ rho_d = 1460
 matcmplx = CA.Material()
 matcmplx.addProperties("ELAS_VISCO", G=G, NU=nu, RHO=rho_d)
 
-test.assertEqual(matcmplx.getNumberOfMaterialProperties(), 1, msg="number of material properties")
+test.assertEqual(matcmplx.size(), 1, msg="number of material properties")
 test.assertCountEqual(matcmplx.getMaterialNames(), ["ELAS_VISCO"])
 
 TRCMNDA = DEFI_TRC(

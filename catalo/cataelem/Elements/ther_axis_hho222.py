@@ -35,7 +35,7 @@ DDL_THER = LocatedComponents(
     components=(("EN1", ("HHO_FT[3]",)), ("EN2", ()), ("EN3", ("HHO_CT[6]"))),
 )
 
-CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
+
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
@@ -192,7 +192,6 @@ class THERAXQ9_HHO222(Element):
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTMPCHF, DDL_THER),
                 (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
-                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),

@@ -80,9 +80,9 @@ subroutine crtype()
 !
     integer(kind=8) :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer(kind=8) :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
-    integer(kind=8) :: iad, jinst, nbpf, nuprev
+    integer(kind=8) :: iad, jinst, nbpf
     integer(kind=8) :: ino, nbv(1), jrefe, icmpd, icmpi, nocc
-    integer(kind=8) :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
+    integer(kind=8) :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini
     integer(kind=8) :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
     integer(kind=8) :: nbordr1, nbordr2, ier1, nbModel, nbMaterField, nbCaraElem
 !
@@ -100,7 +100,7 @@ subroutine crtype()
     character(len=8) :: modelPrev, materFieldPrev, caraElemPrev
     character(len=14) :: numedd
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
-    character(len=19) :: nomch, champ, listr8, pchn1, resu19, profprev, profch
+    character(len=19) :: nomch, champ, listr8, pchn1, resu19, profch
     character(len=19) :: nume_equa_tmp
     character(len=24) :: k24, linst, fieldType, resultType, lcpt, o1, o2, noojb
     character(len=24) :: valkk(4), matric(3), listLoad
@@ -286,20 +286,6 @@ subroutine crtype()
                 call gnomsd(' ', noojb, 15, 19)
                 profch = noojb(1:19)
                 lcopy = .true.
-!               -- si le numero du nume_equa est > 0, on regarde si le numero precedent convient:
-                read (profch(15:19), '(I5)') nuprev
-                if (nuprev .gt. 0) then
-                    nuprev = nuprev-1
-                    profprev = profch
-                    call codent(nuprev, 'D0', profprev(15:19))
-                    call exisd('NUME_EQUA', profprev, iexi)
-                    if (iexi .gt. 0) then
-                        if (idensd('NUME_EQUA', profprev, pchn1)) then
-                            profch = profprev
-                            lcopy = .false.
-                        end if
-                    end if
-                end if
 !
                 if (lcopy) then
                     call copisd('NUME_EQUA', 'G', pchn1, profch)
