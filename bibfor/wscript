@@ -458,10 +458,10 @@ def check_c_fortran_real8(self):
 @Configure.conf
 def check_optimization_fcflags(self):
     """Check for optimization FCFLAGS."""
+    self.remove_optflags("FCFLAGS")
     self.setenv("debug")
     self.start_msg("Setting fortran debug flags")
     self.define("ASTER_DEBUG_FC", 1)
-    self.remove_optflags("FCFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:
         flags.append("--coverage")
