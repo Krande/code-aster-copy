@@ -95,6 +95,8 @@ TEMPLATE = """#!/bin/bash
 #SBATCH --output={output}
 #SBATCH --error={output}.stderr
 
+# + passed on command line: {sbatch_args}
+
 {RUNASTER_ROOT}/bin/run_aster {run_aster_options} {study}
 """
 
@@ -106,7 +108,10 @@ def parse_args(argv):
         argv (list): List of command line arguments.
     """
     parser = argparse.ArgumentParser(
-        usage=USAGE, epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter
+        usage=USAGE,
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        allow_abbrev=False,
     )
     parser.add_argument(
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
@@ -205,6 +210,7 @@ def main(argv=None):
         "run_aster_options": " ".join(args.opts),
         "RUNASTER_ROOT": RUNASTER_ROOT,
         "testlist": export.get("testlist", []),
+        "sbatch_args": sbatch_args,
     }
     params["output"] = args.output or params["name"] + "-%j.txt"
     check_parameters(params)
@@ -220,6 +226,9 @@ def main(argv=None):
     if args.dry_run:
         logger.info("+ filename: %s", script)
         return 0
+    with open(params["output"].replace("-%j", "") + ".sbatch", "w") as fscr:
+        logger.info("+ filename: %s", fscr.name)
+        fscr.write(content)
     try:
         proc = _run(["sbatch"] + sbatch_args + [script])
     finally:
