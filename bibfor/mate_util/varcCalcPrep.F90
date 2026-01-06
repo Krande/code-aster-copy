@@ -28,6 +28,8 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
                         lpain, lchin, &
                         lpaout, lchout)
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -229,6 +231,10 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
     if (l_xfem .and. l_temp) then
         call xajcin(model, 'CHAR_MECA_TEMP_R', mxchin, lchin, lpain, nbin)
     end if
+!
+! - HHO fields
+!
+    call hhoAddInputField(model, mxchin, lchin, lpain, nbin)
 !
 ! - Output fields
 !

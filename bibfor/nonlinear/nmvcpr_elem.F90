@@ -62,7 +62,7 @@ subroutine nmvcpr_elem(modelz, matez, matecoz, cara_elemz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: mxchin = 34, mxchout = 2
+    integer(kind=8), parameter :: mxchin = 37, mxchout = 2
     character(len=8) :: lpain(mxchin), lpaout(mxchout)
     character(len=19) :: lchin(mxchin), lchout(mxchout)
     aster_logical :: l_temp, l_hydr, l_ptot

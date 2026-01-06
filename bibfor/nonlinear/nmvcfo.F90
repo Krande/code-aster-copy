@@ -22,14 +22,14 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/nmvarc_prep.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/nmvccc.h"
-#include "asterfort/vemare.h"
-#include "asterfort/nmvcd2.h"
 #include "asterfort/nmchex.h"
+#include "asterfort/nmvarc_prep.h"
+#include "asterfort/nmvccc.h"
+#include "asterfort/nmvcd2.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 !
 !
     character(len=1), intent(in) :: type_comp
@@ -65,7 +65,7 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: mxchin, mxchout, nbin, nbout
-    parameter(mxchout=2, mxchin=34)
+    parameter(mxchout=2, mxchin=37)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !

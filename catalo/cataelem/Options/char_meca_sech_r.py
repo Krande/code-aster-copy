@@ -38,6 +38,11 @@ PNBSP_I = InputParameter(
 )
 
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
+
+
 CHAR_MECA_SECH_R = Option(
     para_in=(
         SP.PCAGNBA,
@@ -52,6 +57,8 @@ CHAR_MECA_SECH_R = Option(
         SP.PINSTR,
         PVARCPR,
         SP.PVARCRR,
+        PCHHOGT,
+        PCHHOBS,
     ),
     para_out=(SP.PVECTUR,),
     condition=(

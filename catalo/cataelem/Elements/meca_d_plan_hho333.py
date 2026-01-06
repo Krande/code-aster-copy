@@ -144,7 +144,6 @@ EFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="RIGI", compo
 
 NREACR = LocatedComponents(phys=PHY.REAC_R, type="ELNO", components=("DX", "DY"))
 
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y"))
 
@@ -266,7 +265,7 @@ class MECA_DPQ9_HHO333(Element):
         OP.AMOR_MECA(
             te=121,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMASSEL, MMATUUR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PRIGIEL, MMATUUR),
@@ -278,7 +277,7 @@ class MECA_DPQ9_HHO333(Element):
             te=476,
             para_in=(
                 (SP.PFF2D2D, CFORCEF),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTR, CTEMPSR),
                 (OP.CHAR_MECA_FF2D2D.PCHHOBS, CHHOBS),
             ),
@@ -288,20 +287,78 @@ class MECA_DPQ9_HHO333(Element):
             te=476,
             para_in=(
                 (SP.PFR2D2D, NFORCER),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.CHAR_MECA_FR2D2D.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
+        OP.CHAR_MECA_HYDR_R(
+            te=503,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PINSTR, LC.MTEMPSR),
+                (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.CHAR_MECA_HYDR_R.PCHHOGT, CHHOGT),
+                (OP.CHAR_MECA_HYDR_R.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_PTOT_R(
+            te=503,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PINSTR, LC.MTEMPSR),
+                (OP.CHAR_MECA_PTOT_R.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.CHAR_MECA_PTOT_R.PCHHOGT, CHHOGT),
+                (OP.CHAR_MECA_PTOT_R.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_SECH_R(
+            te=503,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PINSTR, LC.MTEMPSR),
+                (OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.CHAR_MECA_SECH_R.PCHHOGT, CHHOGT),
+                (OP.CHAR_MECA_SECH_R.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_TEMP_R(
+            te=503,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PINSTR, LC.MTEMPSR),
+                (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.CHAR_MECA_TEMP_R.PCHHOGT, CHHOGT),
+                (OP.CHAR_MECA_TEMP_R.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.COOR_ELGA(
-            te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+            te=479,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),),
         ),
         OP.EPSI_ELGA(
             te=448,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PDEPLAR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.EPSI_ELGA.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
@@ -317,7 +374,7 @@ class MECA_DPQ9_HHO333(Element):
                 (SP.PCOMPOR, LC.CCOMPOR),
                 (SP.PSIEFR, ECONTPG),
                 (SP.PDEPLAR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.FORC_NODA.PCHHOGT, CHHOGT),
                 (OP.FORC_NODA.PCHHOST, CHHOST),
@@ -335,7 +392,7 @@ class MECA_DPQ9_HHO333(Element):
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PITERAT, LC.CITERAT),
@@ -360,18 +417,18 @@ class MECA_DPQ9_HHO333(Element):
         ),
         OP.HHO_PRECALC_BS(
             te=494,
-            para_in=((SP.PGEOMER, NGEOMER),),
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
             para_out=((OP.HHO_PRECALC_BS.PCHHOBO, CHHOBS),),
         ),
         OP.HHO_PRECALC_OP(
             te=460,
-            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PRECALC_OP.PCHHOBS, CHHOBS)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (OP.HHO_PRECALC_OP.PCHHOBS, CHHOBS)),
             para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
         ),
         OP.HHO_PROJ_MECA(
             te=473,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.HHO_PROJ_MECA.PFUNC_R, PFONCR),
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_PROJ_MECA.PCHHOBS, CHHOBS),
@@ -381,7 +438,7 @@ class MECA_DPQ9_HHO333(Element):
         OP.HHO_DEPL_MECA(
             te=456,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PDEPLPR, DDL_MECA),
                 (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
             ),
@@ -390,7 +447,7 @@ class MECA_DPQ9_HHO333(Element):
         OP.HHO_CINE_F_MECA(
             te=458,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_CINE_F_MECA.PFONC, PFONC),
                 (OP.HHO_CINE_F_MECA.PCHHOBS, CHHOBS),
@@ -400,7 +457,7 @@ class MECA_DPQ9_HHO333(Element):
         OP.HHO_CINE_R_MECA(
             te=458,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO),
                 (OP.HHO_CINE_R_MECA.PCHHOBS, CHHOBS),
             ),
@@ -412,7 +469,7 @@ class MECA_DPQ9_HHO333(Element):
         OP.MASS_MECA(
             te=474,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.MASS_MECA.PVARCPR, LC.ZVARCPG),
                 (OP.MASS_MECA.PCHHOBS, CHHOBS),
@@ -423,7 +480,7 @@ class MECA_DPQ9_HHO333(Element):
             te=142,
             para_in=(
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R),),
@@ -432,7 +489,7 @@ class MECA_DPQ9_HHO333(Element):
             te=142,
             para_in=(
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R),),
@@ -492,7 +549,7 @@ class MECA_DPQ9_HHO333(Element):
                 (OP.RAPH_MECA.PCONTMR, ECONTPG),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PITERAT, LC.CITERAT),
@@ -515,7 +572,7 @@ class MECA_DPQ9_HHO333(Element):
         OP.REFE_FORC_NODA(
             te=450,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PREFCO, LC.CRESSIG),
                 (OP.REFE_FORC_NODA.PCHHOGT, CHHOGT),
@@ -528,7 +585,7 @@ class MECA_DPQ9_HHO333(Element):
             te=455,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
                 (SP.PINSTR, CTEMPSR),
@@ -546,7 +603,7 @@ class MECA_DPQ9_HHO333(Element):
                 (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
@@ -568,7 +625,7 @@ class MECA_DPQ9_HHO333(Element):
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PITERAT, LC.CITERAT),
@@ -658,7 +715,7 @@ class MECA_DPQ9_HHO333(Element):
             para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),),
         ),
         OP.VERI_JACOBIEN(
-            te=328, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PCODRET, LC.ECODRET),)
+            te=328, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PCODRET, LC.ECODRET),)
         ),
     )
 

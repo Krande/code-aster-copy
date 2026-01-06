@@ -49,11 +49,12 @@ module Behaviour_module
     public :: detectVarc, behaviourGetParameters
 ! ==================================================================================================
     private
+#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterc/mgis_get_esvs.h"
 #include "asterc/mgis_get_number_of_esvs.h"
 #include "asterc/r8nnem.h"
-#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
@@ -71,10 +72,8 @@ module Behaviour_module
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/verift.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-#include "jeveux.h"
 #include "MeshTypes_type.h"
 ! ==================================================================================================
 contains
@@ -428,10 +427,10 @@ contains
             WRITE (6, *) '<DEBUG>  Paramètres du modèle'
         end if
 
-        BEHinteg%behavPara%lStandardFE = typmod(2) .eq. ' '
+        BEHinteg%behavPara%lStandardFE = typmod(2) .eq. ' ' .or. typmod(2) .eq. 'HHO'
         BEHinteg%behavPara%lTHM = typmod(2) .eq. 'THM'
         BEHinteg%behavPara%lCZM = typmod(2) .eq. 'ELEMJOIN'
-        BEHinteg%behavPara%lGradVari = typmod(2) .eq. 'GRADVARI'
+        BEHinteg%behavPara%lGradVari = typmod(2) .eq. 'GRADVARI' .or. typmod(2) .eq. 'HHO_GRAD'
         BEHinteg%behavPara%lAxis = typmod(1) .eq. 'AXIS'
         BEHinteg%behavPara%lThreeDim = typmod(1) (1:2) .eq. '3D'
         BEHinteg%behavPara%lPlaneStrain = typmod(1) (1:6) .eq. 'D_PLAN'

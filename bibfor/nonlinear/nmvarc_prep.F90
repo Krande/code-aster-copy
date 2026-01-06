@@ -21,6 +21,8 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
                        lchin, mxchout, nbout, lpaout, lchout, &
                        sigm_prev, vari_prev, varc_prev, varc_curr, nume_harm)
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -200,6 +202,10 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
     if (lxfem .and. exis_temp) then
         call xajcin(model, 'CHAR_MECA_TEMP_R', mxchin, lchin, lpain, nbin)
     end if
+!
+! - HHO fields
+!
+    call hhoAddInputField(model, mxchin, lchin, lpain, nbin)
 !
 ! - Output fields
 !
