@@ -21,7 +21,7 @@
 # aslint: disable=C4015
 
 """
-   Description des OJB jeveux
+Description des OJB jeveux
 """
 import pydoc
 import sys
@@ -128,7 +128,6 @@ class AsBase(Type):
 
 # -----------------------------------------------------------------------------
 class JeveuxAttr:
-
     """Un attribut jeveux"""
 
     def __init__(self, name):

@@ -33,7 +33,6 @@ from ...Objects import NonLinearResult
 
 
 class TANGENT:
-
     """Vérification sur les matrices tangentes
 
     Attributs publics :

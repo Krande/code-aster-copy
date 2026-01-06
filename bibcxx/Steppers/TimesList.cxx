@@ -23,7 +23,6 @@
 
 #include "Steppers/TimesList.h"
 
-
 bool TimesList::setValues( const VectorReal &values ) {
     _values->clear();
     _values->reserve( values.size() );

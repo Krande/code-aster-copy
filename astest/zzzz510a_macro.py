@@ -47,7 +47,7 @@ def sigelmoy(
     for maille in list(set(cells)):
         volume[maille] = 0
 
-    for (num_maille, maille) in enumerate(cells):
+    for num_maille, maille in enumerate(cells):
         volume.update({maille: volume[maille] + pds[num_maille]})
 
     sief_elga = CA.NonLinearResult()
@@ -71,7 +71,7 @@ def sigelmoy(
     rmelmoy2 = CALC_CHAMP(RESULTAT=reswbrest, GROUP_MA=grmapb, CONTRAINTE="SIMY_ELGA")
     import numpy as np
 
-    for (nume_inst, inst) in enumerate(sief_elga.getAccessParameters()["INST"]):
+    for nume_inst, inst in enumerate(sief_elga.getAccessParameters()["INST"]):
 
         selga = CREA_CHAMP(
             TYPE_CHAM="ELGA_SIEF_R",
@@ -142,7 +142,7 @@ def sigelmoy(
         )
 
         dsmoy = dict()
-        for (_cmp, cham_para) in zip(("xx", "yy", "zz", "xy"), (sixx, siyy, sizz, sixy)):
+        for _cmp, cham_para in zip(("xx", "yy", "zz", "xy"), (sixx, siyy, sizz, sixy)):
 
             dsmoy.update(
                 {
@@ -175,7 +175,7 @@ def sigelmoy(
                 ),
             )
 
-            for (_cmp, cham_para) in zip(("xz", "yz"), (sixz, siyz)):
+            for _cmp, cham_para in zip(("xz", "yz"), (sixz, siyz)):
 
                 dsmoy.update(
                     {
@@ -201,7 +201,7 @@ def sigelmoy(
         for maille in list(set(cxx)):
             sxxmoyfinal[maille] = 0
 
-        for (num_maille, maille) in enumerate(cxx):
+        for num_maille, maille in enumerate(cxx):
             sxxmoyfinal.update(
                 {maille: sxxmoyfinal[maille] + 1 / volume[maille] * sxxmoyvale[num_maille]}
             )
@@ -210,7 +210,7 @@ def sigelmoy(
         for maille in list(set(cyy)):
             syymoyfinal[maille] = 0
 
-        for (num_maille, maille) in enumerate(cyy):
+        for num_maille, maille in enumerate(cyy):
             syymoyfinal.update(
                 {maille: syymoyfinal[maille] + 1 / volume[maille] * syymoyvale[num_maille]}
             )
@@ -219,7 +219,7 @@ def sigelmoy(
         for maille in list(set(czz)):
             szzmoyfinal[maille] = 0
 
-        for (num_maille, maille) in enumerate(czz):
+        for num_maille, maille in enumerate(czz):
             szzmoyfinal.update(
                 {maille: szzmoyfinal[maille] + 1 / volume[maille] * szzmoyvale[num_maille]}
             )
@@ -228,7 +228,7 @@ def sigelmoy(
         for maille in list(set(cxy)):
             sxymoyfinal[maille] = 0
 
-        for (num_maille, maille) in enumerate(cxy):
+        for num_maille, maille in enumerate(cxy):
             sxymoyfinal.update(
                 {maille: sxymoyfinal[maille] + 1 / volume[maille] * sxymoyvale[num_maille]}
             )
@@ -238,7 +238,7 @@ def sigelmoy(
             for maille in list(set(cxz)):
                 sxzmoyfinal[maille] = 0
 
-            for (num_maille, maille) in enumerate(cxz):
+            for num_maille, maille in enumerate(cxz):
                 sxzmoyfinal.update(
                     {maille: sxzmoyfinal[maille] + 1 / volume[maille] * sxzmoyvale[num_maille]}
                 )
@@ -247,7 +247,7 @@ def sigelmoy(
             for maille in list(set(cyz)):
                 syzmoyfinal[maille] = 0
 
-            for (num_maille, maille) in enumerate(cyz):
+            for num_maille, maille in enumerate(cyz):
                 syzmoyfinal.update(
                     {maille: syzmoyfinal[maille] + 1 / volume[maille] * syzmoyvale[num_maille]}
                 )
@@ -258,7 +258,7 @@ def sigelmoy(
         champ = [0] * len(l_mailles_total) * 2 * dim_geom
         assert nbrvale == len(champ), f"{nbrvale}, {len(champ)}"
 
-        for (indice, maille) in enumerate(l_mailles_total):
+        for indice, maille in enumerate(l_mailles_total):
             if dim_geom == 2 and maille in l_mailles_grma:
                 champ[4 * indice] = sxxmoyfinal[maille]
                 champ[4 * indice + 1] = syymoyfinal[maille]

@@ -218,7 +218,7 @@ for UnInst, Nrefe, VYrefe, VZrefe in ResuRefe.values():
         VALE_CALC=Nrefe,
         REFERENCE="ANALYTIQUE",
         VALE_REFE=Nrefe,
-        **arg
+        **arg,
     )
     arg = {}
     if abs(VYrefe) < 1e-6:
@@ -232,7 +232,7 @@ for UnInst, Nrefe, VYrefe, VZrefe in ResuRefe.values():
         VALE_CALC=VYrefe,
         REFERENCE="ANALYTIQUE",
         VALE_REFE=VYrefe,
-        **arg
+        **arg,
     )
     arg = {}
     if abs(VZrefe) < 1e-6:
@@ -246,7 +246,7 @@ for UnInst, Nrefe, VYrefe, VZrefe in ResuRefe.values():
         VALE_CALC=VZrefe,
         REFERENCE="ANALYTIQUE",
         VALE_REFE=VZrefe,
-        **arg
+        **arg,
     )
     # Le Trajet 3
     arg = {}
@@ -261,7 +261,7 @@ for UnInst, Nrefe, VYrefe, VZrefe in ResuRefe.values():
         VALE_CALC=Nrefe,
         REFERENCE="ANALYTIQUE",
         VALE_REFE=Nrefe,
-        **arg
+        **arg,
     )
     arg = {}
     if abs(VYrefe) < 1e-6:
@@ -275,7 +275,7 @@ for UnInst, Nrefe, VYrefe, VZrefe in ResuRefe.values():
         VALE_CALC=VYrefe,
         REFERENCE="ANALYTIQUE",
         VALE_REFE=VYrefe,
-        **arg
+        **arg,
     )
     arg = {}
     if abs(VZrefe) < 1e-6:
@@ -289,7 +289,7 @@ for UnInst, Nrefe, VYrefe, VZrefe in ResuRefe.values():
         VALE_CALC=VZrefe,
         REFERENCE="ANALYTIQUE",
         VALE_REFE=VZrefe,
-        **arg
+        **arg,
     )
 
 
@@ -318,7 +318,7 @@ for Angle in LesAngles:
         VALE_REFE=UnVYrefe,
         REFERENCE="ANALYTIQUE",
         VALE_CALC=UnVYrefe,
-        **arg
+        **arg,
     )
     arg = {}
     if abs(UnVZrefe) < 1e-6:
@@ -332,7 +332,7 @@ for Angle in LesAngles:
         VALE_REFE=UnVZrefe,
         REFERENCE="ANALYTIQUE",
         VALE_CALC=UnVZrefe,
-        **arg
+        **arg,
     )
 
 

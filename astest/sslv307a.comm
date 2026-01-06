@@ -145,7 +145,7 @@ CLIM = AFFE_CHAR_MECA(
 #
 CHARGT = AFFE_CHAR_MECA(
     MODELE=MODELE,
-    FORCE_FACE=_F(GROUP_MA=("SECT4_3", "SECT4_4"), FX=0.0, FY=250000.0, FZ=433013.0)
+    FORCE_FACE=_F(GROUP_MA=("SECT4_3", "SECT4_4"), FX=0.0, FY=250000.0, FZ=433013.0),
     #                .......... PRESSION = Q/H ...............
 )
 

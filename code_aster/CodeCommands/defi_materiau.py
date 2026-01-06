@@ -271,12 +271,7 @@ def adapt_elas(keywords):
                 UTMESS("F", "MATERIAL1_14", valk="CELE_S")
             if celP / celS < 2.0 * sqrt(3.0) / 3.0:
                 UTMESS("F", "MATERIAL1_15", valr=(celP / celS, 2.0 * sqrt(3.0) / 3.0))
-            valE = (
-                elas["RHO"]
-                * celS**2
-                * (3.0 * celP**2 - 4.0 * celS**2)
-                / (celP**2 - celS**2)
-            )
+            valE = elas["RHO"] * celS**2 * (3.0 * celP**2 - 4.0 * celS**2) / (celP**2 - celS**2)
             valNU = (celP**2 - 2.0 * celS**2) / (celP**2 - celS**2) / 2.0
             UTMESS("I", "MATERIAL1_12", valr=(valE, valNU), valk="(CELE_P, CELE_S, RHO)")
 

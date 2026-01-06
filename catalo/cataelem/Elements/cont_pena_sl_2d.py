@@ -40,6 +40,7 @@ ECFROT = LocatedComponents(
     phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_F",)),)
 )
 
+
 # --------------------------------------------------------------------------------------------------
 class CPS22D(Element):
     """Contact/friction - Slave elements for penalization - 2D - SEG2"""

@@ -110,6 +110,6 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt, &
 !
 1000 format(' MOMENT PAR RAPPORT AU POINT : ', 1p, e12.5, 1x, e12.5)
 1010 format(' MOMENT PAR RAPPORT AU POINT : ', 1p, e12.5, 1x, e12.5,&
-   &                                           1x, e12.5)
+&                                           1x, e12.5)
 !
 end subroutine

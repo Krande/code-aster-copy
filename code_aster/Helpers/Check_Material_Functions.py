@@ -35,6 +35,7 @@ def check_dis_choc_elas(keywords, options=[]):
     Use with :  defi_materiau
                 dyna_vibra/comportement
     """
+
     #
     # jean-luc.flejou@edf.fr
     #

@@ -18,7 +18,6 @@
 
 subroutine te0399(option, nomte)
 
-
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

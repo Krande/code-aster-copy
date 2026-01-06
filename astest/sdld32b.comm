@@ -132,22 +132,22 @@ dict_dyna_non_line = _F(
 # Solve transient problem
 RESU_HHTd = DYNA_NON_LINE(
     SCHEMA_TEMPS=_F(SCHEMA="HHT", FORMULATION="DEPLACEMENT", ALPHA=alpha_hht, MODI_EQUI="OUI"),
-    **dict_dyna_non_line
+    **dict_dyna_non_line,
 )
 
 RESU_HHTa = DYNA_NON_LINE(
     SCHEMA_TEMPS=_F(SCHEMA="HHT", FORMULATION="ACCELERATION", ALPHA=alpha_hht, MODI_EQUI="OUI"),
-    **dict_dyna_non_line
+    **dict_dyna_non_line,
 )
 
 RESU_NOHHTd = DYNA_NON_LINE(
     SCHEMA_TEMPS=_F(SCHEMA="NOHHT", FORMULATION="DEPLACEMENT", ALPHA=alpha_hht),
-    **dict_dyna_non_line
+    **dict_dyna_non_line,
 )
 
 RESU_NOHHTa = DYNA_NON_LINE(
     SCHEMA_TEMPS=_F(SCHEMA="NOHHT", FORMULATION="ACCELERATION", ALPHA=alpha_hht),
-    **dict_dyna_non_line
+    **dict_dyna_non_line,
 )
 
 

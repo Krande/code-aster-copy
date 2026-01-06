@@ -155,7 +155,7 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
                     SOUS_TITRE=txt_iter,
                     LEGENDE_X=reponses[i][1],
                     LEGENDE_Y=reponses[i][2],
-                    **motscle2
+                    **motscle2,
                 )
                 dic = {
                     "": "",

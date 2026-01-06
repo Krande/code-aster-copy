@@ -40,7 +40,7 @@ TEST_RESU = PROC(
         CHAM_GD=SIMP(statut="o", typ=cham_no_sdaster),
         GROUP_NO=SIMP(statut="f", typ=grno),
         NOM_CMP=SIMP(statut="f", typ="TXM", max=1),
-        **C_TEST_REFERENCE("CHAM_NO", max="**")
+        **C_TEST_REFERENCE("CHAM_NO", max="**"),
     ),
     CARTE=FACT(
         statut="f",
@@ -48,7 +48,7 @@ TEST_RESU = PROC(
         CHAM_GD=SIMP(statut="o", typ=carte_sdaster),
         GROUP_MA=SIMP(statut="f", typ=grma),
         NOM_CMP=SIMP(statut="o", typ="TXM", max=1),
-        **C_TEST_REFERENCE("CARTE", max=1)
+        **C_TEST_REFERENCE("CARTE", max=1),
     ),
     CHAM_ELEM=FACT(
         statut="f",
@@ -64,7 +64,7 @@ TEST_RESU = PROC(
         SOUS_POINT=SIMP(statut="f", typ="I"),
         GROUP_NO=SIMP(statut="f", typ=grno),
         NOM_CMP=SIMP(statut="f", typ="TXM", max=1),
-        **C_TEST_REFERENCE("CHAM_ELEM", max="**")
+        **C_TEST_REFERENCE("CHAM_ELEM", max="**"),
     ),
     RESU=FACT(
         statut="f",
@@ -97,7 +97,7 @@ TEST_RESU = PROC(
         GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
         POINT=SIMP(statut="f", typ="I"),
         SOUS_POINT=SIMP(statut="f", typ="I"),
-        **C_TEST_REFERENCE("RESU", max="**")
+        **C_TEST_REFERENCE("RESU", max="**"),
     ),
     GENE=FACT(
         statut="f",
@@ -137,7 +137,7 @@ TEST_RESU = PROC(
             NUME_ORDRE=SIMP(statut="f", typ="I"),
             INST=SIMP(statut="f", typ="R"),
         ),
-        **C_TEST_REFERENCE("GENE", max="**")
+        **C_TEST_REFERENCE("GENE", max="**"),
     ),
     OBJET=FACT(
         statut="f", max="**", NOM=SIMP(statut="o", typ="TXM"), **C_TEST_REFERENCE("OBJET", max=1)
@@ -161,7 +161,7 @@ TEST_RESU = PROC(
         ),
         NOM_GROUP_MA=SIMP(statut="f", typ=grma, max=1),
         NOM_GROUP_NO=SIMP(statut="f", typ=grno, max=1),
-        **C_TEST_REFERENCE("MAILLAGE", max=1)
+        **C_TEST_REFERENCE("MAILLAGE", max=1),
     ),
     TEST_NAN=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
 )

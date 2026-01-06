@@ -71,9 +71,9 @@ CPRESSF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES", "C
 
 NTHETAR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
+
 # ------------------------------------------------------------
 class MEAXSE2_XT(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2
@@ -223,7 +223,6 @@ class MEAXSE2_XT(Element):
 
 # ------------------------------------------------------------
 class MEAXSE3_XT(MEAXSE2_XT):
-
     """Please document this element"""
 
     meshType = MT.SEG3

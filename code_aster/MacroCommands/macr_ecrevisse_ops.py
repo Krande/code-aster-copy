@@ -270,7 +270,7 @@ def macr_ecrevisse_ops(self, **args):
                         ),
                         INFO=InfoAster,
                         TYPE_CALCUL="TRAN",
-                        **motclefs
+                        **motclefs,
                     )
 
                     _RTHMPJ = PROJ_CHAMP(
@@ -292,7 +292,7 @@ def macr_ecrevisse_ops(self, **args):
                         ),
                         INFO=InfoAster,
                         TYPE_CALCUL="TRAN",
-                        **motclefs
+                        **motclefs,
                     )
 
                     # Projection du champ thermique, a tous les instants
@@ -384,7 +384,7 @@ def macr_ecrevisse_ops(self, **args):
                     NEWTON=_F(**dNEWTON),
                     CONVERGENCE=_F(**dCONVERGENCE),
                     INFO=InfoAster,
-                    **motclefs
+                    **motclefs,
                 )
             else:
                 #      CAS OU LA MACRO EST REENTRANTE : ON RELANCE ECREVISSE POUR CONNAITRE
@@ -439,7 +439,7 @@ def macr_ecrevisse_ops(self, **args):
                     ECOULEMENT=_F(**dECOULEMENT_ecrevisse),
                     MODELE_ECRE=_F(**dMODELE_ECRE),
                     CONVERGENCE=_F(**dCONVERGENCE_ECREVISSE),
-                    **motclefsCALC_ECREVISSE
+                    **motclefsCALC_ECREVISSE,
                 )
             else:
                 CALC_ECREVISSE(
@@ -465,7 +465,7 @@ def macr_ecrevisse_ops(self, **args):
                     ECOULEMENT=_F(**dECOULEMENT_ecrevisse),
                     MODELE_ECRE=_F(**dMODELE_ECRE),
                     CONVERGENCE=_F(**dCONVERGENCE_ECREVISSE),
-                    **motclefsCALC_ECREVISSE
+                    **motclefsCALC_ECREVISSE,
                 )
 
             if debug:

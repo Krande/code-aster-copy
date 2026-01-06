@@ -250,7 +250,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_HEXA20_XH1(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -601,7 +600,6 @@ class HM_HEXA20_XH1(Element):
 
 # ------------------------------------------------------------
 class HM_PENTA15_XH1(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -627,7 +625,6 @@ class HM_PENTA15_XH1(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_PYRAM13_XH1(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.PYRAM13
@@ -650,7 +647,6 @@ class HM_PYRAM13_XH1(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_TETRA10_XH1(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -673,7 +669,6 @@ class HM_TETRA10_XH1(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_HEXA20_XH2(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -701,7 +696,6 @@ class HM_HEXA20_XH2(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_PENTA15_XH2(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -729,7 +723,6 @@ class HM_PENTA15_XH2(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_PYRAM13_XH2(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.PYRAM13
@@ -754,7 +747,6 @@ class HM_PYRAM13_XH2(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_TETRA10_XH2(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -777,7 +769,6 @@ class HM_TETRA10_XH2(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_HEXA20_XH3(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -805,7 +796,6 @@ class HM_HEXA20_XH3(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_PENTA15_XH3(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -833,7 +823,6 @@ class HM_PENTA15_XH3(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_PYRAM13_XH3(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.PYRAM13
@@ -858,7 +847,6 @@ class HM_PYRAM13_XH3(HM_HEXA20_XH1):
 
 # ------------------------------------------------------------
 class HM_TETRA10_XH3(HM_HEXA20_XH1):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

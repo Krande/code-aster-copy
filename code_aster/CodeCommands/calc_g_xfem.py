@@ -103,7 +103,7 @@ def calc_g_xfem_with_co(self, **args):
                         INST=i_cham,
                     ),
                 ),
-                **reuse
+                **reuse,
             )
             # for next iteration
             reuse = dict(reuse=_cham_theta, RESULTAT=_cham_theta)

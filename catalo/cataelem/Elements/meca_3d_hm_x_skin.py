@@ -103,7 +103,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_FACE8_XH(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -248,7 +247,6 @@ class HM_FACE8_XH(Element):
 
 # ------------------------------------------------------------
 class HM_FACE6_XH(HM_FACE8_XH):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

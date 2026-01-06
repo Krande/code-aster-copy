@@ -89,5 +89,5 @@ LIRE_MAILLAGE = OPER(
     sd_prod=lire_maillage_sdprod,
     fr=tr("Crée un maillage par lecture d'un fichier"),
     reentrant="n",
-    **keywords
+    **keywords,
 )

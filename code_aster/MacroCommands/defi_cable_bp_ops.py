@@ -74,7 +74,7 @@ def defi_cable_bp_ops(
     TYPE_RELAX,
     INFO,
     CONE=None,
-    **args
+    **args,
 ):
     """
     Ecriture de la macro DEFI_CABLE_BP
@@ -246,7 +246,7 @@ def defi_cable_bp_ops(
                             GROUP_MA=i["GROUP_MA"],
                             GROUP_NO_ANCRAGE=i["GROUP_NO_ANCRAGE"],
                             GROUP_NO_FUT=(__NOM1, __NOM2),
-                            **motscle3
+                            **motscle3,
                         )
                     )
 
@@ -257,7 +257,7 @@ def defi_cable_bp_ops(
                             GROUP_MA=i["GROUP_MA"],
                             GROUP_NO_ANCRAGE=i["GROUP_NO_ANCRAGE"],
                             GROUP_NO_FUT=(__NOM1,),
-                            **motscle3
+                            **motscle3,
                         )
                     )
 
@@ -268,7 +268,7 @@ def defi_cable_bp_ops(
                             GROUP_MA=i["GROUP_MA"],
                             GROUP_NO_ANCRAGE=i["GROUP_NO_ANCRAGE"],
                             GROUP_NO_FUT=(__NOM2,),
-                            **motscle3
+                            **motscle3,
                         )
                     )
 
@@ -278,7 +278,7 @@ def defi_cable_bp_ops(
                         _F(
                             GROUP_MA=i["GROUP_MA"],
                             GROUP_NO_ANCRAGE=i["GROUP_NO_ANCRAGE"],
-                            **motscle3
+                            **motscle3,
                         )
                     )
 
@@ -323,7 +323,7 @@ def defi_cable_bp_ops(
         TYPE_RELAX=TYPE_RELAX,
         ANALYSE=ANALY,
         INFO=INFO,
-        **motscles
+        **motscles,
     )
 
     return __DC

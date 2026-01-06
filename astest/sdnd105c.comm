@@ -364,10 +364,7 @@ table2 = CREA_TABLE(FONCTION=_F(FONCTION=DEPL, PARA=("T", "ENF_MAX")))
 # references
 Ecin = 1.0 / 2.0 * 1.0 * V0**2
 du = (
-    (
-        Ecin
-        - (F_max**2 / (2 * KN) + LARG_PLAT * F_max + ENFO_FL * (F_max2 + (F_max - F_max2) / 2.0))
-    )
+    (Ecin - (F_max**2 / (2 * KN) + LARG_PLAT * F_max + ENFO_FL * (F_max2 + (F_max - F_max2) / 2.0)))
     / F_max2
     + F_max / KN
     + LARG_PLAT

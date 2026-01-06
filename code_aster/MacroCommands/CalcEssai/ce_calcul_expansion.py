@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 import numpy
 
 from libaster import AsterError
@@ -139,7 +138,7 @@ class CalcEssaiExpansion:
                 RESU_ET=CO("ET"),
                 RESU_RD=CO("RD"),
                 RESOLUTION=parametres,
-                **args
+                **args,
             )
 
         except AsterError as err:

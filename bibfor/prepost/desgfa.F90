@@ -98,65 +98,55 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf, &
             write (ifm, 10003)
         else
             write (ifm, 10004) noment(typent)
-            do 10, iaux = 1, nbaf
+            do iaux = 1, nbaf
                 write (ifm, 10005) valatt(iaux)
-10              continue
-                end if
+            end do
+        end if
 !
-                if (nbgf .eq. 0) then
-                    write (ifm, 10006)
-                else
-                    write (ifm, 10007) noment(typent)
-                    do 20, iaux = 1, nbgf
-                        write (ifm, 10008) nogrf(iaux) (1:8)
-20                      continue
-                        end if
+        if (nbgf .eq. 0) then
+            write (ifm, 10006)
+        else
+            write (ifm, 10007) noment(typent)
+            do iaux = 1, nbgf
+                write (ifm, 10008) nogrf(iaux) (1:8)
+            end do
+        end if
 !
-                        write (ifm, 10009)
+        write (ifm, 10009)
 !
-10001                   format(&
-                                       &//, 50('*'),&
-                                       &/, '*   FAMILLE : ', a32, 3x, '*',&
-                                       &/, '*   NUMERO  : ', i8, 27x, '*')
-10011                   format(&
-                                       &//, 50('*'),&
-                                       &/, '*   FAMILLE : ', a32, 3x, '*',&
-                                       &/, '*', 13x, a32, 3x, '*',&
-                                       &/, '*   NUMERO  : ', i8, 27x, '*')
-10002                   format(&
-                                       &  '*', 3x, 'NOMBRE DE ', a7, ' : ', i7, 18x, '*')
+10001   format(//, 50('*'), &
+                /, '*   FAMILLE : ', a32, 3x, '*', &
+                /, '*   NUMERO  : ', i8, 27x, '*')
+10011   format(//, 50('*'), &
+                /, '*   FAMILLE : ', a32, 3x, '*', &
+                /, '*', 13x, a32, 3x, '*', &
+                /, '*   NUMERO  : ', i8, 27x, '*')
+10002   format('*', 3x, 'NOMBRE DE ', a7, ' : ', i7, 18x, '*')
 !
-10003                   format(&
-                                       &  50('*'),&
-                                       &/, '*', 3x, 'AUCUN ATTRIBUT N''A ETE DEFINI.', 15x, '*')
-10004                   format(&
-                                       &  50('*'),&
-                                     &/, '*', 3x, 'ATTRIBUT(S) CORRESPONDANT(S) A CES ', a7, ' : *')
-10005                   format(&
-                                       &  '*', 10x, i8, 30x, '*')
+10003   format(50('*'), &
+               /, '*', 3x, 'AUCUN ATTRIBUT N''A ETE DEFINI.', 15x, '*')
+10004   format(50('*'), &
+               /, '*', 3x, 'ATTRIBUT(S) CORRESPONDANT(S) A CES ', a7, ' : *')
+10005   format('*', 10x, i8, 30x, '*')
 !
-10006                   format(&
-                                       &  50('*'),&
-                                       &/, '*', 3x, 'AUCUN GROUPE N''A ETE DEFINI.', 17x, '*')
-10007                   format(&
-                                       &  50('*'),&
-                                     &/, '*', 3x, 'GROUPE(S) CORRESPONDANT(S) A CES ', a7, ' :   *')
-10008                   format(&
-                                       &  '*', 10x, a8, 30x, '*')
+10006   format(50('*'), &
+               /, '*', 3x, 'AUCUN GROUPE N''A ETE DEFINI.', 17x, '*')
+10007   format(50('*'), &
+               /, '*', 3x, 'GROUPE(S) CORRESPONDANT(S) A CES ', a7, ' :   *')
+10008   format('*', 10x, a8, 30x, '*')
 !
-10009                   format(&
-                                       &  50('*'),/)
+10009   format(50('*'),/)
 !
 !====
 ! 2. MAUVAIS TYPE D'ENTITES
 !====
 !
-                    else
+    else
 !
-                        codret = 1
-                        call codent(typent, 'G', noment(3))
-                        call utmess('A', 'MED_42', sk=noment(3))
+        codret = 1
+        call codent(typent, 'G', noment(3))
+        call utmess('A', 'MED_42', sk=noment(3))
 !
-                    end if
+    end if
 !
-                    end subroutine
+end subroutine

@@ -205,10 +205,7 @@ DYNA = DYNA_NON_LINE(
 Ecin = 1.0 / 2.0 * M_Mobile * Vini**2
 # Enfoncement max theorique
 du = (
-    (
-        Ecin
-        - (F_max**2 / (2 * KN) + LARG_PLAT * F_max + ENFO_FL * (F_max2 + (F_max - F_max2) / 2.0))
-    )
+    (Ecin - (F_max**2 / (2 * KN) + LARG_PLAT * F_max + ENFO_FL * (F_max2 + (F_max - F_max2) / 2.0)))
     / F_max2
     + F_max / KN
     + LARG_PLAT

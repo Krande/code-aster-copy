@@ -29,14 +29,12 @@ from code_aster.CodeCommands import DEFI_LIST_REEL
 
 
 class TestMissCmde(unittest.TestCase):
-
     """test generator of miss commands file"""
 
     def setUp(self):
         """set up parameters"""
 
         class Parameters(dict):
-
             """fake MISS_PARAMETERS for unittests"""
 
             def set(self, key, value):
@@ -44,7 +42,6 @@ class TestMissCmde(unittest.TestCase):
                 self[key] = value
 
         class Struct:
-
             """fake structure"""
 
             titre = "PRODUIT PAR CALC_MISS"
@@ -463,7 +460,6 @@ rXffxK/nhVQeQ/4A5Lekkg==
 
 
 class TestMissInterface(unittest.TestCase):
-
     """test interface functions to create miss datafiles"""
 
     faster = "ZZZZ108B.aster"
@@ -484,7 +480,6 @@ class TestMissInterface(unittest.TestCase):
 
 
 class TestMissCsolReader(unittest.TestCase):
-
     """test the reader of csol files"""
 
     fcsol = "ZZZZ108B.01.csol.a"

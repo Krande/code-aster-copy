@@ -51,7 +51,7 @@ pos_pout = [
 dX = []
 dY = []
 dZ = []
-for (y, z) in pos_pout:
+for y, z in pos_pout:
     dX.append(DOFm[0] - y * DOFm[5] + z * DOFm[4])
     dY.append(DOFm[1] - z * DOFm[3])
     dZ.append(DOFm[2] + y * DOFm[3])

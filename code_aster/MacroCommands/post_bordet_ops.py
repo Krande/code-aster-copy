@@ -40,7 +40,7 @@ def post_bordet_ops(
     NUME_ORDRE=None,
     PROBA_NUCL=None,
     COEF_MULT=None,
-    **args
+    **args,
 ):
     """Corps de POST_BORDET"""
 

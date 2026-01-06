@@ -18,9 +18,7 @@
 # --------------------------------------------------------------------
 
 
-
 class MissDomains:
-
     """A MissDomain instance assigns the identifiers of the domains and
     the different groups they contains"""
 

@@ -38,7 +38,7 @@ def lire_inte_spec_ops(
     PROL_GAUCHE=None,
     TITRE=None,
     INFO=None,
-    **args
+    **args,
 ):
     # Lecture de la fonction dans un fichier d unité logique UNITE
     nomfich = LogicalUnitFile.filename_from_unit(UNITE)

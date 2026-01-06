@@ -25,7 +25,6 @@ subroutine dchlmx(iparg, nin, lpain, &
 
     implicit none
 
-
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/digde2.h"

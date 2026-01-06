@@ -34,22 +34,22 @@ subroutine impdep(isor, idep, ibl, dmoy, detyp, &
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES DEPLACEMENTS X LOCAL *****'
             write (isor, *)
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! DX MOYEN    ! DX E.TYPE   !',&
-     &                ' DX RMS      ! DX MAX      ! DX MIN      !'
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! DX MOYEN    ! DX E.TYPE   !', &
+                ' DX RMS      ! DX MAX      ! DX MIN      !'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
         else if (ibl .eq. 0) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES GLOBALES  DEPX *****'
             write (isor, *)
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! DX MOYEN    ! DX E.TYPE   ! DX RMS      !',&
-     &                ' DX MAX      ! DX MIN      !'
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! DX MOYEN    ! DX E.TYPE   ! DX RMS      !', &
+                ' DX MAX      ! DX MIN      !'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
         end if
         write (isor, 10) ibl, dmoy, detyp, drms, dmax, dmin
     else if (idep .eq. 2) then
@@ -57,22 +57,22 @@ subroutine impdep(isor, idep, ibl, dmoy, detyp, &
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES DEPLACEMENTS Y LOCAL *****'
             write (isor, *)
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! DY MOYEN    ! DY E.TYPE   ! DY RMS      !',&
-     &                ' DY MAX      ! DY MIN      !'
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! DY MOYEN    ! DY E.TYPE   ! DY RMS      !', &
+                ' DY MAX      ! DY MIN      !'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
         else if (ibl .eq. 0) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES GLOBALES  DEPY *****'
             write (isor, *)
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! DY MOYEN    ! DY E.TYPE   ! DY RMS      !',&
-     &                ' DY MAX      ! DY MIN      !'
-            write (isor, *) '---------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! DY MOYEN    ! DY E.TYPE   ! DY RMS      !', &
+                ' DY MAX      ! DY MIN      !'
+            write (isor, *) '---------------------------------------------', &
+                '----------------------------'
         end if
         write (isor, 10) ibl, dmoy, detyp, drms, dmax, dmin
     else if (idep .eq. 3) then
@@ -80,22 +80,22 @@ subroutine impdep(isor, idep, ibl, dmoy, detyp, &
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES DEPLACEMENTS Z LOCAL *****'
             write (isor, *)
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! DZ MOYEN    ! DZ E.TYPE   ! DZ RMS      !',&
-     &                ' DZ MAX      ! DZ MIN      !'
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! DZ MOYEN    ! DZ E.TYPE   ! DZ RMS      !', &
+                ' DZ MAX      ! DZ MIN      !'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
         else if (ibl .eq. 0) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES GLOBALES  DEPZ *****'
             write (isor, *)
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! DZ MOYEN    ! DZ E.TYPE   ! DZ RMS      !',&
-     &                ' DZ MAX      ! DZ MIN      !'
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! DZ MOYEN    ! DZ E.TYPE   ! DZ RMS      !', &
+                ' DZ MAX      ! DZ MIN      !'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
         end if
         write (isor, 10) ibl, dmoy, detyp, drms, dmax, dmin
     else if (idep .eq. 4) then
@@ -103,22 +103,22 @@ subroutine impdep(isor, idep, ibl, dmoy, detyp, &
             write (isor, *)
             write (isor, *) ' *****  STATISTIQUES DEPLACEMENT  RADIAL *****'
             write (isor, *)
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! R  MOYEN    ! R  E.TYPE   ! R  RMS      !',&
-     &                ' R  MAX      ! R  MIN      !'
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! R  MOYEN    ! R  E.TYPE   ! R  RMS      !', &
+                ' R  MAX      ! R  MIN      !'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
         else if (ibl .eq. 0) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES GLOBALES DEPL RADIAL ****'
             write (isor, *)
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! R  MOYEN    ! R  E.TYPE   ! R  RMS      !',&
-     &                ' R  MAX      ! R  MIN      !'
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! R  MOYEN    ! R  E.TYPE   ! R  RMS      !', &
+                ' R  MAX      ! R  MIN      !'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
         end if
         write (isor, 10) ibl, dmoy, detyp, drms, dmax, dmin
     else if (idep .eq. 5) then
@@ -126,27 +126,27 @@ subroutine impdep(isor, idep, ibl, dmoy, detyp, &
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES DEPLACEMENT ANGULAIRE ****'
             write (isor, *)
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! THETA MOYEN ! THETA E.TYP ! THETA RMS   !',&
-     &                ' THETA MAX   ! THETA MIN   !'
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! THETA MOYEN ! THETA E.TYP ! THETA RMS   !', &
+                ' THETA MAX   ! THETA MIN   !'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
         else if (ibl .eq. 0) then
             write (isor, *)
             write (isor, *) ' ***** STATISTIQUES GLOBALES DEPL ANGLE  ****'
             write (isor, *)
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
-            write (isor, *) '!IB! THETA MOYEN ! THETA E.TYP ! THETA RMS   !',&
-     &                ' THETA MAX   ! THETA MIN   !'
-            write (isor, *) '----------------------------------------------',&
-     &                '----------------------------'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
+            write (isor, *) '!IB! THETA MOYEN ! THETA E.TYP ! THETA RMS   !', &
+                ' THETA MAX   ! THETA MIN   !'
+            write (isor, *) '----------------------------------------------', &
+                '----------------------------'
         end if
         write (isor, 10) ibl, dmoy, detyp, drms, dmax, dmin
     end if
 !
 !
-10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !',&
-      &         1pe12.5, ' !', 1pe12.5, ' !')
+10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !', &
+           1pe12.5, ' !', 1pe12.5, ' !')
 end subroutine

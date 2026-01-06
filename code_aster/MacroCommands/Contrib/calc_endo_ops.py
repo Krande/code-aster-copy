@@ -51,7 +51,7 @@ def calc_endo_ops(
     INFO,
     TITRE,
     IMPR,
-    **args
+    **args,
 ):
     """
     Calcul d'endommagement a partir d'un champ d'endommagement initial

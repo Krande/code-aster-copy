@@ -64,5 +64,5 @@ TEST_TABLE = PROC(
     ),
     NOM_PARA=SIMP(statut="o", typ="TXM"),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
-    **C_TEST_REFERENCE("TABLE", max="**")
+    **C_TEST_REFERENCE("TABLE", max="**"),
 )

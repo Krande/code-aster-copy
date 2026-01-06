@@ -41,6 +41,7 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MVECTAR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NACCELR)
 
+
 # ----------------------------------------------------------------------------------------------
 class MEFS_FACE3P(Element):
     """Element for FSI interaction (U,P) - 3D - On TR3"""

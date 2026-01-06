@@ -21,7 +21,6 @@ function typele(ligrez, igrel, icalc)
     implicit none
     integer(kind=8) :: typele
 
-
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"

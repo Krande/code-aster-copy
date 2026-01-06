@@ -20,7 +20,6 @@
  * --------------------------------------------------------------------
  */
 
-
 #include "PythonBindings/ResultNamingInterface.h"
 
 #include "aster_pybind.h"

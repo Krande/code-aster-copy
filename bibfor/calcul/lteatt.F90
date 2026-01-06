@@ -19,7 +19,6 @@
 function lteatt(noattr, vattr, typel)
     implicit none
 
-
 #include "asterf_types.h"
 #include "asterfort/teattr.h"
 

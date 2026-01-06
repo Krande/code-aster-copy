@@ -34,24 +34,24 @@ subroutine impfn0(isor, ibl, fnmoyt, fnmoyc, fnrmst, &
     if (ibl .eq. 1) then
         write (isor, *)
         write (isor, *) ' ***** STATISTIQUES FORCE NORMALE *****'
-        write (isor, *) '+--+-------------+-------------+-------------+',&
-     &                '-------------+-------------+'
-        write (isor, *) '!IB! FN MOY TTOT ! FN MOY TCHOC! FN RMS TTOT !',&
-     &                   ' FN RMS TCHOC! FN MAX      !'
-        write (isor, *) '+--+-------------+-------------+-------------+',&
-     &                '-------------+-------------+'
+        write (isor, *) '+--+-------------+-------------+-------------+', &
+            '-------------+-------------+'
+        write (isor, *) '!IB! FN MOY TTOT ! FN MOY TCHOC! FN RMS TTOT !', &
+            ' FN RMS TCHOC! FN MAX      !'
+        write (isor, *) '+--+-------------+-------------+-------------+', &
+            '-------------+-------------+'
     else if (ibl .eq. 0) then
         write (isor, *)
         write (isor, *) ' ***** STATISTIQUES GLOBALES FNORM *****'
-        write (isor, *) '+--+-------------+-------------+-------------+',&
-     &                '-------------+-------------+'
-        write (isor, *) '!IB! FN MOY TTOT ! FN MOY TCHOC! FN RMS TTOT !',&
-     &                   ' FN RMS TCHOC! FN MAX      !'
-        write (isor, *) '+--+-------------+-------------+-------------+',&
-     &                '-------------+-------------+'
+        write (isor, *) '+--+-------------+-------------+-------------+', &
+            '-------------+-------------+'
+        write (isor, *) '!IB! FN MOY TTOT ! FN MOY TCHOC! FN RMS TTOT !', &
+            ' FN RMS TCHOC! FN MAX      !'
+        write (isor, *) '+--+-------------+-------------+-------------+', &
+            '-------------+-------------+'
     end if
     write (isor, 10) ibl, fnmoyt, fnmoyc, fnrmst, fnrmsc, fmax
 !
-10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !',&
-      &        1pe12.5, ' !', 1pe12.5, ' !')
+10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !', &
+           1pe12.5, ' !', 1pe12.5, ' !')
 end subroutine

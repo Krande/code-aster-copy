@@ -29,7 +29,6 @@ from ...Messages import UTMESS
 
 
 class MissCsolReader:
-
     """Lit un fichier csol"""
 
     def __init__(self, nbpc, freq_nb):
@@ -83,7 +82,6 @@ class MissCsolReader:
 
 
 class ResultatPC:
-
     """Simple conteneur des valeurs relus en un point de contrôle"""
 
     def __init__(self):

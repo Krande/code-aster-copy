@@ -73,7 +73,6 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 # ------------------------------------------------------------
 class THCPSE3(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG3

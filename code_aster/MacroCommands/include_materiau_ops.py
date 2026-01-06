@@ -121,7 +121,7 @@ def include_materiau_ops(
     PROL_DROITE=None,
     COEF_MULT=None,
     OPTION=None,
-    **args
+    **args,
 ):
     """Macro INCLUDE_MATERIAU"""
     fmat = args.get("FICHIER")

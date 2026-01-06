@@ -58,7 +58,7 @@ def rosen_der(x):
     xm_m1 = x[0:-2]
     xm_p1 = x[2 : len(x)]
     der = Num.zeros(x.shape, x.dtype.char)
-    der[1:-1] = 200 * (xm - xm_m1 ** 2) - 400 * (xm_p1 - xm ** 2) * xm - 2 * (1 - xm)
+    der[1:-1] = 200 * (xm - xm_m1**2) - 400 * (xm_p1 - xm**2) * xm - 2 * (1 - xm)
     der[0] = -400 * x[0] * (x[1] - x[0] ** 2) - 2 * (1 - x[0])
     der[-1] = 200 * (x[-1] - x[-2] ** 2)
     return der
@@ -295,7 +295,7 @@ def line_search_BFGS(f, xk, pk, gfk, args=(), c1=1e-4, alpha0=1):
 
     # Otherwise compute the minimizer of a quadratic interpolant:
 
-    alpha1 = -(derphi0) * alpha0 ** 2 / 2.0 / (phi_a0 - phi0 - derphi0 * alpha0)
+    alpha1 = -(derphi0) * alpha0**2 / 2.0 / (phi_a0 - phi0 - derphi0 * alpha0)
     phi_a1 = f(*(xk + alpha1 * pk,) + args)
     fc = fc + 1
 
@@ -307,17 +307,17 @@ def line_search_BFGS(f, xk, pk, gfk, args=(), c1=1e-4, alpha0=1):
     #  the value of alpha is not too small and satisfies the second condition.
 
     while 1:  # we are assuming pk is a descent direction
-        factor = alpha0 ** 2 * alpha1 ** 2 * (alpha1 - alpha0)
-        a = alpha0 ** 2 * (phi_a1 - phi0 - derphi0 * alpha1) - alpha1 ** 2 * (
+        factor = alpha0**2 * alpha1**2 * (alpha1 - alpha0)
+        a = alpha0**2 * (phi_a1 - phi0 - derphi0 * alpha1) - alpha1**2 * (
             phi_a0 - phi0 - derphi0 * alpha0
         )
         a = a / factor
-        b = -(alpha0 ** 3) * (phi_a1 - phi0 - derphi0 * alpha1) + alpha1 ** 3 * (
+        b = -(alpha0**3) * (phi_a1 - phi0 - derphi0 * alpha1) + alpha1**3 * (
             phi_a0 - phi0 - derphi0 * alpha0
         )
         b = b / factor
 
-        alpha2 = (-b + Num.sqrt(abs(b ** 2 - 3 * a * derphi0))) / (3.0 * a)
+        alpha2 = (-b + Num.sqrt(abs(b**2 - 3 * a * derphi0))) / (3.0 * a)
         phi_a2 = f(*(xk + alpha2 * pk,) + args)
         fc = fc + 1
 

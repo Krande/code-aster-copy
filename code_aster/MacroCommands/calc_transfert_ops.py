@@ -42,7 +42,7 @@ def calc_transfert_ops(
     RESULTAT_Z=None,
     REPERE=None,
     SIGNAL=None,
-    **args
+    **args,
 ):
     """
     Macro permettant le calcul de fonctions de transfert et de signaux deconvolues
@@ -122,10 +122,7 @@ def calc_transfert_ops(
     for aa in lst_entr:
         if typ_resu == "TRAN_GENE" or typ_resu == "DYNA_TRANS":
             _aaa = CALC_FONCTION(COMB=_F(FONCTION=aa, COEF=1))
-            (
-                Tcal,
-                Ordcal,
-            ) = (
+            (Tcal, Ordcal) = (
                 _aaa.Valeurs()
             )  # on recupere la liste d'instant pour les signaux calcules par les operateurs de dynamique
             _Tcal = DEFI_LIST_REEL(
@@ -158,10 +155,7 @@ def calc_transfert_ops(
     for bb in lst_sort:
         if typ_resu == "TRAN_GENE" or typ_resu == "DYNA_TRANS":
             _bbb = CALC_FONCTION(COMB=_F(FONCTION=bb, COEF=1))
-            (
-                TcalS,
-                OrdcalS,
-            ) = (
+            (TcalS, OrdcalS) = (
                 _bbb.Valeurs()
             )  # on recupere la liste d'instant pour les signaux calcules par les operateurs de dynamique
             _TcalS = DEFI_LIST_REEL(

@@ -35,6 +35,7 @@ DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 import math
 
+
 # CONVERSION DES PARAMETRE MOHR-COULOMB AUX DRUCKER-PRAGER
 def MC2DP(c, phi):
 
@@ -177,7 +178,7 @@ Remblai = DEFI_MATERIAU(
     THM_DIFFU=_F(BIOT_COEF=1.0, PERM_IN=K_rf, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, RHO=rho_t_fill),
     MOHR_COULOMB=_F(ANGDIL=phi_rf, COHESION=c_rf, PHI=phi_rf),
     DRUCK_PRAGER=_F(ALPHA=A_rf, SY=S_rf, DILAT=phi_rf, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0),
-    **kw_commun
+    **kw_commun,
 )
 
 K_fond = DEFI_CONSTANTE(VALE=k_fond)
@@ -192,7 +193,7 @@ FOND = DEFI_MATERIAU(
     DRUCK_PRAGER=_F(
         ALPHA=A_fond, SY=S_fond, DILAT=phi_fond, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0
     ),
-    **kw_commun
+    **kw_commun,
 )
 
 K_core = DEFI_CONSTANTE(VALE=k_core)
@@ -207,7 +208,7 @@ CLAY = DEFI_MATERIAU(
     DRUCK_PRAGER=_F(
         ALPHA=A_core, SY=S_core, DILAT=phi_core, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0
     ),
-    **kw_commun
+    **kw_commun,
 )
 
 K_rock = DEFI_CONSTANTE(VALE=k_rock)
@@ -222,7 +223,7 @@ ROCK = DEFI_MATERIAU(
     DRUCK_PRAGER=_F(
         ALPHA=A_rock, SY=S_rock, DILAT=phi_rock, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0
     ),
-    **kw_commun
+    **kw_commun,
 )
 
 CMHY = AFFE_MATERIAU(

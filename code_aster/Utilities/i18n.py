@@ -46,7 +46,6 @@ def get_language():
 
 
 class Language(metaclass=Singleton):
-
     """Simple class to switch between languages."""
 
     _singleton_id = "i18n.Language"

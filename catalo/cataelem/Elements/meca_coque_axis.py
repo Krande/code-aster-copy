@@ -187,7 +187,6 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MECXSE3(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG3

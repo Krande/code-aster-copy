@@ -21,7 +21,6 @@ function nucalc(opt, te, memoir)
     implicit none
     integer(kind=8) :: nucalc
 
-
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"

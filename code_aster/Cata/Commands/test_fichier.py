@@ -36,5 +36,5 @@ TEST_FICHIER = MACRO(
     NB_VALE=SIMP(statut="o", typ="I", fr=tr("Nombre de réels")),
     NB_VALE_I=SIMP(statut="f", typ="I", fr=tr("Nombre d'entiers si VALE_CALC_I est présent")),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
-    **C_TEST_REFERENCE("FICHIER", max=1)
+    **C_TEST_REFERENCE("FICHIER", max=1),
 )

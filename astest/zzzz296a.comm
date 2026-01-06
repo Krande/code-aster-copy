@@ -84,6 +84,7 @@ long_poutre = 2.0 * pow(3.0, 0.5)
 xpg = (1.0 / 3.0) ** 0.5
 points_gauss = (long_poutre * (1.0 + xpg) * 0.5, long_poutre * (1.0 - xpg) * 0.5)
 
+
 # Coordonnées des Sous-Points
 def coord_fibre(ifib):
     Rint = Rext - Ep
@@ -115,7 +116,7 @@ for ipt in range(2):
             NOM_PARA="COOR_X",
             TABLE=TBEPS0,
             FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=ifib)),
-            **motclef
+            **motclef,
         )
         motclef = {}
         if abs(yy) < 1.0e-16:
@@ -127,7 +128,7 @@ for ipt in range(2):
             NOM_PARA="COOR_Y",
             TABLE=TBEPS0,
             FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=ifib)),
-            **motclef
+            **motclef,
         )
         motclef = {}
         if abs(zz) < 1.0e-16:
@@ -139,7 +140,7 @@ for ipt in range(2):
             NOM_PARA="COOR_Z",
             TABLE=TBEPS0,
             FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=ifib)),
-            **motclef
+            **motclef,
         )
         # Suivant la Trisectrice
         xxt, yyt, zzt = np.dot(mat_pass, np.array([xx, yy, zz]))
@@ -153,7 +154,7 @@ for ipt in range(2):
             NOM_PARA="COOR_X",
             TABLE=TBEPSI,
             FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=ifib)),
-            **motclef
+            **motclef,
         )
         motclef = {}
         if abs(yyt) < 1.0e-16:
@@ -165,7 +166,7 @@ for ipt in range(2):
             NOM_PARA="COOR_Y",
             TABLE=TBEPSI,
             FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=ifib)),
-            **motclef
+            **motclef,
         )
         motclef = {}
         if abs(zzt) < 1.0e-16:
@@ -177,7 +178,7 @@ for ipt in range(2):
             NOM_PARA="COOR_Z",
             TABLE=TBEPSI,
             FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=ifib)),
-            **motclef
+            **motclef,
         )
 
 FIN()

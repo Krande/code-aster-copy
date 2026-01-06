@@ -25,7 +25,6 @@ This module provides helper objects to easily apply changes between elements
 
 
 class CataElemVisitor:
-
     """This class walks the tree of CataElem object."""
 
     def __init__(self):
@@ -82,7 +81,6 @@ class CataElemVisitor:
 
 
 class ChangeComponentsVisitor(CataElemVisitor):
-
     """A visitor that can change the components of a LocatedComponents used in
     an element. A new LocatedComponents object is created and replaces the
     existing one.

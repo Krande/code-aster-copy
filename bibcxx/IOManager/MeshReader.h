@@ -24,7 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "IOManager/MedFileReader.h"
 #include "Meshes/IncompleteMesh.h"
 #include "Meshes/Mesh.h"

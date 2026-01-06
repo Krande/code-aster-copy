@@ -139,7 +139,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HH2_HEXA20D(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -293,7 +292,6 @@ class HH2_HEXA20D(Element):
 
 # ------------------------------------------------------------
 class HH2_PENTA15D(HH2_HEXA20D):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -311,7 +309,6 @@ class HH2_PENTA15D(HH2_HEXA20D):
 
 # ------------------------------------------------------------
 class HH2_TETRA10D(HH2_HEXA20D):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -325,7 +322,6 @@ class HH2_TETRA10D(HH2_HEXA20D):
 
 # ------------------------------------------------------------
 class HH2_HEXA20S(HH2_HEXA20D):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -346,7 +342,6 @@ class HH2_HEXA20S(HH2_HEXA20D):
 
 # ------------------------------------------------------------
 class HH2_PENTA15S(HH2_HEXA20D):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -368,7 +363,6 @@ class HH2_PENTA15S(HH2_HEXA20D):
 
 # ------------------------------------------------------------
 class HH2_TETRA10S(HH2_HEXA20D):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

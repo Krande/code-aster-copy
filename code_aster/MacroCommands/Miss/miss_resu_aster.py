@@ -32,7 +32,6 @@ from ...Messages import UTMESS
 
 
 class ResuAsterReader:
-
     """Lit le fichier issu de IMPR_MACR_ELEM"""
 
     def __init__(self, nbgrp):
@@ -263,7 +262,6 @@ class ResuAsterReader:
 
 
 class STRUCT_RESULTAT:
-
     """Simple conteneur."""
 
     def __init__(self):

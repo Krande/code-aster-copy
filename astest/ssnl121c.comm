@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 from ssnl121c_mater import *
@@ -52,7 +51,7 @@ CH_FAX = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="NOEU_NEUT_F",
     MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=FLUXAX)
+    AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=FLUXAX),
     #                        INFO : 2
 )
 

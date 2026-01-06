@@ -34,7 +34,7 @@ def calc_mode_rotation_ops(
     METHODE,
     CALC_FREQ,
     VERI_MODE,
-    **args
+    **args,
 ):
     """
     Macro pour calculer les frequences et modes en fonction des vitesses de rotation.
@@ -100,7 +100,7 @@ def calc_mode_rotation_ops(
             MATR_AMOR=__gyom,
             OPTION=CALC_FREQ["OPTION"],
             SOLVEUR_MODAL=_F(METHODE=METHODE),
-            **motscit
+            **motscit,
         )
 
         tab.append(

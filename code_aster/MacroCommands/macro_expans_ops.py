@@ -34,7 +34,7 @@ def macro_expans_ops(
     MODES_NUM=None,
     MODES_EXP=None,
     RESOLUTION=None,
-    **args
+    **args,
 ):
     """!macro MACRO_EXPANS"""
 

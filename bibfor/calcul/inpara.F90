@@ -22,7 +22,6 @@ function inpara(opt, te, statut, nopara)
 
     implicit none
 
-
 #include "jeveux.h"
     character(len=8) :: nopara
     character(len=3) :: statut

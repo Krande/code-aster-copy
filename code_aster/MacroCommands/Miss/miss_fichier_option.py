@@ -18,8 +18,7 @@
 # --------------------------------------------------------------------
 
 
-"""Module permettant de produire le fichier des options pour Miss3D (OPTMIS).
-"""
+"""Module permettant de produire le fichier des options pour Miss3D (OPTMIS)."""
 
 import os
 

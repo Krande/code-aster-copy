@@ -21,7 +21,6 @@ subroutine alrslt(nout, lchout, lpaout, base)
                              ca_ligrel_, ca_option_, ca_ldist_, ca_nuop_
     implicit none
 
-
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"

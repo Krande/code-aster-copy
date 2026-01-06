@@ -47,6 +47,8 @@ MODE = AFFE_MODELE(
 
 #
 ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+
 #
 def Sinus(t, freq):
     return sin(2.0 * pi * freq * t)

@@ -19,10 +19,10 @@
 subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
 
     use calcul_module, only: ca_iachii_, ca_ialiel_, ca_igr_, ca_iichin_, &
-             ca_illiel_, ca_nbelgr_, ca_ncmpmx_, ca_nec_, ca_iel_, ca_paral_, ca_lparal_, ca_iachid_
+                             ca_illiel_, ca_nbelgr_, ca_ncmpmx_, &
+                             ca_nec_, ca_iel_, ca_paral_, ca_lparal_, ca_iachid_
 
     implicit none
-
 
 #include "asterf_types.h"
 #include "jeveux.h"

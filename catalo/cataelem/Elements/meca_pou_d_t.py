@@ -225,7 +225,6 @@ MMATUNZ = ArrayOfComponents(phys=PHY.MZNS_R, locatedComponents=LC.ECOOR1R)
 
 # ------------------------------------------------------------
 class MECA_POU_D_T(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2

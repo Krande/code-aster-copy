@@ -61,7 +61,7 @@ def normicdf(v):
         return 0
     elif v > 0.5:
         v = 1.0 - v
-    y = sqrt(log(1.0 / v ** 2.0))
+    y = sqrt(log(1.0 / v**2.0))
     xp = y + ((((y * p[4] + p[3]) * y + p[2]) * y + p[1]) * y + p[0]) / (
         (((y * q[4] + q[3]) * y + q[2]) * y + q[1]) * y + q[0]
     )

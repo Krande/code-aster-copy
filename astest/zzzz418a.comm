@@ -96,6 +96,7 @@ long_poutre = 3.0
 xpg = (1.0 / 3.0) ** 0.5
 points_gauss = (long_poutre * (1.0 + xpg) * 0.5, long_poutre * (1.0 - xpg) * 0.5)
 
+
 # Coordonnées des Sous-Points !!!
 def coord_fibre(ifib):
     Rint = Rext - Ep
@@ -132,7 +133,7 @@ for ipt in range(2):
                     _F(NOM_PARA="POINT", VALE_I=ipt + 1),
                     _F(NOM_PARA="SOUS_POINT", VALE_I=ifib),
                 ),
-                **motclef
+                **motclef,
             )
 
 # Extraction de la fibre 103
@@ -171,7 +172,7 @@ for ipt in range(2):
             NOM_PARA=siefc,
             TABLE=TFibre,
             FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=1)),
-            **motclef
+            **motclef,
         )
 
 FIN()

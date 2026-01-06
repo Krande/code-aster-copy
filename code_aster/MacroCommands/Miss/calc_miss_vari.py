@@ -25,6 +25,7 @@ from typing import List
 from ...CodeCommands import CREA_CHAMP
 from ...Utilities import disable_fpe
 
+
 # --------------------------------------------------------------------------------
 #   ROUTINES
 # --------------------------------------------------------------------------------

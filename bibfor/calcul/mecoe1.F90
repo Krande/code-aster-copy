@@ -23,7 +23,6 @@ subroutine mecoe1(opt, te)
 
     implicit none
 
-
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/modatt.h"

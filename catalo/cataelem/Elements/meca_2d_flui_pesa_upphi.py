@@ -59,7 +59,6 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MEFP_FACE3(Element):
-
     """Please document this element"""
 
     meshType = MT.TRIA3
@@ -144,7 +143,6 @@ class MEFP_FACE3(Element):
 
 # ------------------------------------------------------------
 class MEFP_FACE4(MEFP_FACE3):
-
     """Please document this element"""
 
     meshType = MT.QUAD4
@@ -153,7 +151,6 @@ class MEFP_FACE4(MEFP_FACE3):
 
 # ------------------------------------------------------------
 class MEFP_FACE6(MEFP_FACE3):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -162,7 +159,6 @@ class MEFP_FACE6(MEFP_FACE3):
 
 # ------------------------------------------------------------
 class MEFP_FACE8(MEFP_FACE3):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -171,7 +167,6 @@ class MEFP_FACE8(MEFP_FACE3):
 
 # ------------------------------------------------------------
 class MEFP_FACE9(MEFP_FACE3):
-
     """Please document this element"""
 
     meshType = MT.QUAD9

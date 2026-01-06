@@ -20,7 +20,6 @@ function digde2(modelo)
     use calcul_module, only: ca_iamloc_, ca_ilmloc_
     implicit none
 
-
 #include "jeveux.h"
     integer(kind=8) :: modelo
     integer(kind=8) :: digde2

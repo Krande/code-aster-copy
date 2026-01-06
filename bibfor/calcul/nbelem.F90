@@ -22,7 +22,6 @@ function nbelem(ligrlz, igrel, icalc)
 
     implicit none
 
-
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"

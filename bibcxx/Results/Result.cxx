@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "Results/Result.h"
 
 #include "aster_fort_ds.h"

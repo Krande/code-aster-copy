@@ -18,9 +18,7 @@
 # --------------------------------------------------------------------
 
 
-
-""" Ce module contient la classe compte-rendu de validation
-"""
+"""Ce module contient la classe compte-rendu de validation"""
 
 from .strfunc import convert, ufmt
 

@@ -23,7 +23,6 @@
 
 #include "DataFields/Table.h"
 
-
 Table::Table( const std::string &name, const std::string type )
     : DataStructure( name, 19, type ),
       _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),

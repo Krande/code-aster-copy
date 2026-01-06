@@ -43,7 +43,7 @@ def dyna_visco_modes_calc(
     ltrv,
     TYPE_RESU,
     reuse="non",
-    **args
+    **args,
 ):
     """
     Macro-command DYNA_VISCO,

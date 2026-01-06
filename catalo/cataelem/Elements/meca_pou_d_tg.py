@@ -184,7 +184,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MECA_POU_D_TG(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2

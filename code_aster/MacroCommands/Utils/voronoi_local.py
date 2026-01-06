@@ -156,7 +156,7 @@ class Delaunay2D:
 
         # Retriangle the hole left by bad_triangles
         new_triangles = []
-        for (e0, e1, tri_op) in boundary:
+        for e0, e1, tri_op in boundary:
             # Create a new triangle using point p and edge extremes
             T = (idx, e0, e1)
 

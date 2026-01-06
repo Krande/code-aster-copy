@@ -68,7 +68,7 @@ def calc_precont_ops(
     ETAT_INIT=None,
     INFO=1,
     TITRE=None,
-    **args
+    **args,
 ):
     """
     Ecriture de la macro CALC_PRECONT
@@ -495,7 +495,7 @@ def calc_precont_ops(
             INFO=INFO,
             TITRE=TITRE,
             EXCIT=dExcit1,
-            **motscle4
+            **motscle4,
         )
 
         # -----------------------------------------------------------------------
@@ -522,7 +522,7 @@ def calc_precont_ops(
             INFO=INFO,
             TITRE=TITRE,
             EXCIT=dExcit2,
-            **motscle5
+            **motscle5,
         )
     elif adher == "NON":
         motscle4 = {}
@@ -853,7 +853,7 @@ def calc_precont_ops(
                 INFO=INFO,
                 TITRE=TITRE,
                 EXCIT=dExcit1a,
-                **motscle4
+                **motscle4,
             )
             # construction de la fonction multiplicatrice afin de ne pas
             # provoquer un recul d'ancrage
@@ -926,7 +926,7 @@ def calc_precont_ops(
                 INFO=INFO,
                 TITRE=TITRE,
                 EXCIT=dExcit1,
-                **motscle4
+                **motscle4,
             )
 
         if __recul_exists:

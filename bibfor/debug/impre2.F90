@@ -74,11 +74,11 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur, &
         else if (typcoe .eq. 'COMP') then
             write (ifm, 30)
             do i = 1, nbterm-1
-                write (ifm, 40) dble(zc(idcoef+i-1)), dimag(zc(idcoef+i- &
-                                                               1)), zk8(iddl+i-1), zk8(idnoeu+i-1)
+                write (ifm, 40) dble(zc(idcoef+i-1)), &
+                    dimag(zc(idcoef+i-1)), zk8(iddl+i-1), zk8(idnoeu+i-1)
             end do
-            write (ifm, 95) dble(zc(idcoef+nbterm-1)), dimag(zc(idcoef+ &
-                                                nbterm-1)), zk8(iddl+nbterm-1), zk8(idnoeu+nbterm-1)
+            write (ifm, 95) dble(zc(idcoef+nbterm-1)), &
+                dimag(zc(idcoef+nbterm-1)), zk8(iddl+nbterm-1), zk8(idnoeu+nbterm-1)
         end if
 !
         if (typval .eq. 'REEL') then
@@ -96,10 +96,10 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur, &
 30  format(13x, '    COEF     ', '*', '   DDL  ', '(', ' NOEUD  ', ')')
 20  format(2x, 1pe12.5, ' * ', 2x, a6, '(', a8, ')', '+')
 90  format(2x, 1pe12.5, ' * ', 2x, a6, '(', a8, ')')
-40  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ',&
-      &       2x, a6, '(', a8, ')', '+')
-95  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ',&
-      &       2x, a6, '(', a8, ')')
+40  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ', &
+           2x, a6, '(', a8, ')', '+')
+95  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ', &
+           2x, a6, '(', a8, ')')
 50  format(2x, '=', 1pe12.5)
 60  format(2x, '=', a19)
 70  format(2x, '=', '(', 1pe12.5, ',', 1pe12.5, ')')

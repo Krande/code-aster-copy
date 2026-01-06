@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
@@ -259,7 +258,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_DPQ8S_DIL(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -543,7 +541,6 @@ class HM_DPQ8S_DIL(Element):
 
 # ------------------------------------------------------------
 class HM_DPTR6S_DIL(HM_DPQ8S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -561,7 +558,6 @@ class HM_DPTR6S_DIL(HM_DPQ8S_DIL):
 
 # ------------------------------------------------------------
 class HM_DPQ8M_DIL(HM_DPQ8S_DIL):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -579,7 +575,6 @@ class HM_DPQ8M_DIL(HM_DPQ8S_DIL):
 
 # ------------------------------------------------------------
 class HM_DPTR6M_DIL(HM_DPQ8S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

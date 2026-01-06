@@ -50,7 +50,6 @@ RE_TITLE = re.compile("^TITLE ")
 
 
 class PerLevelFormatter(logging.Formatter):
-
     """Formatter for messages"""
 
     formats = {
@@ -72,7 +71,6 @@ class PerLevelFormatter(logging.Formatter):
 
 
 class PerLevelColorFormatter(PerLevelFormatter):
-
     """Formatter for messages"""
 
     def _adjust_color(self, level):
@@ -91,7 +89,6 @@ class PerLevelColorFormatter(PerLevelFormatter):
 
 
 class HgStreamHandler(logging.StreamHandler):
-
     """StreamHandler switching between sys.stdout and sys.stderr
     like the mercurial ui does"""
 

@@ -34,6 +34,8 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
+
 # ---------------------------------------------------------------------------------------------------
 class MECA_FACE3(Element):
     """Skin element for 3D isoparametric elements - On TR3"""

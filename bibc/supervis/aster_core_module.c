@@ -16,7 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-
 /*
  * Module for the core functions of Code_Aster :
  *  - give access to the main object (for fortran calls) :

@@ -37,6 +37,7 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
+
 # ----------------------------------------------------------------------------------------------
 class MEAXFSS2P(Element):
     """Element for FSI interaction (U,P) - Axisymmetric - On SE2"""

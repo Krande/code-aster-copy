@@ -192,9 +192,9 @@ MMATUUC = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
+
 # ------------------------------------------------------------
 class MEQ4GG4(Element):
-
     """Mechanics - Plate (Q4GG) - QUAD4"""
 
     meshType = MT.QUAD4
@@ -746,7 +746,6 @@ class MEQ4GG4(Element):
 
 # ------------------------------------------------------------
 class MET3GG3(MEQ4GG4):
-
     """Mechanics - Plate (T3GG) - TRIA3"""
 
     meshType = MT.TRIA3

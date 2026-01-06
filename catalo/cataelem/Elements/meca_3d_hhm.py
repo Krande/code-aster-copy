@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
@@ -255,7 +254,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HHM_HEXA20(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -578,7 +576,6 @@ class HHM_HEXA20(Element):
 
 # ------------------------------------------------------------
 class HHM_PENTA15(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -596,7 +593,6 @@ class HHM_PENTA15(HHM_HEXA20):
 
 # ------------------------------------------------------------
 class HHM_TETRA10(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -610,7 +606,6 @@ class HHM_TETRA10(HHM_HEXA20):
 
 # ------------------------------------------------------------
 class HHM_HEXA20D(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -629,7 +624,6 @@ class HHM_HEXA20D(HHM_HEXA20):
 
 # ------------------------------------------------------------
 class HHM_PENTA15D(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -649,7 +643,6 @@ class HHM_PENTA15D(HHM_HEXA20):
 
 # ------------------------------------------------------------
 class HHM_TETRA10D(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -665,7 +658,6 @@ class HHM_TETRA10D(HHM_HEXA20):
 
 # ------------------------------------------------------------
 class HHM_HEXA20S(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -686,7 +678,6 @@ class HHM_HEXA20S(HHM_HEXA20):
 
 # ------------------------------------------------------------
 class HHM_PENTA15S(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -708,7 +699,6 @@ class HHM_PENTA15S(HHM_HEXA20):
 
 # ------------------------------------------------------------
 class HHM_TETRA10S(HHM_HEXA20):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

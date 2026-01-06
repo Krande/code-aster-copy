@@ -219,6 +219,7 @@ TEST_RESU(
     )
 )
 
+
 # comparaison EPEQ_ELNO vs INVA_2(EPSI_ELNO)
 # plusieurs variantes à titre d'exemple
 def form(*veps):

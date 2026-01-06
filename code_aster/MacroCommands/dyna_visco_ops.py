@@ -47,7 +47,7 @@ def dyna_visco_ops(
     RESI_RELA=None,
     INFO=None,
     TYPE_RESU=None,
-    **args
+    **args,
 ):
     """
     Macro-command DYNA_VISCO, main file
@@ -214,7 +214,7 @@ def dyna_visco_ops(
         e0,
         eta0,
         ltrv,
-        **args
+        **args,
     )
 
     # FREQUENCY RESPONSE COMPUTATION
@@ -235,7 +235,7 @@ def dyna_visco_ops(
             e0,
             eta0,
             __num,
-            **args
+            **args,
         )
 
         return dyna_harm

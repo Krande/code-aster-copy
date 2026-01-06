@@ -196,6 +196,7 @@ RESU = CALC_CHAMP(
 
 import numpy as np
 
+
 ### Computation of the reversible part of the creep strain
 def EXX_FP_R(t, ti, sig):
     return (

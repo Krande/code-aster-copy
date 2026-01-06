@@ -39,7 +39,7 @@ def recu_fonction_prod(
     NOEUD_I=None,
     NOM_PARA_TABL=None,
     PARA_Y=None,
-    **args
+    **args,
 ):
     if args.get("__all__"):
         return (fonction_c, fonction_sdaster)

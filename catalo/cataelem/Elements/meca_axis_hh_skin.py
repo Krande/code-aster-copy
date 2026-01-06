@@ -70,7 +70,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HH_AXIS_SE3(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG3

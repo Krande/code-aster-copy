@@ -612,7 +612,7 @@ def calc_ecrevisse_ops(self, **args):
                     ITER_GLOB_MAXI=dCONVERGENCE["ITER_GLOB_MAXI"],
                     CRIT_CONV_DEBI=dCONVERGENCE["CRIT_CONV_DEBI"],
                 ),
-                **motscle2
+                **motscle2,
             )
 
             # -------------------------------------------------------------

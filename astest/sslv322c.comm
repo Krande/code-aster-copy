@@ -308,6 +308,7 @@ FCGla15 = RECU_FONCTION(TABLE=CGla15, PARA_X="ABSC_CURV", PARA_Y="G")
 FK1leg = RECU_FONCTION(TABLE=CGKleg, PARA_X="ABSC_CURV", PARA_Y="K1_MPA")
 FK1leg2 = RECU_FONCTION(TABLE=CGKleg2, PARA_X="ABSC_CURV", PARA_Y="K1_MPA")
 
+
 # interpollation polynomiale (MS Excel) de la reference Murakami : G(s)
 def G_Murakami(x):
     a4 = 6.283263e02

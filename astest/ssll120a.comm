@@ -146,7 +146,7 @@ for modele in ["POU_D_T", "POU_D_E", "POU_D_EM", "POU_D_TGM", "POU_D_TG"]:
         INCREMENT=_F(LIST_INST=L_INIT),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-07),
         TITRE=Titre,
-        **stnl_motclefs
+        **stnl_motclefs,
     )
 
     ResPDT = CALC_CHAMP(

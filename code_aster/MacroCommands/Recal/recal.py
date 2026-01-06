@@ -590,9 +590,9 @@ class CALCULS_ASTER:
         if self.unity_follow and info == 2:
             run.options["debug_stderr"] = True
         else:
-            run.options[
-                "debug_stderr"
-            ] = False  # pas d'output d'executions des esclaves dans l'output maitre
+            run.options["debug_stderr"] = (
+                False  # pas d'output d'executions des esclaves dans l'output maitre
+            )
 
         # Master profile
         prof = AsterProfil(run=run, filename=export)

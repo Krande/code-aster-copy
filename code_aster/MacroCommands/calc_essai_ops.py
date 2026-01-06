@@ -42,7 +42,7 @@ def calc_essai_ops(
     GROUP_NO_EXTERIEUR=None,
     RESU_IDENTIFICATION=None,
     RESU_MODIFSTRU=None,
-    **args
+    **args,
 ):
     if MODIFSTRUCT:
         UTMESS("F", "CALCESSAI0_2")

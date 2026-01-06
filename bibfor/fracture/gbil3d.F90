@@ -119,35 +119,35 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm, &
 !
 !
     s11 = dudm(1, 1)*dvdm(1, 1)+dudm(2, 2)*dvdm(2, 2)+dudm(3, 3)*dvdm(3, 3)
-    s12 = dudm(1, 1)*dvdm(2, 2)+dudm(2, 2)*dvdm(1, 1)+dudm(1, 1)*dvdm(3, 3)+dudm(3, 3)*dvdm(1, 1)+&
-          & dudm(2, 2)*dvdm(3, 3)+dudm(3, 3)*dvdm(2, 2)
-    s13 = ( &
-      dudm(1, 2)+dudm(2, 1))*(dvdm(1, 2)+dvdm(2, 1))+(dudm(2, 3)+dudm(3, 2))*(dvdm(2, 3)+dvdm(3, 2)&
-          &)+(dudm(3, 1)+dudm(1, 3))*(dvdm(3, 1)+dvdm(1, 3) &
-          )
+    s12 = dudm(1, 1)*dvdm(2, 2)+dudm(2, 2)*dvdm(1, 1)+dudm(1, 1)*dvdm(3, 3)+ &
+          dudm(3, 3)*dvdm(1, 1)+dudm(2, 2)*dvdm(3, 3)+dudm(3, 3)*dvdm(2, 2)
+    s13 = (dudm(1, 2)+dudm(2, 1))*(dvdm(1, 2)+dvdm(2, 1))+ &
+          (dudm(2, 3)+dudm(3, 2))*(dvdm(2, 3)+dvdm(3, 2))+ &
+          (dudm(3, 1)+dudm(1, 3))*(dvdm(3, 1)+dvdm(1, 3))
 !
-  s21 = dudm(1, 1)*dvdm(1, 1)*dtdm(1, 1)+dudm(2, 2)*dvdm(2, 2)*dtdm(2, 2)+dudm(3, 3)*dvdm(3, 3)*dtd&
-              &m(3, 3)+vect(5)*dtdm(1, 2)+vect(2)*dtdm(2, 1)+vect(7)*dtdm(1, 3)+vect(8)*dtdm(3, 1)&
-              & +vect(9)*dtdm(2, 3)+vect(10)*dtdm(3, 2)
+    s21 = dudm(1, 1)*dvdm(1, 1)*dtdm(1, 1)+dudm(2, 2)*dvdm(2, 2)*dtdm(2, 2)+ &
+          dudm(3, 3)*dvdm(3, 3)*dtdm(3, 3)+vect(5)*dtdm(1, 2)+ &
+          vect(2)*dtdm(2, 1)+vect(7)*dtdm(1, 3)+vect(8)*dtdm(3, 1)+ &
+          vect(9)*dtdm(2, 3)+vect(10)*dtdm(3, 2)
 !
-    s22 = vect(1)*(dtdm(1, 1)+dtdm(2, 2))+vect(11)*(dtdm(1, 1)+dtdm(3, 3))+vect(12)*(dtdm(2, 2)+dt&
-          &dm(3, 3))+(vect(3)+vect(14))*dtdm(1, 2)+(vect(4)+vect(13))*dtdm(2, 1)+(vect(15)+vec&
-          &t(16))*dtdm(1, 3)+(vect(17)+vect(18))*dtdm(2, 3)+(vect(19)+vect(20))*dtdm(3, 2)+(ve&
-          &ct(21)+vect(22))*dtdm(3, 1)
+    s22 = vect(1)*(dtdm(1, 1)+dtdm(2, 2))+ &
+          vect(11)*(dtdm(1, 1)+dtdm(3, 3))+vect(12)*(dtdm(2, 2)+dtdm(3, 3))+ &
+          (vect(3)+vect(14))*dtdm(1, 2)+(vect(4)+vect(13))*dtdm(2, 1)+ &
+          (vect(15)+vect(16))*dtdm(1, 3)+(vect(17)+vect(18))*dtdm(2, 3)+ &
+          (vect(19)+vect(20))*dtdm(3, 2)+(vect(21)+vect(22))*dtdm(3, 1)
 !
-    s23 = ( &
-          vect(6)+dudm(2, 1)*dvdm(2, 1))*dtdm(1, 1)+(vect(23)+dudm(3, 1)*dvdm(3, 1))*dtdm(1, &
-                                                        1)+(vect(6)+dudm(1, 2)*dvdm(1, 2))*dtdm(2, &
-                                                       2)+(vect(24)+dudm(3, 2)*dvdm(3, 2))*dtdm(2, &
-                                                       2)+(vect(24)+dudm(2, 3)*dvdm(2, 3))*dtdm(3, &
-                          3)+(vect(23)+dudm(1, 3)*dvdm(1, 3))*dtdm(3, 3)+(vect(2)+vect(3))*dtdm(1, &
-                                       2)+(vect(25)+vect(26))*dtdm(1, 2)+(vect(4)+vect(5))*dtdm(2, &
-                                     1)+(vect(26)+vect(27))*dtdm(2, 1)+(vect(28)+vect(29))*dtdm(3, &
-                                      2)+(vect(9)+vect(20))*dtdm(3, 2)+(vect(10)+vect(18))*dtdm(2, &
-                                      3)+(vect(28)+vect(30))*dtdm(2, 3)+(vect(8)+vect(15))*dtdm(1, &
-                                     3)+(vect(31)+vect(32))*dtdm(1, 3)+(vect(31)+vect(33))*dtdm(3, &
-                                                                   1)+(vect(22)+vect(7))*dtdm(3, 1 &
-                                                                                                   )
+    s23 = (vect(6)+dudm(2, 1)*dvdm(2, 1))*dtdm(1, 1)+ &
+          (vect(23)+dudm(3, 1)*dvdm(3, 1))*dtdm(1, 1)+ &
+          (vect(6)+dudm(1, 2)*dvdm(1, 2))*dtdm(2, 2)+ &
+          (vect(24)+dudm(3, 2)*dvdm(3, 2))*dtdm(2, 2)+ &
+          (vect(24)+dudm(2, 3)*dvdm(2, 3))*dtdm(3, 3)+ &
+          (vect(23)+dudm(1, 3)*dvdm(1, 3))*dtdm(3, 3)+ &
+          (vect(2)+vect(3))*dtdm(1, 2)+(vect(25)+vect(26))*dtdm(1, 2)+ &
+          (vect(4)+vect(5))*dtdm(2, 1)+(vect(26)+vect(27))*dtdm(2, 1)+ &
+          (vect(28)+vect(29))*dtdm(3, 2)+(vect(9)+vect(20))*dtdm(3, 2)+ &
+          (vect(10)+vect(18))*dtdm(2, 3)+(vect(28)+vect(30))*dtdm(2, 3)+ &
+          (vect(8)+vect(15))*dtdm(1, 3)+(vect(31)+vect(32))*dtdm(1, 3)+ &
+          (vect(31)+vect(33))*dtdm(3, 1)+(vect(22)+vect(7))*dtdm(3, 1)
 !
     s1 = c1*s11+c2*s12+c3*s13
     s2 = c1*s21+c2*s22+c3*s23

@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"), IMPR_MACRO="OUI")
 
 # donnee materiau et fonction

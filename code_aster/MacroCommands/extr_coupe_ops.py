@@ -445,7 +445,7 @@ def convert_med_to_aster(fields, mesh_aster, type_resu, fields_names, mc_mesh):
         TYPE_RESU=type_resu,
         TOUT_ORDRE="OUI",
         MAILLAGE=mesh_aster,
-        **lire_resu
+        **lire_resu,
     )
 
     unit.release()

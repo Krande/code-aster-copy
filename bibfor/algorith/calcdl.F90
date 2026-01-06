@@ -68,16 +68,19 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
 ! ======================================================================
     do ii = 1, ndi
         do jj = 1, ndi
-           dsdde(ii, jj) = deux*mu*vecp(ii, jj)*vecp(ii, jj)-deux*mu*(vecp(1, ii)**2+vecp(2, ii)**2&
-                             &+vecp(3, ii)**2)/trois
+            dsdde(ii, jj) = deux*mu*vecp(ii, jj)*vecp(ii, jj)- &
+                            deux*mu*(vecp(1, ii)**2+vecp(2, ii)**2+vecp(3, ii)**2)/trois
         end do
-      dsdde(ii, 4) = deux*mu*vecp(ii, 1)*vecp(ii, 2)-deux*mu*(vecp(1, 1)*vecp(1, 2)+vecp(2, 1)*vecp&
-                          &(2, 2)+vecp(3, 1)*vecp(3, 2))/trois
+        dsdde(ii, 4) = deux*mu*vecp(ii, 1)*vecp(ii, 2)- &
+                       deux*mu*(vecp(1, 1)*vecp(1, 2)+vecp(2, 1)*vecp(2, 2)+ &
+                                vecp(3, 1)*vecp(3, 2))/trois
         if (ndt .eq. 6) then
-          dsdde(ii, 5) = deux*mu*vecp(ii, 1)*vecp(ii, 3)-deux*mu*(vecp(1, 1)*vecp(1, 3)+vecp(2, 1)*&
-                              &vecp(2, 3)+vecp(3, 1)*vecp(3, 3))/trois
-          dsdde(ii, 6) = deux*mu*vecp(ii, 2)*vecp(ii, 3)-deux*mu*(vecp(1, 3)*vecp(1, 2)+vecp(2, 3)*&
-                              &vecp(2, 2)+vecp(3, 3)*vecp(3, 2))/trois
+            dsdde(ii, 5) = deux*mu*vecp(ii, 1)*vecp(ii, 3)- &
+                           deux*mu*(vecp(1, 1)*vecp(1, 3)+vecp(2, 1)*vecp(2, 3)+ &
+                                    vecp(3, 1)*vecp(3, 3))/trois
+            dsdde(ii, 6) = deux*mu*vecp(ii, 2)*vecp(ii, 3)- &
+                           deux*mu*(vecp(1, 3)*vecp(1, 2)+vecp(2, 3)*vecp(2, 2)+ &
+                                    vecp(3, 3)*vecp(3, 2))/trois
         end if
     end do
     do jj = 1, ndi
@@ -144,15 +147,15 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
     do ii = 1, ndi
         aux4 = da1de(ii)-da6de(ii)*dl
         ddlde(ii) = ( &
-                    -(un-a3*dl)*da2de(ii)+a2*da3de(ii)*dl+parame(3)*c5*aux4-parame(2)*aux4/(de&
-                    &ux*sqrt(aux1)) &
+                    -(un-a3*dl)*da2de(ii)+a2*da3de(ii)*dl+parame(3)*c5*aux4- &
+                    parame(2)*aux4/(deux*sqrt(aux1)) &
                     )/denom
     end do
     do ii = ndi+1, ndt
         aux4 = da1de(ii)-da6de(ii)*dl
         ddlde(ii) = ( &
-                    -(un-a3*dl)*da2de(ii)+a2*da3de(ii)*dl+parame(3)*c5*aux4-parame(2)*aux4/(de&
-                    &ux*sqrt(aux1)) &
+                    -(un-a3*dl)*da2de(ii)+a2*da3de(ii)*dl+parame(3)*c5*aux4- &
+                    parame(2)*aux4/(deux*sqrt(aux1)) &
                     )/denom
     end do
     do ii = ndt+1, 6

@@ -22,7 +22,6 @@ from hashlib import sha1
 
 
 class Parmi:
-
     """Classe qui exprime une contrainte multiple pour un attribut"""
 
     def __init__(self, *args):
@@ -45,7 +44,6 @@ class Parmi:
 
 
 class CheckLog:
-
     """Un validateur qui enregistre toutes les erreurs trouvées.
     checkedXXX répond True si la "marq" courante est inférieure ou égale
     à la celle de la dernière vérification.
@@ -137,7 +135,6 @@ class CheckLog:
 
 
 class CheckFail(CheckLog):
-
     """Un validateur qui lève une exception
     dès la première erreur"""
 

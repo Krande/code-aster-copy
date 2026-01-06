@@ -234,7 +234,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MEDSQU4(Element):
-
     """Mechanics - Plate (DST) - QUAD4"""
 
     meshType = MT.QUAD4
@@ -850,7 +849,6 @@ class MEDSQU4(Element):
 
 # ------------------------------------------------------------
 class MEDSTR3(MEDSQU4):
-
     """Mechanics - Plate (DST) - TRIA3"""
 
     meshType = MT.TRIA3

@@ -71,7 +71,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class DHH2Q9_SUDA(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD9
@@ -187,7 +186,6 @@ class DHH2Q9_SUDA(Element):
 
 # ------------------------------------------------------------
 class DHH2T7_SUDA(DHH2Q9_SUDA):
-
     """Please document this element"""
 
     meshType = MT.TRIA7

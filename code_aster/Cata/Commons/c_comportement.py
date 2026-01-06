@@ -494,7 +494,7 @@ def C_COMPORTEMENT(command):
                     RESI_RADI_RELA=SIMP(statut="f", typ="R"),
                 ),
             ),
-            **opts
+            **opts,
         )
 
     return mcfact

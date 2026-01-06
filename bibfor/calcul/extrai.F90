@@ -23,7 +23,6 @@ subroutine extrai(nin, lchin, lpain, init)
 
     implicit none
 
-
 #include "asterfort/assert.h"
 #include "asterfort/extra1.h"
 #include "asterfort/nbelem.h"

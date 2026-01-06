@@ -54,7 +54,7 @@ CHARGE_1 = AFFE_CHAR_MECA(
         _F(GROUP_NO="G_40", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
     ),
     #
-    FORCE_COQUE=_F(TOUT="OUI", FZ=-1.0)
+    FORCE_COQUE=_F(TOUT="OUI", FZ=-1.0),
     #
 )
 
@@ -74,7 +74,7 @@ D_FONC = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 L_INST = DEFI_LIST_REEL(
     DEBUT=0.0,
     #
-    INTERVALLE=_F(JUSQU_A=0.4, NOMBRE=10)
+    INTERVALLE=_F(JUSQU_A=0.4, NOMBRE=10),
     #
 )
 

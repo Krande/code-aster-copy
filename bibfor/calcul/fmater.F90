@@ -21,7 +21,6 @@ subroutine fmater(nbfmax, nftab, tab)
     use calcul_module, only: ca_jfpgl_, ca_nfpg_
     implicit none
 
-
 #include "jeveux.h"
 #include "asterfort/assert.h"
 

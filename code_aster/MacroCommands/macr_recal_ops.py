@@ -97,7 +97,7 @@ def macr_recal_ops(
     COURBE=None,
     METHODE=None,
     INFO=None,
-    **args
+    **args,
 ):
     """Macro commande realisant le recalage de modeles Aster"""
     # Gestion des Exceptions
@@ -159,7 +159,7 @@ def macr_recal_ops(
         GRAPHIQUE,
         METHODE,
         INFO,
-        **args
+        **args,
     )
 
     onFatalError(prev_onFatalError)
@@ -182,7 +182,7 @@ def macr_recal(
     GRAPHIQUE,
     METHODE,
     INFO,
-    **args
+    **args,
 ):
     ASTER_ROOT = os.environ["ASTER_ROOT"]
 

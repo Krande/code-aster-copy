@@ -147,7 +147,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_FACE8_XH1(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -299,7 +298,6 @@ class HM_FACE8_XH1(Element):
 
 # ------------------------------------------------------------
 class HM_FACE6_XH1(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -309,7 +307,6 @@ class HM_FACE6_XH1(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE8_XH2(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -324,7 +321,6 @@ class HM_FACE8_XH2(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE6_XH2(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -334,7 +330,6 @@ class HM_FACE6_XH2(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE8_XH3(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -349,7 +344,6 @@ class HM_FACE8_XH3(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE6_XH3(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

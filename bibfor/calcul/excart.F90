@@ -20,10 +20,10 @@ subroutine excart(imodat, iparg)
 
     use calcul_module, only: ca_iachii_, ca_iachlo_, ca_iamloc_, ca_iawlo2_, &
                              ca_iel_, ca_igr_, ca_iichin_, ca_ilchlo_, &
-                     ca_ilmloc_, ca_nbelgr_, ca_nbgr_, ca_typegd_, ca_paral_, ca_lparal_, ca_iachid_
+                             ca_ilmloc_, ca_nbelgr_, ca_nbgr_, &
+                             ca_typegd_, ca_paral_, ca_lparal_, ca_iachid_
 
     implicit none
-
 
 #include "asterf_types.h"
 #include "jeveux.h"

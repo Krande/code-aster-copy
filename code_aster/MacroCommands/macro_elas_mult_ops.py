@@ -43,7 +43,7 @@ def macro_elas_mult_ops(
     CHAR_MECA_GLOBAL=None,
     LIAISON_DISCRET=None,
     SOLVEUR=None,
-    **args
+    **args,
 ):
     """
     Ecriture de la macro MACRO_ELAS_MULT
@@ -268,7 +268,7 @@ def macro_elas_mult_ops(
                         CHAM_GD=nomchn[iocc],
                         NOM_CAS=m["NOM_CAS"],
                         CHARGE=lcharg[iocc],
-                        **motscle2
+                        **motscle2,
                     )
                 )
             else:
@@ -278,7 +278,7 @@ def macro_elas_mult_ops(
                         MODELE=MODELE,
                         CHAM_GD=nomchn[iocc],
                         NOM_CAS=m["NOM_CAS"],
-                        **motscle2
+                        **motscle2,
                     )
                 )
             iocc = iocc + 1
@@ -294,7 +294,7 @@ def macro_elas_mult_ops(
                         NUME_MODE=m["MODE_FOURIER"],
                         TYPE_MODE=m["TYPE_MODE"],
                         CHARGE=lcharg[iocc],
-                        **motscle2
+                        **motscle2,
                     )
                 )
             else:
@@ -305,7 +305,7 @@ def macro_elas_mult_ops(
                         CHAM_GD=nomchn[iocc],
                         NUME_MODE=m["MODE_FOURIER"],
                         TYPE_MODE=m["TYPE_MODE"],
-                        **motscle2
+                        **motscle2,
                     )
                 )
             iocc = iocc + 1

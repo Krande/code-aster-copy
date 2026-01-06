@@ -163,6 +163,7 @@ VARN3 = [None] * (NCAL + 1)
 
 time = 0.0
 
+
 #  Formules pour la comparaison calcul 1  / calcul 2
 #
 def verif(VAL_CAL, VAL_REF):

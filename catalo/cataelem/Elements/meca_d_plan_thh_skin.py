@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY

@@ -2236,12 +2236,12 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                 __formFDT[0] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j )/(1.+0.j + AHuXrCL(FREQ))",
-                    **const_context
+                    **const_context,
                 )
                 __formFDT2[0] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j + AHuXrCL(FREQ))/(1.+0.j + AHuXrBH(FREQ))",
-                    **const_context
+                    **const_context,
                 )
             else:
                 __formFDT[0] = FORMULE(
@@ -2250,7 +2250,7 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                 __formFDT2[0] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*AHuXrCL(FREQ)/ACCEX0H(FREQ)",
-                    **const_context
+                    **const_context,
                 )
 
         else:
@@ -2296,67 +2296,67 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                 __formFDT[0] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j )/(1.+0.j + AHuXrCL0(FREQ))",
-                    **const_context
+                    **const_context,
                 )
                 __formFDT2[0] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j + AHuXrCL0(FREQ))/(1.+0.j + AHuXrBH0(FREQ))",
-                    **const_context
+                    **const_context,
                 )
 
                 __formFDT[1] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j )/(1.+0.j + AHuXrCL1(FREQ))",
-                    **const_context
+                    **const_context,
                 )
                 __formFDT2[1] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j + AHuXrCL1(FREQ))/(1.+0.j + AHuXrBH1(FREQ))",
-                    **const_context
+                    **const_context,
                 )
 
                 __formFDT[2] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j )/(1.+0.j + AHuXrCL2(FREQ))",
-                    **const_context
+                    **const_context,
                 )
                 __formFDT2[2] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*(1.+0.j + AHuXrCL2(FREQ))/(1.+0.j + AHuXrBH2(FREQ))",
-                    **const_context
+                    **const_context,
                 )
             else:
                 __formFDT[0] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*AHX0(FREQ)/AHuXrCL0(FREQ)",
-                    **const_context
+                    **const_context,
                 )
                 __formFDT2[0] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*AHuXrCL0(FREQ)/ACCEX0H0(FREQ)",
-                    **const_context
+                    **const_context,
                 )
 
                 __formFDT[1] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*AHX1(FREQ)/AHuXrCL1(FREQ)",
-                    **const_context
+                    **const_context,
                 )
                 __formFDT2[1] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*AHuXrCL1(FREQ)/ACCEX0H1(FREQ)",
-                    **const_context
+                    **const_context,
                 )
 
                 __formFDT[2] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*AHX2(FREQ)/AHuXrCL2(FREQ)",
-                    **const_context
+                    **const_context,
                 )
                 __formFDT2[2] = FORMULE(
                     NOM_PARA="FREQ",
                     VALE_C="FILTRE(FREQ)*AHuXrCL2(FREQ)/ACCEX0H2(FREQ)",
-                    **const_context
+                    **const_context,
                 )
 
             #
@@ -3756,7 +3756,7 @@ def defi_sol_equi_ops(self, INFO=None, **args):
             __fVPf = FORMULE(
                 NOM_PARA=("Efin", "NU", "RHO"),
                 VALE="sqrt(Efin*(1-NU)/((1-2.0*NU)*(1+NU)*RHO))",
-                **const_context
+                **const_context,
             )
 
             act_table = []
@@ -3923,7 +3923,7 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                     + "*E0 \
                    Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
                 ),
-                **unitkw
+                **unitkw,
             )
 
             if dime == "2D":

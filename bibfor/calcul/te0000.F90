@@ -24,7 +24,6 @@ subroutine te0000(numc, opt, te)
 
     implicit none
 
-
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"

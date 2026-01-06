@@ -24,7 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 

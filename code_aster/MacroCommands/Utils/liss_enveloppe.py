@@ -28,7 +28,6 @@ from ...Utilities import force_list
 
 
 class filtre:
-
     """
     La classe filtre est la classe de base des filtres applicables au spectre
     Elle possède une fonction privée filtre qui prend un spectre en entrée et qui
@@ -47,7 +46,6 @@ class filtre:
 
 
 class filtreLogLog(filtre):
-
     """
     Convertit un spectre en LogLog (log base 10)
     """
@@ -81,7 +79,6 @@ class filtreLogLog(filtre):
 
 
 class filtreLinLin(filtre):
-
     """
     Convertit un spectre en LinLin (10^n) à partir d'un spectre en linLog,LogLin ou logLog
     """
@@ -113,7 +110,6 @@ class filtreLinLin(filtre):
 
 
 class filtreLowerPeaks(filtre):
-
     """
     enleve les pics inferieur dans le signal
     """
@@ -138,7 +134,6 @@ class filtreLowerPeaks(filtre):
 
 
 class filtreBandWidth(filtre):
-
     """
     enleve les frequences
     """
@@ -196,7 +191,6 @@ class filtreBandWidth(filtre):
 
 
 class filtreExpand(filtre):
-
     """effectue l'expansion du spectre"""
 
     def __init__(self, **listOpt):
@@ -259,7 +253,6 @@ class filtreExpand(filtre):
 
 
 class spectre:
-
     """
     décrit un spectre composé d'un ensemble de résultat associé à un ensemble de fréquence
     """
@@ -447,7 +440,6 @@ class spectre:
 
 
 class nappe:
-
     """
     décrit un objet nappe qui associe à un ensemble de fréquence à une enesmble de résultats
     """

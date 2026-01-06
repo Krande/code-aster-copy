@@ -74,7 +74,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MEAXSE2_XH(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2
@@ -220,7 +219,6 @@ class MEAXSE2_XH(Element):
 
 # ------------------------------------------------------------
 class MEAXSE3_XH(MEAXSE2_XH):
-
     """Please document this element"""
 
     meshType = MT.SEG3

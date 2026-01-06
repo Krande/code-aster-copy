@@ -80,7 +80,7 @@ def C_TEST_REFERENCE(keyword, max=1):  # COMMUN#
             condition="""exists("REFERENCE")""",
             VALE_REFE=SIMP(statut="f", typ="R", max=max),
             PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-3),
-            **opts_ref
+            **opts_ref,
         )
         opts["REFERENCE"] = SIMP(
             statut="f",
@@ -97,7 +97,7 @@ def C_TEST_REFERENCE(keyword, max=1):  # COMMUN#
                 ORDRE_GRANDEUR=SIMP(statut="f", typ="R"),
             ),
             LEGENDE=SIMP(statut="f", typ="TXM"),
-            **opts
+            **opts,
         )
     }
     return kwargs

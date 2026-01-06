@@ -36,6 +36,7 @@ a = 2.0
 B1 = math.atan2(2.0 + cte, -1.0)
 B2 = B1 - math.pi
 
+
 # definition de la level-set
 # la distance a la level-set depend de la position angulaire theta
 def LN(x, y):

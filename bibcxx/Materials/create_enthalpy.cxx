@@ -17,7 +17,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "Materials/create_enthalpy.h"
 
 #include "aster_fort_material.h"
