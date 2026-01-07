@@ -119,6 +119,144 @@ FieldOnCellsRealPtr PostProcessing::computeAnnealing(
     return vari_curr;
 };
 
+/**
+ * @brief Compute stress
+ * @return Stress (SIEF_ELGA)
+ */
+FieldOnCellsRealPtr PostProcessing::computeStress( const FieldOnNodesRealPtr displ,
+                                                   const ASTERDOUBLE time,
+                                                   const FieldOnCellsRealPtr &externVar ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Select option to compute
+    std::string option = "SIEF_ELGA";
+
+    // Prepare computing: the main object
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( currModel );
+
+    // Add input fields
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PABSCUR", currModel->getMesh()->getCurvilinearAbscissa() );
+
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    if ( currBehaviour ) {
+        calcul->addBehaviourField( currBehaviour );
+    }
+
+    if ( currMater->hasExternalStateVariable() ) {
+        if ( !externVar || !externVar->exists() ) {
+            AS_ABORT( "External state variables vector for end of time step is missing" )
+        }
+        if ( currMater->hasExternalStateVariableWithReference() ) {
+            auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
+            AS_ASSERT( currExternVarRefe );
+            calcul->addInputField( "PVARCRR", currExternVarRefe );
+        }
+        calcul->addInputField( "PVARCPR", externVar );
+    }
+
+    calcul->addXFEMField( currModel );
+    calcul->addHHOField( currModel );
+
+    calcul->addTimeField( "PINSTR", time );
+    calcul->addInputField( "PDEPLAR", displ );
+
+    // Get Finite Element Descriptor
+    FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
+
+    // Create output field
+    auto sief_elga =
+        FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "SIEF_R", currElemChara );
+
+    // Add output field
+    calcul->addOutputField( "PCONTRR", sief_elga );
+
+    // Compute
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+    };
+
+    return sief_elga;
+};
+
+/**
+ * @brief Compute stress
+ * @return Stress (SIEF_ELGA)
+ */
+FieldOnCellsRealPtr
+PostProcessing::computeStructuralStress( const FieldOnNodesRealPtr displ, const ASTERDOUBLE time,
+                                         const FieldOnCellsRealPtr &externVar ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Select option to compute
+    std::string option = "STRX_ELGA";
+
+    // Prepare computing: the main object
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( currModel );
+
+    // Add input fields
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    if ( currMater->hasExternalStateVariable() ) {
+        if ( !externVar || !externVar->exists() ) {
+            AS_ABORT( "External state variables vector for end of time step is missing" )
+        }
+        if ( currMater->hasExternalStateVariableWithReference() ) {
+            auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
+            AS_ASSERT( currExternVarRefe );
+            calcul->addInputField( "PVARCRR", currExternVarRefe );
+        }
+        calcul->addInputField( "PVARCPR", externVar );
+    }
+
+    calcul->addTimeField( "PINSTR", time );
+    calcul->addInputField( "PDEPLAR", displ );
+
+    // Get Finite Element Descriptor
+    FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
+
+    // Create output field
+    auto strx_elga =
+        FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "SIEF_R", currElemChara );
+
+    // Add output field
+    calcul->addOutputField( "PSTRXRR", strx_elga );
+
+    // Compute
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+    };
+
+    return strx_elga;
+};
+
 /** @brief Compute max value of EFGE_ELNO or EGRU_ELNO based on the maximum of the
  *         equivalent moment for piping studies*/
 FieldOnCellsRealPtr
@@ -161,35 +299,37 @@ PostProcessing::computeMaxResultantForPipe( const ResultPtr &resu,
         for ( ASTERINTEGER ipt = 0; ipt < npt; ++ipt ) {
             for ( ASTERINTEGER ispt = 0; ispt < nspt; ++ispt ) {
 
-                double max_fx = -1.0;
-                double max_fy = -1.0;
-                double max_fz = -1.0;
-                double max_moment = -1.0;
+                ASTERDOUBLE max_fx = -1.0;
+                ASTERDOUBLE max_fy = -1.0;
+                ASTERDOUBLE max_fz = -1.0;
+                ASTERDOUBLE max_moment = -1.0;
 
-                double val_fx = std::numeric_limits< double >::quiet_NaN();
-                double val_fy = std::numeric_limits< double >::quiet_NaN();
-                double val_fz = std::numeric_limits< double >::quiet_NaN();
+                ASTERDOUBLE val_fx = std::numeric_limits< ASTERDOUBLE >::quiet_NaN();
+                ASTERDOUBLE val_fy = std::numeric_limits< ASTERDOUBLE >::quiet_NaN();
+                ASTERDOUBLE val_fz = std::numeric_limits< ASTERDOUBLE >::quiet_NaN();
 
-                std::array< double, 3 > moment_vec = { std::numeric_limits< double >::quiet_NaN(),
-                                                       std::numeric_limits< double >::quiet_NaN(),
-                                                       std::numeric_limits< double >::quiet_NaN() };
+                std::array< ASTERDOUBLE, 3 > moment_vec = {
+                    std::numeric_limits< ASTERDOUBLE >::quiet_NaN(),
+                    std::numeric_limits< ASTERDOUBLE >::quiet_NaN(),
+                    std::numeric_limits< ASTERDOUBLE >::quiet_NaN()
+                };
 
                 for ( size_t i = 0; i < input_fields.size(); ++i ) {
-                    double val[6];
+                    ASTERDOUBLE val[6];
                     bool has_moment = true;
 
                     for ( int j = 0; j < 6; ++j ) {
                         try {
                             val[j] = input_fields[i]->getValue( cell, j, ipt, ispt );
                         } catch ( ... ) {
-                            val[j] = std::numeric_limits< double >::quiet_NaN();
+                            val[j] = std::numeric_limits< ASTERDOUBLE >::quiet_NaN();
                             if ( j >= 3 )
                                 has_moment = false;
                         }
                     }
 
                     if ( !std::isnan( val[0] ) ) {
-                        double fx = std::abs( val[0] );
+                        ASTERDOUBLE fx = std::abs( val[0] );
                         if ( fx > max_fx ) {
                             max_fx = fx;
                             val_fx = fx;
@@ -197,7 +337,7 @@ PostProcessing::computeMaxResultantForPipe( const ResultPtr &resu,
                     }
 
                     if ( !std::isnan( val[1] ) ) {
-                        double fy = std::abs( val[1] );
+                        ASTERDOUBLE fy = std::abs( val[1] );
                         if ( fy > max_fy ) {
                             max_fy = fy;
                             val_fy = fy;
@@ -205,7 +345,7 @@ PostProcessing::computeMaxResultantForPipe( const ResultPtr &resu,
                     }
 
                     if ( !std::isnan( val[2] ) ) {
-                        double fz = std::abs( val[2] );
+                        ASTERDOUBLE fz = std::abs( val[2] );
                         if ( fz > max_fz ) {
                             max_fz = fz;
                             val_fz = fz;
@@ -214,8 +354,8 @@ PostProcessing::computeMaxResultantForPipe( const ResultPtr &resu,
 
                     if ( has_moment && !std::isnan( val[3] ) && !std::isnan( val[4] ) &&
                          !std::isnan( val[5] ) ) {
-                        double mx = val[3], my = val[4], mz = val[5];
-                        double norm = std::hypot( mx, my, mz );
+                        ASTERDOUBLE mx = val[3], my = val[4], mz = val[5];
+                        ASTERDOUBLE norm = std::hypot( mx, my, mz );
                         if ( norm > max_moment ) {
                             max_moment = norm;
                             moment_vec = { std::abs( mx ), std::abs( my ), std::abs( mz ) };

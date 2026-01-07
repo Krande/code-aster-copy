@@ -16958,6 +16958,30 @@ class PostProcessing:
          FieldOnCellReals: The maximal value of the field
         """
 
+    def computeStress(self, displ, time=0.0, externVar=None):
+        """Compute stress SIEF_ELGA
+
+        Arguments:
+            displ (FieldOnNodesReal): displacement
+            time (float): time
+            externVar (FieldOnCellsReal): external state variables
+
+        Returns:
+            FieldOnCellReals: stress SIEF_ELGA field
+        """
+
+    def computeStructuralStress(self, displ, time=0.0, externVar=None):
+        """Compute stress STRX_ELGA
+
+        Arguments:
+            displ (FieldOnNodesReal): displacement
+            time (float): time
+            externVar (FieldOnCellsReal): external state variables
+
+        Returns:
+            FieldOnCellReals: stress STRX_ELGA field
+        """
+
 
 # class HHO in libaster
 

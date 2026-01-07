@@ -19,7 +19,6 @@
 
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ..CodeCommands import CALC_CHAMP
 from ..Objects import (
     AssemblyMatrixDisplacementReal,
     DiscreteComputation,
@@ -32,10 +31,11 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
 )
 from ..ObjectsExt import PhysicalProblem
-from ..Utilities import logger, print_stats, profile, reset_stats
-from ..Solvers import PhysicalState, StorageManager, TimeStepper
+from ..Solvers import PhysicalState
 from ..Solvers import ProblemType as PBT
-from ..Solvers.Post import ComputeDisplFromHHO
+from ..Solvers import StorageManager, TimeStepper
+from ..Solvers.Post import ComputeDisplFromHHO, ComputeStress
+from ..Utilities import logger, print_stats, profile, reset_stats
 
 
 @profile
@@ -159,28 +159,6 @@ def _computeRhs(phys_pb, disr_comp, time):
     return rhs
 
 
-@profile
-def _computeStress(phys_pb, result):
-    """Compute SIEF_ELGA en STRX_ELGA
-
-    Arguments:
-        phys_pb (PhysicalProblem): phisical problem
-        result (ElasticResult): result to fill in (in place)
-
-    Returns:
-        ElasticResult: result with stress fields
-    """
-
-    option = ["SIEF_ELGA"]
-
-    if phys_pb.getModel().existsMultiFiberBeam():
-        option.append("STRX_ELGA")
-
-    result = CALC_CHAMP(reuse=result, RESULTAT=result, CONTRAINTE=option)
-
-    return result
-
-
 class OperatorMockup:
     """Simulate a NonLinearOperator object."""
 
@@ -249,6 +227,8 @@ def meca_statique_ops(self, **args):
     disc_comp = DiscreteComputation(phys_pb)
     lin_operator = OperatorMockup(phys_pb, phys_state)
     hooks = [ComputeDisplFromHHO()]
+    if args["OPTION"] == "SIEF_ELGA":
+        hooks.append(ComputeStress())
 
     # we define the matrix before to have an unique name
     # because of a bug with LDLT_SP
@@ -299,11 +279,6 @@ def meca_statique_ops(self, **args):
 
     # cleaning because some objects are still on VOLATILE
     deleteTemporaryObjects()
-
-    # compute stress if requested
-    logger.debug("<MECA_STATIQUE>: Compute stress")
-    if args["OPTION"] == "SIEF_ELGA":
-        result = _computeStress(phys_pb, result)
 
     if verbosity > 1:
         print_stats()
