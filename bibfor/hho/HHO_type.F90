@@ -82,7 +82,6 @@ module HHO_type
     type HHO_Face
 ! ----- Dimension topologique
         integer(kind=8)              :: ndim = 0
-        aster_logical                :: axis = ASTER_FALSE
 ! ----- Type maille
         integer(kind=8)              :: typema = 0
 ! ----- Nombre de noeuds
@@ -119,7 +118,6 @@ module HHO_type
     type HHO_Cell
 ! ----- Dimension topologique
         integer(kind=8)                     :: ndim = 0
-        aster_logical                       :: axis = ASTER_FALSE
 ! ----- Type maille
         integer(kind=8)                     :: typema = 0
 ! ----- Nombre de noeuds
