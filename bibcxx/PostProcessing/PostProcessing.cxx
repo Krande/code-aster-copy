@@ -158,7 +158,7 @@ FieldOnCellsRealPtr PostProcessing::computeStress( const FieldOnNodesRealPtr dis
 
     if ( currMater->hasExternalStateVariable() ) {
         if ( !externVar || !externVar->exists() ) {
-            AS_ABORT( "External state variables vector for end of time step is missing" )
+            AS_ABORT( "External state variables vector is missing" )
         }
         if ( currMater->hasExternalStateVariableWithReference() ) {
             auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
@@ -226,7 +226,7 @@ PostProcessing::computeStructuralStress( const FieldOnNodesRealPtr displ, const 
 
     if ( currMater->hasExternalStateVariable() ) {
         if ( !externVar || !externVar->exists() ) {
-            AS_ABORT( "External state variables vector for end of time step is missing" )
+            AS_ABORT( "External state variables vector is missing" )
         }
         if ( currMater->hasExternalStateVariableWithReference() ) {
             auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();

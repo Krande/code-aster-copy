@@ -99,26 +99,22 @@ def _createTimeStepper(args):
 
 
 @profile
-def _computeMatrix(phys_pb, disr_comp, matrix, time):
+def _computeMatrix(phys_pb, disr_comp, phys_state, matrix):
     """Compute and assemble the elastic matrix
 
     Arguments:
         phys_pb (PhysicalProblem): physical problem
         disr_comp (DiscreteComputation): to compute discrete quantities
+        phys_state (PhysicalState): physical state
         matrix (AssemblyMatrixDisplacementReal): matrix to compute and assemble inplace
-        time (float): current time
 
     Returns:
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
-    # compute external state variables
-    mater = phys_pb.getMaterialField()
-    varc = None
-    if mater and mater.hasExternalStateVariable():
-        varc = phys_pb.getExternalStateVariables(time)
-
-    matr_elem = disr_comp.getLinearStiffnessMatrix(time=time, varc_curr=varc, with_dual=True)
+    matr_elem = disr_comp.getLinearStiffnessMatrix(
+        time=phys_state.time_curr, varc_curr=phys_state.externVar, with_dual=True
+    )
 
     matrix.assemble(matr_elem, phys_pb.getListOfLoads())
 
@@ -126,23 +122,21 @@ def _computeMatrix(phys_pb, disr_comp, matrix, time):
 
 
 @profile
-def _computeRhs(phys_pb, disr_comp, time):
+def _computeRhs(phys_pb, disr_comp, phys_state):
     """Compute and assemble the right hand side
 
     Arguments:
          phys_pb (PhysicalProblem): physical problem
          disr_comp (DiscreteComputation): to compute discrete quantities
-         time (float): current time
+         phys_state (PhysicalState): physical state
 
      Returns:
          FieldOnNodesReal: vector of load
     """
 
-    # compute external state variables
     mater = phys_pb.getMaterialField()
-    varc = None
-    if mater and mater.hasExternalStateVariable():
-        varc = phys_pb.getExternalStateVariables(time)
+    varc = phys_state.externVar
+    time = phys_state.time_curr
 
     # compute imposed displacement with Lagrange
     rhs = disr_comp.getImposedDualBC(time)
@@ -240,6 +234,8 @@ def meca_statique_ops(self, **args):
     if phys_pb.getMaterialField().hasExternalStateVariableWithReference():
         phys_pb.computeReferenceExternalStateVariables()
 
+    hasVarc = phys_pb.getMaterialField().hasExternalStateVariable()
+
     # first index to use, +1 because there is no initial state
     storage_manager.setFirstStorageIndex(result.getNumberOfIndexes() + 1)
 
@@ -250,13 +246,16 @@ def meca_statique_ops(self, **args):
     while not timeStepper.isFinished():
         phys_state.time_curr = timeStepper.getCurrent()
 
+        if hasVarc:
+            phys_state.externVar = phys_pb.getExternalStateVariables(phys_state.time_curr)
+
         # compute matrix and factorize it
         if not isConst or step_rank == 0:
-            matrix = _computeMatrix(phys_pb, disc_comp, matrix, phys_state.time_curr)
+            matrix = _computeMatrix(phys_pb, disc_comp, phys_state, matrix)
             linear_solver.factorize(matrix)
 
         # compute rhs
-        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time_curr)
+        rhs = _computeRhs(phys_pb, disc_comp, phys_state)
 
         # solve linear system
         diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
