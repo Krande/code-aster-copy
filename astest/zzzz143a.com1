@@ -19,6 +19,7 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+from code_aster.Utilities import medcoupling as medc
 
 POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -28,15 +29,25 @@ test_export = CA.TestCase()
 
 # export to medcoupling result
 medresu_temp = TEMP_STAT.createMedCouplingResult()
-with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
-    medresu_temp.write(f.name, 2)
-
-test_export.assertSequenceEqual(medresu_temp.getFields().getFieldsNames(), ("GRAT_R", "TEMP_R"))
+test_export.assertSequenceEqual(medresu_temp.getFields().getFieldsNames(), ("GRAT_NOEU", "TEMP"))
 test_export.assertEqual(len(medresu_temp.getMeshes()), 1)
+desc_temp = set([f1ts.getDescription() for fmts in medresu_temp.getFields() for f1ts in fmts])
+test_export.assertSetEqual(desc_temp, set(("GRAT_R-GRAT_NOEU", "TEMP_R-TEMP")))
 
 medresu_depl = DEPL31_FONC.createMedCouplingResult()
-test_export.assertSequenceEqual(medresu_depl.getFields().getFieldsNames(), ("DEPL_R",))
-test_export.printSummary()
+test_export.assertSequenceEqual(medresu_depl.getFields().getFieldsNames(), ("DEPL",))
+desc_depl = set([f1ts.getDescription() for fmts in medresu_depl.getFields() for f1ts in fmts])
+test_export.assertSetEqual(desc_depl, set(("DEPL_R-DEPL",)))
 
+with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
+    medresu_temp.write(f.name, 2)
+    medreload_temp = medc.MEDFileData(f.name)
+    desc_temp_reload = set(
+        [f1ts.getDescription() for fmts in medreload_temp.getFields() for f1ts in fmts]
+    )
+
+test_export.assertSetEqual(desc_temp_reload, set(("GRAT_R-GRAT_NOEU", "TEMP_R-TEMP")))
+
+test_export.printSummary()
 
 FIN()

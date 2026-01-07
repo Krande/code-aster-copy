@@ -18,68 +18,38 @@
 # --------------------------------------------------------------------
 
 
-import libaster
 import numpy as np
 from ...Utilities import medcoupling as medc
 
 
-def getPhysicalQuantityFromFieldName(fname):
+def getDescriptionInfo(medfield):
     """
-    Get the aster physical quantity from the name of field.
-
-    Physical Quantity has to be the final part of the field name.
+    Get the information stored as description.
 
     Arguments:
-        name (str) : Field name.
+        field (MED*)) : The medcoupling field.
 
     Returns :
-        phys (str) : Physical Quantity name.
-
+        symbname (str): Symbolic name of field.
+        phys (str): Physical quantity.
+        scal (str): Scalar type of field.
     """
-    pqm = libaster.PhysicalQuantityManager.getAllPhysicalQuantityNames()
-    candidates = [i for i in pqm if fname.endswith(i)]
 
-    if not len(candidates) == 1:
-        msg = f"Invalid field name (`{fname}`); expecting a physical quantity as end of name."
-        raise RuntimeError(msg)
-    else:
-        name = candidates[0]
-    return name
+    internal_desc = medfield.getDescription()
+    phys, symbname = internal_desc.split("-")
+    quantity, scal = phys.split("_")
+
+    return symbname, phys, scal
 
 
-def getSymbolicNameFromMedField(medfield):
-    """
-    Get the aster symbolic name of field.
-
-    Arguments:
-        field (MEDFileField | MEDCouplingField) : The field in med format ( medcoupling ).
-
-    Returns :
-        phys (str) : Symbolic name of field.
-        scal (str) : Scalar type of field.
-    """
-    trad = {medc.ON_NODES: "NOEU", medc.ON_CELLS: "ELEM", medc.ON_GAUSS_PT: "ELGA"}
-
-    exceptions = {"DEPL_NOEU": "DEPL", "TEMP_NOEU": "TEMP", "PRES_NOEU": "PRES"}
-
-    fname = medfield.getName()
-    quantity, scal = getPhysicalQuantityFromFieldName(fname).split("_")
-
-    phys = "_".join((quantity, trad[medfield.getTypeOfField()]))
-
-    for src, dest in exceptions.items():
-        phys = phys.replace(src, dest)
-
-    return phys, scal
-
-
-def toMCFieldAndProfileNode(asfield, medmesh, prefix=""):
+def toMCFieldAndProfileNode(asfield, medmesh, symbname, prefix=""):
     """Internal Function. Export the field to a new MEDCoupling field and profile.
 
     Arguments:
         asfield (*SimpleFieldOnNodes*): The aster field as simple field.
         medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
-        prefix,  optional (str): Prefix for field names.
+        symbname (str): Symbolic name of field (e.g. SIEQ_NOEU).
+        prefix,  optional (str): Prefix for field name.
 
     Returns:
         field ( MEDCouplingFieldDouble ) : The field medcoupling format.
@@ -90,15 +60,17 @@ def toMCFieldAndProfileNode(asfield, medmesh, prefix=""):
         raise TypeError(f"Invalid argument type '{tname}'")
 
     # Aster values
-    values, mask = asfield.toNumpy()
+    values, mask = asfield.getValues(copy=False)
 
     # Restrict field based on mask
     restricted_nodes = np.where(np.any(mask, axis=1) == True)[0]
     restricted_values = values[restricted_nodes, :]
 
-    # The field name containing the physical quantity
-    field_name = "".join((prefix, asfield.getPhysicalQuantity()))
-    profile_name = "".join((prefix, "NodesProfile"))
+    # Names
+    physq = asfield.getPhysicalQuantity()
+    field_name = "".join((prefix, symbname))
+    internal_desc = "-".join((physq, symbname))
+    profile_name = "_".join((field_name, "NodesProfile"))
 
     # Medcoupling field
     field_values = medc.DataArrayDouble(restricted_values)
@@ -107,6 +79,7 @@ def toMCFieldAndProfileNode(asfield, medmesh, prefix=""):
 
     medc_node_field = medc.MEDCouplingFieldDouble(medc.ON_NODES, medc.ONE_TIME)
     medc_node_field.setName(field_name)
+    medc_node_field.setDescription(internal_desc)
     medc_node_field.setArray(field_values)
     medc_node_field.setNature(medc.IntensiveMaximum)
 
@@ -127,11 +100,14 @@ def toMCFieldAndProfileNode(asfield, medmesh, prefix=""):
     return medc_node_field, field_profile
 
 
-def toMCFieldAndProfileElem(asfield, medmesh, prefix=""):
+def toMCFieldAndProfileElem(asfield, medmesh, symbname, prefix=""):
     """Export the field to a new MEDCoupling field
 
     Arguments:
+        asfield (*SimpleFieldOnCells*): The aster field as simple field.
         medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
+        symbname (str): Symbolic name of field (e.g. SIEQ_ELGA).
+        prefix,  optional (str): Prefix for field names.
 
     Returns:
         field ( MEDCouplingFieldDouble ) : The field medcoupling format.
@@ -141,15 +117,17 @@ def toMCFieldAndProfileElem(asfield, medmesh, prefix=""):
     if not tname in ("MEDCouplingUMesh",):
         raise TypeError(f"Invalid argument type '{tname}'")
 
-    values, mask = asfield._cache["val"], asfield._cache["msk"]
+    values, mask = asfield.getValues(copy=False)
 
     # Restrict field based on mask
     restricted_cells = np.where(np.any(mask, axis=1))[0]
     restricted_values = values[restricted_cells, :]
 
-    # The field name containing the physical quantity
-    field_name = "".join((prefix, asfield.getPhysicalQuantity()))
-    profile_name = "".join((prefix, "ElemProfile"))
+    # Names
+    physq = asfield.getPhysicalQuantity()
+    field_name = "".join((prefix, symbname))
+    internal_desc = "-".join((physq, symbname))
+    profile_name = "_".join((field_name, "ElemProfile"))
 
     # Medcoupling field
     field_values = medc.DataArrayDouble(restricted_values)
@@ -157,11 +135,12 @@ def toMCFieldAndProfileElem(asfield, medmesh, prefix=""):
     field_values.setName(field_name)
     medc_cell_field = medc.MEDCouplingFieldDouble(medc.ON_CELLS, medc.ONE_TIME)
     medc_cell_field.setName(field_name)
+    medc_cell_field.setDescription(internal_desc)
     medc_cell_field.setArray(field_values)
     medc_cell_field.setNature(medc.IntensiveConservation)
 
     field_profile = medc.DataArrayInt(restricted_cells)
-    field_profile.setName("".join((prefix, "ElemProfile")))
+    field_profile.setName(profile_name)
 
     if len(restricted_cells) == medmesh.getNumberOfCells():
         medc_cell_field.setMesh(medmesh)
@@ -173,48 +152,62 @@ def toMCFieldAndProfileElem(asfield, medmesh, prefix=""):
     return medc_cell_field, field_profile
 
 
-def toMCFieldAndProfile(asfield, medmesh, prefix=""):
-    loc = asfield.getLocalization()
-    if loc == "NOEU":
-        field, profile = toMCFieldAndProfileNode(asfield, medmesh, prefix)
-    elif loc == "ELEM":
-        field, profile = toMCFieldAndProfileElem(asfield, medmesh, prefix)
-    else:
-        raise NotImplementedError(loc)
-
-    return field, profile
-
-
-def toMedCouplingField(asfield, medmesh, prefix=""):
+def toMCFieldAndProfile(asfield, medmesh, symbname, prefix=""):
     """Export the field to a new MEDCoupling field
 
     Arguments:
-        asfield (*SimpleFieldOnNodes*): The aster field as simple field.
+        asfield (*SimpleField*): The aster field as simple field.
         medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
+        symbname (str): Symbolic name of field (e.g. SIEQ_ELGA).
         prefix,  optional (str): Prefix for field names.
 
     Returns:
         field ( MEDCouplingFieldDouble ) : The field medcoupling format.
     """
 
-    medc_field, field_profile = toMCFieldAndProfile(asfield, medmesh, prefix)
+    loc = asfield.getLocalization()
+    if loc == "NOEU":
+        field, profile = toMCFieldAndProfileNode(asfield, medmesh, symbname, prefix)
+    elif loc == "ELEM":
+        field, profile = toMCFieldAndProfileElem(asfield, medmesh, symbname, prefix)
+    else:
+        raise NotImplementedError(loc)
+
+    return field, profile
+
+
+def toMedCouplingField(asfield, medmesh, symbname, prefix=""):
+    """Export the field to a new MEDCoupling field
+
+    Arguments:
+        asfield (*SimpleFieldOnNodes*): The aster field as simple field.
+        medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
+        symbname (str): Symbolic name of field (e.g. SIEQ_ELGA).
+        prefix,  optional (str): Prefix for field names.
+
+    Returns:
+        field ( MEDCouplingFieldDouble ) : The field medcoupling format.
+    """
+
+    medc_field, field_profile = toMCFieldAndProfile(asfield, medmesh, symbname, prefix)
 
     return medc_field
 
 
-def toMedFileField1TS(asfield, medmesh, profile=False, prefix=""):
+def toMedFileField1TS(asfield, medmesh, symbname, prefix="", profile=False):
     """Export the field to a new MED field
 
     Arguments:
         asfield (*SimpleFieldOnNodes*): The aster field as simple field.
         medmesh (*MEDFileUMesh*): The medcoupling support mesh.
-        profile, optional (bool): True to create a MED profile from field mask.
+        symbname (str): Symbolic name of field (e.g. SIEQ_ELGA).
         prefix,  optional (str): Prefix for field names.
+        profile, optional (bool): True to create a MED profile from field mask.
 
     Returns:
         field ( MEDFileField1TS ) : The field in med format ( medcoupling ).
     """
-    medc_node_field, field_profile = toMCFieldAndProfile(asfield, medmesh, prefix)
+    medc_node_field, field_profile = toMCFieldAndProfile(asfield, medmesh, symbname, prefix)
 
     # Med field with profile
     medfield = medc.MEDFileField1TS()
@@ -254,9 +247,7 @@ def fromMedFileField1TSNodes(mc_field, astermesh):
 
     arr = mc_field.getArray()
     cmps = arr.getInfoOnComponents()
-    # FIXME : on devrait garder la physical quantity dans setDescription
-    field_name = arr.getName() or mc_field.getName()
-    phys = getPhysicalQuantityFromFieldName(field_name)
+    name, phys, scal = getDescriptionInfo(mc_field)
     values = arr.getValues()
 
     return phys, cmps, values
@@ -291,9 +282,7 @@ def fromMedFileField1TSCells(mc_field, astermesh):
 
     arr = mc_field.getArray()
     cmps = arr.getInfoOnComponents()
-    # FIXME : on devrait garder la physical quantity dans setDescription
-    field_name = arr.getName() or mc_field.getName()
-    phys = getPhysicalQuantityFromFieldName(field_name)
+    name, phys, scal = getDescriptionInfo(mc_field)
     values = arr.getValues()
 
     return phys, cmps, values

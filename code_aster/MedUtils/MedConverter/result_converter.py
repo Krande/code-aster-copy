@@ -20,7 +20,7 @@
 
 from ...Objects import Mesh, SimpleFieldOnNodesReal
 from ...Utilities import medcoupling as medc
-from .field_converter import getSymbolicNameFromMedField
+from .field_converter import getDescriptionInfo
 
 
 def getNumberOfTimeSteps(medresult):
@@ -129,11 +129,11 @@ def fromMedFileData(result, medresult, astermesh):
             if field_types[0] == medc.ON_NODES:
                 with f1ts:
                     medcfield = f1ts.field(medmesh)
-                    phys, scal = getSymbolicNameFromMedField(medcfield)
+                    name, phys, scal = getDescriptionInfo(medcfield)
                     assert scal == "R"
                     sfield = SimpleFieldOnNodesReal.fromMedCouplingField(medcfield, astermesh)
                     asterfield = sfield.toFieldOnNodes()
-                    result.setField(asterfield, phys, rank)
+                    result.setField(asterfield, name, rank)
                     result.setTime(time, rank)
 
 
@@ -184,7 +184,7 @@ def toMedFileData(result, medmesh=None, profile=False, prefix=""):
         fmts = medc.MEDFileFieldMultiTS()
         for rank, time in zip(ranks, times):
             asterfield = result.getField(fname, rank).toSimpleFieldOnNodes()
-            medcfield = asterfield.toMedFileField1TS(medmesh, profile, prefix)
+            medcfield = asterfield.toMedFileField1TS(medmesh, fname, prefix, profile)
             medcfield.setTime(rank, 0, time)
             fmts.pushBackTimeStep(medcfield)
         fields.pushField(fmts)
