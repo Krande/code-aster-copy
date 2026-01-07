@@ -81,7 +81,8 @@ class PostProcessing {
      */
     FieldOnCellsRealPtr computeStress( const FieldOnNodesRealPtr displ,
                                        const ASTERDOUBLE time = 0.0,
-                                       const FieldOnCellsRealPtr &externVar = nullptr ) const;
+                                       const FieldOnCellsRealPtr &externVar = nullptr,
+                                       const FieldOnCellsRealPtr &strx_elga = nullptr ) const;
 
     /**
      * @brief Compute structural stress

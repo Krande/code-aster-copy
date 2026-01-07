@@ -16958,13 +16958,14 @@ class PostProcessing:
          FieldOnCellReals: The maximal value of the field
         """
 
-    def computeStress(self, displ, time=0.0, externVar=None):
+    def computeStress(self, displ, time=0.0, externVar=None, strx_elga=None):
         """Compute stress SIEF_ELGA
 
         Arguments:
             displ (FieldOnNodesReal): displacement
             time (float): time
             externVar (FieldOnCellsReal): external state variables
+            strx_elga (FieldOnCellsReal): STRX_ELGA field
 
         Returns:
             FieldOnCellReals: stress SIEF_ELGA field

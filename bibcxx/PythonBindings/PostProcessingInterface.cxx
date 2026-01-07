@@ -67,11 +67,13 @@ void exportPostProcessingToPython( py::module_ &mod ) {
                 displ (FieldOnNodesReal): displacement
                 time (float): time
                 externVar (FieldOnCellsReal): external state variables
+                strx_elga (FieldOnCellsReal): STRX_ELGA field
 
             Returns:
                 FieldOnCellReals: stress SIEF_ELGA field
         )",
-              py::arg( "displ" ), py::arg( "time" ) = 0.0, py::arg( "externVar" ) = nullptr )
+              py::arg( "displ" ), py::arg( "time" ) = 0.0, py::arg( "externVar" ) = nullptr,
+              py::arg( "strx_elga" ) = nullptr )
         .def( "computeStructuralStress", &PostProcessing::computeStructuralStress,
               R"(
             Compute stress STRX_ELGA

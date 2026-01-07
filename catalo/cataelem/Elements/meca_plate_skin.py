@@ -124,7 +124,7 @@ class MEBODST(MEBODKT):
 
     meshType = MT.SEG2
     elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),)
-    calculs = (OP.CARA_SECT_POUT5(te=-1), OP.TOU_INI_ELGA(te=-1), OP.TOU_INI_ELNO(te=-1))
+    calculs = (OP.CARA_SECT_POUT5(te=-1), OP.TOU_INI_ELNO(te=-1))
 
 
 # ------------------------------------------------------------

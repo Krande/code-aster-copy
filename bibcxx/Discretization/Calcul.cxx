@@ -66,8 +66,9 @@ void Calcul::setGroupsOfCells( const ModelPtr &model, const VectorString &groupO
 
 /** @brief Add input field */
 void Calcul::addInputField( const std::string &parameterName, const DataFieldPtr field ) {
-    AS_ASSERT( field );
-    _inputFields.insert( listFields::value_type( parameterName, field ) );
+    if ( field ) {
+        _inputFields.insert( listFields::value_type( parameterName, field ) );
+    }
 }
 
 /** @brief Add output field */
@@ -79,22 +80,23 @@ void Calcul::addOutputField( const std::string &parameterName, const DataFieldPt
 
 /** @brief Add input fields for elementary characteristics */
 void Calcul::addElementaryCharacteristicsField( const ElementaryCharacteristicsPtr elemChara ) {
-    AS_ASSERT( elemChara )
-    addInputField( "PCAORIE", elemChara->getLocalBasis() );
-    addInputField( "PCADISK", elemChara->getDiscreteRigidity() );
-    addInputField( "PCADISM", elemChara->getDiscreteMass() );
-    addInputField( "PCADISA", elemChara->getDiscreteDamping() );
-    addInputField( "PCAGEPO", elemChara->getBeamGeometry() );
-    addInputField( "PCAGNPO", elemChara->getBeamSection() );
-    addInputField( "PCACOQU", elemChara->getShellParameters() );
-    addInputField( "PCAARPO", elemChara->getFlexibilityCoefficients() );
-    addInputField( "PCACABL", elemChara->getCableParameters() );
-    addInputField( "PCAGNBA", elemChara->getBarParameters() );
-    addInputField( "PCAMASS", elemChara->getMaterialBase() );
-    addInputField( "PCAPOUF", elemChara->getFluidBeamParameters() );
-    addInputField( "PNBSP_I", elemChara->getNumberOfSubpoints() );
-    addInputField( "PFIBRES", elemChara->getFibers() );
-    addInputField( "PCINFDI", elemChara->getDiscreteParameters() );
+    if ( elemChara ) {
+        addInputField( "PCAORIE", elemChara->getLocalBasis() );
+        addInputField( "PCADISK", elemChara->getDiscreteRigidity() );
+        addInputField( "PCADISM", elemChara->getDiscreteMass() );
+        addInputField( "PCADISA", elemChara->getDiscreteDamping() );
+        addInputField( "PCAGEPO", elemChara->getBeamGeometry() );
+        addInputField( "PCAGNPO", elemChara->getBeamSection() );
+        addInputField( "PCACOQU", elemChara->getShellParameters() );
+        addInputField( "PCAARPO", elemChara->getFlexibilityCoefficients() );
+        addInputField( "PCACABL", elemChara->getCableParameters() );
+        addInputField( "PCAGNBA", elemChara->getBarParameters() );
+        addInputField( "PCAMASS", elemChara->getMaterialBase() );
+        addInputField( "PCAPOUF", elemChara->getFluidBeamParameters() );
+        addInputField( "PNBSP_I", elemChara->getNumberOfSubpoints() );
+        addInputField( "PFIBRES", elemChara->getFibers() );
+        addInputField( "PCINFDI", elemChara->getDiscreteParameters() );
+    }
 }
 
 /** @brief Create and add input field for Fourier */
@@ -134,24 +136,26 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE &
 
 /** @brief Create and add input fields for XFEM */
 void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
-    addInputField( "PAINTER", xfemModel->getField( "AINTER" ) );
-    addInputField( "PPINTER", xfemModel->getField( "PINTER" ) );
-    addInputField( "PPINTTO", xfemModel->getField( "PINTTO" ) );
-    addInputField( "PCNSETO", xfemModel->getField( "CNSETO" ) );
-    addInputField( "PHEAVTO", xfemModel->getField( "HEAVTO" ) );
-    addInputField( "PLONCHA", xfemModel->getField( "LONCHA" ) );
-    addInputField( "PBASLOR", xfemModel->getField( "BASLOC" ) );
-    addInputField( "PLSN", xfemModel->getField( "LSN" ) );
-    addInputField( "PLST", xfemModel->getField( "LST" ) );
-    addInputField( "PSTANO", xfemModel->getField( "STANO" ) );
-    addInputField( "PPMILTO", xfemModel->getField( "PMILT" ) );
-    addInputField( "PFISNO", xfemModel->getField( "FISSNO" ) );
-    addInputField( "PHEA_NO", xfemModel->getField( "HEAVNO" ) );
-    addInputField( "PHEA_SE", xfemModel->getField( "HEAVSE" ) );
-    addInputField( "PHEA_FA", xfemModel->getField( "HEAVFA" ) );
-    addInputField( "PCFACE", xfemModel->getField( "CFACE" ) );
-    addInputField( "PLONGCO", xfemModel->getField( "LONGCO" ) );
-    addInputField( "PBASECO", xfemModel->getField( "BASECO" ) );
+    if ( xfemModel ) {
+        addInputField( "PAINTER", xfemModel->getField( "AINTER" ) );
+        addInputField( "PPINTER", xfemModel->getField( "PINTER" ) );
+        addInputField( "PPINTTO", xfemModel->getField( "PINTTO" ) );
+        addInputField( "PCNSETO", xfemModel->getField( "CNSETO" ) );
+        addInputField( "PHEAVTO", xfemModel->getField( "HEAVTO" ) );
+        addInputField( "PLONCHA", xfemModel->getField( "LONCHA" ) );
+        addInputField( "PBASLOR", xfemModel->getField( "BASLOC" ) );
+        addInputField( "PLSN", xfemModel->getField( "LSN" ) );
+        addInputField( "PLST", xfemModel->getField( "LST" ) );
+        addInputField( "PSTANO", xfemModel->getField( "STANO" ) );
+        addInputField( "PPMILTO", xfemModel->getField( "PMILT" ) );
+        addInputField( "PFISNO", xfemModel->getField( "FISSNO" ) );
+        addInputField( "PHEA_NO", xfemModel->getField( "HEAVNO" ) );
+        addInputField( "PHEA_SE", xfemModel->getField( "HEAVSE" ) );
+        addInputField( "PHEA_FA", xfemModel->getField( "HEAVFA" ) );
+        addInputField( "PCFACE", xfemModel->getField( "CFACE" ) );
+        addInputField( "PLONGCO", xfemModel->getField( "LONGCO" ) );
+        addInputField( "PBASECO", xfemModel->getField( "BASECO" ) );
+    }
 }
 
 /** @brief Create and add input fields for HHO */
@@ -163,21 +167,25 @@ void Calcul::addXFEMField( const ModelPtr model ) {
 
 /** @brief Add input fields for non-linear behaviours */
 void Calcul::addBehaviourField( const BehaviourPropertyPtr behaviour ) {
-    addInputField( "PCOMPOR", behaviour->getBehaviourField() );
-    addInputField( "PCARCRI", behaviour->getConvergenceCriteria() );
-    addInputField( "PMULCOM", behaviour->getMultipleBehaviourField() );
+    if ( behaviour ) {
+        addInputField( "PCOMPOR", behaviour->getBehaviourField() );
+        addInputField( "PCARCRI", behaviour->getConvergenceCriteria() );
+        addInputField( "PMULCOM", behaviour->getMultipleBehaviourField() );
+    }
 }
 
 /** @brief Create and add input fields for HHO */
 void Calcul::addHHOField( const HHOModelPtr HHOModel ) {
-    addInputField( "PCHHOGT", HHOModel->getGradient() );
-    addInputField( "PCHHOST", HHOModel->getStabilization() );
-    addInputField( "PCHHOBS", HHOModel->getBasis() );
+    if ( HHOModel ) {
+        addInputField( "PCHHOGT", HHOModel->getGradient() );
+        addInputField( "PCHHOST", HHOModel->getStabilization() );
+        addInputField( "PCHHOBS", HHOModel->getBasis() );
+    }
 }
 
 /** @brief Create and add input fields for HHO */
 void Calcul::addHHOField( const ModelPtr model ) {
-    if ( model->existsHHO() ) {
+    if ( model && model->existsHHO() ) {
         addHHOField( model->getHHOModel() );
     }
 }

@@ -125,7 +125,8 @@ FieldOnCellsRealPtr PostProcessing::computeAnnealing(
  */
 FieldOnCellsRealPtr PostProcessing::computeStress( const FieldOnNodesRealPtr displ,
                                                    const ASTERDOUBLE time,
-                                                   const FieldOnCellsRealPtr &externVar ) const {
+                                                   const FieldOnCellsRealPtr &externVar,
+                                                   const FieldOnCellsRealPtr &strx_elga ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -145,16 +146,11 @@ FieldOnCellsRealPtr PostProcessing::computeStress( const FieldOnNodesRealPtr dis
 
     // Add input fields
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     calcul->addInputField( "PABSCUR", currModel->getMesh()->getCurvilinearAbscissa() );
 
-    if ( currElemChara ) {
-        calcul->addElementaryCharacteristicsField( currElemChara );
-    }
-
-    if ( currBehaviour ) {
-        calcul->addBehaviourField( currBehaviour );
-    }
+    calcul->addElementaryCharacteristicsField( currElemChara );
 
     if ( currMater->hasExternalStateVariable() ) {
         if ( !externVar || !externVar->exists() ) {
@@ -173,6 +169,7 @@ FieldOnCellsRealPtr PostProcessing::computeStress( const FieldOnNodesRealPtr dis
 
     calcul->addTimeField( "PINSTR", time );
     calcul->addInputField( "PDEPLAR", displ );
+    calcul->addInputField( "PSTRXRR", strx_elga );
 
     // Get Finite Element Descriptor
     FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
@@ -218,11 +215,10 @@ PostProcessing::computeStructuralStress( const FieldOnNodesRealPtr displ, const 
 
     // Add input fields
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
 
-    if ( currElemChara ) {
-        calcul->addElementaryCharacteristicsField( currElemChara );
-    }
+    calcul->addElementaryCharacteristicsField( currElemChara );
 
     if ( currMater->hasExternalStateVariable() ) {
         if ( !externVar || !externVar->exists() ) {
@@ -244,7 +240,7 @@ PostProcessing::computeStructuralStress( const FieldOnNodesRealPtr displ, const 
 
     // Create output field
     auto strx_elga =
-        FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "SIEF_R", currElemChara );
+        FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "STRX_R", currElemChara );
 
     // Add output field
     calcul->addOutputField( "PSTRXRR", strx_elga );
