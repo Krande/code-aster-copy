@@ -634,7 +634,7 @@ class PostBeremin:
         sixx += sig1
         sigma_sfield.setComponentValues("SIXX", sixx)
         sigma_f_mc, prof = field_converter.toMCFieldAndProfileElem(
-            sigma_sfield, self._mesh_3D_cells_mc
+            sigma_sfield, self._mesh_3D_cells_mc, "SIEF_ELGA"
         )
         sigma_a_mc = sigma_f_mc.getArray()[:, 0]
 
