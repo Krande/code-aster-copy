@@ -42,11 +42,14 @@ def check_python(self):
     self.check_python_version((3, 5, 0))
     self.check_python_headers()
     if self.env.CC_IS_INTEL:
-        self.env["LIB_PYEXT"] = list(set(self.env["LIB_PYEXT"]))
+        self.env["LIB_PYEMBED"] = list(set(self.env["LIB_PYEMBED"]))
         # Best is to clear PYEMBED and PYEXT {c/cxx}flags
         for lang in ("CFLAGS", "CXXFLAGS"):
             for feat in ("PYEMBED", "PYEXT"):
                 self.env[lang + "_" + feat] = []
+    for lang in ("CFLAGS", "CXXFLAGS"):
+        for feat in ("PYEMBED", "PYEXT"):
+            self.remove_optflags(lang + "_" + feat)
     cfgext = self.env["CONFIG_PARAMETERS"].get("cfgext", "yaml")
     if cfgext in ("", "yaml"):
         try:
@@ -89,7 +92,7 @@ def check_numpy_headers(self):
         feature="c",
         header_name="Python.h numpy/arrayobject.h",
         includes=[numpy_includes],
-        use=["PYEXT"],
+        use="PYEMBED",
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",
     )

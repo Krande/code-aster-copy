@@ -172,7 +172,7 @@ def post_install_links(ctx):
 
 def build_libbibc(self, env):
     use = [
-        "PYEXT",
+        "PYEMBED",
         "NUMPY",
         "BIBCXX",
         "HDF5",

@@ -140,7 +140,9 @@ def check_mfront(self):
     # Define programs names mfront and tfel-config
 
     self.find_program("mfront" + self.env.TFELSUFFIX, path_list=paths, var="MFRONT", exts=ext)
-    self.find_program("tfel-config" + self.env.TFELSUFFIX, path_list=paths, var="TFEL_CONFIG", exts=ext)
+    self.find_program(
+        "tfel-config" + self.env.TFELSUFFIX, path_list=paths, var="TFEL_CONFIG", exts=ext
+    )
 
     tfel_config = self.env.TFEL_CONFIG[0]
     self.check_cfg(
@@ -151,6 +153,8 @@ def check_mfront(self):
         uselib_store="MFRONT",
         mandatory=True,
     )
+    self.remove_optflags("CFLAGS_MFRONT")
+    self.remove_optflags("CXXFLAGS_MFRONT")
     if self.get_define("ASTER_HAVE_64_BITS"):
         arch = "ASTER_ARCH=64"
     else:
@@ -214,17 +218,17 @@ def check_cxx11_abi(self):
     # LD_LIBRARY_PATH is not reread now.
     # So 'libname' must not have dependencies out of initial LD_LIBRARY_PATH.
     # Use http://demangler.com/ to demangle names
-    
+
     libext = ".so"
     if self.env.ASTER_PLATFORM_MINGW:
         libext = ".dll"
-    
+
     libname = "./libTFELUtilities" + self.env.TFELSUFFIX + libext
     symbol = "replace_all"
     prev = os.getcwd()
 
     lib_dir = osp.join(self.env.TFELHOME[0], "lib")
-    if self.env.ASTER_PLATFORM_MINGW: 
+    if self.env.ASTER_PLATFORM_MINGW:
         lib_dir = osp.join(self.env.TFELHOME[0], "bin")
     os.chdir(lib_dir)
     lib = ctypes.cdll.LoadLibrary(libname)
@@ -323,8 +327,8 @@ class mfront2cxx(Task.Task):
             self.inputs[0].abspath(),
         )
         if self.env.ASTER_PLATFORM_MSYS2:
-            # Temporary workaround for MSYS2 
-            cmd = cmd + " --debug" 
+            # Temporary workaround for MSYS2
+            cmd = cmd + " --debug"
         # self.generator.bld.cmd_and_log(cmd, cwd=wrkdir, quiet=Context.STDOUT)
         self.exec_command(cmd, cwd=wrkdir)
 
