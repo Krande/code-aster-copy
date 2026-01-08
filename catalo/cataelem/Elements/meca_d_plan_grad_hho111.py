@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -325,7 +325,7 @@ class MECA_DGVQ_HHO111(Element):
             te=448,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
-                (SP.PDEPLAR, DDL_MECA),
+                (SP.PDEPLAR, DDL_DEPL),
                 (SP.PGEOMER, NGEOMER),
                 (OP.EPSI_ELGA.PCHHOBS, CHHOBS),
             ),
@@ -429,7 +429,7 @@ class MECA_DGVQ_HHO111(Element):
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_PROJ_MECA.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
+            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_DEPL),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))

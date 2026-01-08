@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ module elg_data_module
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! person_in_charge: natacha.bereux at edf.fr
 !
 !
     use aster_petsc_module
@@ -166,8 +165,11 @@ contains
         if (action .eq. 'NOTE') then
 !       La matrice mat1 a-t-elle déjà été enregistrée ?
             kpos = 1
-            do while ((trim(mat1) /= elg_context(kpos)%full_matas) .and. (kpos <= nmax_ctxt))
+            do while ((trim(mat1) /= elg_context(kpos)%full_matas))
                 kpos = kpos+1
+                if (kpos > nmax_ctxt) then
+                    exit
+                end if
             end do
             if (kpos <= nmax_ctxt) then
                 ke = to_petsc_int(kpos)

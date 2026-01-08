@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine desymt46(ftos, ftot)
 ! OUT  FTOT    : TENSEUR(3,3,3,3) F_IJKL AVEC SYMETRIES MINEURES
 !               F_IJKL=F_JIKL et F_IJKL=F_IJLK
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    real(kind=8), parameter :: un_rac2 = 1d0/sqrt(2.d0)
     integer(kind=8) :: i, j, k, l, ijk(3, 3)
     real(kind=8) :: fnew(6, 6)
 ! ---------------------------------------------------------------------
@@ -40,13 +40,13 @@ subroutine desymt46(ftos, ftot)
 ! -- On supprime les racines de 2
     do j = 4, 6
         do i = 1, 6
-            fnew(i, j) = fnew(i, j)/rac2
+            fnew(i, j) = fnew(i, j)*un_rac2
         end do
     end do
 !
     do j = 1, 6
         do i = 4, 6
-            fnew(i, j) = fnew(i, j)/rac2
+            fnew(i, j) = fnew(i, j)*un_rac2
         end do
     end do
 !

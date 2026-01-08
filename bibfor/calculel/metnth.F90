@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,7 @@ subroutine metnth(model, loadNameJv, caraElem, mateco, time, &
             ilires = 0
             ilires = ilires+1
             call codent(ilires, 'D0', lchout(1) (12:14))
-            call calcul('S', option, ligrmo, 7, lchin, &
+            call calcul('S', option, ligrmo, 6, lchin, &
                         lpain, 1, lchout, lpaout, 'V', &
                         'OUI')
             call reajre(metrnl, lchout(1), 'V')

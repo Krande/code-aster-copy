@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -239,7 +239,7 @@ subroutine op0014()
         ASSERT(lch .lt. 2500)
         lslvo = int(lch/80)+1
         do i = 1, lslvo
-            zk80(jslvo-1+i) = myopt(80*(i-1):80*i)
+            zk80(jslvo-1+i) = myopt(80*(i-1)+1:80*i)
         end do
         !
 

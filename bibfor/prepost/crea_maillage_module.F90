@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: nicolas.pignet at edf.fr
 !
 module crea_maillage_module
 !
@@ -1914,7 +1913,7 @@ contains
         integer(ip), intent(in), optional :: parent, isub, face_id
         integer(ip) :: edge_id
 ! ----------------------------------------------------------------------
-        integer(ip) :: nno, nno_sort(3), old_size
+        integer(ip) :: nno, nno_sort(4), old_size
         integer(ip), allocatable :: new_edges(:)
         aster_logical :: find
 !

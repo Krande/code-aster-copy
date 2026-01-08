@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -168,7 +168,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     end if
 
 ! - Coordinates of current Gauss point
-    coords(ndim+1:) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:ndim)
+    coords(1:3) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:3)
 
 ! - Get material properties
     call mat_proto(BEHinteg, fami, kpg, ksp, '+', &
