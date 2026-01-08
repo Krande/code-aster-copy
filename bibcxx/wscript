@@ -57,7 +57,7 @@ def build(self):
             name="astermfront",
             source=get_srcs("MFront/*.cxx"),
             env=env.derive(),
-            use=["BIBCXX", "PYBIND11", "MFRONT", "PYEXT", "CXX", "ASAN"],
+            use=["BIBCXX", "PYBIND11", "MFRONT", "PYEMBED", "CXX", "ASAN"],
         )
 
     self(
@@ -67,7 +67,7 @@ def build(self):
         target="bibcxx",
         rpath="$ORIGIN",
         use=[
-            "PYEXT",
+            "PYEMBED",
             "PYBIND11",
             "NUMPY",
             "CXX",
