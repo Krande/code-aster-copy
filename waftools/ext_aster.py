@@ -312,15 +312,15 @@ def remove_flags(self, var, flags):
 
 
 @Configure.conf
-def remove_optflags(self, type_flags):
-    """Remove optimisation flags from the `type_flags`/* variables,
-    remove duplicates"""
-    for var in self.env:
-        if var.startswith(type_flags):
-            if not isinstance(self.env[var], (list, tuple)):
-                self.env[var] = [self.env[var]]
-            self.env[var] = self.remove_duplicates(self.env[var])
-            self.env[var] = [i for i in self.env[var] if not i.startswith("-O")]
+def remove_optflags(self, var):
+    """Remove optimisation flags from a variable."""
+    self.env[var] = Utils.to_list(self.env[var])
+    # self.env[var] = self.remove_duplicates(Utils.to_list(self.env[var]))
+    removed = [i for i in self.env[var] if i.startswith("-O")]
+    if removed:
+        print(f"RM: {var}: {removed}")
+    # self.env[var] = [i for i in self.env[var] if not i.startswith("-O")]
+    self.env[var] = [i for i in self.env[var] if i not in removed]
 
 
 @Configure.conf
