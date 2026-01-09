@@ -19,6 +19,7 @@
 
 from code_aster.Commands import (
     DEBUT,
+    DEFI_FICHIER,
     LIRE_MAILLAGE,
     AFFE_MODELE,
     LIRE_RESU,
@@ -31,11 +32,13 @@ from code_aster.Commands import (
     FIN,
 )
 from code_aster import CA
+from code_aster.Utilities import medcoupling as mc
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 import pprint
 import math
+import tempfile
 import numpy as np
 
 test = CA.TestCase()
@@ -441,9 +444,9 @@ cut_ids = {}
 cut_id = 0
 # testing various vect_y orientations
 for rot_ry in (0.0, 33.3333, 45.0, 89.9, 90.1, 135.0, 179.0):
-    vect_y_compo_z = math.sin(np.radians(rot_ry))
+    vect_y_compo_z = math.sin(math.radians(rot_ry))
     for rot_rz in (0.0, 33.0, 45.0, 89.9, 90.1, 135.0, 180.0):
-        rot_rz_rad = np.radians(rot_rz)
+        rot_rz_rad = math.radians(rot_rz)
         vect_y = (math.cos(rot_rz_rad), math.sin(rot_rz_rad), vect_y_compo_z)
         cut_name = f"vect_y = ({vect_y[0]:.3f}, {vect_y[1]:.3f}, {vect_y[2]:.3f})"
         cut_ids[cut_id] = f"segment {cut_name}"
@@ -462,9 +465,27 @@ for rot_ry in (0.0, 33.3333, 45.0, 89.9, 90.1, 135.0, 179.0):
         )
         cut_id += 1
 
-table = MACR_LIGN_COUPE(CHAM_GD=CHNO, MODELE=MO, LIGN_COUPE=cut_lines)
+medfilename_tmp = tempfile.NamedTemporaryFile(dir="REPE_OUT", suffix=".med").name
+unite_resu = DEFI_FICHIER(FICHIER=medfilename_tmp, ACTION="ASSOCIER", TYPE="LIBRE", ACCES="NEW")
+table = MACR_LIGN_COUPE(CHAM_GD=CHNO, MODELE=MO, UNITE_RESU=unite_resu, LIGN_COUPE=cut_lines)
+
+DEFI_FICHIER(ACTION="LIBERER", UNITE=unite_resu)
+
 values = table.EXTR_TABLE().values()
-actual = np.array(
+
+dtype_table = [
+    ("ID", np.int32),
+    ("NUME_ORDRE", np.int32),
+    ("INST", np.float64),
+    ("ABSC_CURV", np.float64),
+    ("COOR_X", np.float64),
+    ("COOR_Y", np.float64),
+    ("COOR_Z", np.float64),
+    ("DX", np.float64),
+    ("DY", np.float64),
+    ("DZ", np.float64),
+]
+table_array = np.array(
     list(
         zip(
             [int(val) for val in values["INTITULE"]],
@@ -478,17 +499,109 @@ actual = np.array(
             values["DY"],
             values["DZ"],
         )
-    )
+    ),
+    dtype=dtype_table,
 )
-reference = np.loadtxt("fort.39")
+reference = np.loadtxt("fort.39", dtype=dtype_table)
 
 # # To update refence table use numpy savetxt
 # from pathlib import Path
-# np.savetxt(Path.home() / "dev" / "codeaster" / "src" / "astest" / "zzzz136c.39",
+# reference_path: Path = Path.home() / "dev" / "codeaster" / "src" / "astest" / "zzzz136c.39"
+# np.savetxt(reference_path,
 #            actual,
 #            header=f"Cut id -> name {pprint.pformat(cut_ids)}\n"
+#            f"dtype = {dtype_table}\n"
 #            "ID NUME_ORDRE INST ABSC_CURV COOR_X COOR_Y COOR_Z DX DY DZ", )
 
-test.assertArrayEqual(actual=actual, reference=reference, rtol=1.0e-07, atol=1.0e-6)
+test.assertArrayEqual(actual=table_array, reference=reference, rtol=1.0e-07, atol=1.0e-6)
 
+meshMEDFileRead = mc.MEDFileUMesh.New(medfilename_tmp)
+
+# testing that med and table output files match
+actual_medfields = mc.MEDFileFields(medfilename_tmp)
+actual_depl_field = actual_medfields.getFieldWithName("CUT_DEPL").getFieldAtLevel(
+    mc.ON_NODES, 1, 0, 1
+)
+
+components = actual_depl_field.getArray().getInfoOnComponents()
+components_index_to_compare = [components.index(compo) for compo in ("DX", "DY", "DZ")]
+
+actual_med_array = actual_depl_field.getArray().toNumPyArray()[:, components_index_to_compare]
+test.assertArrayEqual(
+    actual=actual_med_array,
+    reference=np.array(table_array[["DX", "DY", "DZ"]].tolist()),
+    rtol=1.0e-07,
+    atol=1.0e-6,
+)
+
+# Testing that CUT_20 group results in med match INTITULE 20 table results
+cut_20_node_ids = meshMEDFileRead.getGroupArr(1, "CUT_20").getValues()
+
+# filter table_results for INTITULE 20
+mask = table_array["ID"] == 20
+
+test.assertArrayEqual(
+    actual=actual_med_array[cut_20_node_ids],
+    reference=np.array(table_array[["DX", "DY", "DZ"]][mask].tolist()),
+    rtol=1.0e-07,
+    atol=1.0e-6,
+)
+
+# testing result system axis fields
+
+# checking if axis fields are perpendicular to each other
+actual_x_local = (
+    actual_medfields.getFieldWithName(f"CUT_AXE_X")
+    .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
+    .getArray()
+    .toNumPyArray()
+)
+actual_y_local = (
+    actual_medfields.getFieldWithName(f"CUT_AXE_Y")
+    .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
+    .getArray()
+    .toNumPyArray()
+)
+actual_z_local = (
+    actual_medfields.getFieldWithName(f"CUT_AXE_Z")
+    .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
+    .getArray()
+    .toNumPyArray()
+)
+dot_xy = np.array(
+    [np.dot(actual_x_local[i], actual_y_local[i]) for i in range(actual_x_local.shape[0])]
+)
+dot_xz = np.array(
+    [np.dot(actual_x_local[i], actual_z_local[i]) for i in range(actual_x_local.shape[0])]
+)
+dot_yz = np.array(
+    [np.dot(actual_y_local[i], actual_z_local[i]) for i in range(actual_x_local.shape[0])]
+)
+
+dot_ref = np.zeros(shape=(len(actual_x_local), 1))
+test.assertArrayEqual(actual=dot_xy, reference=dot_ref)
+test.assertArrayEqual(actual=dot_xz, reference=dot_ref)
+test.assertArrayEqual(actual=dot_yz, reference=dot_ref)
+
+# checking axis fields from analytic reference for cut intitule "20"
+ref_vect_x_local = np.array([0.0, 1.0, 0.0])
+ref_vect_y_local = np.array([-1.0, 0.0, 0.7071067811865475])
+ref_vect_y_local = ref_vect_y_local / np.linalg.norm(ref_vect_y_local)
+ref_vect_z_local = np.cross(ref_vect_x_local, ref_vect_y_local)
+
+ref_axis_cut_20 = {
+    "X": np.array([ref_vect_x_local] * 3),
+    "Y": np.array([ref_vect_y_local] * 3),
+    "Z": np.array([ref_vect_z_local] * 3),
+}
+for axis, array_vects in ref_axis_cut_20.items():
+    actual_field = actual_medfields.getFieldWithName(f"CUT_AXE_{axis}").getFieldAtLevel(
+        mc.ON_NODES, 1, 0, 1
+    )
+    components = actual_field.getArray().getInfoOnComponents()
+    components_index_to_compare = [components.index(compo) for compo in ("DX", "DY", "DZ")]
+    actual_med_array = actual_field.getArray().toNumPyArray()[:, components_index_to_compare]
+    test.assertArrayEqual(
+        actual=actual_med_array[cut_20_node_ids], reference=array_vects, rtol=1.0e-07, atol=1.0e-6
+    )
 FIN()

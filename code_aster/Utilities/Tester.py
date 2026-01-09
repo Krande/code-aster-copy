@@ -203,8 +203,13 @@ class TestCase(unittest.TestCase):
             atol (float): absolute tolerance
 
         """
-
-        is_close_results = np.isclose(actual, reference, rtol=rtol, atol=atol)
+        if not actual.dtype.fields:
+            is_close_results = np.isclose(actual, reference, rtol=rtol, atol=atol)
+        else:
+            to_stack = []
+            for field in actual.dtype.fields:
+                to_stack.append(np.isclose(actual[field], reference[field], rtol=rtol, atol=atol))
+            is_close_results = np.stack(to_stack, axis=-1)
         arrays_are_equal = np.all(is_close_results)
         if not arrays_are_equal:
             differences = ~is_close_results

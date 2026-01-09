@@ -34,7 +34,16 @@
 #                       D'UN VECTEUR
 #
 
+from code_aster.Commands import POURSUITE, TEST_TABLE, FIN
+from code_aster import CA
+from code_aster.Utilities import medcoupling as mc
+
 POURSUITE(CODE="OUI")
+
+import math
+import numpy as np
+
+test = CA.TestCase()
 
 #######################################################################
 #            I -  VALIDATION POST_RELEVE_T  EN 2D                     #
@@ -1552,6 +1561,46 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="ABSC_CURV", VALE=0.94150900000000004),
 )
 
+# Testing output med
+
+filepath_med = "REPE_OUT/cut_m2_c.med"
+medfile_fields = mc.MEDFileFields(filepath_med)
+
+# testing SIGM_NOEU field
+actual_med_field = medfile_fields.getFieldWithName("CUT_SIGM_NOEU").getFieldAtLevel(
+    mc.ON_NODES, 1, 0, 1
+)
+components = actual_med_field.getArray().getInfoOnComponents()
+compo_indexes = [components.index(compo) for compo in ("SIXX", "SIYY", "SIZZ")]
+actual_array = actual_med_field.getArray().toNumPyArray()
+
+row_to_test = np.array([0, -2])
+# Testing the same values tested previously using TEST_TABLE
+reference_array = np.array(
+    [
+        [-0.18661750467650, 0.10969274981428, 0.55226000405745],
+        [-0.18661750759705, 0.10969274862629, 0.55226000301801],
+    ]
+)
+test.assertArrayEqual(actual=actual_array[row_to_test][:, compo_indexes], reference=reference_array)
+
+# testing system axis fields
+
+# center is at (0,0)
+# First node is N14 (2.00000000000000E+00  0.00000000000000E+00)
+# Last node is N1 (1.41421356237310E+00  1.41421356237310E+00)
+reference_array = np.array([[1.0, 0.0], [math.sqrt(2.0) / 2.0, math.sqrt(2.0) / 2.0]])
+
+actual_med_field = medfile_fields.getFieldWithName("CUT_AXE_X").getFieldAtLevel(
+    mc.ON_NODES, 1, 0, 1
+)
+components = actual_med_field.getArray().getInfoOnComponents()
+compo_indexes = [components.index(compo) for compo in ("DX", "DY")]
+actual_array = actual_med_field.getArray().toNumPyArray()
+
+row_to_test = np.array([0, -1])
+
+test.assertArrayEqual(actual=actual_array[row_to_test][:, compo_indexes], reference=reference_array)
 # ---------------------------------------------------------------------
 #  M2_P: LISTE DE NOEUDS P2 P3, REPERE POLAIRE
 

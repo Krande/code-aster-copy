@@ -26,6 +26,11 @@ Please *always* these mdoules using these wrappers rather than directly
 by doing, for example for PETSc: ``from ..Utilities import PETSc``...
 """
 
+try:
+    from typing import TYPE_CHECKING
+except (ImportError, ModuleNotFoundError):
+    TYPE_CHECKING = False
+
 # aslint: disable=C4008
 from .ExecutionParameter import disable_fpe
 
@@ -126,3 +131,8 @@ class _sympyMeta(type):
 
 class sympy(metaclass=_sympyMeta):
     """Wrapper to sympy"""
+
+
+if TYPE_CHECKING:
+    import medcoupling
+    import sympy

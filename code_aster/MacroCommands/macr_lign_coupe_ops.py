@@ -18,11 +18,15 @@
 # --------------------------------------------------------------------
 
 import os
-from math import asin, atan2, cos, pi, sin, sqrt
+from math import atan2, cos, pi, sin, sqrt
+from pathlib import Path
+from typing import Dict, Tuple, Union
+import numpy as np
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     COPIER,
+    CREA_CHAMP,
     CREA_RESU,
     CREA_TABLE,
     DEFI_GROUP,
@@ -33,6 +37,7 @@ from ..CodeCommands import (
 )
 from ..Helpers import FileAccess, LogicalUnitFile
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ..visu.visu_builders import VisuCutBuilder
 
 #
 # script PYTHON de creation du résultat local
@@ -40,6 +45,20 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 #
 # verification que les points de la ligne de coupe sont dans la matiere
+
+
+class AxisSystem:
+    INITIAL: str = "INITIAL"
+    GLOBAL: str = "GLOBAL"
+    LOCAL: str = "LOCAL"
+    CYLINDRIC: str = "CYLINDRIQUE"
+    POLAR: str = "POLAIRE"
+    USER: str = "UTILISATEUR"
+    UNKNOWN: str = "UNKNOWN"
+
+    @staticmethod
+    def is_handled_by_modi_repere(axis: str) -> bool:
+        return axis in (AxisSystem.LOCAL, AxisSystem.USER, AxisSystem.CYLINDRIC)
 
 
 def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
@@ -147,7 +166,7 @@ def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
     return
 
 
-def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
+def crea_resu_local(dime, NOM_CHAM, m, resin):
     epsi = 0.00000001
 
     if NOM_CHAM == "DEPL":
@@ -175,7 +194,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
     repere_cut = m["REPERE"]
     type_cut = m["TYPE"]
 
-    if type_cut == "SEGMENT" and repere_cut == "LOCAL":
+    if type_cut == "SEGMENT" and repere_cut == AxisSystem.LOCAL:
         if not m["VECT_Y"]:
             UTMESS("F", "POST0_50")
 
@@ -216,10 +235,10 @@ def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
             args_affe = [_F(VECT_X=(cx1, cx2, cx3), VECT_Y=(cy1, cy2, cy3), TOUT="OUI")]
 
         __remodr = MODI_REPERE(
-            RESULTAT=resin, REPERE="UTILISATEUR", AFFE=args_affe, MODI_CHAM=modi_champ_args
+            RESULTAT=resin, REPERE=AxisSystem.USER, AFFE=args_affe, MODI_CHAM=modi_champ_args
         )
 
-    elif type_cut == "SEGMENT" and repere_cut == "UTILISATEUR":
+    elif type_cut == "SEGMENT" and repere_cut == AxisSystem.USER:
         alpha = m["ANGL_NAUT"][0]
         beta = m["ANGL_NAUT"][1]
         gamma = m["ANGL_NAUT"][2]
@@ -230,11 +249,11 @@ def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
             ANGL_NAUT.append(gamma)
         __remodr = MODI_REPERE(
             RESULTAT=resin,
-            REPERE="UTILISATEUR",
+            REPERE=AxisSystem.USER,
             AFFE=[_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI")],
             MODI_CHAM=modi_champ_args,
         )
-    elif type_cut == "ARC" and repere_cut != "CYLINDRIQUE":
+    elif type_cut == "ARC" and repere_cut != AxisSystem.CYLINDRIC:
         UTMESS("F", "POST0_5", valk=[type_cut, repere_cut])
     elif type_cut == "ARC":
         ORIGINE = [m["CENTRE"][0], m["CENTRE"][1]]
@@ -246,22 +265,22 @@ def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
         elif dime == 2:
             affe_args = [_F(ORIGINE=ORIGINE, TOUT="OUI")]
         __remodr = MODI_REPERE(
-            RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
+            RESULTAT=resin, REPERE=AxisSystem.CYLINDRIC, MODI_CHAM=modi_champ_args, AFFE=affe_args
         )
 
-    elif type_cut[:5] == "GROUP" and repere_cut == "LOCAL":
+    elif type_cut[:5] == "GROUP" and repere_cut == AxisSystem.LOCAL:
         # disabled in #35098 because of a lack of test coverage
         UTMESS("F", "POST0_57")
 
-    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == "CYLINDRIQUE":
+    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == AxisSystem.CYLINDRIC:
         if dime == 3:
             affe_args = [_F(ORIGINE=m["ORIGINE"], AXE_Z=m["AXE_Z"], TOUT="OUI")]
         elif dime == 2:
             affe_args = [_F(ORIGINE=m["ORIGINE"], TOUT="OUI")]
         __remodr = MODI_REPERE(
-            RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
+            RESULTAT=resin, REPERE=AxisSystem.CYLINDRIC, MODI_CHAM=modi_champ_args, AFFE=affe_args
         )
-    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == "UTILISATEUR":
+    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == AxisSystem.USER:
         alpha = m["ANGL_NAUT"][0]
         beta = m["ANGL_NAUT"][1]
         gamma = m["ANGL_NAUT"][2]
@@ -273,7 +292,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
 
         __remodr = MODI_REPERE(
             RESULTAT=resin,
-            REPERE="UTILISATEUR",
+            REPERE=AxisSystem.USER,
             MODI_CHAM=modi_champ_args,
             AFFE=[_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI")],
         )
@@ -523,7 +542,35 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
     return coor
 
 
-#
+def get_result_axis_system(
+    origin_field_in_global_axis: bool, cut_axis_system: str, field_name: str
+) -> str:
+    if not origin_field_in_global_axis:
+        return AxisSystem.UNKNOWN
+    if cut_axis_system == AxisSystem.INITIAL:
+        return AxisSystem.GLOBAL
+    if cut_axis_system == AxisSystem.POLAR or AxisSystem.is_handled_by_modi_repere(
+        axis=cut_axis_system
+    ):
+        # only few fields are handled for axis modifications
+        if field_name in ("DEPL", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO", "FLUX_ELNO", "FLUX_NOEU"):
+            return cut_axis_system
+        UTMESS("A", "POST0_17", valk=[field_name, cut_axis_system])
+        return AxisSystem.GLOBAL
+    raise NotImplementedError(f"{cut_axis_system} is not implemented")
+
+
+def get_axis_config_for_dimension(
+    dimension: int,
+) -> Union[
+    Tuple[Dict[str, Tuple[float, float]], Tuple[str, str]],
+    Tuple[Dict[str, Tuple[float, float, float]], Tuple[str, str, str]],
+]:
+    if dimension == 2:
+        return {"X": (1.0, 0.0), "Y": (0.0, 1.0)}, ("DX", "DY")
+    return {"X": (1.0, 0.0, 0.0), "Y": (0.0, 1.0, 0.0), "Z": (0.0, 0.0, 1.0)}, ("DX", "DY", "DZ")
+
+
 def macr_lign_coupe_ops(
     self,
     LIGN_COUPE,
@@ -534,6 +581,7 @@ def macr_lign_coupe_ops(
     MODELE=None,
     VIS_A_VIS=None,
     UNITE_MAILLAGE=None,
+    UNITE_RESU=None,
     **args,
 ):
     """
@@ -546,6 +594,8 @@ def macr_lign_coupe_ops(
         logical_unit = LogicalUnitFile.new_free(access=FileAccess.New)
         UNITE_MAILLAGE = logical_unit.unit
 
+    write_visu = UNITE_RESU is not None
+
     # On importe les definitions des commandes a utiliser dans la macro
 
     #
@@ -554,8 +604,6 @@ def macr_lign_coupe_ops(
     MasquerAlarme("MODELE1_58")
     MasquerAlarme("MODELE1_63")
     MasquerAlarme("MODELE1_64")
-
-    field_in_global_axis = REPERE_INIT == "GLOBAL"
 
     mcORDR = {}
 
@@ -652,12 +700,17 @@ def macr_lign_coupe_ops(
         )
         RESULTAT = __resuch
 
-    at_least_1_axis_not_initial = any(line_def["REPERE"] != "INITIAL" for line_def in LIGN_COUPE)
-    if (
-        not field_in_global_axis
-        and at_least_1_axis_not_initial
-        and (NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")) or REPERE_INIT == "LOCAL")
-    ):
+    assert NOM_CHAM is not None
+
+    if REPERE_INIT is None and not NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")):
+        REPERE_INIT = AxisSystem.GLOBAL
+
+    origin_field_in_global_axis = REPERE_INIT == AxisSystem.GLOBAL
+
+    at_least_1_axis_not_initial = any(
+        line_def["REPERE"] != AxisSystem.INITIAL for line_def in LIGN_COUPE
+    )
+    if not origin_field_in_global_axis and at_least_1_axis_not_initial:
         if REPERE_INIT is None:
             UTMESS("F", "POST0_55", valk=[NOM_CHAM])
 
@@ -836,7 +889,7 @@ def macr_lign_coupe_ops(
     ioc2 = 0
     mcACTION = []
 
-    if RESULTAT.getType().lower() in (
+    if RESULTAT.getType().lower() not in (
         "evol_ther",
         "evol_sech",
         "evol_elas",
@@ -848,107 +901,203 @@ def macr_lign_coupe_ops(
         "fourier_elas",
         "dyna_trans",
     ):
-        for iocc, m in enumerate(LIGN_COUPE):
-            motscles = {}
-            motscles["OPERATION"] = m["OPERATION"]
-            if m["NOM_CMP"]:
-                motscles["NOM_CMP"] = m["NOM_CMP"]
-                if m["TRAC_NOR"]:
-                    motscles["TRAC_NOR"] = m["TRAC_NOR"]
-                elif m["TRAC_DIR"]:
-                    motscles["TRAC_DIR"] = m["TRAC_DIR"]
-                    motscles["DIRECTION"] = m["DIRECTION"]
-            elif m["INVARIANT"]:
-                motscles["INVARIANT"] = m["INVARIANT"]
-            elif m["RESULTANTE"]:
-                motscles["RESULTANTE"] = m["RESULTANTE"]
-                if m["MOMENT"]:
-                    motscles["MOMENT"] = m["MOMENT"]
-                    motscles["POINT"] = m["POINT"]
-            elif m["ELEM_PRINCIPAUX"]:
-                motscles["ELEM_PRINCIPAUX"] = m["ELEM_PRINCIPAUX"]
-            else:
-                motscles["TOUT_CMP"] = "OUI"
+        assert 0
 
-            cut_type = m["TYPE"]
-            if cut_type in ("GROUP_NO", "GROUP_MA"):
-                groupe = m[cut_type].ljust(8)
-                nomgrma = groupe
-            else:
-                ioc2 += 1
-                nomgrma = " "
-                groupe = f"LICOF{ioc2}"
-                crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
+    # modify mesh before loading VisuCutBuilder
+    cut_to_group: Dict[int, Tuple[str, str]] = {}
+    for iocc, m in enumerate(LIGN_COUPE):
+        cut_type = m["TYPE"]
+        if cut_type in ("GROUP_NO", "GROUP_MA"):
+            groupe = m[cut_type].ljust(8)
+        else:
+            ioc2 += 1
+            groupe = f"LICOF{ioc2}"
+            crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
+        # on definit l'intitulé
+        if m["INTITULE"]:
+            intitl = m["INTITULE"]
+        elif cut_type in ("GROUP_NO", "GROUP_MA"):
+            intitl = groupe
+        else:
+            intitl = f"l.coupe{ioc2}"
+        cut_to_group[iocc] = groupe, intitl
 
-            # on definit l'intitulé
-            if m["INTITULE"]:
-                intitl = m["INTITULE"]
-            elif cut_type in ("GROUP_NO", "GROUP_MA"):
-                intitl = groupe
-            else:
-                intitl = f"l.coupe{ioc2}"
+    if write_visu:
+        unit_depl_configs, compo_depl_unit = get_axis_config_for_dimension(dimension=dime)
 
-            # Expression des contraintes aux noeuds ou des déplacements dans le
-            # repere local
-            if cut_axis_system != "INITIAL":
-                if NOM_CHAM in (
-                    "DEPL",
-                    "SIEF_ELNO",
-                    "SIGM_NOEU",
-                    "SIGM_ELNO",
-                    "FLUX_ELNO",
-                    "FLUX_NOEU",
-                ):
-                    if cut_axis_system == "POLAIRE":
-                        mcACTION.append(
-                            _F(
-                                INTITULE=intitl,
-                                RESULTAT=__remodr,
-                                REPERE=cut_axis_system,
-                                GROUP_NO=groupe,
-                                NOM_CHAM=NOM_CHAM,
-                                **motscles,
-                            )
-                        )
-                    else:
-                        __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou, __macou, nomgrma)
-                        mcACTION.append(
-                            _F(
-                                INTITULE=intitl,
-                                RESULTAT=__remodr,
-                                GROUP_NO=groupe,
-                                NOM_CHAM=NOM_CHAM,
-                                **motscles,
-                            )
-                        )
+        resu_unit_depl = {}
+        for direction, vect_unit in unit_depl_configs.items():
 
-                else:
-                    UTMESS("A", "POST0_17", valk=[NOM_CHAM, cut_axis_system])
-                    mcACTION.append(
-                        _F(
-                            INTITULE=intitl,
-                            RESULTAT=__recou,
-                            GROUP_NO=groupe,
-                            NOM_CHAM=NOM_CHAM,
-                            **motscles,
-                        )
-                    )
+            FIELD_DEPL_1 = CREA_CHAMP(
+                MAILLAGE=__macou,
+                MODELE=__recou.getModel(),
+                OPERATION="AFFE",
+                TYPE_CHAM="NOEU_DEPL_R",
+                AFFE=(_F(TOUT="OUI", NOM_CMP=compo_depl_unit, VALE=vect_unit),),
+            )
+            resu_unit_depl[direction] = CREA_RESU(
+                OPERATION="AFFE",
+                TYPE_RESU="EVOL_ELAS",
+                AFFE=_F(NOM_CHAM="DEPL", INST=0.0, CHAM_GD=FIELD_DEPL_1),
+            )
+        visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou, prefix_output_field_name="CUT")
 
+    for iocc, m in enumerate(LIGN_COUPE):
+        motscles = {}
+        motscles["OPERATION"] = m["OPERATION"]
+        if m["NOM_CMP"]:
+            motscles["NOM_CMP"] = m["NOM_CMP"]
+            if m["TRAC_NOR"]:
+                motscles["TRAC_NOR"] = m["TRAC_NOR"]
+            elif m["TRAC_DIR"]:
+                motscles["TRAC_DIR"] = m["TRAC_DIR"]
+                motscles["DIRECTION"] = m["DIRECTION"]
+        elif m["INVARIANT"]:
+            motscles["INVARIANT"] = m["INVARIANT"]
+        elif m["RESULTANTE"]:
+            motscles["RESULTANTE"] = m["RESULTANTE"]
+            if m["MOMENT"]:
+                motscles["MOMENT"] = m["MOMENT"]
+                motscles["POINT"] = m["POINT"]
+        elif m["ELEM_PRINCIPAUX"]:
+            motscles["ELEM_PRINCIPAUX"] = m["ELEM_PRINCIPAUX"]
+        else:
+            motscles["TOUT_CMP"] = "OUI"
+
+        groupe, intitl = cut_to_group[iocc]
+
+        current_resu = __recou
+
+        result_axis_system = get_result_axis_system(
+            origin_field_in_global_axis=origin_field_in_global_axis,
+            cut_axis_system=cut_axis_system,
+            field_name=NOM_CHAM,
+        )
+
+        if result_axis_system in (AxisSystem.GLOBAL, AxisSystem.UNKNOWN):
             # Expression des contraintes aux noeuds ou des déplacements dans le
             # repere d'origine du champ
-            else:
-                mcACTION.append(
-                    _F(
-                        INTITULE=intitl,
-                        RESULTAT=__recou,
-                        GROUP_NO=groupe,
-                        NOM_CHAM=NOM_CHAM,
-                        **motscles,
+            mcACTION.append(
+                _F(
+                    INTITULE=intitl,
+                    RESULTAT=__recou,
+                    GROUP_NO=groupe,
+                    NOM_CHAM=NOM_CHAM,
+                    **motscles,
+                )
+            )
+        elif result_axis_system == AxisSystem.POLAR:
+            mcACTION.append(
+                _F(
+                    INTITULE=intitl,
+                    RESULTAT=__remodr,
+                    REPERE=cut_axis_system,
+                    GROUP_NO=groupe,
+                    NOM_CHAM=NOM_CHAM,
+                    **motscles,
+                )
+            )
+        elif AxisSystem.is_handled_by_modi_repere(axis=result_axis_system):
+            __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou)
+            current_resu = __remodr
+            mcACTION.append(
+                _F(
+                    INTITULE=intitl,
+                    RESULTAT=__remodr,
+                    GROUP_NO=groupe,
+                    NOM_CHAM=NOM_CHAM,
+                    **motscles,
+                )
+            )
+
+        else:
+            raise ValueError(f"{result_axis_system} not handled")
+
+        if write_visu:
+            # ATTENTION si CHANGEMENT DE REPERE les noms de CHAMP PEUVENT CHANGER
+            fields_names = current_resu.getFieldsNames()
+            assert len(fields_names) == 1
+
+            field_name = fields_names[0]
+
+            node_ids = __macou.getNodes(groupe)
+
+            visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
+                aster_result=current_resu, field_name=field_name, nodes=node_ids
+            )
+
+            same_axes_for_all_cut = True
+            add_axe_mask = True
+            if result_axis_system == AxisSystem.GLOBAL:
+                for axis_name, vect in unit_depl_configs.items():
+                    visu_cut.add_field_on_nodes(
+                        field_name=f"AXE_{axis_name}",
+                        nodes=node_ids,
+                        values=np.array([vect] * len(node_ids)),
+                        components=compo_depl_unit,
                     )
+            elif AxisSystem.is_handled_by_modi_repere(axis=result_axis_system):
+                # transfer matrix from local to global system
+                transfer_matrix: np.ndarray = np.full(
+                    (len(node_ids), dime, dime), fill_value=np.nan
+                )
+                for axis_name, resu_in_unit_direction in resu_unit_depl.items():
+                    axis_index = compo_depl_unit.index(f"D{axis_name}")
+                    axis_glob_in_local_system_tmp = crea_resu_local(
+                        dime=dime, NOM_CHAM="DEPL", m=m, resin=resu_in_unit_direction
+                    )
+
+                    field = axis_glob_in_local_system_tmp.getField("DEPL", 1).toSimpleFieldOnNodes()
+                    transfer_matrix[:, axis_index] = field.getValues()[0][node_ids]
+
+                # evaluate local axis in global coordinate system
+                for axis_name, vect_unit in unit_depl_configs.items():
+                    if (
+                        dime == 2
+                        and resu_in_unit_direction == AxisSystem.CYLINDRIC
+                        and axis_name == "Y"
+                    ):
+                        # it's not possible to acces to Y axis field in 2d results for cylindric
+                        # axis system because theta axis is mapped to Z
+                        continue
+                    unit_axis = np.array(vect_unit)
+                    local_axis_in_global_system = transfer_matrix @ unit_axis
+                    visu_cut.add_field_on_nodes(
+                        field_name=f"AXE_{axis_name}",
+                        nodes=node_ids,
+                        values=local_axis_in_global_system,
+                        components=compo_depl_unit,
+                    )
+
+                    same_axes_for_all_cut = (
+                        same_axes_for_all_cut
+                        and np.unique(local_axis_in_global_system, axis=0).shape[0] == 1
+                    )
+            else:
+                add_axe_mask = False
+
+            # Add mask to only display one node in paraview when every axes are the same
+            if add_axe_mask:
+                if same_axes_for_all_cut:
+                    # mask every node except last one
+                    axis_base_mask = np.full(shape=(len(node_ids), 1), fill_value=0, dtype=int)
+                    axis_base_mask[-1, 0] = 1
+                else:
+                    # show every node
+                    axis_base_mask = np.full(shape=(len(node_ids), 1), fill_value=1, dtype=int)
+                visu_cut.add_field_on_nodes(
+                    field_name="AXE_MASK",
+                    nodes=node_ids,
+                    values=axis_base_mask,
+                    components=("SHOW",),
                 )
 
-    else:
-        assert 0
+            group_name = f"CUT_{intitl}"
+            visu_cut.add_group(name=group_name, ids=node_ids, geo_type=VisuCutBuilder.NODE)
+
+    if write_visu:
+        visu_filepath = Path(LogicalUnitFile.filename_from_unit(unit=UNITE_RESU))
+        visu_cut.write(filepath=visu_filepath)
 
     __tabitm = POST_RELEVE_T(ACTION=mcACTION)
 

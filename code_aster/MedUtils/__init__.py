@@ -28,3 +28,11 @@ from .MedMeshAndFieldsSplitter import (
     splitMeshAndFieldsFromMedFile,
     splitMeshFromMedFile,
 )
+
+__all__ = [
+    "convertMedFieldToAster",
+    "readMedFileToResults",
+    "splitMedFileToResults",
+    "splitMeshAndFieldsFromMedFile",
+    "splitMeshFromMedFile",
+]

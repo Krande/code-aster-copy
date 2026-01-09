@@ -20,6 +20,8 @@ variables:
   # WEEKLY_RUN should be set in scheduled pipeline
   WEEKLY_RUN: "unset"
   TZ: "Europe/Paris"
+  UV_DEFAULT_INDEX: "https://nexus.retd.edf.fr/repository/pypi-all/simple"
+  UV_INSECURE_HOST: "https://nexus.retd.edf.fr"
 
 default:
   tags:

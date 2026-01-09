@@ -686,9 +686,14 @@ P2L_G = POST_RELEVE_T(
 IMPR_TABLE(TABLE=P2L_G, NOM_PARA=("ABSC_CURV", "SIXX", "SIYY", "SIZZ", "SIXY"))
 
 # ---------
+
+medfilename_tmp = "REPE_OUT/cut_m2_c.med"
+unite_resu = DEFI_FICHIER(FICHIER=medfilename_tmp, ACTION="ASSOCIER", TYPE="LIBRE", ACCES="NEW")
+
 M2_C = MACR_LIGN_COUPE(
     RESULTAT=RESU,
     NOM_CHAM="SIGM_NOEU",
+    UNITE_RESU=unite_resu,
     LIGN_COUPE=_F(
         TYPE="GROUP_NO",
         REPERE="CYLINDRIQUE",
