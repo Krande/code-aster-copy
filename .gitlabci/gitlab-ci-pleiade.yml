@@ -279,7 +279,7 @@ keywords_coverage:
       - build/coverage/*
   rules:
     - if: $BUILDTYPE == "nightly" || $BUILDTYPE == "ci"
-      when: always
+      when: on_success
   allow_failure: true
 
 # --- variant debian-next for nightly build: no image available
