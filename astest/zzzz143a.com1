@@ -45,8 +45,30 @@ with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delet
     desc_temp_reload = set(
         [f1ts.getDescription() for fmts in medreload_temp.getFields() for f1ts in fmts]
     )
-
 test_export.assertSetEqual(desc_temp_reload, set(("GRAT_R-GRAT_NOEU", "TEMP_R-TEMP")))
+
+with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
+    DEPL31_FONC.printMedFile(f.name, version="4.2.0")
+    medreload_depl42 = medc.MEDFileData(f.name)
+    desc_depl_reload42 = set(
+        [f1ts.getDescription() for fmts in medreload_depl42.getFields() for f1ts in fmts]
+    )
+    DEPL31_REBUILD = CA.ElasticResult.fromMedCouplingResult(medreload_depl42)
+    rebuild_nord = DEPL31_REBUILD.getAccessParameters()["NUME_ORDRE"]
+    rebuild_insts = DEPL31_REBUILD.getAccessParameters()["INST"]
+    rebuild_fields = set(DEPL31_REBUILD.getFieldsNames())
+test_export.assertSetEqual(desc_depl_reload42, set(("SIEF_R-SIEF_ELGA", "DEPL_R-DEPL")))
+test_export.assertTrue(rebuild_fields.issubset(DEPL31_FONC.getFieldsNames()))
+test_export.assertSequenceEqual(rebuild_nord, DEPL31_FONC.getAccessParameters()["NUME_ORDRE"])
+test_export.assertSequenceEqual(rebuild_insts, DEPL31_FONC.getAccessParameters()["INST"])
+
+with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
+    DEPL31_FONC.printMedFile(f.name, version="3.3.1")
+    medreload_depl33 = medc.MEDFileData(f.name)
+    desc_depl_reload33 = set(
+        [f1ts.getDescription() for fmts in medreload_depl33.getFields() for f1ts in fmts]
+    )
+test_export.assertSetEqual(desc_depl_reload33, set(("",)))
 
 test_export.printSummary()
 
