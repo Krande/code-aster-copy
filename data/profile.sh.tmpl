@@ -14,7 +14,7 @@ fi
 
 export LD_LIBRARY_PATH=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@:${LD_LIBRARY_PATH}:.
 
-export PYTHONPATH=${RUNASTER_ROOT}/@RELATIVE_SPDIR@:${PYTHONPATH}:.
+export PYTHONPATH=${RUNASTER_ROOT}/@RELATIVE_SITEPACKAGESDIR@:${PYTHONPATH}:.
 
 # Better to set PATH rather PYTHONHOME - more stable
 # PYTHONHOME will be deduced from python executable location

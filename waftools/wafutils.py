@@ -20,9 +20,8 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         environ = os.environ.copy()
     python = list(env.PYTHON)[0]
 
-    python_ld_path = env.ASTERLIBDIR
-    add_to_env_paths(self, environ, "PYTHONPATH", python_ld_path)
-    add_to_env_paths(self, environ, "LD_LIBRARY_PATH", python_ld_path)
+    add_to_env_paths(self, environ, "PYTHONPATH", env.SITEPACKAGESDIR)
+    add_to_env_paths(self, environ, "LD_LIBRARY_PATH", env.ASTERLIBDIR)
 
     cmdexe = [python, pyfile] + args
     # this position allows CATALO_CMD to define an environment variable
@@ -71,7 +70,9 @@ def add_to_env_paths(bld, environ, name, path):
         # that may differ from the python used to run waf in case of cross compiling
         if "PYTHON" in environ.keys():
             add_to_env_paths.pathsep = bld.cmd_and_log(
-                [environ["PYTHON"], "-c", "import os; print(os.pathsep, end='')"], env=environ, quiet=0
+                [environ["PYTHON"], "-c", "import os; print(os.pathsep, end='')"],
+                env=environ,
+                quiet=0,
             )
 
     if not path:

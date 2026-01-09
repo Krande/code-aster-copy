@@ -32,8 +32,7 @@ def build(self):
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
 
-    # Use SPDIR if provided (for conda/rattler builds), otherwise use ASTERLIBDIR
-    install_base = env.SPDIR if env.SPDIR else env.ASTERLIBDIR
+    install_base = env.SITEPACKAGESDIR
 
     self(
         features="py",
