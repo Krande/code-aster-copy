@@ -158,7 +158,7 @@ def options(self):
         dest="spdir",
         default=None,
         help="Python site-packages directory for conda/rattler builds "
-        "[default: auto-detect from Python]",
+        "(absolute path or relative to PREFIX, default: auto-detect from Python)",
     )
     group.add_option(
         "--bindir",
@@ -179,7 +179,8 @@ def options(self):
         action="store_false",
         default=False,
         help="Disable the '/aster' subdirectory in installation paths "
-        "(default, useful for conda/rattler builds where files should go directly to lib)",
+        "(this is the default, useful for conda/rattler builds where files _"
+        "should go directly to lib)",
     )
     group = self.add_option_group("code_aster options")
 
@@ -511,7 +512,7 @@ def set_installdirs(self):
 
     # Check if --spdir was explicitly provided for conda/rattler builds
     if self.options.spdir:
-        self.env.SPDIR = self.options.spdir
+        self.env.SPDIR = osp.join(self.env.PREFIX, self.options.spdir)
 
     # Check if --bindir was explicitly provided for Windows DLL installation
     if self.options.bindir:
@@ -538,6 +539,11 @@ def set_installdirs(self):
     # set relative paths for profile.sh
     for var in ("LIBDIR", "DATADIR", "LOCALEDIR"):
         self.env["RELATIVE_" + var] = osp.relpath(self.env["ASTER" + var], self.env["PREFIX"])
+    if self.env.SPDIR:
+        sp_dir = self.env.SPDIR
+    else:
+        sp_dir = self.env.ASTERLIBDIR
+    self.env["RELATIVE_SPDIR"] = osp.relpath(sp_dir, self.env["PREFIX"])
 
 
 @Configure.conf
