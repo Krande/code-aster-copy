@@ -545,9 +545,11 @@ Args:
     medname (str): Name of the result in the MED file. (default: "")
     local (bool): Print only the local domain if *True*. (default: True)
     fields (list[str]): Name of fields to save. (default: all)
+    version (str): Version of MED file.
               )",
               py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = true,
-              py::arg( "internalVar" ) = true, py::arg( "fields" ) = VectorString() )
+              py::arg( "internalVar" ) = true, py::arg( "fields" ) = VectorString(),
+              py::arg( "version" ) = "" )
         .def( "setMesh", &Result::setMesh, R"(
 Set the mesh used by the result.
 

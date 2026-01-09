@@ -930,7 +930,8 @@ Result::interpolateFieldOnCellsReal( const std::string name, const ASTERDOUBLE v
 };
 
 void Result::printMedFile( const std::filesystem::path &fileName, std::string medName, bool local,
-                           bool internalVar, const VectorString &fields ) const {
+                           bool internalVar, const VectorString &fields,
+                           std::string version ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;
@@ -956,6 +957,9 @@ void Result::printMedFile( const std::filesystem::path &fileName, std::string me
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = retour;
+    if ( !version.empty() ) {
+        dict.container["VERSION_MED"] = version;
+    }
 
     if ( getMesh()->isParallel() ) {
         dict.container["PROC0"] = "NON";

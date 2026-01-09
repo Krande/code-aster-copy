@@ -127,7 +127,7 @@ Returns:
         .def( py::self /= py::self )
         .def( -py::self )
         .def( "printMedFile", &FieldOnNodesReal::printMedFile, py::arg( "fileName" ),
-              py::arg( "local" ) = true )
+              py::arg( "local" ) = true, py::arg( "version" ) = "" )
         .def( "setMesh", &FieldOnNodesReal::setMesh )
         .def( "setDescription", &FieldOnNodesReal::setDescription )
         .def( "build", &FieldOnNodesReal::build, py::arg( "mesh" ) = nullptr )
@@ -387,7 +387,8 @@ Returns:
         .def(
             "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
                                 ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
-        .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
+        .def( "printMedFile", &FieldOnNodesComplex::printMedFile, py::arg( "fileName" ),
+              py::arg( "local" ) = true, py::arg( "version" ) = "" )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
         .def( "setDescription", &FieldOnNodesComplex::setDescription )
         .def( "build", &FieldOnNodesComplex::build, py::arg( "mesh" ) = nullptr )

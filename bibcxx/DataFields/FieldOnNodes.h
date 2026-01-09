@@ -435,7 +435,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return nullptr;
     };
 
-    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::string version = std::string() ) const;
 
     /**
      * @brief Import a PETSc vector into a ParallelFieldOnNodes
@@ -816,8 +817,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 };
 
 template < class ValueType >
-bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileName,
-                                              bool local ) const {
+bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileName, bool local,
+                                              std::string version ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;
@@ -841,6 +842,9 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileN
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = (ASTERINTEGER)retour;
+    if ( !version.empty() ) {
+        dict.container["VERSION_MED"] = version;
+    }
 
     if ( getMesh()->isParallel() ) {
         dict.container["PROC0"] = "NON";

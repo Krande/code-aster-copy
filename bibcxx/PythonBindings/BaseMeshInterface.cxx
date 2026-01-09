@@ -147,11 +147,12 @@ Print the mesh in the MED format
 Arguments:
     filename (Path|str): Name of the file
     local (bool=True) : print local values only (relevant for a ParallelMesh only)
+    version (str): Version of MED file. 
 
 Returns:
     Bool: True if of
             )",
-              py::arg( "fileName" ), py::arg( "local" ) = true )
+              py::arg( "fileName" ), py::arg( "local" ) = true, py::arg( "version" ) = "" )
 
         /* Mesh builder functions */
         .def( "_initDefinition", &BaseMesh::initDefinition, R"(

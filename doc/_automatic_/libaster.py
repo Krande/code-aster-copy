@@ -719,12 +719,13 @@ class BaseMesh(DataStructure):
             bool: *False* for a centralized mesh, *True* for a parallel mesh.
         """
 
-    def printMedFile(self, fileName, local=True):
+    def printMedFile(self, fileName, local=True, version=""):
         """Print the mesh in the MED format
 
         Arguments:
             filename (Path|str): Name of the file
             local (bool=True) : print local values only (relevant for a ParallelMesh only)
+            version (str): Version of MED file.
 
         Returns:
             Bool: True if of
@@ -2731,13 +2732,14 @@ class FieldOnCellsReal(DataField):
             float: euclidean norm
         """
 
-    def printMedFile(self, filename, local=True):
+    def printMedFile(self, filename, local=True, version=""):
         """Print the field in MED format.
 
         Arguments:
             filename (Path|str): Path to the file to be printed.
             local (bool): Print local values only (relevant for ParallelMesh only,
                 default: *True*)
+            version (str): Version of MED file.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -2895,11 +2897,14 @@ class FieldOnCellsComplex(DataField):
             list[complex]: List of values.
         """
 
-    def printMedFile(self, filename, local=True):
+    def printMedFile(self, filename, local=True, version=""):
         """Print the field in MED format.
 
         Arguments:
             filename (Path|str): Path to the file to be printed.
+            local (bool): Print local values only (relevant for ParallelMesh only,
+                default: *True*)
+            version (str): Version of MED file.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -3029,11 +3034,14 @@ class FieldOnCellsLong(DataField):
             list[int]: List of values.
         """
 
-    def printMedFile(self, filename, local=True):
+    def printMedFile(self, filename, local=True, version=""):
         """Print the field in MED format.
 
         Arguments:
             filename (Path|str): Path to the file to be printed.
+            local (bool): Print local values only (relevant for ParallelMesh only,
+                default: *True*)
+            version (str): Version of MED file.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -3346,7 +3354,7 @@ class FieldOnNodesReal(DataField):
             float: euclidean norm
         """
 
-    def printMedFile(self, fileName, local=True):
+    def printMedFile(self, fileName, local=True, version=""):
         pass
 
     def scale(self, vect):
@@ -3600,7 +3608,7 @@ class FieldOnNodesComplex(DataField):
             float: euclidean norm
         """
 
-    def printMedFile(self, arg0, arg1):
+    def printMedFile(self, fileName, local=True, version=""):
         pass
 
     def scale(self, vect):
@@ -13572,7 +13580,9 @@ class Result(DataStructure):
     def printListOfFields(self):
         """Print the names of all fields (real, complex, ...) stored in the result."""
 
-    def printMedFile(self, filename, medname="", local=True, internalVar=True, fields=[]):
+    def printMedFile(
+        self, filename, medname="", local=True, internalVar=True, fields=[], version=""
+    ):
         """Print the result in a MED file.
 
         Args:
@@ -13580,6 +13590,7 @@ class Result(DataStructure):
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
             fields (list[str]): Name of fields to save. (default: all)
+            version (str): Version of MED file.
         """
 
     def resize(self, nbIndexes):
@@ -13930,7 +13941,9 @@ class NonLinearResult(TransientResult):
     def getTangentMatrix(self):
         pass
 
-    def printMedFile(self, filename, medname="", local=False, internalVar=True, fields=[]):
+    def printMedFile(
+        self, filename, medname="", local=False, internalVar=True, fields=[], version=""
+    ):
         """Print the result in a MED file.
 
         Args:
@@ -13939,6 +13952,7 @@ class NonLinearResult(TransientResult):
             local (bool): Print only the local domain if *True*. (default: True)
             internalVarl (bool); Save VARI_ELGA_NOMME or not. (default: True)
             fields (list[str]): Name of fields to save. (default: all)
+            version (str): Version of MED file.
         """
 
     def setContact(self, *args, **kwargs):
