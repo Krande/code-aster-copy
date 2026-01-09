@@ -158,14 +158,13 @@ def options(self):
         dest="spdir",
         default=None,
         help="Python site-packages directory for conda/rattler builds "
-             "[default: auto-detect from Python]",
+        "[default: auto-detect from Python]",
     )
     group.add_option(
         "--bindir",
         dest="bindir",
         default=None,
-        help="Binary directory for DLL files on Windows conda/rattler builds "
-             "[default: PREFIX/bin]",
+        help="Binary directory for DLL files on Windows conda/rattler builds [default: PREFIX/bin]",
     )
     group.add_option(
         "--disable-aster-subdir",
@@ -173,7 +172,7 @@ def options(self):
         action="store_true",
         default=False,
         help="Disable the /aster subdirectory in installation paths "
-             "(useful for conda/rattler builds where files should go directly to lib)",
+        "(useful for conda/rattler builds where files should go directly to lib)",
     )
     group = self.add_option_group("code_aster options")
 
@@ -403,8 +402,7 @@ def build(self):
     else:
         sp_dir = self.env.ASTERLIBDIR
     self.install_as(
-        osp.join(sp_dir, "code_aster", "Utilities", "aster_config.py"),
-        ["aster_config.py"],
+        osp.join(sp_dir, "code_aster", "Utilities", "aster_config.py"), ["aster_config.py"]
     )
 
 
@@ -519,14 +517,13 @@ def set_installdirs(self):
     # but we DO want it for data files (tests, profile.sh, etc.)
     if self.options.disable_aster_subdir:
         norm_lib = lambda path: osp.normpath(path)
-        norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
     else:
         norm_lib = lambda path: osp.normpath(osp.join(path, "aster"))
-        norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
+    norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
 
     self.env["ASTERLIBDIR"] = norm_lib(self.env.LIBDIR)
     self.env["ASTERBINDIR"] = self.env.BINDIR
-    self.env["ASTERINCLUDEDIR"] = norm_data(self.env.INCLUDEDIR)
+    self.env["ASTERINCLUDEDIR"] = norm_lib(self.env.INCLUDEDIR)
     self.env["ASTERDATADIR"] = norm_data(self.env.DATADIR)
     if not self.env.LOCALEDIR:
         self.env.LOCALEDIR = osp.join(self.env.PREFIX, "share", "locale")
