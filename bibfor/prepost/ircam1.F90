@@ -22,7 +22,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
                   adsk, partie, indcmp, ncmpve, ntlcmp, &
                   ntncmp, ntucmp, ntproa, nbimpr, caimpi, &
                   caimpk, typech, nomamd, nomtyp, modnum, &
-                  nuanom, lfichUniq, nosdfu, codret)
+                  nuanom, lfichUniq, nosdfu, dschmd, codret)
 !
     use as_med_module, only: as_med_open
     implicit none
@@ -33,6 +33,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
 #include "asterc/utflsh.h"
 #include "asterfort/as_mfdfin.h"
 #include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiodw_field.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircmcc.h"
 #include "asterfort/ircmec.h"
@@ -58,7 +59,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
     character(len=*) :: nofimd, partie
     character(len=*) :: nomamd
     character(len=*) :: caimpk(3, nbimpr)
-    character(len=64) :: nochmd
+    character(len=64) :: nochmd, dschmd
     real(kind=8) :: instan
     aster_logical :: lfichUniq
     character(len=8) :: nosdfu
@@ -227,6 +228,15 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
 !
     call ircmcc(idfimd, nomamd, nochmd, existc, ncmpve, &
                 ntncmp, ntucmp, codret)
+!
+! 3.3. ==> DESCRIPTION DU CHAMP
+!
+    call as_mfiodw_field(idfimd, nochmd, dschmd, codret)
+!
+    if (codret .ne. 0) then
+        saux08 = 'mfiodw'
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
+    end if
 !
 !====
 ! 4. ECRITURE POUR CHAQUE IMPRESSION SELECTIONNEE
