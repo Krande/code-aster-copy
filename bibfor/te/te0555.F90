@@ -77,39 +77,31 @@ subroutine te0555(option, nomte)
     type(FE_Quadrature) :: FEQuad
     type(FE_basis) :: FEBasis
 !
-    character(len=8) :: typmod(2)
     character(len=4) :: fami
-    integer(kind=8) :: sz_tens, ndim, jpres
-    integer(kind=8) :: nno, npg, imatuu, lgpg, iret
-    integer(kind=8) :: igeom, imate, i, j
-    integer(kind=8) :: icontm, ivarim
-    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
-    integer(kind=8) :: ivectu, icontp, ivarip
-    integer(kind=8) :: ivarix, jv_mult_comp
-    integer(kind=8) :: jtab(7)
-    integer(kind=8) :: old_order(21), new_order(21)
-    real(kind=8) :: angl_naut(7), pgl(3, 3), xyzl(3, 4)
-    aster_logical :: matsym
-    character(len=16) :: mult_comp, defo_comp
-    aster_logical :: lVect, lMatr, lVari, lSigm
-    integer(kind=8) :: codret
-    integer(kind=8) :: jv_codret
+    integer(kind=8) :: ndim, nno, igeom, imate, i, j
+    integer(kind=8), parameter :: size_init = 21, size_final = 15, size_fenicsx = 21*21
+
+    real(c_double) :: cst(4), coor(18), kappa, cdofs_f(9)
+    ! NOTICE: see the size of the arrays in the C file: c_interface_tria_mitc_j
+    real(c_double), dimension(size_fenicsx) :: A0, A1, A2, A3, A_int
+
+    integer(c_int) :: ncst, ncd, ne0, ne1, ne2, nwinit
+    integer(c_int) :: entities0(1), entities1(1), entities2(1)
 !
-    real(c_double) :: cst(4), coor(18), w(9), kappa, w_0(21), pres
-    real(c_double) :: cdofs_f(9), F_elem_int(21)
-    ! Tableau de sortie (18*18 éléments -> matrice de rigidité)
-    real(c_double) :: A0(21*21), A1(21*21), A2(21*21), A3(21*21), F_elem(21*21), A_int(21*21)
-    real(c_double) :: A5(21*21), A6(21*21), A7(21*21), A8(21*21), A9(21*21), A10(21*21), A_int0(21*21)
-    real(c_double) :: A11(21*21), A12(21*21), A13(21*21)
-    integer(c_int) :: nw, ncst, ncd, nk, ne0, ne1, ne2, nwinit, np0, np1, quadrature_permutation1(1)
-    integer(c_int) :: entities0(1), entities1(1), entities2(1), quadrature_permutation0(1)
-!
-    real(kind=8) :: b(486), btdb(81, 81), bint(21,21),bint0(21,21) ,bint_perm(21,21),temp_mat(21,21)
-    real(kind=8) :: e, nu, temp, epais, rho
-    integer(kind=8) :: elas_id, igau, ipoids, nbinco, npg1
+    integer(kind=8) :: reorder(size_final)
+    real(kind=8) :: signs(size_final)
+    real(c_double) :: w_0(size_init)
+    real(kind=8), dimension(size_init, size_init) :: bint
+    real(kind=8), dimension(size_final, size_final) :: bf
+    real(kind=8) :: e, nu, epais, rho
+    integer(kind=8) :: elas_id, igau, ipoids, npg1
     integer(kind=8) :: nnos, ivf, idfde
     character(len=16) :: elas_keyword
-    integer(kind=8) :: perm(18), n, k, reorder(21)
+
+    real(kind=8) :: AA(15, 15), BB(3, 3), CC(15, 3), DD(3, 3), CDinv(15, 3)
+    integer(kind=8) :: zz_order(15), gamma_order(3), p_order(3)
+    real(kind=8) :: AAcondensed(size_final, size_final)
+
 ! --------------------------------------------------------------------
 ! - Finite element informations
 !
@@ -120,11 +112,8 @@ subroutine te0555(option, nomte)
 ! - Initializations
 !
     ndim = 2
-    nbinco = ndim*nno
     cst = 0.d0
     coor = 0.d0
-    w = 0.d0
-    btdb(:, :) = 0.d0
     w_0 = 0.d0
     A_int = 0.d0
     A0 = 0.d0
@@ -157,6 +146,7 @@ subroutine te0555(option, nomte)
     cst(2) = nu
     cst(3) = kappa
     cst(4) = epais
+
 ! - Fill material entities vector
 ! on définit 3 entities car 3 arêtes dans le triangle
     entities0(1) = 0
@@ -170,7 +160,7 @@ subroutine te0555(option, nomte)
         coor(3*i+3) = zr(igeom+3*i+2)
     end do
 
-    ! Remplissage des degrés (pas de permut à faire ici)
+! Remplissage des coordonées (pas de permut ici)
     cdofs_f(1) = coor(1)
     cdofs_f(2) = coor(2)
     cdofs_f(3) = coor(3)
@@ -188,49 +178,76 @@ subroutine te0555(option, nomte)
     ne0 = 1
     ne1 = 1
     ne2 = 1
-    np0 = 1
-    np1 = 1
     ncst = size(cst)
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!MATRICE DE RIGIDITÉ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!MATRICE DE RIGIDITÉ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Appel de la fonction C++ - Matrice de rigidité -> Part1
     call BP4_tr6_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A0)
+
 ! Appel de la fonction C++ - Matrice de rigidité -> Part2
     call BP5_tr6_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A1)
     call BP5_tr6_Fortran(w_0, nwinit, cdofs_f, ncd, entities1, ne1, cst, ncst, A2)
     call BP5_tr6_Fortran(w_0, nwinit, cdofs_f, ncd, entities2, ne2, cst, ncst, A3)
 
 ! Remplissage de la matrice intermédiaire
-    do i = 1, 441
+    do i = 1, size_fenicsx
         A_int(i) = A0(i)+A1(i)+A2(i)+A3(i)
     end do
+
 ! Remplissage de la matrice K à partir de A_int
-    do i = 1, 21
-        do j = 1, 21
-            bint(i, j) = A_int((j-1)*21+i)
+    do i = 1, size_init
+        do j = 1, size_init
+            bint(i, j) = A_int((j-1)*size_init+i)
         end do
     end do
 
-![w1, θ_x1, θ_y1,w2, θ_x2, θ_y2,w3, θ_x3, θ_y3,θ_x6, θ_y6,γ_r3, p3,
-!θ_x4, θ_y4, γ_r1, p1, θ_x5, θ_y5,γ_r2, p2]
+! Recupérer les bloques
+    ! (z, z) où z = (thetha_x theta_y w)
+    AA = bint(1:15, 1:15)
 
-    reorder = (/13, 1, 2, &
-                14, 3, 4, &
-                15, 5, 6, &
-                11, 12, &
-                18, 21, &
-                7, 8, &
-                16, 19, &
-                9, 10, &
-                17, 20 &
-                /)
+    ! (gamma, gamma)
+    BB = bint(16:18, 16:18)
 
-    do i = 1, 21
-        do j = 1, 21
-            bint_perm(i, j) = bint(reorder(i), reorder(j))
+    ! (z, p) où z = (thetha_x theta_y w)
+    CC = bint(1:15, 19:21)
+
+    ! (gamma, p)
+    DD = bint(16:18, 19:21)
+
+    do j = 1, 3
+        CDinv(:, j) = CC(:, j)/DD(j, j)
+    end do
+
+    ! Condensation statique
+    AAcondensed = AA+matmul(matmul(CDinv, BB), transpose(CDinv))
+
+! Reorganisation du vecteur
+    ![w1, θ_y1, -θ_x1, w2, θ_y2, -θ_x2, w3, θ_y3, -θ_x3,
+    ! θ_y6, -θ_x6, θ_y4, -θ_x4, θ_y5, -θ_x5]
+    !
+    reorder = (/ &
+              13, 2, 1, &
+              14, 4, 3, &
+              15, 6, 5, &
+              12, 11, &
+              8, 7, &
+              10, 9 &
+              /)
+    signs = (/ &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, -1.d0, &
+            1.d0, -1.d0, &
+            1.d0, -1.d0 &
+            /)
+!
+    do i = 1, size_final
+        do j = 1, size_final
+            bf(i, j) = signs(i)*signs(j)*AAcondensed(reorder(i), reorder(j))
         end do
     end do
 
-    call writeMatrix('PMATUUR', 21, 21, ASTER_TRUE, bint_perm)
+    call writeMatrix('PMATUUR', size_final, size_final, ASTER_TRUE, bf)
 
 end subroutine
