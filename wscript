@@ -32,6 +32,7 @@ Note:
 import os
 import os.path as osp
 import sys
+import sysconfig
 
 from waflib import Build, Configure, Logs, Utils
 from waflib.Tools.c_config import DEFKEYS
@@ -157,8 +158,8 @@ def options(self):
         "--site-packages",
         dest="spdir",
         default=None,
-        help="Python site-packages directory for conda/rattler builds "
-        "(absolute path or relative to PREFIX, default: auto-detect from Python)",
+        help="Python site-packages directory (absolute path or relative to PREFIX), "
+        "special values: 'auto' default Python site-packages, 'no' direcly in lib.",
     )
     group.add_option(
         "--bindir",
@@ -317,9 +318,9 @@ def configure(self):
     self.env["CODEASTERPATH"] = self.path.find_dir("code_aster").abspath()
     self.env["CATALOPATH"] = self.path.find_dir("catalo").abspath()
 
-    self.set_installdirs()
     self.load("parallel", tooldir="waftools")
     self.check_platform()
+    self.set_installdirs()
     self.load("python_cfg", tooldir="waftools")
     # keep compatibility for as_run
     if self.get_define("ASTER_HAVE_MPI"):
@@ -524,8 +525,14 @@ def set_installdirs(self):
     for var in ("LIBDIR", "DATADIR", "LOCALEDIR"):
         self.env["RELATIVE_" + var] = osp.relpath(self.env["ASTER" + var], self.env["PREFIX"])
     # Check if --site-packages was explicitly provided for conda/rattler builds
-    self.env.SITEPACKAGESDIR = self.env.ASTERLIBDIR
-    if self.options.spdir:
+    if not self.options.spdir or self.options.spdir == "no":
+        self.env.SITEPACKAGESDIR = self.env.ASTERLIBDIR
+    elif self.options.spdir == "auto":
+        scheme = "posix_user" if self.env.ASTER_PLATFORM_POSIX else "nt_user"
+        self.env.SITEPACKAGESDIR = sysconfig.get_path(
+            "platlib", scheme=scheme, vars={"userbase": self.env.PREFIX}
+        )
+    else:
         self.env.SITEPACKAGESDIR = osp.join(self.env.PREFIX, self.options.spdir)
     self.env["RELATIVE_SITEPACKAGESDIR"] = osp.relpath(self.env.SITEPACKAGESDIR, self.env["PREFIX"])
     # for aster_config.py
@@ -533,6 +540,10 @@ def set_installdirs(self):
     self.define("ASTER_LIBDIR", self.env["ASTERLIBDIR"])
     self.define("ASTER_DATADIR", self.env["ASTERDATADIR"])
     self.define("ASTER_SITEPACKAGESDIR", self.env.SITEPACKAGESDIR)
+    self.msg("Setting bindir to", self.env["ASTERBINDIR"])
+    self.msg("Setting libdir to", self.env["ASTERLIBDIR"])
+    self.msg("Setting resource dir to", self.env["ASTERDATADIR"])
+    self.msg("Setting python dir to", self.env["SITEPACKAGESDIR"])
 
 
 @Configure.conf
