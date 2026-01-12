@@ -633,7 +633,10 @@ def copy_resultfiles(files, copybase, test=False):
                     filename = compress(filename)
                 if obj.isdir and not osp.exists(obj.path):
                     os.makedirs(obj.path)
-                copy(filename, obj.path, verbose=True)
+                dst = obj.path
+                if osp.isdir(filename):
+                    dst = osp.join(obj.path, osp.basename(filename))
+                copy(filename, dst, verbose=True)
 
 
 def _ls(*paths):

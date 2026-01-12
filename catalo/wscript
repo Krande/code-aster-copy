@@ -32,8 +32,13 @@ def build(self):
     env = self.all_envs[self.variant]  # .derive()
     if self.variant == "debug":
         env.OPTDEBUG = "-g"
+
+    # elem.1 is a JEVEUX database file that must be in ASTERLIBDIR (lib directory)
+    # not in site-packages, as the runtime code expects to find it at lib/elem.1
+    elem_install_path = env.ASTERLIBDIR
+
     if self.cmd.startswith("uninstall"):
-        elem = osp.join(env.ASTERLIBDIR, "elem.1")
+        elem = osp.join(elem_install_path, "elem.1")
         try:
             os.remove(elem)
         except OSError:
@@ -48,7 +53,7 @@ def build(self):
         env=env,
         vars=["CATALO_CMD"],
         use="asterlib",
-        install_path=env.ASTERLIBDIR,
+        install_path=elem_install_path,
     )
 
 

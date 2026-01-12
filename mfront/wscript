@@ -74,6 +74,12 @@ def build(self):
         lmfront = get_srcs("**/*.mfront")
         lst = [i.name for i in lmfront]
 
+        # Determine install paths - DLLs go to BINDIR on Windows, libs stay in LIBDIR
+        if self.env.ASTER_PLATFORM_MSVC64:
+            lib_install_path = env.ASTERBINDIR
+        else:
+            lib_install_path = env.ASTERLIBDIR
+
         self(
             features="cxx cxxshlib",
             name="asterbehaviour",
@@ -81,7 +87,7 @@ def build(self):
             includes=[osp.join(osp.splitext(i)[0], "include") for i in lst],
             target=env["ASTER_BEHAVIOUR_LIB"],
             rpath="$ORIGIN",
-            install_path=env.ASTERLIBDIR,
+            install_path=lib_install_path,
             env=env.derive(),
             use=["MFRONT", "MFRONT_ONLY", "CXX"],
         )
@@ -153,8 +159,8 @@ def check_mfront(self):
         uselib_store="MFRONT",
         mandatory=True,
     )
-    self.remove_optflags("CFLAGS_MFRONT")
-    self.remove_optflags("CXXFLAGS_MFRONT")
+    self.remove_flags("CFLAGS_MFRONT", "^-O[0-9]")
+    self.remove_flags("CXXFLAGS_MFRONT", "^-O[0-9]")
     if self.get_define("ASTER_HAVE_64_BITS"):
         arch = "ASTER_ARCH=64"
     else:
