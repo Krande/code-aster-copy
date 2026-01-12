@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -105,33 +105,33 @@ RES = MECA_NON_LINE(
 
 RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_NOEU"))
 
-# TEST_RESU(
-#     RESU=(
-#         _F(
-#             INST=1.0,
-#             TYPE_TEST="MIN",
-#             RESULTAT=RES,
-#             REFERENCE="ANALYTIQUE",
-#             NOM_CHAM="SIEF_NOEU",
-#             LEGENDE="CALC_PRESSION",
-#             NOM_CMP="SIZZ",
-#             VALE_REFE=-25.0,
-#             VALE_CALC=-25.0,
-#             PRECISION=0.05,
-#         ),
-#         _F(
-#             INST=1.0,
-#             TYPE_TEST="MAX",
-#             RESULTAT=RES,
-#             REFERENCE="ANALYTIQUE",
-#             NOM_CHAM="SIEF_NOEU",
-#             LEGENDE="CALC_PRESSION",
-#             NOM_CMP="SIZZ",
-#             VALE_REFE=-25.0,
-#             VALE_CALC=-25.00,
-#             PRECISION=0.05,
-#         ),
-#     )
-# )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="CALC_PRESSION",
+            NOM_CMP="SIZZ",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.49209145343992,
+            PRECISION=0.05,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="CALC_PRESSION",
+            NOM_CMP="SIZZ",
+            VALE_REFE=-25.0,
+            VALE_CALC=-24.574347838999316,
+            PRECISION=0.05,
+        ),
+    )
+)
 
 FIN()
