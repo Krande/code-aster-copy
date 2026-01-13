@@ -160,7 +160,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 ! - Compute Dirichlet loads (AFFE_CHAR_THER)
 !
     call vedith(model, loadNameJv, loadInfoJv, timeMap, vediri)
-    call asasve(vediri, nume_dof, 'R', vadiri)
+    call asasve(vediri, nume_dof, 'R', 'D', vadiri)
     call ascova('D', vadiri, loadFuncJv, 'INST', timeCurr, &
                 'R', cndiri)
 !
@@ -176,10 +176,10 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
         call vetnth_nonl(model, caraElem, mateco, timeMap, comporTher, &
                          temp_iter, varc_prev, varc_curr, &
                          vetntp, vetnti, 'V', vhydr)
-        call asasve(vetnti, nume_dof, 'R', vatnti)
+        call asasve(vetnti, nume_dof, 'R', 'D', vatnti)
         call jeveuo(vatnti, 'L', jtn)
         cntnti = zk24(jtn)
-        call asasve(vetntp, nume_dof, 'R', vatntp)
+        call asasve(vetntp, nume_dof, 'R', 'D', vatntp)
         call jeveuo(vatntp, 'L', jtn)
         cntntp = zk24(jtn)
     end if
@@ -192,7 +192,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
                 vechtp, &
                 varcCurrZ_=varc_curr, timeMapZ_=timeMap, tempPrevZ_=temp_iter)
 
-    call asasve(vechtp, nume_dof, 'R', vachtp)
+    call asasve(vechtp, nume_dof, 'R', 'D', vachtp)
     call ascova('D', vachtp, loadFuncJv, 'INST', timeCurr, &
                 'R', cnchtp)
     if (l_stat) then
@@ -203,7 +203,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 !
     call vechnl(model, loadNameJv, loadInfoJv, timeMap, &
                 temp_iter, vechtn, 'V')
-    call asasve(vechtn, nume_dof, 'R', vachtn)
+    call asasve(vechtn, nume_dof, 'R', 'D', vachtn)
     call ascova('D', vachtn, ' ', 'INST', timeCurr, &
                 'R', cnchnl)
     if (l_stat) then

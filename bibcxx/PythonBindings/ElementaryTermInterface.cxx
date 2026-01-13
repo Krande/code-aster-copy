@@ -65,6 +65,12 @@ void exportElementaryTermToPython( py::module_ &mod ) {
 
             Returns:
                 str: name of the physical quantity
+            )" )
+        .def( "exists", &ElementaryTermReal::exists, R"(
+            Return True if it exists
+
+            Returns:
+                bool: True if exist
             )" );
 
     py::class_< ElementaryTermComplex, ElementaryTermComplexPtr, DataField >(
@@ -100,5 +106,11 @@ void exportElementaryTermToPython( py::module_ &mod ) {
 
             Returns:
                 str: name of the physical quantity
+            )" )
+        .def( "exists", &ElementaryTermComplex::exists, R"(
+            Return True if it exists
+
+            Returns:
+                bool: True if exist
             )" );
 };

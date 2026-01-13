@@ -1776,6 +1776,13 @@ PMATZZR = OutputParameter(
 """,
 )
 
+PMATUND = OutputParameter(
+    phys=PHY.MDNS_R,
+    type="RESL",
+    comment=""" Matrice decondensation statique for HHO
+""",
+)
+
 PNEU1_R = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
 
 PNEUT_I = OutputParameter(phys=PHY.NEUT_I, type="ELEM", comment="""""")
@@ -1952,6 +1959,8 @@ PVECTTC = OutputParameter(phys=PHY.VPRE_C, type="RESL", comment="""""")
 PVECTTI = OutputParameter(phys=PHY.VTEM_R, type="RESL", comment="""""")
 
 PVECTTR = OutputParameter(phys=PHY.VTEM_R, type="RESL", comment="""""")
+
+PVECTUD = OutputParameter(phys=PHY.VDEP_R, type="RESL", comment="""""")
 
 PVECTU1 = OutputParameter(phys=PHY.VDEP_R, type="RESL", comment="""""")
 

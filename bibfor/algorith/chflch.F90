@@ -83,7 +83,7 @@ subroutine chflch(rigthe, vec2nd, listLoad)
 
 ! - Compute dirichlet RHS
     call vedith(model, loadNameJv, loadInfoJv, timeMap, vediri)
-    call asasve(vediri, numedd, 'R', vadirp)
+    call asasve(vediri, numedd, 'R', 'D', vadirp)
     call ascova('D', vadirp, loadFuncJv, 'INST', timeCurr, &
                 'R', cndirp)
     call jeveuo(cndirp(1:19)//'.VALE', 'L', jndirp)
@@ -99,7 +99,7 @@ subroutine chflch(rigthe, vec2nd, listLoad)
                 loadNameJv, loadInfoJv, &
                 timeCurr, &
                 vechtp)
-    call asasve(vechtp, numedd, 'R', vachtp)
+    call asasve(vechtp, numedd, 'R', 'D', vachtp)
     call ascova('D', vachtp, loadFuncJv, 'INST', timeCurr, &
                 'R', cnchtp)
     call jeveuo(cnchtp(1:19)//'.VALE', 'L', jnchtp)

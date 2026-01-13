@@ -93,7 +93,7 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL), normal(3)
         integer(kind=8) :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
         integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         ASSERT(hhoCell%l_face_init)
@@ -185,10 +185,10 @@ contains
 ! - Verif strange bug if info neq 0 in entry
         info = 0
         b_n = to_blas_int(dimMG)
-        b_nhrs = to_blas_int(total_dofs)
+        b_nrhs = to_blas_int(total_dofs)
         b_lda = to_blas_int(MSIZE_CELL_SCAL)
         b_ldb = to_blas_int(gradrec%max_nrows)
-        call dposv('U', b_n, b_nhrs, MG, b_lda, &
+        call dposv('U', b_n, b_nrhs, MG, b_lda, &
                    gradrec%m, b_ldb, info)
 !
 ! - Sucess ?
@@ -328,7 +328,7 @@ contains
         real(kind=8) :: normal(3)
         integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, max_deg, gbs_cmp
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, b_m
         integer(kind=8) :: iface, fromFace, toFace, cell_offset
         blas_int, parameter :: b_one = 1
 !
@@ -448,10 +448,10 @@ contains
 ! - Verif strange bug if info neq 0 in entry
             info = 0
             b_n = to_blas_int(dimMassMat)
-            b_nhrs = to_blas_int(hhoCell%ndim*total_dofs)
+            b_nrhs = to_blas_int(hhoCell%ndim*total_dofs)
             b_lda = to_blas_int(massMat%max_nrows)
             b_ldb = to_blas_int(SOL%max_nrows)
-            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, SOL%m, b_ldb, info)
+            call dposv('U', b_n, b_nrhs, massMat%m, b_lda, SOL%m, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -639,7 +639,7 @@ contains
         integer(kind=8):: cbs_comp, fbs_comp, gbs_sym, gbs_comp, max_deg
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
         integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = 1
 !
         ASSERT(hhoCell%l_face_init)
@@ -944,10 +944,10 @@ contains
 ! - Verif strange bug if info neq 0 in entry
             info = 0
             b_n = to_blas_int(dimMassMat)
-            b_nhrs = to_blas_int(nbdimMat*total_dofs)
+            b_nrhs = to_blas_int(nbdimMat*total_dofs)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             b_ldb = to_blas_int(SOL%max_nrows)
-            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, &
+            call dposv('U', b_n, b_nrhs, massMat%m, b_lda, &
                        SOL%m, b_ldb, info)
 !
 ! - Sucess ?
@@ -1017,7 +1017,7 @@ contains
         integer(kind=8) :: jbeginCell, jendCell, jbeginFace, jendFace, idim, j, dimStiffMat_cmp
         integer(kind=8) :: row_deb_MG, row_fin_MG, col_deb_MG, col_fin_MG, col_deb_BG, col_fin_BG
         integer(kind=8) :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST, faces_dof
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, LWORK, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, LWORK, b_m
         real(kind=8) :: qp_dphi_ss, normal(3)
         blas_int, parameter :: b_one = 1
 !
@@ -1225,10 +1225,10 @@ contains
         LWORK = to_blas_int(dimMGLag*total_dofs)
         info = 0
         b_n = to_blas_int(dimMGLag)
-        b_nhrs = to_blas_int(total_dofs)
+        b_nrhs = to_blas_int(total_dofs)
         b_lda = to_blas_int(MG%max_nrows)
         b_ldb = to_blas_int(gradrec%max_nrows)
-        call dsysv('U', b_n, b_nhrs, MG%m, b_lda, &
+        call dsysv('U', b_n, b_nrhs, MG%m, b_lda, &
                    IPIV, gradrec%m, b_ldb, WORK%m, LWORK, info)
         call WORK%free()
 !

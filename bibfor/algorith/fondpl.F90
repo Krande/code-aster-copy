@@ -100,7 +100,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
             call corich('E', lchout(1), ichin_=-1)
             call jedetr(veonde(1:19)//'.RELR')
             call reajre(veonde, lchout(1), 'V')
-            call asasve(veonde, numedd, 'R', vaonde)
+            call asasve(veonde, numedd, 'R', 'D', vaonde)
 !
             call jeveuo(vaonde, 'L', jvaond)
             call jeveuo(zk24(jvaond) (1:19)//'.VALE', 'L', vr=vale)

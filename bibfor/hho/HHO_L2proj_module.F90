@@ -76,7 +76,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_face) :: faceMass
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -97,10 +97,10 @@ contains
 ! ---- Solve the system
 !
             b_n = to_blas_int(faceMass%nrows)
-            b_nhrs = to_blas_int(1)
+            b_nrhs = to_blas_int(1)
             b_lda = to_blas_int(faceMass%max_nrows)
             b_ldb = to_blas_int(faceMass%max_nrows)
-            call dposv('U', b_n, b_nhrs, faceMass%m, b_lda, &
+            call dposv('U', b_n, b_nrhs, faceMass%m, b_lda, &
                        coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
@@ -139,7 +139,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_face) :: faceMass
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -162,10 +162,10 @@ contains
 ! ---- Solve the system
 !
             b_n = to_blas_int(faceMass%nrows)
-            b_nhrs = to_blas_int(hhoFace%ndim+1)
+            b_nrhs = to_blas_int(hhoFace%ndim+1)
             b_lda = to_blas_int(faceMass%max_nrows)
             b_ldb = to_blas_int(faceMass%nrows)
-            call dposv('U', b_n, b_nhrs, faceMass%m, b_lda, &
+            call dposv('U', b_n, b_nrhs, faceMass%m, b_lda, &
                        coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
@@ -204,7 +204,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_cell) :: cellMass
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -225,10 +225,10 @@ contains
 ! ---- Solve the system
 !
             b_n = to_blas_int(cellMass%nrows)
-            b_nhrs = to_blas_int(1)
+            b_nrhs = to_blas_int(1)
             b_lda = to_blas_int(cellMass%max_nrows)
             b_ldb = to_blas_int(cellMass%max_nrows)
-            call dposv('U', b_n, b_nhrs, cellMass%m, b_lda, &
+            call dposv('U', b_n, b_nrhs, cellMass%m, b_lda, &
                        coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
@@ -267,14 +267,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_cell) :: cellMass
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
 !
 ! --------------------------------------------------------------------------------------------------
-!
-        info = 0
-        if (2*degree > hhoQuad%order) then
-            call utmess('F', 'HHO1_12')
-        end if
 !
 ! ----- Compute cell mass matrix
 !
@@ -289,10 +284,10 @@ contains
 ! ---- Solve the system
 !
             b_n = to_blas_int(cellMass%nrows)
-            b_nhrs = to_blas_int(hhoCell%ndim)
+            b_nrhs = to_blas_int(hhoCell%ndim)
             b_lda = to_blas_int(cellMass%max_nrows)
             b_ldb = to_blas_int(cellMass%nrows)
-            call dposv('U', b_n, b_nhrs, cellMass%m, b_lda, &
+            call dposv('U', b_n, b_nrhs, cellMass%m, b_lda, &
                        coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
@@ -308,8 +303,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj, &
-                             all)
+    subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj, all)
 !
         implicit none
 !

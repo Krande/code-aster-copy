@@ -28,6 +28,8 @@
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
 #include "Functions/Function.h"
+#include "LinearAlgebra/AssemblyMatrix.h"
+#include "LinearAlgebra/ElementaryVector.h"
 #include "Studies/PhysicalProblem.h"
 
 /**
@@ -119,6 +121,15 @@ class HHO {
                                                ASTERDOUBLE time = 0.0 ) const;
     FieldOnNodesRealPtr projectOnHHOCellSpace( const std::vector< GenericFunctionPtr > fct,
                                                ASTERDOUBLE time = 0.0 ) const;
+
+    std::pair< std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr >,
+               std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr > >
+    static_condensation( const ElementaryMatrixDisplacementRealPtr &me1,
+                         const ElementaryVectorDisplacementRealPtr &ve1 ) const;
+
+    FieldOnNodesRealPtr static_decondensation( const AssemblyMatrixDisplacementRealPtr &MD,
+                                               const FieldOnNodesRealPtr &lD,
+                                               const FieldOnNodesRealPtr &uF ) const;
 };
 
 using HHOPtr = std::shared_ptr< HHO >;

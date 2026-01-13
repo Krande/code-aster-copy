@@ -245,7 +245,7 @@ subroutine op0183()
                     vefnod)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
-        call asasve(vefnod, nume, 'R', vafono)
+        call asasve(vefnod, nume, 'R', 'D', vafono)
 !
         call rsexch(' ', resultOut, 'DEPL', iordr, chamno, &
                     iret)

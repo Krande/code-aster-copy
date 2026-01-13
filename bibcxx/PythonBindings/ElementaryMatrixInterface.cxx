@@ -52,6 +52,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
               py::overload_cast< const std::vector< ElementaryTermRealPtr > & >(
                   &ElementaryMatrixDisplacementReal::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixDisplacementReal::getElementaryTerms )
+        .def( "getNumberOfElementaryTerms",
+              &ElementaryMatrixDisplacementReal::getNumberOfElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixDisplacementReal::hasElementaryTerms );
 
     py::class_< ElementaryMatrixDisplacementComplex,
@@ -70,6 +72,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
               py::overload_cast< const std::vector< ElementaryTermComplexPtr > & >(
                   &ElementaryMatrixDisplacementComplex::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixDisplacementComplex::getElementaryTerms )
+        .def( "getNumberOfElementaryTerms",
+              &ElementaryMatrixDisplacementComplex::getNumberOfElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixDisplacementComplex::hasElementaryTerms );
 
     py::class_< ElementaryMatrixTemperatureReal,
@@ -89,6 +93,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
               py::overload_cast< const std::vector< ElementaryTermRealPtr > & >(
                   &ElementaryMatrixTemperatureReal::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixTemperatureReal::getElementaryTerms )
+        .def( "getNumberOfElementaryTerms",
+              &ElementaryMatrixTemperatureReal::getNumberOfElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixTemperatureReal::hasElementaryTerms );
 
     py::class_< ElementaryMatrixPressureComplex,
@@ -107,5 +113,7 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
               py::overload_cast< const std::vector< ElementaryTermComplexPtr > & >(
                   &ElementaryMatrixPressureComplex::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixPressureComplex::getElementaryTerms )
+        .def( "getNumberOfElementaryTerms",
+              &ElementaryMatrixPressureComplex::getNumberOfElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixPressureComplex::hasElementaryTerms );
 };

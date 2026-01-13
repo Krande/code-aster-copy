@@ -8385,6 +8385,13 @@ class ElementaryTermReal(DataField):
         2. __init__(self: libaster.ElementaryTermReal, arg0: str) -> None
         """
 
+    def exists(self):
+        """Return True if it exists
+
+        Returns:
+            bool: True if exist
+        """
+
     def getFiniteElementDescriptor(self):
         """Return the finite element descriptor
 
@@ -8449,6 +8456,13 @@ class ElementaryTermComplex(DataField):
         1. __init__(self: libaster.ElementaryTermComplex) -> None
 
         2. __init__(self: libaster.ElementaryTermComplex, arg0: str) -> None
+        """
+
+    def exists(self):
+        """Return True if it exists
+
+        Returns:
+            bool: True if exist
         """
 
     def getFiniteElementDescriptor(self):
@@ -8559,6 +8573,9 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
     def getFiniteElementDescriptors(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def hasElementaryTerms(self):
         pass
 
@@ -8603,6 +8620,9 @@ class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
         pass
 
     def getFiniteElementDescriptors(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def hasElementaryTerms(self):
@@ -8654,6 +8674,9 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
     def getFiniteElementDescriptors(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def hasElementaryTerms(self):
         pass
 
@@ -8698,6 +8721,9 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
         pass
 
     def getFiniteElementDescriptors(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def hasElementaryTerms(self):
@@ -8794,6 +8820,9 @@ class ElementaryVectorReal(BaseElementaryVector):
     def getFiniteElementDescriptor(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def getVeass(self):
         pass
 
@@ -8850,6 +8879,9 @@ class ElementaryVectorComplex(BaseElementaryVector):
         pass
 
     def getElementaryTerms(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def getVeass(self):
@@ -17178,6 +17210,33 @@ class HHO:
 
         Returns:
               FieldOnNodesReal: HHO field project on Lagrange space
+        """
+
+    def static_condensation(self, matr_elem, vect_elem):
+        """Performs static condensation.
+
+        Arguments:
+              matr_elem (ElementaryMatrixDisplacementReal): elementary (symetric) matrix.
+              vect_elem (ElementaryVectorDisplacementReal): elementary vector.
+
+        Returns:
+              [
+              [AssemblyMatrixDisplacementReal, FieldOnNodesReal],
+              [AssemblyMatrixDisplacementReal, FieldOnNodesReal]
+              ]: return two pairs of a matrix and a rhs. First pair is the condensated system
+              to solve. Second pair is used for static decondensation.
+        """
+
+    def static_decondensation(self, mD, lD, uF):
+        """Performs static decondensation. Update cell DoFs.
+
+        Arguments:
+              mD (AssemblyMatrixDisplacementReal): matrix of decondensation.
+              lD (FieldOnNodesReal): rhs of decondensation.
+              uF (FieldOnNodesReal): solution computed after condensation.
+
+        Returns:
+              FieldOnNodesReal: solution after decondensation.
         """
 
 

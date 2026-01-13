@@ -129,7 +129,7 @@ subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
                     tpsthe, timeMap, temp_prev, temp_iter, &
                     varc_curr, comporTher, &
                     hydr_prev, hydr_curr, veresi, "V")
-        call asasve(veresi, nume_dof, typres, varesi)
+        call asasve(veresi, nume_dof, typres, 'D', varesi)
         call ascova('D', varesi, bidon, 'INST', rbid, &
                     typres, cnresi)
         call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=v_cnresi)
@@ -138,7 +138,7 @@ subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
 !
         call vethbt(model, loadNameJv, loadInfoJv, &
                     temp_prev, vebtla, 'V')
-        call asasve(vebtla, nume_dof, typres, vabtla)
+        call asasve(vebtla, nume_dof, typres, 'D', vabtla)
         call ascova('D', vabtla, bidon, 'INST', rbid, &
                     typres, cnvabt)
         call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=v_cnvabt)
@@ -147,7 +147,7 @@ subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
 !
         call vethbu(model, matass, loadNameJv, loadInfoJv, &
                     temp_prev, vebuem)
-        call asasve(vebuem, nume_dof, typres, vabuem)
+        call asasve(vebuem, nume_dof, typres, 'D', vabuem)
         call ascova('D', vabuem, bidon, 'INST', rbid, &
                     typres, cnvabu)
         call jeveuo(cnvabu(1:19)//'.VALE', 'L', vr=v_cnvabu)

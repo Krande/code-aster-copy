@@ -104,7 +104,7 @@ subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
                     loadNameJv, loadInfoJv, &
                     partps, &
                     vechmp)
-        call asasve(vechmp, numedd, typmat, vachmp)
+        call asasve(vechmp, numedd, typmat, 'D', vachmp)
         call ascova('D', vachmp, loadFuncJv, 'INST', temps, &
                     typmat, cnchmp)
         call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f1)
@@ -118,7 +118,7 @@ subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
 !
         call vedime(model, loadNameJv, loadInfoJv, temps, typmat, &
                     vechmp)
-        call asasve(vechmp, numedd, typmat, vachmp)
+        call asasve(vechmp, numedd, typmat, 'D', vachmp)
         call ascova('D', vachmp, loadFuncJv, para, temps, &
                     typmat, cnchmp)
         call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f2)

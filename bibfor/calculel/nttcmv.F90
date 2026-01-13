@@ -131,7 +131,7 @@ subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
 ! ----- TEMPERATURES IMPOSEES                                  ---> CNDIRP
 !
         call vedith(model, loadNameJv, loadInfoJv, timeMap, vediri)
-        call asasve(vediri, nume_dof, typres, vadirp)
+        call asasve(vediri, nume_dof, typres, 'D', vadirp)
         call ascova('D', vadirp, loadFuncJv, 'INST', time_curr, &
                     typres, cndirp)
         call jeveuo(cndirp(1:19)//'.VALE', 'E', vr=dirp)
@@ -152,7 +152,7 @@ subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
                     time_curr, &
                     vechtp, &
                     timeMapZ_=timeMap, tempPrevZ_=vtemp, timeMoveZ_=time_move)
-        call asasve(vechtp, nume_dof, typres, vachtp)
+        call asasve(vechtp, nume_dof, typres, 'D', vachtp)
         call ascova('D', vachtp, loadFuncJv, 'INST', time_curr, &
                     typres, cnchtp)
         call jeveuo(cnchtp(1:19)//'.VALE', 'E', vr=chtp)

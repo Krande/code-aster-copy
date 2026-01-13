@@ -86,6 +86,8 @@ contains
         integer(kind=8), intent(in) :: n_rows, n_cols
         real(kind=8), intent(in), optional :: val
 !
+        ASSERT(.not. this%is_allocated)
+!
         this%nrows = n_rows
         this%ncols = n_cols
         this%max_nrows = n_rows

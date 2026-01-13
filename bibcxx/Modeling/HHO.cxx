@@ -313,3 +313,76 @@ FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr h
 
     return hho_elga;
 };
+
+std::pair< std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr >,
+           std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr > >
+HHO::static_condensation( const ElementaryMatrixDisplacementRealPtr &me1,
+                          const ElementaryVectorDisplacementRealPtr &ve1 ) const {
+
+    auto model = this->getModel();
+    auto mesh = model->getMesh();
+    auto dofNume = _phys_problem->getDOFNumbering();
+    AS_ASSERT( dofNume );
+
+    const std::string option = "HHO_COND_MECA";
+    auto calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( model );
+
+    // Input fields
+    calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
+
+    AS_ASSERT( me1->getNumberOfElementaryTerms() == 1 && me1->getElementaryTerms()[0]->exists() );
+    calcul->addInputElementaryTerm( "PMAELS1", me1->getElementaryTerms()[0] );
+    AS_ASSERT( ve1->getNumberOfElementaryTerms() == 1 && ve1->getElementaryTerms()[0]->exists() );
+    calcul->addInputElementaryTerm( "PVEELE1", ve1->getElementaryTerms()[0] );
+
+    // Create output
+    auto me_C = std::make_shared< ElementaryMatrixDisplacementReal >( model, option );
+    auto ve_C = std::make_shared< ElementaryVectorReal >( model );
+
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+    auto me_D = std::make_shared< ElementaryMatrixDisplacementReal >( model, option );
+    auto ve_D = std::make_shared< ElementaryVectorReal >( model );
+
+    calcul->addOutputElementaryTerm( "PMATUND", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTUD", std::make_shared< ElementaryTermReal >() );
+
+    // Compute
+    if ( model->existsFiniteElement() ) {
+        calcul->compute();
+
+        me_C->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+        me_C->build();
+        ve_C->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
+        ve_C->build();
+
+        me_D->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUND" ) );
+        me_D->build();
+        ve_D->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUD" ) );
+        ve_D->build();
+    };
+
+    auto MC = std::make_shared< AssemblyMatrixDisplacementReal >( _phys_problem );
+    MC->assemble( me_C, _phys_problem->getListOfLoads() );
+    auto lC = ve_C->assemble( dofNume );
+
+    auto MD = std::make_shared< AssemblyMatrixDisplacementReal >( _phys_problem );
+    MD->assemble( me_D, _phys_problem->getListOfLoads() );
+    auto lD = ve_D->assemble( dofNume );
+
+    return std::make_pair( std::make_pair( MC, lC ), std::make_pair( MD, lD ) );
+};
+
+FieldOnNodesRealPtr HHO::static_decondensation( const AssemblyMatrixDisplacementRealPtr &MD,
+                                                const FieldOnNodesRealPtr &lD,
+                                                const FieldOnNodesRealPtr &uF ) const {
+
+    FieldOnNodesRealPtr uT = std::make_shared< FieldOnNodesReal >( *lD );
+
+    ( *uT ) += ( *MD ) * ( *uF );
+    ( *uT ) += ( *uF );
+
+    return uT;
+};

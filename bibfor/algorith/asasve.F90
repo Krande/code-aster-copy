@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asasve(vechar, numedd, typres, vachar)
+subroutine asasve(vechar, numedd, typres, detr, vachar)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,6 +41,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
     character(len=*) :: numedd, typres, vechar
     character(len=24) :: vachar
+    character(len=1) :: detr
 !
 ! BUT : ASSEMBLER UN VECT_ELEM RESPECTANT CERTAINES CONVENTIONS
 !  =============================================================
@@ -183,12 +184,14 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !     DESTRUCTION DU VECT_ELEM :
 !     -----------------------------------
-    do i = 1, nbvec
-        call corich('S', relr(i))
-        call detrsd('CHAMP_GD', relr(i))
-    end do
-    call jedetr(vecele//'.RELR')
-    call jedetr(vecele//'.RERR')
+    if (detr(1:1) .ne. "G") then
+        do i = 1, nbvec
+            call corich('S', relr(i))
+            call detrsd('CHAMP_GD', relr(i))
+        end do
+        call jedetr(vecele//'.RELR')
+        call jedetr(vecele//'.RERR')
+    end if
 !
     vachar = vacha8
 !

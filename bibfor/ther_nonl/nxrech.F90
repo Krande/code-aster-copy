@@ -154,7 +154,7 @@ subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
                     tpsthe, timeMap, temp_prev, vtempr, &
                     varc_curr, comporTher, &
                     hydr_prev, hydr_curr, veresi, "V")
-        call asasve(veresi, nume_dof, typres, varesi)
+        call asasve(veresi, nume_dof, typres, 'D', varesi)
         call ascova('D', varesi, bidon, 'INST', r8bid, &
                     typres, cnresi)
         call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
@@ -163,7 +163,7 @@ subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
 !
         call vethbt(model, loadNameJv, loadInfoJv, &
                     vtempr, vebtla, 'V')
-        call asasve(vebtla, nume_dof, typres, vabtla)
+        call asasve(vebtla, nume_dof, typres, 'D', vabtla)
         call ascova('D', vabtla, bidon, 'INST', r8bid, &
                     typres, cnvabt)
         call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)

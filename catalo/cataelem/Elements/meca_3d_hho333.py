@@ -474,6 +474,16 @@ class MECA3DH27_HHO333(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
+        OP.HHO_COND_MECA(
+            te=507,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMAELS1, MMATUUR), (SP.PVEELE1, MVECTUR)),
+            para_out=(
+                (SP.PMATUUR, MMATUUR),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PMATUND, MMATUNS),
+                (SP.PVECTUD, MVECTUR),
+            ),
+        ),
         OP.HHO_PRECALC_BS(
             te=494,
             para_in=((SP.PGEOMER, LC.EGEOM3D),),

@@ -790,11 +790,11 @@ contains
         vaFnodR = " "
         if (postComp%lCplx) then
             call vtcreb(veFnod(1), 'V', 'R', nume_ddlz=numeDof)
-            call asasve(veFnod(1), numeDof, 'R', vaFnodCR)
+            call asasve(veFnod(1), numeDof, 'R', 'D', vaFnodCR)
             call vtcreb(veFnod(2), 'V', 'R', nume_ddlz=numeDof)
-            call asasve(veFnod(2), numeDof, 'R', vaFnodCI)
+            call asasve(veFnod(2), numeDof, 'R', 'D', vaFnodCI)
         else
-            call asasve(veFnod(1), numeDof, 'R', vaFnodR)
+            call asasve(veFnod(1), numeDof, 'R', 'D', vaFnodR)
         end if
 
 ! ----- Assemblying
@@ -942,7 +942,7 @@ contains
                         vechmp, varcCurrZ_=postComp%postCompPara%chvarc, &
                         ligrelCalcZ_=postComp%postCompPara%calcLigrel, &
                         nharm_=postComp%postCompPara%nh)
-            call asasve(vechmp, numeDof, 'R', vachmp)
+            call asasve(vechmp, numeDof, 'R', 'D', vachmp)
             call ascova('D', vachmp, loadFuncJv, 'INST', postComp%postCompPara%time, &
                         'R', cnchmpR)
 
@@ -958,7 +958,7 @@ contains
                         postComp%postCompFields%strx, &
                         vecgmp, &
                         ligrelCalcZ_=postComp%postCompPara%calcLigrel)
-            call asasve(vecgmp, numeDof, 'R', vacgmp)
+            call asasve(vecgmp, numeDof, 'R', 'D', vacgmp)
             call ascova('D', vacgmp, loadFuncJv, 'INST', postComp%postCompPara%time, &
                         'R', cncgmp)
 
@@ -972,7 +972,7 @@ contains
                             postComp%postCompFields%disp, postComp%postCompFields%vectZero, &
                             postComp%postCompFields%vectZero, &
                             vefpip, postComp%postCompPara%calcLigrel)
-                call asasve(vefpip, numeDof, 'R', vafpip)
+                call asasve(vefpip, numeDof, 'R', 'D', vafpip)
                 call ascova('D', vafpip, loadFuncJv, 'INST', postComp%postCompPara%time, &
                             'R', cnfpip)
             end if
@@ -1195,7 +1195,7 @@ contains
                             postComp%postCompPara%compor, postComp%postCompPara%time, &
                             postComp%postCompFields%acce, vemgam, 'V', &
                             postComp%postCompPara%calcLigrel)
-                call asasve(vemgam, numeDof, 'R', vamgam)
+                call asasve(vemgam, numeDof, 'R', 'D', vamgam)
                 call jeveuo(vamgam, 'L', jref)
                 call jeveuo(zk24(jref) (1:19)//'.VALE', 'L', vr=cnmgamVale)
                 call daxpy(b_n, coefMGamR, cnmgamVale, b_incx, fieldRVale, b_incy)
