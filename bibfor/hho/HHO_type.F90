@@ -318,9 +318,9 @@ contains
 !   In this     : a HHo Data
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: iret, jtab(1)
-
-        call tecach('NNO', 'PCHHOGT', 'L', iret, nval=1, itab=jtab)
+        integer(kind=8) :: iret, itab(8)
+!
+        call tecach('NNO', 'PCHHOGT', 'L', iret, nval=1, itab=itab)
         precomp = iret == 0
 !
     end function

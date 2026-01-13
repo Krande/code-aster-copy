@@ -672,11 +672,11 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_massmat_face) :: faceMass
         real(kind=8) :: invH
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
+        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: invM
+        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat, piKF
+        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: S_TT
         integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace
-        integer(kind=8) :: i, j, cell_offset
+        integer(kind=8) :: cell_offset
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
@@ -690,7 +690,8 @@ contains
         cell_offset = total_dofs-cbs+1
 !
         call stab%initialize(total_dofs, total_dofs, 0.0)
-        proj3 = 0.d0
+        piKF = 0.d0
+        S_TT = 0.d0
 !
 !
 ! Step 3: project on faces (eqn. 21)
@@ -710,33 +711,30 @@ contains
             call hhoTraceMatScal(hhoCell, 0, hhoData%cell_degree(), hhoFace, 0, &
                                  hhoData%face_degree(), traceMat)
 !
-! ---- Compute proj3 = [0 | traceMat]
-            proj3(1:fbs, cell_offset:total_dofs) = traceMat(1:fbs, 1:cbs)
+            piKF(1:fbs, 1:cbs) = traceMat(1:fbs, 1:cbs)
 !
             if (.not. faceMass%isIdentity) then
 !
 ! ---- Factorize face Mass
-                piKF = 0.d0
-                piKF(1:fbs, 1:fbs) = faceMass%m(1:fbs, 1:fbs)
-! ---- Verif strange bug if info neq 0 in entry
-                info = 0
+                invM(1:fbs, 1:fbs) = faceMass%m(1:fbs, 1:fbs)
+!
                 b_n = to_blas_int(fbs)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
-                call dpotrf('U', b_n, piKF, b_lda, info)
+                call dpotrf('U', b_n, invM, b_lda, info)
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
                     call utmess('F', 'HHO1_4')
                 end if
 !
-! ---- Solve proj3 = pikF^-1 * proj3
+! ---- Solve piKF = invM^-1 * piKF
                 info = 0
                 b_n = to_blas_int(fbs)
-                b_nrhs = to_blas_int(total_dofs)
+                b_nrhs = to_blas_int(cbs)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                call dpotrs('U', b_n, b_nrhs, piKF, b_lda, &
-                            proj3, b_ldb, info)
+                call dpotrs('U', b_n, b_nrhs, invM, b_lda, &
+                            piKF, b_ldb, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
@@ -745,56 +743,40 @@ contains
                 end if
             end if
 !
-! ---- Compute proj3 -= I_F
-            i = 1
-            do j = fromFace, toFace
-                proj3(i, j) = proj3(i, j)-1.d0
-                i = i+1
-            end do
+            stab%m(fromFace:toFace, cell_offset:total_dofs) = (-invH)*traceMat(1:fbs, 1:cbs)
+            stab%m(fromFace:toFace, fromFace:toFace) = invH*faceMass%m(1:fbs, 1:fbs)
 !
             if (.not. faceMass%isIdentity) then
 !
-! ---- Compute TMP = faceMass * proj3
-                TMP = 0.d0
-                b_ldc = to_blas_int(MSIZE_FACE_SCAL)
-                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                b_lda = to_blas_int(faceMass%max_nrows)
-                b_m = to_blas_int(fbs)
-                b_n = to_blas_int(total_dofs)
-                b_k = to_blas_int(fbs)
-                call dgemm('N', 'N', b_m, b_n, b_k, &
-                           1.d0, faceMass%m, b_lda, proj3, b_ldb, &
-                           0.d0, TMP, b_ldc)
-!
-! ---- Compute stab += invH * proj3**T * TMP
-                b_ldc = to_blas_int(stab%max_nrows)
+! ---- Compute stab += invH * traceMat**T * piKF
+                b_ldc = to_blas_int(MSIZE_CELL_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
-                b_m = to_blas_int(total_dofs)
-                b_n = to_blas_int(total_dofs)
+                b_m = to_blas_int(cbs)
+                b_n = to_blas_int(cbs)
                 b_k = to_blas_int(fbs)
                 call dgemm('T', 'N', b_m, b_n, b_k, &
-                           invH, proj3, b_lda, TMP, b_ldb, &
-                           1.d0, stab%m, b_ldc)
+                           invH, traceMat, b_lda, piKF, b_ldb, &
+                           1.d0, S_TT, b_ldc)
 !
             else
 !
-! ---- Compute stab += invH * proj3**T * proj3 since faceMass = Id
-                b_ldc = to_blas_int(stab%max_nrows)
+! ---- Compute stab += invH * traceMat**T * traceMat since faceMass = Id
+                b_ldc = to_blas_int(MSIZE_CELL_SCAL)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
-                b_n = to_blas_int(total_dofs)
+                b_n = to_blas_int(cbs)
                 b_k = to_blas_int(fbs)
                 call dsyrk('U', 'T', b_n, b_k, &
-                           invH, proj3, b_lda, &
-                           1.d0, stab%m, b_ldc)
+                           invH, traceMat, b_lda, &
+                           1.d0, S_TT, b_ldc)
             end if
 !
             offset_face = offset_face+fbs
         end do
 !
-        if (faceMass%isIdentity) then
-            call stab%copySymU()
-        end if
+        stab%m(cell_offset:total_dofs, cell_offset:total_dofs) = S_TT(1:cbs, 1:cbs)
+!
+        call stab%copySymU()
 !
     end subroutine
 !

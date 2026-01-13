@@ -450,10 +450,6 @@ contains
             face_deg = 4
             cell_deg = 4
             grad_deg = 4
-        elseif (lteatt('FORMULATION', 'HHO_QUIN')) then
-            face_deg = 5
-            cell_deg = 5
-            grad_deg = 5
         elseif (lteatt('FORMULATION', 'HHO_MCSTE')) then
             face_deg = 0
             cell_deg = 1
@@ -474,10 +470,6 @@ contains
             face_deg = 4
             cell_deg = 5
             grad_deg = 4
-        elseif (lteatt('FORMULATION', 'HHO_MQUIN')) then
-            face_deg = 5
-            cell_deg = 6
-            grad_deg = 5
         else
             ASSERT(ASTER_FALSE)
         end if
