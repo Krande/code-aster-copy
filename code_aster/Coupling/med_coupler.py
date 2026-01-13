@@ -327,7 +327,7 @@ class MEDCoupler:
             fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
             return self.extent_field(field).toFieldOnCells(fed)
 
-    def export_field(self, field, field_name=None, cmps=[]):
+    def export_field(self, field, field_name="COUPLINGFIELD", cmps=[]):
         """Convert a code_aster field defined on the whole mesh to
             a MEDCoupling field defined on the interface.
 
@@ -346,9 +346,7 @@ class MEDCoupler:
         assert field.getMesh() == self.mesh
 
         field_interf = self.restrict_field(field, cmps)
-        pfield = field_interf.toMedCouplingField(self.mc_interf)
-        if field_name:
-            pfield.setName(field_name)
+        pfield = field_interf.toMedCouplingField(self.mc_interf, field_name)
 
         return pfield
 
@@ -363,11 +361,11 @@ class MEDCoupler:
             FieldOnNodesReal: code_aster displacement field.
         """
 
-        mc_displ.getArray().setName("DEPL_R")
+        mc_displ.setDescription("DEPL_R-DEPL")
 
         return self.import_field(mc_displ)
 
-    def export_displacement(self, displ, field_name=None):
+    def export_displacement(self, displ, field_name="DEPL"):
         """Create a MEDCoupling field of displacement reduced on the interface mesh.
 
         Arguments:
@@ -392,7 +390,7 @@ class MEDCoupler:
         """
         return self.import_displacement(mc_velo)
 
-    def export_velocity(self, velo, field_name=None):
+    def export_velocity(self, velo, field_name="VELOCITY"):
         """Create a MEDCoupling field of velocity reduced on the interface mesh.
 
         Arguments:
@@ -405,7 +403,7 @@ class MEDCoupler:
 
         return self.export_displacement(velo, field_name)
 
-    def export_temperature(self, temp, field_name=None):
+    def export_temperature(self, temp, field_name="TEMP"):
         """Create a MEDCoupling field of temperature reduced on the interface mesh.
 
         Arguments:
@@ -428,11 +426,11 @@ class MEDCoupler:
             FieldOnNodesReal: code_aster thermal field.
         """
 
-        mc_temp.getArray().setName("TEMP_R")
+        mc_temp.setDescription("TEMP_R-TEMP")
 
         return self.import_field(mc_temp)
 
-    def export_pressure(self, pres, field_name=None):
+    def export_pressure(self, pres, field_name="PRES"):
         """Create a MEDCoupling field of pressure reduced on the interface mesh.
 
         Arguments:
@@ -455,7 +453,7 @@ class MEDCoupler:
             *FieldOnNodesReal*: code_aster pressure field.
         """
 
-        mc_pres.getArray().setName("PRES_R")
+        mc_pres.setDescription("PRES_R-PRES")
 
         return self.import_field(mc_pres)
 
@@ -471,7 +469,7 @@ class MEDCoupler:
             *LoadResult*: surface forces load.
         """
 
-        mc_fluidf.getArray().setName("FORC_R")
+        mc_fluidf.setDescription("FORC_R-FORC")
         forc_elem = self.import_field(mc_fluidf, model)
 
         evol_char = LoadResult()

@@ -520,7 +520,8 @@ class FieldOnCells : public DataField {
      */
     ASTERDOUBLE dot( const FieldOnCellsPtr &tmp ) const;
 
-    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::string version = std::string() ) const;
 
     FieldOnCellsPtr asLocalization( const std::string &loc ) const {
         if ( loc == getLocalization() ) {
@@ -562,8 +563,8 @@ class FieldOnCells : public DataField {
 };
 
 template < class ValueType >
-bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileName,
-                                              bool local ) const {
+bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileName, bool local,
+                                              std::string version ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;
@@ -584,6 +585,9 @@ bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileN
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = (ASTERINTEGER)retour;
+    if ( !version.empty() ) {
+        dict.container["VERSION_MED"] = version;
+    }
 
     if ( getMesh()->isParallel() ) {
         dict.container["PROC0"] = "NON";

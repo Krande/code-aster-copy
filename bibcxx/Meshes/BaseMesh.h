@@ -413,7 +413,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @param fileName Nom du fichier MED à imprimer
      * @return true
      */
-    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::string version = std::string() ) const;
 
     /**
      * @brief Get the mapping between local and global numbering of nodes

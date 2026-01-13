@@ -163,7 +163,8 @@ const JeveuxVectorLong BaseMesh::getMedCellsTypes() const {
     return result;
 }
 
-bool BaseMesh::printMedFile( const std::filesystem::path &fileName, bool local ) const {
+bool BaseMesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                             std::string version ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;
@@ -184,6 +185,9 @@ bool BaseMesh::printMedFile( const std::filesystem::path &fileName, bool local )
 
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = retour;
+    if ( !version.empty() ) {
+        dict.container["VERSION_MED"] = version;
+    }
 
     ListSyntaxMapContainer listeResu;
     SyntaxMapContainer dict2;

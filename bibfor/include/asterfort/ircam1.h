@@ -23,7 +23,7 @@ interface
                       adsk, partie, indcmp, ncmpve, ntlcmp,&
                       ntncmp, ntucmp, ntproa, nbimpr, caimpi,&
                       caimpk, typech, nomamd, nomtyp, modnum,&
-                      nuanom, lfichUniq, nosdfu, codret)
+                      nuanom, lfichUniq, nosdfu, dschmd, codret)
         integer(kind=8) :: nbimpr
         character(len=*) :: nofimd
         character(len=64) :: nochmd
@@ -51,6 +51,7 @@ interface
         integer(kind=8) :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
         aster_logical :: lfichUniq
         character(len=8) :: nosdfu
+        character(len=64) :: dschmd
         integer(kind=8) :: codret
     end subroutine ircam1
 end interface

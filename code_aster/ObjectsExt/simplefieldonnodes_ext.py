@@ -150,7 +150,7 @@ class ExtendedSimpleFieldOnNodesReal:
             mesh (Mesh) : field support mesh.
 
         Returns:
-            field (*MEDCouplingFieldDouble*): The medcoupling field.
+            field (*SimpleFieldOnNodes*): The aster field.
         """
 
         phys, cmps, values = fromMedFileField1TSNodes(mc_field, astermesh)
@@ -161,32 +161,34 @@ class ExtendedSimpleFieldOnNodesReal:
 
         return field
 
-    def toMedCouplingField(self, medmesh, prefix=""):
+    def toMedCouplingField(self, medmesh, symbname, prefix=""):
         """Export the field to a new MEDCoupling field
 
         Arguments:
             medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
+            symbname (str): Symbolic name of field.
             prefix,  optional (str): Prefix for field names.
 
         Returns:
             field ( MEDCouplingFieldDouble ) : The field medcoupling format.
         """
 
-        return toMedCouplingField(self, medmesh, prefix)
+        return toMedCouplingField(self, medmesh, symbname, prefix)
 
-    def toMedFileField1TS(self, medmesh, profile=False, prefix=""):
+    def toMedFileField1TS(self, medmesh, symbname, prefix="", profile=False):
         """Export the field to a new MED field
 
         Arguments:
             medmesh (*MEDFileUMesh*): The medcoupling support mesh.
+            symbname (str): Symbolic name of field.
+            prefix, optional (str): Prefix for field names.
             profile, optional (bool): True to create a MED profile from field mask.
-            prefix,  optional (str): Prefix for field names.
 
         Returns:
             field ( MEDFileField1TS ) : The field in med format ( medcoupling ).
         """
 
-        return toMedFileField1TS(self, medmesh, profile, prefix)
+        return toMedFileField1TS(self, medmesh, symbname, prefix, profile)
 
     def transfert(self, mesh, cmps=[]):
         """Tranfert the field to an other mesh. One of the mesh has to be a restriction

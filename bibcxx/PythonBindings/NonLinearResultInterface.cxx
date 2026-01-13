@@ -44,7 +44,9 @@ Args:
     local (bool): Print only the local domain if *True*. (default: True)
     internalVarl (bool); Save VARI_ELGA_NOMME or not. (default: True)
     fields (list[str]): Name of fields to save. (default: all)
+    version (str): Version of MED file.
               )",
               py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = false,
-              py::arg( "internalVar" ) = true, py::arg( "fields" ) = VectorString() );
+              py::arg( "internalVar" ) = true, py::arg( "fields" ) = VectorString(),
+              py::arg( "version" ) = "" );
 };

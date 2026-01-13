@@ -123,7 +123,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, ligrel, &
     character(len=24)  :: ntlcmp, ntncmp, ntucmp, ntproa, nmcmfi, ncaimi, ncaimk
     character(len=24)  :: indcmp
     character(len=32)  :: nomgd
-    character(len=64)  :: nomamd
+    character(len=64)  :: nomamd, dschmd
     character(len=200) :: nofimd
     character(len=255) :: kfic
     med_idt :: ifimed
@@ -260,6 +260,10 @@ subroutine ircame(ifi, nochmd, chanom, typech, ligrel, &
         goto 999
     end if
     indcmp = '&&IRCAME.CMPINDIR'
+
+    call dismoi('NOM_GD', chanom, 'CHAMP', repk=nomgd)
+    dschmd = trim(nomgd)//'-'//trim(field_type)
+
     if (lfichUniq) then
         call jeveuo(ntncmp, 'L', jnocm1)
         call jeveuo(ntucmp, 'L', jnocm2)
@@ -270,7 +274,6 @@ subroutine ircame(ifi, nochmd, chanom, typech, ligrel, &
             call jecroc(jexnom('&&IRCAME.CMPLOC', zk16(jnocm1+icmp1-1)))
         end do
         one4 = to_mpi_int(1)
-        call dismoi('NOM_GD', chanom, 'CHAMP', repk=nomgd)
         if (nomgd .eq. 'VARI_R') then
             vnbcmp(1) = ncmpve
             call asmpi_comm_vect('MPI_MAX', 'I', 1, vi=vnbcmp)
@@ -431,7 +434,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, ligrel, &
                         adsk, partie, indcmp, ncmpve, ntlcmp, &
                         ntncmp, ntucmp, ntproa, nbimpr, zi(adcaii), &
                         zk80(adcaik), typech, nomamd, nomtyp, modnum, &
-                        numnoa, lfichUniq, nom_sd_fu, codret)
+                        numnoa, lfichUniq, nom_sd_fu, dschmd, codret)
         else
             call utmess('F', 'MED2_4', sk=nochmd, sr=instan)
         end if

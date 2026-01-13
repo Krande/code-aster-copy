@@ -340,7 +340,10 @@ def line_coupe(resu, path_name, mc_mesh, mesh_aster):
         else:
             pass
 
-    med_file = mc.MEDFileFields()
+    medresult = mc.MEDFileData()
+    meshes = mc.MEDFileMeshes()
+
+    med_fields = mc.MEDFileFields()
     nb_path = len(moment_0.keys())
     iField = 0
 
@@ -377,6 +380,8 @@ def line_coupe(resu, path_name, mc_mesh, mesh_aster):
             field = mc.MEDCouplingFieldDouble(mc.ON_NODES, mc.ONE_TIME)
             field.setName("Line-" + field_name)
             field.setMesh(mesh_field)
+            internal_desc = "-".join((sigm_noeu.getPhysicalQuantity(), field_name))
+            field.setDescription(internal_desc)
             ctime = resu.getTime(no)
             field.setTime(ctime, no, no)
             fieldArray = mc.DataArrayDouble(sigm, mesh_field.getNumberOfNodes(), nb_cmp)
@@ -389,66 +394,14 @@ def line_coupe(resu, path_name, mc_mesh, mesh_aster):
 
             field_file.appendFieldNoProfileSBT(field)
 
-        med_file.setFieldAtPos(iField, field_file)
+        med_fields.setFieldAtPos(iField, field_file)
         iField += 1
 
-    type_resu = resu.getType()
+    meshes.pushMesh(mc_mesh)
+    medresult.setMeshes(meshes)
+    medresult.setFields(med_fields)
 
-    resu_coupe = convert_med_to_aster(med_file, mesh_aster, type_resu, fields_names, mc_mesh)
-
-    return resu_coupe
-
-
-def convert_med_to_aster(fields, mesh_aster, type_resu, fields_names, mc_mesh):
-    """Convert MEDCouplingField to aster sd_result
-
-    Arguments:
-        fields : MEDCouplingField to convert
-        mesh_aster : mesh concept from code_aster
-        type_resu : output sd_result type
-        fields_names : list of fields names
-        mc_mesh : MEDCoupling path mesh
-
-    Returns:
-        resu_coupe : sd_results convert
-    """
-
-    med_fields_names = fields.getFieldsNames()
-    lire_resu = {}
-    lire_resu["FORMAT_MED"] = []
-    for med_field in med_fields_names:
-        field_name = med_field.split("-")[-1]
-        lire_resu["FORMAT_MED"].append(_F(NOM_CHAM=field_name, NOM_CHAM_MED=med_field))
-
-    med_file_mesh = mc.MEDFileMeshes()
-    med_file_mesh.pushMesh(mc_mesh)
-
-    data_file = mc.MEDFileData()
-    data_file.setFields(fields)
-    data_file.setMeshes(med_file_mesh)
-
-    ################# TO DO ########################
-    #### implementation with fromMedCouplingResult does not work. The following error occurs
-    #### medcoupling.InterpKernelException: MEDFileAnyTypeField1TS::loadArrays : the structure does not come from a file !
-
-    # result_class = CORR_TYPE_CLASS[type_resu]
-
-    # resu_coupe = result_class.fromMedCouplingResult(data_file, mesh_aster)
-    ################################################
-    unit = LogicalUnitFile.new_free(typ=1)
-    nomfich = LogicalUnitFile.filename_from_unit(unit.unit)
-    data_file.write(nomfich, 2)
-
-    resu_coupe = LIRE_RESU(
-        FORMAT="MED",
-        UNITE=unit.unit,
-        TYPE_RESU=type_resu,
-        TOUT_ORDRE="OUI",
-        MAILLAGE=mesh_aster,
-        **lire_resu,
-    )
-
-    unit.release()
+    resu_coupe = resu.__class__.fromMedCouplingResult(medresult, mesh_aster)
 
     return resu_coupe
 

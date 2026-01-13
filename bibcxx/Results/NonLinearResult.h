@@ -67,7 +67,8 @@ class NonLinearResult : public TransientResult {
 
     void printMedFile( const std::filesystem::path &fileName, std::string medName = std::string(),
                        bool local = true, bool internalVar = true,
-                       const VectorString &fields = VectorString() ) const;
+                       const VectorString &fields = VectorString(),
+                       std::string version = std::string() ) const;
 };
 
 /**

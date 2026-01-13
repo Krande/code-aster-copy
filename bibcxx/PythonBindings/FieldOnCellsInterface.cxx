@@ -200,11 +200,12 @@ Returns:
                 filename (Path|str): Path to the file to be printed.
                 local (bool): Print local values only (relevant for ParallelMesh only,
                     default: *True*)
+                version (str): Version of MED file.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
-              py::arg( "filename" ), py::arg( "local" ) = true )
+              py::arg( "filename" ), py::arg( "local" ) = true, py::arg( "version" ) = "" )
         .def( "norm", &FieldOnCellsReal::norm, R"(
             Return the euclidean norm of the field
 
@@ -344,11 +345,14 @@ Returns:
 
             Arguments:
                 filename (Path|str): Path to the file to be printed.
+                local (bool): Print local values only (relevant for ParallelMesh only,
+                    default: *True*)
+                version (str): Version of MED file.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
-              py::arg( "filename" ), py::arg( "local" ) = true );
+              py::arg( "filename" ), py::arg( "local" ) = true, py::arg( "version" ) = "" );
 
     py::class_< FieldOnCellsLong, FieldOnCellsLongPtr, DataField >( mod, "FieldOnCellsLong" )
         .def( py::init( &initFactoryPtr< FieldOnCellsLong > ) )
@@ -412,11 +416,14 @@ Returns:
 
             Arguments:
                 filename (Path|str): Path to the file to be printed.
+                local (bool): Print local values only (relevant for ParallelMesh only,
+                    default: *True*)
+                version (str): Version of MED file.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
-              py::arg( "filename" ), py::arg( "local" ) = true );
+              py::arg( "filename" ), py::arg( "local" ) = true, py::arg( "version" ) = "" );
     /**
      * Object FieldOnCellsChar8
      */
