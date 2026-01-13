@@ -23,7 +23,7 @@ fi
 jobs=$(( ${NPROC_MAX:-8} / 2 ))
 
 if [ "${OSNAME}" != "win" ]; then
-    ./configure --site-packages=lib/python3.11/site-packages "${opts[@]}"
+    ./configure --site-packages=auto "${opts[@]}"
     make install -j ${jobs}
 else
     ./waf_std configure --mingw-cross-compilation "${opts[@]}"
