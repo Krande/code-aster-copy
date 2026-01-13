@@ -107,6 +107,10 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
         modeli = modeli_in(1:lxlgut(modeli_in))//'#1'
     elseif (formul .eq. 'DIL_INCO') then
         modeli = modeli_in(1:lxlgut(modeli_in))//'#2'
+    elseif (formul .eq. 'STA') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#1'
+    elseif (formul .eq. 'STA_INCO') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#2'
     elseif (formul .ne. ' ') then
         ASSERT(ASTER_FALSE)
     end if

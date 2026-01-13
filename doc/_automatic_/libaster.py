@@ -12198,215 +12198,217 @@ class Modelings:
     # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
-    AXIS_FLUIDE = 65
+    AXIS_FLUIDE = 66
 
-    AXIS_FLUI_ABSO = 66
+    AXIS_FLUI_ABSO = 67
 
-    AXIS_FLUI_STRU = 67
+    AXIS_FLUI_STRU = 68
 
-    AXIS_FOURIER = 68
+    AXIS_FOURIER = 69
 
-    AXIS_GRAD_INCO = 69
+    AXIS_GRAD_INCO = 70
 
-    AXIS_GRAD_VARI = 70
+    AXIS_GRAD_VARI = 71
 
-    AXIS_GVNO = 71
+    AXIS_GVNO = 72
 
-    AXIS_HH2D = 72
+    AXIS_HH2D = 73
 
-    AXIS_HH2MD = 73
+    AXIS_HH2MD = 74
 
-    AXIS_HH2MS = 74
+    AXIS_HH2MS = 75
 
-    AXIS_HH2S = 75
+    AXIS_HH2S = 76
 
-    AXIS_HHD = 76
+    AXIS_HHD = 77
 
-    AXIS_HHM = 77
+    AXIS_HHM = 78
 
-    AXIS_HHMD = 78
+    AXIS_HHMD = 79
 
-    AXIS_HHMS = 79
+    AXIS_HHMS = 80
 
-    AXIS_HHS = 81
+    AXIS_HHS = 82
 
-    AXIS_HM = 82
+    AXIS_HM = 83
 
-    AXIS_HMD = 83
+    AXIS_HMD = 84
 
-    AXIS_HMS = 84
+    AXIS_HMS = 85
 
-    AXIS_INCO_UP = 85
+    AXIS_INCO_UP = 86
 
-    AXIS_INCO_UPG = 86
+    AXIS_INCO_UPG = 87
 
-    AXIS_INCO_UPO = 87
+    AXIS_INCO_UPO = 88
 
-    AXIS_INTERFACE = 88
+    AXIS_INTERFACE = 89
 
-    AXIS_INTERFACE_S = 89
+    AXIS_INTERFACE_S = 90
 
-    AXIS_JHMS = 90
+    AXIS_JHMS = 91
 
-    AXIS_JOINT = 91
+    AXIS_JOINT = 92
 
-    AXIS_SECH = 92
+    AXIS_SECH = 93
 
-    AXIS_SECH_DIAG = 93
+    AXIS_SECH_DIAG = 94
 
-    AXIS_SI = 94
+    AXIS_SI = 95
 
-    AXIS_THH2D = 95
+    AXIS_THH2D = 96
 
-    AXIS_THH2MD = 96
+    AXIS_THH2MD = 97
 
-    AXIS_THH2MS = 97
+    AXIS_THH2MS = 98
 
-    AXIS_THH2S = 98
+    AXIS_THH2S = 99
 
-    AXIS_THHD = 99
+    AXIS_THHD = 100
 
-    AXIS_THHMD = 100
+    AXIS_THHMD = 101
 
-    AXIS_THHMS = 101
+    AXIS_THHMS = 102
 
-    AXIS_THHS = 102
+    AXIS_THHS = 103
 
-    AXIS_THM = 103
+    AXIS_THM = 104
 
-    AXIS_THMD = 104
+    AXIS_THMD = 105
 
-    AXIS_THMS = 105
+    AXIS_THMS = 106
 
-    AXIS_THVD = 106
+    AXIS_THVD = 107
 
-    AXIS_THVS = 107
+    AXIS_THVS = 108
 
-    Axisymmetrical = 63
+    Axisymmetrical = 64
 
-    BARRE = 108
+    BARRE = 109
 
-    CABLE = 109
+    CABLE = 110
 
-    CABLE_GAINE = 110
+    CABLE_GAINE = 111
 
-    CABLE_POULIE = 111
+    CABLE_POULIE = 112
 
-    COQUE_3D = 113
+    COQUE_3D = 114
 
-    COQUE_AXIS = 114
+    COQUE_AXIS = 115
 
-    COQUE_SOLIDE = 116
+    COQUE_SOLIDE = 117
 
-    C_PLAN_SI = 118
+    C_PLAN_SI = 119
 
     DIL_3D = 10
 
-    DIS_T = 119
+    DIS_T = 120
 
-    DIS_TR = 120
+    DIS_TR = 121
 
     DIS_TR_2D = 2
 
     DIS_T_2D = 1
 
-    DKT = 121
+    DKT = 122
 
-    DKTG = 122
+    DKTG = 123
 
-    DST = 123
+    DST = 124
 
-    D_PLAN_2DG = 125
+    D_PLAN_2DG = 126
 
-    D_PLAN_ABSO = 126
+    D_PLAN_ABSO = 127
 
-    D_PLAN_DIL = 127
+    D_PLAN_DIL = 128
 
-    D_PLAN_GRAD_HHO = 128
+    D_PLAN_GRAD_HHO = 129
 
-    D_PLAN_GRAD_INCO = 129
+    D_PLAN_GRAD_INCO = 130
 
-    D_PLAN_GRAD_SIGM = 130
+    D_PLAN_GRAD_SIGM = 131
 
-    D_PLAN_GRAD_VARI = 131
+    D_PLAN_GRAD_VARI = 132
 
-    D_PLAN_GVNO = 132
+    D_PLAN_GVNO = 133
 
-    D_PLAN_HH2D = 133
+    D_PLAN_HH2D = 134
 
-    D_PLAN_HH2MD = 134
+    D_PLAN_HH2MD = 135
 
-    D_PLAN_HH2MS = 135
+    D_PLAN_HH2MS = 136
 
-    D_PLAN_HH2MS_DIL = 136
+    D_PLAN_HH2MS_DIL = 137
 
-    D_PLAN_HH2M_SI = 137
+    D_PLAN_HH2M_SI = 138
 
-    D_PLAN_HH2S = 138
+    D_PLAN_HH2S = 139
 
-    D_PLAN_HH2SUDA = 139
+    D_PLAN_HH2SUDA = 140
 
-    D_PLAN_HHD = 140
+    D_PLAN_HHD = 141
 
-    D_PLAN_HHM = 141
+    D_PLAN_HHM = 142
 
-    D_PLAN_HHMD = 142
+    D_PLAN_HHMD = 143
 
-    D_PLAN_HHMS = 143
+    D_PLAN_HHMS = 144
 
-    D_PLAN_HHO = 144
+    D_PLAN_HHO = 145
 
-    D_PLAN_HHS = 145
+    D_PLAN_HHS = 146
 
-    D_PLAN_HM = 146
+    D_PLAN_HM = 147
 
-    D_PLAN_HMD = 147
+    D_PLAN_HMD = 148
 
-    D_PLAN_HMS = 148
+    D_PLAN_HMS = 149
 
-    D_PLAN_HMS_DIL = 149
+    D_PLAN_HMS_DIL = 150
 
-    D_PLAN_HM_SI = 150
+    D_PLAN_HM_SI = 151
 
-    D_PLAN_HM_SI_DIL = 151
+    D_PLAN_HM_SI_DIL = 152
 
-    D_PLAN_HS = 152
+    D_PLAN_HS = 153
 
-    D_PLAN_INCO_UP = 153
+    D_PLAN_INCO_UP = 154
 
-    D_PLAN_INCO_UPG = 154
+    D_PLAN_INCO_UPG = 155
 
-    D_PLAN_INCO_UPO = 155
+    D_PLAN_INCO_UPO = 156
 
-    D_PLAN_SI = 156
+    D_PLAN_MIX_STA = 157
 
-    D_PLAN_THH2D = 157
+    D_PLAN_SI = 158
 
-    D_PLAN_THH2MD = 158
+    D_PLAN_THH2D = 159
 
-    D_PLAN_THH2MS = 159
+    D_PLAN_THH2MD = 160
 
-    D_PLAN_THH2S = 160
+    D_PLAN_THH2MS = 161
 
-    D_PLAN_THHD = 161
+    D_PLAN_THH2S = 162
 
-    D_PLAN_THHMD = 162
+    D_PLAN_THHD = 163
 
-    D_PLAN_THHMS = 163
+    D_PLAN_THHMD = 164
 
-    D_PLAN_THHS = 164
+    D_PLAN_THHMS = 165
 
-    D_PLAN_THM = 165
+    D_PLAN_THHS = 166
 
-    D_PLAN_THMD = 166
+    D_PLAN_THM = 167
 
-    D_PLAN_THMS = 167
+    D_PLAN_THMD = 168
 
-    D_PLAN_THMS_DIL = 168
+    D_PLAN_THMS = 169
 
-    D_PLAN_THVD = 169
+    D_PLAN_THMS_DIL = 170
 
-    D_PLAN_THVS = 170
+    D_PLAN_THVD = 171
+
+    D_PLAN_THVS = 172
 
     FAISCEAU_3D = 11
 
@@ -12420,7 +12422,7 @@ class Modelings:
 
     FLUI_PESA_2D = 5
 
-    FLUI_STRU = 172
+    FLUI_STRU = 174
 
     FLUI_STRU_2D = 6
 
@@ -12430,9 +12432,9 @@ class Modelings:
 
     GRAD_VARI_3D = 16
 
-    GRILLE_EXCENTRE = 173
+    GRILLE_EXCENTRE = 175
 
-    GRILLE_MEMBRANE = 174
+    GRILLE_MEMBRANE = 176
 
     GVNO_3D = 17
 
@@ -12490,87 +12492,89 @@ class Modelings:
 
     JOINT_HYME_3D = 44
 
-    MEMBRANE = 175
+    MEMBRANE = 177
 
-    PLAN_INTERFACE = 180
+    MIX_STA_3D = 47
 
-    PLAN_INTERFACE_S = 181
+    PLAN_INTERFACE = 182
 
-    PLAN_JHMS = 182
+    PLAN_INTERFACE_S = 183
 
-    PLAN_JOINT = 183
+    PLAN_JHMS = 184
 
-    PLAN_JOINT_HYME = 184
+    PLAN_JOINT = 185
 
-    PLAQ_MITC = 171
+    PLAN_JOINT_HYME = 186
 
-    POU_D_E = 185
+    PLAQ_MITC = 173
 
-    POU_D_EM = 186
+    POU_D_E = 187
 
-    POU_D_SQUE = 187
+    POU_D_EM = 188
 
-    POU_D_T = 188
+    POU_D_SQUE = 189
 
-    POU_D_TG = 189
+    POU_D_T = 190
 
-    POU_D_TGM = 190
+    POU_D_TG = 191
 
-    POU_D_T_GD = 191
+    POU_D_TGM = 192
 
-    POU_FLUI_STRU = 192
+    POU_D_T_GD = 193
 
-    Planar = 176
+    POU_FLUI_STRU = 194
+
+    Planar = 178
 
     PlanarBar = 0
 
-    PlaneStrain = 124
+    PlaneStrain = 125
 
-    PlaneStress = 117
+    PlaneStress = 118
 
-    Q4G = 193
+    Q4G = 195
 
-    Q4GG = 194
+    Q4GG = 196
 
     SECH_3D = 45
 
     SECH_3D_DIAG = 46
 
-    SI_3D = 47
+    SI_3D = 48
 
-    THH2D_3D = 48
+    THH2D_3D = 49
 
-    THH2MD_3D = 49
+    THH2MD_3D = 50
 
-    THH2MS_3D = 50
+    THH2MS_3D = 51
 
-    THH2S_3D = 51
+    THH2S_3D = 52
 
-    THHD_3D = 52
+    THHD_3D = 53
 
-    THHMD_3D = 54
+    THHMD_3D = 55
 
-    THHMS_3D = 55
+    THHMS_3D = 56
 
-    THHM_3D = 53
+    THHM_3D = 54
 
-    THHS_3D = 56
+    THHS_3D = 57
 
-    THMD_3D = 58
+    THMD_3D = 59
 
-    THMS_3D = 59
+    THMS_3D = 60
 
-    THMS_DIL_3D = 60
+    THMS_DIL_3D = 61
 
-    THM_3D = 57
+    THM_3D = 58
 
-    THVD_3D = 61
+    THVD_3D = 62
 
-    THVS_3D = 62
+    THVS_3D = 63
 
-    TUYAU_3M = 195
+    TUYAU_3M = 197
 
-    TUYAU_6M = 196
+    TUYAU_6M = 198
 
     Tridimensional = 7
 
@@ -12647,6 +12651,10 @@ class Formulation:
     NoFormulation = 0
 
     Quadratic = 2
+
+    Sta = 8
+
+    StaInco = 9
 
     UP = 4
 

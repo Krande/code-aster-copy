@@ -84,6 +84,7 @@ Enumeration of modelings.
         .value( "JOINT_HYME_3D", JOINT_HYME_3D )
         .value( "SECH_3D", SECH_3D )
         .value( "SECH_3D_DIAG", SECH_3D_DIAG )
+        .value( "MIX_STA_3D", MIX_STA_3D )
         .value( "SI_3D", SI_3D )
         .value( "THH2D_3D", THH2D_3D )
         .value( "THH2MD_3D", THH2MD_3D )
@@ -189,6 +190,7 @@ Enumeration of modelings.
         .value( "D_PLAN_INCO_UP", D_PLAN_INCO_UP )
         .value( "D_PLAN_INCO_UPG", D_PLAN_INCO_UPG )
         .value( "D_PLAN_INCO_UPO", D_PLAN_INCO_UPO )
+        .value( "D_PLAN_MIX_STA", D_PLAN_MIX_STA )
         .value( "D_PLAN_SI", D_PLAN_SI )
         .value( "D_PLAN_THH2D", D_PLAN_THH2D )
         .value( "D_PLAN_THH2MD", D_PLAN_THH2MD )
@@ -240,5 +242,7 @@ Enumeration of formulation.
         .value( "UPsi", UPsi )
         .value( "Dil", Dil )
         .value( "DilInco", DilInco )
+        .value( "Sta", Sta )
+        .value( "StaInco", StaInco )
         .export_values();
 };

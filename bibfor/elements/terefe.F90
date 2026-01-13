@@ -69,11 +69,15 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 1
         else if (type_elem .eq. 'THM') then
             index = 1
+        else if (type_elem .eq. 'THM_DIL') then
+            index = 1
         else if (type_elem .eq. 'MECA_INCO') then
             index = 1
         else if (type_elem .eq. 'MECA_CG') then
             index = 1
         else if (type_elem .eq. 'MECA_DIL') then
+            index = 1
+        else if (type_elem .eq. 'MECA_MIXSTA') then
             index = 1
         else
             ASSERT(.false.)
@@ -87,12 +91,16 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 1
         else if (type_elem .eq. 'MECA_DIL') then
             index = 2
+        else if (type_elem .eq. 'THM_DIL') then
+            index = 2
         else
             ASSERT(.false.)
         end if
     else if (refe_name .eq. 'FLUX_THER_REFE') then
         if (type_elem .eq. 'THM') then
             index = 4
+        else if (type_elem .eq. 'THM_DIL') then
+            index = 5
         else
             ASSERT(.false.)
         end if
@@ -101,12 +109,16 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 2
         else if (type_elem .eq. 'THM') then
             index = 2
+        else if (type_elem .eq. 'THM_DIL') then
+            index = 3
         else
             ASSERT(.false.)
         end if
     else if (refe_name .eq. 'FLUX_HYD2_REFE') then
         if (type_elem .eq. 'THM') then
             index = 3
+        else if (type_elem .eq. 'THM_DIL') then
+            index = 4
         else
             ASSERT(.false.)
         end if
@@ -157,6 +169,10 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 3
         else if (type_elem .eq. 'MECA_DIL') then
             index = 3
+        else if (type_elem .eq. 'MECA_MIXSTA') then
+            index = 2
+        else if (type_elem .eq. 'THM_DIL') then
+            index = 6
         else
             ASSERT(.false.)
         end if

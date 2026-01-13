@@ -46,13 +46,13 @@ KDESSIC = 3.6e-6
 
 ma_me = LIRE_MAILLAGE(INFO=2)
 
-
 mo_me = AFFE_MODELE(
     MAILLAGE=ma_me,
     AFFE=(
         _F(PHENOMENE="MECANIQUE", MODELISATION="3D", GROUP_MA="massif"),
         _F(PHENOMENE="MECANIQUE", MODELISATION="DKT", GROUP_MA="coque"),
         _F(PHENOMENE="MECANIQUE", MODELISATION="GRILLE_MEMBRANE", GROUP_MA="grille"),
+        _F(PHENOMENE="MECANIQUE", MODELISATION="GRILLE_EXCENTRE", GROUP_MA="grille_excentree"),
         _F(PHENOMENE="MECANIQUE", MODELISATION="BARRE", GROUP_MA="barre"),
         _F(PHENOMENE="MECANIQUE", MODELISATION="DIS_T", GROUP_MA="ressort"),
     ),
@@ -90,7 +90,10 @@ cara_me = AFFE_CARA_ELEM(
     MODELE=mo_me,
     BARRE=_F(GROUP_MA="barre", SECTION="GENERALE", CARA="A", VALE=1.0),
     COQUE=_F(GROUP_MA="coque", EPAIS=7.0, COEF_RIGI_DRZ=0, COQUE_NCOU=1, VECTEUR=(1, 0, 0)),
-    GRILLE=_F(GROUP_MA="grille", SECTION=1.0, VECT_1=(0, 1, 0)),
+    GRILLE=(
+        _F(GROUP_MA="grille", SECTION=1.0, VECT_1=(0, 1, 0)),
+        _F(GROUP_MA="grille_excentree", SECTION=1.0, VECT_1=(0, 1, 0), EXCENTREMENT=0.0),
+    ),
     DISCRET=_F(GROUP_MA="ressort", CARA="K_T_D_N", VALE=(YOUNG, YOUNG, YOUNG)),
 )
 
@@ -111,6 +114,11 @@ liaison_me = AFFE_CHAR_MECA(
         _F(GROUP_MA="grille_o", DX=0),
         _F(GROUP_MA="grille_n", DY=UIMP),
         _F(GROUP_MA="grille_e", DX=0),
+        _F(GROUP_MA="grille_excentree", DZ=0, DRX=0, DRY=0, DRZ=0),
+        _F(GROUP_MA="grille_excentree_s", DY=0),
+        _F(GROUP_MA="grille_excentree_o", DX=0),
+        _F(GROUP_MA="grille_excentree_n", DY=UIMP),
+        _F(GROUP_MA="grille_excentree_e", DX=0),
         _F(GROUP_MA="barre", DZ=0, DX=0),
         _F(GROUP_NO="barre_s", DY=0),
         _F(GROUP_NO="barre_n", DY=UIMP),
@@ -128,6 +136,7 @@ champ_mask_0 = CREA_CHAMP(
         _F(GROUP_MA="massif", NOM_CMP="TEMP", VALE=0),
         _F(GROUP_MA="coque", NOM_CMP="TEMP", VALE=0),
         _F(GROUP_MA="grille", NOM_CMP="TEMP", VALE=0),
+        _F(GROUP_MA="grille_excentree", NOM_CMP="TEMP", VALE=0),
         _F(GROUP_MA="barre", NOM_CMP="TEMP", VALE=0),
         _F(GROUP_MA="ressort", NOM_CMP="TEMP", VALE=0),
     ),
@@ -144,6 +153,7 @@ champ_zero = CREA_CHAMP(
         _F(CHAM_GD=champ_mask_0, GROUP_MA="massif", NOM_CMP="TEMP"),
         _F(CHAM_GD=champ_mask_0, GROUP_MA="coque", NOM_CMP="TEMP"),
         _F(CHAM_GD=champ_mask_0, GROUP_MA="grille", NOM_CMP="TEMP"),
+        _F(CHAM_GD=champ_mask_0, GROUP_MA="grille_excentree", NOM_CMP="TEMP"),
         _F(CHAM_GD=champ_mask_0, GROUP_MA="barre", NOM_CMP="TEMP"),
         _F(CHAM_GD=champ_mask_0, GROUP_MA="ressort", NOM_CMP="TEMP"),
     ),
@@ -160,6 +170,7 @@ champ_chaud = CREA_CHAMP(
         _F(GROUP_MA="massif", NOM_CMP="TEMP", VALE=TIMP),
         _F(GROUP_MA="coque", NOM_CMP="TEMP", VALE=TIMP),
         _F(GROUP_MA="grille", NOM_CMP="TEMP", VALE=TIMP),
+        _F(GROUP_MA="grille_excentree", NOM_CMP="TEMP", VALE=TIMP),
         _F(GROUP_MA="barre", NOM_CMP="TEMP", VALE=TIMP),
         _F(GROUP_MA="ressort", NOM_CMP="TEMP", VALE=TIMP),
     ),
@@ -225,6 +236,7 @@ mate_pur = AFFE_MATERIAU(
         _F(GROUP_MA="massif", MATER=acier_sech),
         _F(GROUP_MA="coque", MATER=acier),
         _F(GROUP_MA="grille", MATER=mat_indep_temp),
+        _F(GROUP_MA="grille_excentree", MATER=mat_indep_temp),
         _F(GROUP_MA="barre", MATER=mat_indep_temp),
         _F(GROUP_MA="ressort", MATER=fictif),
     ),
@@ -258,6 +270,7 @@ evol_me = STAT_NON_LINE(
         _F(GROUP_MA="massif", RELATION="VMIS_ISOT_NL", RESI_CPLAN_MAXI=1.0e-2, REGU_VISC="OUI"),
         _F(GROUP_MA="coque", RELATION="VMIS_ISOT_NL", RESI_CPLAN_MAXI=1.0e-2),
         _F(GROUP_MA="grille", RELATION="GRILLE_ISOT_LINE"),
+        _F(GROUP_MA="grille_excentree", RELATION="GRILLE_ISOT_LINE"),
         _F(GROUP_MA="barre", RELATION="VMIS_ISOT_LINE"),
         _F(GROUP_MA="ressort", RELATION="ELAS"),
     ),
@@ -294,7 +307,7 @@ CALC_CHAMP(
     RESULTAT=evol_me,
     DEFORMATION=("EPSI_ELGA"),
     TOUT_ORDRE="OUI",
-    GROUP_MA=("massif", "grille", "coque"),
+    GROUP_MA=("massif", "grille", "grille_excentree", "coque"),
 )
 
 CALC_CHAMP(
@@ -308,10 +321,11 @@ CALC_CHAMP(
 evol_cyl = MODI_REPERE(
     RESULTAT=evol_me,
     MODI_CHAM=(
-        _F(NOM_CHAM="EPSI_ELGA", TYPE_CHAM="TENS_3D"),
+        # _F(NOM_CHAM="EPSI_ELGA", TYPE_CHAM="TENS_3D"),
         _F(NOM_CHAM="EPSI_ELNO", TYPE_CHAM="TENS_3D"),
     ),
     REPERE="CYLINDRIQUE",
+    CARA_ELEM=cara_me,
     AFFE=_F(ORIGINE=(10000.0, 0.0, 0.0), AXE_Z=(0.0, 0.0, 1.0), TOUT="OUI"),
 )
 
@@ -332,7 +346,7 @@ CALC_CHAMP(
     RESULTAT=evol_me,
     VARI_INTERNE=("VARC_ELNO"),
     TOUT_ORDRE="OUI",
-    GROUP_MA=("massif", "grille", "barre", "ressort", "coque"),
+    GROUP_MA=("massif", "grille", "grille_excentree", "barre", "ressort", "coque"),
 )
 
 CALC_CHAMP(
@@ -340,7 +354,7 @@ CALC_CHAMP(
     RESULTAT=evol_me,
     VARI_INTERNE=("VARC_NOEU"),
     TOUT_ORDRE="OUI",
-    GROUP_MA=("massif", "grille", "barre", "ressort"),
+    GROUP_MA=("massif", "grille", "grille_excentree", "barre", "ressort"),
 )
 
 
@@ -426,6 +440,18 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
             GROUP_MA="grille",
+            POINT=1,
+            VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP),
+            VALE_CALC=200.0,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            GROUP_MA="grille_excentree",
             POINT=1,
             VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP),
             VALE_CALC=200.0,
@@ -532,6 +558,18 @@ TEST_RESU(
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="TEMP",
             GROUP_MA="grille",
+            POINT=1,
+            VALE_REFE=TIMP,
+            VALE_CALC=100.0,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
+            NOM_CHAM="VARC_ELGA",
+            NOM_CMP="TEMP",
+            GROUP_MA="grille_excentree",
             POINT=1,
             VALE_REFE=TIMP,
             VALE_CALC=100.0,

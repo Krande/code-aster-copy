@@ -108,6 +108,7 @@ subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
     integer(kind=8), parameter :: parbsi = 27*6
     real(kind=8) :: sigtm(parsig), ftemp(partmp), bsigm(parbsi)
     real(kind=8) :: vale_refe, list_vale_refe(6)
+    character(len=16) :: type_elem
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -118,34 +119,40 @@ subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
     ASSERT(nno .le. 27)
     ASSERT(npi .le. 27)
     ASSERT(dimcon .le. 31+5)
+
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        type_elem = "THM_DIL"
+    else
+        type_elem = "THM"
+    end if
 !
 ! - Check which *_REFE exist
 !
     if (ds_thm%ds_elem%l_dof_meca) then
-        call terefe('SIGM_REFE', 'THM', vale_refe)
+        call terefe('SIGM_REFE', type_elem, vale_refe)
         indx_vale_refe = 1
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_pre1) then
-        call terefe('FLUX_HYD1_REFE', 'THM', vale_refe)
+        call terefe('FLUX_HYD1_REFE', type_elem, vale_refe)
         indx_vale_refe = 2
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_pre2) then
-        call terefe('FLUX_HYD2_REFE', 'THM', vale_refe)
+        call terefe('FLUX_HYD2_REFE', type_elem, vale_refe)
         indx_vale_refe = 3
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_ther) then
-        call terefe('FLUX_THER_REFE', 'THM', vale_refe)
+        call terefe('FLUX_THER_REFE', type_elem, vale_refe)
         indx_vale_refe = 4
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_2nd) then
-        call terefe('LAGR_REFE', 'THM', vale_refe)
+        call terefe('LAGR_REFE', type_elem, vale_refe)
         indx_vale_refe = 5
         list_vale_refe(indx_vale_refe) = vale_refe
-        call terefe('EPSI_REFE', 'THM', vale_refe)
+        call terefe('EPSI_REFE', type_elem, vale_refe)
         indx_vale_refe = 6
         list_vale_refe(indx_vale_refe) = vale_refe
     end if

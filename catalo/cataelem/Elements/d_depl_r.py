@@ -153,6 +153,12 @@ for cmp in (
     "DRGZ",
     "PSI",
     "LAG_GV",
+    "EPXX",
+    "EPYY",
+    "EPZZ",
+    "EPXY",
+    "EPXZ",
+    "EPYZ",
 ):
 
     # ----------------
