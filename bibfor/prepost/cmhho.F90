@@ -85,6 +85,10 @@ subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem)
 !
     call mesh_hho%convert_cells(nb_list_elem, list_elem)
 !
+! - Check conformity
+!
+    call mesh_hho%check_conformity("F")
+!
 ! - Fix cells
 !
     call mesh_hho%fix(ASTER_FALSE, ASTER_TRUE, ASTER_TRUE, ASTER_FALSE, ASTER_TRUE, 1.0d-12)

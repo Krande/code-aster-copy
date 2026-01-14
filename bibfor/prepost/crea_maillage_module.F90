@@ -193,6 +193,7 @@ module crea_maillage_module
         procedure, private, pass :: add_edge
         procedure, private, pass :: add_face
         procedure, public, pass :: add_node
+        procedure, public, pass :: check_conformity
         procedure, private, pass :: add_point1
         procedure, private, pass :: add_volume
         procedure, private, pass :: barycenter
@@ -225,7 +226,7 @@ module crea_maillage_module
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: numbering_edge, numbering_face, dividing_cell, mult_elem
-    private :: sort_nodes_face
+    private :: sort_nodes_face, check_conformity_edge, check_conformity_face
 contains
 !
 !===================================================================================================
@@ -4223,5 +4224,128 @@ contains
         deallocate (count)
 !
     end subroutine
+!
+!
+! ==================================================================================================
+!
+    subroutine check_conformity(this, type_msg)
+!
+        implicit none
+!
+        class(Mmesh), intent(in) :: this
+        character(len=1), intent(in) :: type_msg
+!
+! ---------------------------------------------------------------------------------
+!
+        integer(ip) :: i_cell, cell_id, cell_dim, object_id, cell_type
+        integer(ip) :: i_face, face_id, face_cell_id, face_cell_type
+        integer(ip) :: i_edge, edge_id, edge_cell_id, edge_cell_type
+!
+        do i_cell = one_ip, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                cell_id = i_cell
+                cell_dim = this%cells(cell_id)%dim
+                cell_type = this%cells(cell_id)%type
+                object_id = this%cells(cell_id)%ss_id
+!
+                if (cell_dim == three_ip) then
+                    do i_face = one_ip, this%volumes(object_id)%nb_faces
+                        face_id = this%volumes(object_id)%faces(i_face)
+                        face_cell_id = this%faces(face_id)%cell_id
+                        if (face_cell_id > zero_ip) then
+                            face_cell_type = this%cells(face_cell_id)%type
+                            if (.not. check_conformity_face(cell_type, face_cell_type)) then
+                                call utmess(type_msg, 'MESH1_6', si=int(edge_cell_id, 8), &
+                                            sk=this%converter%name(face_cell_type))
+                            end if
+                        end if
+                    end do
+                elseif (cell_dim == two_ip) then
+                    do i_edge = one_ip, this%faces(object_id)%nb_edges
+                        edge_id = this%faces(object_id)%edges(i_edge)
+                        edge_cell_id = this%edges(edge_id)%cell_id
+                        if (edge_cell_id > zero_ip) then
+                            edge_cell_type = this%cells(edge_cell_id)%type
+                            if (.not. check_conformity_edge(cell_type, edge_cell_type)) then
+                                call utmess(type_msg, 'MESH1_5', si=int(edge_cell_id, 8), &
+                                            sk=this%converter%name(edge_cell_type))
+                            end if
+                        end if
+                    end do
+                end if
+            end if
+        end do
+!
+    end subroutine
+!
+!
+! ==================================================================================================
+!
+    function check_conformity_edge(face_type, edge_type) result(ok)
+!
+        implicit none
+!
+        integer(ip), intent(in) :: face_type, edge_type
+        aster_logical :: ok
+!
+! ---------------------------------------------------------------------------------
+!
+        ok = ASTER_TRUE
+        if (face_type == MT_TRIA3 .or. face_type == MT_QUAD4) then
+            ok = edge_type == MT_SEG2
+        elseif (face_type == MT_TRIA6 .or. face_type == MT_TRIA7 &
+                .or. face_type == MT_QUAD8 .or. face_type == MT_QUAD9) then
+            ok = edge_type == MT_SEG3
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end function
+!
+!
+! ==================================================================================================
+!
+    function check_conformity_face(volu_type, face_type) result(ok)
+!
+        implicit none
+!
+        integer(ip), intent(in) :: volu_type, face_type
+        aster_logical :: ok
+!
+! ---------------------------------------------------------------------------------
+!
+        ok = ASTER_TRUE
+        select case (volu_type)
+        case (MT_TETRA4)
+            ok = face_type == MT_TRIA3
+        case (MT_TETRA10)
+            ok = face_type == MT_TRIA6
+        case (MT_TETRA15)
+            ok = face_type == MT_TRIA7
+        case (MT_HEXA8, MT_HEXA9)
+            ok = face_type == MT_QUAD4
+        case (MT_HEXA20)
+            ok = face_type == MT_QUAD8
+        case (MT_HEXA27)
+            ok = face_type == MT_QUAD9
+        case (MT_PYRAM5)
+            ok = face_type == MT_TRIA3 .or. face_type == MT_QUAD4
+        case (MT_PYRAM13)
+            ok = face_type == MT_TRIA6 .or. face_type == MT_QUAD8
+        case (MT_PYRAM19)
+            ok = face_type == MT_TRIA7 .or. face_type == MT_QUAD9
+        case (MT_PENTA6, MT_PENTA7)
+            ok = face_type == MT_TRIA3 .or. face_type == MT_QUAD4
+        case (MT_PENTA15)
+            ok = face_type == MT_TRIA6 .or. face_type == MT_QUAD8
+        case (MT_PENTA18)
+            ok = face_type == MT_TRIA6 .or. face_type == MT_QUAD9
+        case (MT_PENTA21)
+            ok = face_type == MT_TRIA7 .or. face_type == MT_QUAD9
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end function
 !
 end module

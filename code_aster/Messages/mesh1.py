@@ -27,8 +27,8 @@ Pour créer un champ de déplacement adapté au maillage, on peut utiliser la co
 """
     ),
     2: _(
-        """Opération DECOUPE_LAC : 
-pour au moins une maille surfacique déclarée dans GROUP_MA_ESCL, 
+        """Opération DECOUPE_LAC :
+pour au moins une maille surfacique déclarée dans GROUP_MA_ESCL,
 on ne trouve pas de maille volumique dont cette maille serait une des faces."""
     ),
     3: _("""Pour l'opération DECOUPE_LAC. Groupe de mailles %(i1)d - Nombre de mailles %(i2)d."""),
@@ -36,6 +36,8 @@ on ne trouve pas de maille volumique dont cette maille serait une des faces."""
         """Pour le mot clé facteur %(k1)s, vous nous modifiez qu'une partie des mailles du maillage.
 Ceci est dangereux car cela peut produire un maillage non conforme."""
     ),
+    5: _("""Le segment %(i1)d de type %(k1)s crée une non-conformité du maillage."""),
+    6: _("""La face %(i1)d de type %(k1)s crée une non-conformité du maillage."""),
     7: _("""L'opération ne traite pas les macro-éléments."""),
     8: _("""L'opération ne traite pas les ABSC_CURV."""),
     9: _("""L'opération MODI_MAILLE ne peut traiter qu'une seule occurrence de QUAD_TRIA3."""),

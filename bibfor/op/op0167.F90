@@ -444,9 +444,6 @@ subroutine op0167()
         end if
         keywfact = 'MODI_HHO'
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
-        if (nbCell .ne. nbCellIn) then
-            call utmess('A', 'MESH1_4', sk=keywfact)
-        end if
         call jeveuo(jvCellNume, 'L', vi=listCellNume)
         call cmhho(meshIn, meshOut, nbCell, listCellNume)
         goto 350
