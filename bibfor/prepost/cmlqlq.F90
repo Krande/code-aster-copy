@@ -21,9 +21,9 @@ subroutine cmlqlq(main, maout, nbma, lima)
     use crea_maillage_module
 !
     implicit none
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
 #include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 !
     integer(kind=8) :: nbma, lima(nbma)
     character(len=8) :: main, maout
@@ -99,7 +99,11 @@ subroutine cmlqlq(main, maout, nbma, lima)
 !
 ! - Convert cells
 !
-    call mesh_conv%convert_cells(nbma, lima)
+    call mesh_conv%convert_cells(nbma, lima, ASTER_FALSE)
+!
+! - Check conformity
+!
+    call mesh_conv%check_conformity("A")
 !
 ! - Copy mesh
 !

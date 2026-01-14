@@ -21,6 +21,7 @@ subroutine cm1518(main, maout, nbma, lima)
     use crea_maillage_module
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
@@ -55,7 +56,11 @@ subroutine cm1518(main, maout, nbma, lima)
 !
 ! - Convert cells
 !
-    call mesh_conv%convert_cells(nbma, lima)
+    call mesh_conv%convert_cells(nbma, lima, ASTER_FALSE)
+!
+! - Check conformity
+!
+    call mesh_conv%check_conformity("A")
 !
 ! - Copy mesh
 !

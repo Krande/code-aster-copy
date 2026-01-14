@@ -139,7 +139,11 @@ subroutine cmbqbq(main, maout, degree, info)
         listCells(ima) = ima
     end do
 !
-    call mesh_conv%convert_cells(nbma, listCells)
+    call mesh_conv%convert_cells(nbma, listCells, ASTER_FALSE)
+!
+! - Check conformity
+!
+    call mesh_conv%check_conformity("A")
 !
 ! - Copy mesh
 !

@@ -204,6 +204,7 @@ module crea_maillage_module
         procedure, private, pass :: convert_edge
         procedure, private, pass :: convert_face
         procedure, private, pass :: convert_volume
+        procedure, private, pass :: convert_one_cell
         procedure, private, pass :: copy_group_ma
         procedure, private, pass :: copy_group_no
         procedure, private, pass :: find_edge
@@ -2238,15 +2239,88 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine convert_cells(this, nb_cells, list_cells)
+    recursive subroutine convert_one_cell(this, cell_id, subdim)
+!
+        implicit none
+!
+        class(Mmesh), intent(inout) :: this
+        integer(ip), intent(in) :: cell_id
+        aster_logical, intent(in) :: subdim
+! ------------------------------------------------------------------
+        integer(ip) :: cell_dim, object_id, nno, cell_type
+        integer(ip) :: i_node, nodes_loc(27)
+        integer(ip) :: i_face, face_id, face_cell_id
+        integer(ip) :: i_edge, edge_id, edge_cell_id
+!
+        cell_dim = this%cells(cell_id)%dim
+        cell_type = this%cells(cell_id)%type
+        object_id = this%cells(cell_id)%ss_id
+!
+        if (this%converter%to_convert(cell_type)) then
+            if (this%debug) then
+                print *, "Convert ", cell_id, ": ", this%cells(cell_id)%type, &
+                    this%converter%name(this%cells(cell_id)%type), cell_dim
+            end if
+!
+            this%cells(cell_id)%type = this%converter%convert_to(cell_type)
+            nno = this%converter%nno(this%cells(cell_id)%type)
+            call this%numbering_nodes(this%cells(cell_id)%type, nodes_loc)
+            this%cells(cell_id)%nodes = zero_ip
+            if (cell_dim == three_ip) then
+                do i_node = one_ip, nno
+                    this%cells(cell_id)%nodes(i_node) = &
+                        this%volumes(object_id)%nodes(nodes_loc(i_node))
+                end do
+!
+                if (subdim) then
+                    do i_face = one_ip, this%volumes(object_id)%nb_faces
+                        face_id = this%volumes(object_id)%faces(i_face)
+                        face_cell_id = this%faces(face_id)%cell_id
+                        if (face_cell_id > zero_ip) then
+                            call this%convert_one_cell(face_cell_id, subdim)
+                        end if
+                    end do
+                end if
+            elseif (cell_dim == two_ip) then
+                do i_node = one_ip, nno
+                    this%cells(cell_id)%nodes(i_node) = &
+                        this%faces(object_id)%nodes(nodes_loc(i_node))
+                end do
+!
+                if (subdim) then
+                    do i_edge = one_ip, this%faces(object_id)%nb_edges
+                        edge_id = this%faces(object_id)%edges(i_edge)
+                        edge_cell_id = this%edges(edge_id)%cell_id
+                        if (edge_cell_id > zero_ip) then
+                            call this%convert_one_cell(edge_cell_id, subdim)
+                        end if
+                    end do
+                end if
+            elseif (cell_dim == one_ip) then
+                do i_node = one_ip, nno
+                    this%cells(cell_id)%nodes(i_node) = &
+                        this%edges(object_id)%nodes(nodes_loc(i_node))
+                end do
+            elseif (cell_dim == zero_ip) then
+                ASSERT(ASTER_FALSE)
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end if
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine convert_cells(this, nb_cells, list_cells, sub_level)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer(kind=8), intent(in) :: nb_cells, list_cells(nb_cells)
+        aster_logical, intent(in) :: sub_level
 ! ------------------------------------------------------------------
-        integer(ip) :: i_cell, cell_id, cell_dim, object_id, nno, cell_type
-        integer(ip) :: i_node, nodes_loc(27)
+        integer(ip) :: i_cell, cell_id
         real(kind=8):: start, end
 !
         if (this%info >= 2) then
@@ -2256,41 +2330,9 @@ contains
 !
         do i_cell = one_ip, int(nb_cells, ip)
             cell_id = int(list_cells(i_cell), ip)
-            cell_dim = this%cells(cell_id)%dim
-            cell_type = this%cells(cell_id)%type
-            object_id = this%cells(cell_id)%ss_id
 !
-            if (this%debug) then
-                print *, "Convert ", cell_id, ": ", this%cells(cell_id)%type, &
-                    this%converter%name(this%cells(cell_id)%type), cell_dim
-            end if
+            call this%convert_one_cell(cell_id, sub_level)
 !
-            if (this%converter%to_convert(cell_type)) then
-                this%cells(cell_id)%type = this%converter%convert_to(cell_type)
-                nno = this%converter%nno(this%cells(cell_id)%type)
-                call this%numbering_nodes(this%cells(cell_id)%type, nodes_loc)
-                this%cells(cell_id)%nodes = zero_ip
-                if (cell_dim == three_ip) then
-                    do i_node = one_ip, nno
-                        this%cells(cell_id)%nodes(i_node) = &
-                            this%volumes(object_id)%nodes(nodes_loc(i_node))
-                    end do
-                elseif (cell_dim == two_ip) then
-                    do i_node = one_ip, nno
-                        this%cells(cell_id)%nodes(i_node) = &
-                            this%faces(object_id)%nodes(nodes_loc(i_node))
-                    end do
-                elseif (cell_dim == one_ip) then
-                    do i_node = one_ip, nno
-                        this%cells(cell_id)%nodes(i_node) = &
-                            this%edges(object_id)%nodes(nodes_loc(i_node))
-                    end do
-                elseif (cell_dim == zero_ip) then
-                    ASSERT(ASTER_FALSE)
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            end if
         end do
 ! --- Keep only necessary nodes
         call this%update()
