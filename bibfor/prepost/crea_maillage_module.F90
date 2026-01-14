@@ -227,7 +227,7 @@ module crea_maillage_module
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: numbering_edge, numbering_face, dividing_cell, mult_elem
-    private :: sort_nodes_face, check_conformity_edge, check_conformity_face
+    private :: sort_nodes_face, check_conformity_cell, check_conformity_face
 contains
 !
 !===================================================================================================
@@ -3183,6 +3183,9 @@ contains
                 ASSERT(nno1 >= nno2)
             end do
         end do
+!
+        call this%check_conformity("A")
+!
     end subroutine
 !
 ! ==================================================================================================
@@ -4282,6 +4285,7 @@ contains
         integer(ip) :: i_cell, cell_id, cell_dim, object_id, cell_type
         integer(ip) :: i_face, face_id, face_cell_id, face_cell_type
         integer(ip) :: i_edge, edge_id, edge_cell_id, edge_cell_type
+        integer(ip) :: volu_id, cell_type2, cell_id2
 !
         do i_cell = one_ip, this%nb_total_cells
             if (this%cells(i_cell)%keep) then
@@ -4289,6 +4293,10 @@ contains
                 cell_dim = this%cells(cell_id)%dim
                 cell_type = this%cells(cell_id)%type
                 object_id = this%cells(cell_id)%ss_id
+!
+                if (object_id <= zero_ip) then
+                    cycle
+                end if
 !
                 if (cell_dim == three_ip) then
                     do i_face = one_ip, this%volumes(object_id)%nb_faces
@@ -4301,6 +4309,20 @@ contains
                                             sk=this%converter%name(face_cell_type))
                             end if
                         end if
+                        if (this%faces(face_id)%nb_volumes == 2) then
+                            volu_id = this%faces(face_id)%volumes(2)
+                            cell_id2 = this%volumes(volu_id)%cell_id
+                            if (cell_id2 > zero_ip) then
+                                cell_type2 = this%cells(cell_id2)%type
+                                if (.not. check_conformity_cell(cell_type, cell_type2)) then
+                                    call utmess(type_msg, 'MESH1_13', &
+                                                ni=2, nk=2, &
+                                                vali=[int(cell_id, 8), int(cell_id2, 8)], &
+                                                valk=[this%converter%name(cell_type), &
+                                                      this%converter%name(cell_type2)])
+                                end if
+                            end if
+                        end if
                     end do
                 elseif (cell_dim == two_ip) then
                     do i_edge = one_ip, this%faces(object_id)%nb_edges
@@ -4308,7 +4330,7 @@ contains
                         edge_cell_id = this%edges(edge_id)%cell_id
                         if (edge_cell_id > zero_ip) then
                             edge_cell_type = this%cells(edge_cell_id)%type
-                            if (.not. check_conformity_edge(cell_type, edge_cell_type)) then
+                            if (.not. check_conformity_face(cell_type, edge_cell_type)) then
                                 call utmess(type_msg, 'MESH1_5', si=int(edge_cell_id, 8), &
                                             sk=this%converter%name(edge_cell_type))
                             end if
@@ -4323,41 +4345,88 @@ contains
 !
 ! ==================================================================================================
 !
-    function check_conformity_edge(face_type, edge_type) result(ok)
+    function check_conformity_cell(cell_type, cell_type2) result(ok)
 !
         implicit none
 !
-        integer(ip), intent(in) :: face_type, edge_type
+        integer(ip), intent(in) :: cell_type, cell_type2
         aster_logical :: ok
 !
 ! ---------------------------------------------------------------------------------
 !
         ok = ASTER_TRUE
-        if (face_type == MT_TRIA3 .or. face_type == MT_QUAD4) then
-            ok = edge_type == MT_SEG2
-        elseif (face_type == MT_TRIA6 .or. face_type == MT_TRIA7 &
-                .or. face_type == MT_QUAD8 .or. face_type == MT_QUAD9) then
-            ok = edge_type == MT_SEG3
-        else
+        select case (cell_type)
+        case (MT_TRIA3, MT_QUAD4)
+            ok = cell_type2 == MT_TRIA3 .or. cell_type2 == MT_QUAD4
+        case (MT_TRIA6, MT_TRIA7, MT_QUAD8, MT_QUAD9)
+            ok = cell_type2 == MT_TRIA6 .or. cell_type2 == MT_TRIA7 &
+                 .or. cell_type2 == MT_QUAD8 .or. cell_type2 == MT_QUAD9
+        case (MT_TETRA4)
+            ok = cell_type2 == MT_TETRA4 .or. cell_type2 == MT_PYRAM5 &
+                 .or. cell_type2 == MT_PENTA6 .or. cell_type2 == MT_PENTA7
+        case (MT_TETRA10)
+            ok = cell_type2 == MT_TETRA10 .or. cell_type2 == MT_PYRAM13 &
+                 .or. cell_type2 == MT_PENTA15 .or. cell_type2 == MT_PENTA18
+        case (MT_TETRA15)
+            ok = cell_type2 == MT_TETRA15 .or. cell_type2 == MT_PYRAM19 &
+                 .or. cell_type2 == MT_PENTA21
+        case (MT_HEXA8, MT_HEXA9)
+            ok = cell_type2 == MT_HEXA8 .or. cell_type2 == MT_HEXA9 &
+                 .or. cell_type2 == MT_PYRAM5 .or. cell_type2 == MT_PENTA6 &
+                 .or. cell_type2 == MT_PENTA7
+        case (MT_HEXA20)
+            ok = cell_type2 == MT_HEXA20 .or. cell_type2 == MT_PYRAM13 &
+                 .or. cell_type2 == MT_PENTA15
+        case (MT_HEXA27)
+            ok = cell_type2 == MT_HEXA27 .or. cell_type2 == MT_PYRAM19 &
+                 .or. cell_type2 == MT_PENTA18 .or. cell_type2 == MT_PENTA21
+        case (MT_PYRAM5)
+            ok = cell_type2 == MT_PYRAM5 .or. cell_type2 == MT_TETRA4 &
+                 .or. cell_type2 == MT_HEXA8 .or. cell_type2 == MT_HEXA9 &
+                 .or. cell_type2 == MT_PENTA6 .or. cell_type2 == MT_PENTA7
+        case (MT_PYRAM13)
+            ok = cell_type2 == MT_PYRAM13 .or. cell_type2 == MT_TETRA10 &
+                 .or. cell_type2 == MT_HEXA20 .or. cell_type2 == MT_PENTA15
+        case (MT_PYRAM19)
+            ok = cell_type2 == MT_TETRA15 .or. cell_type2 == MT_PYRAM19 &
+                 .or. cell_type2 == MT_PENTA21 .or. cell_type2 == MT_HEXA27
+        case (MT_PENTA6, MT_PENTA7)
+            ok = cell_type2 == MT_PENTA6 .or. cell_type2 == MT_PENTA7 &
+                 .or. cell_type2 == MT_HEXA8 .or. cell_type2 == MT_PYRAM5 &
+                 .or. cell_type2 == MT_TETRA4
+        case (MT_PENTA15)
+            ok = cell_type2 == MT_TETRA10 .or. cell_type2 == MT_PYRAM13 &
+                 .or. cell_type2 == MT_PENTA15 .or. cell_type2 == MT_HEXA20
+        case (MT_PENTA18)
+            ok = cell_type2 == MT_TETRA10 .or. cell_type2 == MT_PYRAM13 &
+                 .or. cell_type2 == MT_PENTA18 .or. cell_type2 == MT_HEXA27
+        case (MT_PENTA21)
+            ok = cell_type2 == MT_TETRA15 .or. cell_type2 == MT_PYRAM19 &
+                 .or. cell_type2 == MT_PENTA21 .or. cell_type2 == MT_HEXA27
+        case default
             ASSERT(ASTER_FALSE)
-        end if
+        end select
 !
     end function
 !
 !
 ! ==================================================================================================
 !
-    function check_conformity_face(volu_type, face_type) result(ok)
+    function check_conformity_face(cell_type, face_type) result(ok)
 !
         implicit none
 !
-        integer(ip), intent(in) :: volu_type, face_type
+        integer(ip), intent(in) :: cell_type, face_type
         aster_logical :: ok
 !
 ! ---------------------------------------------------------------------------------
 !
         ok = ASTER_TRUE
-        select case (volu_type)
+        select case (cell_type)
+        case (MT_TRIA3, MT_QUAD4)
+            ok = face_type == MT_SEG2
+        case (MT_TRIA6, MT_TRIA7, MT_QUAD8, MT_QUAD9)
+            ok = face_type == MT_SEG3
         case (MT_TETRA4)
             ok = face_type == MT_TRIA3
         case (MT_TETRA10)

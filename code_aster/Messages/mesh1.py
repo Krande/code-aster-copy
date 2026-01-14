@@ -55,6 +55,10 @@ Ceci est dangereux car cela peut produire un maillage non conforme."""
 C'est interdit, vous ne pouvez modifier que les coordonnées des noeuds comme dans les mots clés DEFORME et TRANSLATION.
 Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/DECOUPE_LAC sur votre maillage."""
     ),
+    13: _(
+        """Les volumes %(i1)d de type %(k1)s et %(i2)d de type %(k2)s sont connectés par une face non-conforme.
+          Cela crée une non-conformité dans le maillage."""
+    ),
     15: _("""Le mot-clef MAILLAGE est obligatoire."""),
     20: _(
         """Échec lors de la création du GROUP_MA (%(k1)s), il existe déjà.
