@@ -24,7 +24,7 @@ It also stores measures of elapsed times of each command, memory consumptions...
 Each line starts with a prefix defining the type of information:
 - TEST for keywords coverage
 - PERF for elapsed time in a command
-- TIME for the elapsed time since the startup
+- MEM for the memory consumption
 """
 
 import os
@@ -40,7 +40,7 @@ EMPTY = "--"
 
 class Tracking:
     @staticmethod
-    def add(type: str, data):
+    def add(type: str, *data):
         """High level function to store a new execution information.
 
         Arguments:
@@ -48,20 +48,56 @@ class Tracking:
             data (misc): Data to be stored, passed to a dedicated function.
         """
         if type == "KWDS":
-            Tracking.track_coverage(*data)
+            _track_coverage(*data)
+        elif type == "PERF":
+            _track_perf(*data)
+        elif type == "MEM":
+            _track_memory(*data)
 
     @staticmethod
-    def track_coverage(command, name, keywords):
-        """Track used keywords into the '.code' file.
+    def stop_timer(timer):
+        """Stop the timer to store the last measures.
 
         Arguments:
-            command (*SyntaxObjects.Command*): Description object of the command
-            name (str): Command name
-            keywords (dict): Dict of keywords.
+            time (Timer): Timer object.
         """
-        cover = CodeVisitor(name)
-        command.accept(cover, keywords)
-        libaster.affich("CODE", cover.get_text())
+        specials = ("check syntax", "fortran", "sdveri", "cleanup")
+        for key in specials:
+            times = timer.StopAndGet(f" . {key}")
+            _track_perf(key, *times)
+        times = timer.StopAndGet(timer.total_key)
+        _track_perf(timer.TotalKey, *times)
+
+
+def _write_code(line):
+    if libaster.jeveux_status():
+        libaster.affich("CODE", line)
+    else:
+        with open("fort.15", "a") as fcode:
+            fcode.write(line + "\n")
+
+
+def _track_coverage(command, name, keywords):
+    """Track used keywords into the '.code' file.
+
+    Arguments:
+        command (*SyntaxObjects.Command*): Description object of the command
+        name (str): Command name
+        keywords (dict): Dict of keywords.
+    """
+    cover = CodeVisitor(name)
+    command.accept(cover, keywords)
+    _write_code(cover.get_text())
+
+
+def _track_perf(command, *data):
+    line = " ".join(["PERF", command] + [str(i) for i in data])
+    _write_code(line)
+
+
+def _track_memory(command, *data):
+    line = " ".join(["MEM", command] + [str(i) for i in data])
+    _write_code(line)
 
 
 class CodeVisitor:

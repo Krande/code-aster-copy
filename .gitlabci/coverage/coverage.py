@@ -248,7 +248,9 @@ class CoverageAnalysis:
         re_cmde = re.compile(
             r"^(?P<cmde>[^&]\w+) +(?P<fact>[-\w]+) +(?P<simp>\w+)" r" +(?P<value>.*)", re.M
         )
-        content = re_test.sub("", content)
+        code = [line for line in content.splitlines() if re_test.search(line)]
+        code = os.linesep.join(code)
+        content = re_test.sub("", code)
         calculs = []
         for mat in re_calc.finditer(content):
             phen = self._features.get_model(mat.group("elt"))

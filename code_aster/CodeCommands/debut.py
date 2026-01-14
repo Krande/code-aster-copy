@@ -183,7 +183,7 @@ class Starter(ExecuteCommand):
             params.enable(Options.TestMode)
             stop_with = "ABORT"
             iwarn = True
-            Tracking.add("KWDS", (self._cata, self.command_name, keywords))
+            Tracking.add("KWDS", self._cata, self.command_name, keywords)
 
         erreur = keywords.get("ERREUR")
         if erreur:
