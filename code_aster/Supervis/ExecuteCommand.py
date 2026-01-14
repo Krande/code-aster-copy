@@ -88,7 +88,7 @@ from ..Utilities import (
     no_new_attributes,
 )
 from ..Utilities.outputs import command_text, decorate_name
-from .code_file import track_coverage
+from .code_file import Tracking
 from .CommandSyntax import CommandSyntax
 from .ctopy import check_ds_object
 from .Serializer import FinalizeOptions, saveObjectsFromContext
@@ -208,7 +208,7 @@ class ExecuteCommand:
             timer.Stop(" . check syntax")
         self.adapt_syntax(keywords)
         if ExecutionParameter().option & Options.TestMode:
-            track_coverage(self._cata, self.command_name, keywords)
+            Tracking.add("KWDS", (self._cata, self.command_name, keywords))
         self.create_result(keywords)
         if not getattr(self._result, "userName", "n/a"):
             # attribute does exist but is not defined
@@ -485,7 +485,7 @@ class ExecuteCommand:
             self._result = None
         else:
             raise NotImplementedError(
-                "Method 'create_result' must be " "overridden for {0!r}.".format(self.name)
+                "Method 'create_result' must be overridden for {0!r}.".format(self.name)
             )
 
     @property
@@ -635,9 +635,7 @@ class ExecuteCommand:
 def check_jeveux():
     """Check that the memory manager (Jeveux) is up."""
     if not libaster.jeveux_status():
-        raise RuntimeError(
-            "code_aster memory manager is not started. " "No command can be executed."
-        )
+        raise RuntimeError("code_aster memory manager is not started. No command can be executed.")
 
 
 class ExecuteMacro(ExecuteCommand):

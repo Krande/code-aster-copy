@@ -18,7 +18,13 @@
 # --------------------------------------------------------------------
 
 """
-This module defines the visitor used to print the keywords in the CODE file.
+The CODE is not only to check the keywords coverage.
+It also stores measures of elapsed times of each command, memory consumptions...
+
+Each line starts with a prefix defining the type of information:
+- TEST for keywords coverage
+- PERF for elapsed time in a command
+- TIME for the elapsed time since the startup
 """
 
 import os
@@ -32,17 +38,30 @@ from ..Utilities import is_float, is_int
 EMPTY = "--"
 
 
-def track_coverage(command, name, keywords):
-    """Track used keywords into the '.code' file.
+class Tracking:
+    @staticmethod
+    def add(type: str, data):
+        """High level function to store a new execution information.
 
-    Arguments:
-        command (*SyntaxObjects.Command*): Description object of the command
-        name (str): Command name
-        keywords (dict): Dict of keywords.
-    """
-    cover = CodeVisitor(name)
-    command.accept(cover, keywords)
-    libaster.affich("CODE", cover.get_text())
+        Arguments:
+            type (str): Type of information: "KWDS", "TIME", "PERF".
+            data (misc): Data to be stored, passed to a dedicated function.
+        """
+        if type == "KWDS":
+            Tracking.track_coverage(*data)
+
+    @staticmethod
+    def track_coverage(command, name, keywords):
+        """Track used keywords into the '.code' file.
+
+        Arguments:
+            command (*SyntaxObjects.Command*): Description object of the command
+            name (str): Command name
+            keywords (dict): Dict of keywords.
+        """
+        cover = CodeVisitor(name)
+        command.accept(cover, keywords)
+        libaster.affich("CODE", cover.get_text())
 
 
 class CodeVisitor:
