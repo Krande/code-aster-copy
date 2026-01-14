@@ -114,6 +114,7 @@ enum Modelings {
     AXIS_FLUI_STRU,
     AXIS_FOURIER,
     AXIS_GRAD_INCO,
+    AXIS_GRAD_HHO,
     AXIS_GRAD_VARI,
     AXIS_GVNO,
     AXIS_HH2D,
@@ -243,14 +244,14 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 199;
+const int nbModelings = 200;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 187;
+const int nbModelingsMechanics = 188;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;

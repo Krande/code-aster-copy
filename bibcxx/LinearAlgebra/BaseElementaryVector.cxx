@@ -39,9 +39,10 @@ FieldOnNodesRealPtr BaseElementaryVector::assembleWithLoadFunctions(
 
     // Pre-assembling
     std::string typres( "R" );
+    std::string detrE( "G" );
     std::string name( " " );
     name.resize( 24, ' ' );
-    CALLO_ASASVE( vectElemName, dofNume->getName(), typres, name );
+    CALLO_ASASVE( vectElemName, dofNume->getName(), typres, detrE, name );
 
     // Get function for load
     std::string fomult( " " );

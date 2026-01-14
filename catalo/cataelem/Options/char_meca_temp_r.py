@@ -74,6 +74,11 @@ PPMILTO = InputParameter(phys=PHY.N792_R, comment="""  PPMILTO : CHAMP SPECIFIQU
 PFISNO = InputParameter(phys=PHY.NEUT_I, comment="""  PFISNO  : CHAMP SPECIFIQUE XFEM  """)
 
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
+
+
 CHAR_MECA_TEMP_R = Option(
     para_in=(
         PBASLOR,
@@ -105,6 +110,8 @@ CHAR_MECA_TEMP_R = Option(
         SP.PINSTR,
         PVARCPR,
         SP.PVARCRR,
+        PCHHOGT,
+        PCHHOBS,
     ),
     para_out=(SP.PCONTRT, SP.PVECTUR),
     condition=(
@@ -119,7 +126,6 @@ CHAR_MECA_TEMP_R = Option(
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "3FI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "AFI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "PFI"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.TYPMOD2, "HHO"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
     ),
     comment=""" CHAR_MECA_TEMP_R (MOT-CLE : TEMP_CALCULEE): CALCUL DU SECOND MEMBRE

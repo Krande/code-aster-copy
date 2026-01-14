@@ -8385,6 +8385,13 @@ class ElementaryTermReal(DataField):
         2. __init__(self: libaster.ElementaryTermReal, arg0: str) -> None
         """
 
+    def exists(self):
+        """Return True if it exists
+
+        Returns:
+            bool: True if exist
+        """
+
     def getFiniteElementDescriptor(self):
         """Return the finite element descriptor
 
@@ -8449,6 +8456,13 @@ class ElementaryTermComplex(DataField):
         1. __init__(self: libaster.ElementaryTermComplex) -> None
 
         2. __init__(self: libaster.ElementaryTermComplex, arg0: str) -> None
+        """
+
+    def exists(self):
+        """Return True if it exists
+
+        Returns:
+            bool: True if exist
         """
 
     def getFiniteElementDescriptor(self):
@@ -8559,6 +8573,9 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
     def getFiniteElementDescriptors(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def hasElementaryTerms(self):
         pass
 
@@ -8603,6 +8620,9 @@ class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
         pass
 
     def getFiniteElementDescriptors(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def hasElementaryTerms(self):
@@ -8654,6 +8674,9 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
     def getFiniteElementDescriptors(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def hasElementaryTerms(self):
         pass
 
@@ -8698,6 +8721,9 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
         pass
 
     def getFiniteElementDescriptors(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def hasElementaryTerms(self):
@@ -8794,6 +8820,9 @@ class ElementaryVectorReal(BaseElementaryVector):
     def getFiniteElementDescriptor(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def getVeass(self):
         pass
 
@@ -8850,6 +8879,9 @@ class ElementaryVectorComplex(BaseElementaryVector):
         pass
 
     def getElementaryTerms(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def getVeass(self):
@@ -12208,207 +12240,207 @@ class Modelings:
 
     AXIS_GRAD_INCO = 70
 
-    AXIS_GRAD_VARI = 71
+    AXIS_GRAD_VARI = 72
 
-    AXIS_GVNO = 72
+    AXIS_GVNO = 73
 
-    AXIS_HH2D = 73
+    AXIS_HH2D = 74
 
-    AXIS_HH2MD = 74
+    AXIS_HH2MD = 75
 
-    AXIS_HH2MS = 75
+    AXIS_HH2MS = 76
 
-    AXIS_HH2S = 76
+    AXIS_HH2S = 77
 
-    AXIS_HHD = 77
+    AXIS_HHD = 78
 
-    AXIS_HHM = 78
+    AXIS_HHM = 79
 
-    AXIS_HHMD = 79
+    AXIS_HHMD = 80
 
-    AXIS_HHMS = 80
+    AXIS_HHMS = 81
 
-    AXIS_HHS = 82
+    AXIS_HHS = 83
 
-    AXIS_HM = 83
+    AXIS_HM = 84
 
-    AXIS_HMD = 84
+    AXIS_HMD = 85
 
-    AXIS_HMS = 85
+    AXIS_HMS = 86
 
-    AXIS_INCO_UP = 86
+    AXIS_INCO_UP = 87
 
-    AXIS_INCO_UPG = 87
+    AXIS_INCO_UPG = 88
 
-    AXIS_INCO_UPO = 88
+    AXIS_INCO_UPO = 89
 
-    AXIS_INTERFACE = 89
+    AXIS_INTERFACE = 90
 
-    AXIS_INTERFACE_S = 90
+    AXIS_INTERFACE_S = 91
 
-    AXIS_JHMS = 91
+    AXIS_JHMS = 92
 
-    AXIS_JOINT = 92
+    AXIS_JOINT = 93
 
-    AXIS_SECH = 93
+    AXIS_SECH = 94
 
-    AXIS_SECH_DIAG = 94
+    AXIS_SECH_DIAG = 95
 
-    AXIS_SI = 95
+    AXIS_SI = 96
 
-    AXIS_THH2D = 96
+    AXIS_THH2D = 97
 
-    AXIS_THH2MD = 97
+    AXIS_THH2MD = 98
 
-    AXIS_THH2MS = 98
+    AXIS_THH2MS = 99
 
-    AXIS_THH2S = 99
+    AXIS_THH2S = 100
 
-    AXIS_THHD = 100
+    AXIS_THHD = 101
 
-    AXIS_THHMD = 101
+    AXIS_THHMD = 102
 
-    AXIS_THHMS = 102
+    AXIS_THHMS = 103
 
-    AXIS_THHS = 103
+    AXIS_THHS = 104
 
-    AXIS_THM = 104
+    AXIS_THM = 105
 
-    AXIS_THMD = 105
+    AXIS_THMD = 106
 
-    AXIS_THMS = 106
+    AXIS_THMS = 107
 
-    AXIS_THVD = 107
+    AXIS_THVD = 108
 
-    AXIS_THVS = 108
+    AXIS_THVS = 109
 
     Axisymmetrical = 64
 
-    BARRE = 109
+    BARRE = 110
 
-    CABLE = 110
+    CABLE = 111
 
-    CABLE_GAINE = 111
+    CABLE_GAINE = 112
 
-    CABLE_POULIE = 112
+    CABLE_POULIE = 113
 
-    COQUE_3D = 114
+    COQUE_3D = 115
 
-    COQUE_AXIS = 115
+    COQUE_AXIS = 116
 
-    COQUE_SOLIDE = 117
+    COQUE_SOLIDE = 118
 
-    C_PLAN_SI = 119
+    C_PLAN_SI = 120
 
     DIL_3D = 10
 
-    DIS_T = 120
+    DIS_T = 121
 
-    DIS_TR = 121
+    DIS_TR = 122
 
     DIS_TR_2D = 2
 
     DIS_T_2D = 1
 
-    DKT = 122
+    DKT = 123
 
-    DKTG = 123
+    DKTG = 124
 
-    DST = 124
+    DST = 125
 
-    D_PLAN_2DG = 126
+    D_PLAN_2DG = 127
 
-    D_PLAN_ABSO = 127
+    D_PLAN_ABSO = 128
 
-    D_PLAN_DIL = 128
+    D_PLAN_DIL = 129
 
-    D_PLAN_GRAD_HHO = 129
+    D_PLAN_GRAD_HHO = 130
 
-    D_PLAN_GRAD_INCO = 130
+    D_PLAN_GRAD_INCO = 131
 
-    D_PLAN_GRAD_SIGM = 131
+    D_PLAN_GRAD_SIGM = 132
 
-    D_PLAN_GRAD_VARI = 132
+    D_PLAN_GRAD_VARI = 133
 
-    D_PLAN_GVNO = 133
+    D_PLAN_GVNO = 134
 
-    D_PLAN_HH2D = 134
+    D_PLAN_HH2D = 135
 
-    D_PLAN_HH2MD = 135
+    D_PLAN_HH2MD = 136
 
-    D_PLAN_HH2MS = 136
+    D_PLAN_HH2MS = 137
 
-    D_PLAN_HH2MS_DIL = 137
+    D_PLAN_HH2MS_DIL = 138
 
-    D_PLAN_HH2M_SI = 138
+    D_PLAN_HH2M_SI = 139
 
-    D_PLAN_HH2S = 139
+    D_PLAN_HH2S = 140
 
-    D_PLAN_HH2SUDA = 140
+    D_PLAN_HH2SUDA = 141
 
-    D_PLAN_HHD = 141
+    D_PLAN_HHD = 142
 
-    D_PLAN_HHM = 142
+    D_PLAN_HHM = 143
 
-    D_PLAN_HHMD = 143
+    D_PLAN_HHMD = 144
 
-    D_PLAN_HHMS = 144
+    D_PLAN_HHMS = 145
 
-    D_PLAN_HHO = 145
+    D_PLAN_HHO = 146
 
-    D_PLAN_HHS = 146
+    D_PLAN_HHS = 147
 
-    D_PLAN_HM = 147
+    D_PLAN_HM = 148
 
-    D_PLAN_HMD = 148
+    D_PLAN_HMD = 149
 
-    D_PLAN_HMS = 149
+    D_PLAN_HMS = 150
 
-    D_PLAN_HMS_DIL = 150
+    D_PLAN_HMS_DIL = 151
 
-    D_PLAN_HM_SI = 151
+    D_PLAN_HM_SI = 152
 
-    D_PLAN_HM_SI_DIL = 152
+    D_PLAN_HM_SI_DIL = 153
 
-    D_PLAN_HS = 153
+    D_PLAN_HS = 154
 
-    D_PLAN_INCO_UP = 154
+    D_PLAN_INCO_UP = 155
 
-    D_PLAN_INCO_UPG = 155
+    D_PLAN_INCO_UPG = 156
 
-    D_PLAN_INCO_UPO = 156
+    D_PLAN_INCO_UPO = 157
 
-    D_PLAN_MIX_STA = 157
+    D_PLAN_MIX_STA = 158
 
-    D_PLAN_SI = 158
+    D_PLAN_SI = 159
 
-    D_PLAN_THH2D = 159
+    D_PLAN_THH2D = 160
 
-    D_PLAN_THH2MD = 160
+    D_PLAN_THH2MD = 161
 
-    D_PLAN_THH2MS = 161
+    D_PLAN_THH2MS = 162
 
-    D_PLAN_THH2S = 162
+    D_PLAN_THH2S = 163
 
-    D_PLAN_THHD = 163
+    D_PLAN_THHD = 164
 
-    D_PLAN_THHMD = 164
+    D_PLAN_THHMD = 165
 
-    D_PLAN_THHMS = 165
+    D_PLAN_THHMS = 166
 
-    D_PLAN_THHS = 166
+    D_PLAN_THHS = 167
 
-    D_PLAN_THM = 167
+    D_PLAN_THM = 168
 
-    D_PLAN_THMD = 168
+    D_PLAN_THMD = 169
 
-    D_PLAN_THMS = 169
+    D_PLAN_THMS = 170
 
-    D_PLAN_THMS_DIL = 170
+    D_PLAN_THMS_DIL = 171
 
-    D_PLAN_THVD = 171
+    D_PLAN_THVD = 172
 
-    D_PLAN_THVS = 172
+    D_PLAN_THVS = 173
 
     FAISCEAU_3D = 11
 
@@ -12422,7 +12454,7 @@ class Modelings:
 
     FLUI_PESA_2D = 5
 
-    FLUI_STRU = 174
+    FLUI_STRU = 175
 
     FLUI_STRU_2D = 6
 
@@ -12432,9 +12464,9 @@ class Modelings:
 
     GRAD_VARI_3D = 16
 
-    GRILLE_EXCENTRE = 175
+    GRILLE_EXCENTRE = 176
 
-    GRILLE_MEMBRANE = 176
+    GRILLE_MEMBRANE = 177
 
     GVNO_3D = 17
 
@@ -12492,49 +12524,49 @@ class Modelings:
 
     JOINT_HYME_3D = 44
 
-    MEMBRANE = 177
+    MEMBRANE = 178
 
     MIX_STA_3D = 47
 
-    PLAN_INTERFACE = 182
+    PLAN_INTERFACE = 183
 
-    PLAN_INTERFACE_S = 183
+    PLAN_INTERFACE_S = 184
 
-    PLAN_JHMS = 184
+    PLAN_JHMS = 185
 
-    PLAN_JOINT = 185
+    PLAN_JOINT = 186
 
-    PLAN_JOINT_HYME = 186
+    PLAN_JOINT_HYME = 187
 
-    PLAQ_MITC = 173
+    PLAQ_MITC = 174
 
-    POU_D_E = 187
+    POU_D_E = 188
 
-    POU_D_EM = 188
+    POU_D_EM = 189
 
-    POU_D_SQUE = 189
+    POU_D_SQUE = 190
 
-    POU_D_T = 190
+    POU_D_T = 191
 
-    POU_D_TG = 191
+    POU_D_TG = 192
 
-    POU_D_TGM = 192
+    POU_D_TGM = 193
 
-    POU_D_T_GD = 193
+    POU_D_T_GD = 194
 
-    POU_FLUI_STRU = 194
+    POU_FLUI_STRU = 195
 
-    Planar = 178
+    Planar = 179
 
     PlanarBar = 0
 
-    PlaneStrain = 125
+    PlaneStrain = 126
 
-    PlaneStress = 118
+    PlaneStress = 119
 
-    Q4G = 195
+    Q4G = 196
 
-    Q4GG = 196
+    Q4GG = 197
 
     SECH_3D = 45
 
@@ -12572,9 +12604,9 @@ class Modelings:
 
     THVS_3D = 63
 
-    TUYAU_3M = 197
+    TUYAU_3M = 198
 
-    TUYAU_6M = 198
+    TUYAU_6M = 199
 
     Tridimensional = 7
 
@@ -16958,6 +16990,31 @@ class PostProcessing:
          FieldOnCellReals: The maximal value of the field
         """
 
+    def computeStress(self, displ, time=0.0, externVar=None, strx_elga=None):
+        """Compute stress SIEF_ELGA
+
+        Arguments:
+            displ (FieldOnNodesReal): displacement
+            time (float): time
+            externVar (FieldOnCellsReal): external state variables
+            strx_elga (FieldOnCellsReal): STRX_ELGA field
+
+        Returns:
+            FieldOnCellReals: stress SIEF_ELGA field
+        """
+
+    def computeStructuralStress(self, displ, time=0.0, externVar=None):
+        """Compute stress STRX_ELGA
+
+        Arguments:
+            displ (FieldOnNodesReal): displacement
+            time (float): time
+            externVar (FieldOnCellsReal): external state variables
+
+        Returns:
+            FieldOnCellReals: stress STRX_ELGA field
+        """
+
 
 # class HHO in libaster
 
@@ -17153,6 +17210,33 @@ class HHO:
 
         Returns:
               FieldOnNodesReal: HHO field project on Lagrange space
+        """
+
+    def static_condensation(self, matr_elem, vect_elem):
+        """Performs static condensation.
+
+        Arguments:
+              matr_elem (ElementaryMatrixDisplacementReal): elementary (symetric) matrix.
+              vect_elem (ElementaryVectorDisplacementReal): elementary vector.
+
+        Returns:
+              [
+              [AssemblyMatrixDisplacementReal, FieldOnNodesReal],
+              [AssemblyMatrixDisplacementReal, FieldOnNodesReal]
+              ]: return two pairs of a matrix and a rhs. First pair is the condensated system
+              to solve. Second pair is used for static decondensation.
+        """
+
+    def static_decondensation(self, mD, lD, uF):
+        """Performs static decondensation. Update cell DoFs.
+
+        Arguments:
+              mD (AssemblyMatrixDisplacementReal): matrix of decondensation.
+              lD (FieldOnNodesReal): rhs of decondensation.
+              uF (FieldOnNodesReal): solution computed after condensation.
+
+        Returns:
+              FieldOnNodesReal: solution after decondensation.
         """
 
 

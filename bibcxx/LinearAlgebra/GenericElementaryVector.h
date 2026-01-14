@@ -260,6 +260,8 @@ class GenericElementaryVector : public BaseElementaryVector {
      */
     auto getElementaryTerms() const { return _elemTerm; }
 
+    ASTERINTEGER getNumberOfElementaryTerms() const { return _elemTerm.size(); }
+
     /**
      * @brief Assembly with dofNume
      * @param dofNume object DOFNumbering

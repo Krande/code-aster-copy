@@ -138,7 +138,7 @@ subroutine sinoz1(model, sigmElga, sigmNoeu)
 
 !  ASSEMBLAGE DES SECONDS MEMBRES
     vecass = '??????'
-    call asasve(vectElem, numeDof, typres, vecass)
+    call asasve(vectElem, numeDof, typres, 'D', vecass)
     call jeveuo(vecass, 'L', jvecas)
     do i = 1, nbcmp
         vect(i) = zk24(jvecas-1+i)

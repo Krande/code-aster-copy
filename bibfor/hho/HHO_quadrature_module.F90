@@ -33,6 +33,7 @@ module HHO_quadrature_module
 #include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/reereg.h"
 #include "asterfort/utmess.h"
@@ -1073,13 +1074,15 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
         integer(kind=8) :: order
+        aster_logical :: axis
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
         call hhoSelectOrder(hhoCell%typema, npg, order)
 !
-        call hhoGetQuadCell(this, hhoCell, order, hhoCell%axis, ASTER_FALSE, adapt=ASTER_FALSE)
+        axis = lteatt("TYPMOD", "AXIS")
+        call hhoGetQuadCell(this, hhoCell, order, axis, ASTER_FALSE, adapt=ASTER_FALSE)
 !
     end subroutine
 !
@@ -1106,13 +1109,15 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: order
+        aster_logical :: axis
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
-        call hhoGetQuadFace(this, hhoFace, order, hhoFace%axis, &
+        axis = lteatt("TYPMOD", "AXIS")
+        call hhoGetQuadFace(this, hhoFace, order, axis, &
                             ASTER_FALSE, adapt=ASTER_FALSE)
 !
     end subroutine

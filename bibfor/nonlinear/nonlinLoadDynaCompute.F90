@@ -101,7 +101,7 @@ subroutine nonlinLoadDynaCompute(mode, sddyna, &
             call nmchex(hval_veasse, 'VEASSE', 'CNONDP', vect_asse)
             call veondp(model, ds_material%mater, ds_material%mateco, &
                         sddyna, time_curr, vect_elem)
-            call asasve(vect_elem, nume_dof, 'R', vect_alem)
+            call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
             call ascova('D', vect_alem, ' ', 'INST', time_curr, &
                         'R', vect_asse)
             if (niv .ge. 2) then

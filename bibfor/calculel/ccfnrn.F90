@@ -481,13 +481,13 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
 
             if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
-                call asasve(vfono(1), numeDof, 'R', vafono)
+                call asasve(vfono(1), numeDof, 'R', 'D', vafono)
             else
 ! creation champ aux noeuds
                 call vtcreb(vfono(1), 'V', 'R', nume_ddlz=numeDof)
-                call asasve(vfono(1), numeDof, 'R', vafonr)
+                call asasve(vfono(1), numeDof, 'R', 'D', vafonr)
                 call vtcreb(vfono(2), 'V', 'R', nume_ddlz=numeDof)
-                call asasve(vfono(2), numeDof, 'R', vafoni)
+                call asasve(vfono(2), numeDof, 'R', 'D', vafoni)
             end if
             if (lcpu) then
                 call cpu_time(rctfin)
@@ -625,7 +625,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 partps, &
                                 vechmp, varcCurrZ_=chvarc, &
                                 ligrelCalcZ_=ligrel, nharm_=nh)
-                    call asasve(vechmp, numeDof, 'R', vachmp)
+                    call asasve(vechmp, numeDof, 'R', 'D', vachmp)
                     call ascova('D', vachmp, loadFuncJv, 'INST', time, &
                                 'R', cnchmp)
 !
@@ -641,7 +641,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 vecgmp, &
                                 ligrelCalcZ_=ligrel)
 
-                    call asasve(vecgmp, numeDof, 'R', vacgmp)
+                    call asasve(vecgmp, numeDof, 'R', 'D', vacgmp)
                     call ascova('D', vacgmp, loadFuncJv, 'INST', time, &
                                 'R', cncgmp)
                 else
@@ -683,7 +683,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 chdepl, bidon, &
                                 bidon, &
                                 vefpip, ligrel)
-                    call asasve(vefpip, numeDof, 'R', vafpip)
+                    call asasve(vefpip, numeDof, 'R', 'D', vafpip)
                     call ascova('D', vafpip, loadFuncJv, 'INST', time, &
                                 'R', cnfpip)
 !
@@ -853,7 +853,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 ligrel)
 !
 !           --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
-                    call asasve(vreno, numeDof, 'R', vareno)
+                    call asasve(vreno, numeDof, 'R', 'D', vareno)
                     call jeveuo(vareno, 'L', jref)
                     call jeveuo(zk24(jref) (1:19)//'.VALE', 'L', vr=reno)
                     b_n = to_blas_int(lonch)

@@ -19,7 +19,6 @@
 
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ..CodeCommands import CALC_CHAMP
 from ..Objects import (
     AssemblyMatrixDisplacementReal,
     DiscreteComputation,
@@ -32,9 +31,11 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
 )
 from ..ObjectsExt import PhysicalProblem
-from ..Utilities import logger, print_stats, profile, reset_stats
-from ..Solvers import PhysicalState, StorageManager, TimeStepper
+from ..Solvers import PhysicalState
 from ..Solvers import ProblemType as PBT
+from ..Solvers import StorageManager, TimeStepper
+from ..Solvers.Post import ComputeDisplFromHHO, ComputeStress
+from ..Utilities import logger, print_stats, profile, reset_stats
 
 
 @profile
@@ -98,26 +99,22 @@ def _createTimeStepper(args):
 
 
 @profile
-def _computeMatrix(phys_pb, disr_comp, matrix, time):
+def _computeMatrix(phys_pb, disr_comp, phys_state, matrix):
     """Compute and assemble the elastic matrix
 
     Arguments:
         phys_pb (PhysicalProblem): physical problem
         disr_comp (DiscreteComputation): to compute discrete quantities
+        phys_state (PhysicalState): physical state
         matrix (AssemblyMatrixDisplacementReal): matrix to compute and assemble inplace
-        time (float): current time
 
     Returns:
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
-    # compute external state variables
-    mater = phys_pb.getMaterialField()
-    varc = None
-    if mater and mater.hasExternalStateVariable():
-        varc = phys_pb.getExternalStateVariables(time)
-
-    matr_elem = disr_comp.getLinearStiffnessMatrix(time=time, varc_curr=varc, with_dual=True)
+    matr_elem = disr_comp.getLinearStiffnessMatrix(
+        time=phys_state.time_curr, varc_curr=phys_state.externVar, with_dual=True
+    )
 
     matrix.assemble(matr_elem, phys_pb.getListOfLoads())
 
@@ -125,23 +122,21 @@ def _computeMatrix(phys_pb, disr_comp, matrix, time):
 
 
 @profile
-def _computeRhs(phys_pb, disr_comp, time):
+def _computeRhs(phys_pb, disr_comp, phys_state):
     """Compute and assemble the right hand side
 
     Arguments:
          phys_pb (PhysicalProblem): physical problem
          disr_comp (DiscreteComputation): to compute discrete quantities
-         time (float): current time
+         phys_state (PhysicalState): physical state
 
      Returns:
          FieldOnNodesReal: vector of load
     """
 
-    # compute external state variables
     mater = phys_pb.getMaterialField()
-    varc = None
-    if mater and mater.hasExternalStateVariable():
-        varc = phys_pb.getExternalStateVariables(time)
+    varc = phys_state.externVar
+    time = phys_state.time_curr
 
     # compute imposed displacement with Lagrange
     rhs = disr_comp.getImposedDualBC(time)
@@ -158,26 +153,18 @@ def _computeRhs(phys_pb, disr_comp, time):
     return rhs
 
 
-@profile
-def _computeStress(phys_pb, result):
-    """Compute SIEF_ELGA en STRX_ELGA
+class OperatorMockup:
+    """Simulate a NonLinearOperator object."""
 
-    Arguments:
-        phys_pb (PhysicalProblem): phisical problem
-        result (ElasticResult): result to fill in (in place)
+    def __init__(self, phys_pb, phys_state) -> None:
+        self.problem = phys_pb
+        self.state = phys_state
 
-    Returns:
-        ElasticResult: result with stress fields
-    """
 
-    option = ["SIEF_ELGA"]
-
-    if phys_pb.getModel().existsMultiFiberBeam():
-        option.append("STRX_ELGA")
-
-    result = CALC_CHAMP(reuse=result, RESULTAT=result, CONTRAINTE=option)
-
-    return result
+def _post_hooks(lin_operator, hooks):
+    """Call hooks"""
+    for hook in hooks:
+        hook(lin_operator)
 
 
 def meca_statique_ops(self, **args):
@@ -232,6 +219,10 @@ def meca_statique_ops(self, **args):
     # Define main objects
     phys_state = PhysicalState(PBT.MecaStat)
     disc_comp = DiscreteComputation(phys_pb)
+    lin_operator = OperatorMockup(phys_pb, phys_state)
+    hooks = [ComputeDisplFromHHO()]
+    if args["OPTION"] == "SIEF_ELGA":
+        hooks.append(ComputeStress())
 
     # we define the matrix before to have an unique name
     # because of a bug with LDLT_SP
@@ -243,6 +234,8 @@ def meca_statique_ops(self, **args):
     if phys_pb.getMaterialField().hasExternalStateVariableWithReference():
         phys_pb.computeReferenceExternalStateVariables()
 
+    hasVarc = phys_pb.getMaterialField().hasExternalStateVariable()
+
     # first index to use, +1 because there is no initial state
     storage_manager.setFirstStorageIndex(result.getNumberOfIndexes() + 1)
 
@@ -253,17 +246,22 @@ def meca_statique_ops(self, **args):
     while not timeStepper.isFinished():
         phys_state.time_curr = timeStepper.getCurrent()
 
+        if hasVarc:
+            phys_state.externVar = phys_pb.getExternalStateVariables(phys_state.time_curr)
+
         # compute matrix and factorize it
         if not isConst or step_rank == 0:
-            matrix = _computeMatrix(phys_pb, disc_comp, matrix, phys_state.time_curr)
+            matrix = _computeMatrix(phys_pb, disc_comp, phys_state, matrix)
             linear_solver.factorize(matrix)
 
         # compute rhs
-        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time_curr)
+        rhs = _computeRhs(phys_pb, disc_comp, phys_state)
 
         # solve linear system
         diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
         phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
+
+        _post_hooks(lin_operator, hooks)
         phys_state.commit()
 
         # store field
@@ -280,11 +278,6 @@ def meca_statique_ops(self, **args):
 
     # cleaning because some objects are still on VOLATILE
     deleteTemporaryObjects()
-
-    # compute stress if requested
-    logger.debug("<MECA_STATIQUE>: Compute stress")
-    if args["OPTION"] == "SIEF_ELGA":
-        result = _computeStress(phys_pb, result)
 
     if verbosity > 1:
         print_stats()

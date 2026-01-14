@@ -104,7 +104,7 @@ subroutine nttain(model, mateco, caraElem, listLoad, nume_dof, &
 !
 ! --- ASSEMBLAGE DU SEGOND MEMBRE
 !
-    call asasve(veresi, nume_dof, typres, varesi)
+    call asasve(veresi, nume_dof, typres, 'D', varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid, &
                 typres, cnresi)
     call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)

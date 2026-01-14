@@ -59,9 +59,37 @@ void exportPostProcessingToPython( py::module_ &mod ) {
         )",
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_curr" ),
               py::arg( "externVarPrev" ), py::arg( "externVarCurr" ) )
+        .def( "computeStress", &PostProcessing::computeStress,
+              R"(
+            Compute stress SIEF_ELGA
+
+            Arguments:
+                displ (FieldOnNodesReal): displacement
+                time (float): time
+                externVar (FieldOnCellsReal): external state variables
+                strx_elga (FieldOnCellsReal): STRX_ELGA field
+
+            Returns:
+                FieldOnCellReals: stress SIEF_ELGA field
+        )",
+              py::arg( "displ" ), py::arg( "time" ) = 0.0, py::arg( "externVar" ) = nullptr,
+              py::arg( "strx_elga" ) = nullptr )
+        .def( "computeStructuralStress", &PostProcessing::computeStructuralStress,
+              R"(
+            Compute stress STRX_ELGA
+
+            Arguments:
+                displ (FieldOnNodesReal): displacement
+                time (float): time
+                externVar (FieldOnCellsReal): external state variables
+
+            Returns:
+                FieldOnCellReals: stress STRX_ELGA field
+        )",
+              py::arg( "displ" ), py::arg( "time" ) = 0.0, py::arg( "externVar" ) = nullptr )
         .def( "computeMaxResultantForPipe", &PostProcessing::computeMaxResultantForPipe,
-              R"(  
-            Computes the maximum of the EFGE_ELNO or EGRU_ELNO field in absolute value, 
+              R"(
+            Computes the maximum of the EFGE_ELNO or EGRU_ELNO field in absolute value,
             based on the maximal values of the equivalent moment at each element.
 
             Arguments:

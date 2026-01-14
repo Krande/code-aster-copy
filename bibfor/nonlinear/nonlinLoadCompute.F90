@@ -171,7 +171,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
         call nmchex(hval_veelem, 'VEELEM', 'CNDIDO', vect_elem)
         call nmchex(hval_veasse, 'VEASSE', 'CNDIDO', vect_asse)
         call vedime(model, lload_name, lload_info, time_curr, 'R', vect_elem)
-        call asasve(vect_elem, nume_dof, 'R', vect_alem)
+        call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then
@@ -201,7 +201,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
                     lload_name, lload_info, &
                     time_list, &
                     vect_elem, varcCurrZ_=vrcplu)
-        call asasve(vect_elem, nume_dof, 'R', vect_alem)
+        call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then
@@ -238,7 +238,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
                         disp_prev, disp_cumu_inst, &
                         vrcplu, &
                         vect_elem)
-            call asasve(vect_elem, nume_dof, 'R', vect_alem)
+            call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
             call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                         'R', vect_asse)
             if (niv .ge. 2) then
@@ -260,7 +260,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
                     disp_prev, disp_cumu_inst, &
                     vite_curr, acce_curr, strx_prev, &
                     vect_elem)
-        call asasve(vect_elem, nume_dof, 'R', vect_alem)
+        call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then

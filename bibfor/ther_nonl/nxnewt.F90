@@ -137,7 +137,7 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
                 tpsthe, timeMap, temp_prev, temp_iter, &
                 varc_curr, comporTher, &
                 hydr_prev, hydr_curr, veresi, "V")
-    call asasve(veresi, nume_dof, typres, varesi)
+    call asasve(veresi, nume_dof, typres, 'D', varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid, &
                 typres, cnresi)
 
@@ -148,7 +148,7 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
 ! - Dirichlet - BT LAMBDA
     call vethbt(model, loadNameJv, loadInfoJv, &
                 temp_iter, vebtla, 'V')
-    call asasve(vebtla, nume_dof, typres, vabtla)
+    call asasve(vebtla, nume_dof, typres, 'D', vabtla)
     call ascova('D', vabtla, bidon, 'INST', r8bid, &
                 typres, cnvabt)
 !

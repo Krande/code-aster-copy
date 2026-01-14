@@ -1,0 +1,162 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Compilation of the mfront source file
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="vonMises_GradVari", UNITE_MFRONT=38)
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MAIL = CREA_MAILLAGE(MAILLAGE=MAIL, MODI_HHO=_F(TOUT="OUI"))
+
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+from math import pi
+
+E = 200e6
+nu = 0.3
+k = E / (3 * (1 - 2 * nu))
+mu = E / (2 * (1 + nu))
+s0 = 1e6
+H = -20e6
+
+ell_loc = 0.6
+C = abs(H) * (ell_loc / pi) ** 2
+PENA = abs(H)
+
+MATER_SANE = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=nu),
+    MFRONT=_F(LISTE_COEF=(k, mu, s0, H, PENA), PENA_LAGR=PENA, C_GRAD_VARI=C),
+    NON_LOCAL=_F(PENA_LAGR=PENA, C_GRAD_VARI=C),
+)
+
+MATER_IMPERFECTION = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=nu),
+    MFRONT=_F(LISTE_COEF=(k, mu, s0 * 0.95, H, PENA), PENA_LAGR=PENA, C_GRAD_VARI=C),
+    NON_LOCAL=_F(PENA_LAGR=PENA, C_GRAD_VARI=C),
+)
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+MATE = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="SURF_SANE", MATER=MATER_SANE),
+        _F(GROUP_MA="SURF_IMPERFECTION", MATER=MATER_IMPERFECTION),
+    ),
+)
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+LI1 = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=80)))
+
+INST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI1),
+    ECHEC=(
+        _F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"),
+        _F(EVENEMENT="RESI_MAXI", RESI_GLOB_MAXI=1e4),
+    ),
+)
+
+vale_calc = {"LINEAIRE": 190804.63696041878, "QUADRATIQUE": 190251.6715304514}
+
+for formu in ["LINEAIRE", "QUADRATIQUE"]:
+
+    ### >>>>>>>>>>>>>>>>>
+    ### Model affectation
+    ### <<<<<<<<<<<<<<<<<
+
+    MODELE = AFFE_MODELE(
+        MAILLAGE=MAIL,
+        AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_GRAD_HHO", FORMULATION=formu),
+    )
+
+    ### >>>>>>>>>>>>>>>>>>>
+    ### Boundary conditions
+    ### <<<<<<<<<<<<<<<<<<<
+
+    u_imp = 2.5e-2
+
+    CL_DEPL = AFFE_CHAR_CINE(
+        MODELE=MODELE,
+        MECA_IMPO=(
+            _F(GROUP_MA="LEFT", DX=0),
+            _F(GROUP_MA="BOTTOM", DY=0),
+            _F(GROUP_MA="TOP", DY=1),
+        ),
+    )
+
+    COEF = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, u_imp))
+
+    ### >>>>>>>>
+    ### Solution
+    ### <<<<<<<<
+
+    RESU = STAT_NON_LINE(
+        MODELE=MODELE,
+        CHAM_MATER=MATE,
+        EXCIT=(_F(CHARGE=CL_DEPL, FONC_MULT=COEF)),
+        COMPORTEMENT=(_F(TOUT="OUI", RELATION="MFRONT", COMPOR_MFRONT=behaviour)),
+        INCREMENT=_F(LIST_INST=INST),
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, PREDICTION="TANGENTE"),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=15, RESI_GLOB_MAXI=1.0e-2),
+        SOLVEUR=_F(METHODE="MUMPS"),
+    )
+
+    ### >>>>
+    ### Test
+    ### <<<<
+
+    RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="REAC_NODA", CONTRAINTE="SIGM_NOEU")
+
+    TAB2 = POST_RELEVE_T(
+        ACTION=_F(
+            OPERATION="MOYENNE_ARITH",
+            INTITULE="FORCE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            TOUT_ORDRE="OUI",
+            GROUP_MA="TOP",
+            NOM_CMP="SIYY",
+        )
+    )
+
+    TEST_TABLE(
+        VALE_CALC=vale_calc[formu],
+        NOM_PARA="MOYENNE",
+        TABLE=TAB2,
+        FILTRE=_F(NOM_PARA="INST", VALE=1),
+    )
+
+FIN()

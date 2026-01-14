@@ -75,6 +75,23 @@ class PostProcessing {
                       const FieldOnCellsRealPtr &externVarPrev = nullptr,
                       const FieldOnCellsRealPtr &externVarCurr = nullptr ) const;
 
+    /**
+     * @brief Compute stress
+     * @return Stress (SIEF_ELGA)
+     */
+    FieldOnCellsRealPtr computeStress( const FieldOnNodesRealPtr displ,
+                                       const ASTERDOUBLE time = 0.0,
+                                       const FieldOnCellsRealPtr &externVar = nullptr,
+                                       const FieldOnCellsRealPtr &strx_elga = nullptr ) const;
+
+    /**
+     * @brief Compute structural stress
+     * @return Stress (STRX_ELGA)
+     */
+    FieldOnCellsRealPtr
+    computeStructuralStress( const FieldOnNodesRealPtr displ, const ASTERDOUBLE time = 0.0,
+                             const FieldOnCellsRealPtr &externVar = nullptr ) const;
+
     /** @brief Compute max value of EFGE_ELNO or EGRU_ELNO based on the maximum of the
      *         equivalent moment for piping studies*/
     FieldOnCellsRealPtr computeMaxResultantForPipe( const ResultPtr &resu,

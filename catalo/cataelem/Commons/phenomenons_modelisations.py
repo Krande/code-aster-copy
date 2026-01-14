@@ -5945,6 +5945,49 @@ phen.add(
     ),
 )
 
+phen.add(
+    "AXIS_GRAD_HHO#1",
+    Modelisation(
+        dim=(2, 2),
+        code="HA1",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AGVQ_HHO111),
+            (MT.TRIA7, EL.MECA_AGVT_HHO111),
+            (MT.SEG3, EL.MECA_AXGV_HHO1_F),
+        ),
+    ),
+)
+
+
+phen.add(
+    "AXIS_GRAD_HHO#2",
+    Modelisation(
+        dim=(2, 2),
+        code="HA2",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AGVQ_HHO222),
+            (MT.TRIA7, EL.MECA_AGVT_HHO222),
+            (MT.SEG3, EL.MECA_AXGV_HHO2_F),
+        ),
+    ),
+)
+
 ############################################################
 # Pour le phenomene : THERMIQUE :
 ############################################################

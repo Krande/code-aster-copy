@@ -38,6 +38,10 @@ PCAORIE = InputParameter(
     comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE, TUYAU ...  """,
 )
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
+
 
 CHAR_MECA_HYDR_R = Option(
     para_in=(
@@ -52,6 +56,8 @@ CHAR_MECA_HYDR_R = Option(
         PVARCPR,
         PNBSP_I,
         SP.PVARCRR,
+        PCHHOGT,
+        PCHHOBS,
     ),
     para_out=(SP.PVECTUR,),
     condition=(

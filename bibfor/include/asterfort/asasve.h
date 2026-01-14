@@ -19,10 +19,11 @@
 !
 !
 interface
-    subroutine asasve(vechar, numedd, typres, vachar)
+    subroutine asasve(vechar, numedd, typres, detr, vachar)
         character(len=*) :: vechar
         character(len=*) :: numedd
         character(len=*) :: typres
         character(len=24) :: vachar
+        character(len=1) :: detr
     end subroutine asasve
 end interface

@@ -56,7 +56,7 @@ module HHO_matrix_module
         procedure, pass :: copySymU => hhoMatriceCopySymU
         procedure, pass :: copy => hhoMatriceCopy
         procedure, pass :: add => hhoMatriceAdd
-        procedure, pass :: addSubPart => hhoMatriceAddSub
+        procedure, pass :: addBlock => hhoMatriceAddSub
         procedure, pass :: prune => hhoMatricePrune
         procedure, pass :: dot => hhoMatriceDot
 !
@@ -85,6 +85,8 @@ contains
         class(HHO_matrix), intent(inout) :: this
         integer(kind=8), intent(in) :: n_rows, n_cols
         real(kind=8), intent(in), optional :: val
+!
+        ASSERT(.not. this%is_allocated)
 !
         this%nrows = n_rows
         this%ncols = n_cols

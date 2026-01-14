@@ -199,5 +199,34 @@ void exportHHOToPython( py::module_ &mod ) {
       Returns:
             FieldOnNodesReal: HHO field
         )",
-              py::arg( "value" ) );
+              py::arg( "value" ) )
+        .def( "static_condensation", &HHO::static_condensation,
+              R"(
+      Performs static condensation.
+
+      Arguments:
+            matr_elem (ElementaryMatrixDisplacementReal): elementary (symetric) matrix.
+            vect_elem (ElementaryVectorDisplacementReal): elementary vector.
+
+      Returns:
+            [
+            [AssemblyMatrixDisplacementReal, FieldOnNodesReal],
+            [AssemblyMatrixDisplacementReal, FieldOnNodesReal]
+            ]: return two pairs of a matrix and a rhs. First pair is the condensated system
+            to solve. Second pair is used for static decondensation.
+        )",
+              py::arg( "matr_elem" ), py::arg( "vect_elem" ) )
+        .def( "static_decondensation", &HHO::static_decondensation,
+              R"(
+      Performs static decondensation. Update cell DoFs.
+
+      Arguments:
+            mD (AssemblyMatrixDisplacementReal): matrix of decondensation.
+            lD (FieldOnNodesReal): rhs of decondensation.
+            uF (FieldOnNodesReal): solution computed after condensation.
+
+      Returns:
+            FieldOnNodesReal: solution after decondensation.
+        )",
+              py::arg( "mD" ), py::arg( "lD" ), py::arg( "uF" ) );
 };

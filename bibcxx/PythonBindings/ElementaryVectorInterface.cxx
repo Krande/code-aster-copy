@@ -72,6 +72,7 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
             )",
               py::arg( "terms" ) )
         .def( "getElementaryTerms", &ElementaryVectorReal::getElementaryTerms )
+        .def( "getNumberOfElementaryTerms", &ElementaryVectorReal::getNumberOfElementaryTerms )
         .def( "getFiniteElementDescriptor", &ElementaryVectorReal::getFiniteElementDescriptor );
 
     py::class_< ElementaryVectorComplex, ElementaryVectorComplexPtr, BaseElementaryVector >(
@@ -102,6 +103,7 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
             )",
               py::arg( "terms" ) )
         .def( "getElementaryTerms", &ElementaryVectorComplex::getElementaryTerms )
+        .def( "getNumberOfElementaryTerms", &ElementaryVectorComplex::getNumberOfElementaryTerms )
         .def( "assemble", &ElementaryVectorComplex::assemble, py::arg( "dofNume" ),
               py::arg( "minimum" ) = false );
 

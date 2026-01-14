@@ -119,6 +119,44 @@ class ComputeHydr(BaseHook):
         current.set("HYDR_ELGA", hydr_curr)
 
 
+class ComputeStress(BaseHook):
+    """This object deals with stess.
+
+    This class can be used to calculate SIEF_ELGA.
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._post = None
+
+    def setup(self, nl_oper):
+        """Setup function"""
+        self._enabled = True
+        self._post = PostProcessing(nl_oper.problem)
+
+    def run(self, nl_oper):
+        """Execute the hook
+
+        Args:
+            nl_oper (NonLinearOperator): Non linear operator
+        """
+
+        current = nl_oper.state
+
+        strx_elga = None
+        if nl_oper.problem.getModel().existsMultiFiberBeam():
+            strx_elga = self._post.computeStructuralStress(
+                current.primal_curr, current.time_curr, current.externVar
+            )
+            current.set("STRX_ELGA", strx_elga)
+
+        sief_elga = self._post.computeStress(
+            current.primal_curr, current.time_curr, current.externVar, strx_elga
+        )
+        current.set("SIEF_ELGA", sief_elga)
+        current.stress = sief_elga
+
+
 class PostHHO(BaseHook):
     """Compute the true primal field from HHO unknowns."""
 

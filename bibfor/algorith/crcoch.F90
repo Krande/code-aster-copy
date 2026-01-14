@@ -302,7 +302,7 @@ subroutine crcoch()
                         loadNameJv, loadInfoJv, &
                         partps, &
                         vechmp)
-            call asasve(vechmp, numedd, 'R', vachmp)
+            call asasve(vechmp, numedd, 'R', 'D', vachmp)
             call ascova('D', vachmp, loadFuncJv, 'INST', tps, &
                         'R', nomch2)
             call jeveuo(nomch2//'.VALE', 'L', jchou2)

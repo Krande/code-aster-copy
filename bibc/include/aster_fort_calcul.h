@@ -35,9 +35,9 @@ extern "C" {
 void DEFSSPPS( ADDMATRASSE, addmatrasse, const char *, STRING_SIZE, const char *, STRING_SIZE,
                const ASTERDOUBLE *, const ASTERDOUBLE *, const char *, STRING_SIZE );
 
-#define CALLO_ASASVE( a, b, c, d ) CALLOOOO( ASASVE, asasve, a, b, c, d )
-void DEFSSSS( ASASVE, asasve, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-              STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_ASASVE( a, b, c, d, e ) CALLOOOOO( ASASVE, asasve, a, b, c, d, e )
+void DEFSSSSS( ASASVE, asasve, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+               STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_ASCOVA( a, b, c, d, e, f, g, h )                                                     \
     CALLOOOOPOOO( ASCOVA, ascova, a, b, c, d, e, f, g, h )
