@@ -30,6 +30,7 @@
 
 // aslint: disable=C3012
 
+#ifdef ASTER_HAVE_MED
 std::vector< std::string > splitChar( char *toSplit, int nbElem, int size ) {
     std::vector< std::string > toReturn;
     for ( int i = 0; i < nbElem; ++i ) {
@@ -79,3 +80,4 @@ std::pair< int, int > splitEntitySet( int nbElemT, int rank, int nbProcs ) {
     }
     return { nbElemL, start };
 };
+#endif

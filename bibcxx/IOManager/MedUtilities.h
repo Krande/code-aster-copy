@@ -26,6 +26,7 @@
 
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 #include <string>
@@ -59,5 +60,6 @@ void applyPermutation( const med_int *in, med_int *out ) {
         out[i] = in[indices[i]];
     }
 };
+#endif
 
 #endif /* MEDUTILITIES_H_ */

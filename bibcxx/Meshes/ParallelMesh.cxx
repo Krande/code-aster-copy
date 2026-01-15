@@ -661,8 +661,12 @@ const VectorLong ParallelMesh::getAllMedCellsTypes() const {
 
 bool ParallelMesh::printMedFile( const std::filesystem::path &fileName, bool local,
                                  std::array< int, 3 > version ) const {
+#ifdef ASTER_HAVE_MED
     auto aTMWriter = AsterToMedWriter();
     return aTMWriter.printMesh( *this, fileName, local );
+#else
+    return false;
+#endif
 };
 
 #endif /* ASTER_HAVE_MPI */
