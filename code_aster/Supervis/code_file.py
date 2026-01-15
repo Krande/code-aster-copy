@@ -33,7 +33,7 @@ import libaster
 
 from ..Cata.Language.SyntaxObjects import IDS
 from ..Cata.SyntaxUtils import value_is_sequence
-from ..Utilities import is_float, is_int
+from ..Utilities import MPI, is_float, is_int
 
 EMPTY = "--"
 
@@ -70,6 +70,9 @@ class Tracking:
 
 
 def _write_code(line):
+    # only on proc #0
+    if MPI.ASTER_COMM_WORLD.rank != 0:
+        return
     if libaster.jeveux_status():
         libaster.affich("CODE", line)
     else:
