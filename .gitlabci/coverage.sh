@@ -38,16 +38,15 @@ mc --insecure cp ${MINIO_DIR}/last.tested ${wrkdir}/
 printf "\nchecking testcases results directory ${resdir} - $(date)\n"
 mkdir -p ${resdir}
 
-if [ -f ${resdir}/mess_files.tar.gz ] && [ -f ${resdir}/code_files.tar.gz ]; then
+if [ -f ${resdir}/code_files.tar.gz ]; then
     (
         cd ${resdir}
-        printf "extracting mess and code files...\n"
-        tar xzf mess_files.tar.gz
+        printf "extracting code files...\n"
         tar xzf code_files.tar.gz
         printf "files extracted.\n"
     )
 else
-    printf "mess and code files supposed to be here (merge-request job)\n"
+    printf "code files supposed to be here (merge-request job)\n"
 fi
 
 printf "\ncoverage analysis - $(date)\n"
