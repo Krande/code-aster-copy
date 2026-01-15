@@ -6103,11 +6103,12 @@ class JacobianType:
 
     Perturbation = 1
 
-# class IngrationType in libaster
+
+# class IntegrationType in libaster
 
 
 class IntegrationType:
-    """Enumeration for contact type."""
+    """Enumeration for integration type."""
 
     # Method resolution order:
     #     IntegrationType
@@ -6164,9 +6165,10 @@ class IntegrationType:
     # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
-    Elembased = 1
+    Elembased = 0
 
-    Segbased = 0
+    Segbased = 1
+
 
 # class ContactParameter in libaster
 
@@ -6204,6 +6206,13 @@ class ContactParameter:
             float: contact coefficient.
         """
 
+    def getIntegrationType(self):
+        """Return how the integration is made. It is a value of an enum
+
+        Returns:
+            IntegrationType: Integration type.
+        """
+
     def getJacobianType(self):
         """Return how the Jacobian is computed. It is a value of an enum
 
@@ -6237,6 +6246,13 @@ class ContactParameter:
 
         Arguments:
             float: contact coefficient.
+        """
+
+    def setIntegrationType(self, type):
+        """Set how the integration is made. It is a value of an enum
+
+        Arguments:
+            IntegrationType: Integration type.
         """
 
     def setJacobianType(self, type):

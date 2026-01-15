@@ -40,6 +40,7 @@
    * - :py:class:`~code_aster.Objects.HydraulicFluxReal`
    * - :py:class:`~code_aster.Objects.ImpedanceReal`
    * - :py:class:`~code_aster.Objects.InitialState`
+   * - :py:class:`~code_aster.Objects.IntegrationType`
    * - :py:class:`~code_aster.Objects.InterfaceType`
    * - :py:class:`~code_aster.Objects.JacobianType`
    * - :py:class:`~code_aster.Objects.Loads`
