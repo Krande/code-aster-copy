@@ -12,6 +12,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.AsterToMedWriter` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.AsterToMedWriter
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.CodedMaterial` object
 ********************************************************************************
 
@@ -363,6 +372,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MedToAsterReader` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MedToAsterReader
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.MedVector` object
 ********************************************************************************
 
@@ -398,15 +416,6 @@ Documentation of all other types.
    :members:
 
 .. autoclass:: code_aster.Objects.AllMeshEntities
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.MeshReader` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.MeshReader
    :show-inheritance:
    :members:
 
