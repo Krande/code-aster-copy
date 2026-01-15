@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -272,7 +272,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HH2M_DPQ8S_DIL(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -437,7 +436,7 @@ class HH2M_DPQ8S_DIL(Element):
         ),
         OP.REFE_FORC_NODA(
             te=600,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, LC.CRESTHD)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_ELAS(
@@ -545,7 +544,6 @@ class HH2M_DPQ8S_DIL(Element):
 
 # ------------------------------------------------------------
 class HH2M_DPTR6S_DIL(HH2M_DPQ8S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
