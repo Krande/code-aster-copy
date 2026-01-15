@@ -110,7 +110,12 @@ if [ "${BUILDTYPE:0:7}" = "nightly" ]; then
     mc --insecure cp run_testcases.xml ${dest}/
     mc --insecure cp mess_files.tar.gz ${dest}/
     mc --insecure cp code_files.tar.gz ${dest}/
-    [ -f coverage.tgz ] && mc --insecure cp coverage.tgz ${dest}/
+    if [ -f coverage.tgz ]; then
+        mc --insecure cp coverage.tgz ${dest}/
+        tar xvf coverage.tgz coverage.txt
+        today=$(date +%Y-%m-%d)
+        mc --insecure cp coverage.txt minio/codeaster/devops/gcov/${today}_coverage.txt
+    fi
 
     cd ..
 fi
