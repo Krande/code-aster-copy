@@ -56,19 +56,24 @@ void MedFilePointer::checkFileVersion() {
     }
 }
 
-int MedFilePointer::open( const std::filesystem::path &filename,
-                          const MedFileAccessType &openType ) {
+int MedFilePointer::open( const std::filesystem::path &filename, const MedFileAccessType &openType,
+                          std::array< int, 3 > version ) {
     med_access_mode medAccessMode = MED_ACC_UNDEF;
     if ( openType == MedReadOnly ) {
         medAccessMode = MED_ACC_RDONLY;
     } else if ( openType == MedReadWrite ) {
-        medAccessMode = MED_ACC_RDEXT;
+        medAccessMode = MED_ACC_RDWR;
     } else if ( openType == MedCreate ) {
         medAccessMode = MED_ACC_CREAT;
     } else {
         throw std::runtime_error( "Med file access type not allowed" );
     }
-    _fileId = MEDfileOpen( filename.string().c_str(), medAccessMode );
+    if ( version == std::array< int, 3 >( { 0, 0, 0 } ) ) {
+        _fileId = MEDfileOpen( filename.string().c_str(), medAccessMode );
+    } else {
+        _fileId = MEDfileVersionOpen( filename.string().c_str(), medAccessMode, version[0],
+                                      version[1], version[2] );
+    }
     checkFileVersion();
     _isOpen = true;
     _parallelOpen = false;
@@ -84,7 +89,7 @@ int MedFilePointer::openParallel( const std::filesystem::path &filename,
     if ( openType == MedReadOnly ) {
         medAccessMode = MED_ACC_RDONLY;
     } else if ( openType == MedReadWrite ) {
-        medAccessMode = MED_ACC_RDEXT;
+        medAccessMode = MED_ACC_RDWR;
     } else if ( openType == MedCreate ) {
         medAccessMode = MED_ACC_CREAT;
     } else {

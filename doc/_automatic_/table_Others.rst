@@ -10,6 +10,7 @@
    :header-rows: 1
 
    * - Class name
+   * - :py:class:`~code_aster.Objects.AsterToMedWriter`
    * - :py:class:`~code_aster.Objects.CodedMaterial`
    * - :py:class:`~code_aster.Objects.CommGraph`
    * - :py:class:`~code_aster.Objects.ConstantFieldValuesReal`
@@ -49,12 +50,12 @@
    * - :py:class:`~code_aster.Objects.MedFileAccessType`
    * - :py:class:`~code_aster.Objects.MedFileReader`
    * - :py:class:`~code_aster.Objects.MedMesh`
+   * - :py:class:`~code_aster.Objects.MedToAsterReader`
    * - :py:class:`~code_aster.Objects.MedVector`
    * - :py:class:`~code_aster.Objects.MeshBalancer`
    * - :py:class:`~code_aster.Objects.MeshConnectionGraph`
    * - :py:class:`~code_aster.Objects.MeshEntity`
    * - :py:class:`~code_aster.Objects.AllMeshEntities`
-   * - :py:class:`~code_aster.Objects.MeshReader`
    * - :py:class:`~code_aster.Objects.ModelSplitingMethod`
    * - :py:class:`~code_aster.Objects.Modelings`
    * - :py:class:`~code_aster.Objects.Node`

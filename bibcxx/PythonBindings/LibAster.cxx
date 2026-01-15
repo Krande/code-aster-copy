@@ -33,6 +33,7 @@
 #include "PythonBindings/AcousticLoadInterface.h"
 #include "PythonBindings/AcousticModeResultInterface.h"
 #include "PythonBindings/AssemblyMatrixInterface.h"
+#include "PythonBindings/AsterToMedWriterInterface.h"
 #include "PythonBindings/BaseAssemblyMatrixInterface.h"
 #include "PythonBindings/BaseDOFNumberingInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
@@ -118,6 +119,7 @@
 #include "PythonBindings/MedFieldInterface.h"
 #include "PythonBindings/MedFileReaderInterface.h"
 #include "PythonBindings/MedMeshInterface.h"
+#include "PythonBindings/MedToAsterReaderInterface.h"
 #include "PythonBindings/MedVectorInterface.h"
 #include "PythonBindings/MeshBalancerInterface.h"
 #include "PythonBindings/MeshConnectionGraphInterface.h"
@@ -125,7 +127,6 @@
 #include "PythonBindings/MeshEntitiesInterface.h"
 #include "PythonBindings/MeshInterface.h"
 #include "PythonBindings/MeshPairingInterface.h"
-#include "PythonBindings/MeshReaderInterface.h"
 #include "PythonBindings/MeshUtilsInterface.h"
 #include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
@@ -361,7 +362,8 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMedFamilyToPython( mod );
     exportMedVectorToPython( mod );
 #endif /* ASTER_HAVE_MED */
-    exportMeshReaderToPython( mod );
+    exportMedToAsterReaderToPython( mod );
+    exportAsterToMedWriterToPython( mod );
     exportFieldCharacteristicsToPython( mod );
     exportModelingUtilitiesToPython( mod );
     exportSyntaxSaverToPython( mod );

@@ -73,7 +73,8 @@ class MedFilePointer {
     bool isParallel() const { return _parallelOpen; };
 
     /** @brief open med file */
-    int open( const std::filesystem::path &filename, const MedFileAccessType & );
+    int open( const std::filesystem::path &filename, const MedFileAccessType &,
+              std::array< int, 3 > version = { 0, 0, 0 } );
 
     /** @brief open med file in parallel */
     int openParallel( const std::filesystem::path &filename, const MedFileAccessType & );

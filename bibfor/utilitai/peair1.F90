@@ -27,6 +27,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
 #include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -52,7 +53,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
 !     OUT : LONG : LONGUEUR DU CONTOUR
 !
 !
-    integer(kind=8) :: jma, ifm, niv, ima, numa, ino
+    integer(kind=8) :: jma, ifm, niv, ima, numa, ino, value_nb
     integer(kind=8) :: nutyma, nbel, jdno, nbext1, nbext2, iext1
     integer(kind=8) :: iext2, ni1, ni2, nj1, nj2, nbe, nj3, nj0, jdco, i
     integer(kind=8) :: rang, nbproc, nbma_int, no_1, no_2, ma_ext, iret
@@ -74,6 +75,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
     integer(kind=8), pointer :: noex(:) => null()
     integer(kind=8), pointer :: lisma_int(:) => null()
     integer(kind=8), pointer :: node_line(:) => null()
+    integer(kind=8), pointer :: v_vect(:) => null()
     blas_int :: b_incx, b_incy, b_n
     mpi_int :: mrank, msize
     aster_logical :: l_par
@@ -225,7 +227,9 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
 !       On regarde que tous les noeuds ghosts d'un sous-domaine sont
 !       relies a une autre partie du contour d'un autre sous-domaine
         if (l_par) then
-            call vector_ghosts_comm(vec_name, mesh)
+            call jeveuo(vec_name, 'L', vi=v_vect)
+            call jelira(vec_name, 'LONMAX', ival=value_nb)
+            call vector_ghosts_comm(mesh, value_nb, v_vect)
             do ino = 1, node_nb
                 if (node_line(ino) .ne. 0) then
                     call utmess('F', 'UTILITY_2')

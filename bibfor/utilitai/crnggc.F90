@@ -268,9 +268,13 @@ subroutine crnggc(chamnz, l_print)
             end do
         end if
 !
-        write (6, *) "zi(jrecep1) ", zi(jrecep1), nbddl
-        flush (6)
-        if (nbddl .eq. 0) cycle
+        if (nbddl .eq. 0) then
+            call jedetr('&&CRNUGG.NUM_DDL_GLOB_E')
+            call jedetr('&&CRNUGG.NUM_DDL_GLOB_R')
+            call jedetr('&&CRNUGG.NOEUD_NEC_E1')
+            call jedetr('&&CRNUGG.NOEUD_NEC_R1')
+            cycle
+        end if
         ASSERT(zi(jrecep1) .eq. nbddl)
         n4e = to_mpi_int(nbddl)
         n4r = to_mpi_int(nb_ddl_envoi)

@@ -31,58 +31,8 @@
 #include "ParallelUtilities/AsterMPI.h"
 
 #ifdef ASTER_HAVE_MED
-MedMesh::MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim,
-                  med_int nbstep )
-    : _name( name ), _filePtr( filePtr ), _dim( dim ), _nbstep( nbstep ) {
-    for ( int j = 1; j <= _nbstep; ++j ) {
-        med_int numdt, numit;
-        med_float dt;
-        MEDmeshComputationStepInfo( _filePtr.getFileId(), _name.c_str(), j, &numdt, &numit, &dt );
-        _sequences.emplace_back( numdt, numit, dt );
-    }
-
-    const auto famNumber = MEDnFamily( _filePtr.getFileId(), _name.c_str() );
-    char *groupname;
-    char familyname[MED_NAME_SIZE + 1] = "";
-    med_int familynumber;
-    for ( int i = 1; i <= famNumber; ++i ) {
-        const auto nbGrp = MEDnFamilyGroup( _filePtr.getFileId(), _name.c_str(), i );
-        groupname = (char *)malloc( sizeof( char ) * MED_LNAME_SIZE * nbGrp + 1 );
-        const auto cret = MEDfamilyInfo( _filePtr.getFileId(), _name.c_str(), i, familyname,
-                                         &familynumber, groupname );
-        if ( cret < 0 ) {
-            const auto natt = MEDnFamily23Attribute( _filePtr.getFileId(), _name.c_str(), i );
-            med_int *attval, *attide;
-            char *attdes;
-            attide = (med_int *)malloc( sizeof( med_int ) * natt );
-            attval = (med_int *)malloc( sizeof( med_int ) * natt );
-            attdes = (char *)malloc( MED_COMMENT_SIZE * natt + 1 );
-            med_int attributenumber = 0, attributevalue = 0;
-            MEDfamily23Info( _filePtr.getFileId(), _name.c_str(), i, familyname, attide, attval,
-                             attdes, &familynumber, groupname );
-            free( attide );
-            free( attval );
-            free( attdes );
-        }
-        const auto gnames = splitChar( groupname, nbGrp, MED_LNAME_SIZE );
-        _families.emplace_back( new MedFamily( std::string( familyname, strlen( familyname ) ),
-                                               familynumber, gnames ) );
-        free( groupname );
-    }
-
-    const auto jointNumber = MEDnSubdomainJoint( _filePtr.getFileId(), _name.c_str() );
-    for ( int jointId = 1; jointId <= jointNumber; ++jointId ) {
-        char jointname[MED_NAME_SIZE + 1] = "", remotemeshname[MED_NAME_SIZE + 1] = "";
-        char description[MED_COMMENT_SIZE + 1] = "";
-        med_int domainnumber = -1, nstep = -1, nocstpncorrespondence = -1;
-        MEDsubdomainJointInfo( _filePtr.getFileId(), _name.c_str(), jointId, jointname, description,
-                               &domainnumber, remotemeshname, &nstep, &nocstpncorrespondence );
-
-        _joints.emplace_back( new MedJoint( _filePtr, _name, jointId, jointname, description,
-                                            domainnumber, remotemeshname, nstep,
-                                            nocstpncorrespondence ) );
-    }
-};
+MedMesh::MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim )
+    : _name( name ), _filePtr( filePtr ), _dim( dim ) {};
 
 std::vector< med_int > MedMesh::getCellFamilyAtSequence( int numdt, int numit,
                                                          int iterator ) const {
@@ -335,6 +285,152 @@ std::vector< med_int > MedMesh::getGlobalNodeNumberingAtSequence( int numdt, int
     } else {
         return globNum;
     }
+};
+
+bool MedMesh::readFromFile() {
+    if ( !_filePtr.isOpen() ) {
+        return false;
+    }
+
+    for ( int j = 1; j <= _nbstep; ++j ) {
+        med_int numdt, numit;
+        med_float dt;
+        MEDmeshComputationStepInfo( _filePtr.getFileId(), _name.c_str(), j, &numdt, &numit, &dt );
+        _sequences.emplace_back( numdt, numit, dt );
+    }
+
+    const auto famNumber = MEDnFamily( _filePtr.getFileId(), _name.c_str() );
+    char *groupname;
+    char familyname[MED_NAME_SIZE + 1] = "";
+    med_int familynumber;
+    for ( int i = 1; i <= famNumber; ++i ) {
+        const auto nbGrp = MEDnFamilyGroup( _filePtr.getFileId(), _name.c_str(), i );
+        groupname = (char *)malloc( sizeof( char ) * MED_LNAME_SIZE * nbGrp + 1 );
+        const auto cret = MEDfamilyInfo( _filePtr.getFileId(), _name.c_str(), i, familyname,
+                                         &familynumber, groupname );
+        if ( cret < 0 ) {
+            const auto natt = MEDnFamily23Attribute( _filePtr.getFileId(), _name.c_str(), i );
+            med_int *attval, *attide;
+            char *attdes;
+            attide = (med_int *)malloc( sizeof( med_int ) * natt );
+            attval = (med_int *)malloc( sizeof( med_int ) * natt );
+            attdes = (char *)malloc( MED_COMMENT_SIZE * natt + 1 );
+            med_int attributenumber = 0, attributevalue = 0;
+            MEDfamily23Info( _filePtr.getFileId(), _name.c_str(), i, familyname, attide, attval,
+                             attdes, &familynumber, groupname );
+            free( attide );
+            free( attval );
+            free( attdes );
+        }
+        const auto gnames = splitChar( groupname, nbGrp, MED_LNAME_SIZE );
+        _families.emplace_back( new MedFamily( std::string( familyname, strlen( familyname ) ),
+                                               familynumber, gnames ) );
+        free( groupname );
+    }
+
+    const auto jointNumber = MEDnSubdomainJoint( _filePtr.getFileId(), _name.c_str() );
+    for ( int jointId = 1; jointId <= jointNumber; ++jointId ) {
+        char jointname[MED_NAME_SIZE + 1] = "", remotemeshname[MED_NAME_SIZE + 1] = "";
+        char description[MED_COMMENT_SIZE + 1] = "";
+        med_int domainnumber = -1, nstep = -1, nocstpncorrespondence = -1;
+        MEDsubdomainJointInfo( _filePtr.getFileId(), _name.c_str(), jointId, jointname, description,
+                               &domainnumber, remotemeshname, &nstep, &nocstpncorrespondence );
+
+        _joints.emplace_back( new MedJoint( _filePtr, _name, jointId, jointname, description,
+                                            domainnumber, remotemeshname, nstep,
+                                            nocstpncorrespondence ) );
+    }
+    return true;
+};
+
+void MedMesh::printCoordinatesAtSequence( med_int numdt, med_int numit, med_int nodeNumber,
+                                          const std::vector< med_float > &coord,
+                                          MedFilterPtr filter ) const {
+    if ( filter == nullptr ) {
+        MEDmeshNodeCoordinateWr( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NO_DT,
+                                 MED_FULL_INTERLACE, nodeNumber, &coord[0] );
+    } else {
+        MEDmeshNodeCoordinateAdvancedWr( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                         MED_NO_DT, filter->getPointer(), &coord[0] );
+    }
+};
+
+void MedMesh::addFamily( const std::string &name, med_int num, const VectorString &grps ) {
+    if ( name.size() > MED_NAME_SIZE ) {
+        throw std::runtime_error(
+            "Family name too long (size limite: " + std::to_string( MED_NAME_SIZE ) + ")" );
+    }
+    _families.emplace_back( new MedFamily( name, num, grps ) );
+    char *grpChar = stringVectorToChar( grps, MED_LNAME_SIZE );
+    MEDfamilyCr( _filePtr.getFileId(), _name.c_str(), name.c_str(), num, grps.size(), grpChar );
+    free( grpChar );
+};
+
+void MedMesh::setNodeFamilyAtSequence( med_int numdt, med_int numit,
+                                       const std::vector< med_int > &family, MedFilterPtr filter ) {
+    if ( filter == nullptr ) {
+        MEDmeshEntityFamilyNumberWr( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
+                                     MED_NO_GEOTYPE, family.size(), &family[0] );
+    } else {
+        MEDmeshEntityAttributeAdvancedWr( _filePtr.getFileId(), _name.c_str(), MED_FAMILY_NUMBER,
+                                          numdt, numit, MED_NODE, MED_NO_GEOTYPE,
+                                          filter->getPointer(), &family[0] );
+    }
+};
+
+void MedMesh::setCellFamilyAtSequence( med_int numdt, med_int numit, med_geometry_type geotype,
+                                       const std::vector< med_int > &family, MedFilterPtr filter ) {
+    if ( filter == nullptr ) {
+        MEDmeshEntityFamilyNumberWr( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_CELL,
+                                     geotype, family.size(), &family[0] );
+    } else {
+        MEDmeshEntityAttributeAdvancedWr( _filePtr.getFileId(), _name.c_str(), MED_FAMILY_NUMBER,
+                                          numdt, numit, MED_CELL, geotype, filter->getPointer(),
+                                          &family[0] );
+    }
+};
+
+void MedMesh::printConnectivityForGeometricTypeAtSequence( med_int numdt, med_int numit,
+                                                           med_geometry_type geotype,
+                                                           med_int cellNumber,
+                                                           const std::vector< med_int > &conn,
+                                                           MedFilterPtr filter ) {
+    if ( filter == nullptr ) {
+        MEDmeshElementConnectivityWr( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NO_DT,
+                                      MED_CELL, geotype, MED_NODAL, MED_FULL_INTERLACE, cellNumber,
+                                      &conn[0] );
+    } else {
+        MEDmeshElementConnectivityAdvancedWr( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                              MED_NO_DT, MED_CELL, geotype, MED_NODAL,
+                                              filter->getPointer(), &conn[0] );
+    }
+};
+
+void MedMesh::printGlobalNodeNumberingAtSequence( med_int numdt, med_int numit,
+                                                  const std::vector< med_int > &globnum ) {
+    MEDmeshGlobalNumberWr( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
+                           MED_NO_GEOTYPE, globnum.size(), &globnum[0] );
+};
+
+void MedMesh::createJoint( const std::string &name, const std::string &desc,
+                           med_int oppositeDomain ) {
+    if ( name.size() > MED_NAME_SIZE ) {
+        throw std::runtime_error(
+            "Joint name too long (size limite: " + std::to_string( MED_NAME_SIZE ) + ")" );
+    }
+    if ( desc.size() > MED_COMMENT_SIZE ) {
+        throw std::runtime_error(
+            "FDescription too long (size limite: " + std::to_string( MED_COMMENT_SIZE ) + ")" );
+    }
+    MEDsubdomainJointCr( _filePtr.getFileId(), _name.c_str(), name.c_str(), desc.c_str(),
+                         oppositeDomain, _name.c_str() );
+};
+
+void MedMesh::printNodeJointAtSequence( const std::string &name, med_int numdt, med_int numit,
+                                        const std::vector< med_int > &joint ) {
+    MEDsubdomainCorrespondenceWr( _filePtr.getFileId(), _name.c_str(), name.c_str(), numdt, numit,
+                                  MED_NODE, MED_NO_GEOTYPE, MED_NODE, MED_NO_GEOTYPE,
+                                  joint.size() / 2, &joint[0] );
 };
 
 #endif

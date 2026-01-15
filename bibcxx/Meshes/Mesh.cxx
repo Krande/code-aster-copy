@@ -27,6 +27,7 @@
 
 #include "aster_fort_mesh.h"
 
+#include "IOManager/AsterToMedWriter.h"
 #include "Utilities/Tools.h"
 
 bool Mesh::readAsterFile( const std::filesystem::path &fileName ) {
@@ -293,3 +294,13 @@ void Mesh::addCellLabels( const VectorString &labels ) {
         _nameOfCells->add( i + 1, labels[i] );
     }
 }
+
+bool Mesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                         std::array< int, 3 > version ) const {
+#ifdef ASTER_HAVE_MED
+    auto aTMWriter = AsterToMedWriter();
+    return aTMWriter.printMesh( *this, fileName, local );
+#else
+    return false;
+#endif
+};

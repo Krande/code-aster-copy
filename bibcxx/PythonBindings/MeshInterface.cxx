@@ -265,5 +265,18 @@ Returns:
       Arguments:
           cell_labels (list) : Cell labels.
               )",
-              py::arg( "cell_labels" ) );
+              py::arg( "cell_labels" ) )
+        .def( "printMedFile", &Mesh::printMedFile, R"(
+Print the mesh in the MED format
+
+Arguments:
+    filename (Path|str): Name of the file
+    local (bool=True) : print local values only (relevant for a ParallelMesh only)
+    version (list): list of size 3 ([major, minor, release])
+
+Returns:
+    Bool: True if of
+            )",
+              py::arg( "fileName" ), py::arg( "local" ) = true,
+              py::arg( "version" ) = std::array< int, 3 >( { 0, 0, 0 } ) );
 };

@@ -719,13 +719,13 @@ class BaseMesh(DataStructure):
             bool: *False* for a centralized mesh, *True* for a parallel mesh.
         """
 
-    def printMedFile(self, fileName, local=True, version=""):
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
         """Print the mesh in the MED format
 
         Arguments:
             filename (Path|str): Name of the file
             local (bool=True) : print local values only (relevant for a ParallelMesh only)
-            version (str): Version of MED file.
+            version (list): list of size 3 ([major, minor, release])
 
         Returns:
             Bool: True if of
@@ -931,6 +931,18 @@ class Mesh(BaseMesh):
 
         Returns:
             bool: *True* if the mesh contains quadratic cells, *False* otherwise.
+        """
+
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
+        """Print the mesh in the MED format
+
+        Arguments:
+            filename (Path|str): Name of the file
+            local (bool=True) : print local values only (relevant for a ParallelMesh only)
+            version (list): list of size 3 ([major, minor, release])
+
+        Returns:
+            Bool: True if of
         """
 
     def readAsterFile(self, filename):
@@ -15439,6 +15451,18 @@ class ParallelMesh(BaseMesh):
             bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         """
 
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
+        """Print the mesh in the MED format
+
+        Arguments:
+            filename (Path|str): Name of the file
+            local (bool=True) : print local values only (relevant for a ParallelMesh only)
+            version (list): list of size 3 ([major, minor, release])
+
+        Returns:
+            Bool: True if of
+        """
+
     def setGroupOfCells(self, group_name, cell_ids):
         """Set new group of cells in the mesh
 
@@ -17745,6 +17769,18 @@ class MedFileReader:
     def close(self):
         """Close med file"""
 
+    def createMesh(self, name, dim, desc):
+        """Create new mesh in file
+
+        Arguments:
+            name (str): mesh name (length: 64)
+            dim (int): mesh dimension
+            desc (str): mesh description (length: 200)
+
+        Returns:
+            MedMesh: return new med mesh object
+        """
+
     def getField(self, *args, **kwargs):
         """Overloaded function.
 
@@ -17810,12 +17846,13 @@ class MedFileReader:
             int: profile number
         """
 
-    def open(self, path, accessType):
+    def open(self, path, accessType, version=[0, 0, 0]):
         """Open med file
 
         Arguments:
             path (Path|str): path to med file
             accessType (MedFileAccessType): med access type
+            version (list): list of size 3 ([major, minor, release])
 
         Returns:
             int: return code (0 if open is ok)
@@ -17948,6 +17985,15 @@ class MedMesh:
 
     def __pickling_disabled__(self):
         pass
+
+    def addFamily(self, name, num, grps):
+        """Add family to mesh
+
+        Arguments:
+            name (str): family name
+            num (int): family id
+            grps (list): group list
+        """
 
     def getCellFamilyAtSequence(self, numdt, numit, type_iterator):
         """Get cell family in calculation sequence for given profile
@@ -18223,14 +18269,14 @@ class MedVector:
         """Get vector size, ie: number of elements (cells or nodes)"""
 
 
-# class MeshReader in libaster
+# class MedToAsterReader in libaster
 
 
-class MeshReader:
+class MedToAsterReader:
     pass
 
     # Method resolution order:
-    #     MeshReader
+    #     MedToAsterReader
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -18270,6 +18316,74 @@ class MeshReader:
             path (Path|str): path to med file
             mesh_name (str): mesh name (optional)
             verbosity (int): verbosity (optional)
+        """
+
+
+# class AsterToMedWriter in libaster
+
+
+class AsterToMedWriter:
+    pass
+
+    # Method resolution order:
+    #     AsterToMedWriter
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
+        pass
+
+    def printMesh(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.Mesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+
+
+        Print mesh to med file
+
+        Arguments:
+            Mesh: mesh to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mesh_name (str): mesh name (optional)
+
+
+        2. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ParallelMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+
+
+        Print mesh to med file
+
+        Arguments:
+            Mesh: mesh to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mesh_name (str): mesh name (optional)
+
+
+        3. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ConnectionMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+
+
+        Print mesh to med file
+
+        Arguments:
+            Mesh: mesh to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mesh_name (str): mesh name (optional)
+        """
+
+    def printResult(self, result, path, parallelPrint=False):
+        """Print result to med file
+
+        Arguments:
+            result: result to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
         """
 
 

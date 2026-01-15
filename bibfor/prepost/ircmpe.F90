@@ -175,8 +175,6 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         lficUniq = .true._1
     end if
-    !
-    ! SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT UNE COMPOSANTE VALIDE
     if (lficUniq) then
         nbmaect = nbmaec
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=1, sci=nbmaect)
@@ -184,6 +182,8 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
     else
         lnbmaec = nbmaec .eq. 0
     end if
+    !
+    ! SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT UNE COMPOSANTE VALIDE
     if (lnbmaec) then
         do i_fpg = 1, nbvato
             if (exicmp(i_fpg)) then

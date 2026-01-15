@@ -410,4 +410,28 @@ std::vector< double > MedField::getValuesAtSequenceOnEntityAndProfile( int numdt
     return toReturn;
 };
 
+void MedField::addSequence( int numdt, int numit, float dt, int meshnumdt, int meshnumit ) {
+    _sequences.emplace_back( numdt, numit, dt );
+    _numdtNumitToSeq[numdt][numit] = curSeq;
+    ++curSeq;
+};
+
+void MedField::printRealValuesAtSequenceOnNodes( int numdt, int numit, int nodeNb,
+                                                 const VectorReal &values, MedFilterPtr filter ) {
+    const auto &seq = _numdtNumitToSeq[numdt][numit];
+    const double &dt = _sequences[seq].getDt();
+    std::string locName( "" );
+    if ( filter == nullptr ) {
+        std::string profName( "" );
+        MEDfieldValueWithProfileWr( _filePtr.getFileId(), _name.c_str(), numdt, numit, dt, MED_NODE,
+                                    MED_NO_GEOTYPE, MED_COMPACT_STMODE, profName.c_str(),
+                                    locName.c_str(), MED_FULL_INTERLACE, MED_ALL_CONSTITUENT,
+                                    nodeNb, (const unsigned char *const)&values[0] );
+    } else {
+        MEDfieldValueAdvancedWr( _filePtr.getFileId(), _name.c_str(), numdt, numit, dt, MED_NODE,
+                                 MED_NO_GEOTYPE, locName.c_str(), filter->getPointer(),
+                                 (const unsigned char *const)&values[0] );
+    }
+}
+
 #endif

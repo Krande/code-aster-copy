@@ -76,6 +76,13 @@ class MedFileReader {
 
     ~MedFileReader();
 
+    /** @brief create field */
+    MedFieldPtr createField( const std::string &name, const MedMeshPtr &mesh,
+                             const VectorString &cmps );
+
+    /** @brief create mesh */
+    MedMeshPtr createMesh( const std::string &name, const int &dim, const std::string &desc );
+
     /** @brief close file */
     int close();
 
@@ -84,6 +91,9 @@ class MedFileReader {
 
     /** @brief get field from index */
     MedFieldPtr getField( int index ) const { return _fields[index]; };
+
+    /** @brief get file pointer */
+    MedFilePointer getFilePointer() const { return _filePtr; };
 
     /** @brief get all field names */
     std::vector< std::string > getFieldNames() const;
@@ -97,6 +107,16 @@ class MedFileReader {
     /** @brief get mesh from index */
     MedMeshPtr getMesh( int index ) const { return _meshes[index]; };
 
+    /** @brief get mesh from name */
+    MedMeshPtr getMesh( const std::string &name ) const {
+        for ( const auto &mesh : _meshes ) {
+            if ( name == mesh->getName() ) {
+                return mesh;
+            }
+        }
+        return MedMeshPtr( nullptr );
+    };
+
     /** @brief get number of profile */
     int getProfileNumber() const;
 
@@ -104,7 +124,8 @@ class MedFileReader {
     int openParallel( const std::filesystem::path &filename, const MedFileAccessType &openType );
 
     /** @brief med open of file */
-    int open( const std::filesystem::path &filename, const MedFileAccessType &openType );
+    int open( const std::filesystem::path &filename, const MedFileAccessType &openType,
+              std::array< int, 3 > version = { 0, 0, 0 } );
 };
 
 /**

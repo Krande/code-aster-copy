@@ -29,6 +29,7 @@
 #include "IOManager/MedCalculationSequence.h"
 #include "IOManager/MedFamily.h"
 #include "IOManager/MedFilePointer.h"
+#include "IOManager/MedFilter.h"
 #include "IOManager/MedJoint.h"
 
 #include <iostream>
@@ -50,7 +51,7 @@ class MedMesh {
     /** @brief dimension */
     med_int _dim;
     /** @brief step number */
-    med_int _nbstep;
+    med_int _nbstep = 0;
     /** @brief all calcultation sequences */
     std::vector< MedCalculationSequence > _sequences;
     /** @brief all families */
@@ -73,7 +74,15 @@ class MedMesh {
      * @param name mesh name
      * @param dim dimension
      */
-    MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim, med_int nbstep );
+    MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim );
+
+    /**
+     * @brief add a family
+     * @param name family name
+     * @param num family number
+     * @param grps group vector
+     */
+    void addFamily( const std::string &name, med_int num, const VectorString &grps );
 
     /**
      * @brief add a calculation sequence
@@ -87,6 +96,12 @@ class MedMesh {
         }
         _sequences.emplace_back( numdt, numit, dt );
     };
+
+    /**
+     * @brief reserve calculation sequences
+     * @param nbStep step number
+     */
+    void reserveSequences( int nbStep ) { _nbstep = nbStep; };
 
     /** @brief get cell family from sequence and profile iterator */
     std::vector< med_int > getCellFamilyAtSequence( int numdt, int numit, int iterator ) const;
@@ -166,8 +181,43 @@ class MedMesh {
     /** @brief get split node number and node id start number from sequence for current proc */
     std::pair< med_int, med_int > getSplitNodeNumberAtSequence( int numdt, int numit ) const;
 
+    /** @brief print coordinates to sequence */
+    void printCoordinatesAtSequence( med_int numdt, med_int numit, med_int nodeNumber,
+                                     const std::vector< med_float > &coords,
+                                     MedFilterPtr filter = nullptr ) const;
+
     /** @brief get coordinates from sequence */
     std::vector< double > readCoordinates( int numdt, int numit ) const;
+
+    /** @brief read mesh informations from file */
+    bool readFromFile();
+
+    /** @brief set node family */
+    void setNodeFamilyAtSequence( med_int numdt, med_int numit,
+                                  const std::vector< med_int > &family,
+                                  MedFilterPtr filter = nullptr );
+
+    /** @brief set cell family for geometric type */
+    void setCellFamilyAtSequence( med_int numdt, med_int numit, med_geometry_type geotype,
+                                  const std::vector< med_int > &family,
+                                  MedFilterPtr filter = nullptr );
+
+    /** @brief print cell connectivity from sequence and geotype */
+    void printConnectivityForGeometricTypeAtSequence( med_int numdt, med_int numit,
+                                                      med_geometry_type geotype, med_int cellNumber,
+                                                      const std::vector< med_int > &conn,
+                                                      MedFilterPtr filter = nullptr );
+
+    /** @brief print global node numbering */
+    void printGlobalNodeNumberingAtSequence( med_int numdt, med_int numit,
+                                             const std::vector< med_int > &globnum );
+
+    /** @brief create joint */
+    void createJoint( const std::string &name, const std::string &desc, med_int oppositeDomain );
+
+    /** @brief print global node numbering */
+    void printNodeJointAtSequence( const std::string &name, med_int numdt, med_int numit,
+                                   const std::vector< med_int > &joint );
 };
 
 /**

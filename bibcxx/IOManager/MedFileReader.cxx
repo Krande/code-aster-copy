@@ -34,10 +34,64 @@ MedFileReader::~MedFileReader() {
         _filePtr.close();
 };
 
-int MedFileReader::close() {
-    return _filePtr.close();
-    ;
+MedMeshPtr MedFileReader::createMesh( const std::string &name, const int &dim,
+                                      const std::string &desc ) {
+    for ( const auto &mesh : _meshes ) {
+        if ( name == mesh->getName() ) {
+            throw std::runtime_error( "Mesh " + name + " already exists in med file" );
+        }
+    }
+    if ( !_filePtr.isOpen() ) {
+        throw std::runtime_error( "MED file not open" );
+    }
+    if ( name.size() > MED_NAME_SIZE ) {
+        throw std::runtime_error(
+            "Mesh name too long (size limite: " + std::to_string( MED_NAME_SIZE ) + ")" );
+    }
+    if ( desc.size() > MED_COMMENT_SIZE ) {
+        throw std::runtime_error(
+            "Mesh description too long (size limite: " + std::to_string( MED_COMMENT_SIZE ) + ")" );
+    }
+    std::string dtunit( "Sans unite" );
+    std::string axisname( "X               Y               Z               " );
+    std::string axisunit( "INCONNU         INCONNU         INCONNU         " );
+    auto cret = MEDmeshCr( _filePtr.getFileId(), name.c_str(), dim, dim, MED_UNSTRUCTURED_MESH,
+                           desc.c_str(), dtunit.c_str(), MED_SORT_ITDT, MED_CARTESIAN,
+                           axisname.c_str(), axisunit.c_str() );
+    auto ref = _meshes.emplace_back( new MedMesh( _filePtr, name, dim ) );
+    return ref;
 };
+
+MedFieldPtr MedFileReader::createField( const std::string &name, const MedMeshPtr &mesh,
+                                        const VectorString &cmps ) {
+    for ( const auto &field : _fields ) {
+        if ( name == field->getName() ) {
+            throw std::runtime_error( "Field " + name + " already exists in med file" );
+        }
+    }
+    if ( !_filePtr.isOpen() ) {
+        throw std::runtime_error( "MED file not open" );
+    }
+    if ( name.size() > MED_NAME_SIZE ) {
+        throw std::runtime_error(
+            "Field name too long (size limite: " + std::to_string( MED_NAME_SIZE ) + ")" );
+    }
+    VectorString cmpUnit;
+    for ( int i = 0; i < cmps.size(); ++i ) {
+        cmpUnit.push_back( "Sans unite" );
+    }
+    char *cmpChar = stringVectorToChar( cmps, MED_SNAME_SIZE );
+    char *unitChar = stringVectorToChar( cmpUnit, MED_SNAME_SIZE );
+    std::string dtunit( "Sans unite" );
+    auto cret = MEDfieldCr( _filePtr.getFileId(), name.c_str(), MED_DOUBLE, cmps.size(), cmpChar,
+                            unitChar, dtunit.c_str(), mesh->getName().c_str() );
+    free( cmpChar );
+    free( unitChar );
+    auto ref = _fields.emplace_back( new MedField( _filePtr, name, cmps, mesh, 0, {} ) );
+    return ref;
+};
+
+int MedFileReader::close() { return _filePtr.close(); };
 
 MedFieldPtr MedFileReader::getField( const std::string &name ) const {
     const auto index = _mapFieldNameInt.at( name );
@@ -57,9 +111,9 @@ int MedFileReader::getMeshNumber() const { return _meshes.size(); };
 
 int MedFileReader::getProfileNumber() const { return _profiles.size(); };
 
-int MedFileReader::open( const std::filesystem::path &filename,
-                         const MedFileAccessType &openType ) {
-    _filePtr.open( filename, openType );
+int MedFileReader::open( const std::filesystem::path &filename, const MedFileAccessType &openType,
+                         std::array< int, 3 > version ) {
+    _filePtr.open( filename, openType, version );
     readFile();
 
     return 0;
@@ -100,7 +154,9 @@ int MedFileReader::readFile() {
             std::cout << "Mesh type must be unstructured. Mesh name: " << meshname << std::endl;
             continue;
         }
-        auto ref = _meshes.emplace_back( new MedMesh( _filePtr, meshname, spacedim, nstep ) );
+        auto ref = _meshes.emplace_back( new MedMesh( _filePtr, meshname, spacedim ) );
+        ref->reserveSequences( nstep );
+        ref->readFromFile();
         _mapMeshNameRank[strip( meshname )] = count;
         free( axisname );
         free( axisunit );
@@ -143,14 +199,7 @@ int MedFileReader::readFile() {
         const auto cnames = splitChar( componentname, nbCmp, MED_SNAME_SIZE );
         auto curMesh = _meshes[_mapMeshNameRank[strip( meshname )]];
         auto &ref = _fields.emplace_back(
-            new MedField( _filePtr, fieldname, cnames, curMesh, ncstp, nbCmp, _profiles ) );
-
-        for ( int j = 1; j <= ncstp; ++j ) {
-            med_int numdt, numit;
-            med_float dt;
-            MEDfieldComputingStepInfo( fileId, fieldname, j, &numdt, &numit, &dt );
-            ref->addSequence( numdt, numit, dt );
-        }
+            new MedField( _filePtr, fieldname, cnames, curMesh, ncstp, _profiles ) );
 
         free( componentname );
         free( componentunit );

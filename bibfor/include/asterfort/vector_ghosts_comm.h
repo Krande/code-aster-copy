@@ -17,8 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vector_ghosts_comm(vector, mesh)
-        character(len=*) :: vector
-        character(len=8) :: mesh
+    subroutine vector_ghosts_comm(mesh, vect_size, v_vect)
+        character(len=8), intent(in) :: mesh
+        integer(kind=8), intent(inout) :: vect_size
+        integer(kind=8), intent(inout) :: v_vect(*)
     end subroutine vector_ghosts_comm
 end interface

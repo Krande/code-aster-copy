@@ -46,10 +46,10 @@ MedFilter::MedFilter( const MedFilePointer &filePtr, med_int nentity, med_int nv
     std::string profilename( "" );
     if ( _profile != nullptr )
         profilename = _profile->getName();
-    MEDfilterBlockOfEntityCr( _filePtr.getFileId(), _nentity, _nvaluesperentity,
-                              _nconstituentpervalue, _constituentselect, _switchmode, _storagemode,
-                              profilename.c_str(), _start, _stride, _count, _blocksize,
-                              _lastblocksize, _filter );
+    auto ier = MEDfilterBlockOfEntityCr( _filePtr.getFileId(), _nentity, _nvaluesperentity,
+                                         _nconstituentpervalue, _constituentselect, _switchmode,
+                                         _storagemode, profilename.c_str(), _start, _stride, _count,
+                                         _blocksize, _lastblocksize, _filter );
     _exists = true;
 };
 

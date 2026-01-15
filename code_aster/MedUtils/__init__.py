@@ -28,6 +28,7 @@ from .MedMeshAndFieldsSplitter import (
     splitMeshAndFieldsFromMedFile,
     splitMeshFromMedFile,
 )
+from .MedWriter import printMeshToMedFile, printResultToMedFile
 
 __all__ = [
     "convertMedFieldToAster",
@@ -35,4 +36,6 @@ __all__ = [
     "splitMedFileToResults",
     "splitMeshAndFieldsFromMedFile",
     "splitMeshFromMedFile",
+    "printMeshToMedFile",
+    "printResultToMedFile",
 ]
