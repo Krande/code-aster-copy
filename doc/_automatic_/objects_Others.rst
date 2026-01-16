@@ -282,6 +282,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.IntegrationType` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.IntegrationType
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.InterfaceType` object
 ********************************************************************************
 

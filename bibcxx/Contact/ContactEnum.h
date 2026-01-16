@@ -46,4 +46,6 @@ enum class InitialState { Interpenetrated, No, Yes };
 
 enum class JacobianType { Analytical, Perturbation };
 
+enum class IntegrationType { Elembased, Segbased };
+
 #endif /* CONTACT_ENUM_H_ */

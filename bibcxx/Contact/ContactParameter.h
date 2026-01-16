@@ -44,6 +44,8 @@ class ContactParameter {
     ASTERDOUBLE _coeff;
     /** @brief Jacobian computation = TYPE_MATR_TANG */
     JacobianType _jacType;
+    /** @brief Contact algorithm = TYPE_INTE */
+    IntegrationType _inteType;
 
   public:
     /**
@@ -60,7 +62,8 @@ class ContactParameter {
           _type( ContactType::Unilateral ),
           _vari( ContactVariant::Empty ),
           _coeff( 100. ),
-          _jacType( JacobianType::Analytical ) {};
+          _jacType( JacobianType ::Analytical ),
+          _inteType( IntegrationType::Segbased ) {};
 
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
     ContactParameter( const py::tuple &tup );
@@ -76,6 +79,8 @@ class ContactParameter {
 
     JacobianType getJacobianType() const { return _jacType; };
 
+    IntegrationType getIntegrationType() const { return _inteType; };
+
     void setAlgorithm( const ContactAlgo &algo ) { _algo = algo; };
 
     void setType( const ContactType &type ) { _type = type; };
@@ -85,6 +90,8 @@ class ContactParameter {
     void setCoefficient( const ASTERDOUBLE &coeff ) { _coeff = coeff; };
 
     void setJacobianType( const JacobianType &type ) { _jacType = type; };
+
+    void setIntegrationType( const IntegrationType &type ) { _inteType = type; };
 };
 
 /**

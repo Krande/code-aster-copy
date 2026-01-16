@@ -22,6 +22,7 @@ subroutine quadPoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
     use MeshPairing_module
     use mesh_type
     use mesh_cell_module
+    use contact_type
 !
     implicit none
 !
@@ -62,6 +63,7 @@ subroutine quadPoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
     integer(kind=8) :: modelDime
     type(CELL_GEOM) :: cellSlav, cellMast
     real(kind=8), pointer :: nodeCoor(:) => null()
+    type(ContactParameters) :: parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,8 +82,10 @@ subroutine quadPoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
 ! - Get coordinates of intersection points in slave parametric space
     call getInteJV(baseName, iPair+1, nbPoinInte, poinInteSlav)
 
+! - Set the parameters to use seg_based
+    parameters%inte_type = 1
 ! - Get quadrature points
-    call getQuadCont(modelDime, &
+    call getQuadCont(parameters, modelDime, &
                      cellSlav%cellCode, cellMast%cellCode, &
                      nbPoinInte, poinInteSlav, &
                      nbPoinQuad, poinQuadSlav)

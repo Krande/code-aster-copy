@@ -98,7 +98,7 @@ subroutine laMatr_diff(parameters, geom, matr_cont, matr_fric)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(geom%elem_dime, &
+    call getQuadCont(parameters, geom%elem_dime, &
                      geom%elem_slav_code, geom%elem_mast_code, &
                      nbPoinInte, poinInteSlav, &
                      nb_qp, coor_qp, &

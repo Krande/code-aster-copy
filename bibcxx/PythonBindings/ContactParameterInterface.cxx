@@ -70,6 +70,19 @@ Arguments:
     JacobianType: Jacobian type.
         )",
               py::arg( "type" ) )
+        .def( "getIntegrationType", &ContactParameter::getIntegrationType, R"(
+Return how the integration is made. It is a value of an enum
+
+Returns:
+    IntegrationType: Integration type.
+        )" )
+        .def( "setIntegrationType", &ContactParameter::setIntegrationType, R"(
+Set how the integration is made. It is a value of an enum
+
+Arguments:
+    IntegrationType: Integration type.
+        )",
+              py::arg( "type" ) )
         .def( "getVariant", &ContactParameter::getVariant, R"(
 Return the contact variant used. It is a value of an enum
 

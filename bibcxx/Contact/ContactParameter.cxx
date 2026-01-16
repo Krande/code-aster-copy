@@ -28,9 +28,10 @@ ContactParameter::ContactParameter( const py::tuple &tup ) : ContactParameter() 
     _vari = tup[++i].cast< ContactVariant >();
     _coeff = tup[++i].cast< ASTERDOUBLE >();
     _jacType = tup[++i].cast< JacobianType >();
+    _inteType = tup[++i].cast< IntegrationType >();
 };
 py::tuple ContactParameter::_getState() const {
-    return py::make_tuple( _algo, _type, _vari, _coeff, _jacType );
+    return py::make_tuple( _algo, _type, _vari, _coeff, _jacType, _inteType );
 };
 
 FrictionParameter::FrictionParameter( const py::tuple &tup ) : FrictionParameter() {

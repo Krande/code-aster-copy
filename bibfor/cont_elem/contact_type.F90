@@ -41,6 +41,7 @@ module contact_type
         integer(kind=8)                             :: type_cont = 0
         integer(kind=8)                             :: vari_cont = 0
         integer(kind=8)                             :: jac_type = 0
+        integer(kind=8)                             :: inte_type = 0
         real(kind=8)                        :: vari_cont_coef = 0.d0
         real(kind=8), dimension(9)          :: coef_cont = 0.d0
 
@@ -100,20 +101,20 @@ module contact_type
         integer(kind=8)                             :: nb_dofs = 0
     end type
 
-    type Cell_Geom
+    type Cell_GeomC
         integer(kind=8) :: cellDime = 0
         integer(kind=8) :: nbNode = 0
         character(len=8) :: cellCode = " "
         real(kind=8), dimension(3, 9) :: coorNodeGlob = 0.d0
         real(kind=8), dimension(2, 9) :: coorNodePara = 0.d0
-    end type Cell_Geom
+    end type Cell_GeomC
 
     type Contact_CellGeom
         integer(kind=8) :: cellDime = 0
 ! ----- Slave side
-        type(Cell_Geom) :: slav
+        type(Cell_GeomC) :: slav
 ! ----- Master side
-        type(Cell_Geom) :: mast
+        type(Cell_GeomC) :: mast
     end type Contact_CellGeom
 
 ! - Type for parameters of projection algorithm
@@ -128,8 +129,8 @@ module contact_type
     type Contact_ProjPara
         real(kind=8) :: pointCoor(3) = 0.d0
         integer(kind=8) :: modelDime = 0
-        type(Cell_Geom) :: geomTarget
-        type(Cell_Geom) :: geomTargetLine
+        type(Cell_GeomC) :: geomTarget
+        type(Cell_GeomC) :: geomTargetLine
         real(kind=8):: projVect(3) = 0.d0
         real(kind=8) :: ksi(2) = 0.d0
         real(kind=8) :: tau1(3) = 0.d0
@@ -143,7 +144,7 @@ module contact_type
 !===================================================================================================
 !
     public :: ContactParameters, ContactGeom
-    public :: Cell_Geom, Contact_CellGeom
+    public :: Cell_GeomC, Contact_CellGeom
     public :: Contact_ProjAlgoPara, Contact_ProjPara
 !
 contains
