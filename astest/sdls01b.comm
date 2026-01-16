@@ -260,7 +260,7 @@ test.assertAlmostEqual(np.linalg.norm(valr - deplr_refe), 0.0)
 
 
 # Test IMPR_RESU with PARTIE
-dict_unites = {"REEL": 12, "IMAG": 13, "MODULE": 14, "PHASE": 15}
+dict_unites = {"REEL": 31, "IMAG": 32, "MODULE": 41, "PHASE": 42}
 valr_refe = {
     "REEL": deplr_refe,
     "IMAG": np.zeros(deplr_refe.shape),
