@@ -1,8 +1,27 @@
 """
-- Extract PERF lines from '.code'.
-- Build a pandas dataframe
+This script provides these features:
+
+- Extract execution times from the '.code' files from one or several directories:
+
+    check_perf.py --extract --output=destination-file.csv dir1 [dir2 [...]]
+
+- Compare two or more csv files (files will be alphabetically ordered):
+
+    check_perf.py --compare file1.csv file2.csv [file3.csv [...]]
+
+- Check the history for a testcase (files will be alphabetically ordered):
+
+    check_perf.py --history --name=testname --output=destination-file.csv *.csv
+
+
+  The CSV file can be loaded with:
+
+    python3
+    >>> import pandas as pd
+    >>> df = pd.read_csv("destination-file.csv", index_col=0)
 """
 
+import argparse
 import re
 import time
 from pathlib import Path
@@ -48,18 +67,20 @@ def extract_one(filename: Path) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def extract_perf(resdir: Path) -> pd.DataFrame:
+def extract_perf(resdir: list[Path]) -> pd.DataFrame:
     """Extract PERF lines from all '.code' files from a directory.
 
     Arguments:
-        resdir (Path|str): Results directory containing the '.code' files.
+        resdir (list[Path|str]): Results directory containing the '.code' files.
 
     Returns:
         DataFrame: Data with columns: (test name, command, elapsed time).
     """
+    dirs = resdir if type(resdir) in (list, tuple) else [resdir]
     ldf = []
-    for path in Path(resdir).glob("*.code"):
-        ldf.append(extract_one(path))
+    for dir1 in dirs:
+        for path in Path(dir1).glob("*.code"):
+            ldf.append(extract_one(path))
     return pd.concat(ldf, ignore_index=True)
 
 
@@ -96,14 +117,15 @@ Nombre de commandes comparées : {nbcmd} ({nbcmdtot} sans filtre)
 """
 
 
+regdate = re.compile("([0-9]{4}-[0-9]{2}-[0-9]{2})")
+
+
 class PerfReport:
     """Write the report comparing to execution.
 
     Arguments:
         key (str): Column to be used for comparison: "cpu", "sys" or "elapsed".
     """
-
-    _redate = re.compile("([0-9]{4}-[0-9]{2}-[0-9]{2})")
 
     def __init__(self, key: str = "cpu"):
         self.df1 = None
@@ -143,10 +165,10 @@ class PerfReport:
         """
         df1 = pd.read_csv(file1, index_col=0)
         df2 = pd.read_csv(file2, index_col=0)
-        mat = self._redate.search(str(file1))
+        mat = regdate.search(str(file1))
         if mat:
             date1 = mat.group(1)
-        mat = self._redate.search(str(file2))
+        mat = regdate.search(str(file2))
         if mat:
             date2 = mat.group(1)
         self.set_data(df1, df2, date1, date2)
@@ -226,12 +248,60 @@ class PerfReport:
 if __name__ == "__main__":
     pd.set_option("display.max_rows", 50)
 
-    # src = "debian-12"
-    # df = extract_perf(f"/local00/tmp/perf/{src}")
-    # df.to_csv(f"2026-01-14_{src}.csv")
-    # df = extract_perf("/local00/tmp/perf/deb2")
-    # df.to_csv("2026-01-16_debian-12.csv")
-
-    report = PerfReport()
-    report.from_csv("2026-01-14_debian-12.csv", "2026-01-16_debian-12.csv")
-    report.show_difference()
+    parser = argparse.ArgumentParser(
+        usage=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "--extract", action="store_true", help="Extract execution times from '.code' files"
+    )
+    parser.add_argument("--compare", action="store_true", help="Compare 2 or more CSV files")
+    parser.add_argument("--history", action="store_true", help="History for a testcase")
+    parser.add_argument(
+        "-o", "--output", action="store", help="Filename of the CSV file for '--extract'"
+    )
+    parser.add_argument("--name", action="store", help="Name of the testcase")
+    parser.add_argument(
+        "args", metavar="FILES/DIRS", nargs="*", help="List of files or directories"
+    )
+    args = parser.parse_args()
+    if args.extract:
+        if not args.output:
+            parser.error("please define the result file using '-o'/'--output' option")
+        if not args.args:
+            parser.error("at least one directory must be passed in argument")
+        df = extract_perf(args.args)
+        df.to_csv(args.output)
+    elif args.compare:
+        if len(args.args) < 2:
+            parser.error("at least to CSV files are needed for comparison")
+        files = sorted(args.args, reverse=True)
+        file2 = files.pop(0)
+        while files:
+            file1, file2 = file2, files.pop(0)
+            report = PerfReport()
+            report.from_csv(file2, file1)
+            report.show_difference()
+    elif args.history:
+        if not args.output:
+            parser.error("please define the result file using '-o'/'--output' option")
+        if not args.args:
+            parser.error("at least one CSV file must be passed in argument")
+        files = sorted(args.args)
+        dft = None
+        for csv in files:
+            csv = Path(csv)
+            print(f"reading {csv}...", end=" ")
+            date = csv.stem
+            mat = regdate.search(str(csv))
+            if mat:
+                date = mat.group(1)
+            cols = ["command", "cpu"]
+            df = pd.read_csv(csv, index_col=0)
+            dfi = df[df["test"] == args.name][cols]
+            dfi.rename(columns={"cpu": date}, inplace=True)
+            if dft is None:
+                dft = dfi
+                continue
+            dft = pd.merge(dft, dfi, how="outer", on="command")
+            print(f"current size {dft.shape}")
+        dft.to_csv(args.output)
