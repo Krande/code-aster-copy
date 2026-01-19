@@ -58,15 +58,11 @@ def configure(self):
 
     # prefer memory usage over speed
     self.add_linkflags("-Wl,--no-keep-memory")
-    # this option removes the warning about executable stack because of nested functions
-    # https://sourceware.org/bugzilla/show_bug.cgi?id=29072
-    self.add_linkflags("-Wl,--no-warn-execstack")
 
     self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
     self.add_linkflags([f"-Wl,{i}" for i in self.get_lto_options()], dest="LINKFLAGS")
 
-    # seems incompatible with subroutines like zerofr that takes function as argument (test ssnv168f)
-    # self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
+    self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
