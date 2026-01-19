@@ -46,7 +46,7 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    character(len=8) :: model, mesh, typmo, mesh0, nomgd
+    character(len=8) :: model, mesh, mesh0, nomgd
     aster_logical :: lmodemeca, ldynatrans
     integer(kind=8) :: nexci, nbel, i
     real(kind=8) :: start, finish, dirz, absccur, long
@@ -80,13 +80,6 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
         end if
     end if
 
-!--- Cas axis : on normalise informe l'utilisateur de la division
-!    automatique par 1/R
-    call dismoi('MODELISATION', cgStudy%model, 'MODELE', repk=typmo)
-    if (typmo(1:4) .eq. 'AXIS') then
-        call utmess('I', 'RUPTURE3_10')
-    end if
-!
 !--- Verify the input theta factors field
     if (cgTheta%theta_factors_in) then
         call dismoi('NOM_MAILLA', cgTheta%theta_factors, 'CHAM_NO', repk=mesh0)
