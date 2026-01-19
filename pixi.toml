@@ -138,7 +138,7 @@ def-astergc = { cmd = ["python", "msvc/def_gen_astergc.py"], description = "Gene
 def-gen-all = { cmd = "echo Def generation complete", depends-on = ["def-bibfor", "def-bibfor-ext", "def-bibcxx", "def-bibc", "def-astergc"] }
 
 [feature.cf.target.linux-64.tasks.build]
-cmd = "waf --use-config-dir=config/ --prefix=$CONDA_PREFIX --med-libs='med medC medfwrap medimport' --enable-med --enable-hdf5 --enable-mumps --enable-metis --mumps-libs='cmumps_seq dmumps_seq smumps_seq zmumps_seq pord_seq mumps_common_seq mpiseq_seq' --enable-scotch --enable-mfront --libdir=$CONDA_PREFIX/lib --site-packages=$CONDA_PREFIX/lib/python3.12/site-packages --disable-aster-subdir --install-tests --disable-mpi --disable-petsc --without-repo configure && waf install"
+cmd = "waf --use-config-dir=config/ --prefix=$CONDA_PREFIX --med-libs='med medC medfwrap medimport' --enable-med --enable-hdf5 --enable-mumps --enable-metis --mumps-libs='cmumps_seq dmumps_seq smumps_seq zmumps_seq pord_seq mumps_common_seq mpiseq_seq' --enable-scotch --enable-mfront --libdir=$CONDA_PREFIX/lib --site-packages=$CONDA_PREFIX/lib/python3.12/site-packages --disable-aster-subdir --install-tests --disable-mpi --disable-petsc --without-hg configure && waf install"
 description = "Build the project (nompi variant)"
 
 [feature.cf.target.linux-64.tasks.build.env]

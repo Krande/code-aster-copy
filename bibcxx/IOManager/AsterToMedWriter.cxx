@@ -188,7 +188,7 @@ bool AsterToMedWriter::printMesh( const Mesh &toPrint, const std::filesystem::pa
         irange( (ASTERINTEGER)0, (ASTERINTEGER)( toPrint.getNumberOfCells() - 1 ) );
     return _printMeshFromList( toPrint, filename, nodeList, cellList, local, meshName );
 };
-
+#ifdef ASTER_HAVE_MPI
 bool AsterToMedWriter::printMesh( const ConnectionMesh &toPrint,
                                   const std::filesystem::path &filename, bool local,
                                   const std::string &meshName ) {
@@ -213,7 +213,7 @@ bool AsterToMedWriter::printMesh( const ParallelMesh &toPrint,
         cellList = toPrint.getInnerCells();
     }
     auto cret = _printMeshFromList( toPrint, filename, nodeList, cellList, local, meshName );
-
+#endif
 #ifdef ASTER_HAVE_MPI
     if ( local ) {
         auto fr = MedFileReader();

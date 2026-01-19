@@ -59,6 +59,8 @@ def check_version(self):
         assert type(values) in (list, tuple), (1, values)
         assert len(values) == 7, (2, values)
         vers, revid, branch, date, frbr, chg, loc = values
+        if len(vers) == 4: # will remove the extra build number (as it is not the official version)
+            vers = vers[:3]
         assert len(vers) == 3, (3, values)
         assert [type(i) for i in vers] == [int, int, int], (4, values)
         assert type(revid) is str, (5, values)

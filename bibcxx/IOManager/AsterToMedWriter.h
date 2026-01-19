@@ -77,7 +77,7 @@ class AsterToMedWriter {
     /** @brief print Mesh object */
     bool printMesh( const Mesh &, const std::filesystem::path &filename, bool local = true,
                     const std::string &meshName = "" );
-
+#ifdef ASTER_HAVE_MPI
     /** @brief print ParallelMesh object */
     bool printMesh( const ParallelMesh &, const std::filesystem::path &filename, bool local = true,
                     const std::string &meshName = "" );
@@ -85,13 +85,13 @@ class AsterToMedWriter {
     /** @brief print ConnectionMesh object */
     bool printMesh( const ConnectionMesh &, const std::filesystem::path &filename,
                     bool local = true, const std::string &meshName = "" );
-
+#endif
     /** @brief print MeshPtr object */
     bool printMesh( const MeshPtr &mesh, const std::filesystem::path &filename, bool local = true,
                     const std::string &meshName = "" ) {
         return printMesh( *mesh, filename, local, meshName );
     };
-
+#ifdef ASTER_HAVE_MPI
     /** @brief print ParallelMeshPtr object */
     bool printMesh( const ParallelMeshPtr &mesh, const std::filesystem::path &filename,
                     bool local = true, const std::string &meshName = "" ) {
@@ -103,7 +103,7 @@ class AsterToMedWriter {
                     bool local = true, const std::string &meshName = "" ) {
         return printMesh( *mesh, filename, local, meshName );
     };
-
+#endif
     /** @brief print ResultPtr object */
     bool printResult( const ResultPtr &, const std::filesystem::path &filename, bool local = true );
 #endif
