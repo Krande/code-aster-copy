@@ -82,6 +82,7 @@ subroutine crnggc(chamnz, l_print)
     integer(kind=8), pointer :: v_dom(:) => null()
     integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
+    integer(kind=8), pointer :: v_nogl(:) => null()
 !
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig, comm_name, tag_name, nume_equa, joints, meshj, chamno
@@ -123,6 +124,8 @@ subroutine crnggc(chamnz, l_print)
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
     nomgdr = zk24(jrefn+1) (1:8)
+    call jeveuo(mesh//'.NUNOLG', 'L', vi=v_nogl)
+    call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
 !
 !   SI LE MAILLAGE N'EST PAS PARALLELE, ON SORT
     if (.not. isParallelMesh(mesh)) goto 999
@@ -182,8 +185,6 @@ subroutine crnggc(chamnz, l_print)
     call wkvect('&&CRNUGG.CMP2', 'V V I', ncmpmx, jcpne2)
 !
 !   Il faut maintenant communiquer les numeros partages
-!   NOTE : On pourrait sans doute se passer d'une communication puisque celui qui recoit
-!          sait ce qu'il attend et celui qui envoit pourrait tout envoyer
     do iaux = 1, nb_comm
         domj_i = v_comm(iaux)
         numpro = v_dom(domj_i)
@@ -212,13 +213,22 @@ subroutine crnggc(chamnz, l_print)
         nb_ddl_envoi = 0
         do jaux = 1, nbnoer
             poscom = (jaux-1)*(1+nec)+1
+!           Numero local (pour le proc courant)
             numno1 = zi(jjoinr+2*(jaux-1))
+!           Numero local (pour le proc d'en face)
             numno2 = zi(jjoinr+2*jaux-1)
             zi(jenvoi1+poscom) = numno2
             do iec = 1, nec
                 zi(jenvoi1+poscom+iec) = zzprno(1, numno1, 2+iec)
             end do
-            nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
+!           On ne souhaite recevoir les num de ddl globaux que du processeur
+!           qui les possedent (cela explique le if( v_noex(numno1).eq.numpr2 ) )
+!           Malgré tout, on envoie tout au proc d'en face (numeros de noeuds et
+!           entiers codes) car il s'attend a avoir une liste dimensionnee a la
+!           taille du raccord (cela explique le remplissage de zi(jenvoi1+...)
+            if (v_noex(numno1) .eq. numpr2) then
+                nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
+            end if
         end do
         zi(jenvoi1) = nb_ddl_envoi
         n4e = to_mpi_int(lgenvr1)
@@ -226,17 +236,24 @@ subroutine crnggc(chamnz, l_print)
         call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
                               zi(jrecep1), n4r, numpr4, tag4, mpicou)
 
-        call wkvect('&&CRNUGG.NUM_DDL_GLOB_E', 'V V I', max(1, zi(jrecep1)), jenvoi2)
-        call wkvect('&&CRNUGG.NUM_DDL_GLOB_R', 'V V I', max(1, zi(jenvoi1)), jrecep2)
+        call wkvect('&&CRNUGG.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1)+1, jenvoi2)
+        call wkvect('&&CRNUGG.NUM_DDL_GLOB_R', 'V V I', zi(jenvoi1)+1, jrecep2)
 
         nbddl = 0
         if (zi(jrecep1) > 0) then
+!           On dimensionne le raccord a la taille du nombre de ddl attendus
+!           par le proc d'en face
             call jeecra(jexnum(send, domj_i), 'LONMAX', zi(jrecep1))
             call jeveuo(jexnum(send, domj_i), 'E', jnujoi1)
 !
             do jaux = 1, nbnoee
                 poscom = (jaux-1)*(1+nec)+1
                 numno1 = zi(jrecep1+poscom)
+!               Si on ne possede pas le noeud : on envoie rien (cf.
+!               if( v_noex(numno1).ne.numpr2 ) then plus bas
+                if (v_noex(numno1) .ne. rang) then
+                    cycle
+                end if
 !
                 nddl = zzprno(1, numno1, 1)
                 nbcmp = zzprno(1, numno1, 2)
@@ -246,7 +263,7 @@ subroutine crnggc(chamnz, l_print)
                     nddlg = v_nugll(nddl)
                 end if
 !
-!           Recherche des composantes demandees
+!               Recherche des composantes demandees
                 do iec = 1, nec
                     zi(jencod+iec-1) = zzprno(1, numno1, 2+iec)
                     zi(jenco2+iec-1) = zi(jrecep1+poscom+iec)
@@ -255,50 +272,52 @@ subroutine crnggc(chamnz, l_print)
                 call isdeco(zi(jenco2), zi(jcpne2), ncmpmx)
                 ico2 = 0
                 do icmp = 1, ncmpmx
-                    if (zi(jcpnec+icmp-1) .eq. 1) then
-                        if (zi(jcpne2+icmp-1) .eq. 1) then
-                            ASSERT(nddlg .ne. -1)
-                            zi(jenvoi2+nbddl) = nddlg+ico2
-                            zi(jnujoi1+nbddl) = nddl+ico2
-                            nbddl = nbddl+1
-                        end if
+!                   Comme on est sur un noeud possede par le proc courant,
+!                   si le proc d'en face attend un ddl (ie composante presente),
+!                   il faut necessairement que la composante soit aussi presente
+!                   sur ce proc (d'ou ASSERT(zi(jcpnec+icmp-1) .ne. 0))
+                    if (zi(jcpne2+icmp-1) .eq. 1) then
+                        ASSERT(zi(jcpnec+icmp-1) .ne. 0)
+                        ASSERT(nddlg .ne. -1)
+                        zi(jenvoi2+nbddl+1) = nddlg+ico2
+                        zi(jnujoi1+nbddl+1) = nddl+ico2
+                        nbddl = nbddl+1
                         ico2 = ico2+1
                     end if
                 end do
             end do
+            ASSERT(zi(jrecep1) .eq. nbddl)
+            zi(jenvoi2) = nbddl
         end if
 !
-        if (nbddl .eq. 0) then
-            call jedetr('&&CRNUGG.NUM_DDL_GLOB_E')
-            call jedetr('&&CRNUGG.NUM_DDL_GLOB_R')
-            call jedetr('&&CRNUGG.NOEUD_NEC_E1')
-            call jedetr('&&CRNUGG.NOEUD_NEC_R1')
-            cycle
-        end if
-        ASSERT(zi(jrecep1) .eq. nbddl)
-        n4e = to_mpi_int(nbddl)
-        n4r = to_mpi_int(nb_ddl_envoi)
+        n4e = to_mpi_int(nbddl+1)
+        n4r = to_mpi_int(nb_ddl_envoi+1)
         call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
                               zi(jrecep2), n4r, numpr4, tag4, mpicou)
 
-        if (nb_ddl_envoi > 0) then
+        if (zi(jrecep2) > 0) then
             call jeecra(jexnum(recv, domj_i), 'LONMAX', nb_ddl_envoi)
             call jeveuo(jexnum(recv, domj_i), 'E', jnujoi2)
 !
-            curpos = 0
+            curpos = 1
             do jaux = 1, nbnoer
                 numno1 = zi(jjoinr+2*(jaux-1))
+!               On ne regarde que les noeuds possedes par le proc d'en face
+!               puisque c'est ce qu'il a envoye
+                if (v_noex(numno1) .ne. numpr2) then
+                    cycle
+                end if
                 nddll = zzprno(1, numno1, 1)
                 nbcmp = zzprno(1, numno1, 2)
                 do icmp = 0, nbcmp-1
-                    ASSERT(zi(jrecep2+curpos) .ne. -1)
                     v_nugll(nddll+icmp) = zi(jrecep2+curpos)
                     v_posdd(nddll+icmp) = numpro
                     zi(jnujoi2+curpos) = nddll+icmp
                     curpos = curpos+1
                 end do
             end do
-            ASSERT(curpos .eq. nb_ddl_envoi)
+            ASSERT(curpos-1 .eq. nb_ddl_envoi)
+            ASSERT(curpos-1 .eq. zi(jrecep2))
         end if
 !
         call jedetr('&&CRNUGG.NUM_DDL_GLOB_E')
@@ -395,7 +414,6 @@ subroutine crnggc(chamnz, l_print)
 !   NOMBRE DE DDL LOCAUX
     call jeveuo(nume_equa//'.NEQU', 'L', jnequ)
     nbddll = zi(jnequ)
-    call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
     do iaux = 1, nbddll
         nuno = v_deeq((iaux-1)*2+1)
         if (nuno .ne. 0) then
