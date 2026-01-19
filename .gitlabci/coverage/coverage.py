@@ -41,8 +41,6 @@ Examples:
 class CoverageAnalysis:
     """Check code coverage."""
 
-    MESS_EXT = ".mess.txt"
-
     def __init__(
         self,
         root: Path,
@@ -224,10 +222,9 @@ class CoverageAnalysis:
     def check_one(self, filename: Path):
         """Check a testcase coverage."""
         test = filename.with_suffix("")
-        elaps = get_total_job(test.with_suffix(self.MESS_EXT))
-        ref = elaps, test.name
         with open(filename, "rb") as fcode:
             content = fcode.read().decode(errors="replace")
+        ref = get_total_job(content), test.name
         self._parse_code(ref, content)
 
     def _parse_code(self, ref, content):
@@ -248,7 +245,9 @@ class CoverageAnalysis:
         re_cmde = re.compile(
             r"^(?P<cmde>[^&]\w+) +(?P<fact>[-\w]+) +(?P<simp>\w+)" r" +(?P<value>.*)", re.M
         )
-        content = re_test.sub("", content)
+        code = [line for line in content.splitlines() if re_test.search(line)]
+        code = os.linesep.join(code)
+        content = re_test.sub("", code)
         calculs = []
         for mat in re_calc.finditer(content):
             phen = self._features.get_model(mat.group("elt"))
@@ -320,23 +319,20 @@ class CoverageAnalysis:
             self.report(f"{indent}{light}")
 
 
-def get_total_job(filename):
-    """Extract the execution time from a 'mess' file.
+def get_total_job(text):
+    """Extract the execution time from content of the code file.
 
     Arguments:
-        filename (str): Filename.
+        text (str): Code file content.
 
     Returns:
         float: The execution time (or 0.).
     """
+    expr = r"PERF +TOTAL_JOB" + r" +([0-9\.]+)" * 3
+    re_time = re.compile(expr, re.M)
     elaps = 0.0
-    if osp.exists(filename):
-        expr = r"TOTAL_JOB" + r" +: +([0-9\.]+)" * 4
-        re_time = re.compile(expr, re.M)
-        with open(filename, "rb") as fmess:
-            content = fmess.read().decode(errors="replace")
-        for mat in re_time.finditer(content):
-            elaps += float(mat.group(3))
+    for mat in re_time.finditer(text):
+        elaps += float(mat.group(3))
     return elaps
 
 

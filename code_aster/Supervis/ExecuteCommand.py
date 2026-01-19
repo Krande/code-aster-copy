@@ -88,7 +88,7 @@ from ..Utilities import (
     no_new_attributes,
 )
 from ..Utilities.outputs import command_text, decorate_name
-from .code_file import track_coverage
+from .code_file import Tracking
 from .CommandSyntax import CommandSyntax
 from .ctopy import check_ds_object
 from .Serializer import FinalizeOptions, saveObjectsFromContext
@@ -208,7 +208,7 @@ class ExecuteCommand:
             timer.Stop(" . check syntax")
         self.adapt_syntax(keywords)
         if ExecutionParameter().option & Options.TestMode:
-            track_coverage(self._cata, self.command_name, keywords)
+            Tracking.add("KWDS", self._cata, self.command_name, keywords)
         self.create_result(keywords)
         if not getattr(self._result, "userName", "n/a"):
             # attribute does exist but is not defined
@@ -436,8 +436,11 @@ class ExecuteCommand:
         """Print the memory and timer informations."""
         # not called if not show_syntax()
         timer = ExecutionParameter().timer
-        logger.info(command_memory())
-        logger.info(command_time(self._counter, *timer.StopAndGet(str(self._counter))))
+        times = timer.StopAndGet(str(self._counter))
+        if ExecutionParameter().option & Options.TestMode:
+            Tracking.add("PERF", self.name, *times)
+        logger.info(command_memory(self.name))
+        logger.info(command_time(self._counter, *times))
         logger.info(command_separator())
 
     def check_syntax(self, keywords):
@@ -485,7 +488,7 @@ class ExecuteCommand:
             self._result = None
         else:
             raise NotImplementedError(
-                "Method 'create_result' must be " "overridden for {0!r}.".format(self.name)
+                "Method 'create_result' must be overridden for {0!r}.".format(self.name)
             )
 
     @property
@@ -635,9 +638,7 @@ class ExecuteCommand:
 def check_jeveux():
     """Check that the memory manager (Jeveux) is up."""
     if not libaster.jeveux_status():
-        raise RuntimeError(
-            "code_aster memory manager is not started. " "No command can be executed."
-        )
+        raise RuntimeError("code_aster memory manager is not started. No command can be executed.")
 
 
 class ExecuteMacro(ExecuteCommand):
@@ -990,8 +991,11 @@ def command_result(counter, command_name, result):
     return MessageLog.GetText("I", "SUPERVIS2_72", **dict_args)
 
 
-def command_memory():
+def command_memory(command_name):
     """Return a representation of the current memory consumption.
+
+    Arguments:
+        command_name (str): Command name.
 
     Returns:
         str: String representation.
@@ -999,6 +1003,8 @@ def command_memory():
     rval, iret = aster_core.get_mem_stat("VMPEAK", "VMSIZE", "CMAX_JV", "CMXU_JV")
     txt = ""
     if iret == 0:
+        if ExecutionParameter().option & Options.TestMode:
+            Tracking.add("MEM", command_name, *rval)
         if rval[0] > 0.0:
             txt = MessageLog.GetText("I", "SUPERVIS2_73", valr=rval)
         else:

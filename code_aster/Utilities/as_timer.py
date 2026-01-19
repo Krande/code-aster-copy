@@ -86,7 +86,7 @@ class Timer:
             self._oversize_name = self._oversize_name % self.MaxSize
         except TypeError:
             pass
-        if not format in ("as_run", "aster"):
+        if format not in ("as_run", "aster"):
             format = "as_run"
 
         if format == "as_run":

@@ -37,6 +37,7 @@ import sys
 import libaster
 
 from ..Supervis import ExecuteCommand, FinalizeOptions, saveObjects
+from ..Supervis.code_file import Tracking
 from ..Utilities import ExecutionParameter, Options, haveMPI, logger
 
 
@@ -114,7 +115,7 @@ class Closer(ExecuteCommand):
             else:
                 # called "atexit", objects may be deleted, only close database
                 libaster.jeveux_finalize(0)
-
+        Tracking.stop_timer(ExecutionParameter().timer)
         logger.info(repr(ExecutionParameter().timer))
 
     def post_exec(self, keywords):

@@ -17,15 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# aslint: disable=C4008
-
 import time
 from functools import wraps
 
-from . import config
-
-if config["ASTER_PLATFORM_POSIX"]:
+try:
     from resource import RUSAGE_SELF, getrusage
+except ImportError:
+    RUSAGE_SELF = getrusage = None
 
 from .logger import logger
 
@@ -54,7 +52,7 @@ class Profiler:
             result = func(*args, **kwargs)
             delta = time.perf_counter() - start
             self._elaps[key] += delta
-            if config["ASTER_PLATFORM_POSIX"]:
+            if getrusage:
                 mem_used = int(getrusage(RUSAGE_SELF).ru_maxrss / 1024)
             else:
                 mem_used = -1

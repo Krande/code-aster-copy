@@ -18,7 +18,13 @@
 # --------------------------------------------------------------------
 
 """
-This module defines the visitor used to print the keywords in the CODE file.
+The CODE is not only to check the keywords coverage.
+It also stores measures of elapsed times of each command, memory consumptions...
+
+Each line starts with a prefix defining the type of information:
+- TEST for keywords coverage
+- PERF for elapsed time in a command
+- MEM for the memory consumption
 """
 
 import os
@@ -27,12 +33,54 @@ import libaster
 
 from ..Cata.Language.SyntaxObjects import IDS
 from ..Cata.SyntaxUtils import value_is_sequence
-from ..Utilities import is_float, is_int
+from ..Utilities import MPI, is_float, is_int
 
 EMPTY = "--"
 
 
-def track_coverage(command, name, keywords):
+class Tracking:
+    @staticmethod
+    def add(type: str, *data):
+        """High level function to store a new execution information.
+
+        Arguments:
+            type (str): Type of information: "KWDS", "TIME", "PERF".
+            data (misc): Data to be stored, passed to a dedicated function.
+        """
+        if type == "KWDS":
+            _track_coverage(*data)
+        elif type == "PERF":
+            _track_perf(*data)
+        elif type == "MEM":
+            _track_memory(*data)
+
+    @staticmethod
+    def stop_timer(timer):
+        """Stop the timer to store the last measures.
+
+        Arguments:
+            time (Timer): Timer object.
+        """
+        specials = ("check syntax", "fortran", "sdveri", "cleanup")
+        for key in specials:
+            times = timer.StopAndGet(f" . {key}")
+            _track_perf(key, *times)
+        times = timer.StopAndGet(timer.total_key)
+        _track_perf(timer.TotalKey, *times)
+
+
+def _write_code(line):
+    # only on proc #0
+    if MPI.ASTER_COMM_WORLD.rank != 0:
+        return
+    if libaster.jeveux_status():
+        libaster.affich("CODE", line)
+    else:
+        with open("fort.15", "a") as fcode:
+            fcode.write(line + "\n")
+
+
+def _track_coverage(command, name, keywords):
     """Track used keywords into the '.code' file.
 
     Arguments:
@@ -42,7 +90,17 @@ def track_coverage(command, name, keywords):
     """
     cover = CodeVisitor(name)
     command.accept(cover, keywords)
-    libaster.affich("CODE", cover.get_text())
+    _write_code(cover.get_text())
+
+
+def _track_perf(command, *data):
+    line = " ".join(["PERF", command] + [str(i) for i in data])
+    _write_code(line)
+
+
+def _track_memory(command, *data):
+    line = " ".join(["MEM", command] + [str(i) for i in data])
+    _write_code(line)
 
 
 class CodeVisitor:

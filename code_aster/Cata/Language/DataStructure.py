@@ -182,7 +182,7 @@ class UnitBaseType(ValueCheckMixing):
             return True
 
         if isinstance(value, int):
-            return True
+            return value != 15
 
         if not isinstance(value, dict):
             return False
