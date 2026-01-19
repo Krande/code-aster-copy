@@ -25,5 +25,22 @@ devtools
 # pixi/uv environments
 .pixi
 *.egg-info
-pixi.lock
-uv.lock
+
+# krande fork
+.idea/*
+logs/*
+.env*
+install_*.log
+tmp_b*
+med_aster_module.c.1.dll.manifest
+tmp_blink.bat
+build*/
+temp/
+.vs
+*pick.code_aster*
+code_aster/pkginfo.py
+conda/test_file.py
+build/*
+build-cmake/*
+output/
+test_output/

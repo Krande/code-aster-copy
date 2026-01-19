@@ -1,0 +1,163 @@
+[workspace]
+name = "code-aster"
+version = "18.0.2"
+description = "A pixi project for building the windows variant of code aster"
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64"]
+
+[environments]
+common = { features = ["common"], solve-group = "common", no-default-feature = true }
+dev = { features = ["dev", "common"], no-default-feature = true }
+release = { features = ["release", "common"], no-default-feature = true }
+cf = { features = ["cf", "common"], no-default-feature = true }
+debug = { features = ["debug", "common"], no-default-feature = true }
+conda = { features = ["conda"], no-default-feature = true }
+
+[feature.conda]
+channels = ["conda-forge"]
+platforms = ["linux-64", "win-64"]
+dependencies = { rattler-build = "*", python = "3.12.*" }
+
+[feature.cf]
+channels = ["conda-forge"]
+[feature.release]
+channels = ["conda-forge", "https://repo.prefix.dev/code-aster"]
+[feature.debug]
+channels = ["conda-forge", "https://repo.prefix.dev/code-aster"]
+
+[feature.common.dependencies]
+python = "==3.12.8"
+libboost-devel = ">=1.86"
+waf = "==2.1.5"
+pyyaml = "*"
+pytest = "*"
+python-dotenv = "*"
+pybind11 = "==2.13.1"
+setuptools = "*"
+scipy = "*"
+
+[feature.common.target.linux-64.dependencies]
+gfortran = "14*"
+gxx = "14*"
+gcc = "14*"
+zlib = "*"
+libblas = { version = ">=3.9.0" }
+liblapack = { version = ">=3.9.0" }
+openblas = { version = ">=0.3.20" }
+flex = "*"
+bison = "*"
+libxml2-devel = "2.14.*"
+
+[feature.common.target.win-64.dependencies]
+vswhere = "*"
+ninja = "*"
+psutil = "*"
+clang = "19.*"
+
+libblas = { version = "*", build = "*mkl" }
+liblapack = { version = "*", build = "*mkl" }
+mkl-devel = { version = "2025.3.*", channel = "conda-forge" }
+ifx_win-64 = { version = "==2025.0.4", channel = "conda-forge" }
+llvmdev = "*"
+
+[feature.dev.target.win-64.dependencies]
+clangdev = "*"
+pixi-pycharm = "*"
+
+[feature.release.target.win-64.dependencies]
+hdf5 = { version = "*", build = "*release*" }
+mfront = { version = "*", build = "*release*" }
+mgis = { version = "*", build = "*release*" }
+libmed = { version = "*", build = "*release*INT64*" }
+medcoupling = { version = "*", build = "*release*INT64*" }
+libscotch = { version = "*", build = "*release*INT64*" }
+scotch = { version = "==7.0.7", build = "*release*INT64*" }
+metis = { version = "*", build = "*release*INT64*" }
+mumps = { version = "*", build = "*release*INT64*" }
+
+[feature.debug.target.win-64.dependencies]
+hdf5 = { version = "*", build = "*debug*" }
+mfront = { version = ">=4.2.3", build = "*debug*" }
+mgis = { version = ">=2.2.1", build = "*debug*" }
+libmed = { version = "*", build = "*debug*INT64*" }
+medcoupling = { version = "*", build = "*debug*INT64*" }
+metis = { version = "*", build = "*debug*INT64*66" }
+libscotch = { version = "*", build = "*debug*INT64*" }
+scotch = { version = "==7.0.7", build = "*debug*INT64*166" }
+mumps = { version = "*", build = "*debug*INT64*68" }
+
+[feature.cf.target.linux-64.dependencies]
+hdf5 = { version = "*" }
+mfront = { version = ">=4.2.3" }
+mgis = { version = ">=2.2.1" }
+libmed = { version = "*" }
+medcoupling = { version = "*", build = "*nompi*" }
+metis = { version = "*" }
+libscotch = { version = "*" }
+scotch = { version = "==7.0.10" }
+mumps-include = { version = "*" }
+mumps-seq = { version = "*" }
+
+[feature.conda.tasks]
+test-eval = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "$PIXI_PROJECT_ROOT/test_output", "--output", "$PIXI_PROJECT_ROOT/conda_debug/test_scanner/results"] }
+
+[feature.conda.target.win-64.tasks]
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" } }
+ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" } }
+cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml"] }
+
+[feature.conda.target.linux-64.tasks]
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" } }
+ctest = { cmd = ["rattler-build", "test", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" } }
+cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
+
+[feature.release.target.win-64.tasks]
+build = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64"], description = "Build the project" }
+install = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+test = { cmd = ["run_ctest", "--resutest=temp\\release", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
+
+[feature.debug.target.win-64.tasks]
+buildd = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project" }
+installd = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+testd = { cmd = ["run_ctest", "--resutest=temp\\debug", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
+testd-eval = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "$PIXI_PROJECT_ROOT/temp/debug", "--output", "$PIXI_PROJECT_ROOT/conda_debug/test_scanner/results"] }
+ctestd = {cmd="run_ctest --resutest=temp\\debug1 --clean -R", description="Run ctest command"}
+debug = { cmd = ["python","msvc/run_tests.py", "--attach-debugger", "--test-file"], description = "Run the debug script on a specific test" }
+
+[feature.dev.target.win-64.tasks]
+test_scan = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "--output", "conda_debug/test_scanner/results/windows/nompi"], description = "Scan the test results" }
+dev = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
+run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
+dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }
+
+def-bibfor = { cmd = ["python", "msvc/def_gen_fc.py"], description = "Generate the bibfor.def file" }
+def-bibfor-ext = { cmd = ["python", "msvc/def_gen_bibfor_ext.py"], description = "Generate the bibfor_ext.def file" }
+def-bibcxx = { cmd = ["python", "msvc/def_gen_cpp.py"], description = "Generate the bibcxx.def file" }
+def-bibc = { cmd = ["python", "msvc/def_gen_c.py"], description = "Generate the bibc.def file" }
+def-astergc = { cmd = ["python", "msvc/def_gen_astergc.py"], description = "Generate the asterGC.def file" }
+def-gen-all = { cmd = "echo Def generation complete", depends-on = ["def-bibfor", "def-bibfor-ext", "def-bibcxx", "def-bibc", "def-astergc"] }
+
+[feature.cf.target.linux-64.tasks.build]
+cmd = "waf --use-config-dir=config/ --prefix=$CONDA_PREFIX --med-libs='med medC medfwrap medimport' --enable-med --enable-hdf5 --enable-mumps --enable-metis --mumps-libs='cmumps_seq dmumps_seq smumps_seq zmumps_seq pord_seq mumps_common_seq mpiseq_seq' --enable-scotch --enable-mfront --libdir=$CONDA_PREFIX/lib --site-packages=$CONDA_PREFIX/lib/python3.12/site-packages --disable-aster-subdir --install-tests --disable-mpi --disable-petsc --without-repo configure && waf install"
+description = "Build the project (nompi variant)"
+
+[feature.cf.target.linux-64.tasks.build.env]
+CONFIG_PARAMETERS_addmem = "2000"
+TFELHOME = "$CONDA_PREFIX"
+LIBPATH_METIS = "$CONDA_PREFIX/lib"
+INCLUDES_METIS = "$CONDA_PREFIX/include"
+LIBPATH_PETSC = "$CONDA_PREFIX/lib"
+INCLUDES_PETSC = "$CONDA_PREFIX/include"
+INCLUDES_BOOST = "$CONDA_PREFIX/include"
+LIBPATH_BOOST = "$CONDA_PREFIX/lib"
+INCLUDES_MUMPS = "$CONDA_PREFIX/include $CONDA_PREFIX/include/mumps_seq"
+LIBPATH_MUMPS = "$CONDA_PREFIX/lib"
+INCLUDES_MED = "$CONDA_PREFIX/include"
+LIBPATH_MED = "$CONDA_PREFIX/lib"
+LIBPATH_MEDCOUPLING = "$CONDA_PREFIX/lib"
+INCLUDES_MEDCOUPLING = "$CONDA_PREFIX/include"
+PYPATH_MEDCOUPLING = "$CONDA_PREFIX/lib/python3.12/site-packages"
+DEFINES = "ASTER_INT8"
+FCFLAGS = "-fallow-argument-mismatch"
+FFLAGS = "-fallow-argument-mismatch"
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib"
