@@ -91,6 +91,8 @@ class CoverageAnalysis:
             str: Path to file.
         """
         prefix = prefix or time.strftime("%Y-%m-%d")
+        if prefix == "last" and typ == "results":
+            typ += ".txt"
         return osp.join(self._root, prefix + "." + typ)
 
     def _show_grouped(self, features: Features, tested_by: bool = None):
