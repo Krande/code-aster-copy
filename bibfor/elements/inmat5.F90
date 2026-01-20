@@ -47,7 +47,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
 !
     integer(kind=8) :: kpg, kno, knos, k
     real(kind=8) :: nosom(MT_NNOMAX, MT_NNOMAX)
-    real(kind=8), parameter :: demi = 0.5d0, quart = 0.25d0
+    real(kind=8), parameter :: demi = 0.5d0, quart = 0.25d0, tiers = 1.d0/3.d0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -237,9 +237,9 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
         nosom(5, 3) = demi
         nosom(6, 3) = demi
         nosom(6, 1) = demi
-        nosom(7, 1) = quart
-        nosom(7, 2) = quart
-        nosom(7, 3) = quart
+        nosom(7, 1) = tiers
+        nosom(7, 2) = tiers
+        nosom(7, 3) = tiers
 !
 !
     else if (elrefa .eq. 'QU8') then
