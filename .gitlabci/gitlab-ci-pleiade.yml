@@ -28,12 +28,12 @@ default:
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
-    - if: $CI_COMMIT_REF_NAME == "main" && $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_REF_NAME == "v17" && $CI_PIPELINE_SOURCE == "schedule"
       variables:
-        REFREV: main
+        REFREV: v17
     - if: $CI_PIPELINE_SOURCE == "web"
       variables:
-        REFREV: main
+        REFREV: v17
     - if: $BUILDTYPE == "code-checking"
     - if: $BUILDTYPE == "docker"
 
