@@ -43,13 +43,13 @@ class AsterToMedWriter {
     enum entityType { Cells, Nodes };
     void _createGroups( const BaseMesh &, MedMeshPtr, std::vector< med_int > &, const VectorLong &,
                         entityType, bool );
-
+#ifdef ASTER_HAVE_MPI
     void _buildFilterInformations(
         const VectorLong &nodeVector, const VectorLong &cellVector, JeveuxVectorLong cellTypeVec,
         std::array< med_int, 3 > &cumNodeNb,
         std::map< med_geometry_type, std::array< med_int, 3 > > &mapMedTypeCellsByProc,
         VectorOfVectorsLong & );
-
+#endif
     void _createMedGlobalNumbering( VectorLong &globNum, const VectorLong &innerNodes, int startNum,
                                     int localNodeNumber );
 

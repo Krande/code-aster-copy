@@ -213,8 +213,6 @@ bool AsterToMedWriter::printMesh( const ParallelMesh &toPrint,
         cellList = toPrint.getInnerCells();
     }
     auto cret = _printMeshFromList( toPrint, filename, nodeList, cellList, local, meshName );
-#endif
-#ifdef ASTER_HAVE_MPI
     if ( local ) {
         auto fr = MedFileReader();
         fr.open( filename, MedReadWrite );
@@ -260,10 +258,9 @@ bool AsterToMedWriter::printMesh( const ParallelMesh &toPrint,
             ++count;
         }
     }
-#endif
     return cret;
 };
-
+#endif
 bool AsterToMedWriter::_printMeshFromList( const BaseMesh &toPrint,
                                            const std::filesystem::path &filename,
                                            const VectorLong &nodeList, const VectorLong &cellList,
@@ -291,8 +288,10 @@ bool AsterToMedWriter::_printMeshFromList( const BaseMesh &toPrint,
     std::map< med_geometry_type, std::array< med_int, 3 > > mapMedTypeCellsByProc;
     // sort cells by type and create med filter informations
     if ( !local ) {
+#ifdef ASTER_HAVE_MPI
         _buildFilterInformations( nodeList, cellList, cellTypeVec, cumNodeNb, mapMedTypeCellsByProc,
                                   cellByType );
+#endif
     } else {
         _sortCellsByType( cellList, cellTypeVec, cellByType );
     }
@@ -400,7 +399,7 @@ bool AsterToMedWriter::_printMeshFromList( const BaseMesh &toPrint,
     }
     return true;
 };
-
+#ifdef ASTER_HAVE_MPI
 std::set< std::set< std::string > > gatherFamilies( std::set< std::set< std::string > > in ) {
     VectorString grpVec, allGrpVec;
     VectorLong grpNum, allGrpNum;
@@ -424,7 +423,7 @@ std::set< std::set< std::string > > gatherFamilies( std::set< std::set< std::str
     }
     return out;
 };
-
+#endif
 void AsterToMedWriter::_createGroups( const BaseMesh &toPrint, MedMeshPtr mesh,
                                       std::vector< med_int > &allEntityFamily,
                                       const VectorLong &indexes, entityType entType, bool local ) {
@@ -450,8 +449,11 @@ void AsterToMedWriter::_createGroups( const BaseMesh &toPrint, MedMeshPtr mesh,
         families.insert( family );
     }
     // gather all families over procs
+#ifdef ASTER_HAVE_MPI
     auto allFamilies = local ? families : gatherFamilies( families );
-
+#else
+    auto allFamilies = families;
+#endif
     // add families in med mesh
     // and build famToInt: from family (set of groups) to family id
     int familyCount = 1;
@@ -498,7 +500,7 @@ void AsterToMedWriter::_sortCellsByType( const VectorLong &cellVector, JeveuxVec
         cellIdByType[cellTypeMod - 1].push_back( cellId );
     }
 };
-
+#ifdef ASTER_HAVE_MPI
 void AsterToMedWriter::_buildFilterInformations(
     const VectorLong &nodeVector, const VectorLong &cellVector, JeveuxVectorLong cellTypeVec,
     std::array< med_int, 3 > &cumNodeNb,
@@ -549,6 +551,7 @@ void AsterToMedWriter::_buildFilterInformations(
         }
     }
 };
+#endif
 
 void AsterToMedWriter::_createMedGlobalNumbering( VectorLong &globNum, const VectorLong &innerNodes,
                                                   int startNum, int localNodeNumber ) {
@@ -566,8 +569,10 @@ bool AsterToMedWriter::printResult( const ResultPtr &resu, const std::filesystem
     // first, print mesh if needed
     const auto meshInResu = resu->getMesh();
     if ( meshInResu->isParallel() ) {
+#ifdef ASTER_HAVE_MPI
         const auto pMesh0 = std::dynamic_pointer_cast< ParallelMesh >( meshInResu );
         printMesh( pMesh0, filename, local );
+#endif
     } else {
         const auto mesh0 = std::dynamic_pointer_cast< Mesh >( meshInResu );
         printMesh( mesh0, filename, local );
@@ -592,8 +597,10 @@ bool AsterToMedWriter::printResult( const ResultPtr &resu, const std::filesystem
         nodeList = meshInResu->getInnerNodes();
         cellList = meshInResu->getInnerCells();
         // sort cells by type and create med filter informations
+#ifdef ASTER_HAVE_MPI
         _buildFilterInformations( nodeList, cellList, cellTypeVec, cumNodeNb, mapMedTypeCellsByProc,
                                   cellByType );
+#endif
     }
 
     const auto indexes = resu->getIndexes();
