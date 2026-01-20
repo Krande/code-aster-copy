@@ -1,0 +1,231 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#  - CALCUL DE STABILITE D'UNE POUTRE CONSOLE SOUMISE A UN EFFORT
+#    DE FLEXION A UNE EXTREMITE. CALCUL DES CHARGES CRITIQUES
+#    CONDUISANT AU FLAMBEMENT ELASTIQUE PAR DEVERSEMENT D'UNE POUTRE
+#  - MODELISATION AVEC DES ELEMENTS '3D'(HEXA8)
+#  + EN ANNEXE, TEST DU COUPLAGE INFO_MODE+CALC_MODES SUR UN CAS
+#    DE FLAMBEMENT
+# ---------------------------------------------------------------------
+#
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MA = CREA_MAILLAGE(CREA_POI1=_F(GROUP_NO=("B"), NOM_GROUP_MA=("B")), MAILLAGE=mesh)
+
+MOEL = AFFE_MODELE(
+    AFFE=(
+        _F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"),
+        _F(GROUP_MA=("B"), MODELISATION="DIS_TR", PHENOMENE="MECANIQUE"),
+    ),
+    MAILLAGE=MA,
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+# ---------------------------------------------------------------------
+CARAELEM = AFFE_CARA_ELEM(
+    DISCRET=(
+        _F(CARA="K_TR_D_N", GROUP_MA=("B"), VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+        _F(
+            CARA="M_TR_D_N", GROUP_MA=("B"), VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        ),
+    ),
+    MODELE=MOEL,
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+# ---------------------------------------------------------------------
+MATERIAU = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3))
+
+CHAM_MAT = AFFE_MATERIAU(AFFE=_F(MATER=(MATERIAU,), TOUT="OUI"), MODELE=MOEL)
+
+# ---------------------------------------------------------------------
+#                     INSTANTS
+# ---------------------------------------------------------------------
+fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
+
+listinst = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(_F(JUSQU_A=0.8, NOMBRE=4), _F(JUSQU_A=0.85, NOMBRE=5), _F(JUSQU_A=1, NOMBRE=1)),
+)
+
+# ---------------------------------------------------------------------
+#                     CHARGEMENTS
+# ---------------------------------------------------------------------
+CON_LI = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA="ENCASTRE"),
+    LIAISON_ELEM=_F(GROUP_MA_1=("FACE",), GROUP_NO_2=("B",), OPTION="3D_POU"),
+    MODELE=MOEL,
+)
+
+CHARGE = AFFE_CHAR_MECA(FORCE_NODALE=_F(FY=-120000, GROUP_NO="B"), MODELE=MOEL)
+
+# ---------------------------------------------------------------------
+#                     CALCUL STAT_NON_LINE CRIT_STAB FLAMBEMENT
+# ---------------------------------------------------------------------
+res = STAT_NON_LINE(
+    CARA_ELEM=CARAELEM,
+    CHAM_MATER=CHAM_MAT,
+    COMPORTEMENT=_F(DEFORMATION="GDEF_LOG", RELATION="ELAS", GROUP_MA="POUTRE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=300, RESI_GLOB_RELA=1e-04),
+    CRIT_STAB=_F(NMAX_CHAR_CRIT=1, TYPE="FLAMBEMENT"),
+    EXCIT=(
+        _F(CHARGE=CHARGE, FONC_MULT=fonc, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=CON_LI, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=listinst),
+    MODELE=MOEL,
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=1, REAC_ITER=1),
+)
+
+TABSPEC0 = RECU_TABLE(CO=res, NOM_TABLE="ANALYSE_MODALE")
+# IMPR_TABLE(FORMAT_R='1PE22.15',
+#            TABLE=TABSPEC0,
+#            UNITE=4)
+
+DEPS = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=res, NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ"), GROUP_NO="B"
+    )
+)
+
+# IMPR_TABLE(FORMAT_R='1PE22.15', TABLE=DEPS, UNITE=8)
+
+M_FLAMB1 = EXTR_TABLE(
+    TYPE_RESU="CHAM_NO_SDASTER",
+    TABLE=TABSPEC0,
+    NOM_PARA="NOM_SD",
+    FILTRE=(
+        _F(NOM_PARA="TYPE_MODE", VALE_K="MODE_FLAMB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(NOM_PARA="INST", PRECISION=1.0e-6, VALE=0.85),
+    ),
+)
+
+M_FLAMB1.setMesh(res.getMesh())
+
+
+M_FLAMB2 = EXTR_TABLE(
+    TYPE_RESU="CHAM_NO_SDASTER",
+    TABLE=TABSPEC0,
+    NOM_PARA="NOM_SD",
+    FILTRE=(
+        _F(NOM_PARA="TYPE_MODE", VALE_K="MODE_FLAMB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(NOM_PARA="INST", PRECISION=1.0e-6, VALE=1),
+    ),
+)
+
+M_FLAMB2.setMesh(res.getMesh())
+
+
+# Création d'une SD MODE_MECA
+MODES = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="MODE_MECA",
+    AFFE=(_F(CHAM_GD=M_FLAMB1, NUME_MODE=1), _F(CHAM_GD=M_FLAMB2, NUME_MODE=2)),
+    NOM_CHAM="DEPL",
+)
+"""
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=MODES,
+                  TOUT_ORDRE='OUI'),
+          UNITE=7)
+"""
+# ---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+# ---------------------------------------------------------------------
+TEST_TABLE(
+    VALE_CALC=-0.17441621362816126,
+    NOM_PARA="CHAR_CRIT",
+    TABLE=TABSPEC0,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="MODE_FLAMB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(NOM_PARA="INST", VALE=0.84),
+    ),
+)
+
+TEST_TABLE(
+    VALE_CALC=4.612035525941387,
+    NOM_PARA="CHAR_CRIT",
+    TABLE=TABSPEC0,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="MODE_FLAMB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(NOM_PARA="INST", VALE=0.85),
+    ),
+)
+
+
+# ---------------------------------------------------------------------
+#                     CALCUL STAT_NON_LINE CRIT_STAB STABILITE
+# ---------------------------------------------------------------------
+res_1 = STAT_NON_LINE(
+    CARA_ELEM=CARAELEM,
+    CHAM_MATER=CHAM_MAT,
+    COMPORTEMENT=_F(DEFORMATION="GDEF_LOG", RELATION="ELAS", GROUP_MA="POUTRE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=300, RESI_GLOB_RELA=1e-04),
+    CRIT_STAB=_F(NMAX_CHAR_CRIT=1, TYPE="STABILITE", RIGI_GEOM="NON", DDL_STAB=("DY", "DZ")),
+    EXCIT=(
+        _F(CHARGE=CHARGE, FONC_MULT=fonc, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=CON_LI, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=listinst),
+    MODELE=MOEL,
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=1, REAC_ITER=1),
+)
+
+TABSTAB = RECU_TABLE(CO=res_1, NOM_TABLE="ANALYSE_MODALE")
+"""
+IMPR_TABLE(FORMAT_R='1PE22.15',
+           TABLE=TABSTAB,
+           UNITE=5)
+"""
+# ---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+# ---------------------------------------------------------------------
+TEST_TABLE(
+    VALE_CALC=0.17441565947874274,
+    NOM_PARA="CHAR_STAB",
+    TABLE=TABSTAB,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="MODE_STAB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(NOM_PARA="INST", VALE=0.84),
+    ),
+)
+
+TEST_TABLE(
+    VALE_CALC=21908.1775675426,
+    NOM_PARA="CHAR_STAB",
+    TABLE=TABSTAB,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="MODE_STAB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(NOM_PARA="INST", VALE=0.85),
+    ),
+)
+
+
+FIN()
