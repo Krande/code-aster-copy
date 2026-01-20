@@ -40,6 +40,9 @@ if [ -z "${changes}" ]; then
         # only run these testcases
         args+=( "--testlist=${flist}" )
     fi
+    # add mark to skip keywords coverage
+    mkdir -p results
+    echo "only tests changed" > results/.only_tests
 fi
 
 if [ "${BUILDTYPE}" = "ci" ] && [ "${CI_JOB_NAME}" != "known_failures_test" ]; then

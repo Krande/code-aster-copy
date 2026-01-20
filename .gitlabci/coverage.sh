@@ -46,7 +46,13 @@ if [ -f ${resdir}/code_files.tar.gz ]; then
         printf "files extracted.\n"
     )
 else
-    printf "code files supposed to be here (merge-request job)\n"
+    printf "code files are supposed to be here (ci job)\n"
+fi
+
+if [ -f results/.only_tests ]; then
+    printf "\nWARNING only some testcases have been executed, skip coverage analysis.\n\n"
+    printf "\nend time - $(date)\n\n"
+    exit 0
 fi
 
 printf "\ncoverage analysis - $(date)\n"

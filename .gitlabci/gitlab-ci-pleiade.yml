@@ -273,7 +273,10 @@ keywords_coverage:
     - job: verification_test
   script:
     - do_upload="no"
-    - test "$(date +%u)" = "${WEEKLY_RUN}" && test "${BUILDTYPE}" = "nightly" && do_upload="upload"
+    - test "$(date +%u)" = "${WEEKLY_RUN}"
+        && test "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH"
+        && test "${BUILDTYPE}" = "nightly"
+        && do_upload="upload"
     - .gitlabci/coverage.sh . ./install ./results "${do_upload}"
   artifacts:
     when: always
