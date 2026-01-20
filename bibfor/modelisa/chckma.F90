@@ -308,6 +308,8 @@ subroutine chckma(nomu, dtol)
 
     if (hasQuadraticCell) then
         call mesh_conv%init(nomu, convert_max=ASTER_FALSE)
+        call mesh_conv%check_conformity("A")
+!
         if (mesh_conv%nb_edges_dege > 0) then
             do ima = 1, mesh_conv%nb_edges_dege
                 ma1 = mesh_conv%edges_dege(2*(ima-1)+1)
@@ -331,9 +333,9 @@ subroutine chckma(nomu, dtol)
         end if
 !
         if (mesh_conv%nb_edges_dege > 0 .or. mesh_conv%nb_faces_dege > 0) then
-            call mesh_conv%clean()
             call utmess('F', "MODELISA4_10")
         end if
+        call mesh_conv%clean()
     end if
 !
 !     -----------------------------------------------------------

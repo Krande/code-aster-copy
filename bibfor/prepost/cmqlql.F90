@@ -80,7 +80,11 @@ subroutine cmqlql(main, maout, nbma, lima)
 !
 ! - Convert cells
 !
-    call mesh_conv%convert_cells(nbma, lima)
+    call mesh_conv%convert_cells(nbma, lima, ASTER_TRUE)
+!
+! - Check conformity
+!
+    call mesh_conv%check_conformity("A")
 !
 ! - Copy mesh
 !
