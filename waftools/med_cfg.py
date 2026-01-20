@@ -239,6 +239,38 @@ def check_med(self):
     self.check_sizeof_med_int()
     self.check_sizeof_med_idt()
     self.check_med_python()
+    self.check_mfiodw()
+
+
+@Configure.conf
+def check_mfiodw(self):
+    fragment = r"""
+#include <med.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern void mfiodw(void);
+#ifdef __cplusplus
+}
+#endif
+int main(void){
+    void *p = (void *)mfiodw;
+    return 0;
+}"""
+    self.start_msg("Checking for mfiodw")
+    try:
+        self.check_cc(
+            fragment=fragment,
+            use="MED HDF5 Z",
+            uselib_store="MED",
+            mandatory=False,
+            execute=False,
+        )
+    except:
+        self.end_msg("no", "YELLOW")
+    else:
+        self.define("ASTER_HAVE_MED_MFIODW", 1)
+        self.end_msg("yes")
 
 
 @Configure.conf

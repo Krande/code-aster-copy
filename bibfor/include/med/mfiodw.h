@@ -18,6 +18,7 @@
 
 !
 !
+#ifdef ASTER_HAVE_MED_MFIODW
 interface
 #include "asterf_types.h"
     subroutine mfiodw(fid, class, oname, desc, cret)
@@ -28,3 +29,4 @@ interface
         med_int :: cret
     end subroutine mfiodw
 end interface
+#endif

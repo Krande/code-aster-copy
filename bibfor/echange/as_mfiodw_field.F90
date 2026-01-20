@@ -46,7 +46,11 @@ subroutine as_mfiodw_field(fid, cha, desc, cret)
         ! On verifie que le champ existe bien avant d'appeler mfiodw
         call mfioex(fidm, class4, cha, oexist4, cret4)
         if (oexist4 .eq. 1) then
+#ifdef ASTER_HAVE_MED_MFIODW
             call mfiodw(fidm, class4, cha, desc, cret4)
+#else
+            cret4 = 0
+#endif
             cret = cret4
         else
             cret = -1
@@ -66,7 +70,11 @@ subroutine as_mfiodw_field(fid, cha, desc, cret)
         ! On verifie que le champ existe bien avant d'appeler mfiodw
         call mfioex(fid, class, cha, oexist, cret)
         if (oexist .eq. 1) then
+#ifdef ASTER_HAVE_MED_MFIODW
             call mfiodw(fid, class, cha, desc, cret)
+#else
+            cret = 0
+#endif
         else
             cret = -1
         end if
