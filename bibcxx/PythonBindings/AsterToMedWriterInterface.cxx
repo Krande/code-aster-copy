@@ -50,7 +50,7 @@ Arguments:
             )",
             py::arg( "mesh" ), py::arg( "path" ), py::arg( "parallelPrint" ) = false,
             py::arg( "mesh_name" ) = "" );
-
+#ifdef ASTER_HAVE_MPI
     c1.def( "printMesh",
             py::overload_cast< const ParallelMeshPtr &, const std::filesystem::path &, bool,
                                const std::string & >( &AsterToMedWriter::printMesh ),
@@ -80,7 +80,7 @@ Arguments:
             )",
             py::arg( "mesh" ), py::arg( "path" ), py::arg( "parallelPrint" ) = false,
             py::arg( "mesh_name" ) = "" );
-
+#endif
     c1.def( "printResult", &AsterToMedWriter::printResult,
             R"(
 Print result to med file
