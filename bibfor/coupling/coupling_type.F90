@@ -37,23 +37,26 @@ module coupling_type
 !
     type CouplingMap
 !
-        integer(kind=8) :: nbDoFs = 0, nbDoFsFECEll = 0, nbDoFsFEFace = 0, nbDoFshhoFace = 0
-        integer(kind=8) :: mapDoFsFECell(MAX_BV) = 0
-        integer(kind=8) :: mapDoFsFEFace(MAX_BV) = 0
-        integer(kind=8) :: mapDoFshhoFace(MSIZE_FACE_VEC) = 0
+        integer(kind=8) :: nbDoFs = 0, nbDoFsFECellSl = 0, nbDoFsFEFaceSl = 0
+        integer(kind=8) :: nbDoFshhoFaceMa = 0, nbDoFsFEFaceMa = 0
+        integer(kind=8) :: mapDoFsFECellSl(MAX_BV) = 0
+        integer(kind=8) :: mapDoFsFEFaceSl(MAX_BV) = 0
+        integer(kind=8) :: mapDoFsFEFaceMa(MAX_BV) = 0
+        integer(kind=8) :: mapDoFshhoFaceMa(MSIZE_FACE_VEC) = 0
     end type
 !
     type CouplingData
 !
+        integer(kind=8) :: nbDoFs = 0
         real(kind=8) :: disp_prev(MSIZE_FACE_VEC+MAX_BV) = 0.d0
-        real(kind=8) :: dispFECell_prev(MAX_BV) = 0.d0
-        real(kind=8) :: dispFEFace_prev(MAX_BV) = 0.d0
-        real(kind=8) :: disphhoFace_prev(MSIZE_FACE_VEC) = 0.d0
+        real(kind=8) :: dispFECellSl_prev(MAX_BV) = 0.d0
+        real(kind=8) :: dispFEFaceSl_prev(MAX_BV) = 0.d0
+        real(kind=8) :: disphhoFaceMa_prev(MSIZE_FACE_VEC) = 0.d0
 !
         real(kind=8) :: disp_curr(MSIZE_FACE_VEC+MAX_BV) = 0.d0
-        real(kind=8) :: dispFECell_curr(MAX_BV) = 0.d0
-        real(kind=8) :: dispFEFace_curr(MAX_BV) = 0.d0
-        real(kind=8) :: disphhoFace_curr(MSIZE_FACE_VEC) = 0.d0
+        real(kind=8) :: dispFECellSl_curr(MAX_BV) = 0.d0
+        real(kind=8) :: dispFEFaceSl_curr(MAX_BV) = 0.d0
+        real(kind=8) :: disphhoFaceMa_curr(MSIZE_FACE_VEC) = 0.d0
 !
         real(kind=8) :: coef_pena = 0.d0
     end type

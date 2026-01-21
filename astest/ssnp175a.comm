@@ -17,14 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
-
-from code_aster.MacroCommands.defi_cont import DEFI_CONT
-from code_aster.Commands import *
-from code_aster import CA
-
-# Restart with DEFI_CONT do not currently work.
-# This variable allows to check restart during the development phase.
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 

@@ -46,6 +46,10 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellPena
     { { "MEPLSE3", "MECA_2D_HHO2_F" }, "CP_S3S3_HHO2" },
     { { "MEPLSE2", "MECA_2D_HHO3_F" }, "CP_S2S3_HHO3" },
     { { "MEPLSE3", "MECA_2D_HHO3_F" }, "CP_S3S3_HHO3" },
+    { { "MEPLSE2", "MEPLSE2" }, "CP_S2S2" },
+    { { "MEPLSE2", "MEPLSE3" }, "CP_S2S3" },
+    { { "MEPLSE3", "MEPLSE2" }, "CP_S3S2" },
+    { { "MEPLSE3", "MEPLSE3" }, "CP_S3S3" },
 };
 } // namespace
 
@@ -118,7 +122,6 @@ ASTERBOOL CouplingPairing::compute() {
 ASTERINTEGER CouplingPairing::getCplCellType( const std::string &slavCellTypeName,
                                               const std::string &mastCellTypeName ) const {
     std::string cplTypeName;
-    std::cout << slavCellTypeName << ", " << mastCellTypeName << std::endl;
 
     if ( slavCellTypeName.find( "HHO" ) != std::string::npos ) {
         UTMESS( "F", "COUPLAGE_2" );

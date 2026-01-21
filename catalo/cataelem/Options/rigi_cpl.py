@@ -29,7 +29,7 @@ PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base loc
 RIGI_CPL = Option(
     para_in=(SP.PPAIRR, SP.PDEPLMR, SP.PDEPLPR, SP.PINSTMR, SP.PINSTPR, SP.PGEOMER, PCHHOBS),
     para_out=(SP.PMATUUR,),
-    condition=(CondCalcul("+", ((AT.HHO, "OUI"),)),),
+    condition=(CondCalcul("+", ((AT.RACCORD, "OUI"),)),),
     comment=""" RIGI_CPL: CALCUL DE LA MATRICE TANGENTE
            ELEMENTAIRE DE COUPLAGE FEM/HHO """,
 )

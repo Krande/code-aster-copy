@@ -3705,7 +3705,12 @@ phen.add(
     Modelisation(
         dim=(1, 2),
         code="HP2",
-        attrs=((AT.HHO, "OUI"), (AT.FORMULATION, "HHO_LINE"), (AT.TYPMOD2, "HHO")),
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
         elements=((MT.SEG23, EL.CP_S2S3_HHO1), (MT.SEG33, EL.CP_S3S3_HHO1)),
     ),
 )
@@ -3715,8 +3720,30 @@ phen.add(
     Modelisation(
         dim=(1, 2),
         code="HP2",
-        attrs=((AT.HHO, "OUI"), (AT.FORMULATION, "HHO_QUAD"), (AT.TYPMOD2, "HHO")),
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
         elements=((MT.SEG23, EL.CP_S2S3_HHO2), (MT.SEG33, EL.CP_S3S3_HHO2)),
+    ),
+)
+
+# -- Define COUPLING FEM/FEM elements for PENALISATION method
+
+phen.add(
+    "CPL_PEN_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="CP2",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.SEG22, EL.CP_S2S2),
+            (MT.SEG23, EL.CP_S2S3),
+            (MT.SEG32, EL.CP_S3S2),
+            (MT.SEG33, EL.CP_S3S3),
+        ),
     ),
 )
 

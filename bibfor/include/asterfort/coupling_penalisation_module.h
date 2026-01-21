@@ -26,4 +26,8 @@
 !
 ! --- maximum number of basis function
 #define MSIZE_CPL_PENA 27+MSIZE_FACE_VEC
+
+! FEM-FEM with QU9/QU9 2*3*9=54
+#define MSIZE_CPL_PENA_FEM 54
+
 !

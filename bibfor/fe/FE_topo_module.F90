@@ -41,7 +41,7 @@ module fe_topo_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: FE_Cell, FE_Skin
-    private :: normal_face, init_face, func_face, print_face
+    private :: normal_face, init_face, func_face, print_face, diameter_face
 !
 !===================================================================================================
 !
@@ -49,13 +49,13 @@ module fe_topo_module
 !
     type FE_Skin
 ! ----- Dimension topologique
-        integer(kind=8)                     :: ndim = 0
+        integer(kind=8)             :: ndim = 0
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Type maille short
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
-        integer(kind=8)                     :: nbnodes = 0
+        integer(kind=8)             :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 9 noeuds pour quad)
         real(kind=8), dimension(3, 9):: coorno = 0.d0
 ! ----- member function
@@ -65,6 +65,7 @@ module fe_topo_module
         procedure, public, pass :: init => init_face
         procedure, public, pass :: normal => normal_face
         procedure, public, pass :: updateCoordinates => updateCoordinatesFace
+        procedure, public, pass :: diameter => diameter_face
 
     end type FE_Skin
 !
@@ -74,13 +75,13 @@ module fe_topo_module
 !
     type FE_Cell
 ! ----- Dimension topologique
-        integer(kind=8)                     :: ndim = 0
+        integer(kind=8)             :: ndim = 0
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Type maille
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
-        integer(kind=8)                     :: nbnodes = 0
+        integer(kind=8)             :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
         real(kind=8), dimension(3, 27):: coorno = 0.d0
 ! ----- member function
@@ -298,11 +299,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine init_face(this)
+    subroutine init_face(this, sub_type)
 !
         implicit none
 !
         class(FE_Skin), intent(out) :: this
+        character(len=*), optional, intent(in) :: sub_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -316,30 +318,76 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer(kind=8) :: inode, idim, iret, jv_geom
+        integer(kind=8) :: inode, idim, iret, jv_geom, node_init, node_idx
+        character(len=8) :: sub_type_
 ! --------------------------------------------------------------------------------------------------
 !
         call teattr('S', 'TYPMA', this%typemas, iret)
         ASSERT(iret == 0)
 !
-        select case (this%typemas)
-        case ("S22", "S23")
-            this%typemas = "SE2"
-        case ("S32", "S33")
-            this%typemas = "SE3"
-        case ("T33", "TQ7", "TT2", "TQ4")
-            this%typemas = "TR3"
-        case ("T66", "TT1", "TQ1", "TQ2", "TQ3")
-            this%typemas = "TR6"
-        case ("T77")
-            this%typemas = "TR7"
-        case ("Q44", "QT7", "QT1")
-            this%typemas = "QU4"
-        case ("Q88", "QT2", "QT4")
-            this%typemas = "QU8"
-        case ("Q99", "QT5", "QT3")
-            this%typemas = "QU9"
-        end select
+        node_init = 1
+        if (present(sub_type)) then
+            sub_type_ = sub_type
+            if (sub_type_(1:5) == "SLAVE") then
+                select case (this%typemas)
+                case ("S22", "S23")
+                    this%typemas = "SE2"
+                case ("S32", "S33")
+                    this%typemas = "SE3"
+                case ("T33", "TQ7", "TT2", "TQ4")
+                    this%typemas = "TR3"
+                case ("T66", "TT1", "TQ1", "TQ2", "TQ3")
+                    this%typemas = "TR6"
+                case ("T77")
+                    this%typemas = "TR7"
+                case ("Q44", "QT7", "QT1")
+                    this%typemas = "QU4"
+                case ("Q88", "QT2", "QT4")
+                    this%typemas = "QU8"
+                case ("Q99", "QT5", "QT3")
+                    this%typemas = "QU9"
+                case default
+                    ASSERT(ASTER_FALSE)
+                end select
+            else if (sub_type_(1:6) == "MASTER") then
+                select case (this%typemas)
+                case ("S22")
+                    this%typemas = "SE2"
+                    node_init = 3
+                case ("S32")
+                    this%typemas = "SE2"
+                    node_init = 4
+                case ("S23")
+                    this%typemas = "SE3"
+                    node_init = 3
+                case ("S33")
+                    this%typemas = "SE3"
+                    node_init = 4
+                case ("T33")
+                    this%typemas = "TR3"
+                    node_init = 4
+                case ("T66")
+                    this%typemas = "TR6"
+                    node_init = 7
+                case ("T77")
+                    this%typemas = "TR7"
+                    node_init = 8
+                case ("Q44")
+                    this%typemas = "QU4"
+                    node_init = 5
+                case ("Q88")
+                    this%typemas = "QU8"
+                    node_init = 9
+                case ("Q99")
+                    this%typemas = "QU9"
+                    node_init = 10
+                case default
+                    ASSERT(ASTER_FALSE)
+                end select
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end if
 !
         call elrfno(this%typemas, nno=this%nbnodes, ndim=this%ndim)
         call CellNameS2L(this%typemas, this%typema)
@@ -348,8 +396,9 @@ contains
 !
         call jevech('PGEOMER', 'L', jv_geom)
         do inode = 1, this%nbnodes
+            node_idx = node_init-1+inode-1
             do idim = 1, this%ndim+1
-                this%coorno(idim, inode) = zr(jv_geom+(inode-1)*(this%ndim+1)+idim-1)
+                this%coorno(idim, inode) = zr(jv_geom+node_idx*(this%ndim+1)+idim-1)
             end do
         end do
 !
@@ -586,5 +635,43 @@ contains
         end do
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function diameter_face(this)
+!
+        implicit none
+!
+        class(FE_Skin), intent(in) :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Initialize a FE Skin from a FE_Cell
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In FESkin           : a FE face
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: inode, jnode, nnos
+        real(kind=8), dimension(3) :: vector
+! --------------------------------------------------------------------------------------------------
+!
+        diameter_face = 0.d0
+!
+        call elrfno(this%typemas, nnos=nnos)
+!
+        do inode = 1, nnos
+            do jnode = inode+1, nnos
+                vector(1:3) = this%coorno(1:3, inode)-this%coorno(1:3, jnode)
+                diameter_face = max(norm2(vector), diameter_face)
+            end do
+        end do
+!
+    end function
 !
 end module

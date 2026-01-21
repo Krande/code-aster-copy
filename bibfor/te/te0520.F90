@@ -46,11 +46,11 @@ subroutine te0520(option, nomte)
 !
 !===================================================================================================
 !
-    type(FE_Skin):: feFace
-    type(HHO_Face):: hhoFace
-    type(HHO_Data):: hhoData
-    type(FE_Quadrature) :: FEQuad
-    type(HHO_Quadrature) :: hhoQuad
+    type(FE_Skin):: FEFaceSl
+    type(HHO_Face):: hhoFaceMa
+    type(HHO_Data):: hhoDataMa
+    type(FE_Quadrature) :: FEQuadSl
+    type(HHO_Quadrature) :: hhoQuadMa
     type(CouplingMap) :: cplPenaMap
     type(CouplingData) :: cplPenaData
     real(kind=8) :: rhs(MSIZE_CPL_PENA)
@@ -58,15 +58,15 @@ subroutine te0520(option, nomte)
 !
 ! --- Initialize topologie
 !
-    call cplPenaInitTopo(feFace, hhoFace, hhoData)
+    call cplPenaInitTopoFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa)
 !
 ! --- Initialize mapping
 !
-    call cplPenaInitMap(feFace, hhoFace, hhoData, cplPenaMap)
+    call cplPenaInitMapFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa, cplPenaMap)
 !
 ! --- Initialize quadrature
 !
-    call cplGetQuadFEMHHO(feFace, hhoFace, hhoData, FEQuad, hhoQuad)
+    call cplGetQuadFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuadMa)
 !
 ! --- Initialize data
 !
@@ -78,8 +78,8 @@ subroutine te0520(option, nomte)
 !
 ! --- Compute coupling residual
 !
-        call cplPenaRhs(feFace, hhoFace, hhoData, FEQuad, hhoQuad, &
-                        cplPenaData, rhs)
+        call cplPenaRhsFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuadMa, &
+                              cplPenaData, rhs)
 !
 ! --- Write vector
 !
@@ -89,8 +89,8 @@ subroutine te0520(option, nomte)
 !
 ! --- Compute coupling matrix
 !
-        call cplPenaLhs(feFace, hhoFace, hhoData, FEQuad, hhoQuad, &
-                        cplPenaData, lhs)
+        call cplPenaLhsFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuadMa, &
+                              cplPenaData, lhs)
 !
 ! - Write matrix
 !

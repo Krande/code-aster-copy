@@ -29,7 +29,7 @@ PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base loc
 CHAR_MECA_CPL = Option(
     para_in=(SP.PPAIRR, SP.PDEPLMR, SP.PDEPLPR, SP.PINSTMR, SP.PINSTPR, SP.PGEOMER, PCHHOBS),
     para_out=(SP.PVECTUR,),
-    condition=(CondCalcul("+", ((AT.HHO, "OUI"),)),),
+    condition=(CondCalcul("+", ((AT.RACCORD, "OUI"),)),),
     comment=""" CHAR_MECA_CPL: CALCUL DU SECOND MEMBRE
            ELEMENTAIRE DE COUPLAGE FEM/HHO """,
 )

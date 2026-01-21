@@ -55,7 +55,7 @@ module coupling_quadrature_module
 
 !
     private :: cplGetQuad, getQuadOrderFEM, cplProjFEM2HHO
-    public :: cplGetQuadFEMHHO
+    public :: cplGetQuadFEMHHO, cplGetQuadFEMFEM
 !
 contains
 !
@@ -90,13 +90,13 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplGetQuad(feFace, max_order, FEQuad)
+    subroutine cplGetQuad(FEFaceSl, max_order, FEQuadSl)
 !
         implicit none
 !
-        type(FE_Skin), intent(in) :: feFace
+        type(FE_Skin), intent(in) :: FEFaceSl
         integer(kind=8), intent(in) :: max_order
-        type(FE_Quadrature), intent(out) :: FEQuad
+        type(FE_Quadrature), intent(out) :: FEQuadSl
 !
 !===================================================================================================
 !    FEM/HHO - Get quadrature
@@ -120,7 +120,7 @@ contains
             poinInteSlav(2, iPoinInte) = zr(jpair-1+10+iPoinInte)
         end do
 !
-        ndim = feFace%ndim+1
+        ndim = FEFaceSl%ndim+1
 !
 ! - Triangulation of convex polygon defined by intersection points
         if (ndim .eq. 3) then
@@ -159,7 +159,7 @@ contains
         end if
 !
         ASSERT(nbTria*nbPtGauss <= 64)
-        FEQuad%nbQuadPoints = nbTria*nbPtGauss
+        FEQuadSl%nbQuadPoints = nbTria*nbPtGauss
         nb_qp = 0
 !
 ! - Loop on triangles
@@ -180,29 +180,29 @@ contains
 ! ----- Loop on integration points
             do iGauss = 1, nbGauss
                 nb_qp = nb_qp+1
-                FEQuad%points_param(1:2, nb_qp) = gausCoorSlav(1:2, iGauss)
-                FEQuad%weights_param(nb_qp) = gausWeightSlav(iGauss)
+                FEQuadSl%points_param(1:2, nb_qp) = gausCoorSlav(1:2, iGauss)
+                FEQuadSl%weights_param(nb_qp) = gausWeightSlav(iGauss)
 !
 ! ------------- Get shape functions and first derivative only (for perf)
-                call mmnonf(ndim, feFace%nbnodes, feFace%typemas, &
+                call mmnonf(ndim, FEFaceSl%nbnodes, FEFaceSl%typemas, &
                             gausCoorSlav(1, iGauss), gausCoorSlav(2, iGauss), &
                             shape_func)
-                call mmdonf(ndim, feFace%nbnodes, feFace%typemas, &
+                call mmdonf(ndim, FEFaceSl%nbnodes, FEFaceSl%typemas, &
                             gausCoorSlav(1, iGauss), gausCoorSlav(2, iGauss), &
                             shape_dfunc)
 !
                 coorac = 0.d0
-                do i = 1, feFace%nbnodes
-                    coorac(1:3) = coorac(1:3)+feFace%coorno(1:3, i)*shape_func(i)
+                do i = 1, FEFaceSl%nbnodes
+                    coorac(1:3) = coorac(1:3)+FEFaceSl%coorno(1:3, i)*shape_func(i)
                 end do
 !
 ! ------------- Compute jacobian
-                call mmmjac(ASTER_FALSE, feFace%nbnodes, ndim, &
-                            feFace%typemas, feFace%coorno, &
+                call mmmjac(ASTER_FALSE, FEFaceSl%nbnodes, ndim, &
+                            FEFaceSl%typemas, FEFaceSl%coorno, &
                             shape_func, shape_dfunc, jaco)
 !
-                FEQuad%points(1:3, nb_qp) = coorac
-                FEQuad%weights(nb_qp) = abs(jaco)*gausWeightSlav(iGauss)
+                FEQuadSl%points(1:3, nb_qp) = coorac
+                FEQuadSl%weights(nb_qp) = abs(jaco)*gausWeightSlav(iGauss)
             end do
         end do
 !
@@ -213,14 +213,14 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplProjFEM2HHO(feFace, hhoFace, FEQuad, hhoQuad)
+    subroutine cplProjFEM2HHO(FEFaceSl, hhoFaceMa, FEQuadSl, hhoQuadMa)
 !
         implicit none
 !
-        type(FE_Skin), intent(in) :: feFace
-        type(HHO_Face), intent(in) :: hhoFace
-        type(FE_Quadrature), intent(in) :: FEQuad
-        type(HHO_Quadrature), intent(out) :: hhoQuad
+        type(FE_Skin), intent(in) :: FEFaceSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl
+        type(HHO_Quadrature), intent(out) :: hhoQuadMa
 !
 !===================================================================================================
 !    FEM/HHO - Get quadrature
@@ -232,39 +232,96 @@ contains
         real(kind=8) :: tau1_mast(3), tau2_mast(3)
         character(len=8) :: type_mast
 !
-        hhoQuad%nbQuadPoints = FEQuad%nbQuadPoints
-        ndim = feFace%ndim+1
+        hhoQuadMa%nbQuadPoints = FEQuadSl%nbQuadPoints
+        ndim = FEFaceSl%ndim+1
 !
-        call CellNameL2S(hhoFace%typema, type_mast)
+        call CellNameL2S(hhoFaceMa%typema, type_mast)
 !
-        do ipg = 1, hhoQuad%nbQuadPoints
-            hhoQuad%weights(ipg) = FEQuad%weights(ipg)
-            coor_qp_sl = FEQuad%points_param(1:2, ipg)
+        do ipg = 1, hhoQuadMa%nbQuadPoints
+            hhoQuadMa%weights(ipg) = FEQuadSl%weights(ipg)
+            coor_qp_sl = FEQuadSl%points_param(1:2, ipg)
 !
 ! ------ Compute outward slave normal (pairing configuration)
 !
-            call apnorm(feface%nbnodes, feface%typemas, ndim, feface%coorno, &
+            call apnorm(FEFaceSl%nbnodes, FEFaceSl%typemas, ndim, FEFaceSl%coorno, &
                         coor_qp_sl(1), coor_qp_sl(2), norm_slav, tau_slav(1:3, 1), tau_slav(1:3, 2))
 !
 ! ----- Return in real slave space (pairing configuration)
 !
-            coor_qp_sl_re = FEQuad%points(1:3, ipg)
+            coor_qp_sl_re = FEQuadSl%points(1:3, ipg)
 !
 ! ----- Projection on master element
-            call mmnewd(type_mast, hhoFace%nbnodes, ndim, hhoFace%coorno, &
+            call mmnewd(type_mast, hhoFaceMa%nbnodes, ndim, hhoFaceMa%coorno, &
                         coor_qp_sl_re, 100, PROJ_TOLE, norm_slav, ksi_line(1), &
                         ksi_line(2), tau1_mast, tau2_mast, iret)
             ASSERT(iret == 0)
 !
 ! ----- Check that projected node is inside cell
 !
-            call projInsideCell(1e-3, ndim, type_mast, ksi_line, iret)
+            call projInsideCell(1e-6, ndim, type_mast, ksi_line, iret)
             ASSERT(iret == 0)
 !
-            hhoQuad%points_param(1:2, ipg) = ksi_line
-            call reerel(type_mast, hhoFace%nbnodes, 3, hhoFace%coorno, &
-                        hhoQuad%points_param(1:3, ipg), &
-                        hhoQuad%points(1:3, ipg))
+            hhoQuadMa%points_param(1:2, ipg) = ksi_line
+            call reerel(type_mast, hhoFaceMa%nbnodes, 3, hhoFaceMa%coorno, &
+                        hhoQuadMa%points_param(1:3, ipg), &
+                        hhoQuadMa%points(1:3, ipg))
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplProjFEM2FEM(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa)
+!
+        implicit none
+!
+        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl
+        type(FE_Quadrature), intent(out) :: FEQuadMa
+!
+!===================================================================================================
+!    FEM/FEM - Get quadrature
+!===================================================================================================
+!
+        integer(kind=8) :: ndim, ipg, iret
+        real(kind=8) :: norm_slav(3), tau_slav(3, 2), coor_qp_sl(2)
+        real(kind=8) :: coor_qp_sl_re(3), ksi_line(2)
+        real(kind=8) :: tau1_mast(3), tau2_mast(3)
+!
+        FEQuadMa%nbQuadPoints = FEQuadSl%nbQuadPoints
+        ndim = FEFaceSl%ndim+1
+!
+        do ipg = 1, FEQuadMa%nbQuadPoints
+            FEQuadMa%weights(ipg) = FEQuadSl%weights(ipg)
+            coor_qp_sl = FEQuadSl%points_param(1:2, ipg)
+!
+! ------ Compute outward slave normal (pairing configuration)
+!
+            call apnorm(FEFaceSl%nbnodes, FEFaceSl%typemas, ndim, FEFaceSl%coorno, &
+                        coor_qp_sl(1), coor_qp_sl(2), norm_slav, tau_slav(1:3, 1), tau_slav(1:3, 2))
+!
+! ----- Return in real slave space (pairing configuration)
+!
+            coor_qp_sl_re = FEQuadSl%points(1:3, ipg)
+!
+! ----- Projection on master element
+            call mmnewd(FEFaceMa%typemas, FEFaceMa%nbnodes, ndim, FEFaceMa%coorno, &
+                        coor_qp_sl_re, 100, PROJ_TOLE, norm_slav, ksi_line(1), &
+                        ksi_line(2), tau1_mast, tau2_mast, iret)
+            ASSERT(iret == 0)
+!
+! ----- Check that projected node is inside cell
+!
+            call projInsideCell(1e-6, ndim, FEFaceMa%typemas, ksi_line, iret)
+            ASSERT(iret == 0)
+!
+            FEQuadMa%points_param(1:2, ipg) = ksi_line
+            call reerel(FEFaceMa%typemas, FEFaceMa%nbnodes, 3, FEFaceMa%coorno, &
+                        FEQuadMa%points_param(1:3, ipg), &
+                        FEQuadMa%points(1:3, ipg))
         end do
 !
     end subroutine
@@ -275,15 +332,15 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplGetQuadFEMHHO(feFace, hhoFace, hhoData, FEQuad, hhoQuad)
+    subroutine cplGetQuadFEMHHO(FEFaceSl, hhoFaceMa, hhoData, FEQuadSl, hhoQuadMa)
 !
         implicit none
 !
-        type(FE_Skin), intent(in) :: feFace
-        type(HHO_Face), intent(in) :: hhoFace
+        type(FE_Skin), intent(in) :: FEFaceSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
         type(HHO_Data), intent(in) :: hhoData
-        type(FE_Quadrature), intent(out) :: FEQuad
-        type(HHO_Quadrature), intent(out) :: hhoQuad
+        type(FE_Quadrature), intent(out) :: FEQuadSl
+        type(HHO_Quadrature), intent(out) :: hhoQuadMa
 !
 !===================================================================================================
 !    FEM/HHO - Get quadrature
@@ -291,10 +348,37 @@ contains
 !
         integer(kind=8) :: max_order
 !
-        max_order = 2*(max(hhoData%face_degree(), getQuadOrderFEM(feFace%typemas))+1)
+        max_order = 2*(max(hhoData%face_degree(), getQuadOrderFEM(FEFaceSl%typemas))+1)
 !
-        call cplGetQuad(feFace, max_order, FEQuad)
-        call cplProjFEM2HHO(feFace, hhoFace, FEQuad, hhoQuad)
+        call cplGetQuad(FEFaceSl, max_order, FEQuadSl)
+        call cplProjFEM2HHO(FEFaceSl, hhoFaceMa, FEQuadSl, hhoQuadMa)
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplGetQuadFEMFEM(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa)
+!
+        implicit none
+!
+        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa
+        type(FE_Quadrature), intent(out) :: FEQuadSl, FEQuadMa
+!
+!===================================================================================================
+!    FEM/HHO - Get quadrature
+!===================================================================================================
+!
+        integer(kind=8) :: max_order
+!
+        max_order = 2*(max(getQuadOrderFEM(FEFaceSl%typemas), &
+                           getQuadOrderFEM(FEFaceMa%typemas))+1)
+!
+        call cplGetQuad(FEFaceSl, max_order, FEQuadSl)
+        call cplProjFEM2FEM(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa)
 !
     end subroutine
 !

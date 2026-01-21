@@ -42,6 +42,7 @@ module coupling_penalisation_module
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
+#include "blas/dsymv.h"
 #include "FE_basis_module.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,8 +53,10 @@ module coupling_penalisation_module
 !
 !
 !
-    public :: cplPenaInitTopo, cplPenaInitMap, cplPenaInitData
-    public :: cplPenaRhs, cplPenaLhs
+    public :: cplPenaInitTopoFEMHHO, cplPenaInitMapFEMHHO, cplPenaInitData
+    public :: cplPenaInitTopoFEMFEM, cplPenaInitMapFEMFEM
+    public :: cplPenaRhsFEMHHO, cplPenaLhsFEMHHO
+    public :: cplPenaRhsFEMFEM, cplPenaLhsFEMFEM
 !
 contains
 !
@@ -62,21 +65,21 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplPenaInitTopo(feFace, hhoFace, hhoData)
+    subroutine cplPenaInitTopoFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa)
 !
         implicit none
 !
-        type(FE_Skin), intent(out) :: feFace
-        type(HHO_Face), intent(out) :: hhoFace
-        type(HHO_Data), intent(out) :: hhoData
+        type(FE_Skin), intent(out) :: FEFaceSl
+        type(HHO_Face), intent(out) :: hhoFaceMa
+        type(HHO_Data), intent(out) :: hhoDataMa
 !
 !===================================================================================================
 !    Initialize FEM and HHO topology - Penalisation
 !===================================================================================================
 !
-        call feFace%init()
+        call FEFaceSl%init("SLAVE")
 !
-        call hhoInfoInitFace(hhoFace, hhoData)
+        call hhoInfoInitFace(hhoFaceMa, hhoDataMa)
 !
     end subroutine
 !
@@ -85,46 +88,116 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplPenaInitMap(FEFace, hhoFace, hhoData, cplMap)
+    subroutine cplPenaInitTopoFEMFEM(FEFaceSl, FEFaceMa)
+!
+        implicit none
+!
+        type(FE_Skin), intent(out) :: FEFaceSl, FEFaceMa
+!
+!===================================================================================================
+!    Initialize FEM and FEM topology - Penalisation
+!===================================================================================================
+!
+        call FEFaceSl%init("SLAVE")
+        call FEFaceMa%init("MASTER")
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplPenaInitMapFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa, cplMap)
 !
         implicit none
 !
         type(CouplingMap), intent(inout) :: cplMap
-        type(FE_Skin), intent(in) :: FEFace
-        type(HHO_Face), intent(in) :: hhoFace
-        type(HHO_Data), intent(in) :: hhoData
+        type(FE_Skin), intent(in) :: FEFaceSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
+        type(HHO_Data), intent(in) :: hhoDataMa
 !
 !===================================================================================================
 !    Initialize FEM and HHO topology
 !===================================================================================================
 !
-        type(FE_basis) :: FEBasis
-        integer(kind=8) :: iBase, idof, idim, fbs
-        call FEBasis%initFace(FEFace)
-        ASSERT(FEBasis%typeEF == EF_LAGRANGE)
+        type(FE_basis) :: FEBasisSl
+        integer(kind=8) :: iBase, idim, fbs
 !
-        idof = 1
+        call FEBasisSl%initFace(FEFaceSl)
+        ASSERT(FEBasisSl%typeEF == EF_LAGRANGE)
 !
-        ASSERT(FEBasis%size == FEFace%nbnodes)
-        do iBase = 1, FEBasis%size
-            do idim = 1, FEBasis%ndim
-                cplMap%mapDoFsFEFace(idof) = idof
-                idof = idof+1
+        cplMap%nbDoFs = 0
+        cplMap%nbDoFsFEFaceSl = 0
+!
+        ASSERT(FEBasisSl%size == FEFaceSl%nbnodes)
+        do iBase = 1, FEBasisSl%size
+            do idim = 1, FEBasisSl%ndim
+                cplMap%nbDoFs = cplMap%nbDoFs+1
+                cplMap%nbDoFsFEFaceSl = cplMap%nbDoFsFEFaceSl+1
+                cplMap%mapDoFsFEFaceSl(cplMap%nbDoFsFEFaceSl) = cplMap%nbDoFs
             end do
         end do
 !
-        call hhoMecaFaceDofs(hhoFace, hhoData, fbs)
+        call hhoMecaFaceDofs(hhoFaceMa, hhoDataMa, fbs)
+        cplMap%nbDoFshhoFaceMa = 0
 !
         do iBase = 1, fbs
-            cplMap%mapDoFshhoFace(iBase) = idof
-            idof = idof+1
+            cplMap%nbDoFs = cplMap%nbDoFs+1
+            cplMap%nbDoFshhoFaceMa = cplMap%nbDoFshhoFaceMa+1
+            cplMap%mapDoFshhoFaceMa(cplMap%nbDoFshhoFaceMa) = cplMap%nbDoFs
         end do
 !
-        cplMap%nbDoFs = FEBasis%size*FEBasis%ndim+fbs
-        cplMap%nbDoFsFECell = 0
-        cplMap%nbDoFsFEFace = FEBasis%size*FEBasis%ndim
-        cplMap%nbDoFshhoFace = fbs
         ASSERT(cplMap%nbDoFs <= MSIZE_CPL_PENA)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplPenaInitMapFEMFEM(FEFaceSl, FEFaceMa, cplMap)
+!
+        implicit none
+!
+        type(CouplingMap), intent(inout) :: cplMap
+        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa
+!
+!===================================================================================================
+!    Initialize FEM and HHO topology
+!===================================================================================================
+!
+        type(FE_basis) :: FEBasisSl, FEBasisMa
+        integer(kind=8) :: iBase, idim
+!
+        call FEBasisSl%initFace(FEFaceSl)
+        call FEBasisMa%initFace(FEFaceMa)
+!
+        cplMap%nbDoFs = 0
+        cplMap%nbDoFsFEFaceSl = 0
+!
+        ASSERT(FEBasisSl%size == FEFaceSl%nbnodes)
+        do iBase = 1, FEBasisSl%size
+            do idim = 1, FEBasisSl%ndim
+                cplMap%nbDoFs = cplMap%nbDoFs+1
+                cplMap%nbDoFsFEFaceSl = cplMap%nbDoFsFEFaceSl+1
+                cplMap%mapDoFsFEFaceSl(cplMap%nbDoFsFEFaceSl) = cplMap%nbDoFs
+            end do
+        end do
+!
+        cplMap%nbDoFsFEFaceMa = 0
+!
+        ASSERT(FEBasisMa%size == FEFaceMa%nbnodes)
+        do iBase = 1, FEBasisma%size
+            do idim = 1, FEBasisMa%ndim
+                cplMap%nbDoFs = cplMap%nbDoFs+1
+                cplMap%nbDoFsFEFaceMa = cplMap%nbDoFsFEFaceMa+1
+                cplMap%mapDoFsFEFaceMa(cplMap%nbDoFsFEFaceMa) = cplMap%nbDoFs
+            end do
+        end do
+!
+        ASSERT(cplMap%nbDoFs <= MSIZE_CPL_PENA_FEM)
 !
     end subroutine
 !
@@ -147,6 +220,7 @@ contains
 !
         integer(kind=8) :: jpair
 !
+        cplData%nbDoFs = cplMap%nbDoFs
         if (option == "CHAR_MECA_CPL") then
             call readVector('PDEPLMR', cplMap%nbDoFs, cplData%disp_prev)
             call readVector('PDEPLPR', cplMap%nbDoFs, cplData%disp_curr)
@@ -163,14 +237,14 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplPenaRhs(feFace, hhoFace, hhoData, FEQuad, hhoQuad, cplData, rhs)
+    subroutine cplPenaRhsFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuad, cplData, rhs)
 !
         implicit none
 !
-        type(FE_Skin), intent(in) :: feFace
-        type(HHO_Face), intent(in) :: hhoFace
-        type(HHO_Data), intent(in) :: hhoData
-        type(FE_Quadrature), intent(in) :: FEQuad
+        type(FE_Skin), intent(in) :: FEFaceSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
+        type(HHO_Data), intent(in) :: hhoDataMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl
         type(HHO_Quadrature), intent(in) :: hhoQuad
         type(CouplingData), intent(in) :: cplData
         real(kind=8), intent(inout) :: rhs(MSIZE_CPL_PENA)
@@ -183,8 +257,8 @@ contains
 !
         rhs = 0.d0
 !
-        call cplCmpPenaFEHHOMatVec(feFace, hhoFace, hhoData, FEQuad, hhoQuad, &
-                                   cplData%coef_pena, mat)
+        call cplCmpPenaFEMHHOMatVec(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuad, &
+                                    cplData%coef_pena, mat)
         call mat%dot(cplData%disp_curr, rhs)
         call mat%free()
 !
@@ -195,14 +269,14 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplPenaLhs(feFace, hhoFace, hhoData, FEQuad, hhoQuad, cplData, lhs)
+    subroutine cplPenaLhsFEMHHO(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuad, cplData, lhs)
 !
         implicit none
 !
-        type(FE_Skin), intent(in) :: feFace
-        type(HHO_Face), intent(in) :: hhoFace
-        type(HHO_Data), intent(in) :: hhoData
-        type(FE_Quadrature), intent(in) :: FEQuad
+        type(FE_Skin), intent(in) :: FEFaceSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
+        type(HHO_Data), intent(in) :: hhoDataMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl
         type(HHO_Quadrature), intent(in) :: hhoQuad
         type(CouplingData), intent(in) :: cplData
         type(HHO_matrix), intent(inout) :: lhs
@@ -211,8 +285,64 @@ contains
 !    PENALISATION - FEM/HHO - Compute matrix
 !===================================================================================================
 !
-        call cplCmpPenaFEHHOMatVec(feFace, hhoFace, hhoData, FEQuad, hhoQuad, &
-                                   cplData%coef_pena, lhs)
+        call cplCmpPenaFEMHHOMatVec(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuad, &
+                                    cplData%coef_pena, lhs)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplPenaRhsFEMFEM(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa, cplData, rhs)
+!
+        implicit none
+!
+        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
+        type(CouplingData), intent(in) :: cplData
+        real(kind=8), intent(inout) :: rhs(MSIZE_CPL_PENA_FEM)
+!
+!===================================================================================================
+!    PENALISATION - FEM/FEM - Compute residual
+!===================================================================================================
+!
+        real(kind=8) :: mat(MSIZE_CPL_PENA_FEM, MSIZE_CPL_PENA_FEM)
+        blas_int :: b_n, b_lda
+        blas_int, parameter :: b_one = to_blas_int(1)
+!
+        rhs = 0.d0
+!
+        call cplCmpPenaFEMFEMMatVec(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa, &
+                                    cplData%coef_pena, mat)
+!
+        b_n = to_blas_int(cplData%nbDoFs)
+        b_lda = to_blas_int(MSIZE_CPL_PENA_FEM)
+        call dsymv("U", b_n, 1.d0, mat, b_lda, cplData%disp_curr, b_one, 0.d0, rhs, b_one)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplPenaLhsFEMFEM(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa, cplData, lhs)
+!
+        implicit none
+!
+        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
+        type(CouplingData), intent(in) :: cplData
+        real(kind=8), intent(inout) :: lhs(MSIZE_CPL_PENA_FEM, MSIZE_CPL_PENA_FEM)
+!
+!===================================================================================================
+!    PENALISATION - FEM/FEM - Compute matrix
+!===================================================================================================
+!
+        call cplCmpPenaFEMFEMMatVec(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa, &
+                                    cplData%coef_pena, lhs)
 !
     end subroutine
 !
