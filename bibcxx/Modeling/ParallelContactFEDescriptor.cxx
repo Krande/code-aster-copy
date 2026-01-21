@@ -258,11 +258,11 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
 
     if ( nbElemToKeep < 0 ) {
         // Allocation du .NEMA
-        _contactFEDsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
+        _virtualCellsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         int cmpt = 0;
         for ( const auto &vCell : vCellToAdd ) {
-            _contactFEDsDescriptor->push_back( vCell );
+            _virtualCellsDescriptor->push_back( vCell );
             ++cmpt;
         }
 
@@ -287,7 +287,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
                 }
             }
             toCopy.push_back( explorer[numElem].getType() );
-            _contactFEDsDescriptor->push_back( toCopy );
+            _virtualCellsDescriptor->push_back( toCopy );
             ++cmpt;
         }
     }
@@ -638,11 +638,11 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
 
     if ( nbElemToKeep < 0 ) {
         // Allocation du .NEMA
-        _contactFEDsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
+        _virtualCellsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         int cmpt = 0;
         for ( const auto &vCell : vCellToAdd ) {
-            _contactFEDsDescriptor->push_back( vCell );
+            _virtualCellsDescriptor->push_back( vCell );
             ++cmpt;
         }
 
@@ -667,7 +667,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
                 }
             }
             toCopy.push_back( explorer[numElem].getType() );
-            _contactFEDsDescriptor->push_back( toCopy );
+            _virtualCellsDescriptor->push_back( toCopy );
             ++cmpt;
         }
     }

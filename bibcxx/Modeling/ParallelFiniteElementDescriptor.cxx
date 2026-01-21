@@ -185,7 +185,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         _joints->setReceivedElements( recv );
 
         // Allocation du .NEMA
-        _contactFEDsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
+        _virtualCellsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
         for ( auto &numElem : virtualCellToKeep ) {
@@ -199,7 +199,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                 }
             }
             toCopy.push_back( curElem.getType() );
-            _contactFEDsDescriptor->push_back( toCopy );
+            _virtualCellsDescriptor->push_back( toCopy );
         }
 
         const auto &liel = FEDesc->getListOfGroupsOfElementsExplorer();

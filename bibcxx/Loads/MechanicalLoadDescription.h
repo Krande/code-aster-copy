@@ -321,11 +321,8 @@ class MechanicalLoadDescription : public DataStructure {
     FieldOnCellsRealPtr getPairingField() const { return _pairingPts; }
 
     void setPairingField( const FieldOnCellsRealPtr &pair ) {
-        _FEDesc = nullptr;
-        _FEDesc = std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
-                                                               *( pair->getDescription() ) );
-        _pairingPts = nullptr;
-        _pairingPts = std::make_shared< FieldOnCellsReal >( getName() + ".PAIRS", *pair );
+        _FEDesc->addVirtualCells( *( pair->getDescription() ) );
+        *_pairingPts = *pair;
     };
 
     bool hasLoadResult() const { return _evolChar->exists(); }

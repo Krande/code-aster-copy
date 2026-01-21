@@ -30,6 +30,7 @@
 #include "Modeling/PhysicalQuantityManager.h"
 #include "Modeling/PhysicsAndModelings.h"
 #include "ParallelUtilities/AsterMPI.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const std::string &type,
@@ -40,7 +41,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _dofDescriptor( getName() + ".PRNM" ),
       _listOfGroupsOfElements( getName() + ".LIEL" ),
       _groupsOfCellsNumberByElement( getName() + ".REPE" ),
-      _contactFEDsDescriptor( getName() + ".NEMA" ),
+      _virtualCellsDescriptor( getName() + ".NEMA" ),
       _dofOfDelayedNumberedConstraintNodes( getName() + ".PRNS" ),
       _virtualNodesNumbering( getName() + ".LGNS" ),
       _superElementsDescriptor( getName() + ".SSSA" ),
@@ -49,7 +50,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _mesh( mesh ),
       _partition( nullptr ),
       _explorer(
-          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _contactFEDsDescriptor ) ),
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
       _explorer2(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {
     if ( _parameters->exists() ) {
@@ -66,21 +67,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name,
                                                   const FiniteElementDescriptor &fed )
     : FiniteElementDescriptor( name, "LIGREL", fed.getMesh() ) {
-
-    // JeveuxVector to be duplicated
-    *( _numberOfDelayedNumberedConstraintNodes ) = *( fed._numberOfDelayedNumberedConstraintNodes );
-    *( _parameters ) = *( fed._parameters );
-    *( _dofDescriptor ) = *( fed._dofDescriptor );
-    *( _listOfGroupsOfElements ) = *( fed._listOfGroupsOfElements );
-    *( _groupsOfCellsNumberByElement ) = *( fed._groupsOfCellsNumberByElement );
-    *( _contactFEDsDescriptor ) = *( fed._contactFEDsDescriptor );
-    *( _dofOfDelayedNumberedConstraintNodes ) = *( fed._dofOfDelayedNumberedConstraintNodes );
-    *( _virtualNodesNumbering ) = *( fed._virtualNodesNumbering );
-    *( _superElementsDescriptor ) = *( fed._superElementsDescriptor );
-    *( _nameOfNeighborhoodStructure ) = *( fed._nameOfNeighborhoodStructure );
-    *( _typeOfCells ) = *( fed._typeOfCells );
-    // Pointers to be copied
-    _partition = fed._partition;
+    *this = fed;
 };
 
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
@@ -98,6 +85,26 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
     this->build();
+};
+
+FiniteElementDescriptor &FiniteElementDescriptor::operator=(
+    const FiniteElementDescriptor &toCopy ) { // JeveuxVector to be duplicated
+    *( _numberOfDelayedNumberedConstraintNodes ) =
+        *( toCopy._numberOfDelayedNumberedConstraintNodes );
+    *( _parameters ) = *( toCopy._parameters );
+    *( _dofDescriptor ) = *( toCopy._dofDescriptor );
+    *( _listOfGroupsOfElements ) = *( toCopy._listOfGroupsOfElements );
+    *( _groupsOfCellsNumberByElement ) = *( toCopy._groupsOfCellsNumberByElement );
+    *( _virtualCellsDescriptor ) = *( toCopy._virtualCellsDescriptor );
+    *( _dofOfDelayedNumberedConstraintNodes ) = *( toCopy._dofOfDelayedNumberedConstraintNodes );
+    *( _virtualNodesNumbering ) = *( toCopy._virtualNodesNumbering );
+    *( _superElementsDescriptor ) = *( toCopy._superElementsDescriptor );
+    *( _nameOfNeighborhoodStructure ) = *( toCopy._nameOfNeighborhoodStructure );
+    *( _typeOfCells ) = *( toCopy._typeOfCells );
+    // Pointers to be copied
+    _partition = toCopy._partition;
+
+    return *this;
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
@@ -126,7 +133,7 @@ FiniteElementDescriptor::FiniteElementDescriptorPtr
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getVirtualCellsExplorer() const {
-    _contactFEDsDescriptor->build();
+    _virtualCellsDescriptor->build();
     return _explorer;
 };
 
@@ -150,7 +157,7 @@ const JeveuxContiguousCollectionLong &FiniteElementDescriptor::getListOfGroupsOf
 };
 
 const JeveuxContiguousCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
-    return _contactFEDsDescriptor;
+    return _virtualCellsDescriptor;
 };
 
 ASTERINTEGER FiniteElementDescriptor::getNumberOfVirtualNodes() const {
@@ -258,7 +265,7 @@ bool FiniteElementDescriptor::exists() const {
 
 bool FiniteElementDescriptor::build() {
     // too costly in affe_char_meca
-    // _contactFEDsDescriptor->build();
+    // _virtualCellsDescriptor->build();
     _listOfGroupsOfElements->build();
 
     return true;
@@ -344,6 +351,109 @@ void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptor
             ( *_dofDescriptor )[i * nec + j] = gathered[rowner][nbNodesProc[rowner] * nec + j];
         nbNodesProc[rowner]++;
     }
+};
+
+void FiniteElementDescriptor::addVirtualCells( const FiniteElementDescriptor &other ) {
+
+    if ( !other.exists() ) {
+        return;
+    }
+
+    if ( getMesh() != other.getMesh() ) {
+        raiseAsterError( "Les deux objets n'ont pas le même maillage support." );
+    }
+
+    if ( !exists() ) {
+        *this = other;
+    }
+
+    if ( !other._virtualCellsDescriptor->exists() ) {
+        return;
+    }
+    if ( other._virtualCellsDescriptor->size() == 0 ) {
+        return;
+    }
+
+    VectorOfVectorsLong nema;
+    _virtualCellsDescriptor->build();
+    other._virtualCellsDescriptor->build();
+
+    nema.reserve( _virtualCellsDescriptor->size() + other._virtualCellsDescriptor->size() );
+    const ASTERINTEGER offset = _virtualCellsDescriptor->size();
+    for ( const auto &vcell : _virtualCellsDescriptor ) {
+        nema.push_back( vcell->toVector() );
+    }
+
+    for ( const auto &vcell : other._virtualCellsDescriptor ) {
+        nema.push_back( vcell->toVector() );
+    }
+
+    _virtualCellsDescriptor->deallocate();
+    _virtualCellsDescriptor->allocate( nema );
+
+    std::map< ASTERINTEGER, VectorLong > mapLiel;
+
+    _listOfGroupsOfElements->build();
+    _listOfGroupsOfElements->updateValuePointer();
+    for ( const auto &grel : _listOfGroupsOfElements ) {
+        auto cells = grel->toVector();
+        if ( cells.size() > 1 ) {
+            const auto typeFE = cells.back();
+            cells.pop_back();
+            if ( mapLiel.count( typeFE ) > 0 ) {
+                mapLiel[typeFE].insert( mapLiel[typeFE].end(), cells.begin(), cells.end() );
+            } else {
+                mapLiel[typeFE] = cells;
+            }
+        }
+    }
+
+    other._listOfGroupsOfElements->build();
+    other._listOfGroupsOfElements->updateValuePointer();
+    for ( const auto &grel : other._listOfGroupsOfElements ) {
+        auto cells = grel->toVector();
+        // add only grel of virtual cells
+        if ( cells.size() > 1 && cells[0] < 0 ) {
+            const auto typeFE = cells.back();
+            cells.pop_back();
+
+            std::transform( cells.begin(), cells.end(), cells.begin(),
+                            [offset]( ASTERINTEGER idx ) { return idx - offset; } );
+
+            if ( mapLiel.count( typeFE ) > 0 ) {
+                mapLiel[typeFE].insert( mapLiel[typeFE].end(), cells.begin(), cells.end() );
+            } else {
+                mapLiel[typeFE] = cells;
+            }
+        }
+    }
+
+    // Number of groups of elements and length of FED for coupling element
+    ASTERINTEGER nbGrel = mapLiel.size(), lielLont = 0;
+    for ( const auto &[type, cells] : mapLiel ) {
+        lielLont += cells.size();
+        nbGrel += 1;
+    }
+    lielLont += nbGrel;
+
+    _listOfGroupsOfElements->deallocate();
+    _listOfGroupsOfElements->allocate( nbGrel, lielLont, Variable );
+
+    // Add  elements for each GREL
+    for ( auto [type, cells] : mapLiel ) {
+        cells.push_back( type );
+        _listOfGroupsOfElements->push_back( cells );
+    }
+
+    // Adapt FED
+    CALLO_ADALIG_WRAP( this->getName() );
+    std::string base = "G";
+    CALLO_CORMGI( base, this->getName() );
+    bool l_calc_rigi = false;
+    CALLO_INITEL( this->getName(), (ASTERLOGICAL *)&l_calc_rigi );
+
+    // Final building
+    this->build();
 };
 
 void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr &other ) {

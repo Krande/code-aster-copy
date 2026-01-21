@@ -55,7 +55,7 @@ class FiniteElementDescriptor : public DataStructure {
     /** @brief Vecteur Jeveux '.REPE' */
     JeveuxVectorLong _groupsOfCellsNumberByElement;
     /** @brief Collection '.NEMA' */
-    JeveuxContiguousCollectionLong _contactFEDsDescriptor;
+    JeveuxContiguousCollectionLong _virtualCellsDescriptor;
     /** @brief Vecteur Jeveux '.PRNS' */
     JeveuxVectorLong _dofOfDelayedNumberedConstraintNodes;
     /** @brief Vecteur Jeveux '.LGNS' */
@@ -103,6 +103,10 @@ class FiniteElementDescriptor : public DataStructure {
      * @brief Destructor
      */
     ~FiniteElementDescriptor() {};
+
+    FiniteElementDescriptor &operator=( const FiniteElementDescriptor &toCopy );
+
+    void addVirtualCells( const FiniteElementDescriptor &other );
 
     const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const;
 
