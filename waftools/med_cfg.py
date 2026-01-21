@@ -249,28 +249,30 @@ def check_mfiodw(self):
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void mfiodw(void);
+extern void mfiodw_(void);
 #ifdef __cplusplus
 }
 #endif
 int main(void){
-    void *p = (void *)mfiodw;
-    return 0;
+    void (*p)(void) = mfiodw_;
+    return p ? 0 : 1;
 }"""
     self.start_msg("Checking for mfiodw")
     try:
-        self.check_cc(
+        result = self.check_cc(
             fragment=fragment,
             use="MED HDF5 Z",
             uselib_store="MED",
             mandatory=False,
-            execute=False,
+            execute=True,
         )
+        if result:
+            self.define("ASTER_HAVE_MED_MFIODW", 1)
+            self.end_msg("yes")
+        else:
+            self.end_msg("no", "YELLOW")
     except:
         self.end_msg("no", "YELLOW")
-    else:
-        self.define("ASTER_HAVE_MED_MFIODW", 1)
-        self.end_msg("yes")
 
 
 @Configure.conf
