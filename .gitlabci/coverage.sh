@@ -33,7 +33,7 @@ fi
 
 printf "\ndownload previous data into ${wrkdir} - $(date)\n"
 mkdir -p ${wrkdir}
-mc --insecure cp ${MINIO_DIR}/last.tested ${wrkdir}/
+mc --insecure cp ${MINIO_DIR}/last_tested.pick ${wrkdir}/
 
 printf "\nchecking testcases results directory ${resdir} - $(date)\n"
 mkdir -p ${resdir}
@@ -68,7 +68,7 @@ printf "\nupload analysis onto minio (upload=${upload}) - $(date)\n"
 if [ "${upload}" = "upload" ]; then
     today=$(date +%Y-%m-%d)
     mc --insecure cp ${wrkdir}/${today}.* ${MINIO_DIR}/
-    mc --insecure cp ${wrkdir}/last.* ${MINIO_DIR}/
+    mc --insecure cp ${wrkdir}/last_* ${MINIO_DIR}/
 else
     echo "INFO: do not upload results"
 fi
