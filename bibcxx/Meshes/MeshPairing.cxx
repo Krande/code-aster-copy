@@ -187,8 +187,8 @@ ASTERBOOL MeshPairing::surfacesHasBeenDefined() {
     return returnValue;
 }
 
-ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole,
-                                ASTERDOUBLE &area_tole ) {
+ASTERBOOL MeshPairing::compute( const ASTERDOUBLE &dist_pairing, const ASTERDOUBLE &pair_tole,
+                                const ASTERDOUBLE &area_tole ) {
 
     build();
     CALL_JEMARQ();

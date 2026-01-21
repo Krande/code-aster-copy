@@ -333,6 +333,7 @@ subroutine chckma(nomu, dtol)
         end if
 !
         if (mesh_conv%nb_edges_dege > 0 .or. mesh_conv%nb_faces_dege > 0) then
+            call mesh_conv%clean()
             call utmess('F', "MODELISA4_10")
         end if
         call mesh_conv%clean()

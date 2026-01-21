@@ -182,6 +182,12 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         CALL_EXECOP( &op );
         return true;
     };
+
+    void setPairingField( const FieldOnCellsRealPtr pair ) {
+        _mecaLoadDesc->setPairingField( pair );
+    };
+
+    FieldOnCellsRealPtr getPairingField() const { return _mecaLoadDesc->getPairingField(); };
 };
 
 /**********************************************************

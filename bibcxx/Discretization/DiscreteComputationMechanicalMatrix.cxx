@@ -862,8 +862,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
     // Select option for matrix
     std::string option = "RIGI_CONT";
 
-    auto Fed_Slave = _phys_problem->getVirtualSlavCell();
-    auto Fed_pair = _phys_problem->getVirtualCell();
+    auto Fed_Slave = _phys_problem->getContactSlaveFED();
+    auto Fed_pair = _phys_problem->getContactFED();
 
 #ifdef ASTER_HAVE_MPI
     const auto pCFED = std::dynamic_pointer_cast< ParallelContactFEDescriptor >( Fed_pair );
@@ -1232,3 +1232,53 @@ DiscreteComputation::getImpedanceWaveMatrix( const VectorString &groupOfCells ) 
     elemMatr->build();
     return elemMatr;
 };
+
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalCouplingMatrix(
+    const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step ) const {
+
+    // Select option for matrix
+    std::string option = "RIGI_CPL";
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel(), option );
+
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
+
+    for ( const auto &load : mecaLoadReal ) {
+
+        const auto pairing = load->getPairingField();
+        if ( pairing && pairing->exists() ) {
+
+            // Prepare computing
+            CalculPtr calcul = std::make_unique< Calcul >( option );
+            calcul->setFiniteElementDescriptor( pairing->getDescription() );
+
+            // Set input field
+            calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+            calcul->addInputField( "PDEPLMR", displ_prev );
+            calcul->addInputField( "PDEPLPR", displ_step );
+            calcul->addInputField( "PPAIRR", pairing );
+            calcul->addHHOField( _phys_problem->getModel() );
+
+            // Add time fields
+            calcul->addTimeField( "PINSTMR", time_prev );
+            calcul->addTimeField( "PINSTPR", time_prev + time_step );
+
+            // Add output elementary
+            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+
+            // Computation
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+            }
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+}

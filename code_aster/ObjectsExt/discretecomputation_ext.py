@@ -494,6 +494,13 @@ class ExtendedDiscreteComputation:
             resi_ext += self.getVolumetricForces(
                 phys_state.time_curr, varc_curr=phys_state.externVar
             )
+
+            resi_ext -= self.getMechanicalCouplingForces(
+                phys_state.primal_prev,
+                phys_state.primal_step,
+                phys_state.time_prev,
+                phys_state.time_step,
+            )
         else:
             raise RuntimeError()
 
@@ -719,6 +726,13 @@ class ExtendedDiscreteComputation:
                 ).getElementaryTerms()
             )
             matr_elem_ext.build()
+        elif phys_pb.isMechanical():
+            matr_elem_ext = self.getMechanicalCouplingMatrix(
+                phys_state.primal_prev,
+                phys_state.primal_step,
+                phys_state.time_prev,
+                phys_state.time_step,
+            )
 
         return matr_elem_ext
 

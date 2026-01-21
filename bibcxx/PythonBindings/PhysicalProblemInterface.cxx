@@ -188,14 +188,14 @@ Arguments:
     // -----------------------------------------------------------------------------------------
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
-    c1.def( "setVirtualSlavCell", &PhysicalProblem::setVirtualSlavCell, R"(
+    c1.def( "setContactSlaveFED", &PhysicalProblem::setContactSlaveFED, R"(
         Set virtual cells from contact definition
 
         Arguments:
             virtualCell (FiniteElementDescriptor)): a pointer to the FED
                 )",
             py::arg( "contact" ) );
-    c1.def( "setVirtualCell", &PhysicalProblem::setVirtualCell, R"(
+    c1.def( "setContactFED", &PhysicalProblem::setContactFED, R"(
         Set virtual cells from contact pairing
 
         Arguments:

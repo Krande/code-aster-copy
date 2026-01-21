@@ -26,6 +26,7 @@
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
+#include "DataFields/FieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
@@ -119,6 +120,8 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _ondpr;
     /** @brief Carte '.ONDE' */
     ConstantFieldOnCellsTypePtr _onde;
+    /** @brief Field '.PAIRS' */
+    FieldOnCellsRealPtr _pairingPts;
 
   public:
     MechanicalLoadDescription( void ) = delete;
@@ -154,6 +157,7 @@ class MechanicalLoadDescription : public DataStructure {
           _fl102( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FL102", _FEDesc ) ),
           _forno( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FORNO", _FEDesc ) ),
           _imped( std::make_shared< ConstantFieldOnCellsType >( getName() + ".IMPED", _FEDesc ) ),
+          _pairingPts( std::make_shared< FieldOnCellsReal >( getName() + ".PAIRS" ) ),
           _pesan( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PESAN", _FEDesc ) ),
           _preff( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PREFF", _FEDesc ) ),
           _press( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PRESS", _FEDesc ) ),
@@ -235,6 +239,8 @@ class MechanicalLoadDescription : public DataStructure {
             return ( _ondpl && _ondpl->exists() );
         } else if ( load_name == "ONDPR" ) {
             return ( _ondpr && _ondpr->exists() );
+        } else if ( load_name == "PAIRS" ) {
+            return ( _pairingPts && _pairingPts->exists() );
         } else {
             AS_ABORT( "Unknown option " + load_name );
         }
@@ -312,6 +318,16 @@ class MechanicalLoadDescription : public DataStructure {
         return nullptr;
     }
 
+    FieldOnCellsRealPtr getPairingField() const { return _pairingPts; }
+
+    void setPairingField( const FieldOnCellsRealPtr &pair ) {
+        _FEDesc = nullptr;
+        _FEDesc = std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
+                                                               *( pair->getDescription() ) );
+        _pairingPts = nullptr;
+        _pairingPts = std::make_shared< FieldOnCellsReal >( getName() + ".PAIRS", *pair );
+    };
+
     bool hasLoadResult() const { return _evolChar->exists(); }
 
     std::string getLoadResultName() const {
@@ -360,6 +376,7 @@ class MechanicalLoadDescription : public DataStructure {
         _vnor->updateValuePointers();
         _ondpl->updateValuePointers();
         _ondpr->updateValuePointers();
+        _pairingPts->updateValuePointers();
     };
 
     bool build() {

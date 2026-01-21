@@ -28,6 +28,7 @@ subroutine aplcpgn(mesh, newgeo, &
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/ap_infast_n.h"
 #include "asterfort/apcoor.h"
@@ -35,19 +36,18 @@ subroutine aplcpgn(mesh, newgeo, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/mesh_pairing_type.h"
 #include "asterfort/prjint_ray.h"
 #include "asterfort/testvois.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
 #include "Contact_type.h"
-#include "asterfort/int_to_char8.h"
-#include "asterfort/mesh_pairing_type.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
@@ -132,7 +132,7 @@ subroutine aplcpgn(mesh, newgeo, &
 !
 ! - some initializations
 !
-    debug = ASTER_FALSE
+    debug = meshPairing%debug
     pair_exist = ASTER_TRUE
     inte_neigh(1:4) = 0
     list_slav_master(1:4) = 0

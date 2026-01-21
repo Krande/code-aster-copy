@@ -20,6 +20,7 @@
    * - :py:class:`~code_aster.Objects.ContactType`
    * - :py:class:`~code_aster.Objects.ContactVariant`
    * - :py:class:`~code_aster.Objects.CoordinatesSpace`
+   * - :py:class:`~code_aster.Objects.CouplingMethod`
    * - :py:class:`~code_aster.Objects.CrackShape`
    * - :py:class:`~code_aster.Objects.DiscreteComputation`
    * - :py:class:`~code_aster.Objects.DisplacementReal`

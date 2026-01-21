@@ -20,11 +20,12 @@ subroutine caliel(loadZ, modelZ)
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/caarle.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
@@ -37,7 +38,6 @@ subroutine caliel(loadZ, modelZ)
 #include "asterfort/rapo2d.h"
 #include "asterfort/rapo3d.h"
 #include "asterfort/rapoco.h"
-#include "jeveux.h"
 !
     character(len=*), intent(in) :: loadZ, modelZ
 !
@@ -82,21 +82,21 @@ subroutine caliel(loadZ, modelZ)
         do iocc = 1, nbOcc
             call getvtx(factorKeyword, 'OPTION', iocc=iocc, scal=option, nbret=iop)
             if (option .eq. '3D_POU') then
-                call rapo3d(numeDof, iocc, listRela, loadZ)
+                call rapo3d(numeDof, iocc, listRela, load)
             else if (option .eq. 'COQ_3D') then
-                call raco3d(iocc, listRela, loadZ)
+                call raco3d(iocc, listRela, load)
             else if (option .eq. '3D_POU_ARLEQUIN') then
-                call caarle(numeDof, iocc, listRela, loadZ)
+                call caarle(numeDof, iocc, listRela, load)
             else if (option .eq. '2D_POU') then
-                call rapo2d(numeDof, iocc, listRela, loadZ)
+                call rapo2d(numeDof, iocc, listRela, load)
             else if (option .eq. '3D_TUYAU') then
-                call rapo3d(numeDof, iocc, listRela, loadZ)
+                call rapo3d(numeDof, iocc, listRela, load)
             else if (option .eq. 'PLAQ_POUT_ORTH') then
-                call rapo3d(numeDof, iocc, listRela, loadZ)
+                call rapo3d(numeDof, iocc, listRela, load)
             else if (option .eq. 'COQ_POU') then
-                call rapoco(numeDof, iocc, listRela, loadZ)
+                call rapoco(numeDof, iocc, listRela, load)
             else if (option .eq. 'COQ_TUYAU') then
-                call rapoco(numeDof, iocc, listRela, loadZ)
+                call rapoco(numeDof, iocc, listRela, load)
             else
                 ASSERT(ASTER_FALSE)
             end if

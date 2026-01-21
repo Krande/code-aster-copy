@@ -38,6 +38,7 @@ module loadMecaCompute_module
     private :: compLoadVectType, compLoadMatrType
 ! ==================================================================================================
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/barych.h"
@@ -73,7 +74,6 @@ module loadMecaCompute_module
 #include "asterfort/utmess.h"
 #include "asterfort/vtgpld.h"
 #include "asterfort/xajcin.h"
-#include "jeveux.h"
 #include "LoadTypes_type.h"
 ! ==================================================================================================
 contains
@@ -1701,6 +1701,8 @@ contains
                 loadField = loadPreObjectZ(1:13)//'.VFACE'
             elseif (indxNeumType .eq. LOAD_NEUM_WAVE) then
                 loadField = loadPreObjectZ(1:13)//'.ONDE'
+            elseif (indxNeumType .eq. LOAD_CPL) then
+                loadField = loadPreObjectZ(1:13)//'.PAIRS'
             else
                 ASSERT(ASTER_FALSE)
             end if

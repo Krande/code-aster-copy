@@ -18,7 +18,25 @@
 
 subroutine te0131(nomopt, nomte)
     implicit none
-#include "asterfort/utmess.h"
+!
+#include "asterf_types.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/readVector.h"
+#include "asterfort/writeVector.h"
+#include "FE_module.h"
+!
     character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+!
+! ------------------------------------------------------
+! -- HHO_DEPL_MECA: copy field only
+!-------------------------------------------------------
+    integer(kind=8) :: ndim, nno, nsize
+    real(kind=8) :: field(MAX_BV)
+!
+    call elrefe_info(fami="RIGI", ndim=ndim, nno=nno)
+    nsize = nno*ndim
+!
+    call readVector("PDEPLPR", nsize, field)
+    call writeVector("PDEPL_R", nsize, field)
+!
 end subroutine

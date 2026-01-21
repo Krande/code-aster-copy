@@ -26,8 +26,8 @@ module HHO_matrix_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/writeMatrix.h"
 #include "asterfort/readMatrix.h"
+#include "asterfort/writeMatrix.h"
 #include "blas/daxpy.h"
 #include "blas/dgemv.h"
 !
@@ -57,8 +57,10 @@ module HHO_matrix_module
         procedure, pass :: copy => hhoMatriceCopy
         procedure, pass :: add => hhoMatriceAdd
         procedure, pass :: addBlock => hhoMatriceAddSub
+        procedure, pass :: addBlock2 => hhoMatriceAddSub2
         procedure, pass :: prune => hhoMatricePrune
         procedure, pass :: dot => hhoMatriceDot
+        procedure, pass :: scale => hhoMatriceScale
 !
     end type HHO_matrix
 !
@@ -66,7 +68,7 @@ module HHO_matrix_module
     private  :: hhoMatriceInit, hhoMatriceFree, hhoMatriceWrite, hhoMatriceSetValue
     private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU, hhoMatriceCopy
     private  :: hhoMatriceAdd, hhoMatricePrune, hhoMatriceDot
-    private  :: hhoMatriceAddSub
+    private  :: hhoMatriceAddSub2, hhoMatriceAddSub, hhoMatriceScale
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -339,6 +341,42 @@ contains
 !
 !===================================================================================================
 !
+    subroutine hhoMatriceAddSub2(this, mat, max_row, nb_row, nb_col, row_offset, col_offset, alpha_)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(inout) :: this
+        integer(kind=8), intent(in) :: nb_row, nb_col, max_row
+        real(kind=8), intent(in) :: mat(max_row, nb_col)
+        integer(kind=8), intent(in) :: row_offset, col_offset
+        real(kind=8), intent(in), optional :: alpha_
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print matrix
+!   In mat   : matrix to print
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: j, j2
+        real(kind=8) :: alpha
+!
+        alpha = 1.d0
+        if (present(alpha_)) alpha = alpha_
+!
+        ASSERT(this%nrows >= nb_row+row_offset)
+        ASSERT(this%ncols >= nb_col+col_offset)
+!
+        do j = 1, nb_col
+            j2 = col_offset+j
+            call daxpy_1(nb_row, alpha, mat(:, j), this%m(row_offset+1:, j2))
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine hhoMatriceDot(this, x, y, alpha_, beta_)
 !
         implicit none
@@ -399,6 +437,33 @@ contains
                 if (abs(this%m(i, j)) < threshold) then
                     this%m(i, j) = 0.d0
                 end if
+            end do
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatriceScale(this, val)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(inout) :: this
+        real(kind=8), intent(in) :: val
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print matrix
+!   In mat   : matrix to print
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: i, j
+!
+        do j = 1, this%ncols
+            do i = 1, this%nrows
+                this%m(i, j) = val*this%m(i, j)
             end do
         end do
 !

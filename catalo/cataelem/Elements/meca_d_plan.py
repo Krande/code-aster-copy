@@ -825,6 +825,11 @@ class MEDPQU8(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
+        OP.HHO_DEPL_MECA(
+            te=131,
+            para_in=((SP.PDEPLPR, DDL_MECA),),
+            para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DDL_MECA),),
+        ),
         OP.INDIC_ENER(
             te=490,
             para_in=(

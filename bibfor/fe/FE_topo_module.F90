@@ -23,14 +23,14 @@ module fe_topo_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
-#include "asterfort/teattr.h"
-#include "asterfort/jevech.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
-#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/teattr.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,6 +91,7 @@ module fe_topo_module
         procedure, public, pass :: evalCoor => coor_cell
         procedure, public, pass :: barycenter => bary_cell
         procedure, public, pass :: updateCoordinates
+        procedure, public, pass :: getSkin
     end type FE_Cell
 !
 contains
@@ -179,10 +180,27 @@ contains
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
         integer(kind=8) :: inode, idim, iret, jv_geom
+        character(len=8) :: typ
 ! --------------------------------------------------------------------------------------------------
 !
-        call teattr('S', 'TYPMA', this%typemas, iret)
+        call teattr('S', 'TYPMA', typ, iret)
         ASSERT(iret == 0)
+!
+        select case (typ)
+        case ("TS1", "TS2")
+            this%typemas = "TR3"
+        case ("TS3", "TS4")
+            this%typemas = "TR6"
+        case ("QS1", "QS2")
+            this%typemas = "QU4"
+        case ("QS3", "QS4")
+            this%typemas = "QU8"
+        case ("QS5", "QS6")
+            this%typemas = "QU9"
+        case default
+            this%typemas = typ
+        end select
+!
         call elrfno(this%typemas, nno=this%nbnodes, ndim=this%ndim)
         call CellNameS2L(this%typemas, this%typema)
 !
@@ -200,6 +218,81 @@ contains
         end if
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function getSkin(this, nbNodes, nodes) result(skin)
+!
+        implicit none
+!
+        class(FE_Cell), intent(in) :: this
+        integer(kind=8), intent(in) :: nbNodes, nodes(9)
+        type(FE_Skin) :: skin
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Initialize a FE Skin from a FE_Cell
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out FESkin           : a FE face
+! --------------------------------------------------------------------------------------------------
+!
+        aster_logical, parameter :: l_debug = ASTER_FALSE
+        integer(kind=8) :: inode, idim, node
+! --------------------------------------------------------------------------------------------------
+!
+        skin%nbnodes = nbNodes
+        skin%ndim = this%ndim-1
+!
+        if (this%ndim == 2) then
+            select case (nbNodes)
+            case (2)
+                skin%typemas = "SE2"
+            case (3)
+                skin%typemas = "SE3"
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        else
+            select case (nbNodes)
+            case (3)
+                skin%typemas = "TR3"
+            case (6)
+                skin%typemas = "TR6"
+            case (7)
+                skin%typemas = "TR7"
+            case (4)
+                skin%typemas = "QU4"
+            case (8)
+                skin%typemas = "QU8"
+            case (9)
+                skin%typemas = "QU9"
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        end if
+!
+        call CellNameS2L(skin%typemas, skin%typema)
+!
+! - Get coordinates
+!
+        do inode = 1, skin%nbnodes
+            node = nodes(inode)
+            do idim = 1, this%ndim
+                skin%coorno(idim, inode) = this%coorno(idim, node)
+            end do
+        end do
+!
+        if (l_debug) then
+            call skin%print()
+        end if
+!
+    end function
 !
 !===================================================================================================
 !
@@ -228,6 +321,26 @@ contains
 !
         call teattr('S', 'TYPMA', this%typemas, iret)
         ASSERT(iret == 0)
+!
+        select case (this%typemas)
+        case ("S22", "S23")
+            this%typemas = "SE2"
+        case ("S32", "S33")
+            this%typemas = "SE3"
+        case ("T33", "TQ7", "TT2", "TQ4")
+            this%typemas = "TR3"
+        case ("T66", "TT1", "TQ1", "TQ2", "TQ3")
+            this%typemas = "TR6"
+        case ("T77")
+            this%typemas = "TR7"
+        case ("Q44", "QT7", "QT1")
+            this%typemas = "QU4"
+        case ("Q88", "QT2", "QT4")
+            this%typemas = "QU8"
+        case ("Q99", "QT5", "QT3")
+            this%typemas = "QU9"
+        end select
+!
         call elrfno(this%typemas, nno=this%nbnodes, ndim=this%ndim)
         call CellNameS2L(this%typemas, this%typema)
 !

@@ -19,7 +19,14 @@
 
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
-from ..Objects import MechanicalLoadReal, ParallelMechanicalLoadReal, ConnectionMesh, Model
+from ..Objects import (
+    MechanicalLoadReal,
+    ParallelMechanicalLoadReal,
+    ConnectionMesh,
+    Model,
+    CouplingMethod,
+    CouplingPairing,
+)
 from ..Objects import SyntaxSaver
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
@@ -130,6 +137,21 @@ class MechanicalLoadDefinition(ExecuteCommand):
         """Override default _exec in case of parallel load"""
         if isinstance(self._result, MechanicalLoadReal):
             super(MechanicalLoadDefinition, self).exec_(keywords)
+
+            if "LIAISON_MASSIF" in keywords.keys():
+                assert len(keywords["LIAISON_MASSIF"]) == 1
+                cpl = CouplingPairing(keywords["MODELE"], keywords["INFO"])
+                cpl.setSlaveGroupOfCells(keywords["LIAISON_MASSIF"][0]["GROUP_MA_ESCL"])
+                cpl.setMasterGroupOfCells(keywords["LIAISON_MASSIF"][0]["GROUP_MA_MAIT"])
+                cpl.setMethod(
+                    {
+                        "PENALISATION": CouplingMethod.Penalization,
+                        "NITSCHE": CouplingMethod.Nitsche,
+                    }[keywords["LIAISON_MASSIF"][0]["METHODE"]]
+                )
+                cpl.setCoefficient(keywords["LIAISON_MASSIF"][0]["COEF_PENA"])
+                cpl.compute()
+                self._result.setPairingField(cpl.getPairingField())
         else:
             model = keywords.pop("MODELE")
             if "LIAISON_PROJ" in list(keywords.keys()):

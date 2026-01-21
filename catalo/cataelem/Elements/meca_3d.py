@@ -882,6 +882,11 @@ class MECA_HEXA20(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PNEUTER, LC.N9NEUT_R)),
             para_out=((OP.GRAD_NEUT9_R.PGNEUTR, LC.G27NEUTR),),
         ),
+        OP.HHO_DEPL_MECA(
+            te=131,
+            para_in=((SP.PDEPLPR, DDL_MECA),),
+            para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DDL_MECA),),
+        ),
         OP.INDIC_ENER(
             te=491,
             para_in=(

@@ -864,6 +864,38 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ),
               py::arg( "coef_cont" ), py::arg( "coef_frot" ) )
 
+        .def( "getMechanicalCouplingForces", &DiscreteComputation::getMechanicalCouplingForces, R"(
+            Compute coupling for LIAISON_HHO.
+
+            Arguments:
+                displ_prev (FieldOnNodes): displacement field at begin of current time
+                displ_step (FieldOnNodes): field of increment of displacement
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
+
+            Returns:
+                FieldOnNodesReal: coupling forces
+
+        )",
+              py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ) )
+
+        .def( "getMechanicalCouplingMatrix", &DiscreteComputation::getMechanicalCouplingMatrix, R"(
+            Compute coupling for LIAISON_HHO.
+
+            Arguments:
+                displ_prev (FieldOnNodes): displacement field at begin of current time
+                displ_step (FieldOnNodes): field of increment of displacement
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
+
+            Returns:
+                ElementaryMatrixDisplacementReal: coupling elementary matrix.
+
+        )",
+              py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ) )
+
         .def( "getMechanicalNodalForces", &DiscreteComputation::getMechanicalNodalForces,
               R"(
       Return the elementary mechanical nodal forces vector

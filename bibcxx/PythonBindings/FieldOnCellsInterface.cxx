@@ -64,6 +64,12 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 FieldOnCellsReal
             )" )
+        .def( "exists", &FieldOnCellsReal::exists, R"(
+            The field exists or not ?
+
+            Returns:
+                Bool
+            )" )
         .def(
             "toSimpleFieldOnCells",
             []( const FieldOnCellsReal &f ) { return toSimpleFieldOnCells( f ); },

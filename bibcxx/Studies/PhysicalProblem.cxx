@@ -36,8 +36,8 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _mesh( curModel->getMesh() ),
       _materialField( curMat ),
       _elemChara( cara ),
-      _virtualSlavCell( nullptr ),
-      _virtualCell( nullptr ),
+      _contactSlaveFED( nullptr ),
+      _contactFED( nullptr ),
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
       _dofNume( nullptr ),
       _behavProp( nullptr ),
@@ -199,8 +199,8 @@ bool PhysicalProblem::computeDOFNumbering() {
 #endif /* ASTER_HAVE_MPI */
         _dofNume = std::make_shared< DOFNumbering >();
 
-    if ( _virtualSlavCell ) {
-        return _dofNume->computeNumbering( getModel(), getListOfLoads(), getVirtualSlavCell() );
+    if ( _contactSlaveFED ) {
+        return _dofNume->computeNumbering( getModel(), getListOfLoads(), getContactSlaveFED() );
     } else {
         return _dofNume->computeNumbering( getModel(), getListOfLoads() );
     }

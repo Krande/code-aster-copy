@@ -3698,6 +3698,28 @@ phen.add(
     ),
 )
 
+# -- Define COUPLING FEM/HHO elements for PENALISATION method
+
+phen.add(
+    "CPL_PEN_H1_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HP2",
+        attrs=((AT.HHO, "OUI"), (AT.FORMULATION, "HHO_LINE"), (AT.TYPMOD2, "HHO")),
+        elements=((MT.SEG23, EL.CP_S2S3_HHO1), (MT.SEG33, EL.CP_S3S3_HHO1)),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H2_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HP2",
+        attrs=((AT.HHO, "OUI"), (AT.FORMULATION, "HHO_QUAD"), (AT.TYPMOD2, "HHO")),
+        elements=((MT.SEG23, EL.CP_S2S3_HHO2), (MT.SEG33, EL.CP_S3S3_HHO2)),
+    ),
+)
+
 # ------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour :
 #  * Forces nodales

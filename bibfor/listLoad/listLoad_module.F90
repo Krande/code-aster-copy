@@ -51,9 +51,10 @@ module listLoad_module
     private :: getListLoadAccess, copyListLoad
 ! ==================================================================================================
     private
+#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -75,7 +76,6 @@ module listLoad_module
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "jeveux.h"
 #include "LoadTypes_type.h"
 ! ==================================================================================================
 contains
@@ -592,6 +592,57 @@ contains
                 call utmess('F', 'CHARGES9_31')
             else if (loadApply .eq. 'FIXE_CSTE') then
                 loadIden = 'NEUM_ONDE'
+            else if (loadApply .eq. 'SUIV_PILO') then
+                call utmess('F', 'CHARGES9_33')
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end if
+        if (loadIden .ne. "None") then
+            nbLoadIden = nbLoadIden+1
+            ASSERT(nbLoadIden .lt. LOAD_NBIDEN_MAXI)
+            listLoadIden(nbLoadIden) = loadIden
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getLoadCoupling
+!
+! Get identifier for LIAISON_MASSIF load
+!
+! In  loadPreObject     : base JEVEUX name for object
+! In  loadApply         : how to apply load
+! IO  nbLoadIden        : number of identifier of loads in listLoadIden
+! IO  listLoadIden      : list of loads's identifier
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getLoadCoupling(loadPreObjectZ, loadApply, &
+                               nbLoadIden, listLoadIden)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: loadPreObjectZ
+        character(len=16), intent(in) :: loadApply
+        integer(kind=8), intent(inout) :: nbLoadIden
+        character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
+! ----- Locals
+        character(len=24) :: loadIden
+        aster_logical :: loadExist
+!   ------------------------------------------------------------------------------------------------
+!
+        loadIden = 'None'
+        call isMecaLoadExist(LOAD_CPL, loadPreObjectZ, &
+                             loadExist)
+        if (loadExist) then
+            if (loadApply .eq. 'SUIV') then
+                call utmess('F', 'CHARGES9_32')
+            else if (loadApply .eq. 'DIDI') then
+                call utmess('F', 'CHARGES9_9')
+            else if (loadApply .eq. 'FIXE_PILO') then
+                call utmess('F', 'CHARGES9_31')
+            else if (loadApply .eq. 'FIXE_CSTE') then
+                loadIden = 'DIRI_CSTE'
             else if (loadApply .eq. 'SUIV_PILO') then
                 call utmess('F', 'CHARGES9_33')
             else
@@ -2013,6 +2064,10 @@ contains
 ! ----- Non-standard load: ONDE_PLANE
         call getLoadPlaneWave(loadPreObjectZ, loadApplyZ, &
                               nbLoadIden, listLoadIden)
+
+! ----- Non-standard load: LIAISON_MASSIF
+        call getLoadCoupling(loadPreObjectZ, loadApplyZ, &
+                             nbLoadIden, listLoadIden)
 
 ! ----- Add new load(s) in list of loads
         if (nbLoadIden .gt. 0) then

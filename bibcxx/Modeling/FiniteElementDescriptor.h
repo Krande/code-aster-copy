@@ -55,7 +55,7 @@ class FiniteElementDescriptor : public DataStructure {
     /** @brief Vecteur Jeveux '.REPE' */
     JeveuxVectorLong _groupsOfCellsNumberByElement;
     /** @brief Collection '.NEMA' */
-    JeveuxContiguousCollectionLong _virtualCellsDescriptor;
+    JeveuxContiguousCollectionLong _contactFEDsDescriptor;
     /** @brief Vecteur Jeveux '.PRNS' */
     JeveuxVectorLong _dofOfDelayedNumberedConstraintNodes;
     /** @brief Vecteur Jeveux '.LGNS' */
@@ -91,6 +91,8 @@ class FiniteElementDescriptor : public DataStructure {
      * @brief Constructeur
      */
     FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh );
+
+    FiniteElementDescriptor( const std::string &name, const FiniteElementDescriptor &fed );
 
     FiniteElementDescriptor( const BaseMeshPtr mesh );
 
@@ -146,7 +148,9 @@ class FiniteElementDescriptor : public DataStructure {
     FiniteElementDescriptorPtr restrict( const VectorLong &cells ) const;
 
     /** @brief Get index of elem type */
-    ASTERINTEGER getElemTypeNume( const std::string elemTypeName ) const;
+    ASTERINTEGER getElemTypeNume( const std::string &elemTypeName ) const;
+
+    std::string getElemTypeName( const ASTERINTEGER &elemTypeNume ) const;
 
     JeveuxVectorLong getFiniteElementType() const;
 

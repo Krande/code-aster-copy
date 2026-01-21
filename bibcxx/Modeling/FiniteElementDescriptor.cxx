@@ -40,7 +40,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _dofDescriptor( getName() + ".PRNM" ),
       _listOfGroupsOfElements( getName() + ".LIEL" ),
       _groupsOfCellsNumberByElement( getName() + ".REPE" ),
-      _virtualCellsDescriptor( getName() + ".NEMA" ),
+      _contactFEDsDescriptor( getName() + ".NEMA" ),
       _dofOfDelayedNumberedConstraintNodes( getName() + ".PRNS" ),
       _virtualNodesNumbering( getName() + ".LGNS" ),
       _superElementsDescriptor( getName() + ".SSSA" ),
@@ -49,7 +49,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _mesh( mesh ),
       _partition( nullptr ),
       _explorer(
-          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _contactFEDsDescriptor ) ),
       _explorer2(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {
     if ( _parameters->exists() ) {
@@ -62,6 +62,26 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
 
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
     : FiniteElementDescriptor( name, "LIGREL", mesh ) {};
+
+FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name,
+                                                  const FiniteElementDescriptor &fed )
+    : FiniteElementDescriptor( name, "LIGREL", fed.getMesh() ) {
+
+    // JeveuxVector to be duplicated
+    *( _numberOfDelayedNumberedConstraintNodes ) = *( fed._numberOfDelayedNumberedConstraintNodes );
+    *( _parameters ) = *( fed._parameters );
+    *( _dofDescriptor ) = *( fed._dofDescriptor );
+    *( _listOfGroupsOfElements ) = *( fed._listOfGroupsOfElements );
+    *( _groupsOfCellsNumberByElement ) = *( fed._groupsOfCellsNumberByElement );
+    *( _contactFEDsDescriptor ) = *( fed._contactFEDsDescriptor );
+    *( _dofOfDelayedNumberedConstraintNodes ) = *( fed._dofOfDelayedNumberedConstraintNodes );
+    *( _virtualNodesNumbering ) = *( fed._virtualNodesNumbering );
+    *( _superElementsDescriptor ) = *( fed._superElementsDescriptor );
+    *( _nameOfNeighborhoodStructure ) = *( fed._nameOfNeighborhoodStructure );
+    *( _typeOfCells ) = *( fed._typeOfCells );
+    // Pointers to be copied
+    _partition = fed._partition;
+};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ) {};
@@ -106,7 +126,7 @@ FiniteElementDescriptor::FiniteElementDescriptorPtr
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getVirtualCellsExplorer() const {
-    _virtualCellsDescriptor->build();
+    _contactFEDsDescriptor->build();
     return _explorer;
 };
 
@@ -130,7 +150,7 @@ const JeveuxContiguousCollectionLong &FiniteElementDescriptor::getListOfGroupsOf
 };
 
 const JeveuxContiguousCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
-    return _virtualCellsDescriptor;
+    return _contactFEDsDescriptor;
 };
 
 ASTERINTEGER FiniteElementDescriptor::getNumberOfVirtualNodes() const {
@@ -238,20 +258,31 @@ bool FiniteElementDescriptor::exists() const {
 
 bool FiniteElementDescriptor::build() {
     // too costly in affe_char_meca
-    // _virtualCellsDescriptor->build();
+    // _contactFEDsDescriptor->build();
     _listOfGroupsOfElements->build();
 
     return true;
 };
 
-ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string elemTypeName ) const {
+ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string &elemTypeName ) const {
 
     ASTERINTEGER elemTypeNume;
     JeveuxChar32 objName( " " );
-    std::string name = "&CATA.TE.NOMTE";
-    CALLO_JEXNOM( objName, name, elemTypeName );
+    std::string cata = "&CATA.TE.NOMTE";
+    CALLO_JEXNOM( objName, cata, elemTypeName );
     CALLO_JENONU( objName, &elemTypeNume );
     return elemTypeNume;
+};
+
+std::string FiniteElementDescriptor::getElemTypeName( const ASTERINTEGER &elemTypeNume ) const {
+
+    JeveuxChar32 objName( " " );
+    JeveuxChar24 elemTypeName;
+    std::string cata = "&CATA.TE.NOMTE";
+    ASTERINTEGER nume = elemTypeNume;
+    CALLO_JEXNUM( objName, cata, &nume );
+    CALLO_JENUNO( objName, elemTypeName );
+    return strip( elemTypeName.toString() );
 };
 
 const std::string FiniteElementDescriptor::getPartitionMethod() const {

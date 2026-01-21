@@ -23,15 +23,15 @@ module FE_quadrature_module
     implicit none
 !
     private
-#include "asterc/r8gaem.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "FE_module.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ module FE_quadrature_module
 !
     type FE_Quadrature
         character(len=8)                    :: fami = " "
-        integer(kind=8)                             :: nbQuadPoints = 0
+        integer(kind=8)                     :: nbQuadPoints = 0
         real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights_param = 0.d0
         real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
@@ -76,7 +76,7 @@ contains
 !
         implicit none
 !
-        integer(kind=8), intent(in)                             :: nbnodes, ndim
+        integer(kind=8), intent(in)                     :: nbnodes, ndim
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
         aster_logical, intent(in)                       :: l_skin
         real(kind=8), intent(in)                        :: basis(*), dbasis(*)
