@@ -82,7 +82,6 @@ subroutine crnggc(chamnz, l_print)
     integer(kind=8), pointer :: v_dom(:) => null()
     integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
-    integer(kind=8), pointer :: v_nogl(:) => null()
 !
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig, comm_name, tag_name, nume_equa, joints, meshj, chamno
@@ -124,11 +123,10 @@ subroutine crnggc(chamnz, l_print)
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
     nomgdr = zk24(jrefn+1) (1:8)
-    call jeveuo(mesh//'.NUNOLG', 'L', vi=v_nogl)
-    call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
 !
 !   SI LE MAILLAGE N'EST PAS PARALLELE, ON SORT
     if (.not. isParallelMesh(mesh)) goto 999
+    call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
 !
     call dismoi('NB_EQUA', nume_equa, 'NUME_EQUA', repi=neql)
 !
