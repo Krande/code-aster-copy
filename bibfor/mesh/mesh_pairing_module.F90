@@ -3020,7 +3020,6 @@ contains
                 E = inputPts(:, j)
                 call isInside(E, edgePt1, edgePt2, inside_E)
                 call isInside(S, edgePt1, edgePt2, inside_S)
-                print *, inside_E, inside_S
                 if (inside_E) then
                     if (.not. inside_S) then
                         call computeIntersectionPoint3D(S, E, edgePt1, edgePt2, intersection)
@@ -3043,6 +3042,12 @@ contains
 !
 ! isInside
 !
+!   Check if a point is inside a polygone, given one oriented edge
+!
+! In  point                    : point to test
+! In  edgePt1                  : first point of the edge
+! In  edgePt2                  : second point of the edge
+! Out  inside                  : boolean, if True then the point is inside
 ! --------------------------------------------------------------------------------------------------
     subroutine isInside(point, edgePt1, edgePt2, inside)
 ! ----- Parameters
@@ -3059,6 +3064,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! computeIntersectionPoint3D
+!
+!   Compute the intersection point between two lines
+!
+! In  point1                    : init point of the first line
+! In  point2                    : end point of the first line
+! In  edgePt1                   : init poinr of the second line
+! In  edgePt2                   : end point of the second line
+! Out  intersection             : intersection point of the two lines
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine computeIntersectionPoint3D(point1, point2, edgePt1, edgePt2, intersection)
@@ -3082,6 +3095,16 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! computeIntePtsOrigCell
+!
+!   Compute coordinates of the intersection points in the slave cell (origin)
+!
+! In  cellOrigLine              : geometric properties of cell to project (linearized)
+! In  nbPoinInte                : number of intersection points
+! In  cellProj                  : geometric properties of projected cell from slave cell
+! In  meshPairing               : main datastructure for pairing
+! In  cellTargLine              : geometric properties of cell where to project (linearized)
+! Out  poinInteOrig             : coordinates of intersection points in original cell
+! Out  poinInteTarg             : coordinates of intersection points in target cell
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine computeIntePtsOrigCell(cellOrigLine, nbPoinInte, poinInteOrig, &
@@ -3153,6 +3176,14 @@ contains
 !
 ! computeBarycentricCoordsTRIA
 !
+!   Compute barycentric coordinates of a point in a triangle
+!
+! In  pointA            : first vertex of the triangle
+! In  pointB            : second vertex of the triangle
+! In  pointC            : third vertex of the triangle
+! In  pointX            : point of interest
+! Out lambda            : barycentric coordinates of pointX
+!
 ! --------------------------------------------------------------------------------------------------
     subroutine computeBarycentricCoordsTRIA(pointA, pointB, pointC, pointX, lambda)
 ! ----- Parameters
@@ -3179,6 +3210,16 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! computeBaryCoordsIfOnEdgeQUAD
+!
+!   Compute the barycentric coordinates in quadrangle if point is on one edge
+!
+! In  pointA            : first vertex of the quadrangle
+! In  pointB            : second vertex of the quadrangle
+! In  pointC            : third vertex of the quadrangle
+! In  pointD            : third vertex of the quadrangle
+! In  pointX            : point of interest
+! Out lambda_quad       : barycentric coordinates
+! Out isOnEdge          : boolean, if True, point is on one edge
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine computeBaryCoordsIfOnEdgeQUAD(pointA, pointB, pointC, pointD, pointX, &
@@ -3244,6 +3285,13 @@ contains
 !
 ! computeSignedAreaTRIA
 !
+!   Compute signed area of a triangle
+!
+! In  pointA            : first vertex of the triangle
+! In  pointB            : second vertex of the triangle
+! In  pointC            : third vertex of the triangle
+! Out signArea          : signed area of the triangle
+!
 ! --------------------------------------------------------------------------------------------------
     subroutine computeSignedAreaTRIA(pointA, pointB, pointC, signArea)
 ! ----- Parameters
@@ -3258,6 +3306,14 @@ contains
 !
 ! isInsideTRIA
 !
+!   Check if a point is inside a triangle
+!
+! In  pointA            : first vertex of the triangle
+! In  pointB            : second vertex of the triangle
+! In  pointC            : third vertex of the triangle
+! In  pointX            : point of interest
+! Out inside            : boolean, if True the point is inside
+!
 ! --------------------------------------------------------------------------------------------------
     subroutine isInsideTRIA(pointX, pointA, pointB, pointC, inside)
 ! ----- Parameters
@@ -3271,7 +3327,6 @@ contains
         call computeSignedAreaTRIA(pointX, pointB, pointC, A2)
         call computeSignedAreaTRIA(pointX, pointC, pointA, A3)
         prod = abs(A1*A2*A3)
-        print *, 'A1, A2, A3', A1, A2, A3
         inside = (A1 >= 0.0 .and. A2 >= 0.0 .and. A3 >= 0.0) .or. &
                  (A1 <= 0.0 .and. A2 <= 0.0 .and. A3 <= 0.0) .or. (prod <= tole)
     end subroutine isInsideTRIA
