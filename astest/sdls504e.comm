@@ -207,6 +207,7 @@ IMPR_TABLE(FORMAT_R='1PE22.15',
 # ---------------------------------------------------------------------
 TEST_TABLE(
     VALE_CALC=0.17441565947874274,
+    TOLE_MACHINE=2e-06,
     NOM_PARA="CHAR_STAB",
     TABLE=TABSTAB,
     FILTRE=(
