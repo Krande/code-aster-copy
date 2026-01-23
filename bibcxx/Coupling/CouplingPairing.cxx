@@ -26,6 +26,7 @@
 
 #include "DataFields/FieldOnCellsBuilder.h"
 #include "Messages/Messages.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
 namespace {
@@ -55,62 +56,31 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellPena
 
 CouplingPairing::CouplingPairing( const std::string name, const ModelPtr model,
                                   const ASTERINTEGER verbosity )
-    : DataStructure( name, 8, "PAIRING_SD" ),
-      _model( model ),
-      _meshPairing( std::make_shared< MeshPairing >( getName() + ".APMA" ) ),
-      _verbosity( verbosity ),
-      _algo( CouplingMethod::Undefined ),
-      _coef_pena( 0. ) {
+    : DataStructure( name, 8, "PAIRING_SD" ), _model( model ), _verbosity( verbosity ) {
     if ( !_model )
         raiseAsterError( "Mesh is empty" );
 
     if ( !_model->isMechanical() )
         UTMESS( "F", "CONTACT1_2" );
-
-    _meshPairing->setMesh( this->getMesh() );
-    _meshPairing->setVerbosity( getVerbosity() );
-    _meshPairing->setMethod( PairingMethod::Legacy );
 };
 
 void CouplingPairing::check() const {
     // Some checks
-    auto hasCommonNodes = _meshPairing->hasCommonNodes();
-    if ( hasCommonNodes ) {
-        UTMESS( "F", "CONTACT1_1" );
+    for ( const auto &zone : _zones ) {
+        zone->check( _model );
     }
-
-    if ( _algo == CouplingMethod::Nitsche ) {
-        auto surf2Volu = _meshPairing->getSlaveCellsSurfToVolu();
-        if ( surf2Volu.size() == 0 ) {
-            UTMESS( "F", "CONTACT1_3" );
-        }
-    }
-
-    // Check mesh orientation (normals)
-    _meshPairing->checkNormals( _model );
 }
-
-void CouplingPairing::setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }
 
 ASTERBOOL CouplingPairing::compute() {
 
-    _meshPairing->build();
+    if ( _zones.empty() ) {
+        raiseAsterError( "CouplingZone vector is empty" );
+    }
     this->check();
 
-    // Get distance ratio
-    auto dist_pairing = -1.0;
-
-    // Tolerance for pairing (zero value for geometrical operations)
-    const ASTERDOUBLE pair_tole = 1e-8;
-
-    // Tolerance for removing intersection cells
-    const ASTERDOUBLE area_tole = 1e-2;
-
     // Pairing
-    const auto returnValue = _meshPairing->compute( dist_pairing, pair_tole, area_tole );
-
-    if ( !returnValue ) {
-        return returnValue;
+    for ( auto &zone : _zones ) {
+        AS_ASSERT( zone->compute() );
     }
 
     // Build FED
@@ -119,7 +89,31 @@ ASTERBOOL CouplingPairing::compute() {
     return true;
 }
 
-ASTERINTEGER CouplingPairing::getCplCellType( const std::string &slavCellTypeName,
+VectorPairLong CouplingPairing::getListOfPairs() const {
+
+    VectorPairLong returnValue;
+    ASTERINTEGER nbPairs = this->getNumberOfPairs();
+
+    if ( nbPairs == 0 ) {
+        raiseAsterError( "No contact pairs: was the pairing performed correctly? " );
+    }
+
+    returnValue.reserve( nbPairs );
+
+    for ( const auto &zone : _zones ) {
+        VectorPairLong pairsOnZone = zone->getListOfPairs();
+        auto nbPairsZone = pairsOnZone.size();
+
+        for ( auto iPairZone = 0; iPairZone < nbPairsZone; iPairZone++ ) {
+            returnValue.push_back( pairsOnZone[iPairZone] );
+        };
+    }
+
+    return returnValue;
+}
+
+ASTERINTEGER CouplingPairing::getCplCellType( const CouplingMethod algo,
+                                              const std::string &slavCellTypeName,
                                               const std::string &mastCellTypeName ) const {
     std::string cplTypeName;
 
@@ -129,12 +123,12 @@ ASTERINTEGER CouplingPairing::getCplCellType( const std::string &slavCellTypeNam
 
     const auto key = std::make_pair( slavCellTypeName, mastCellTypeName );
 
-    if ( _algo == CouplingMethod::Nitsche ) {
+    if ( algo == CouplingMethod::Nitsche ) {
         auto it = cplCellNits.find( key );
         if ( it != cplCellNits.end() ) {
             cplTypeName = it->second;
         }
-    } else if ( _algo == CouplingMethod::Penalization ) {
+    } else if ( algo == CouplingMethod::Penalization ) {
         auto it = cplCellPena.find( key );
         if ( it != cplCellPena.end() ) {
             cplTypeName = it->second;
@@ -160,98 +154,104 @@ void CouplingPairing::createVirtualElemForCoupling(
     // listCplType: list of coupling cells attached to pair (cellType, iPair)
     // listCplElem: list of coupling cells
 
-    AS_ASSERT( _algo != CouplingMethod::Undefined );
-
     ASTERINTEGER iCplPair = 0;
-
-    // Get pairing
-    const auto listOfPairs = _meshPairing->getListOfPairs();
-    const auto nbPairs = this->getNumberOfPairs();
-
-    // Link between surface and volume
-    MapLong surf2Volu;
-    if ( _algo == CouplingMethod::Nitsche ) {
-        if ( getMesh()->isParallel() ) {
-            UTMESS( "F", "CONTACT1_5" );
-        }
-        surf2Volu = _meshPairing->getSlaveCellsSurfToVolu();
-        if ( surf2Volu.size() == 0 ) {
-            UTMESS( "F", "CONTACT1_3" );
-        }
-    }
-
-    // Create vector of (virtual) coupling cells
-    VectorPairLong listCplTypeZone;
-    listCplTypeZone.reserve( nbPairs );
 
     const auto fed = _model->getFiniteElementDescriptor();
 
     const auto typeFE = fed->getFiniteElementType();
     typeFE->updateValuePointer();
 
-    // Loop on pairs in zone
-    for ( int iPair = 0; iPair < nbPairs; iPair++ ) {
+    for ( ASTERINTEGER iZone = 0; iZone < _zones.size(); iZone++ ) {
+        const auto zone = _zones[iZone];
+
+        const auto algo = zone->getMethod();
+        AS_ASSERT( algo != CouplingMethod::Undefined );
+
         // Get pairing
-        auto [slavCellNume, mastCellNume] = listOfPairs[iPair];
+        const auto listOfPairsZone = zone->getListOfPairs();
+        const auto nbPairsZone = this->getNumberOfPairs();
 
-        // Get cell slave to construct (is volumic cell for Nitsche)
-        auto slavCellUsedNume = slavCellNume;
-        if ( _algo == CouplingMethod::Nitsche ) {
-            slavCellUsedNume = surf2Volu[slavCellNume];
+        // Link between surface and volume
+        MapLong surf2Volu;
+        if ( algo == CouplingMethod::Nitsche ) {
+            if ( getMesh()->isParallel() ) {
+                UTMESS( "F", "CONTACT1_5" );
+            }
+            surf2Volu = zone->getSlaveCellsSurfToVolu();
+            if ( surf2Volu.size() == 0 ) {
+                UTMESS( "F", "CONTACT1_3" );
+            }
         }
 
-        // Get slave and master cell type
-        const auto slavCellTypeName = fed->getElemTypeName( ( *typeFE )[slavCellUsedNume] );
-        const auto mastCellTypeName = fed->getElemTypeName( ( *typeFE )[mastCellNume] );
+        // Create vector of (virtual) coupling cells
+        VectorPairLong listCplTypeZone;
+        listCplTypeZone.reserve( nbPairsZone );
 
-        // Get index of type of coupling cell
-        const ASTERINTEGER typeElemNume =
-            this->getCplCellType( slavCellTypeName, mastCellTypeName );
-        AS_ASSERT( typeElemNume != -1 );
+        // Loop on pairs in zone
+        for ( int iPair = 0; iPair < nbPairsZone; iPair++ ) {
+            // Get pairing
+            auto [slavCellNume, mastCellNume] = listOfPairsZone[iPair];
 
-        // Add coupling element to list
-        if ( cplElemType.count( typeElemNume ) == 0 ) {
-            cplElemType[typeElemNume] = 0;
+            // Get cell slave to construct (is volumic cell for Nitsche)
+            auto slavCellUsedNume = slavCellNume;
+            if ( algo == CouplingMethod::Nitsche ) {
+                slavCellUsedNume = surf2Volu[slavCellNume];
+            }
+
+            // Get slave and master cell type
+            const auto slavCellTypeName = fed->getElemTypeName( ( *typeFE )[slavCellUsedNume] );
+            const auto mastCellTypeName = fed->getElemTypeName( ( *typeFE )[mastCellNume] );
+
+            // Get index of type of coupling cell
+            const ASTERINTEGER typeElemNume =
+                this->getCplCellType( algo, slavCellTypeName, mastCellTypeName );
+            AS_ASSERT( typeElemNume != -1 );
+
+            // Add coupling element to list
+            if ( cplElemType.count( typeElemNume ) == 0 ) {
+                cplElemType[typeElemNume] = 0;
+            }
+            cplElemType[typeElemNume] += 1;
+
+            // New virtual element
+            iCplPair++;
+            listCplTypeZone.push_back( std::make_pair( typeElemNume, iCplPair ) );
+            _cell2Zone[iCplPair - 1] = iZone;
+
+            // Get nodes
+            auto slav_cell_con = ( *meshConnectivity )[slavCellUsedNume + 1];
+            auto toAdd1 = slav_cell_con->toVector();
+            slav_cell_con = JeveuxCollectionObject< ASTERINTEGER >();
+            auto mast_cell_con = ( *meshConnectivity )[mastCellNume + 1];
+            auto toAdd2 = mast_cell_con->toVector();
+
+            // Coupling element on zone
+            VectorLong cplElemZone;
+            cplElemZone.reserve( toAdd1.size() + toAdd2.size() + 1 );
+
+            // Copy slave nodes to coupling element
+            cplElemZone.insert( cplElemZone.end(), toAdd1.begin(), toAdd1.end() );
+
+            // Add slave nodes to list of paired nodes
+            slaveNodePaired.insert( toAdd1.begin(), toAdd1.end() );
+
+            // Add slave cell to list of paired cells
+            slaveCellPaired.insert( slavCellNume );
+
+            // Copy master nodes to coupling element
+            cplElemZone.insert( cplElemZone.end(), toAdd2.begin(), toAdd2.end() );
+
+            // Add type of coupling element
+            cplElemZone.push_back( typeElemNume );
+
+            // Add coupling element to all coupling elements
+            listCplElem.push_back( cplElemZone );
         }
-        cplElemType[typeElemNume] += 1;
-
-        // New virtual element
-        iCplPair++;
-        listCplTypeZone.push_back( std::make_pair( typeElemNume, iCplPair ) );
-
-        // Get nodes
-        auto slav_cell_con = ( *meshConnectivity )[slavCellUsedNume + 1];
-        auto toAdd1 = slav_cell_con->toVector();
-        slav_cell_con = JeveuxCollectionObject< ASTERINTEGER >();
-        auto mast_cell_con = ( *meshConnectivity )[mastCellNume + 1];
-        auto toAdd2 = mast_cell_con->toVector();
-
-        // Coupling element on zone
-        VectorLong cplElemZone;
-        cplElemZone.reserve( toAdd1.size() + toAdd2.size() + 1 );
-
-        // Copy slave nodes to coupling element
-        cplElemZone.insert( cplElemZone.end(), toAdd1.begin(), toAdd1.end() );
-
-        // Add slave nodes to list of paired nodes
-        slaveNodePaired.insert( toAdd1.begin(), toAdd1.end() );
-
-        // Add slave cell to list of paired cells
-        slaveCellPaired.insert( slavCellNume );
-
-        // Copy master nodes to coupling element
-        cplElemZone.insert( cplElemZone.end(), toAdd2.begin(), toAdd2.end() );
-
-        // Add type of coupling element
-        cplElemZone.push_back( typeElemNume );
-
-        // Add coupling element to all coupling elements
-        listCplElem.push_back( cplElemZone );
+        // Add coupling elements of zone
+        listCplType.push_back( listCplTypeZone );
     }
-    // Add coupling elements of zone
-    listCplType.push_back( listCplTypeZone );
 
-    AS_ASSERT( iCplPair == nbPairs )
+    AS_ASSERT( iCplPair == this->getNumberOfPairs() );
 }
 
 void CouplingPairing::buildFiniteElementDescriptor() {
@@ -276,6 +276,9 @@ void CouplingPairing::buildFiniteElementDescriptor() {
 
     // Object for number of cells for each type of coupling cell
     MapLong cplElemType;
+
+    // Clear map between zone and coupling elements
+    _cell2Zone.clear();
 
     // Create virtual elements for coupling
     createVirtualElemForCoupling( cplElemType, meshConnectivity, listCplElem, listCplType,
@@ -352,10 +355,8 @@ FieldOnCellsRealPtr CouplingPairing::getPairingField() const {
 
     // Get pairing
     const ASTERINTEGER nbPairs = this->getNumberOfPairs();
-    const VectorLong nbInter = _meshPairing->getNumberOfIntersectionPoints();
-    AS_ASSERT( nbPairs == nbInter.size() );
 
-    VectorPairLong listPairs = _meshPairing->getListOfPairs();
+    VectorPairLong listPairs = this->getListOfPairs();
 
     // Acces to list of cells
     const auto meshConnex = this->getMesh()->getConnectivity();
@@ -393,35 +394,40 @@ FieldOnCellsRealPtr CouplingPairing::getPairingField() const {
             // Get mesh cell index
             auto iPair = -( *liel )[iElem];
 
-            // Adress in field
-            auto shift = data->getShifting( iGrel, iElem );
-
             if ( iPair <= nbPairs ) {
                 const auto iLocaPair = iPair - 1;
 
+                // Current coupling zone
+                auto iZone = _cell2Zone.at( iLocaPair );
+                const auto zone = _zones[iZone];
+
+                // Adress in field
+                auto shift = data->getShifting( iGrel, iElem );
+
                 // Value for projection tolerance
                 ( *data )[shift + 0] = 1.e-8;
-                // Set number of intersection points
-                ( *data )[shift + 1] = nbInter[iLocaPair];
-                AS_ASSERT( nbInter[iLocaPair] <= 8 );
 
                 // Set coordinates of slave intersection points
                 const auto inter =
-                    _meshPairing->getIntersectionPoints( iLocaPair, CoordinatesSpace::Slave );
+                    zone->getIntersectionPoints( iLocaPair, CoordinatesSpace::Slave );
 
-                for ( ASTERINTEGER iInter = 0; iInter < nbInter[iLocaPair]; iInter++ ) {
+                // Set number of intersection points
+                ( *data )[shift + 1] = inter.size();
+                AS_ASSERT( inter.size() <= 8 );
+
+                for ( ASTERINTEGER iInter = 0; iInter < inter.size(); iInter++ ) {
                     ( *data )[shift + 2 + iInter] = inter[iInter][0];
                     ( *data )[shift + 10 + iInter] = inter[iInter][1];
                 }
 
                 // Coefficient of penalization
-                ( *data )[shift + 29] = _coef_pena;
+                ( *data )[shift + 29] = zone->getCoefficient();
 
                 // For Nitsche
-                if ( _algo == CouplingMethod::Nitsche ) {
+                if ( zone->getMethod() == CouplingMethod::Nitsche ) {
                     auto [slavCellNume, mastCellNume] = listPairs[iLocaPair];
                     auto slav_surf_con = ( *meshConnex )[slavCellNume + 1]->toVector();
-                    auto slavVoluNume = _meshPairing->getSlaveCellSurfToVolu( slavCellNume );
+                    auto slavVoluNume = zone->getSlaveCellSurfToVolu( slavCellNume );
                     auto slav_volu_con = ( *meshConnex )[slavVoluNume + 1]->toVector();
 
                     auto mapLoc = mapping( slav_surf_con, slav_volu_con );
@@ -443,4 +449,22 @@ FieldOnCellsRealPtr CouplingPairing::getPairingField() const {
     CALL_JEDEMA();
 
     return data;
+};
+
+ASTERINTEGER CouplingPairing::getNumberOfPairs() const {
+    ASTERINTEGER nbPair = 0;
+
+    for ( const auto &zone : _zones ) {
+        nbPair += zone->getNumberOfPairs();
+    }
+
+    return nbPair;
+};
+
+void CouplingPairing::setVerbosity( const ASTERINTEGER verbosity ) {
+    _verbosity = verbosity;
+
+    for ( auto &zone : _zones ) {
+        zone->setVerbosity( _verbosity );
+    }
 };

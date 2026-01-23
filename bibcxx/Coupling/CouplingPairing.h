@@ -21,36 +21,28 @@
 
 #pragma once
 
+#include "Coupling/CouplingZonePairing.h"
 #include "DataFields/FieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Meshes/MeshEnum.h"
 #include "Meshes/MeshPairing.h"
 #include "Modeling/Model.h"
 
-enum class CouplingMethod {
-    Undefined,
-    Nitsche,
-    Penalization,
-};
-
 class CouplingPairing : public DataStructure {
     /** Datastructure for pairing */
   protected:
+    /* verboisity */
+    ASTERINTEGER _verbosity;
+
     /** @brief Model */
     ModelPtr _model;
 
     /** @brief Finite element descriptor for virtual elements of coupling */
     FiniteElementDescriptorPtr _fed;
 
-    /** @brief Level of verbosity */
-    ASTERINTEGER _verbosity;
+    std::vector< CouplingZonePairingPtr > _zones;
 
-    /** @brief Definition of pairing of two surfaces */
-    MeshPairingPtr _meshPairing;
-
-    CouplingMethod _algo;
-
-    ASTERDOUBLE _coef_pena;
+    MapLong _cell2Zone;
 
   protected:
     /** @brief Create virtual elements for coupling */
@@ -61,7 +53,7 @@ class CouplingPairing : public DataStructure {
                                        SetLong &slaveNodePaired, SetLong &slaveCellPaired );
 
     /** @brief Get index of coupling cell */
-    ASTERINTEGER getCplCellType( const std::string &slavCellTypeName,
+    ASTERINTEGER getCplCellType( const CouplingMethod algo, const std::string &slavCellTypeName,
                                  const std::string &mastCellTypeName ) const;
 
     /* Check mesh */
@@ -89,14 +81,7 @@ class CouplingPairing : public DataStructure {
     ASTERBOOL compute();
 
     /** @brief Set group of slave cells */
-    void setSlaveGroupOfCells( const std::string &groupName ) {
-        _meshPairing->setSlaveGroupOfCells( groupName );
-    }
-
-    /** @brief Set group of master cells */
-    void setMasterGroupOfCells( const std::string &groupName ) {
-        _meshPairing->setMasterGroupOfCells( groupName );
-    }
+    void addZone( const CouplingZonePairingPtr zone ) { _zones.push_back( zone ); };
 
     /** @brief Build Finite Element Descriptor from pairing */
     virtual void buildFiniteElementDescriptor();
@@ -104,19 +89,15 @@ class CouplingPairing : public DataStructure {
     /** @brief Get Finite Element Descriptor from pairing */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _fed; };
 
-    /** @brief Set verbosity */
-    void setVerbosity( const ASTERINTEGER &level );
+    ASTERINTEGER getNumberOfPairs() const;
 
-    /** @brief Get verbosity */
-    ASTERINTEGER getVerbosity() const { return _verbosity; }
-
-    ASTERINTEGER getNumberOfPairs() const { return _meshPairing->getNumberOfPairs(); };
+    VectorPairLong getListOfPairs() const;
 
     FieldOnCellsRealPtr getPairingField() const;
 
-    void setMethod( const CouplingMethod algo ) { _algo = algo; }
+    void setVerbosity( const ASTERINTEGER verbosity );
 
-    void setCoefficient( const ASTERDOUBLE coef ) { _coef_pena = coef; }
+    ASTERINTEGER getVerbosity() const { return _verbosity; };
 };
 
 using CouplingPairingPtr = std::shared_ptr< CouplingPairing >;

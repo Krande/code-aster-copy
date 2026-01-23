@@ -177,13 +177,10 @@ ContactPairing::getIntersectionPoints( ASTERINTEGER &indexZone,
         raiseAsterError( "No contact pairs: was the pairing performed correctly? " );
     }
     returnValue.reserve( nbPairs );
+    const auto meshPair = _contDefi->getContactZone( indexZone )->getMeshPairing();
     for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
-        VectorOfVectorsReal interOnZone = _contDefi->getContactZone( indexZone )
-                                              ->getMeshPairing()
-                                              ->getIntersectionPoints( iPair, coorSpace );
-        ASTERINTEGER nbInter = _contDefi->getContactZone( indexZone )
-                                   ->getMeshPairing()
-                                   ->getNumberOfIntersectionPoints( iPair );
+        VectorOfVectorsReal interOnZone = meshPair->getIntersectionPoints( iPair, coorSpace );
+        ASTERINTEGER nbInter = meshPair->getNumberOfIntersectionPoints( iPair );
         if ( nbInter != 0 ) {
             VectorReal vectVale;
             for ( auto iInter = 0; iInter < nbInter; iInter++ ) {
@@ -191,7 +188,6 @@ ContactPairing::getIntersectionPoints( ASTERINTEGER &indexZone,
                                  interOnZone[iInter].end() );
             };
             returnValue.push_back( vectVale );
-            vectVale.clear();
         }
     }
     return returnValue;

@@ -7616,6 +7616,78 @@ class CouplingMethod:
     Undefined = 0
 
 
+# class CouplingZonePairing in libaster
+
+
+class CouplingZonePairing(DataStructure):
+    """Object to create contact pairing."""
+
+    # Method resolution order:
+    #     CouplingZonePairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.CouplingZonePairing, arg0: libaster.BaseMesh, arg1: int) -> None
+
+        2. __init__(self: libaster.CouplingZonePairing, arg0: libaster.BaseMesh) -> None
+        """
+
+    def check(self, model):
+        """Check common nodes and normals.
+
+        Arguments:
+            model [Model]: model.
+        """
+
+    def setCoefficient(self, coef_pena):
+        """Set penalization's coefficient.
+
+        Arguments:
+            coef_pena [float]: penalization's coefficient.
+        """
+
+    def setMasterGroupsOfCells(self, groups_name):
+        """Set master's side.
+
+        Arguments:
+            groups_name [list[str]]: list of groups.
+        """
+
+    def setMethod(self, method):
+        """Set method.
+
+        Returns:
+            method [CouplingMethod]: method.
+        """
+
+    def setPairingParameters(self, parameters):
+        """Set pairing parameters.
+
+        Arguments:
+            parameters [PairingParameter]: PairingParameterPtr.
+        """
+
+    def setSlaveGroupsOfCells(self, groups_name):
+        """Set slave's side.
+
+        Arguments:
+            groups_name [list[str]]: list of groups.
+        """
+
+    def setVerbosity(self, verbosity):
+        """Set verbosity.
+
+        Arguments:
+            verbosity [float]: verbosity level.
+        """
+
+
 # class CouplingPairing in libaster
 
 
@@ -7632,6 +7704,13 @@ class CouplingPairing(DataStructure):
 
     def __init__(self, arg0, arg1):
         pass
+
+    def addZone(self, zone):
+        """Add a new zone of coupling;
+
+        Argument:
+            zone [CouplingZonePairing]: zone.
+        """
 
     def compute(self):
         """Compute the pairing quantitie
@@ -7666,51 +7745,6 @@ class CouplingPairing(DataStructure):
 
         Returns:
             FieldOnCellsReal: intersection points.
-        """
-
-    def getVerbosity(self):
-        """Get level of verbosity
-
-        Returns:
-            integer: level of verbosity
-        """
-
-    def setCoefficient(self, coeff):
-        """Set coefficient of penalization.
-
-        Argument:
-            coeff [float]: coefficient of penalization.
-        """
-
-    def setMasterGroupOfCells(self, group_name):
-        """Set name of the master group.
-
-        Arguments:
-            group_name [str]: name of the master group.
-        """
-
-    def setMethod(self, method):
-        """Set method of coupling.
-
-        Argument:
-            method [CouplingMethod]: Method to use.
-        """
-
-    def setSlaveGroupOfCells(self, group_name):
-        """Set name of the slave group.
-
-        Arguments:
-            group_name [str]: name of the slave group.
-        """
-
-    def setVerbosity(self, verbosity):
-        """Set level of verbosity
-              0 - without
-              1 - normal (default)
-              2 - detailled (text)
-
-        Arguments:
-            level (integer): level of verbosity
         """
 
 

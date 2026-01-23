@@ -781,10 +781,28 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Modélise le raccord entre deux massifs"),
-        GROUP_MA_ESCL=SIMP(statut="o", typ=grma, max=1),
-        GROUP_MA_MAIT=SIMP(statut="o", typ=grma, max=1),
+        GROUP_MA_ESCL=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA_MAIT=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         METHODE=SIMP(statut="o", typ="TXM", into=("PENALISATION",)),
         COEF_PENA=SIMP(statut="o", typ="R", val_min=0.0),
+        # Pairing options (for segment to segment contact)
+        APPARIEMENT=SIMP(statut="f", typ="TXM", defaut="MORTAR", into=("MORTAR",)),
+        b_zone_pair_param=BLOC(
+            condition="""equal_to("APPARIEMENT", "MORTAR") """,
+            APPA_TOLE=SIMP(statut="f", typ="R", defaut=1e-8, val_min=0.0),
+            AIRE_TOLE=SIMP(statut="f", typ="R", defaut=1e-8, val_min=0.0),
+            TYPE_APPA=SIMP(
+                statut="f", typ="TXM", defaut="FORCEBRUTE", into=("RAPIDE", "FORCEBRUTE", "PANG")
+            ),
+        ),
+        # VERIFICATION DE L"ORIENTATION ET DE LA COHERENCE DES NORMALES
+        VERI_NORM=SIMP(
+            statut="f",
+            typ="TXM",
+            defaut="OUI",
+            into=("OUI", "NON"),
+            fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),
+        ),
     ),
     LIAISON_UNIF=FACT(
         statut="f",

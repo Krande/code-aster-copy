@@ -281,6 +281,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.CouplingZonePairing` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.CouplingZonePairing
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.Crack` object
 ********************************************************************************
 

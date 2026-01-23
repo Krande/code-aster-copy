@@ -20,14 +20,18 @@
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
 from ..Objects import (
-    MechanicalLoadReal,
-    ParallelMechanicalLoadReal,
     ConnectionMesh,
-    Model,
     CouplingMethod,
     CouplingPairing,
+    CouplingZonePairing,
+    MechanicalLoadReal,
+    Model,
+    PairingAlgo,
+    PairingMethod,
+    PairingParameter,
+    ParallelMechanicalLoadReal,
+    SyntaxSaver,
 )
-from ..Objects import SyntaxSaver
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
 
@@ -140,16 +144,42 @@ class MechanicalLoadDefinition(ExecuteCommand):
 
             if "LIAISON_MASSIF" in keywords.keys():
                 assert len(keywords["LIAISON_MASSIF"]) == 1
+                _cpl_method = {
+                    "PENALISATION": CouplingMethod.Penalization,
+                    "NITSCHE": CouplingMethod.Nitsche,
+                }
+                _pair_method = {
+                    "RAPIDE": PairingMethod.Fast,
+                    "FORCEBRUTE": PairingMethod.BrutForce,
+                    "PANG": PairingMethod.Legacy,
+                }
+
+                _algo_pair = {"MORTAR": PairingAlgo.Mortar}
+
                 cpl = CouplingPairing(keywords["MODELE"], keywords["INFO"])
-                cpl.setSlaveGroupOfCells(keywords["LIAISON_MASSIF"][0]["GROUP_MA_ESCL"])
-                cpl.setMasterGroupOfCells(keywords["LIAISON_MASSIF"][0]["GROUP_MA_MAIT"])
-                cpl.setMethod(
-                    {
-                        "PENALISATION": CouplingMethod.Penalization,
-                        "NITSCHE": CouplingMethod.Nitsche,
-                    }[keywords["LIAISON_MASSIF"][0]["METHODE"]]
-                )
-                cpl.setCoefficient(keywords["LIAISON_MASSIF"][0]["COEF_PENA"])
+                for item in keywords["LIAISON_MASSIF"]:
+                    zone = CouplingZonePairing(keywords["MODELE"].getMesh(), keywords["INFO"])
+                    zone.setCoefficient(item["COEF_PENA"])
+                    zone.setMethod(_cpl_method[item["METHODE"]])
+                    zone.setSlaveGroupsOfCells(item["GROUP_MA_ESCL"])
+                    zone.setMasterGroupsOfCells(item["GROUP_MA_MAIT"])
+
+                    # pairing parameters
+                    pairParam = PairingParameter()
+                    pairParam.setAlgorithm(_algo_pair[item["APPARIEMENT"]])
+
+                    if item["APPARIEMENT"] == "MORTAR":
+                        pairParam.setPairingTolerance(item["APPA_TOLE"])
+                        pairParam.setAreaIntersectionTolerance(item["AIRE_TOLE"])
+                        pairParam.setPairingMethod(_pair_method[item["TYPE_APPA"]])
+
+                    zone.setPairingParameters(pairParam)
+                    zone.build()
+
+                    if item["VERI_NORM"] == "OUI":
+                        zone.check(keywords["MODELE"])
+
+                    cpl.addZone(zone)
                 cpl.compute()
                 self._result.setPairingField(cpl.getPairingField())
         else:
