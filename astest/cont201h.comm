@@ -24,7 +24,7 @@ from libaster import ContactPairing, ContactComputation, PairingMethod
 import math
 import numpy as np
 
-DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("MODELE1_3", "MODELE1_53"), INFO=1)
 
 test = CA.TestCase()
 
@@ -65,7 +65,12 @@ for pairMeth in pairingMethod:
     # - Test number of pairs
     test.assertEqual(meshPair.getNumberOfPairs(), refValues["nbPairs"])
     # - Test intersection points
-    test.assertSequenceEqual(meshPair.getIntersectionPoints(0), refValues["intersectionPts"])
+    test.assertArrayEqual(
+        np.array(meshPair.getIntersectionPoints(0)),
+        np.array(refValues["intersectionPts"]),
+        rtol=1.0e-06,
+        atol=1.0e-05,
+    )
     # - Test number of quadrature points
     test.assertEqual(len(meshPair.getQuadraturePoints(0)), refValues["nbQuadPtsTot"])
 FIN()

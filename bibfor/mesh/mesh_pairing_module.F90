@@ -1158,7 +1158,6 @@ contains
         aster_logical :: errorProj, errorInte
         type(CELL_GEOM) :: cellProj
         integer(kind=8) :: nbCmpPara, nbNodeProj
-        aster_logical :: interSecMethd
 !   ------------------------------------------------------------------------------------------------
 !
         inteNeigh = 0
@@ -1191,21 +1190,14 @@ contains
                                nbPoinInteI, poinInteTargI, poinInteOrigI, &
                                inteNeigh)
         elseif (meshPairing%spaceDime .eq. 3) then
-            interSecMethd = ASTER_FALSE
-            if (interSecMethd) then
-                call addPoinInte3D(meshPairing, cellProj, nbNodeProj, &
-                                   cellOrigLine, cellTargLine, &
-                                   nbPoinInteI, poinInteTargI, poinInteOrigI, &
-                                   inteNeigh, iret)
-                call addPoinOnEdge(meshPairing, cellProj, nbNodeProj, &
-                                   cellOrigLine, cellTargLine, &
-                                   nbPoinInteI, poinInteTargI, poinInteOrigI, &
-                                   inteNeigh)
-            else
-                call addPoinInte3DSH(meshPairing, cellProj, nbNodeProj, &
-                                     cellOrigLine, cellTargLine, &
-                                     nbPoinInteI, poinInteTargI, poinInteOrigI)
-            end if
+            call addPoinInte3D(meshPairing, cellProj, nbNodeProj, &
+                               cellOrigLine, cellTargLine, &
+                               nbPoinInteI, poinInteTargI, poinInteOrigI, &
+                               inteNeigh, iret)
+            call addPoinOnEdge(meshPairing, cellProj, nbNodeProj, &
+                               cellOrigLine, cellTargLine, &
+                               nbPoinInteI, poinInteTargI, poinInteOrigI, &
+                               inteNeigh)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -2817,11 +2809,11 @@ contains
                 if (meshPairing%debug) then
                     WRITE (6, *) "Compute intersection and projection in master space"
                 end if
-                call cellInteProj(meshPairing, &
-                                  cellSlav, cellSlavLine, cellMastLine, &
-                                  iret, &
-                                  nbPoinInte, poinInte, &
-                                  inteArea)
+                call cellInteProjSH(meshPairing, &
+                                    cellSlav, cellSlavLine, cellMastLine, &
+                                    iret, &
+                                    nbPoinInte, poinInte, &
+                                    inteArea)
                 isFatal = isFatalError(iret)
                 if (.not. isFatal .and. iret .ne. ERR_PAIR_NONE) then
                     call utmess('A', 'MESH4_3')
@@ -3330,4 +3322,190 @@ contains
         inside = (A1 >= 0.0 .and. A2 >= 0.0 .and. A3 >= 0.0) .or. &
                  (A1 <= 0.0 .and. A2 <= 0.0 .and. A3 <= 0.0) .or. (prod <= tole)
     end subroutine isInsideTRIA
+! --------------------------------------------------------------------------------------------------
+!
+! cellInteProjSH - prjint_ray
+!
+! Compute intersection and projection from cell to target cell (only used for robust for now)
+!
+! In  meshPairing      : main datastructure for pairing
+! In  cellOrig         : general geometric properties of origin cell
+! In  cellOrigLine     : general geometric properties of linearized origin cell
+! In  cellTargLine     : general geometric properties of linearized target cell
+! Out iret             : return code error
+! Out nbPoinInte       : number of intersection points
+! Out poinInteOrig     : coordinates of intersection points (in origin cell parametric space)
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine cellInteProjSH(meshPairing, &
+                              cellOrig, cellOrigLine, cellTargLine, &
+                              iret_, &
+                              nbPoinInte_, poinInteOrig_, &
+                              inteArea_, inteNeigh_)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(MESH_PAIRING), intent(in) :: meshPairing
+        type(CELL_GEOM), intent(in) :: cellOrig, cellOrigLine, cellTargLine
+        integer(kind=8), optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: nbPoinInte_
+        real(kind=8), optional, intent(out) :: poinInteOrig_(2, MAX_NB_INTE)
+        real(kind=8), optional, intent(out) :: inteArea_
+        integer(kind=8), optional, intent(out) :: inteNeigh_(MAX_NB_NEIGH)
+! ----- Local
+        aster_logical, parameter :: debug = ASTER_FALSE
+        integer(kind=8) :: iret, inteNeigh(MAX_NB_NEIGH)
+        integer(kind=8) :: nbPoinInteI
+        real(kind=8) :: poinInteTargI(2, 2*MAX_NB_INTE), poinInteOrigI(2, 2*MAX_NB_INTE)
+        integer(kind=8) :: nbPoinInteS
+        real(kind=8) :: poinInteTargS(2, MAX_NB_INTE), poinInteOrigS(2, MAX_NB_INTE)
+        integer(kind=8) :: nbPoinInte
+        real(kind=8) :: poinInteOrig(2, MAX_NB_INTE)
+        real(kind=8) :: inteArea
+        aster_logical :: errorProj, errorInte
+        type(CELL_GEOM) :: cellProj
+        integer(kind=8) :: nbCmpPara, nbNodeProj
+!   ------------------------------------------------------------------------------------------------
+!
+        inteNeigh = 0
+        nbPoinInte = 0
+        poinInteOrig = 0.d0
+        inteArea = 0.d0
+        iret = ERR_PAIR_NONE
+        nbCmpPara = meshPairing%spaceDime-1
+
+! ----- Compute projection of cell on target cell
+        errorProj = ASTER_FALSE
+        call cellProjOnCell(meshPairing, &
+                            cellOrig, cellOrigLine, cellTargLine, &
+                            cellProj, nbNodeProj, iret)
+        if (iret .ne. ERR_PAIR_NONE) then
+            errorProj = ASTER_TRUE
+            goto 100
+        end if
+        if (meshPairing%debug) then
+            WRITE (6, *) "     Intersection is OK"
+        end if
+
+! ----- Compute intersection in parametric space of target cell
+        nbPoinInteI = 0
+        poinInteTargI = 0.d0
+        poinInteOrigI = 0.d0
+        if (meshPairing%spaceDime .eq. 2) then
+            ASSERT(nbNodeProj .eq. 2)
+            call addPoinInte2D(meshPairing, cellProj, &
+                               nbPoinInteI, poinInteTargI, poinInteOrigI, &
+                               inteNeigh)
+        elseif (meshPairing%spaceDime .eq. 3) then
+            call addPoinInte3DSH(meshPairing, cellProj, nbNodeProj, &
+                                 cellOrigLine, cellTargLine, &
+                                 nbPoinInteI, poinInteTargI, poinInteOrigI)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
+! ----- Trop de points d'intersection (avant tri) => on ne sait pas gérer
+        ASSERT(nbPoinInteI .le. 2*MAX_NB_INTE)
+
+! ----- Error management
+        errorInte = ASTER_FALSE
+        if (nbPoinInteI == 0 .or. iret == ERR_PAIR_MAST) then
+            errorInte = ASTER_TRUE
+            goto 100
+        end if
+
+! ----- Debug print
+        if (meshPairing%debug) then
+            WRITE (6, *) "     Intersection (before re-ordering): ", nbPoinInteI, &
+                " points of intersection"
+            WRITE (6, *) "     Target side : ", poinInteTargI(1:nbCmpPara, 1:nbPoinInteI)
+            WRITE (6, *) "     Origin side : ", poinInteOrigI(1:nbCmpPara, 1:nbPoinInteI)
+        end if
+
+! ----- Sort list of intersection points
+        if ((nbPoinInteI .gt. 2 .and. meshPairing%spaceDime == 3) .or. &
+            (nbPoinInteI .ge. 2 .and. meshPairing%spaceDime == 2)) then
+            call intePoinSort(meshPairing, &
+                              nbPoinInteI, poinInteTargI, poinInteOrigI, &
+                              nbPoinInteS, poinInteTargS, poinInteOrigS)
+        else
+            ASSERT(nbPoinInteI .le. MAX_NB_INTE)
+            nbPoinInteS = nbPoinInteI
+            poinInteTargS(:, 1:nbPoinInteI) = poinInteTargI(:, 1:nbPoinInteI)
+            poinInteOrigS(:, 1:nbPoinInteI) = poinInteOrigI(:, 1:nbPoinInteI)
+        end if
+
+! ----- Error management
+        if (nbPoinInteS > MAX_NB_INTE) then
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Intersection (after re-ordering): ", nbPoinInteS, &
+                    " points of intersection"
+                WRITE (6, *) "     Too many points !"
+            end if
+            iret = ERR_PAIR_SLAV
+            go to 99
+        end if
+
+! ----- Debug print
+        if (meshPairing%debug) then
+            WRITE (6, *) "     Intersection (after re-ordering): ", nbPoinInteS, &
+                " points of intersection"
+            WRITE (6, *) "     Target side : ", poinInteTargS(1:nbCmpPara, 1:nbPoinInteS)
+            WRITE (6, *) "     Origin side : ", poinInteOrigS(1:nbCmpPara, 1:nbPoinInteS)
+        end if
+
+! ----- All nodes have to be inside original cell
+        call intePoinInCell(meshPairing, cellOrigLine, &
+                            nbPoinInteS, poinInteOrigS, poinInteOrig)
+        nbPoinInte = nbPoinInteS
+
+! ----- Compute weight of intersection
+        inteArea = 0.d0
+        if (nbPoinInte .ne. 0) then
+            call inteCellArea(meshPairing%spaceDime, nbPoinInte, poinInteOrig, inteArea)
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Area of intersection : ", inteArea
+            end if
+        end if
+
+! ----- Error
+100     continue
+        if (errorProj .or. errorInte) then
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Failure of intersection"
+            end if
+            nbPoinInte = 0
+            poinInteOrig = 0.d0
+            inteNeigh = 0
+            inteArea = 0.d0
+        else
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Success of intersection"
+            end if
+        end if
+
+! ----- Fatal error only in debug mode
+99      continue
+        if (debug) then
+            ASSERT(iret .ne. ERR_PAIR_NONE)
+        end if
+
+! ----- Outputs
+        if (present(inteNeigh_)) then
+            inteNeigh_ = inteNeigh
+        end if
+        if (present(nbPoinInte_)) then
+            nbPoinInte_ = nbPoinInte
+        end if
+        if (present(inteArea_)) then
+            inteArea_ = inteArea
+        end if
+        if (present(poinInteOrig_)) then
+            poinInteOrig_ = poinInteOrig
+        end if
+        if (present(iret_)) then
+            iret_ = iret
+        end if
+    end subroutine cellInteProjSH
+!
+!   ------------------------------------------------------------------------------------------------
 end module
