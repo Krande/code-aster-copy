@@ -181,11 +181,8 @@ subroutine op0150()
 !
 ! - Check if fields are allowed for the result
 !
+    numeDdlName = ' '
     call getvid(' ', 'NUME_DDL', scal=numeDdlName, nbret=numeDdlNb)
-!
-    if (numeDdlNb .eq. 0) then
-        numeDdlName = ' '
-    end if
 !
 ! - Read
 !
