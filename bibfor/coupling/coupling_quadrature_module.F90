@@ -51,7 +51,7 @@ module coupling_quadrature_module
 !
 !
 #define MAX_NB_INTE  8
-#define PROJ_TOLE  1.0d-8
+#define PROJ_TOLE  1.0d-10
 
 !
     private :: cplGetQuad, getQuadOrderFEM, cplProjFEM2HHO
@@ -129,12 +129,16 @@ contains
             else
                 nbTria = nbPoinInte
             end if
-            if (max_order <= 5) then
-                ! order 5 - by triangle
+            if (max_order <= 2) then
+                ! order 2 - by triangle
+                elga_fami = 'FPG3'
+                nbPtGauss = 3
+            else if (max_order <= 3) then
+                ! order 3 - by triangle
                 elga_fami = 'FPG4'
                 nbPtGauss = 4
-            else if (max_order <= 7) then
-                ! order 7 - by triangle
+            else if (max_order <= 5) then
+                ! order 5 - by triangle
                 elga_fami = 'FPG7'
                 nbPtGauss = 7
             else
@@ -143,7 +147,11 @@ contains
         elseif (ndim .eq. 2) then
             nbTria = 1
 !
-            if (max_order <= 5) then
+            if (max_order <= 3) then
+                ! order 5
+                elga_fami = 'FPG2'
+                nbPtGauss = 2
+            elseif (max_order <= 5) then
                 ! order 5
                 elga_fami = 'FPG3'
                 nbPtGauss = 3
@@ -348,7 +356,7 @@ contains
 !
         integer(kind=8) :: max_order
 !
-        max_order = 2*(max(hhoData%face_degree(), getQuadOrderFEM(FEFaceSl%typemas))+1)
+        max_order = 2*(max(hhoData%face_degree(), getQuadOrderFEM(FEFaceSl%typemas)))
 !
         call cplGetQuad(FEFaceSl, max_order, FEQuadSl)
         call cplProjFEM2HHO(FEFaceSl, hhoFaceMa, FEQuadSl, hhoQuadMa)
@@ -375,7 +383,7 @@ contains
         integer(kind=8) :: max_order
 !
         max_order = 2*(max(getQuadOrderFEM(FEFaceSl%typemas), &
-                           getQuadOrderFEM(FEFaceMa%typemas))+1)
+                           getQuadOrderFEM(FEFaceMa%typemas)))
 !
         call cplGetQuad(FEFaceSl, max_order, FEQuadSl)
         call cplProjFEM2FEM(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa)

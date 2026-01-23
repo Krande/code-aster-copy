@@ -31,6 +31,7 @@ module fe_topo_module
 #include "asterfort/elrfvf.h"
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
+#include "asterfort/getFESkinSubType.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -299,12 +300,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine init_face(this, sub_type)
+    subroutine init_face(this, side)
 !
         implicit none
 !
         class(FE_Skin), intent(out) :: this
-        character(len=*), optional, intent(in) :: sub_type
+        character(len=*), optional, intent(in) :: side
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -314,79 +315,22 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out FESkin           : a FE cell
+! Out FESkin           : a FE face
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
         integer(kind=8) :: inode, idim, iret, jv_geom, node_init, node_idx
-        character(len=8) :: sub_type_
+        character(len=8) :: side_, sub_type
 ! --------------------------------------------------------------------------------------------------
 !
         call teattr('S', 'TYPMA', this%typemas, iret)
         ASSERT(iret == 0)
 !
         node_init = 1
-        if (present(sub_type)) then
-            sub_type_ = sub_type
-            if (sub_type_(1:5) == "SLAVE") then
-                select case (this%typemas)
-                case ("S22", "S23")
-                    this%typemas = "SE2"
-                case ("S32", "S33")
-                    this%typemas = "SE3"
-                case ("T33", "TQ7", "TT2", "TQ4")
-                    this%typemas = "TR3"
-                case ("T66", "TT1", "TQ1", "TQ2", "TQ3")
-                    this%typemas = "TR6"
-                case ("T77")
-                    this%typemas = "TR7"
-                case ("Q44", "QT7", "QT1")
-                    this%typemas = "QU4"
-                case ("Q88", "QT2", "QT4")
-                    this%typemas = "QU8"
-                case ("Q99", "QT5", "QT3")
-                    this%typemas = "QU9"
-                case default
-                    ASSERT(ASTER_FALSE)
-                end select
-            else if (sub_type_(1:6) == "MASTER") then
-                select case (this%typemas)
-                case ("S22")
-                    this%typemas = "SE2"
-                    node_init = 3
-                case ("S32")
-                    this%typemas = "SE2"
-                    node_init = 4
-                case ("S23")
-                    this%typemas = "SE3"
-                    node_init = 3
-                case ("S33")
-                    this%typemas = "SE3"
-                    node_init = 4
-                case ("T33")
-                    this%typemas = "TR3"
-                    node_init = 4
-                case ("T66")
-                    this%typemas = "TR6"
-                    node_init = 7
-                case ("T77")
-                    this%typemas = "TR7"
-                    node_init = 8
-                case ("Q44")
-                    this%typemas = "QU4"
-                    node_init = 5
-                case ("Q88")
-                    this%typemas = "QU8"
-                    node_init = 9
-                case ("Q99")
-                    this%typemas = "QU9"
-                    node_init = 10
-                case default
-                    ASSERT(ASTER_FALSE)
-                end select
-            else
-                ASSERT(ASTER_FALSE)
-            end if
+        if (present(side)) then
+            side_ = side
+            call getFESkinSubType(this%typemas, side_, sub_type, node_init)
+            this%typemas = sub_type
         end if
 !
         call elrfno(this%typemas, nno=this%nbnodes, ndim=this%ndim)

@@ -47,6 +47,15 @@ def node_up(coor, connec, cell_id):
     return False
 
 
+def node_up3d(coor, connec, cell_id):
+    bar = barycenter(coor, connec[cell_id])
+
+    if bar[2] > 0.0:
+        return True
+
+    return False
+
+
 def create_grp_2d(mesh):
 
     connec = mesh.getConnectivity()
@@ -66,12 +75,55 @@ def create_grp_2d(mesh):
         MAILLAGE=mesh,
         reuse=mesh,
         CREA_GROUP_MA=(
-            _F(NOM="LIAISON_Haut", GROUP_MA=("Group_2")),
-            _F(NOM="LIAISON_Bas", GROUP_MA=("Group_1")),
-            _F(NOM="Encast", GROUP_MA=("Group_3")),
-            _F(NOM="Pres", GROUP_MA=("Group_4")),
-            _F(NOM="Sym_Haut", MAILLE=nodes_haut),
-            _F(NOM="Sym_Bas", MAILLE=nodes_bas),
+            _F(NOM="LIAISON_Haut", GROUP_MA=("Group_2"), TYPE_MAILLE="1D"),
+            _F(NOM="LIAISON_Bas", GROUP_MA=("Group_1"), TYPE_MAILLE="1D"),
+            _F(NOM="Encast", GROUP_MA=("Group_3"), TYPE_MAILLE="1D"),
+            _F(NOM="Pres", GROUP_MA=("Group_4"), TYPE_MAILLE="1D"),
+            _F(NOM="Sym_Haut", MAILLE=nodes_haut, TYPE_MAILLE="1D"),
+            _F(NOM="Sym_Bas", MAILLE=nodes_bas, TYPE_MAILLE="1D"),
+        ),
+    )
+
+    return mesh
+
+
+def create_grp_3d(mesh):
+
+    connec = mesh.getConnectivity()
+    coor = mesh.getCoordinates()
+
+    all_cells = mesh.getCells("Symx")
+    cellsx_haut = []
+    cellsx_bas = []
+
+    for c_id in all_cells:
+        if node_up3d(coor, connec, c_id):
+            cellsx_haut.append(f"M{c_id+1}")
+        else:
+            cellsx_bas.append(f"M{c_id+1}")
+
+    all_cells = mesh.getCells("Symy")
+    cellsy_haut = []
+    cellsy_bas = []
+
+    for c_id in all_cells:
+        if node_up3d(coor, connec, c_id):
+            cellsy_haut.append(f"M{c_id+1}")
+        else:
+            cellsy_bas.append(f"M{c_id+1}")
+
+    mesh = DEFI_GROUP(
+        MAILLAGE=mesh,
+        reuse=mesh,
+        CREA_GROUP_MA=(
+            _F(NOM="LIAISON_Haut", GROUP_MA=("Group_2"), TYPE_MAILLE="2D"),
+            _F(NOM="LIAISON_Bas", GROUP_MA=("Group_1"), TYPE_MAILLE="2D"),
+            _F(NOM="Encast", GROUP_MA=("Group_3"), TYPE_MAILLE="2D"),
+            _F(NOM="Pres", GROUP_MA=("Group_4"), TYPE_MAILLE="2D"),
+            _F(NOM="Symx_Haut", MAILLE=cellsx_haut, TYPE_MAILLE="2D"),
+            _F(NOM="Symx_Bas", MAILLE=cellsx_bas, TYPE_MAILLE="2D"),
+            _F(NOM="Symy_Haut", MAILLE=cellsy_haut, TYPE_MAILLE="2D"),
+            _F(NOM="Symy_Bas", MAILLE=cellsy_bas, TYPE_MAILLE="2D"),
         ),
     )
 

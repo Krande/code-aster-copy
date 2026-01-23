@@ -3747,6 +3747,42 @@ phen.add(
     ),
 )
 
+phen.add(
+    "CPL_PEN_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="CP3",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.QU4QU8, EL.CP_Q4Q8),
+            (MT.QU4QU9, EL.CP_Q4Q9),
+            (MT.QU4TR3, EL.CP_Q4T3),
+            (MT.QU4TR6, EL.CP_Q4T6),
+            (MT.QU8QU4, EL.CP_Q8Q4),
+            (MT.QU8QU9, EL.CP_Q8Q9),
+            (MT.QU8TR3, EL.CP_Q8T3),
+            (MT.QU8TR6, EL.CP_Q8T6),
+            (MT.QU9QU4, EL.CP_Q9Q4),
+            (MT.QU9QU8, EL.CP_Q9Q8),
+            (MT.QU9TR3, EL.CP_Q9T3),
+            (MT.QU9TR6, EL.CP_Q9T6),
+            (MT.QUAD44, EL.CP_Q4Q4),
+            (MT.QUAD88, EL.CP_Q8Q8),
+            (MT.QUAD99, EL.CP_Q9Q9),
+            (MT.TR3QU4, EL.CP_T3Q4),
+            (MT.TR3QU8, EL.CP_T3Q8),
+            (MT.TR3QU9, EL.CP_T3Q9),
+            (MT.TR3TR6, EL.CP_T3T6),
+            (MT.TR6QU4, EL.CP_T6Q4),
+            (MT.TR6QU8, EL.CP_T6Q8),
+            (MT.TR6QU9, EL.CP_T6Q9),
+            (MT.TR6TR3, EL.CP_T6T3),
+            (MT.TRIA33, EL.CP_T3T3),
+            (MT.TRIA66, EL.CP_T6T6),
+        ),
+    ),
+)
+
 # ------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour :
 #  * Forces nodales
