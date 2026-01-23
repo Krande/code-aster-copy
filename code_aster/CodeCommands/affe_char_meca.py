@@ -176,7 +176,7 @@ class MechanicalLoadDefinition(ExecuteCommand):
                     zone.setPairingParameters(pairParam)
                     zone.build()
 
-                    if item["VERI_NORM"] == "OUI":
+                    if keywords["VERI_NORM"] == "OUI":
                         zone.check(keywords["MODELE"])
 
                     cpl.addZone(zone)

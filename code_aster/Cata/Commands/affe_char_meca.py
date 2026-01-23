@@ -795,14 +795,6 @@ AFFE_CHAR_MECA = OPER(
                 statut="f", typ="TXM", defaut="FORCEBRUTE", into=("RAPIDE", "FORCEBRUTE", "PANG")
             ),
         ),
-        # VERIFICATION DE L"ORIENTATION ET DE LA COHERENCE DES NORMALES
-        VERI_NORM=SIMP(
-            statut="f",
-            typ="TXM",
-            defaut="OUI",
-            into=("OUI", "NON"),
-            fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),
-        ),
     ),
     LIAISON_UNIF=FACT(
         statut="f",

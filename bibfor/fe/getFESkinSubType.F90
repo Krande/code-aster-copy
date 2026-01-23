@@ -20,8 +20,8 @@ subroutine getFESkinSubType(typema, side, subtype, node_init)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrfno.h"
 !
     character(len=8), intent(in) :: typema
@@ -139,6 +139,21 @@ subroutine getFESkinSubType(typema, side, subtype, node_init)
     case ("TT5")
         slav = "TR6"
         mast = "TR6"
+    case ("QT8")
+        slav = "QU4"
+        mast = "TR7"
+    case ("QT9")
+        slav = "QU8"
+        mast = "TR7"
+    case ("QT0")
+        slav = "QU9"
+        mast = "TR7"
+    case ("TT6")
+        slav = "TR3"
+        mast = "TR7"
+    case ("TT7")
+        slav = "TR6"
+        mast = "TR7"
     case default
         ASSERT(ASTER_FALSE)
     end select

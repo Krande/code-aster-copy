@@ -22,16 +22,16 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/gtvois.h"
 #include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/gtvois.h"
 #include "asterfort/utlisi.h"
-#include "asterfort/assert.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -106,6 +106,8 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
                 nb_neigh = 3
             case ('TRIA6')
                 nb_neigh = 3
+            case ('TRIA7')
+                nb_neigh = 3
             case ('QUAD4')
                 nb_neigh = 4
             case ('QUAD8')
@@ -144,6 +146,9 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
         case ('TRIA6')
             nb_neigh = 3
             elem_code = 'TR6'
+        case ('TRIA7')
+            nb_neigh = 3
+            elem_code = 'TR7'
         case ('QUAD4')
             nb_neigh = 4
             elem_code = 'QU4'

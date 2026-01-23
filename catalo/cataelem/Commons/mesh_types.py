@@ -728,6 +728,22 @@ QU9SE2 = MeshType(nbno=11, dim=1, code="QS5")
 # ------------------------------------------------------------
 QU9SE3 = MeshType(nbno=12, dim=1, code="QS6")
 
+# ------------------------------------------------------------
+QU4TR7 = MeshType(nbno=11, dim=2, code="QT8")
+
+# ------------------------------------------------------------
+QU8TR7 = MeshType(nbno=15, dim=2, code="QT9")
+
+# ------------------------------------------------------------
+QU9TR7 = MeshType(nbno=16, dim=2, code="QT0")
+
+# ------------------------------------------------------------
+TR3TR7 = MeshType(nbno=10, dim=2, code="TT6")
+
+# ------------------------------------------------------------
+TR6TR7 = MeshType(nbno=13, dim=2, code="TT7")
+
+
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)
 MESHTYPES = objects_from_context(globals(), MeshType)

@@ -39,8 +39,9 @@ module mesh_cell_module
     private :: cellPoinAdjustSeg, cellPoinAdjustTria, cellPoinAdjustQuad
 ! ==================================================================================================
     private
-#include "asterc/r8nnem.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfno.h"
@@ -49,7 +50,6 @@ module mesh_cell_module
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "jeveux.h"
 #include "MeshTypes_type.h"
 ! ==================================================================================================
 contains
@@ -135,6 +135,8 @@ contains
             cellGeom%cellCode = 'TR3'
         case ('TRIA6')
             cellGeom%cellCode = 'TR6'
+        case ('TRIA7')
+            cellGeom%cellCode = 'TR7'
         case ('QUAD4')
             cellGeom%cellCode = 'QU4'
         case ('QUAD8')
@@ -219,7 +221,8 @@ contains
         if (cellGeom%cellCode .eq. 'SE2' .or. cellGeom%cellCode .eq. 'SE3') then
             cellGeomLine%cellCode = 'SE2'
             cellGeomLine%nbNode = 2
-        elseif (cellGeom%cellCode .eq. 'TR3' .or. cellGeom%cellCode .eq. 'TR6') then
+        elseif (cellGeom%cellCode .eq. 'TR3' .or. cellGeom%cellCode .eq. 'TR6' &
+                .or. cellGeom%cellCode .eq. 'TR7') then
             cellGeomLine%cellCode = 'TR3'
             cellGeomLine%nbNode = 3
         else if (cellGeom%cellCode .eq. 'QU4' .or. &
@@ -701,7 +704,7 @@ contains
                 poinCoorPara(1) .le. (1.d0+toleInside)) then
                 cellPoinInside = ASTER_TRUE
             end if
-        elseif (cellCode .eq. 'TR3' .or. cellCode .eq. 'TR6') then
+        elseif (cellCode .eq. 'TR3' .or. cellCode .eq. 'TR6' .or. cellCode .eq. 'TR7') then
             if (poinCoorPara(1) .ge. -toleInside .and. &
                 poinCoorPara(2) .ge. -toleInside .and. &
                 (poinCoorPara(2)+poinCoorPara(1)) .le. (1.d0+toleInside)) then

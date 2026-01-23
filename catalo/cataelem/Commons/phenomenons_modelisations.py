@@ -3730,6 +3730,58 @@ phen.add(
     ),
 )
 
+phen.add(
+    "CPL_PEN_H1_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="H31",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.QU4QU9, EL.CP_Q4Q9_HHO1),
+            (MT.QU8QU9, EL.CP_Q8Q9_HHO1),
+            (MT.QUAD99, EL.CP_Q9Q9_HHO1),
+            (MT.TR3QU9, EL.CP_T3Q9_HHO1),
+            (MT.TR6QU9, EL.CP_T6Q9_HHO1),
+            (MT.QU4TR7, EL.CP_Q4T7_HHO1),
+            (MT.QU8TR7, EL.CP_Q8T7_HHO1),
+            (MT.QU9TR7, EL.CP_Q9T7_HHO1),
+            (MT.TR3TR7, EL.CP_T3T7_HHO1),
+            (MT.TR6TR7, EL.CP_T6T9_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H2_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="H32",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.QU4QU9, EL.CP_Q4Q9_HHO2),
+            (MT.QU8QU9, EL.CP_Q8Q9_HHO2),
+            (MT.QUAD99, EL.CP_Q9Q9_HHO2),
+            (MT.TR3QU9, EL.CP_T3Q9_HHO2),
+            (MT.TR6QU9, EL.CP_T6Q9_HHO2),
+            (MT.QU4TR7, EL.CP_Q4T7_HHO2),
+            (MT.QU8TR7, EL.CP_Q8T7_HHO2),
+            (MT.QU9TR7, EL.CP_Q9T7_HHO2),
+            (MT.TR3TR7, EL.CP_T3T7_HHO2),
+            (MT.TR6TR7, EL.CP_T6T9_HHO2),
+        ),
+    ),
+)
+
 # -- Define COUPLING FEM/FEM elements for PENALISATION method
 
 phen.add(

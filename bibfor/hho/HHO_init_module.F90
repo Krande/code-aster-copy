@@ -256,7 +256,68 @@ contains
             nbnodes_post = 3
             node_init = 4
             elem_dim = 1
+        elseif (typma == 'QQ6') then
+            typma = 'QUAD4'
+            nbnodes = 4
+            nbnodes_post = 9
+            node_init = 5
+            elem_dim = 2
+        elseif (typma == 'QQ3') then
+            typma = 'QUAD4'
+            nbnodes = 4
+            nbnodes_post = 9
+            node_init = 9
+            elem_dim = 2
+        elseif (typma == 'Q99') then
+            typma = 'QUAD4'
+            nbnodes = 4
+            nbnodes_post = 9
+            node_init = 10
+            elem_dim = 2
+        elseif (typma == 'TQ5') then
+            typma = 'QUAD4'
+            nbnodes = 4
+            nbnodes_post = 9
+            node_init = 4
+            elem_dim = 2
+        elseif (typma == 'TQ3') then
+            typma = 'QUAD4'
+            nbnodes = 4
+            nbnodes_post = 9
+            node_init = 7
+            elem_dim = 2
+        elseif (typma == 'QT8') then
+            typma = 'TRIA3'
+            nbnodes = 3
+            nbnodes_post = 7
+            node_init = 5
+            elem_dim = 2
+        elseif (typma == 'QT9') then
+            typma = 'TRIA3'
+            nbnodes = 3
+            nbnodes_post = 7
+            node_init = 9
+            elem_dim = 2
+        elseif (typma == 'QT0') then
+            typma = 'TRIA3'
+            nbnodes = 3
+            nbnodes_post = 7
+            node_init = 10
+            elem_dim = 2
+        elseif (typma == 'TT6') then
+            typma = 'TRIA3'
+            nbnodes = 3
+            nbnodes_post = 7
+            node_init = 4
+            elem_dim = 2
+        elseif (typma == 'TT7') then
+            typma = 'TRIA3'
+            nbnodes = 3
+            nbnodes_post = 7
+            node_init = 7
+            elem_dim = 2
         else
+            print *, typma
             ASSERT(ASTER_FALSE)
         end if
 !
