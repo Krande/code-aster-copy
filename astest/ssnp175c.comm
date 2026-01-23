@@ -45,7 +45,7 @@ MODI = AFFE_MODELE(
         _F(
             GROUP_MA=("Bas", "LIAISON_Bas", "Encast", "Sym_Bas"),
             PHENOMENE="MECANIQUE",
-            MODELISATION="D_PLAN_INCO_UPG",
+            MODELISATION="D_PLAN",
         ),
     ),
 )

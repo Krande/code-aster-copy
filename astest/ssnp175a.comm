@@ -17,10 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Commands import *
+from code_aster import CA
+from ssnp175a_func import create_grp_2d
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 Mail0 = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+Mail0 = create_grp_2d(Mail0)
 
 Mail = CREA_MAILLAGE(MAILLAGE=Mail0, MODI_HHO=_F(GROUP_MA="Bas"))
 

@@ -274,6 +274,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_LINE' .or. formul .eq. 'HHO_VLINE') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -287,6 +288,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_CSTE') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -300,6 +302,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_QUAD' .or. formul .eq. 'HHO_VQUAD') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -313,6 +316,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_CUBI') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -326,6 +330,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_QUAR') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
