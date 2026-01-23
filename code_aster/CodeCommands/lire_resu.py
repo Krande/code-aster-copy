@@ -99,7 +99,11 @@ class ResultsReader(ExecuteCommand):
             if dofNum:
                 self._result.setDOFNumbering(dofNum)
 
-        self._result.build()
+        if "NUME_DDL" in keywords:
+            numeEqua = keywords["NUME_DDL"].getEquationNumbering()
+            self._result.build([], [numeEqua])
+        else:
+            self._result.build()
 
 
 LIRE_RESU = ResultsReader.run
