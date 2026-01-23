@@ -32,17 +32,18 @@ subroutine as_mfiodw_field(fid, cha, desc, cret)
 #ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
-!
+
+#ifndef ASTER_DISABLE_MED_DESCR
 #if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
+    aster_int :: maj, mini, rel, cret
     med_int :: cret4, oexist4, class4
-    med_int :: maj4, mini4, rel4
     fidm = to_med_idt(fid)
     ! class4 = 1 <=> field type
     class4 = 1_4
     !
-    call as_mfinvr(fidm, maj4, mini4, rel4, cret4)
-    if ((cret4 .eq. 0) .and. (maj4 .eq. 4 .and. mini4 .ge. 2 .or. maj4 .ge. 5)) then
+    call as_mfinvr(fidm, maj, mini, rel, cret)
+    if ((cret .eq. 0) .and. (maj .eq. 4 .and. mini .ge. 2 .or. maj .ge. 5)) then
         ! On verifie que le champ existe bien avant d'appeler mfiodw
         call mfioex(fidm, class4, cha, oexist4, cret4)
         if (oexist4 .eq. 1) then
@@ -74,6 +75,10 @@ subroutine as_mfiodw_field(fid, cha, desc, cret)
         cret = 0
     end if
 #endif
-!
+#else
+    call utmess('A', 'DVP_97', sk="mfiodw: non supporté dans cette version de med", si=1)
+    cret = 0
+#endif
+
 #endif
 end subroutine

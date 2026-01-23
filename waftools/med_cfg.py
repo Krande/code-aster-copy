@@ -313,7 +313,12 @@ int main(void){
         self.define("ASTER_MED_VERSION_MAJOR", int(major))
         self.define("ASTER_MED_VERSION_MINOR", int(minor))
         self.define("ASTER_MED_VERSION_RELEASE", int(release))
-        self.end_msg(ret)
+        if int(major) < 4 or (int(major) == 4 and int(minor) < 2):
+            self.define("ASTER_DISABLE_MED_DESCR", 1)
+            ret = ret + ": med 4.2 is needed. MED descriptions are disabled."
+            self.end_msg(ret, "YELLOW")
+        else:
+            self.end_msg(ret)
 
 
 @Configure.conf
