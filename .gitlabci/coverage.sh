@@ -49,7 +49,7 @@ else
     printf "code files are supposed to be here (ci job)\n"
 fi
 
-if [ -f results/.only_tests ]; then
+if [ -f results/only_tests ]; then
     printf "\nWARNING only some testcases have been executed, skip coverage analysis.\n\n"
     printf "\nend time - $(date)\n\n"
     exit 0
