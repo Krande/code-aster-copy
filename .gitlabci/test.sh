@@ -40,9 +40,6 @@ if [ -z "${changes}" ]; then
         # only run these testcases
         args+=( "--testlist=${flist}" )
     fi
-    # add mark to skip keywords coverage
-    mkdir -p results
-    echo "only tests changed" > results/only_tests
 fi
 
 if [ "${BUILDTYPE}" = "ci" ] && [ "${CI_JOB_NAME}" != "known_failures_test" ]; then
@@ -74,6 +71,12 @@ if [ ${iret} -ne 0 ]; then
     printf "\nrunning testcases #3 (rerun-failed)... - $(date)\n"
     ${run_ctest} "${args[@]}" --rerun-failed
     iret=$?
+fi
+
+if [ -z "${changes}" ]; then
+    # add mark to skip keywords coverage
+    mkdir -p results
+    echo "only tests changed" > results/only_tests
 fi
 
 # archive gcov data
