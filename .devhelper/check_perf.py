@@ -84,9 +84,14 @@ def extract_perf(resdir: list[Path]) -> pd.DataFrame:
     return pd.concat(ldf, ignore_index=True)
 
 
-def compare(df1: pd.DataFrame, df2: pd.DataFrame, key: str = "cpu") -> pd.DataFrame:
+def compare(
+    df1: pd.DataFrame, df2: pd.DataFrame, key: str = "cpu", keep: list[str] = None
+) -> pd.DataFrame:
     """Compare the execution times from 2 dataframes, add a 'diff' column."""
-    cols = ["test", "command", key]
+    columns = ["test", "command"]
+    if not keep:
+        keep = []
+    cols = columns + keep + [key]
     dk1 = df1[cols]
     dk2 = df2[cols]
     # only keep commands, not grouped values
@@ -101,19 +106,28 @@ def compare(df1: pd.DataFrame, df2: pd.DataFrame, key: str = "cpu") -> pd.DataFr
     v2 = mrg[key + "_2"]
     mrg["diff"] = (v2 - v1) / v1 * 100.0
     mrg = mrg.sort_values(by=["order_1", "order_2"])
-    cols = ["test", "command", key + "_1", key + "_2", "diff"]
+    if keep:
+        mapping = dict([(i + "_1", i) for i in keep])
+        mrg.rename(columns=mapping, inplace=True)
+    cols = columns + keep + [key + "_1", key + "_2", "diff"]
     return mrg[cols]
+
+
+def without_nan(df, column):
+    """Remove lines containing a NaN (or inf) in a column."""
+    no_nan = df[column].replace([np.inf, -np.inf], np.nan).notna()
+    return df[no_nan]
 
 
 HEADER = """
 On imprime au plus {maxcmd} commandes qui se sont dégradées (ou améliorées) de plus de {perc}%
-entre les dates {date1} et {date2}.
+{hosts_compared}entre les dates {date1} et {date2}.
+{host_shown}
 On ne compare que les commandes qui consomment plus de {tmin} secondes.
 Les temps comparés sont les temps '{key}'.
 
 Nombre de tests : {nbtest1} avant, {nbtest2} après.
 Nombre de commandes comparées : {nbcmd} ({nbcmdtot} sans filtre)
-
 """
 
 
@@ -196,23 +210,32 @@ class PerfReport:
         print("Added commands:")
         print(cmdadd)
 
-    def show_difference(self, maxcmd: int = 30, tmin: float = 1.0, perc: float = 10):
-        """Show the slower and faster commands."""
+    def compute_changes(self, tmin: float, perc: float):
+        """Compute the slower and faster commands."""
         cmp = self.cmp
         k1, k2 = self.key + "_1", self.key + "_2"
         # to remove NaN and inf
-        nodiff = cmp["diff"].replace([np.inf, -np.inf], np.nan).notna()
-        cmp = cmp[nodiff]
+        cmp = without_nan(cmp, "diff")
 
         tmin = 1.0
         filt = (cmp[k1] > tmin) & (cmp[k2] > tmin)
         cmp1 = cmp[filt]
         self.filtered = cmp1
 
-        self.faster = cmp1[cmp1["diff"] < 0.0].sort_values(by="diff", ascending=True)
-        self.slower = cmp1[cmp1["diff"] > 0.0].sort_values(by="diff", ascending=False)
+        self.faster = cmp1[cmp1["diff"] < -perc].sort_values(by="diff", ascending=True)
+        self.slower = cmp1[cmp1["diff"] > perc].sort_values(by="diff", ascending=False)
 
+    def header_infos(self, maxcmd, tmin, perc, host_shown="", hosts_compared=""):
+        """Return informations to format the header."""
         infos = {}
+        infos["host_shown"] = ""
+        if host_shown:
+            infos["host_shown"] = f"On affiche les valeurs mesurées sur {host_shown.capitalize()}."
+        infos["hosts_compared"] = ""
+        if hosts_compared:
+            infos["hosts_compared"] = (
+                "sur " + " et ".join([i.capitalize() for i in hosts_compared]) + " "
+            )
         infos["maxcmd"] = maxcmd
         infos["perc"] = perc
         infos["tmin"] = tmin
@@ -223,26 +246,70 @@ class PerfReport:
         infos["nbcmdtot"] = len(self.df2)
         infos["date1"] = self.date1
         infos["date2"] = self.date2
+        return infos
+
+    def show_difference(self, maxcmd: int = 30, tmin: float = 1.0, perc: float = 10):
+        """Show the slower and faster commands."""
+        self.compute_changes(tmin, perc)
+
+        infos = self.header_infos(maxcmd, tmin, perc)
         print(HEADER.format(**infos))
+        print_changes(self.slower, "Dégradations", maxcmd, self.key)
+        print_changes(self.faster, "Améliorations", maxcmd, self.key)
 
-        fmt_t = "{{diff:8.0f}}% {{test:<12s}} {{command:<25s}} {{{k1}:8.2f}} {{{k2}:8.2f}}"
-        fmt = fmt_t.format(k1=k1, k2=k2)
-        cols = ["diff", "test", "command", k1, k2]
-        print("Dégradations :")
-        df = self.slower[:maxcmd][cols]
-        for line in df.itertuples():
-            data = {}
-            for col in cols:
-                data[col] = getattr(line, col)
-            print(fmt.format(**data))
 
-        print("Améliorations :")
-        df = self.faster[:maxcmd][cols]
-        for line in df.itertuples():
-            data = {}
-            for col in cols:
-                data[col] = getattr(line, col)
-            print(fmt.format(**data))
+def get_comparison(file1, file2, tmin: float, perc: float):
+    report = PerfReport()
+    report.from_csv(file1, file2)
+    report.compute_changes(tmin, perc)
+    return report
+
+
+def compare_hosts(filenames: dict, maxcmd: int = 30, tmin: float = 1.0, perc: float = 10):
+    """Compare 2 dates for each host.
+
+    It expects 2 files for each host.
+    The host names are deduced from the filenames which must follow this
+    form: <hostname>/<date>.csv.
+
+    Arguments:
+        files (dict): 2 filenames for each host.
+
+    Returns:
+        tuple(pd.DataFrame): DataFrame of slower and faster commands.
+    """
+    host1, host2 = list(filenames.keys())
+    data1 = get_comparison(*filenames[host1], tmin, perc)
+    data2 = get_comparison(*filenames[host2], tmin, perc)
+
+    cols = ["test", "command", "cpu_1", "cpu_2", "diff_1"]
+    faster = compare(data1.faster, data2.faster, key="diff", keep=["cpu_1", "cpu_2"])
+    faster = without_nan(faster, "diff")[cols]
+    faster.rename(columns={"diff_1": "diff"}, inplace=True)
+    slower = compare(data1.slower, data2.slower, key="diff", keep=["cpu_1", "cpu_2"])
+    slower = without_nan(slower, "diff")[cols]
+    slower.rename(columns={"diff_1": "diff"}, inplace=True)
+
+    infos = data1.header_infos(maxcmd, tmin, perc, host_shown=host1, hosts_compared=(host1, host2))
+    print(HEADER.format(**infos))
+    print_changes(slower, "Dégradations", maxcmd)
+    print_changes(faster, "Améliorations", maxcmd)
+    return slower, faster
+
+
+def print_changes(df: pd.DataFrame, legend: str, maxcmd: int = 30, key: str = "cpu"):
+    """Print a DataFrame containing columns: test, command, key_1, key_2, diff"""
+    k1, k2 = key + "_1", key + "_2"
+    fmt_t = "{{diff:8.0f}}% {{test:<12s}} {{command:<25s}} {{{k1}:8.2f}} {{{k2}:8.2f}}"
+    fmt = fmt_t.format(k1=k1, k2=k2)
+    cols = ["diff", "test", "command", k1, k2]
+    print(f"{legend}:")
+    df = df[:maxcmd][cols]
+    for line in df.itertuples():
+        data = {}
+        for col in cols:
+            data[col] = getattr(line, col)
+        print(fmt.format(**data))
 
 
 if __name__ == "__main__":
@@ -254,7 +321,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--extract", action="store_true", help="Extract execution times from '.code' files"
     )
-    parser.add_argument("--compare", action="store_true", help="Compare 2 or more CSV files")
+    parser.add_argument("--compare", action="store_true", help="Compare two CSV files")
+    parser.add_argument(
+        "--compare-host",
+        dest="compare_host",
+        action="store_true",
+        help="Get host name from CSV files, expecting 4 CSV files (2 for each host), "
+        "must follow this form: <hostname>/<date>.csv",
+    )
     parser.add_argument("--history", action="store_true", help="History for a testcase")
     parser.add_argument(
         "-o", "--output", action="store", help="Filename of the CSV file for '--extract'"
@@ -272,8 +346,8 @@ if __name__ == "__main__":
         df = extract_perf(args.args)
         df.to_csv(args.output)
     elif args.compare:
-        if len(args.args) < 2:
-            parser.error("at least to CSV files are needed for comparison")
+        if len(args.args) != 2:
+            parser.error("expecting 2 CSV files for comparison")
         files = sorted(args.args, reverse=True)
         file2 = files.pop(0)
         while files:
@@ -281,6 +355,21 @@ if __name__ == "__main__":
             report = PerfReport()
             report.from_csv(file2, file1)
             report.show_difference()
+    elif args.compare_host:
+        if len(args.args) != 4:
+            parser.error("expecting 4 CSV files for comparison")
+        filenames = {}
+        for csv in args.args:
+            csv = Path(csv)
+            mat = regdate.search(csv.name)
+            assert mat, f"filename must match YYYY-mm-dd format, not {csv.name}"
+            host = csv.parent.name
+            filenames.setdefault(host, [])
+            filenames[host].append(csv)
+        for host, files in filenames.items():
+            if len(files) != 2:
+                raise ValueError(f"host '{host}': expecting 2 files, {len(files)} provided")
+        slower, faster = compare_hosts(filenames)
     elif args.history:
         if not args.output:
             parser.error("please define the result file using '-o'/'--output' option")
