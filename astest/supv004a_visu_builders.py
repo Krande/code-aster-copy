@@ -75,157 +75,158 @@ def get_mesh_1d() -> mc.MEDFileUMesh:
 class TestVisuCutBuilder(unittest.TestCase):
     def test_visu_builder_works_for_node_fields(self):
         # enterContext will enter TemporaryDirectory context manager and exit it when test ends
-        temp_dir = Path(self.enterContext(TemporaryDirectory()))
+        with TemporaryDirectory() as temporary_dir_obj:
+            temp_dir = Path(temporary_dir_obj)
 
-        med_mesh = get_mesh_1d()
-        visu_cut = VisuCutBuilder(med_mesh, prefix_output_field_name="VISU")
-        visu_cut.add_field_on_nodes(
-            field_name="DEPL",
-            nodes=[2, 1],
-            values=np.array([(1.0, 0.0, 0.0), (0.0, 0.0, 1.0)]),
-            components=("DX", "DY", "DZ"),
-            nume_ordre=1,
-            instant=0.1,
-        )
-
-        visu_cut.add_field_on_nodes(
-            field_name="DEPL",
-            nodes=[1],
-            values=np.array([(0.0, 0.0, 2.0)]),
-            components=("DX", "DY", "DZ"),
-            nume_ordre=1,
-            instant=0.1,
-        )
-
-        visu_cut.add_group(name="toto", ids=[1, 2], geo_type=VisuCutBuilder.NODE)
-        visu_cut.add_group(name="toto2", ids=[2, 3], geo_type=VisuCutBuilder.NODE)
-        visu_cut.add_group(name="tata", ids=[2, 3], geo_type=VisuCutBuilder.LINE)
-        visu_cut.add_group(name="tata2", ids=[3, 4], geo_type=VisuCutBuilder.LINE)
-
-        temp_med_file = temp_dir / "visu_1.med"
-        visu_cut.write(temp_med_file)
-
-        # Read med output
-        actual_field: mc.MEDFileField1TS = mc.ReadFieldNode(
-            fileName=str(temp_med_file),
-            meshName=med_mesh.getName(),
-            meshDimRelToMax=0,
-            fieldName="VISU_DEPL",
-            iteration=1,
-            order=0,
-        )
-
-        actual_array = actual_field.getArray().toNumPyArray()
-        np.testing.assert_equal(
-            actual_array,
-            np.array(
-                [
-                    (np.nan, np.nan, np.nan),
-                    (0.0, 0.0, 2.0),
-                    (1.0, 0.0, 0.0),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                ]
-            ),
-        )
-        with self.assertRaises(ValueError):
-            # incoherent components
+            med_mesh = get_mesh_1d()
+            visu_cut = VisuCutBuilder(med_mesh, prefix_output_field_name="VISU")
             visu_cut.add_field_on_nodes(
                 field_name="DEPL",
-                nodes=[1],
-                values=np.array([(0.0,)]),
-                components=("DX",),
+                nodes=[2, 1],
+                values=np.array([(1.0, 0.0, 0.0), (0.0, 0.0, 1.0)]),
+                components=("DX", "DY", "DZ"),
                 nume_ordre=1,
                 instant=0.1,
             )
-        with self.assertRaises(ValueError):
-            # incoherent instant
+
             visu_cut.add_field_on_nodes(
                 field_name="DEPL",
                 nodes=[1],
                 values=np.array([(0.0, 0.0, 2.0)]),
                 components=("DX", "DY", "DZ"),
                 nume_ordre=1,
-                instant=0.2,
+                instant=0.1,
             )
 
-        # Adding another timestep
-        visu_cut.add_field_on_nodes(
-            field_name="DEPL",
-            nodes=[0, 8],
-            values=np.array([(1.0, 0.0, 0.0), (0.0, 0.0, 1.0)]),
-            components=("DX", "DY", "DZ"),
-            nume_ordre=2,
-            instant=0.3,
-        )
+            visu_cut.add_group(name="toto", ids=[1, 2], geo_type=VisuCutBuilder.NODE)
+            visu_cut.add_group(name="toto2", ids=[2, 3], geo_type=VisuCutBuilder.NODE)
+            visu_cut.add_group(name="tata", ids=[2, 3], geo_type=VisuCutBuilder.LINE)
+            visu_cut.add_group(name="tata2", ids=[3, 4], geo_type=VisuCutBuilder.LINE)
 
-        # Add field without instant or nume_ordre
-        visu_cut.add_field_on_nodes(
-            field_name="AFIELD",
-            nodes=[2, 1],
-            values=np.array([(1.0, 0.0, 0.0), (0.0, 0.0, 1.0)]),
-            components=("X", "Y", "Z"),
-        )
+            temp_med_file = temp_dir / "visu_1.med"
+            visu_cut.write(temp_med_file)
 
-        temp_med_file = temp_dir / "visu_2.med"
-        visu_cut.write(temp_med_file)
+            # Read med output
+            actual_field: mc.MEDFileField1TS = mc.ReadFieldNode(
+                fileName=str(temp_med_file),
+                meshName=med_mesh.getName(),
+                meshDimRelToMax=0,
+                fieldName="VISU_DEPL",
+                iteration=1,
+                order=0,
+            )
 
-        # Read med output
-        actual_field: mc.MEDFileField1TS = mc.ReadFieldNode(
-            fileName=str(temp_med_file),
-            meshName=med_mesh.getName(),
-            meshDimRelToMax=0,
-            fieldName="VISU_DEPL",
-            iteration=2,
-            order=0,
-        )
+            actual_array = actual_field.getArray().toNumPyArray()
+            np.testing.assert_equal(
+                actual_array,
+                np.array(
+                    [
+                        (np.nan, np.nan, np.nan),
+                        (0.0, 0.0, 2.0),
+                        (1.0, 0.0, 0.0),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                    ]
+                ),
+            )
+            with self.assertRaises(ValueError):
+                # incoherent components
+                visu_cut.add_field_on_nodes(
+                    field_name="DEPL",
+                    nodes=[1],
+                    values=np.array([(0.0,)]),
+                    components=("DX",),
+                    nume_ordre=1,
+                    instant=0.1,
+                )
+            with self.assertRaises(ValueError):
+                # incoherent instant
+                visu_cut.add_field_on_nodes(
+                    field_name="DEPL",
+                    nodes=[1],
+                    values=np.array([(0.0, 0.0, 2.0)]),
+                    components=("DX", "DY", "DZ"),
+                    nume_ordre=1,
+                    instant=0.2,
+                )
 
-        actual_array = actual_field.getArray().toNumPyArray()
-        np.testing.assert_equal(
-            actual_array,
-            np.array(
-                [
-                    (1.0, 0.0, 0.0),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (0.0, 0.0, 1.0),
-                    (np.nan, np.nan, np.nan),
-                ]
-            ),
-        )
+            # Adding another timestep
+            visu_cut.add_field_on_nodes(
+                field_name="DEPL",
+                nodes=[0, 8],
+                values=np.array([(1.0, 0.0, 0.0), (0.0, 0.0, 1.0)]),
+                components=("DX", "DY", "DZ"),
+                nume_ordre=2,
+                instant=0.3,
+            )
 
-        # Testing groups
-        actual_mesh: mc.MEDFileUMesh = mc.MEDFileUMesh.New(str(temp_med_file))
-        assert actual_mesh.getGroupArr(1, "toto").getValues() == [1, 2]
-        assert actual_mesh.getGroupArr(0, "tata").getValues() == [2, 3]
+            # Add field without instant or nume_ordre
+            visu_cut.add_field_on_nodes(
+                field_name="AFIELD",
+                nodes=[2, 1],
+                values=np.array([(1.0, 0.0, 0.0), (0.0, 0.0, 1.0)]),
+                components=("X", "Y", "Z"),
+            )
 
-        # Read med output (field 1 timesteps)
-        actual_field: mc.MEDFileField1TS = mc.ReadField(str(temp_med_file), "VISU_AFIELD")
-        actual_array = actual_field.getArray().toNumPyArray()
-        np.testing.assert_equal(
-            actual_array,
-            np.array(
-                [
-                    (np.nan, np.nan, np.nan),
-                    (0.0, 0.0, 1.0),
-                    (1.0, 0.0, 0.0),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                    (np.nan, np.nan, np.nan),
-                ]
-            ),
-        )
+            temp_med_file = temp_dir / "visu_2.med"
+            visu_cut.write(temp_med_file)
+
+            # Read med output
+            actual_field: mc.MEDFileField1TS = mc.ReadFieldNode(
+                fileName=str(temp_med_file),
+                meshName=med_mesh.getName(),
+                meshDimRelToMax=0,
+                fieldName="VISU_DEPL",
+                iteration=2,
+                order=0,
+            )
+
+            actual_array = actual_field.getArray().toNumPyArray()
+            np.testing.assert_equal(
+                actual_array,
+                np.array(
+                    [
+                        (1.0, 0.0, 0.0),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (0.0, 0.0, 1.0),
+                        (np.nan, np.nan, np.nan),
+                    ]
+                ),
+            )
+
+            # Testing groups
+            actual_mesh: mc.MEDFileUMesh = mc.MEDFileUMesh.New(str(temp_med_file))
+            assert actual_mesh.getGroupArr(1, "toto").getValues() == [1, 2]
+            assert actual_mesh.getGroupArr(0, "tata").getValues() == [2, 3]
+
+            # Read med output (field 1 timesteps)
+            actual_field: mc.MEDFileField1TS = mc.ReadField(str(temp_med_file), "VISU_AFIELD")
+            actual_array = actual_field.getArray().toNumPyArray()
+            np.testing.assert_equal(
+                actual_array,
+                np.array(
+                    [
+                        (np.nan, np.nan, np.nan),
+                        (0.0, 0.0, 1.0),
+                        (1.0, 0.0, 0.0),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                        (np.nan, np.nan, np.nan),
+                    ]
+                ),
+            )
