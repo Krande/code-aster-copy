@@ -21,7 +21,7 @@
 @Author Jean - Luc Adia(EDF R&D MMC - T25, jean-luc.adia@edf.fr);
 @Description {
 BETON_BURGER model for concrete creep;
-The modification take into account one point: 
+The modification take into account one point:
 -drying creep depending to the positive part of derivative of relative humidity;
 }
 
@@ -67,15 +67,15 @@ STATE VARIABLES
 
 //! Spherical irreversible basic creep strain
 @StateVariable strain ESPHI;
-ESPHI.setEntryName("SphericIrreversibleStrain");
+ESPHI.setEntryName("SphIrreStr");
 
 //! Limit strain for the irreversible creep model
 @StateVariable strain ELIM;
-ELIM.setEntryName("MaximumValueOfTheIrreversibleStrain");
+ELIM.setEntryName("MaxIrreStr");
 
 //! Deviatoric irreversible basic creep strain
 @StateVariable StrainStensor EDEVI;
-EDEVI.setEntryName("DeviatoricIrreversibleStrain");
+EDEVI.setEntryName("DevIrreStr");
 
 /*!
 AUXILLIAIRY STATE VARIABLES SECTION
@@ -83,29 +83,29 @@ AUXILLIAIRY STATE VARIABLES SECTION
 
 //! Spherical Reversible basic creep strain
 @AuxiliaryStateVariable strain ESPHR;
-ESPHR.setEntryName("SphericReversibleStrain");
+ESPHR.setEntryName("SphRevStr");
 
 
 //! Deviatoric Reversible basic creep strain
 @AuxiliaryStateVariable StrainStensor EDEVR;
-EDEVR.setEntryName("DeviatoricReversibleStrain");
+EDEVR.setEntryName("DevRevStr");
 
 //! Drying creep strain
 @AuxiliaryStateVariable StrainStensor Edess;
-Edess.setEntryName("DryingCreepStrain");
+Edess.setEntryName("DryingCreepStr");
 
 /*!
- * Shifted value of the historical minimale of relative humidity 
+ * Shifted value of the historical minimale of relative humidity
  *
  * This value has been shifted (value + 1) so the implicit initialization to zero of this
  * variable in most finite element solvers is meaningfull. So for initialization at value different to 1, please don't forget to take into account this shift.
  */
 //! Basic creep strain tensor
 @AuxiliaryStateVariable StrainStensor EF;
-EF.setEntryName("BasicCreepStrain");
+EF.setEntryName("BasicCreepStr");
 
 @AuxiliaryStateVariable strain rHmin;
-rHmin.setEntryName("ShiftedHistoricalMinimumRelativeHumidity");
+rHmin.setEntryName("ShHistMinRelaHum");
 
 /*!
 EXTERNAL STATE VARIABLES SECTION
