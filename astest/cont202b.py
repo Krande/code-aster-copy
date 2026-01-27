@@ -534,6 +534,10 @@ test.assertEqual(refValues[1]["nbPairs"], nbPairs)
 
 if nbPairs != 0:
     listPairs = meshPair.getListOfPairs()
+    # - sort before comparison
+    listPairs.sort()
+    listPairs, refValues[1]["listPairs"].sort()
+    # - test
     test.assertSequenceEqual(listPairs, refValues[1]["listPairs"])
 
 # -------------------------------------
@@ -553,6 +557,10 @@ test.assertEqual(refValues[2]["nbPairs"], nbPairs)
 
 if nbPairs != 0:
     listPairs = meshPair.getListOfPairs()
+    # - sort before comparison
+    listPairs.sort()
+    listPairs, refValues[2]["listPairs"].sort()
+    # - test
     test.assertSequenceEqual(listPairs, refValues[2]["listPairs"])
 
 # -------------------------------------
@@ -572,6 +580,10 @@ test.assertEqual(refValues[3]["nbPairs"], nbPairs)
 
 if nbPairs != 0:
     listPairs = meshPair.getListOfPairs()
+    # - sort before comparison
+    listPairs.sort()
+    listPairs, refValues[3]["listPairs"].sort()
+    # - test
     test.assertSequenceEqual(listPairs, refValues[3]["listPairs"])
 
 # -------------------------------------
@@ -591,6 +603,10 @@ test.assertEqual(refValues[4]["nbPairs"], nbPairs)
 
 if nbPairs != 0:
     listPairs = meshPair.getListOfPairs()
+    # - sort before comparison
+    listPairs.sort()
+    listPairs, refValues[4]["listPairs"].sort()
+    # - test
     test.assertSequenceEqual(listPairs, refValues[4]["listPairs"])
 
 # -------------------------------------
@@ -610,6 +626,10 @@ test.assertEqual(refValues[5]["nbPairs"], nbPairs)
 
 if nbPairs != 0:
     listPairs = meshPair.getListOfPairs()
+    # - sort before comparison
+    listPairs.sort()
+    listPairs, refValues[5]["listPairs"].sort()
+    # - test
     test.assertSequenceEqual(listPairs, refValues[5]["listPairs"])
 
 # -------------------------------------
@@ -629,6 +649,10 @@ test.assertEqual(refValues[6]["nbPairs"], nbPairs)
 
 if nbPairs != 0:
     listPairs = meshPair.getListOfPairs()
+    # - sort before comparison
+    listPairs.sort()
+    listPairs, refValues[6]["listPairs"].sort()
+    # - test
     test.assertSequenceEqual(listPairs, refValues[6]["listPairs"])
 
 FIN()

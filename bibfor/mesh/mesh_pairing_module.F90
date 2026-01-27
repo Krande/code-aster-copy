@@ -2809,11 +2809,11 @@ contains
                 if (meshPairing%debug) then
                     WRITE (6, *) "Compute intersection and projection in master space"
                 end if
-                call cellInteProj(meshPairing, &
-                                  cellSlav, cellSlavLine, cellMastLine, &
-                                  iret, &
-                                  nbPoinInte, poinInte, &
-                                  inteArea)
+                call cellInteProjSH(meshPairing, &
+                                    cellSlav, cellSlavLine, cellMastLine, &
+                                    iret, &
+                                    nbPoinInte, poinInte, &
+                                    inteArea)
                 isFatal = isFatalError(iret)
                 if (.not. isFatal .and. iret .ne. ERR_PAIR_NONE) then
                     call utmess('A', 'MESH4_3')
@@ -2887,4 +2887,625 @@ contains
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
+
+! --------------------------------------------------------------------------------------------------
+!
+! addPoinInte3DSH
+!
+! Compute intersection in parametric master space and return points coordinates in slave space
+!    - For 3D case with Sutherland-Hodgman algorithm
+!
+! In  meshPairing      : main datastructure for pairing
+! In  cellProj         : geometric properties of projected cell from slave cell
+! In  nbNodeProj       : number of projected nodes
+! In  cellOrigLine     : geometric properties of cell to project (linearized)
+! In  cellTargLine     : geometric properties of cell where to project (linearized)
+! Out nbPoinInte       : number of intersection points
+! Out poinInteTarg     : coordinates of intersection points in target cell
+! Out poinInteOrig     : coordinates of intersection points in original cell
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine addPoinInte3DSH(meshPairing, cellProj, nbNodeProj, &
+                               cellOrigLine, cellTargLine, &
+                               nbPoinInte, poinInteTarg, poinInteOrig)
+! ----- Parameters
+        type(MESH_PAIRING), intent(in) :: meshPairing
+        type(CELL_GEOM), intent(in) :: cellProj
+        integer(kind=8), intent(in) :: nbNodeProj
+        type(CELL_GEOM), intent(in) :: cellOrigLine, cellTargLine
+        integer(kind=8), intent(out) :: nbPoinInte
+        real(kind=8), intent(out) :: poinInteTarg(2, 2*MAX_NB_INTE), poinInteOrig(2, 2*MAX_NB_INTE)
+        ! Compute polygon intersection in the master plane
+        call polygonIntersectionSH(cellProj%coorNodePara(1:2, :), nbNodeProj, &
+                                   cellTargLine%coorNodePara(1:2, :), cellTargLine%nbNode, &
+                                   poinInteTarg, nbPoinInte)
+        ! Compute the intersection in the slave plane
+        call computeIntePtsOrigCell(cellOrigLine, nbPoinInte, poinInteOrig, poinInteTarg, &
+                                    cellProj, meshPairing, cellTargLine)
+    end subroutine addPoinInte3DSH
+
+! --------------------------------------------------------------------------------------------------
+!
+! polygonIntersectionSH
+!
+! Compute intersection between two convex polygons using Sutherland-Hodgman algorithm
+!
+! In  polygon1          : nodes of the first polygon (subject)
+! In  n1                : number of nodes of the first polygon
+! In  polygon2          : nodes of the second polygon (clip)
+! In  n2                : number of nodes of the second polygon
+! Out  intersection     : nodes of the intersection (output)
+! Out  ninter           : number of nodes of the intersection
+! --------------------------------------------------------------------------------------------------
+    subroutine polygonIntersectionSH(polygon1, n1, polygon2, n2, intersection, ninter)
+! ----- Parameters
+        integer(kind=8), intent(in) :: n1, n2
+        real(kind=8), intent(in) :: polygon1(2, n1), polygon2(2, n2)
+        integer(kind=8), intent(out) :: ninter
+        real(kind=8), intent(out) :: intersection(2, 2*MAX_NB_INTE)
+! ----- Local
+        real(kind=8) :: clipped1(2, 2*MAX_NB_INTE), clipped2(2, 2*MAX_NB_INTE)
+        integer(kind=8) :: nclip1, nclip2
+        !
+        call sutherlandHodgmanClip(polygon1, n1, polygon2, n2, clipped1, nclip1)
+        call sutherlandHodgmanClip(polygon1, n1, polygon2, n2, clipped2, nclip2)
+        if (nclip1 > 0 .and. nclip2 == 0) then
+            intersection(:, 1:nclip1) = clipped1(:, 1:nclip1)
+            ninter = nclip1
+        else if (nclip2 > 0 .and. nclip1 == 0) then
+            intersection(:, 1:nclip2) = clipped2(:, 1:nclip2)
+            ninter = nclip2
+        else if (nclip1 > 0 .and. nclip2 > 0) then
+            intersection(:, 1:nclip1) = clipped1(:, 1:nclip1)
+            ninter = nclip1
+        else
+            ninter = 0
+        end if
+    end subroutine polygonIntersectionSH
+
+! --------------------------------------------------------------------------------------------------
+!
+! sutherlandHodgmanClip
+!
+! Compute intersection between two convex polygons using Sutherland-Hodgman algorithm
+!
+! In  cellA             : nodes of the first polygon (subject)
+! In  nA                : number of nodes of the first polygon
+! In  cellB             : nodes of the second polygon (clip)
+! In  nB                : number of nodes of the second polygon
+! Out  intePts          : nodes of the intersection (output)
+! Out  nintePts         : number of nodes of the intersection
+! --------------------------------------------------------------------------------------------------
+    subroutine sutherlandHodgmanClip(cellA, nA, cellB, nB, intePts, nintePts)
+! ----- Parameters
+        integer(kind=8), intent(in) :: nA, nB
+        real(kind=8), intent(in) :: cellA(2, nA), cellB(2, nA)
+        real(kind=8), intent(out) :: intePts(2, 2*MAX_NB_INTE)
+        integer(kind=8), intent(out) :: nintePts
+! ----- Local
+        real(kind=8) :: inputPts(2, 2*MAX_NB_INTE), edgePt1(2), edgePt2(2)
+        real(kind=8) :: S(2), E(2), intersection(2)
+        integer(kind=8) :: i, j, ninput
+        aster_logical :: inside_S, inside_E
+        !
+        intePts(:, 1:nA) = cellA(:, 1:nA)
+        nintePts = nA
+
+        do i = 1, nB
+            edgePt2(:) = cellB(:, i)
+            if (i .eq. 1) then
+                edgePt1(:) = cellB(:, nB)
+            else
+                edgePt1(:) = cellB(:, i-1)
+            end if
+
+            ninput = nintePts
+
+            inputPts(:, 1:ninput) = intePts(:, 1:ninput)
+
+            nintePts = 0
+            if (ninput == 0) exit
+
+            S = inputPts(:, ninput)
+
+            do j = 1, ninput
+                E = inputPts(:, j)
+                call isInside(E, edgePt1, edgePt2, inside_E)
+                call isInside(S, edgePt1, edgePt2, inside_S)
+                if (inside_E) then
+                    if (.not. inside_S) then
+                        call computeIntersectionPoint3D(S, E, edgePt1, edgePt2, intersection)
+                        nintePts = nintePts+1
+                        intePts(:, nintePts) = intersection
+                    end if
+                    nintePts = nintePts+1
+                    intePts(:, nintePts) = E
+                else if (inside_S) then
+                    call computeIntersectionPoint3D(S, E, edgePt1, edgePt2, intersection)
+                    nintePts = nintePts+1
+                    intePts(:, nintePts) = intersection
+                end if
+                S = E
+            end do
+        end do
+    end subroutine sutherlandHodgmanClip
+
+! --------------------------------------------------------------------------------------------------
+!
+! isInside
+!
+!   Check if a point is inside a polygone, given one oriented edge
+!
+! In  point                    : point to test
+! In  edgePt1                  : first point of the edge
+! In  edgePt2                  : second point of the edge
+! Out  inside                  : boolean, if True then the point is inside
+! --------------------------------------------------------------------------------------------------
+    subroutine isInside(point, edgePt1, edgePt2, inside)
+! ----- Parameters
+        real(kind=8), intent(in) :: point(2), edgePt1(2), edgePt2(2)
+        aster_logical, intent(out) :: inside
+! ----- Local
+        real(kind=8) cross_product
+        !
+        cross_product = (edgePt2(1)-edgePt1(1))*(point(2)-edgePt1(2))- &
+                        (edgePt2(2)-edgePt1(2))*(point(1)-edgePt1(1))
+        inside = cross_product > 0.0
+    end subroutine isInside
+
+! --------------------------------------------------------------------------------------------------
+!
+! computeIntersectionPoint3D
+!
+!   Compute the intersection point between two lines
+!
+! In  point1                    : init point of the first line
+! In  point2                    : end point of the first line
+! In  edgePt1                   : init poinr of the second line
+! In  edgePt2                   : end point of the second line
+! Out  intersection             : intersection point of the two lines
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine computeIntersectionPoint3D(point1, point2, edgePt1, edgePt2, intersection)
+! ----- Parameters
+        real(kind=8), intent(in) :: point1(2), point2(2), edgePt1(2), edgePt2(2)
+        real(kind=8), intent(out) :: intersection(2)
+! ----- Local
+        real(kind=8) :: dcx, dcy, dpx, dpy, n1, n2, n3
+        !
+        dcx = edgePt1(1)-edgePt2(1)
+        dcy = edgePt1(2)-edgePt2(2)
+        dpx = point1(1)-point2(1)
+        dpy = point1(2)-point2(2)
+        n1 = edgePt1(1)*edgePt2(2)-edgePt1(2)*edgePt2(1)
+        n2 = point1(1)*point2(2)-point1(2)*point2(1)
+        n3 = 1.0/(dcx*dpy-dcy*dpx)
+        intersection(1) = (n1*dpx-n2*dcx)*n3
+        intersection(2) = (n1*dpy-n2*dcy)*n3
+    end subroutine computeIntersectionPoint3D
+
+! --------------------------------------------------------------------------------------------------
+!
+! computeIntePtsOrigCell
+!
+!   Compute coordinates of the intersection points in the slave cell (origin)
+!
+! In  cellOrigLine              : geometric properties of cell to project (linearized)
+! In  nbPoinInte                : number of intersection points
+! In  cellProj                  : geometric properties of projected cell from slave cell
+! In  meshPairing               : main datastructure for pairing
+! In  cellTargLine              : geometric properties of cell where to project (linearized)
+! Out  poinInteOrig             : coordinates of intersection points in original cell
+! Out  poinInteTarg             : coordinates of intersection points in target cell
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine computeIntePtsOrigCell(cellOrigLine, nbPoinInte, poinInteOrig, &
+                                      poinInteTarg, cellProj, meshPairing, cellTargLine)
+! ----- Parameters
+        type(CELL_GEOM), intent(in) :: cellOrigLine, cellProj, cellTargLine
+        integer(kind=8), intent(in) :: nbPoinInte
+        real(kind=8), intent(out) :: poinInteOrig(2, 2*MAX_NB_INTE), poinInteTarg(2, 2*MAX_NB_INTE)
+        type(MESH_PAIRING), intent(in) :: meshPairing
+! ----- Local
+        real(kind=8) :: lambda_tria(3)
+        real(kind=8) :: lambda_quad(4)
+        integer(kind=8) :: iPtInte
+        real(kind=8) :: normOrig(3), normOrigOppo(3)
+        type(MESH_PROJ_PARA) :: projPara
+        real(kind=8) :: poinInteGlob(3)
+        aster_logical :: isOnEdge
+        !
+        if (cellOrigLine%cellCode .eq. "TR3") then
+            do iPtInte = 1, nbPoinInte
+                ! Compute barycentric coordinates
+                call computeBarycentricCoordsTRIA(cellProj%coorNodePara(1:2, 1), &
+                                                  cellProj%coorNodePara(1:2, 2), &
+                                                  cellProj%coorNodePara(1:2, 3), &
+                                                  poinInteTarg(1:2, iPtInte), &
+                                                  lambda_tria)
+                ! Compute the coordinates of the point
+                poinInteOrig(1:2, iPtInte) = lambda_tria(1)*cellOrigLine%coorNodePara(1:2, 1)+ &
+                                             lambda_tria(2)*cellOrigLine%coorNodePara(1:2, 2)+ &
+                                             lambda_tria(3)*cellOrigLine%coorNodePara(1:2, 3)
+            end do
+        elseif (cellOrigLine%cellCode .eq. "QU4") then
+            do iPtInte = 1, nbPoinInte
+                call computeBaryCoordsIfOnEdgeQUAD(cellProj%coorNodePara(1:2, 1), &
+                                                   cellProj%coorNodePara(1:2, 2), &
+                                                   cellProj%coorNodePara(1:2, 3), &
+                                                   cellProj%coorNodePara(1:2, 4), &
+                                                   poinInteTarg(1:2, iPtInte), &
+                                                   lambda_quad, isOnEdge)
+                if (isOnEdge) then
+                    poinInteOrig(1:2, iPtInte) = lambda_quad(1)*cellOrigLine%coorNodePara(1:2, 1)+ &
+                                                 lambda_quad(2)*cellOrigLine%coorNodePara(1:2, 2)+ &
+                                                 lambda_quad(3)*cellOrigLine%coorNodePara(1:2, 3)+ &
+                                                 lambda_quad(4)*cellOrigLine%coorNodePara(1:2, 4)
+                else
+                    call cellPoinParaToGlob(cellTargLine, poinInteTarg(1:2, iPtInte), poinInteGlob)
+                    call cellCompNormAtBary(meshPairing%spaceDime, cellOrigLine, normOrig)
+                    normOrigOppo = -normOrig
+                    ! ----- Set parameters of Newton algorithm for projection
+                    projPara%debug = ASTER_FALSE
+                    projPara%newtIterMaxi = 75
+                    projPara%newtTole = meshPairing%pairTole
+                    ! ----- Prepare object for projection on target cell
+                    projPara%spaceDime = meshPairing%spaceDime
+                    projPara%coorPoinGlob = poinInteGlob
+                    projPara%projVect = normOrig
+                    ! ----- Projection by given vector
+                    call poinProjByVect(projPara, cellOrigLine)
+                    poinInteOrig(1:2, iPtInte) = projPara%coorProjPara
+                end if
+            end do
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
+    end subroutine computeIntePtsOrigCell
+
+! --------------------------------------------------------------------------------------------------
+!
+! computeBarycentricCoordsTRIA
+!
+!   Compute barycentric coordinates of a point in a triangle
+!
+! In  pointA            : first vertex of the triangle
+! In  pointB            : second vertex of the triangle
+! In  pointC            : third vertex of the triangle
+! In  pointX            : point of interest
+! Out lambda            : barycentric coordinates of pointX
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine computeBarycentricCoordsTRIA(pointA, pointB, pointC, pointX, lambda)
+! ----- Parameters
+        real(kind=8), intent(in) :: pointA(2), pointB(2), pointC(2), pointX(2)
+        real(kind=8), intent(out) :: lambda(3)
+! ----- Local
+        real(kind=8) :: Area, Area_a, Area_b, Area_c
+        !
+        ! Compute the area of the main triangle
+        Area = 0.5*abs((pointB(1)-pointA(1))*(pointC(2)-pointA(2))- &
+                       (pointB(2)-pointA(2))*(pointC(1)-pointA(1)))
+        ! Compute the area of subtriangles
+        Area_a = 0.5*abs((pointB(1)-pointX(1))*(pointC(2)-pointX(2))- &
+                         (pointB(2)-pointX(2))*(pointC(1)-pointX(1)))
+        Area_b = 0.5*abs((pointC(1)-pointX(1))*(pointA(2)-pointX(2))- &
+                         (pointC(2)-pointX(2))*(pointA(1)-pointX(1)))
+        Area_c = 0.5*abs((pointA(1)-pointX(1))*(pointB(2)-pointX(2))- &
+                         (pointA(2)-pointX(2))*(pointB(1)-pointX(1)))
+        lambda(1) = Area_a/Area
+        lambda(2) = Area_b/Area
+        lambda(3) = Area_c/Area
+    end subroutine computeBarycentricCoordsTRIA
+
+! --------------------------------------------------------------------------------------------------
+!
+! computeBaryCoordsIfOnEdgeQUAD
+!
+!   Compute the barycentric coordinates in quadrangle if point is on one edge
+!
+! In  pointA            : first vertex of the quadrangle
+! In  pointB            : second vertex of the quadrangle
+! In  pointC            : third vertex of the quadrangle
+! In  pointD            : third vertex of the quadrangle
+! In  pointX            : point of interest
+! Out lambda_quad       : barycentric coordinates
+! Out isOnEdge          : boolean, if True, point is on one edge
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine computeBaryCoordsIfOnEdgeQUAD(pointA, pointB, pointC, pointD, pointX, &
+                                             lambda_quad, isOnEdge)
+! ----- Parameters
+        real(kind=8), intent(in) :: pointA(2), pointB(2), pointC(2), pointD(2), pointX(2)
+        real(kind=8), intent(out) :: lambda_quad(4)
+        aster_logical :: isOnEdge
+! ----- Local
+        real(kind=8) :: A1, A2, A3, A4
+        real(kind=8) :: tolArea
+        real(kind=8) :: lambda_tri(3)
+        aster_logical :: inside_tria_1, inside_tria_2
+        !
+        ! Compute signed areas
+        call computeSignedAreaTRIA(pointX, pointA, pointB, A1)
+        call computeSignedAreaTRIA(pointX, pointB, pointC, A2)
+        call computeSignedAreaTRIA(pointX, pointC, pointD, A3)
+        call computeSignedAreaTRIA(pointX, pointD, pointA, A4)
+        ! Compute areas
+        A1 = abs(A1)
+        A2 = abs(A2)
+        A3 = abs(A3)
+        A4 = abs(A4)
+        ! Test
+        tolArea = 1e-12
+        call isInsideTRIA(pointX, pointA, pointB, pointC, inside_tria_1)
+        call isInsideTRIA(pointX, pointA, pointC, pointD, inside_tria_2)
+        if ((A1 <= tolArea) .or. (A2 <= tolArea)) then
+            call isInsideTRIA(pointX, pointA, pointB, pointC, inside_tria_1)
+            if (inside_tria_1) then
+                call computeBarycentricCoordsTRIA(pointA, pointB, pointC, pointX, lambda_tri)
+                lambda_quad(1) = lambda_tri(1)
+                lambda_quad(2) = lambda_tri(2)
+                lambda_quad(3) = lambda_tri(3)
+                lambda_quad(4) = 0.0
+                isOnEdge = ASTER_TRUE
+            else
+                lambda_quad = -1.0
+                isOnEdge = ASTER_FALSE
+            end if
+        else if ((A3 <= tolArea) .or. (A4 <= tolArea)) then
+            call isInsideTRIA(pointX, pointA, pointC, pointD, inside_tria_2)
+            if (inside_tria_2) then
+                call computeBarycentricCoordsTRIA(pointA, pointC, pointD, pointX, lambda_tri)
+                lambda_quad(1) = lambda_tri(1)
+                lambda_quad(2) = 0.0
+                lambda_quad(3) = lambda_tri(2)
+                lambda_quad(4) = lambda_tri(3)
+                isOnEdge = ASTER_TRUE
+            else
+                lambda_quad = -1.0
+                isOnEdge = ASTER_FALSE
+            end if
+        else
+            lambda_quad = -1.0
+            isOnEdge = ASTER_FALSE
+        end if
+
+    end subroutine computeBaryCoordsIfOnEdgeQUAD
+
+! --------------------------------------------------------------------------------------------------
+!
+! computeSignedAreaTRIA
+!
+!   Compute signed area of a triangle
+!
+! In  pointA            : first vertex of the triangle
+! In  pointB            : second vertex of the triangle
+! In  pointC            : third vertex of the triangle
+! Out signArea          : signed area of the triangle
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine computeSignedAreaTRIA(pointA, pointB, pointC, signArea)
+! ----- Parameters
+        real(kind=8), intent(in) :: pointA(2), pointB(2), pointC(2)
+        real(kind=8), intent(out) :: signArea
+        !
+        signArea = 0.5*((pointB(1)-pointA(1))*(pointC(2)-pointA(2)) &
+                        -(pointB(2)-pointA(2))*(pointC(1)-pointA(1)))
+    end subroutine computeSignedAreaTRIA
+
+! --------------------------------------------------------------------------------------------------
+!
+! isInsideTRIA
+!
+!   Check if a point is inside a triangle
+!
+! In  pointA            : first vertex of the triangle
+! In  pointB            : second vertex of the triangle
+! In  pointC            : third vertex of the triangle
+! In  pointX            : point of interest
+! Out inside            : boolean, if True the point is inside
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine isInsideTRIA(pointX, pointA, pointB, pointC, inside)
+! ----- Parameters
+        real(kind=8), intent(in) :: pointX(2), pointA(2), pointB(2), pointC(2)
+        aster_logical, intent(out) :: inside
+! ----- Local
+        real(kind=8) A1, A2, A3, prod, tole
+        !
+        tole = 1e-12
+        call computeSignedAreaTRIA(pointX, pointA, pointB, A1)
+        call computeSignedAreaTRIA(pointX, pointB, pointC, A2)
+        call computeSignedAreaTRIA(pointX, pointC, pointA, A3)
+        prod = abs(A1*A2*A3)
+        inside = (A1 >= 0.0 .and. A2 >= 0.0 .and. A3 >= 0.0) .or. &
+                 (A1 <= 0.0 .and. A2 <= 0.0 .and. A3 <= 0.0) .or. (prod <= tole)
+    end subroutine isInsideTRIA
+! --------------------------------------------------------------------------------------------------
+!
+! cellInteProjSH - prjint_ray
+!
+! Compute intersection and projection from cell to target cell (only used for robust for now)
+!
+! In  meshPairing      : main datastructure for pairing
+! In  cellOrig         : general geometric properties of origin cell
+! In  cellOrigLine     : general geometric properties of linearized origin cell
+! In  cellTargLine     : general geometric properties of linearized target cell
+! Out iret             : return code error
+! Out nbPoinInte       : number of intersection points
+! Out poinInteOrig     : coordinates of intersection points (in origin cell parametric space)
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine cellInteProjSH(meshPairing, &
+                              cellOrig, cellOrigLine, cellTargLine, &
+                              iret_, &
+                              nbPoinInte_, poinInteOrig_, &
+                              inteArea_, inteNeigh_)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(MESH_PAIRING), intent(in) :: meshPairing
+        type(CELL_GEOM), intent(in) :: cellOrig, cellOrigLine, cellTargLine
+        integer(kind=8), optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: nbPoinInte_
+        real(kind=8), optional, intent(out) :: poinInteOrig_(2, MAX_NB_INTE)
+        real(kind=8), optional, intent(out) :: inteArea_
+        integer(kind=8), optional, intent(out) :: inteNeigh_(MAX_NB_NEIGH)
+! ----- Local
+        aster_logical, parameter :: debug = ASTER_FALSE
+        integer(kind=8) :: iret, inteNeigh(MAX_NB_NEIGH)
+        integer(kind=8) :: nbPoinInteI
+        real(kind=8) :: poinInteTargI(2, 2*MAX_NB_INTE), poinInteOrigI(2, 2*MAX_NB_INTE)
+        integer(kind=8) :: nbPoinInteS
+        real(kind=8) :: poinInteTargS(2, MAX_NB_INTE), poinInteOrigS(2, MAX_NB_INTE)
+        integer(kind=8) :: nbPoinInte
+        real(kind=8) :: poinInteOrig(2, MAX_NB_INTE)
+        real(kind=8) :: inteArea
+        aster_logical :: errorProj, errorInte
+        type(CELL_GEOM) :: cellProj
+        integer(kind=8) :: nbCmpPara, nbNodeProj
+!   ------------------------------------------------------------------------------------------------
+!
+        inteNeigh = 0
+        nbPoinInte = 0
+        poinInteOrig = 0.d0
+        inteArea = 0.d0
+        iret = ERR_PAIR_NONE
+        nbCmpPara = meshPairing%spaceDime-1
+
+! ----- Compute projection of cell on target cell
+        errorProj = ASTER_FALSE
+        call cellProjOnCell(meshPairing, &
+                            cellOrig, cellOrigLine, cellTargLine, &
+                            cellProj, nbNodeProj, iret)
+        if (iret .ne. ERR_PAIR_NONE) then
+            errorProj = ASTER_TRUE
+            goto 100
+        end if
+        if (meshPairing%debug) then
+            WRITE (6, *) "     Intersection is OK"
+        end if
+
+! ----- Compute intersection in parametric space of target cell
+        nbPoinInteI = 0
+        poinInteTargI = 0.d0
+        poinInteOrigI = 0.d0
+        if (meshPairing%spaceDime .eq. 2) then
+            ASSERT(nbNodeProj .eq. 2)
+            call addPoinInte2D(meshPairing, cellProj, &
+                               nbPoinInteI, poinInteTargI, poinInteOrigI, &
+                               inteNeigh)
+        elseif (meshPairing%spaceDime .eq. 3) then
+            call addPoinInte3DSH(meshPairing, cellProj, nbNodeProj, &
+                                 cellOrigLine, cellTargLine, &
+                                 nbPoinInteI, poinInteTargI, poinInteOrigI)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
+! ----- Trop de points d'intersection (avant tri) => on ne sait pas gérer
+        ASSERT(nbPoinInteI .le. 2*MAX_NB_INTE)
+
+! ----- Error management
+        errorInte = ASTER_FALSE
+        if (nbPoinInteI == 0 .or. iret == ERR_PAIR_MAST) then
+            errorInte = ASTER_TRUE
+            goto 100
+        end if
+
+! ----- Debug print
+        if (meshPairing%debug) then
+            WRITE (6, *) "     Intersection (before re-ordering): ", nbPoinInteI, &
+                " points of intersection"
+            WRITE (6, *) "     Target side : ", poinInteTargI(1:nbCmpPara, 1:nbPoinInteI)
+            WRITE (6, *) "     Origin side : ", poinInteOrigI(1:nbCmpPara, 1:nbPoinInteI)
+        end if
+
+! ----- Sort list of intersection points
+        if ((nbPoinInteI .gt. 2 .and. meshPairing%spaceDime == 3) .or. &
+            (nbPoinInteI .ge. 2 .and. meshPairing%spaceDime == 2)) then
+            call intePoinSort(meshPairing, &
+                              nbPoinInteI, poinInteTargI, poinInteOrigI, &
+                              nbPoinInteS, poinInteTargS, poinInteOrigS)
+        else
+            ASSERT(nbPoinInteI .le. MAX_NB_INTE)
+            nbPoinInteS = nbPoinInteI
+            poinInteTargS(:, 1:nbPoinInteI) = poinInteTargI(:, 1:nbPoinInteI)
+            poinInteOrigS(:, 1:nbPoinInteI) = poinInteOrigI(:, 1:nbPoinInteI)
+        end if
+
+! ----- Error management
+        if (nbPoinInteS > MAX_NB_INTE) then
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Intersection (after re-ordering): ", nbPoinInteS, &
+                    " points of intersection"
+                WRITE (6, *) "     Too many points !"
+            end if
+            iret = ERR_PAIR_SLAV
+            go to 99
+        end if
+
+! ----- Debug print
+        if (meshPairing%debug) then
+            WRITE (6, *) "     Intersection (after re-ordering): ", nbPoinInteS, &
+                " points of intersection"
+            WRITE (6, *) "     Target side : ", poinInteTargS(1:nbCmpPara, 1:nbPoinInteS)
+            WRITE (6, *) "     Origin side : ", poinInteOrigS(1:nbCmpPara, 1:nbPoinInteS)
+        end if
+
+! ----- All nodes have to be inside original cell
+        call intePoinInCell(meshPairing, cellOrigLine, &
+                            nbPoinInteS, poinInteOrigS, poinInteOrig)
+        nbPoinInte = nbPoinInteS
+
+! ----- Compute weight of intersection
+        inteArea = 0.d0
+        if (nbPoinInte .ne. 0) then
+            call inteCellArea(meshPairing%spaceDime, nbPoinInte, poinInteOrig, inteArea)
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Area of intersection : ", inteArea
+            end if
+        end if
+
+! ----- Error
+100     continue
+        if (errorProj .or. errorInte) then
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Failure of intersection"
+            end if
+            nbPoinInte = 0
+            poinInteOrig = 0.d0
+            inteNeigh = 0
+            inteArea = 0.d0
+        else
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Success of intersection"
+            end if
+        end if
+
+! ----- Fatal error only in debug mode
+99      continue
+        if (debug) then
+            ASSERT(iret .ne. ERR_PAIR_NONE)
+        end if
+
+! ----- Outputs
+        if (present(inteNeigh_)) then
+            inteNeigh_ = inteNeigh
+        end if
+        if (present(nbPoinInte_)) then
+            nbPoinInte_ = nbPoinInte
+        end if
+        if (present(inteArea_)) then
+            inteArea_ = inteArea
+        end if
+        if (present(poinInteOrig_)) then
+            poinInteOrig_ = poinInteOrig
+        end if
+        if (present(iret_)) then
+            iret_ = iret
+        end if
+    end subroutine cellInteProjSH
+!
+!   ------------------------------------------------------------------------------------------------
 end module
