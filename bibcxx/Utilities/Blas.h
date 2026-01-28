@@ -4,7 +4,7 @@
 /**
  * @file Blas.h
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -41,6 +41,12 @@ class AsterBLAS {
     // zdscal
     static void scal( const ASTERINTEGER &n, const ASTERDOUBLE &alpha, ASTERCOMPLEX *x,
                       const ASTERINTEGER &incx );
+    // dgemm
+    static void dgemm( const std::string &tra, const std::string &trb, const ASTERINTEGER &m,
+                       const ASTERINTEGER &n, const ASTERINTEGER &k, const ASTERDOUBLE &alpha,
+                       const ASTERDOUBLE *A, const ASTERINTEGER &lda, const ASTERDOUBLE *B,
+                       const ASTERINTEGER &ldb, const ASTERDOUBLE &beta, ASTERDOUBLE *C,
+                       const ASTERINTEGER &ldc );
 };
 
 template < typename T >
