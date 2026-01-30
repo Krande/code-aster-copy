@@ -29,7 +29,7 @@ NBPO = 2**10
 frr = 2.0
 amor = 0.6
 wg = frr * 2.0 * pi
-ecart = 5.0
+
 ####################################################
 #
 ####################################################
@@ -39,7 +39,6 @@ ecart = 5.0
 ####################################################
 TSM = 8.0
 t_ini = 0.5
-ecart = 1.0
 pga = 0.2
 #
 # Attention: ces valeurs sont les moyennes utilises pour la simulation
@@ -57,7 +56,7 @@ ACCE1b = (
         INIT_ALEA=1000000,
         TITRE="DSP1",
         PAS_INST=DT,
-        NB_POIN=2**10,
+        NB_POIN=2**11,
         PESANTEUR=9.81,
         DUREE_PHASE_FORTE=10.1,
         DSP=_F(AMOR_REDUIT=amor, FREQ_FOND=frr),
@@ -73,14 +72,39 @@ RMS1b = INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1b))
 N1b = INFO_FONCTION(NOCI_SEISME=_F(FONCTION=FONCT1b, OPTION="MAXI"))
 IMPR_TABLE(TABLE=N1b, UNITE=8)
 
-TEST_TABLE(VALE_CALC=2.5746777839137174, NOM_PARA="ACCE_MAX", TABLE=N1b)
+TEST_TABLE(VALE_CALC=1.96558364338093, NOM_PARA="ACCE_MAX", TABLE=N1b)
 
-TEST_TABLE(
-    VALE_CALC=0.6306225203120654,
-    #           VALE_REFE=0.603,PRECISION=0.1,REFERENCE='ANALYTIQUE',
-    NOM_PARA="ECART_TYPE",
-    TABLE=RMS1b,
+TEST_TABLE(VALE_CALC=0.44568296758232173, NOM_PARA="ECART_TYPE", TABLE=RMS1b)
+
+
+# - on teste la modification de DT
+
+ACCE1c = (
+    GENE_ACCE_SEISME(
+        INFO=2,
+        INIT_ALEA=1000000,
+        TITRE="DSP1",
+        PAS_INST=0.005,
+        NB_POIN=2**12,
+        PESANTEUR=9.81,
+        DUREE_PHASE_FORTE=10.1,
+        DSP=_F(AMOR_REDUIT=amor, FREQ_FOND=frr),
+        MODULATION=_F(TYPE="JENNINGS_HOUSNER", ACCE_MAX=pga),
+    ),
 )
+
+FONCT1c = RECU_FONCTION(
+    TABLE=ACCE1c, FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1), NOM_PARA_TABL="FONCTION"
+)
+
+RMS1c = INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1c))
+N1c = INFO_FONCTION(NOCI_SEISME=_F(FONCTION=FONCT1c, OPTION="MAXI"))
+
+
+TEST_TABLE(VALE_CALC=2.1909117971400938, NOM_PARA="ACCE_MAX", TABLE=N1c)
+
+TEST_TABLE(VALE_CALC=0.4691549363767639, NOM_PARA="ECART_TYPE", TABLE=RMS1c)
+
 
 ##############################
 # TYPE "GAMMA"
