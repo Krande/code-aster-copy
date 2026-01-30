@@ -631,11 +631,11 @@ class ModulatorGamma(Modulator):
         T2 = T1 + self.DUREE_PHASE_FORTE
         x0 = [1.3, 0.25]
         liste_t = NP.arange(0.0, DUREE_SIGNAL, 0.01)
-        N1 = NP.searchsorted(liste_t, T1)
-        N2 = NP.searchsorted(liste_t, T2)
+        # N1 = NP.searchsorted(liste_t, T1)
+        # N2 = NP.searchsorted(liste_t, T2)
         # fqt_ini = fonctm_gam(liste_t, 1.0, x0[0], x0[1])
         # _, TSM, _, _ = f_ARIAS_TSM(liste_t, fqt_ini, self.norme)
-        x_opt = fmin(f_opta, x0, args=(liste_t, N1, N2))
+        x_opt = fmin(f_opta, x0, args=(liste_t, T1, T2))
         a2 = x_opt[0]
         a3 = x_opt[1]
         fqt = fonctm_gam(sample_time, 1.0, a2, a3)
@@ -661,10 +661,8 @@ class ModulatorJH(Modulator):
         alpha = x_opt[0]
         beta = x_opt[1]
         T2 = T1 + self.DUREE_PHASE_FORTE
-        N1 = NP.searchsorted(liste_t, T1)
-        N2 = NP.searchsorted(liste_t, T2)
-        fqt = fonctm_JetH(sample_time, T1, T2, alpha, beta)
 
+        fqt = fonctm_JetH(sample_time, T1, T2, alpha, beta)
         self.calc_fonc_modul(sample_time, T1, T2, fqt)
 
         _, TSM, self.T1, self.T2 = f_ARIAS_TSM(sample_time, fqt, self.norme)
