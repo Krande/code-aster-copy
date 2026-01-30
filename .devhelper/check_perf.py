@@ -179,6 +179,8 @@ class PerfReport:
         """
         df1 = pd.read_csv(file1, index_col=0)
         df2 = pd.read_csv(file2, index_col=0)
+        date1 = file1.stem
+        date2 = file2.stem
         mat = regdate.search(str(file1))
         if mat:
             date1 = mat.group(1)

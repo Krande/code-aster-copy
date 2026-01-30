@@ -264,6 +264,7 @@ verification_test:
       artifacts: false
       optional: true
 
+# --- additional analysis
 keywords_coverage:
   interruptible: true
   stage: code-checking
@@ -282,6 +283,34 @@ keywords_coverage:
     when: always
     paths:
       - build/coverage/*
+  rules:
+    - if: $BUILDTYPE == "ci"
+      when: on_success
+    - if: $BUILDTYPE == "nightly"
+      when: always
+  allow_failure: true
+
+perf_analysis:
+  interruptible: true
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  stage: code-checking
+  needs:
+    - job: prepare
+    - job: verification_test
+  script:
+    - apt-get update
+    - apt-get install -y jq
+    - do_upload="no"
+    - test "$(date +%u)" = "${WEEKLY_RUN}"
+        && test "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH"
+        && test "${BUILDTYPE}" = "nightly"
+        && do_upload="upload"
+    - .gitlabci/perf.sh ./results "${do_upload}"
+  artifacts:
+    when: always
+    paths:
+      - build/perf/*
   rules:
     - if: $BUILDTYPE == "ci"
       when: on_success
