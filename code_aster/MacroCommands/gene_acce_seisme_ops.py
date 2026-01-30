@@ -631,10 +631,6 @@ class ModulatorGamma(Modulator):
         T2 = T1 + self.DUREE_PHASE_FORTE
         x0 = [1.3, 0.25]
         liste_t = NP.arange(0.0, DUREE_SIGNAL, 0.01)
-        # N1 = NP.searchsorted(liste_t, T1)
-        # N2 = NP.searchsorted(liste_t, T2)
-        # fqt_ini = fonctm_gam(liste_t, 1.0, x0[0], x0[1])
-        # _, TSM, _, _ = f_ARIAS_TSM(liste_t, fqt_ini, self.norme)
         x_opt = fmin(f_opta, x0, args=(liste_t, T1, T2))
         a2 = x_opt[0]
         a3 = x_opt[1]
