@@ -97,6 +97,15 @@ class CP_S2S3_HHO2(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.RIGI_ELAS_CPL(
+            te=520,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PPAIRR, LC.CPAIRR),
+                (OP.RIGI_CPL.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM2D),)),
     )

@@ -1432,7 +1432,7 @@ class DiscreteComputation:
         """
 
     def getMechanicalCouplingForces(self, displ_prev, displ_step, time_prev, time_step):
-        """Compute coupling for LIAISON_HHO.
+        """Compute coupling for LIAISON_MASSIF.
 
         Arguments:
             displ_prev (FieldOnNodes): displacement field at begin of current time
@@ -1445,7 +1445,7 @@ class DiscreteComputation:
         """
 
     def getMechanicalCouplingMatrix(self, displ_prev, displ_step, time_prev, time_step):
-        """Compute coupling for LIAISON_HHO.
+        """Compute coupling for LIAISON_MASSIF.
 
         Arguments:
             displ_prev (FieldOnNodes): displacement field at begin of current time
@@ -1517,6 +1517,13 @@ class DiscreteComputation:
 
         Returns:
               ElementaryVectorDisplacementReal: imposed dual vector
+        """
+
+    def getMechanicalLinearCouplingMatrix(self):
+        """Compute coupling for LIAISON_MASSIF.
+
+        Returns:
+            ElementaryMatrixDisplacementReal: coupling elementary matrix.
         """
 
     def getMechanicalMassMatrix(self, diagonal, varc_curr=None, groupOfCells=[]):

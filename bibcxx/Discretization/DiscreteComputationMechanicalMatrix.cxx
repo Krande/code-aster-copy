@@ -1282,3 +1282,45 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalCouplingMa
     elemMatr->build();
     return elemMatr;
 }
+
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCouplingMatrix() const {
+
+    // Select option for matrix
+    std::string option = "RIGI_ELAS_CPL";
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel(), option );
+
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
+
+    for ( const auto &load : mecaLoadReal ) {
+
+        const auto pairing = load->getPairingField();
+        if ( pairing && pairing->exists() ) {
+
+            // Prepare computing
+            CalculPtr calcul = std::make_unique< Calcul >( option );
+            calcul->setFiniteElementDescriptor( pairing->getDescription() );
+
+            // Set input field
+            calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+            calcul->addInputField( "PPAIRR", pairing );
+            calcul->addHHOField( _phys_problem->getModel() );
+
+            // Add output elementary
+            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+
+            // Computation
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+            }
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+}

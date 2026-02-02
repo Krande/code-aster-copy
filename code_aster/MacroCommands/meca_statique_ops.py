@@ -116,7 +116,9 @@ def _computeMatrix(phys_pb, disr_comp, phys_state, matrix):
         time=phys_state.time_curr, varc_curr=phys_state.externVar, with_dual=True
     )
 
-    matrix.assemble(matr_elem, phys_pb.getListOfLoads())
+    matr_elem_cpl = disr_comp.getMechanicalLinearCouplingMatrix()
+
+    matrix.assemble([matr_elem, matr_elem_cpl], phys_pb.getListOfLoads())
 
     return matrix
 

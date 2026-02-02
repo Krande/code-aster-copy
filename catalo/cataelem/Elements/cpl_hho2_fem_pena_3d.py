@@ -93,6 +93,15 @@ class CP_Q4Q9_HHO2(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.RIGI_ELAS_CPL(
+            te=520,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PPAIRR, LC.CPAIRR),
+                (OP.CHAR_MECA_CPL.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),)),
     )

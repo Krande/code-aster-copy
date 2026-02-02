@@ -184,4 +184,69 @@ TEST_RESU(
     )
 )
 
+RES2 = MECA_STATIQUE(
+    INFO=1,
+    MODELE=MODI,
+    CHAM_MATER=AFFE,
+    EXCIT=(_F(CHARGE=CINE_HHO), _F(CHARGE=CINE_FEM), _F(CHARGE=CHAR_PRES), _F(CHARGE=RACCORD)),
+    INST=1.0,
+)
+
+RES2 = CALC_CHAMP(
+    reuse=RES2, RESULTAT=RES2, CONTRAINTE=("SIEF_NOEU", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO")
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="SIEF_NOEU",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.830610159974214,
+            PRECISION=0.05,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="SIEF_NOEU",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-24.227133615082842,
+            PRECISION=0.05,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIGM_NOEU",
+            LEGENDE="SIYY",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.830610159974214,
+            PRECISION=0.05,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIGM_NOEU",
+            LEGENDE="SIYY",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-24.227133615082842,
+            PRECISION=0.05,
+        ),
+    )
+)
+
 FIN()

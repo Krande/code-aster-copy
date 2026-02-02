@@ -189,4 +189,95 @@ TEST_RESU(
     )
 )
 
+RES2 = MECA_STATIQUE(
+    INFO=1,
+    MODELE=MODI,
+    CHAM_MATER=AFFE,
+    EXCIT=(_F(CHARGE=CINE_FEM), _F(CHARGE=CINE_HHO), _F(CHARGE=CHAR_PRES), _F(CHARGE=RACCORD)),
+    INST=1.0,
+)
+
+RES2 = CALC_CHAMP(
+    reuse=RES2, RESULTAT=RES2, CONTRAINTE=("SIEF_NOEU", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO")
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="SIEF_NOEU",
+            NOM_CMP="SIZZ",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.000000000000274,
+            PRECISION=0.16,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="SIEF_NOEU",
+            NOM_CMP="SIZZ",
+            VALE_REFE=-25.0,
+            VALE_CALC=-24.999999999998096,
+            PRECISION=0.16,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIGM_NOEU",
+            LEGENDE="SIZZ",
+            NOM_CMP="SIZZ",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.000000000000274,
+            PRECISION=0.16,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIGM_NOEU",
+            LEGENDE="SIZZ",
+            NOM_CMP="SIZZ",
+            VALE_REFE=-25.0,
+            VALE_CALC=-24.999999999998096,
+            PRECISION=0.16,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIGM_NOEU",
+            LEGENDE="SIXY",
+            NOM_CMP="SIXY",
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1e-6,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIGM_NOEU",
+            LEGENDE="SIXY",
+            NOM_CMP="SIXY",
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1e-6,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+    )
+)
+
 FIN()

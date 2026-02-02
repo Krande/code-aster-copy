@@ -85,7 +85,7 @@ subroutine te0520(option, nomte)
 !
         call writeVector('PVECTUR', cplPenaMap%nbDoFs, rhs)
 !
-    elseif (option == "RIGI_CPL") then
+    elseif (option == "RIGI_CPL" .or. option == "RIGI_ELAS_CPL") then
 !
 ! --- Compute coupling matrix
 !

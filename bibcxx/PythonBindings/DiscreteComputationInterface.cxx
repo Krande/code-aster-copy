@@ -865,7 +865,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "coef_cont" ), py::arg( "coef_frot" ) )
 
         .def( "getMechanicalCouplingForces", &DiscreteComputation::getMechanicalCouplingForces, R"(
-            Compute coupling for LIAISON_HHO.
+            Compute coupling for LIAISON_MASSIF.
 
             Arguments:
                 displ_prev (FieldOnNodes): displacement field at begin of current time
@@ -881,7 +881,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "time_step" ) )
 
         .def( "getMechanicalCouplingMatrix", &DiscreteComputation::getMechanicalCouplingMatrix, R"(
-            Compute coupling for LIAISON_HHO.
+            Compute coupling for LIAISON_MASSIF.
 
             Arguments:
                 displ_prev (FieldOnNodes): displacement field at begin of current time
@@ -895,6 +895,15 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "time_prev" ),
               py::arg( "time_step" ) )
+
+        .def( "getMechanicalLinearCouplingMatrix",
+              &DiscreteComputation::getMechanicalLinearCouplingMatrix, R"(
+            Compute coupling for LIAISON_MASSIF.
+
+            Returns:
+                ElementaryMatrixDisplacementReal: coupling elementary matrix.
+
+        )" )
 
         .def( "getMechanicalNodalForces", &DiscreteComputation::getMechanicalNodalForces,
               R"(
