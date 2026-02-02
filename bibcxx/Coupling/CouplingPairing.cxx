@@ -98,6 +98,17 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellPena
     { { "MECA_FACE6", "MECA_FACE6" }, "CP_T6T6" },
 
 };
+
+// Update also coupling_type.h
+enum Offset {
+    COEF_PENA = 0,
+    NB_PTS_INTER = 1,
+    COOR_PTS_X = 2,
+    COOR_PTS_Y = 10,
+    NB_NODES_NITSCHE = 18,
+    NODE_IDX_FACE = 19,
+    SIZE = 27,
+};
 } // namespace
 
 CouplingPairing::CouplingPairing( const std::string name, const ModelPtr model,
@@ -432,7 +443,7 @@ FieldOnCellsRealPtr CouplingPairing::getPairingField() const {
     ASTERINTEGER nbPair = 0;
     for ( ASTERINTEGER iGrel = 0; iGrel < nbGrel; iGrel++ ) {
         auto nbElem = data->getNumberOfElements( iGrel );
-        AS_ASSERT( data->getSizeOfFieldOfElement( iGrel ) == 41 );
+        AS_ASSERT( data->getSizeOfFieldOfElement( iGrel ) == Offset::SIZE );
         auto liel = ( *grel )[iGrel + 1];
         liel->updateValuePointer();
         // Loop on elements
@@ -450,24 +461,21 @@ FieldOnCellsRealPtr CouplingPairing::getPairingField() const {
                 // Adress in field
                 auto shift = data->getShifting( iGrel, iElem );
 
-                // Value for projection tolerance
-                ( *data )[shift + 0] = 1.e-8;
-
                 // Set coordinates of slave intersection points
                 const auto inter =
                     zone->getIntersectionPoints( iLocaPair, CoordinatesSpace::Slave );
 
                 // Set number of intersection points
-                ( *data )[shift + 1] = inter.size();
+                ( *data )[shift + Offset::NB_PTS_INTER] = inter.size();
                 AS_ASSERT( inter.size() <= 8 );
 
                 for ( ASTERINTEGER iInter = 0; iInter < inter.size(); iInter++ ) {
-                    ( *data )[shift + 2 + iInter] = inter[iInter][0];
-                    ( *data )[shift + 10 + iInter] = inter[iInter][1];
+                    ( *data )[shift + Offset::COOR_PTS_X + iInter] = inter[iInter][0];
+                    ( *data )[shift + Offset::COOR_PTS_Y + iInter] = inter[iInter][1];
                 }
 
                 // Coefficient of penalization
-                ( *data )[shift + 29] = zone->getCoefficient();
+                ( *data )[shift + Offset ::COEF_PENA] = zone->getCoefficient();
 
                 // For Nitsche
                 if ( zone->getMethod() == CouplingMethod::Nitsche ) {
@@ -478,12 +486,12 @@ FieldOnCellsRealPtr CouplingPairing::getPairingField() const {
 
                     auto mapLoc = mapping( slav_surf_con, slav_volu_con );
                     // Number of nodes
-                    ( *data )[shift + 30] = double( mapLoc.size() );
+                    ( *data )[shift + Offset::NB_NODES_NITSCHE] = ASTERDOUBLE( mapLoc.size() );
 
                     // Mapping
                     auto i = 0;
                     for ( auto &nodeId : mapLoc ) {
-                        ( *data )[shift + 31 + i++] = double( nodeId );
+                        ( *data )[shift + Offset::NODE_IDX_FACE + i++] = ASTERDOUBLE( nodeId );
                     }
                 }
             }

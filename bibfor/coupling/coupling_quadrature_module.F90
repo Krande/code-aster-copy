@@ -33,6 +33,7 @@ module coupling_quadrature_module
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
 #include "asterfort/coupling_penalisation_module.h"
+#include "asterfort/coupling_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/latrco.h"
 #include "asterfort/lcptga.h"
@@ -112,12 +113,12 @@ contains
         real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
 !
         call jevech('PPAIRR', 'L', jpair)
-        nbPoinInte = int(zr(jpair-1+2))
+        nbPoinInte = int(zr(jpair-1+OFFSET_NB_PTS_INTER))
         ASSERT(nbPoinInte .le. MAX_NB_INTE)
         poinInteSlav = 0.d0
         do iPoinInte = 1, nbPoinInte
-            poinInteSlav(1, iPoinInte) = zr(jpair-1+2+iPoinInte)
-            poinInteSlav(2, iPoinInte) = zr(jpair-1+10+iPoinInte)
+            poinInteSlav(1, iPoinInte) = zr(jpair-1+OFFSET_COOR_PTS_X+iPoinInte-1)
+            poinInteSlav(2, iPoinInte) = zr(jpair-1+OFFSET_COOR_PTS_Y+iPoinInte-1)
         end do
 !
         ndim = FEFaceSl%ndim+1

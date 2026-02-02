@@ -39,6 +39,7 @@ module coupling_penalisation_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/coupling_penalisation_module.h"
+#include "asterfort/coupling_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
@@ -228,7 +229,7 @@ contains
         end if
 !
         call jevech('PPAIRR', 'L', jpair)
-        cplData%coef_pena = zr(jpair-1+30)
+        cplData%coef_pena = zr(jpair-1+OFFSET_COEF_PENA)
 !
     end subroutine
 !
