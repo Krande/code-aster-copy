@@ -21,25 +21,26 @@ subroutine te0353(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/dfdm2d.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/get_elas_para.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/meta_vpta_coef.h"
 #include "asterfort/metaGetPhase.h"
 #include "asterfort/metaGetType.h"
-#include "asterfort/get_elas_id.h"
-#include "asterfort/get_elas_para.h"
+#include "asterfort/Metallurgy_type.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/Metallurgy_type.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 !
-    character(len=16), intent(in) :: option
-    character(len=16), intent(in) :: nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,192 +51,162 @@ subroutine te0353(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) ::  i, k, lgpg, iret, ispg
+    integer(kind=8), parameter :: ksp = 1, nbSigm = 4
+    character(len=4), parameter :: fami = 'RIGI'
+    integer(kind=8) :: iNode, iSigm, lgpg, iret
     real(kind=8) :: sigmo
-    character(len=4) :: fami
-    character(len=16) :: metaPhasName, rela_comp, valk(2)
-    integer(kind=8) :: j_mate, j_mater
-    integer(kind=8) :: meta_type, nb_phasis
+    character(len=16) :: metaPhasName, relaComp, valk(2)
+    integer(kind=8) :: jvMater, jvMaterCode
+    integer(kind=8) :: metaType, nbPhases
     real(kind=8) :: young, nu, deuxmu
     integer(kind=8) :: j_sigm
-    integer(kind=8) :: nb_sigm, elas_id
-    integer(kind=8) :: j_poids, j_vf, j_dfde, j_geom
-    integer(kind=8) :: nno, ipg, npg, jtab(7)
+    integer(kind=8) :: elasID
+    integer(kind=8) :: j_poids, j_vf, j_dfde, jvGeom
+    integer(kind=8) :: nbNode, kpg, npg, jtab(7)
     integer(kind=8) :: j_vectu
     integer(kind=8) :: j_vari
-    real(kind=8) :: sig(4), sigdv(4)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, co_axis
+    real(kind=8) :: sig(nbSigm), sigdv(nbSigm)
+    real(kind=8) :: dfdx(MT_NNOMAX2D), dfdy(MT_NNOMAX2D), poids, r, co_axis
     real(kind=8) :: coef, trans
     real(kind=8) :: zcold_curr
-    real(kind=8) :: phas_prev(5), phas_curr(5), temp
+    real(kind=8) :: phasPrev(META_NBPHASE_MAXI), phasCurr(META_NBPHASE_MAXI), temp
     aster_logical :: l_axi, l_temp
-    character(len=16) :: elas_keyword
+    character(len=16) :: elasKeyword
     character(len=16) :: metaRela, metaGlob
     character(len=16), pointer :: compor(:) => null()
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ispg = 1
-    fami = 'RIGI'
-!
+
 ! - Element reference
-!
-    call elrefe_info(fami=fami, nno=nno, &
-                     npg=npg, jpoids=j_poids, jvf=j_vf, jdfde=j_dfde)
-    call tecach('OOO', 'PVARIPR', 'L', iret, nval=7, &
-                itab=jtab)
+    call elrefe_info(fami=fami, nno=nbNode, npg=npg, &
+                     jpoids=j_poids, jvf=j_vf, jdfde=j_dfde)
+    call tecach('OOO', 'PVARIPR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
-    l_axi = .false.
-    if (lteatt('AXIS', 'OUI')) then
-        l_axi = .true.
-    end if
-!
+    l_axi = lteatt('AXIS', 'OUI')
+
 ! - Geometry
-!
-    call jevech('PGEOMER', 'L', j_geom)
-!
-! - Comportement
-!
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Get behaviour
     call jevech('PCOMPOR', 'L', vk16=compor)
-    rela_comp = compor(RELA_NAME)
+    relaComp = compor(RELA_NAME)
     metaRela = compor(META_RELA)
     metaGlob = compor(META_GLOB)
-!
-! - Cannot evaluate command variables effect for Mfront behaviors
-!
-    if ((metaRela .eq. 'MFRONT') .or. (metaRela .eq. 'AnisoLemaitre') &
-        .or. (metaRela(1:4) .eq. 'Meta')) then
-        goto 99
-    end if
-!
-! - Get type of phasis
-!
+
+! - Get type of phases
     metaPhasName = compor(META_PHAS)
-    call metaGetType(meta_type, nb_phasis)
-    ASSERT(nb_phasis .le. 5)
-    if ((meta_type .eq. META_NONE) .or. (rela_comp .eq. 'META_LEMA_ANI')) then
-        goto 99
-    end if
-!
-! - Check type of phasis
-!
-    valk(1) = metaPhasName
-    if (metaPhasName .eq. 'ACIER') then
-        if (meta_type .ne. META_STEEL) then
-            valk(2) = 'ZIRC'
-            call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
-        end if
-    elseif (metaPhasName .eq. 'ZIRC') then
-        if (meta_type .ne. META_ZIRC) then
-            valk(2) = 'ACIER'
-            call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
-        end if
-    else
-        goto 99
-    end if
-!
-! - Stresses
-!
-    nb_sigm = 4
-    call jevech('PCONTMR', 'L', j_sigm)
-!
-! - Internal variables
-!
-    call jevech('PVARIPR', 'L', j_vari)
-!
-! - Material parameters
-!
-    call jevech('PMATERC', 'L', j_mate)
-    j_mater = zi(j_mate)
-!
-! - Output vector
-!
-    call jevech('PVECTUR', 'E', j_vectu)
-    do i = 1, nno
-        zr(j_vectu+2*i-2) = 0.d0
-        zr(j_vectu+2*i-1) = 0.d0
-    end do
-!
-    do ipg = 1, npg
-        k = (ipg-1)*nno
-!
-! ----- Derived of shape functions
-!
-        call dfdm2d(nno, ipg, j_poids, j_dfde, zr(j_geom), &
-                    poids, dfdx, dfdy)
-!
-! ----- Radius for axi-symmetric
-!
-        r = 0.d0
-        do i = 1, nno
-            r = r+zr(j_geom+2*(i-1))*zr(j_vf+k+i-1)
-        end do
-!
-! ----- Get current temperature
-!
-        call rcvarc(' ', 'TEMP', '+', fami, ipg, &
-                    1, temp, iret)
-        l_temp = iret .eq. 0
-!
-! ----- Get phasis
-!
-        phas_prev(:) = 0.d0
-        phas_curr(:) = 0.d0
-        call metaGetPhase(fami, '-', ipg, ispg, meta_type, &
-                          nb_phasis, phas_prev)
-        call metaGetPhase(fami, '+', ipg, ispg, meta_type, &
-                          nb_phasis, phas_curr, zcold_=zcold_curr)
-!
-! ----- Get elastic parameters
-!
-        call get_elas_id(j_mater, elas_id, elas_keyword)
-        call get_elas_para(fami, j_mater, '+', ipg, ispg, &
-                           elas_id, elas_keyword, &
-                           e_=young, nu_=nu)
-        ASSERT(elas_id .eq. 1)
-        deuxmu = young/(1.d0+nu)
-!
-! ----- Compute coefficients for second member
-!
-        call meta_vpta_coef(metaRela, metaGlob, &
-                            lgpg, fami, ipg, j_mater, &
-                            l_temp, temp, meta_type, nb_phasis, phas_prev, &
-                            phas_curr, zcold_curr, young, deuxmu, coef, &
-                            trans)
-!
-! ----- Compute geometric coefficient for axisymmetric
-!
-        if (l_axi) then
-            poids = poids*r
-            co_axis = 1.d0/r
+    call metaGetType(metaType, nbPhases)
+    ASSERT(nbPhases .le. META_NBPHASE_MAXI)
+
+    if ((metaType .ne. META_NONE) .and. (relaComp .ne. 'META_LEMA_ANI') .and. &
+        metaPhasName .ne. "VIDE") then
+
+        ASSERT(nbPhases .ne. 0)
+
+! ----- Check type of phases
+        valk(1) = metaPhasName
+        if (metaPhasName .eq. 'ACIER') then
+            if (metaType .ne. META_STEEL) then
+                valk(2) = 'ZIRC'
+                call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
+            end if
+        elseif (metaPhasName .eq. 'ZIRC') then
+            if (metaType .ne. META_ZIRC) then
+                valk(2) = 'ACIER'
+                call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
+            end if
         else
-            co_axis = 0.d0
+            ASSERT(ASTER_FALSE)
         end if
-!
-! ----- Compute stresses
-!
-        sigmo = 0.d0
-        do i = 1, 3
-            sigmo = sigmo+zr(j_sigm+(ipg-1)*nb_sigm+i-1)
+
+! ----- Stresses
+        call jevech('PCONTMR', 'L', j_sigm)
+
+! ----- Internal variables
+        call jevech('PVARIPR', 'L', j_vari)
+
+! ----- Material parameters
+        call jevech('PMATERC', 'L', jvMater)
+        jvMaterCode = zi(jvMater)
+
+! ----- Output vector
+        call jevech('PVECTUR', 'E', j_vectu)
+        do iNode = 1, nbNode
+            zr(j_vectu+2*iNode-2) = 0.d0
+            zr(j_vectu+2*iNode-1) = 0.d0
         end do
-        sigmo = sigmo/3.d0
 !
-        do i = 1, nb_sigm
-            sigdv(i) = zr(j_sigm+(ipg-1)*nb_sigm+i-1)-sigmo*kron(i)
-            sig(i) = coef*(1.5d0*trans*sigdv(i))
-            sig(i) = deuxmu*sig(i)
+        do kpg = 1, npg
+! --------- Derived of shape functions
+            call dfdm2d(nbNode, kpg, j_poids, j_dfde, zr(jvGeom), &
+                        poids, dfdx, dfdy)
+
+! --------- Radius for axi-symmetric
+            r = 0.d0
+            do iNode = 1, nbNode
+                r = r+zr(jvGeom+2*(iNode-1))*zr(j_vf+(kpg-1)*nbNode+iNode-1)
+            end do
+
+! --------- Get current temperature
+            call rcvarc(' ', 'TEMP', '+', fami, kpg, &
+                        ksp, temp, iret)
+            l_temp = iret .eq. 0
+
+! --------- Get phases
+            phasPrev = 0.d0
+            phasCurr = 0.d0
+            call metaGetPhase(fami, '-', kpg, ksp, metaType, &
+                              nbPhases, phasPrev)
+            call metaGetPhase(fami, '+', kpg, ksp, metaType, &
+                              nbPhases, phasCurr, zcold_=zcold_curr)
+
+! --------- Get elastic parameters
+            call get_elas_id(jvMaterCode, elasID, elasKeyword)
+            call get_elas_para(fami, jvMaterCode, '+', kpg, ksp, &
+                               elasID, elasKeyword, &
+                               e_=young, nu_=nu)
+            ASSERT(elasID .eq. ELAS_ISOT)
+            deuxmu = young/(1.d0+nu)
+
+! --------- Compute coefficients for second member
+            call meta_vpta_coef(metaRela, metaGlob, &
+                                lgpg, fami, kpg, jvMaterCode, &
+                                l_temp, temp, metaType, nbPhases, phasPrev, &
+                                phasCurr, zcold_curr, young, deuxmu, coef, &
+                                trans)
+
+! --------- Compute geometric coefficient for axisymmetric
+            if (l_axi) then
+                poids = poids*r
+                co_axis = 1.d0/r
+            else
+                co_axis = 0.d0
+            end if
+
+! --------- Compute stresses
+            sigmo = 0.d0
+            do iNode = 1, 3
+                sigmo = sigmo+zr(j_sigm+(kpg-1)*nbSigm+iNode-1)
+            end do
+            sigmo = sigmo/3.d0
+            do iSigm = 1, nbSigm
+                sigdv(iSigm) = zr(j_sigm+(kpg-1)*nbSigm+iSigm-1)-sigmo*kron(iSigm)
+                sig(iSigm) = coef*(1.5d0*trans*sigdv(iSigm))
+                sig(iSigm) = deuxmu*sig(iSigm)
+            end do
+
+! --------- Second member
+            do iNode = 1, nbNode
+                zr(j_vectu+2*iNode-2) = zr(j_vectu+2*iNode-2)+ &
+                                        poids*(sig(1)*dfdx(iNode)+ &
+                                               sig(3)*zr(j_vf+(kpg-1)*nbNode+iNode-1)*co_axis+ &
+                                               sig(4)*dfdy(iNode))
+                zr(j_vectu+2*iNode-1) = zr(j_vectu+2*iNode-1)+ &
+                                        poids*(sig(2)*dfdy(iNode)+ &
+                                               sig(4)*dfdx(iNode))
+            end do
         end do
-!
-! ----- Second member
-!
-        do i = 1, nno
-            zr(j_vectu+2*i-2) = zr(j_vectu+2*i-2)+ &
-                                poids*(sig(1)*dfdx(i)+sig(3)*zr(j_vf+k+i-1)*co_axis+sig(4)*dfdy(i))
-            zr(j_vectu+2*i-1) = zr(j_vectu+2*i-1)+ &
-                                poids*(sig(2)*dfdy(i)+sig(4)*dfdx(i))
-        end do
-    end do
-!
-99  continue
+    end if
 end subroutine

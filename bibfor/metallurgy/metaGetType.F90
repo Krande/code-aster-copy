@@ -16,17 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetType(meta_type, nb_phasis)
+subroutine metaGetType(metaType, nbPhases)
 !
     use calcul_module, only: calcul_status
-!
     implicit none
 !
 #include "asterfort/rcvarc.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer(kind=8), intent(out) :: meta_type
-    integer(kind=8), intent(out) :: nb_phasis
+    integer(kind=8), intent(out) :: metaType, nbPhases
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,28 +34,23 @@ subroutine metaGetType(meta_type, nb_phasis)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out meta_type      : type of metallurgy
-! Out nb_phasis      : total number of phasis (cold and hot)
+! Out metaType       : type of metallurgy
+! Out nbPhases       : total number of phases (cold and hot)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: steel, zirc, fami
-    integer(kind=8) :: kpg, ksp
+    integer(kind=8), parameter :: kpg = 1, ksp = 1
+    character(len=8), parameter :: steel = "PFERRITE", zirc = "ALPHPUR"
+    character(len=8) :: fami
     integer(kind=8) :: iret_steel, iret_zirc
     real(kind=8) :: r8dummy
 !
-    data steel/'PFERRITE'/
-    data zirc/'ALPHPUR'/
-!
 ! --------------------------------------------------------------------------------------------------
 !
-    kpg = 1
-    ksp = 1
-    meta_type = META_NONE
-    nb_phasis = 0
-!
+    metaType = META_NONE
+    nbPhases = 0
+
 ! - Choice of integration scheme: for CALC_POINT_MAT is PMAT !
-!
     if (calcul_status() .eq. 2) then
         fami = 'PMAT'
     else
@@ -67,15 +60,20 @@ subroutine metaGetType(meta_type, nb_phasis)
     call rcvarc(' ', steel, '+', fami, kpg, &
                 ksp, r8dummy, iret_steel)
     if (iret_steel .eq. 0) then
-        meta_type = META_STEEL
-        nb_phasis = 5
+        metaType = META_STEEL
+        nbPhases = 5
+
     else
         call rcvarc(' ', zirc, '+', fami, kpg, &
                     ksp, r8dummy, iret_zirc)
         if (iret_zirc .eq. 0) then
-            meta_type = META_ZIRC
-            nb_phasis = 3
+            metaType = META_ZIRC
+            nbPhases = 3
+        else
+            metaType = META_NONE
+            nbPhases = 0
         end if
-    end if
 
+    end if
+!
 end subroutine

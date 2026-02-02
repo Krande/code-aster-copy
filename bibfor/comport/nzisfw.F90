@@ -93,7 +93,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: maxval, nb_phase, meta_type
+    integer(kind=8) :: maxval, nbPhases, metaType
     integer(kind=8) :: ndimsi, i, j, k, mode, iret2
     real(kind=8) :: phase(5), phasm(5), zalpha, deltaz(5)
     real(kind=8) :: temp, dt, coef_hard
@@ -128,27 +128,25 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 ! - Behaviour in kit
     metaRela = compor(META_RELA)
     metaGlob = compor(META_GLOB)
-!
+
 ! - Get metallurgy type
-!
-    call metaGetType(meta_type, nb_phase)
-    ASSERT(meta_type .eq. META_STEEL)
-    ASSERT(nb_phase .eq. 5)
-!
-! - Get phasis
-!
+    call metaGetType(metaType, nbPhases)
+    ASSERT(metaType .eq. META_STEEL)
+    ASSERT(nbPhases .eq. 5)
+
+! - Get phases
     if (resi) then
         poum = '+'
-        call metaGetPhase(fami, '+', kpg, ksp, meta_type, &
-                          nb_phase, phase, zcold_=zalpha)
-        call metaGetPhase(fami, '-', kpg, ksp, meta_type, &
-                          nb_phase, phasm)
+        call metaGetPhase(fami, '+', kpg, ksp, metaType, &
+                          nbPhases, phase, zcold_=zalpha)
+        call metaGetPhase(fami, '-', kpg, ksp, metaType, &
+                          nbPhases, phasm)
     else
         poum = '-'
-        call metaGetPhase(fami, '-', kpg, ksp, meta_type, &
-                          nb_phase, phase, zcold_=zalpha)
+        call metaGetPhase(fami, '-', kpg, ksp, metaType, &
+                          nbPhases, phase, zcold_=zalpha)
     end if
-    do k = 1, nb_phase-1
+    do k = 1, nbPhases-1
         deltaz(k) = phase(k)-phasm(k)
     end do
 !
@@ -181,14 +179,14 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 ! - Mixture law (yield limit)
 !
     call metaGetParaMixture(poum, fami, kpg, ksp, imat, &
-                            l_visc, meta_type, nb_phase, zalpha, fmel, &
+                            l_visc, metaType, nbPhases, zalpha, fmel, &
                             sy)
 !
     if (resi) then
 ! ----- Parameters for annealing
         if (l_anneal) then
             call metaGetParaAnneal(poum, fami, kpg, ksp, imat, &
-                                   meta_type, nb_phase, &
+                                   metaType, nbPhases, &
                                    theta)
         else
             do i = 1, 8
@@ -198,7 +196,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 ! ----- Parameters for viscosity
         if (l_visc) then
             call metaGetParaVisc(poum, fami, kpg, ksp, imat, &
-                                 meta_type, nb_phase, eta, n, unsurn, &
+                                 metaType, nbPhases, eta, n, unsurn, &
                                  c, m)
         else
             eta(:) = 0.d0
@@ -210,7 +208,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 !
 ! 2.6 - CALCUL DE VIM+DG-DS ET DE RMOY
 !
-        do k = 1, nb_phase-1
+        do k = 1, nbPhases-1
             dz(k) = phase(k)-phasm(k)
             if (dz(k) .ge. 0.d0) then
                 dz1(k) = dz(k)
@@ -220,20 +218,20 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
                 dz2(k) = -dz(k)
             end if
         end do
-        if (phase(nb_phase) .gt. 0.d0) then
+        if (phase(nbPhases) .gt. 0.d0) then
             dvin = 0.d0
-            do k = 1, nb_phase-1
-                dvin = dvin+dz2(k)*(theta(4+k)*vim(k)-vim(nb_phase))/phase(nb_phase)
+            do k = 1, nbPhases-1
+                dvin = dvin+dz2(k)*(theta(4+k)*vim(k)-vim(nbPhases))/phase(nbPhases)
             end do
-            vi(nb_phase) = vim(nb_phase)+dvin
-            vimoy = phase(nb_phase)*vi(nb_phase)
+            vi(nbPhases) = vim(nbPhases)+dvin
+            vimoy = phase(nbPhases)*vi(nbPhases)
         else
-            vi(nb_phase) = 0.d0
+            vi(nbPhases) = 0.d0
             vimoy = 0.d0
         end if
-        do k = 1, nb_phase-1
+        do k = 1, nbPhases-1
             if (phase(k) .gt. 0.d0) then
-                dvin = dz1(k)*(theta(k)*vim(nb_phase)-vim(k))/phase(k)
+                dvin = dz1(k)*(theta(k)*vim(nbPhases)-vim(k))/phase(k)
                 vi(k) = vim(k)+dvin
                 vimoy = vimoy+phase(k)*vi(k)
             else
@@ -245,7 +243,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 !
         cmoy = 0.d0
         mmoy = 0.d0
-        do k = 1, nb_phase
+        do k = 1, nbPhases
             cmoy = cmoy+phase(k)*c(k)
             mmoy = mmoy+phase(k)*m(k)
         end do
@@ -255,7 +253,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
         else
             ds = dt*(cr**mmoy)
         end if
-        do k = 1, nb_phase
+        do k = 1, nbPhases
             if (phase(k) .gt. 0.d0) then
                 vi(k) = vi(k)-ds
                 if (vi(k) .le. 0.d0) vi(k) = 0.d0
@@ -265,16 +263,16 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
         trans = 0.d0
         if (l_plas_tran) then
             call metaGetParaPlasTransf('+', fami, 1, 1, imat, &
-                                       meta_type, nb_phase, deltaz, zalpha, &
+                                       metaType, nbPhases, deltaz, zalpha, &
                                        kpt, fpt)
-            do k = 1, nb_phase-1
+            do k = 1, nbPhases-1
                 if (deltaz(k) .gt. 0.d0) then
                     trans = trans+kpt(k)*fpt(k)*deltaz(k)
                 end if
             end do
         end if
     else
-        do k = 1, nb_phase
+        do k = 1, nbPhases
             vi(k) = vim(k)
         end do
     end if
@@ -285,18 +283,18 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 ! ----- Get hardening slope (linear)
         coef_hard = (1.d0)
         call metaGetParaHardLine(poum, fami, kpg, ksp, imat, &
-                                 meta_type, nb_phase, &
+                                 metaType, nbPhases, &
                                  e, coef_hard, h)
-        do k = 1, nb_phase
+        do k = 1, nbPhases
             r(k) = h(k)*vi(k)+sy(k)
         end do
     end if
     if (l_hard_isotnlin) then
 ! ----- Get hardening slope (non-linear)
-        call metaGetParaHardTrac(imat, meta_type, nb_phase, &
+        call metaGetParaHardTrac(imat, metaType, nbPhases, &
                                  l_temp, temp, &
                                  vi, h, r, maxval)
-        do k = 1, nb_phase
+        do k = 1, nbPhases
             r(k) = r(k)+sy(k)
         end do
     end if
@@ -309,8 +307,8 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
         rmoy = 0.d0
         hmoy = 0.d0
     end if
-    rmoy = (1.d0-fmel)*r(nb_phase)+fmel*rmoy
-    hmoy = (1.d0-fmel)*h(nb_phase)+fmel*hmoy
+    rmoy = (1.d0-fmel)*r(nbPhases)+fmel*rmoy
+    hmoy = (1.d0-fmel)*h(nbPhases)+fmel*hmoy
 !
 ! ********************************
 ! 3 - DEBUT DE L ALGORITHME
@@ -355,7 +353,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
             dp = 0.d0
         else
             vip(IDX_I_IPLAS) = 1.d0
-            call nzcalc(carcri, nb_phase, phase, zalpha, &
+            call nzcalc(carcri, nbPhases, phase, zalpha, &
                         fmel, seuil, dt, trans, &
                         hmoy, deuxmu, eta, unsurn, &
                         dp, iret)
@@ -368,12 +366,12 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 !
                 do j = 1, maxval
                     test = 0
-                    vip(1:nb_phase) = vi(1:nb_phase)+dp
-                    hplus(1:nb_phase) = h(1:nb_phase)
-                    call metaGetParaHardTrac(imat, meta_type, nb_phase, &
+                    vip(1:nbPhases) = vi(1:nbPhases)+dp
+                    hplus(1:nbPhases) = h(1:nbPhases)
+                    call metaGetParaHardTrac(imat, metaType, nbPhases, &
                                              l_temp, temp, &
                                              vip, h, r)
-                    do k = 1, nb_phase
+                    do k = 1, nbPhases
                         if (phase(k) .gt. 0.d0) then
                             r(k) = r(k)+sy(k)
                             if (abs(h(k)-hplus(k)) .gt. precr) test = 1
@@ -383,7 +381,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
                     hmoy = 0.d0
                     rmoy = 0.d0
                     if (zalpha .gt. 0.d0) then
-                        do k = 1, nb_phase-1
+                        do k = 1, nbPhases-1
                             if (phase(k) .gt. 0.d0) then
                                 rmoy = rmoy+phase(k)*(r(k)-h(k)*dp)
                                 hmoy = hmoy+phase(k)*h(k)
@@ -392,12 +390,12 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
                         rmoy = fmel*rmoy/zalpha
                         hmoy = fmel*hmoy/zalpha
                     end if
-                    if (phase(nb_phase) .gt. 0.d0) then
-                        rmoy = (1.d0-fmel)*(r(nb_phase)-h(nb_phase)*dp)+rmoy
-                        hmoy = (1.d0-fmel)*h(nb_phase)+hmoy
+                    if (phase(nbPhases) .gt. 0.d0) then
+                        rmoy = (1.d0-fmel)*(r(nbPhases)-h(nbPhases)*dp)+rmoy
+                        hmoy = (1.d0-fmel)*h(nbPhases)+hmoy
                     end if
                     seuil = sieleq-(1.5d0*deuxmu*trans+1.d0)*rmoy
-                    call nzcalc(carcri, nb_phase, phase, zalpha, &
+                    call nzcalc(carcri, nbPhases, phase, zalpha, &
                                 fmel, seuil, dt, trans, &
                                 hmoy, deuxmu, eta, unsurn, &
                                 dp, iret)
@@ -420,7 +418,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
 !
 ! 4.2.3 - CALCUL DE VIP ET RMOY
 !
-        do k = 1, nb_phase
+        do k = 1, nbPhases
             if (phase(k) .gt. 0.d0) then
                 vip(k) = vi(k)+dp
             else
@@ -428,17 +426,17 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
             end if
         end do
         vip(IDX_I_EPSEQ) = 0.d0
-        if (phase(nb_phase) .gt. 0.d0) then
+        if (phase(nbPhases) .gt. 0.d0) then
             if (l_hard_isotline) then
-                vip(IDX_I_EPSEQ) = vip(IDX_I_EPSEQ)+(1-fmel)*h(nb_phase)*vip(nb_phase)
+                vip(IDX_I_EPSEQ) = vip(IDX_I_EPSEQ)+(1-fmel)*h(nbPhases)*vip(nbPhases)
             end if
             if (l_hard_isotnlin) then
-                vip(IDX_I_EPSEQ) = vip(IDX_I_EPSEQ)+(1-fmel)*(r(nb_phase)-sy(nb_phase))
+                vip(IDX_I_EPSEQ) = vip(IDX_I_EPSEQ)+(1-fmel)*(r(nbPhases)-sy(nbPhases))
             end if
         end if
 !
         if (zalpha .gt. 0.d0) then
-            do k = 1, nb_phase-1
+            do k = 1, nbPhases-1
                 if (l_hard_isotline) then
                     vip(IDX_I_EPSEQ) = vip(IDX_I_EPSEQ)+fmel*phase(k)*h(k)*vip(k)/zalpha
                 end if
@@ -491,13 +489,13 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat, &
                     b = 1.d0-(1.5d0*deuxmu*dp/sieleq)
                     dv = 0.d0
                     if (mode .eq. 1) then
-                        do k = 1, nb_phase
+                        do k = 1, nbPhases
                             n0(k) = (1-n(k))/n(k)
                         end do
-                        dv = (1-fmel)*phase(nb_phase)*(eta(nb_phase)/n(nb_phase)/dt)* &
-                             ((dp/dt)**n0(nb_phase))
+                        dv = (1-fmel)*phase(nbPhases)*(eta(nbPhases)/n(nbPhases)/dt)* &
+                             ((dp/dt)**n0(nbPhases))
                         if (zalpha .gt. 0.d0) then
-                            do k = 1, nb_phase-1
+                            do k = 1, nbPhases-1
                                 if (phase(k) .gt. 0.d0) then
                                     dv = dv+fmel*(phase(k)/zalpha)* &
                                          (eta(k)/n(k)/dt)*((dp/dt)**n0(k))

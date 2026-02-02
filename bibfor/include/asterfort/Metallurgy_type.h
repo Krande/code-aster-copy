@@ -23,6 +23,9 @@
 #define META_STEEL       1
 #define META_ZIRC        2
 
+! Maximum number of phases from user
+#define META_NBPHASE_MAXI 5
+
 ! - Phases for steel: total number (4 cold, 1 hot + 1 sum of cold)
 #define NBPHASESTEEL     6
 

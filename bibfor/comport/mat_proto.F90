@@ -23,13 +23,13 @@ subroutine mat_proto(BEHinteg, &
     use Behaviour_type
     implicit none
 !
-#include "jeveux.h"
-#include "asterf_types.h"
 #include "asterc/r8nnem.h"
-#include "asterfort/rcadlv.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/metaGetPhase.h"
 #include "asterfort/metaGetType.h"
+#include "asterfort/rcadlv.h"
+#include "jeveux.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
@@ -61,7 +61,7 @@ subroutine mat_proto(BEHinteg, &
 !
     integer(kind=8) :: i, jadr, icodre, ncoef, nbPara
     real(kind=8) :: phase(5), zalpha
-    integer(kind=8) :: metaType, nbPhase
+    integer(kind=8) :: metaType, nbPhases
     integer(kind=8), parameter :: nbParaMaxi = 4
     real(kind=8) :: paraVale(nbParaMaxi)
     character(len=16) :: paraName(nbParaMaxi)
@@ -78,12 +78,14 @@ subroutine mat_proto(BEHinteg, &
     paraName = " "
     paraVale = 0.d0
     if (BEHinteg%behavPara%lElasIsMeta) then
-        call metaGetType(metaType, nbPhase)
-        call metaGetPhase(fami, poum, kpg, ksp, metaType, &
-                          nbPhase, phase, zcold_=zalpha)
-        nbPara = nbPara+1
-        paraName(nbPara) = "META"
-        paraVale(nbPara) = zalpha
+        call metaGetType(metaType, nbPhases)
+        if (nbPhases .ne. 0) then
+            call metaGetPhase(fami, poum, kpg, ksp, metaType, &
+                              nbPhases, phase, zcold_=zalpha)
+            nbPara = nbPara+1
+            paraName(nbPara) = "META"
+            paraVale(nbPara) = zalpha
+        end if
     end if
 
     if (.not. BEHinteg%behavESVA%lGeomInESVA) then
