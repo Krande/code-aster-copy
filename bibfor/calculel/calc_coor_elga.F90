@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
+subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus, &
+                          cacoquZ_)
 !
     implicit none
 !
@@ -27,6 +28,7 @@ subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
     character(len=19), intent(in) :: ligrel
     character(len=19), intent(in) :: chgeom
     character(len=19), intent(in) :: chgaus
+    character(len=*), optional, intent(in) :: cacoquZ_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,9 +43,9 @@ subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: lpain(5), lpaout(1)
+    character(len=8) :: lpain(6), lpaout(1)
     character(len=16) :: option
-    character(len=19) :: lchin(5), lchout(1)
+    character(len=19) :: lchin(6), lchout(1)
     integer(kind=8) :: nbchin, nfiss
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,6 +53,12 @@ subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     nbchin = 1
+
+    if (present(cacoquZ_)) then
+        lpain(2) = 'PCACOQU'
+        lchin(2) = cacoquZ_(1:19)
+        nbchin = 2
+    end if
 !   si le modele comporte des elements X-FEM, on ajoute les
 !   champs ad hoc
     call dismoi('NB_FISS_XFEM', modelZ, 'MODELE', repi=nfiss)
@@ -63,7 +71,7 @@ subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
         lchin(4) = modelZ(1:8)//'.TOPOSE.CNS'
         lpain(5) = 'PLONCHA'
         lchin(5) = modelZ(1:8)//'.TOPOSE.LON'
-        nbchin = 5
+        nbchin = nbchin+5
     end if
 !
     lpaout(1) = 'PCOORPG'
