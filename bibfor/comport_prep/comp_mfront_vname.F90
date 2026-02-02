@@ -20,18 +20,18 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/lxlgut.h"
-#include "asterfort/utmess.h"
-#include "asterfort/codent.h"
-#include "asterfort/BehaviourMGIS_type.h"
-#include "asterc/mgis_get_number_of_isvs.h"
-#include "asterc/mgis_get_isvs.h"
 #include "asterc/mgis_get_isvs_sizes.h"
 #include "asterc/mgis_get_isvs_types.h"
+#include "asterc/mgis_get_isvs.h"
+#include "asterc/mgis_get_number_of_isvs.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/BehaviourMGIS_type.h"
+#include "asterfort/codent.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: extern_addr
     integer(kind=8), intent(in) :: nbVariMeca
@@ -51,9 +51,10 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-  integer(kind=8) :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng, variTypeMGIS, lenTronca
-    integer(kind=8) :: lenMaxi
-    character(len=16) :: variName, variNameMGIS
+    integer(kind=8) :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, variTypeMGIS
+    integer(kind=8) :: leng, lenMaxi, lenTronca
+    character(len=16) :: variName
+    character(len=80) :: variNameMGIS
     character(len=80), pointer :: variNameList(:) => null()
     integer(kind=8), pointer :: variSizeList(:) => null()
     integer(kind=8), pointer :: variTypeList(:) => null()
@@ -82,16 +83,16 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
             call mgis_get_isvs_types(extern_addr, variTypeList)
             iVari = 0
             do iVariType = 1, nbVariMGIS
-                variNameMGIS = variNameList(iVariType) (1:16)
+                variNameMGIS = variNameList(iVariType)
                 variSizeMGIS = variSizeList(iVariType)
                 variTypeMGIS = variTypeList(iVariType)
-
                 leng = lxlgut(variNameMGIS)
                 lenTronca = min(leng, 14)
 
                 if (variTypeMGIS .eq. MGIS_BV_SCALAR) then
                     lenMaxi = 16
-                    infoVari(iVari+1) = variNameMGIS
+                    lenTronca = min(leng, 16)
+                    infoVari(iVari+1) = variNameMGIS(1:lenTronca)
 
                 else if (variTypeMGIS .eq. MGIS_BV_VECTOR_1D .or. &
                          variTypeMGIS .eq. MGIS_BV_VECTOR_2D .or. &
@@ -152,7 +153,7 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
                     call utmess('F', "MGIS1_24")
                 end if
                 if (leng .gt. lenMaxi) then
-                    call utmess('A', "MGIS1_19", nk=2, &
+                    call utmess('I', "MGIS1_19", nk=2, &
                                 valk=[variNameMGIS, variNameMGIS(1:lenTronca)])
                 end if
                 iVari = iVari+variSizeMGIS
