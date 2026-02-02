@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 interface
-    subroutine get_elas_id(j_mater, elas_id, elas_keyword)
-        integer(kind=8), intent(in) :: j_mater
-        integer(kind=8), intent(out) :: elas_id
-        character(len=*), optional, intent(out) :: elas_keyword
+    subroutine get_elas_id(jvMaterCode, elasID, elasKeyword_)
+        integer(kind=8), intent(in) :: jvMaterCode
+        integer(kind=8), intent(out) :: elasID
+        character(len=*), optional, intent(out) :: elasKeyword_
     end subroutine get_elas_id
 end interface

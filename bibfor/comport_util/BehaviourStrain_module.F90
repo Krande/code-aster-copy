@@ -381,7 +381,7 @@ contains
 ! ----- Local
         real(kind=8) :: alpha(2)
         real(kind=8) :: alphaL, alphaT, alphaN
-        integer(kind=8) :: metaType, nbPhase
+        integer(kind=8) :: metaType, nbPhases
         real(kind=8) :: zCold, zHot
         real(kind=8) :: epsthMetaHot, epsthMetaCold
         real(kind=8) :: z_h_r, deps_ch_tref
@@ -401,26 +401,31 @@ contains
 
 ! ----- Get type of metallurgy and get phases
         metaType = META_NONE
-        nbPhase = 0
+        nbPhases = 0
+        zCold = 0.d0
+        zHot = 0.d0
         if (elasKeyword .eq. 'ELAS_META') then
-            call metaGetType(metaType, nbPhase)
-            call metaGetPhase(fami, poum, kpg, ksp, metaType, nbPhase, &
-                              zcold_=zCold, zhot_=zHot)
+            call metaGetType(metaType, nbPhases)
+            if (nbPhases .ne. 0) then
+                call metaGetPhase(fami, poum, kpg, ksp, metaType, nbPhases, &
+                                  zcold_=zCold, zhot_=zHot)
+            end if
         end if
 
 ! ----- Compute thermic strain
         if (elasID .eq. ELAS_ISOT) then
             if (elasKeyword .eq. 'ELAS_META') then
-                epsthMetaHot = zHot*alpha(1)*(temp-tempRefe)
-                epsthMetaCold = zCold*alpha(2)*(temp-tempRefe)
                 if (.not. lMetaLemaAni) then
+                    epsthMetaHot = zHot*alpha(1)*(temp-tempRefe)
+                    epsthMetaCold = zCold*alpha(2)*(temp-tempRefe)
                     call get_elasth_para(fami, jvMaterCode, '+', kpg, ksp, &
                                          elasID, elasKeyword, &
                                          z_h_r_=z_h_r, deps_ch_tref_=deps_ch_tref)
                     epsthMetaHot = epsthMetaHot+(1-z_h_r)*deps_ch_tref*zHot
                     epsthMetaCold = epsthMetaCold+z_h_r*deps_ch_tref*zCold
+                    epsthMeta = epsthMetaHot+epsthMetaCold
                 end if
-                epsthMeta = epsthMetaHot+epsthMetaCold
+
             else
                 epsthIsot = alpha(1)*(temp-tempRefe)
             end if

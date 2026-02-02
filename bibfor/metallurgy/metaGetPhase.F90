@@ -16,8 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetPhase(fami, poum, ipg, ispg, meta_type, &
-                        nb_phase, phase_, zcold_, zhot_, tole_bound_)
+subroutine metaGetPhase(fami, poum, kpg, ksp, &
+                        metaType, nbPhases, &
+                        phase_, zcold_, zhot_, tole_bound_)
 !
     implicit none
 !
@@ -28,9 +29,8 @@ subroutine metaGetPhase(fami, poum, ipg, ispg, meta_type, &
 !
     character(len=*), intent(in) :: fami
     character(len=1), intent(in) :: poum
-    integer(kind=8), intent(in) :: ipg, ispg
-    integer(kind=8), intent(in) :: meta_type
-    integer(kind=8), intent(in) :: nb_phase
+    integer(kind=8), intent(in) :: kpg, ksp
+    integer(kind=8), intent(in) :: metaType, nbPhases
     real(kind=8), optional, intent(out) :: phase_(*)
     real(kind=8), optional, intent(out) :: zcold_
     real(kind=8), optional, intent(out) :: zhot_
@@ -40,17 +40,17 @@ subroutine metaGetPhase(fami, poum, ipg, ispg, meta_type, &
 !
 ! Comportment utility - Metallurgy
 !
-! Get phase
+! Get phases
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  fami         : Gauss family for integration point rule
 ! In  poum         : '-' or '+' for parameters evaluation (previous or current temperature)
-! In  ipg          : current point gauss
-! In  ispg         : current "sous-point" gauss
-! In  meta_type    : type of metallurgy
-! In  nb_phase    : total number of phase (cold and hot)
-! Out phase       : phase
+! In  kpg          : current point gauss
+! In  ksp          : current "sous-point" gauss
+! In  metaType     : type of metallurgy
+! In  nbPhases     : total number of phase (cold and hot)
+! Out phase        : phases
 ! Out zcold        : sum of cold phase
 ! Out zhot         : hot phase
 ! In  tole_bound   : tolerance to project phase proportion on boundary
@@ -62,52 +62,52 @@ subroutine metaGetPhase(fami, poum, ipg, ispg, meta_type, &
                                                 'PAUSTENI', 'PCOLDSUM'/)
     character(len=8), parameter :: zirc(3) = (/'ALPHPUR ', 'ALPHBETA', &
                                                'BETA    '/)
-    integer(kind=8) :: i_phase_c, i_phase, iret, nb_phase_c
+    integer(kind=8) :: iPhaseCold, iPhase, iret, nbPhasesCold
     real(kind=8) :: zcold, zhot, phase(5), tole_bound
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nb_phase .le. 5)
-    phase(1:5) = 0.d0
-    nb_phase_c = nb_phase-1
+    ASSERT(nbPhases .le. 5)
+    ASSERT(nbPhases .gt. 0)
+    phase = 0.d0
     if (present(tole_bound_)) then
         tole_bound = tole_bound_
     else
         tole_bound = r8prem()
     end if
-!
+    nbPhasesCold = nbPhases-1
+
 ! - Set cold phase
-!
-    do i_phase = 1, nb_phase
-        if (meta_type .eq. META_STEEL) then
-            call rcvarc('F', steel(i_phase), poum, fami, ipg, &
-                        ispg, phase(i_phase), iret)
+    do iPhase = 1, nbPhases
+        if (metaType .eq. META_STEEL) then
+            call rcvarc('F', steel(iPhase), poum, fami, kpg, &
+                        ksp, phase(iPhase), iret)
             if (iret .eq. 1) then
-                phase(i_phase) = 0.d0
+                phase(iPhase) = 0.d0
             end if
-        elseif (meta_type .eq. META_ZIRC) then
-            call rcvarc('F', zirc(i_phase), poum, fami, ipg, &
-                        ispg, phase(i_phase), iret)
+        elseif (metaType .eq. META_ZIRC) then
+            call rcvarc('F', zirc(iPhase), poum, fami, kpg, &
+                        ksp, phase(iPhase), iret)
             if (iret .eq. 1) then
-                phase(i_phase) = 0.d0
+                phase(iPhase) = 0.d0
             end if
         else
             ASSERT(ASTER_FALSE)
         end if
     end do
-!
+
 ! - Sum of cold phases
-!
     zcold = 0.d0
-    if (meta_type .eq. META_STEEL) then
-        call rcvarc('F', steel(6), poum, fami, ipg, &
-                    ispg, zcold, iret)
+    if (metaType .eq. META_STEEL) then
+        call rcvarc('F', steel(6), poum, fami, kpg, &
+                    ksp, zcold, iret)
         if (iret .eq. 1) then
             zcold = 0.d0
         end if
-    elseif (meta_type .eq. META_ZIRC) then
-        do i_phase_c = 1, nb_phase_c
-            zcold = zcold+phase(i_phase_c)
+
+    elseif (metaType .eq. META_ZIRC) then
+        do iPhaseCold = 1, nbPhasesCold
+            zcold = zcold+phase(iPhaseCold)
         end do
         if (zcold .le. tole_bound) then
             zcold = 0.d0
@@ -116,13 +116,11 @@ subroutine metaGetPhase(fami, poum, ipg, ispg, meta_type, &
             zcold = 1.d0
         end if
     end if
-!
+
 ! - Set hot phase
-!
-    zhot = phase(nb_phase)
-!
+    zhot = phase(nbPhases)
     if (present(phase_)) then
-        phase_(1:nb_phase) = phase(1:nb_phase)
+        phase_(1:nbPhases) = phase(1:nbPhases)
     end if
     if (present(zcold_)) then
         zcold_ = zcold
