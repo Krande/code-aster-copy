@@ -15,16 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine nzcalc(carcri, nb_phase, phase, zalpha,&
-                      fmel  , seuil   , dt   , trans ,&
-                      rprim , deuxmu  , eta  , unsurn,&
-                      dp    , iret)
-        integer(kind=8), intent(in) :: nb_phase
-        real(kind=8), intent(in) :: phase(nb_phase), zalpha
-        real(kind=8) :: seuil, dt, trans, rprim, deuxmu, carcri(3), fmel
-        real(kind=8) :: eta(5), unsurn(5), dp
+    subroutine nzcalc(carcri, nbPhase, phase, zalpha, &
+                      fmix, seuil, timeIncr, trans, &
+                      rprim, deuxmu, eta, unsurn, &
+                      dp, iret)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+        integer(kind=8), intent(in) :: nbPhase
+        real(kind=8), intent(in) :: phase(nbPhase), zalpha
+        real(kind=8), intent(in) :: fmix, seuil, timeIncr, trans
+        real(kind=8), intent(in) :: rprim, deuxmu, eta(nbPhase), unsurn(nbPhase)
+        real(kind=8), intent(out) :: dp
         integer(kind=8), intent(out) :: iret
     end subroutine nzcalc
 end interface

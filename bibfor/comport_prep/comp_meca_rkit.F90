@@ -21,9 +21,10 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp, l_etat_init_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/ddi_kit_read.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/lxlgut.h"
 #include "asterfort/thm_kit_read.h"
 !
     character(len=16), intent(in) :: keywordfact
@@ -52,7 +53,7 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp, l_etat_init_)
     character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
     character(len=16) :: rela_cg(2)
-    character(len=16) :: metaPhas, metaRela, relaCompMeta, metaGlob
+    character(len=16) :: metaPhas, metaRela, relaCompMeta, metaGlob, metaPhasUser
     aster_logical :: l_etat_init, lIsot, lCine
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,11 +65,16 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp, l_etat_init_)
     end if
 !
     if (rela_comp .eq. 'KIT_META') then
-        metaPhas = 'VIDE'
+! ----- Get phase
+        metaPhasUser = 'VIDE'
         call getvtx(keywordfact, 'RELATION_KIT', iocc=iocc, &
-                    nbval=1, vect=metaPhas, nbret=nocc)
+                    nbval=1, vect=metaPhasUser, nbret=nocc)
         ASSERT(nocc .eq. 1)
 
+! ----- Using list of phases for mechanical  behaviours
+        metaPhas = metaPhasUser(1:lxlgut(metaPhasUser))//"_MECA"
+
+! ----- Get behaviour
         call getvtx(keywordfact, 'RELATION', iocc=iocc, scal=relaCompMeta)
 
 ! ----- Internal state variables (by phase)

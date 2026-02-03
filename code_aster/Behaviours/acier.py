@@ -23,7 +23,7 @@ from .cata_comportement import LoiComportement
 loi = LoiComportement(
     nom="ACIER",
     lc_type=("PHASE",),
-    doc="""phases metallurgiques de l'acier""",
+    doc="""Metallurgical phases for steel - Using in metallurgical behaviour law""",
     num_lc=0,
     nb_vari=6,
     nom_vari=("FERRITE", "PERLITE", "BAINITE", "MARTENSITE", "AUSTENITE", "SUMCOLD"),

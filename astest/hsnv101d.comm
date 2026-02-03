@@ -379,6 +379,10 @@ ALP2 = DEFI_FONCTION(
     VALE=(0.0, 23.5e-6, 900.0, 23.5e-6),
 )
 
+FPRIM = DEFI_FONCTION(
+    NOM_PARA="META", PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE", VALE=(0.0, 2.0, 1.0, 0.0)
+)
+
 FMEL = DEFI_FONCTION(
     NOM_PARA="META", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(0.0, 0.0, 1.0, 1.0)
 )
@@ -409,6 +413,26 @@ ACIER2 = DEFI_MATERIAU(
         F3_D_SIGM_EPSI=FBM1,
         F4_D_SIGM_EPSI=FBM1,
         C_D_SIGM_EPSI=AUS1,
+    ),
+    META_PT=_F(
+        F1_K=0.0,
+        F2_K=0.0,
+        F3_K=1.0e-10,
+        F4_K=1.0e-10,
+        F1_D_F_META=FPRIM,
+        F2_D_F_META=FPRIM,
+        F3_D_F_META=FPRIM,
+        F4_D_F_META=FPRIM,
+    ),
+    META_RE=_F(
+        C_F1_THETA=0.0,
+        C_F2_THETA=0.0,
+        C_F3_THETA=0.0,
+        C_F4_THETA=1.0,
+        F1_C_THETA=0.0,
+        F2_C_THETA=0.0,
+        F3_C_THETA=0.0,
+        F4_C_THETA=0.0,
     ),
 )
 
@@ -643,7 +667,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="N13",
-            NOM_CMP="V43",
+            NOM_CMP="V37",
             GROUP_MA="M1",
             CHAM_GD=CHVAR47,
             VALE_CALC=0.0,
@@ -716,7 +740,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="N13",
-            NOM_CMP="V43",
+            NOM_CMP="V37",
             GROUP_MA="M1",
             CHAM_GD=CHVAR48,
             VALE_CALC=1.0,
@@ -799,7 +823,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="N13",
-            NOM_CMP="V43",
+            NOM_CMP="V37",
             GROUP_MA="M1",
             CHAM_GD=CHVAR64,
             VALE_CALC=0.0,
@@ -872,7 +896,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="N13",
-            NOM_CMP="V43",
+            NOM_CMP="V37",
             GROUP_MA="M1",
             CHAM_GD=CHVA114,
             VALE_CALC=1.0,
@@ -941,7 +965,7 @@ TEST_RESU(
             PRECISION=2.0e-3,
             GROUP_MA="M1",
             CHAM_GD=CHVA176,
-            VALE_CALC=0.0620686439708,
+            VALE_CALC=0.062067372657506364,
             VALE_REFE=0.06206,
             REFERENCE="NON_DEFINI",
         ),
@@ -952,7 +976,7 @@ TEST_RESU(
             NOM_CMP="V14",
             GROUP_MA="M1",
             CHAM_GD=CHVA206,
-            VALE_CALC=0.062068635644455,
+            VALE_CALC=0.06206737392051208,
             VALE_REFE=0.062068999999999999,
             REFERENCE="NON_DEFINI",
         ),
@@ -962,7 +986,7 @@ TEST_RESU(
             NOM_CMP="SIYY",
             GROUP_MA="M1",
             CHAM_GD=CHSI206,
-            VALE_CALC=1.8000262682145e08,
+            VALE_CALC=180013745.5623269,
             VALE_REFE=1.80000000e8,
             REFERENCE="NON_DEFINI",
         ),
@@ -972,7 +996,7 @@ TEST_RESU(
             NOM_CMP="EPYY",
             GROUP_MA="M1",
             CHAM_GD=CHEP206,
-            VALE_CALC=0.052288633459089,
+            VALE_CALC=0.052287443022841606,
             VALE_REFE=0.052288000000000001,
             REFERENCE="NON_DEFINI",
         ),
@@ -993,7 +1017,7 @@ TEST_RESU(
             NOM_CMP="EPYY",
             GROUP_MA="M1",
             CHAM_GD=CHEPM206,
-            VALE_CALC=0.0629686334591,
+            VALE_CALC=0.0629674430228416,
             VALE_REFE=0.062968,
             REFERENCE="ANALYTIQUE",
         ),
@@ -1003,7 +1027,7 @@ TEST_RESU(
             NOM_CMP="EPYY",
             GROUP_MA="M1",
             CHAM_GD=CHEPP206,
-            VALE_CALC=0.0620686356445,
+            VALE_CALC=0.06206737392051233,
             VALE_REFE=0.062069,
             REFERENCE="ANALYTIQUE",
         ),
@@ -1055,7 +1079,7 @@ TEST_RESU(
             NOM_CMP="EPYY",
             GROUP_MA="M1",
             CHAM_GD=CHEPM251,
-            VALE_CALC=-0.000450004524598,
+            VALE_CALC=-0.00045001137927669864,
             VALE_REFE=-4.5e-04,
             REFERENCE="ANALYTIQUE",
         ),
@@ -1083,7 +1107,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="N13",
-            NOM_CMP="V43",
+            NOM_CMP="V37",
             GROUP_MA="M1",
             CHAM_GD=CHVA296,
             VALE_CALC=1.0,

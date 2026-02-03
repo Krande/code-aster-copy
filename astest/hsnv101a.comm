@@ -532,7 +532,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="ABSOLU",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVAR47,
             VALE_CALC=0.0e00,
@@ -575,7 +575,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="RELATIF",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVAR48,
             VALE_CALC=1.0,
@@ -630,7 +630,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="ABSOLU",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVAR64,
             VALE_CALC=0.0e00,
@@ -673,7 +673,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="RELATIF",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVA114,
             VALE_CALC=1.0,

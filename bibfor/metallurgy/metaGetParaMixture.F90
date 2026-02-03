@@ -16,28 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaMixture(poum, fami, kpg, ksp, j_mater, &
-                              l_visc, meta_type, nb_phasis, zalpha, fmel, &
+subroutine metaGetParaMixture(poum, fami, kpg, ksp, jvMaterCode, &
+                              l_visc, metaType, nbPhase, zalpha, fmix, &
                               sy)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/Metallurgy_type.h"
+#include "asterfort/rcvalb.h"
 !
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: kpg
-    integer(kind=8), intent(in) :: ksp
-    integer(kind=8), intent(in) :: j_mater
-    integer(kind=8), intent(in) :: meta_type
-    integer(kind=8), intent(in) :: nb_phasis
+    integer(kind=8), intent(in) :: kpg, ksp, jvMaterCode
+    integer(kind=8), intent(in) :: metaType
+    integer(kind=8), intent(in) :: nbPhase
     aster_logical, intent(in) :: l_visc
     real(kind=8), intent(in) :: zalpha
-    real(kind=8), intent(out) :: fmel
-    real(kind=8), optional, intent(out) :: sy(*)
+    real(kind=8), intent(out) :: fmix
+    real(kind=8), optional, intent(out) :: sy(nbPhase)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,80 +49,79 @@ subroutine metaGetParaMixture(poum, fami, kpg, ksp, j_mater, &
 ! In  fami         : Gauss family for integration point rule
 ! In  kpg          : current point gauss
 ! In  ksp          : current "sous-point" gauss
-! In  j_mater      : coded material address
-! In  meta_type    : type of metallurgy
-! In  nb_phasis    : total number of phasis (cold and hot)
+! In  jvMaterCode  : coded material address
+! In  metaType     : type of metallurgy
+! In  nbPhase      : total number of phasis (cold and hot)
 ! In  l_visc       : .true. if visco-plasticity
 ! In  zalpha       : sum of "cold" phasis
-! Out fmel         : mixing function
+! Out fmix         : mixing function
 ! Out sy           : elasticity yield by phasis
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: nb_resu_max
-    parameter(nb_resu_max=6)
-    real(kind=8) :: resu_vale(nb_resu_max)
-    integer(kind=8) :: codret(nb_resu_max)
-    character(len=16) :: resu_name(nb_resu_max)
-    integer(kind=8) :: nb_resu, i_resu
+    integer(kind=8), parameter :: nbPropMaxi = 6
+    real(kind=8) :: propVale(nbPropMaxi)
+    integer(kind=8) :: propCode(nbPropMaxi)
+    character(len=16) :: propName(nbPropMaxi)
+    integer(kind=8) :: nbProp, iProp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_resu = 1
-!
-! - Mixing function
-!
-    resu_name(1) = 'SY_MELANGE'
+
+! - Get mixing function
+    nbProp = 1
+    propName(1) = 'SY_MELANGE'
     if (l_visc) then
-        nb_resu = 1
-        resu_name(1) = 'S_VP_MELANGE'
+        propName(1) = 'S_VP_MELANGE'
     end if
-    fmel = 0.d0
-    call rcvalb(fami, kpg, ksp, poum, j_mater, &
+    fmix = 0.d0
+    call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                 ' ', 'ELAS_META', 1, 'META', [zalpha], &
-                nb_resu, resu_name, resu_vale, codret, 0)
-    if (codret(1) .eq. 0) then
-        fmel = resu_vale(1)
+                nbProp, propName, propVale, propCode, 0)
+    if (propCode(1) .eq. 0) then
+        fmix = propVale(1)
     else
-        fmel = zalpha
+        fmix = zalpha
     end if
-!
-! - Elasticity yield by phasis
-!
+
+! - Get elasticity yield by phasis
     if (present(sy)) then
-        nb_resu = nb_phasis
-        if (meta_type .eq. META_STEEL) then
-            resu_name(1) = 'F1_SY'
-            resu_name(2) = 'F2_SY'
-            resu_name(3) = 'F3_SY'
-            resu_name(4) = 'F4_SY'
-            resu_name(5) = 'C_SY'
+        nbProp = nbPhase
+        if (metaType .eq. META_STEEL) then
+            propName(1) = 'F1_SY'
+            propName(2) = 'F2_SY'
+            propName(3) = 'F3_SY'
+            propName(4) = 'F4_SY'
+            propName(5) = 'C_SY'
             if (l_visc) then
-                resu_name(1) = 'F1_S_VP'
-                resu_name(2) = 'F2_S_VP'
-                resu_name(3) = 'F3_S_VP'
-                resu_name(4) = 'F4_S_VP'
-                resu_name(5) = 'C_S_VP'
+                propName(1) = 'F1_S_VP'
+                propName(2) = 'F2_S_VP'
+                propName(3) = 'F3_S_VP'
+                propName(4) = 'F4_S_VP'
+                propName(5) = 'C_S_VP'
             end if
-            sy(1:nb_resu) = 0.d0
-        elseif (meta_type .eq. META_ZIRC) then
-            resu_name(1) = 'F1_SY'
-            resu_name(2) = 'F2_SY'
-            resu_name(3) = 'C_SY'
+            sy(1:nbProp) = 0.d0
+
+        elseif (metaType .eq. META_ZIRC) then
+            propName(1) = 'F1_SY'
+            propName(2) = 'F2_SY'
+            propName(3) = 'C_SY'
             if (l_visc) then
-                resu_name(1) = 'F1_S_VP'
-                resu_name(2) = 'F2_S_VP'
-                resu_name(3) = 'C_S_VP'
+                propName(1) = 'F1_S_VP'
+                propName(2) = 'F2_S_VP'
+                propName(3) = 'C_S_VP'
             end if
-            sy(1:nb_resu) = 0.d0
+            sy(1:nbProp) = 0.d0
+
         else
             ASSERT(ASTER_FALSE)
         end if
-        call rcvalb(fami, kpg, ksp, poum, j_mater, &
+
+        call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                     ' ', 'ELAS_META', 0, ' ', [0.d0], &
-                    nb_resu, resu_name, resu_vale, codret, 2)
-        do i_resu = 1, nb_resu
-            sy(i_resu) = resu_vale(i_resu)
+                    nbProp, propName, propVale, propCode, 2)
+        do iProp = 1, nbProp
+            sy(iProp) = propVale(iProp)
         end do
     end if
 !

@@ -107,12 +107,12 @@ subroutine te0353(option, nomte)
 
 ! ----- Check type of phases
         valk(1) = metaPhasName
-        if (metaPhasName .eq. 'ACIER') then
+        if (metaPhasName .eq. 'ACIER_MECA') then
             if (metaType .ne. META_STEEL) then
                 valk(2) = 'ZIRC'
                 call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
             end if
-        elseif (metaPhasName .eq. 'ZIRC') then
+        elseif (metaPhasName .eq. 'ZIRC_MECA') then
             if (metaType .ne. META_ZIRC) then
                 valk(2) = 'ACIER'
                 call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
