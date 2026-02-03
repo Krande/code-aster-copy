@@ -34,10 +34,10 @@ namespace {
 
 const std::map< std::pair< std::string, std::string >, std::string > cplCellNits {
     { { "MEDPTR3", "MECA_2D_HHO1_F" }, "CN_T3S3_HHO1" },
-    { { "MEDPTR6", "MECA_2D_HHO1_F" }, "CP_T6S3_HHO1" },
-    { { "MEDPQU4", "MECA_2D_HHO1_F" }, "CP_Q4S3_HHO2" },
-    { { "MEDPQU8", "MECA_2D_HHO1_F" }, "CP_Q8S3_HHO2" },
-    { { "MEDPQU9", "MECA_2D_HHO1_F" }, "CP_Q9S3_HHO3" },
+    { { "MEDPTR6", "MECA_2D_HHO1_F" }, "CN_T6S3_HHO1" },
+    { { "MEDPQU4", "MECA_2D_HHO1_F" }, "CN_Q4S3_HHO2" },
+    { { "MEDPQU8", "MECA_2D_HHO1_F" }, "CN_Q8S3_HHO2" },
+    { { "MEDPQU9", "MECA_2D_HHO1_F" }, "CN_Q9S3_HHO3" },
 };
 
 const std::map< std::pair< std::string, std::string >, std::string > cplCellPena {
@@ -96,7 +96,24 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellPena
     { { "MECA_FACE6", "MECA_FACE3" }, "CP_T6T3" },
     { { "MECA_FACE3", "MECA_FACE3" }, "CP_T3T3" },
     { { "MECA_FACE6", "MECA_FACE6" }, "CP_T6T6" },
+};
 
+const std::map< std::pair< std::string, std::string >, std::string > cplCellLagr {
+    { { "MEPLSE2", "MEPLSE2" }, "CL_S2S2" },       { { "MEPLSE2", "MEPLSE3" }, "CL_S2S3" },
+    { { "MEPLSE3", "MEPLSE2" }, "CL_S3S2" },       { { "MEPLSE3", "MEPLSE3" }, "CL_S3S3" },
+    { { "MECA_FACE4", "MECA_FACE8" }, "CL_Q4Q8" }, { { "MECA_FACE4", "MECA_FACE9" }, "CL_Q4Q9" },
+    { { "MECA_FACE4", "MECA_FACE3" }, "CL_Q4T3" }, { { "MECA_FACE4", "MECA_FACE6" }, "CL_Q4T6" },
+    { { "MECA_FACE8", "MECA_FACE4" }, "CL_Q8Q4" }, { { "MECA_FACE8", "MECA_FACE9" }, "CL_Q8Q9" },
+    { { "MECA_FACE8", "MECA_FACE3" }, "CL_Q8T3" }, { { "MECA_FACE8", "MECA_FACE6" }, "CL_Q8T6" },
+    { { "MECA_FACE9", "MECA_FACE4" }, "CL_Q9Q4" }, { { "MECA_FACE9", "MECA_FACE8" }, "CL_Q9Q8" },
+    { { "MECA_FACE9", "MECA_FACE3" }, "CL_Q9T3" }, { { "MECA_FACE9", "MECA_FACE6" }, "CL_Q9T6" },
+    { { "MECA_FACE4", "MECA_FACE4" }, "CL_Q4Q4" }, { { "MECA_FACE8", "MECA_FACE8" }, "CL_Q8Q8" },
+    { { "MECA_FACE9", "MECA_FACE9" }, "CL_Q9Q9" }, { { "MECA_FACE3", "MECA_FACE4" }, "CL_T3Q4" },
+    { { "MECA_FACE3", "MECA_FACE8" }, "CL_T3Q8" }, { { "MECA_FACE3", "MECA_FACE9" }, "CL_T3Q9" },
+    { { "MECA_FACE3", "MECA_FACE6" }, "CL_T3T6" }, { { "MECA_FACE6", "MECA_FACE4" }, "CL_T6Q4" },
+    { { "MECA_FACE6", "MECA_FACE8" }, "CL_T6Q8" }, { { "MECA_FACE6", "MECA_FACE9" }, "CL_T6Q9" },
+    { { "MECA_FACE6", "MECA_FACE3" }, "CL_T6T3" }, { { "MECA_FACE3", "MECA_FACE3" }, "CL_T3T3" },
+    { { "MECA_FACE6", "MECA_FACE6" }, "CL_T6T6" },
 };
 
 // Update also coupling_type.h
@@ -188,6 +205,11 @@ ASTERINTEGER CouplingPairing::getCplCellType( const CouplingMethod algo,
     } else if ( algo == CouplingMethod::Penalization ) {
         auto it = cplCellPena.find( key );
         if ( it != cplCellPena.end() ) {
+            cplTypeName = it->second;
+        }
+    } else if ( algo == CouplingMethod::Lagrangian ) {
+        auto it = cplCellLagr.find( key );
+        if ( it != cplCellLagr.end() ) {
             cplTypeName = it->second;
         }
     } else {

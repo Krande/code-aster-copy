@@ -30,4 +30,7 @@
 ! FEM-FEM with QU9/QU9 2*3*9=54
 #define MSIZE_CPL_PENA_FEM 54
 
+! FEM-FEM with QU9/QU9 6*9 + 3*9=81
+#define MSIZE_CPL_LAGR_FEM 81
+#define MSIZE_LAGR_FEM 27
 !

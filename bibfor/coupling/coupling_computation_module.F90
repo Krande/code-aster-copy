@@ -39,6 +39,7 @@ module coupling_computation_module
 #include "asterf_types.h"
 #include "asterfort/coupling_penalisation_module.h"
 #include "asterfort/HHO_size_module.h"
+#include "blas/dger.h"
 #include "blas/dsyr.h"
 #include "FE_basis_module.h"
 !
@@ -51,6 +52,8 @@ module coupling_computation_module
 !
     public :: cplCmpPenaFEMHHOMatScal, cplCmpPenaFEMHHOMatVec
     public :: cplCmpPenaFEMFEMMatScal, cplCmpPenaFEMFEMMatVec
+    public :: cplCmpLagrFEMFEMMatScal, cplCmpLagrFEMFEMMatVec
+
 !
 contains
 !
@@ -69,7 +72,7 @@ contains
         type(HHO_Data), intent(in) :: hhoDataMa
         type(FE_Quadrature), intent(in) :: FEQuadSl
         type(HHO_Quadrature), intent(in) :: hhoQuadMa
-        real(kind=8) :: coef_pena
+        real(kind=8), intent(in) :: coef_pena
         type(HHO_matrix), intent(out) :: lhs
 !
 !===================================================================================================
@@ -138,7 +141,7 @@ contains
         type(HHO_Data), intent(in) :: hhoDataMa
         type(FE_Quadrature), intent(in) :: FEQuadSl
         type(HHO_Quadrature), intent(in) :: hhoQuadMa
-        real(kind=8) :: coef_pena
+        real(kind=8), intent(in) :: coef_pena
         type(HHO_matrix), intent(out) :: lhs
 !
 !===================================================================================================
@@ -210,7 +213,7 @@ contains
 !
         type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa
         type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
-        real(kind=8) :: coef_pena
+        real(kind=8), intent(in) :: coef_pena
         real(kind=8), intent(out) :: lhs(MSIZE_CPL_PENA_FEM, MSIZE_CPL_PENA_FEM)
 !
 !===================================================================================================
@@ -271,7 +274,7 @@ contains
 !
         type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa
         type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
-        real(kind=8) :: coef_pena
+        real(kind=8), intent(in) :: coef_pena
         real(kind=8), intent(out) :: lhs(MSIZE_CPL_PENA_FEM, MSIZE_CPL_PENA_FEM)
 !
 !===================================================================================================
@@ -309,6 +312,116 @@ contains
 ! ----- Copy the lower part
 !
         call hhoCopySymPartMat('U', lhs(1:ndofs, 1:ndofs))
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplCmpLagrFEMFEMMatScal(FEFaceSl, FEFaceMa, FEFaceLagSl, FEQuadSl, FEQuadMa, lhs)
+!
+        implicit none
+!
+        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa, FEFaceLagSl
+        type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
+        real(kind=8), intent(out) :: lhs(MSIZE_LAGR_FEM, MSIZE_CPL_PENA_FEM)
+!
+!===================================================================================================
+!    FEM/FEM - Compute matrix: (mu^s, u^s-u^m)
+!              unknowns ((u^s, lag^s), u^m)
+!===================================================================================================
+!
+        type(FE_Basis) :: FEBasisSl, FEBasisMa, FEBasisLagSl
+        real(kind=8), dimension(MAX_BS) :: BSEvalSl, BSEvalMa, BSEvalLagSl
+        real(kind=8), dimension(MAX_BS+MAX_BS) :: BS
+        real(kind=8) :: coeff
+        integer(kind=8) :: nbDoFsFEMa, nbDoFsFESl, nbDoFs, ipg, nbDoFsFELagSl
+        blas_int, parameter :: b_one = to_blas_int(1)
+        blas_int :: b_lda, b_n, b_m
+!
+! -- init face basis
+        call FEBasisSl%initFace(FEFaceSl)
+        call FEBasisMa%initFace(FEFaceMa)
+        call FEBasisLagSl%initFace(FEFaceLagSl)
+!
+! -- number of dofs
+        nbDoFsFELagSl = FEBasisLagSl%size
+        nbDoFsFESl = FEBasisSl%size
+        nbDoFsFEMa = FEBasisMa%size
+        nbDoFs = nbDoFsFESl+nbDoFsFEMa
+!
+        b_n = to_blas_int(nbDoFs)
+        b_m = to_blas_int(nbDoFsFELagSl)
+        b_lda = to_blas_int(MSIZE_LAGR_FEM)
+!
+        lhs = 0.d0
+!
+! -- Loop on quadrature point
+        do ipg = 1, FEQuadSl%nbQuadPoints
+! ----- Eval face basis function at the quadrature point
+! -------- Compute uh1
+            BSEvalSl = FEBasisSl%func(FEQuadSl%points_param(1:3, ipg))
+            BSEvalMa = FEBasisMa%func(FEQuadMa%points_param(1:3, ipg))
+            BSEvalLagSl = FEBasisLagSl%func(FEQuadSl%points_param(1:3, ipg))
+!
+! -------- Assemble [u^s, -u^m]
+            BS(1:nbDoFsFESl) = BSEvalSl(1:nbDoFsFESl)
+            BS(nbDoFsFESl+1:nbDoFs) = -BSEvalMa(1:nbDoFsFEMa)
+!
+! --------  Eval
+
+            coeff = FEQuadSl%weights(ipg)
+            call dger(b_m, b_n, coeff, BSEvalLagSl, b_one, BS, b_one, lhs, b_lda)
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine cplCmpLagrFEMFEMMatVec(FEFaceSl, FEFaceMa, FEFaceLagSl, FEQuadSl, FEQuadMa, lhs)
+!
+        implicit none
+!
+        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa, FEFaceLagSl
+        type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
+        real(kind=8), intent(out) :: lhs(MSIZE_LAGR_FEM, MSIZE_CPL_PENA_FEM)
+!
+!===================================================================================================
+!    FEM/FEM - Compute matrix: (mu^s, u^s-u^m)
+!              unknowns ((u^s, lag^s), u^m)
+!===================================================================================================
+!
+        real(kind=8) :: lhs_scal(MSIZE_LAGR_FEM, MSIZE_CPL_PENA_FEM)
+        integer(kind=8) :: ndim, ndofsSl_scal, ndofsMa_scal, ndofs_scal, ndofsLagSl_scal
+        integer(kind=8) :: idim, i, j, deca_row, deca_col, ndofs
+
+        call cplCmpLagrFEMFEMMatScal(FEFaceSl, FEFaceMa, FEFaceLagSl, FEQuadSl, FEQuadMa, &
+                                     lhs_scal)
+!
+        ndim = FEFaceSl%ndim+1
+        ndofsLagSl_scal = FEFaceLagSl%nbnodes
+        ndofsSl_scal = FEFaceSl%nbnodes
+        ndofsMa_scal = FEFaceMa%nbnodes
+        ndofs_scal = ndofsSl_scal+ndofsMa_scal
+        ndofs = ndim*(ndofs_scal+ndofsLagSl_scal)
+!
+        lhs = 0.d0
+!
+        do idim = 1, ndim
+            deca_col = idim
+            do j = 1, ndofs_scal
+                deca_row = idim
+                do i = 1, ndofsLagSl_scal
+                    lhs(deca_row, deca_col) = lhs_scal(i, j)
+                    deca_row = deca_row+ndim
+                end do
+                deca_col = deca_col+ndim
+            end do
+        end do
 !
     end subroutine
 !===================================================================================================

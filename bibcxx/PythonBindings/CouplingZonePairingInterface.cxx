@@ -33,6 +33,7 @@ Enumeration for coupling method.
         .value( "Undefined", CouplingMethod::Undefined )
         .value( "Nitsche", CouplingMethod::Nitsche )
         .value( "Penalization", CouplingMethod::Penalization )
+        .value( "Lagrangian", CouplingMethod::Lagrangian )
         .export_values();
 
     py::class_< CouplingZonePairing, CouplingZonePairingPtr, DataStructure > class_(

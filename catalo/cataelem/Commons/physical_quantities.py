@@ -852,6 +852,9 @@ list_cmp_depl = (
     "HHO_LG[10]",
     "PINCH",
     "PSI",
+    "LAGX",
+    "LAGY",
+    "LAGZ",
 )
 comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)

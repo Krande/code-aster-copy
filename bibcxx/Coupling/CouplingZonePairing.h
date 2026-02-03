@@ -32,6 +32,7 @@ enum class CouplingMethod {
     Undefined,
     Nitsche,
     Penalization,
+    Lagrangian,
 };
 
 class CouplingZonePairing : public DataStructure {

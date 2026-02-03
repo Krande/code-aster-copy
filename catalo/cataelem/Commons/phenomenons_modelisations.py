@@ -3835,6 +3835,59 @@ phen.add(
     ),
 )
 
+# -- Define COUPLING FEM/FEM elements for LAGRANGIAN method
+
+phen.add(
+    "CPL_LAG_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="CL2",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.SEG22, EL.CL_S2S2),
+            (MT.SEG23, EL.CL_S2S3),
+            (MT.SEG32, EL.CL_S3S2),
+            (MT.SEG33, EL.CL_S3S3),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_LAG_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="CL3",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.QU4QU8, EL.CL_Q4Q8),
+            (MT.QU4QU9, EL.CL_Q4Q9),
+            (MT.QU4TR3, EL.CL_Q4T3),
+            (MT.QU4TR6, EL.CL_Q4T6),
+            (MT.QU8QU4, EL.CL_Q8Q4),
+            (MT.QU8QU9, EL.CL_Q8Q9),
+            (MT.QU8TR3, EL.CL_Q8T3),
+            (MT.QU8TR6, EL.CL_Q8T6),
+            (MT.QU9QU4, EL.CL_Q9Q4),
+            (MT.QU9QU8, EL.CL_Q9Q8),
+            (MT.QU9TR3, EL.CL_Q9T3),
+            (MT.QU9TR6, EL.CL_Q9T6),
+            (MT.QUAD44, EL.CL_Q4Q4),
+            (MT.QUAD88, EL.CL_Q8Q8),
+            (MT.QUAD99, EL.CL_Q9Q9),
+            (MT.TR3QU4, EL.CL_T3Q4),
+            (MT.TR3QU8, EL.CL_T3Q8),
+            (MT.TR3QU9, EL.CL_T3Q9),
+            (MT.TR3TR6, EL.CL_T3T6),
+            (MT.TR6QU4, EL.CL_T6Q4),
+            (MT.TR6QU8, EL.CL_T6Q8),
+            (MT.TR6QU9, EL.CL_T6Q9),
+            (MT.TR6TR3, EL.CL_T6T3),
+            (MT.TRIA33, EL.CL_T3T3),
+            (MT.TRIA66, EL.CL_T6T6),
+        ),
+    ),
+)
+
 # ------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour :
 #  * Forces nodales

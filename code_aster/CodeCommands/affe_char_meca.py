@@ -145,6 +145,7 @@ class MechanicalLoadDefinition(ExecuteCommand):
             if "LIAISON_MASSIF" in keywords.keys():
                 assert len(keywords["LIAISON_MASSIF"]) == 1
                 _cpl_method = {
+                    "LAGRANGIEN": CouplingMethod.Lagrangian,
                     "PENALISATION": CouplingMethod.Penalization,
                     "NITSCHE": CouplingMethod.Nitsche,
                 }
