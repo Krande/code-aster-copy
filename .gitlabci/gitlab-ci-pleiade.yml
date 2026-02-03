@@ -300,7 +300,7 @@ perf_analysis:
     - job: verification_test
   script:
     - apt-get update
-    - apt-get install -y jq
+    - apt-get install -y python3 python3-numpy python3-pandas jq
     - do_upload="no"
     - test "$(date +%u)" = "${WEEKLY_RUN}"
         && test "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH"

@@ -14,7 +14,7 @@ _help() {
     echo usage: $(basename $0) results-directory upload
 }
 
-if [ $# -lt 1] || [ $# -gt 2 ]; then
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
     _help
     exit 1
 fi
