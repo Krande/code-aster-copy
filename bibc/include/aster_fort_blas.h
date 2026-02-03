@@ -30,13 +30,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*
-// #define CALL_DAXPY( a, b, c, e, f, g ) CALLPSSSSSS( DAXPY, daxpy, a, b, c, e, f, g )
-// #define CALLO_DAXPY( a, b, c, e, f, g ) CALLPOOOOOO( DAXPY, daxpy, a, b, c, e, f, g )
-// extern void DEFPSSSSSS( DAXPY, daxpy, ASTERINTEGER *, ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER
-// *,
-//                        ASTERDOUBLE *, ASTERINTEGER * );
-*/
 
 #define CALL_DSCAL( a, b, c, d ) CALLPPPP( DSCAL, dscal, a, b, c, d )
 extern void DEFPPPP( DSCAL, dscal, const ASTERINTEGER *, const ASTERDOUBLE *, ASTERDOUBLE *,
@@ -49,6 +42,14 @@ extern void DEFPPPP( ZSCAL, zscal, const ASTERINTEGER *, const ASTERCOMPLEX *, A
 #define CALL_ZDSCAL( a, b, c, d ) CALLPPPP( ZDSCAL, zdscal, a, b, c, d )
 extern void DEFPPPP( ZDSCAL, zdscal, const ASTERINTEGER *, const ASTERDOUBLE *, ASTERCOMPLEX *,
                      const ASTERINTEGER * );
+
+#define CALLO_DGEMM( a, b, c, d, e, f, g, h, i, j, k, l, m )                                       \
+    CALLOOPPPPPPPPPPP( DGEMM, dgemm, a, b, c, d, e, f, g, h, i, j, k, l, m )
+extern void DEFSSPPPPPPPPPPP( DGEMM, dgemm, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                              const ASTERINTEGER *, const ASTERINTEGER *, const ASTERINTEGER *,
+                              const ASTERDOUBLE *, const ASTERDOUBLE *, const ASTERINTEGER *,
+                              const ASTERDOUBLE *, const ASTERINTEGER *, const ASTERDOUBLE *,
+                              const ASTERDOUBLE *, const ASTERINTEGER * );
 
 #ifdef __cplusplus
 }

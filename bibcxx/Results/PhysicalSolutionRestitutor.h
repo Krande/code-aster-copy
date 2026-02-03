@@ -26,12 +26,7 @@
 #include "Results/ModeResult.h"
 #include "Results/Result.h"
 #include "Studies/PhysicalProblem.h"
-
-#ifdef ASTER_HAVE_MKL
-#include <mkl.h>
-#else
-#include <cblas.h>
-#endif
+#include "Utilities/Blas.h"
 
 class PhysicalSolutionRestitutor {
   private:
@@ -89,8 +84,8 @@ class PhysicalSolutionRestitutor {
 
     inline void matVecBatch( const double *A_ptr, const double *X_ptr, double *Y_ptr, size_t nVals,
                              size_t nModes, size_t m ) {
-        cblas_dgemm( CblasColMajor, CblasNoTrans, CblasNoTrans, nVals, m, nModes, 1.0, A_ptr, nVals,
-                     X_ptr, nModes, 0.0, Y_ptr, nVals );
+        AsterBLAS::dgemm( "N", "N", nVals, m, nModes, 1.0, A_ptr, nVals, X_ptr, nModes, 0.0, Y_ptr,
+                          nVals );
     }
 
     static inline void updateMaxAbsValues( const double *vals_in, double *vals_max,

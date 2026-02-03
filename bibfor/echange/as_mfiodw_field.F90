@@ -36,7 +36,7 @@ subroutine as_mfiodw_field(fid, cha, desc, cret)
 #ifndef ASTER_DISABLE_MED_DESCR
 #if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
-    aster_int :: maj, mini, rel, cret
+    aster_int :: maj, mini, rel
     med_int :: cret4, oexist4, class4
     fidm = to_med_idt(fid)
     ! class4 = 1 <=> field type

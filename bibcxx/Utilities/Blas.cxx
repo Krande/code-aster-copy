@@ -24,14 +24,22 @@
 void AsterBLAS::scal( const ASTERINTEGER &n, const ASTERDOUBLE &alpha, ASTERDOUBLE *x,
                       const ASTERINTEGER &incx ) {
     CALL_DSCAL( &n, &alpha, x, &incx );
-};
+}
 
 void AsterBLAS::scal( const ASTERINTEGER &n, const ASTERCOMPLEX &alpha, ASTERCOMPLEX *x,
                       const ASTERINTEGER &incx ) {
     CALL_ZSCAL( &n, &alpha, x, &incx );
-};
+}
 
 void AsterBLAS::scal( const ASTERINTEGER &n, const ASTERDOUBLE &alpha, ASTERCOMPLEX *x,
                       const ASTERINTEGER &incx ) {
     CALL_ZDSCAL( &n, &alpha, x, &incx );
-};
+}
+
+void AsterBLAS::dgemm( const std::string &tra, const std::string &trb, const ASTERINTEGER &m,
+                       const ASTERINTEGER &n, const ASTERINTEGER &k, const ASTERDOUBLE &alpha,
+                       const ASTERDOUBLE *A, const ASTERINTEGER &lda, const ASTERDOUBLE *B,
+                       const ASTERINTEGER &ldb, const ASTERDOUBLE &beta, ASTERDOUBLE *C,
+                       const ASTERINTEGER &ldc ) {
+    CALLO_DGEMM( tra, trb, &m, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc );
+}

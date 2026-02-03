@@ -70,7 +70,6 @@ def configure(self):
         self.check_opts_math_lib()
         self.check_math_libs_call_blas_lapack("RED")
     self.check_libm_after_files()
-    self.check_math_libs_call_cblas()
 
 
 ###############################################################################
@@ -377,24 +376,6 @@ def check_math_libs_call_blas_lapack(self, color="RED"):
 
 
 @Configure.conf
-def check_math_libs_call_cblas(self, color="RED"):
-    """Compile and run a minimal program using cblas"""
-    self.start_msg("Checking for cblas headers")
-    if os.environ.get("DEVTOOLS_COMPUTER_ID") == "none":
-        # skip in minimal_build
-        self.end_msg("skip", color="YELLOW")
-        return
-    try:
-        self.check_cc(fragment=cblas_fragment, use="MPI OPENMP MATH", mandatory=True)
-    except Exception as exc:
-        # the message must be closed
-        self.end_msg("no", color=color)
-        raise Errors.ConfigurationError(str(exc))
-    else:
-        self.end_msg("yes")
-
-
-@Configure.conf
 def check_math_libs_call_blacs(self, color="RED"):
     """Compile and run a minimal blacs program"""
     if self.get_define("ASTER_HAVE_MPI"):
@@ -484,14 +465,3 @@ program hello
     print *, total
 end program hello
 """
-
-cblas_fragment = r"""
-#ifdef ASTER_HAVE_MKL
-#include <mkl.h>
-#else
-#include <cblas.h>
-#endif
-
-int main(void){
-    return 0;
-}"""
