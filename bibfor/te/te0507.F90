@@ -30,6 +30,7 @@ subroutine te0507(nomopt, nomte)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/tecach.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
 !
@@ -45,7 +46,7 @@ subroutine te0507(nomopt, nomte)
 !
 ! --- Local variables
 !
-    integer(kind=8) :: cbs, fbs, total_dofs
+    integer(kind=8) :: cbs, fbs, total_dofs, iad, iret
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
 !
@@ -58,7 +59,13 @@ subroutine te0507(nomopt, nomte)
 !
     call lhs_elem%initialize(total_dofs, total_dofs)
     call lhs_elem%read("PMAELS1", ASTER_TRUE)
-    call readVector("PVEELE1", total_dofs, rhs_elem)
+!
+    call tecach("OON", "PVEELE1", "L", iret, iad=iad)
+    if (iret == 0) then
+        call readVector("PVEELE1", total_dofs, rhs_elem)
+    else
+        rhs_elem = 0.d0
+    end if
 !
     call hhoCondStatic(cbs, lhs_elem, rhs_elem, &
                        lhs_cond, rhs_cond, lhs_decond, rhs_decond)
