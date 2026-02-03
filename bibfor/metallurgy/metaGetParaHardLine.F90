@@ -16,25 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaHardLine(poum, fami, kpg, ksp, j_mater, &
-                               meta_type, nb_phasis, &
+subroutine metaGetParaHardLine(poum, fami, kpg, ksp, jvMaterCode, &
+                               metaType, nbPhase, &
                                young, coef, h)
 !
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/Metallurgy_type.h"
+#include "asterfort/rcvalb.h"
 !
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg, ksp
-    integer(kind=8), intent(in) :: j_mater
-    integer(kind=8), intent(in) :: meta_type
-    integer(kind=8), intent(in) :: nb_phasis
-    real(kind=8), intent(in) :: young
-    real(kind=8), intent(in) :: coef
-    real(kind=8), intent(out) :: h(*)
+    integer(kind=8), intent(in) :: jvMaterCode
+    integer(kind=8), intent(in) :: metaType, nbPhase
+    real(kind=8), intent(in) :: young, coef
+    real(kind=8), intent(out) :: h(nbPhase)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,45 +46,47 @@ subroutine metaGetParaHardLine(poum, fami, kpg, ksp, j_mater, &
 ! In  fami         : Gauss family for integration point rule
 ! In  kpg          : current point gauss
 ! In  ksp          : current "sous-point" gauss
-! In  j_mater      : coded material address
-! In  meta_type    : type of metallurgy
-! In  nb_phasis    : total number of phasis (cold and hot)
+! In  jvMaterCode  : coded material address
+! In  metaType     : type of metallurgy
+! In  nbPhase      : total number of phasis (cold and hot)
 ! In  young        : Young modulusure
 ! In  coef         : coefficient before hardening slope
 ! Out h            : current hardening slope
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nb_resu_max = 5
-    real(kind=8) :: resu_vale(nb_resu_max)
-    integer(kind=8) :: codret(nb_resu_max)
-    character(len=16) :: resu_name(nb_resu_max)
-    integer(kind=8) :: nb_resu, i_resu
+    integer(kind=8), parameter :: nbPropMaxi = 5
+    real(kind=8) :: propVale(nbPropMaxi)
+    integer(kind=8) :: propCode(nbPropMaxi)
+    character(len=16) :: propName(nbPropMaxi)
+    integer(kind=8) :: nbProp, iProp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_resu = nb_phasis
+    nbProp = nbPhase
 !
-    if (meta_type .eq. META_STEEL) then
-        resu_name(1) = 'F1_D_SIGM_EPSI'
-        resu_name(2) = 'F2_D_SIGM_EPSI'
-        resu_name(3) = 'F3_D_SIGM_EPSI'
-        resu_name(4) = 'F4_D_SIGM_EPSI'
-        resu_name(5) = 'C_D_SIGM_EPSI'
-    elseif (meta_type .eq. META_ZIRC) then
-        resu_name(1) = 'F1_D_SIGM_EPSI'
-        resu_name(2) = 'F2_D_SIGM_EPSI'
-        resu_name(3) = 'C_D_SIGM_EPSI'
+    if (metaType .eq. META_STEEL) then
+        propName(1) = 'F1_D_SIGM_EPSI'
+        propName(2) = 'F2_D_SIGM_EPSI'
+        propName(3) = 'F3_D_SIGM_EPSI'
+        propName(4) = 'F4_D_SIGM_EPSI'
+        propName(5) = 'C_D_SIGM_EPSI'
+
+    elseif (metaType .eq. META_ZIRC) then
+        propName(1) = 'F1_D_SIGM_EPSI'
+        propName(2) = 'F2_D_SIGM_EPSI'
+        propName(3) = 'C_D_SIGM_EPSI'
+
     else
         ASSERT(ASTER_FALSE)
     end if
 !
-    call rcvalb(fami, kpg, ksp, poum, j_mater, &
+    call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                 ' ', 'META_ECRO_LINE', 0, ' ', [0.d0], &
-                nb_resu, resu_name, resu_vale, codret, 2)
-    do i_resu = 1, nb_resu
-        h(i_resu) = resu_vale(i_resu)
-        h(i_resu) = coef*h(i_resu)*young/(young-h(i_resu))
+                nbPhase, propName, propVale, propCode, 2)
+    do iProp = 1, nbProp
+        h(iProp) = propVale(iProp)
+        h(iProp) = coef*h(iProp)*young/(young-h(iProp))
     end do
 !
 end subroutine

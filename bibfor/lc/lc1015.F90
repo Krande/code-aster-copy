@@ -63,12 +63,12 @@ subroutine lc1015(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (compor(META_PHAS) .eq. 'ACIER') then
+    if (compor(META_PHAS) .eq. 'ACIER_MECA') then
         call lcgdpm(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, vim, option, sigp, &
                     vip, dsidep, codret)
-    else if (compor(META_PHAS) .eq. 'ZIRC') then
+    else if (compor(META_PHAS) .eq. 'ZIRC_MECA') then
         call nzgdzi(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, vim, option, sigp, &

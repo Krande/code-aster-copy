@@ -18,19 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine metaGetParaMixture(poum  , fami     , kpg      , ksp   , j_mater,&
-                                  l_visc, meta_type, nb_phasis, zalpha, fmel   ,&
+    subroutine metaGetParaMixture(poum, fami, kpg, ksp, jvMaterCode, &
+                                  l_visc, metaType, nbPhase, zalpha, fmix, &
                                   sy)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        integer(kind=8), intent(in) :: j_mater
-        integer(kind=8), intent(in) :: meta_type
-        integer(kind=8), intent(in) :: nb_phasis
+        integer(kind=8), intent(in) :: kpg, ksp, jvMaterCode
+        integer(kind=8), intent(in) :: metaType
+        integer(kind=8), intent(in) :: nbPhase
         aster_logical, intent(in) :: l_visc
         real(kind=8), intent(in) :: zalpha
-        real(kind=8), intent(out) :: fmel
-        real(kind=8), optional, intent(out) :: sy(*)
+        real(kind=8), intent(out) :: fmix
+        real(kind=8), optional, intent(out) :: sy(nbPhase)
     end subroutine metaGetParaMixture
 end interface

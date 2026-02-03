@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis, &
+subroutine metaGetParaHardTrac(jvMaterCode, metaType, nbPhase, &
                                l_temp, temp, &
-                               epsp, h0, rp_, maxval_)
+                               epseq, h0, rp_, nbValeMaxi_)
 !
     implicit none
 !
@@ -30,15 +30,15 @@ subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis, &
 #include "asterfort/utmess.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer(kind=8), intent(in) :: j_mater
-    integer(kind=8), intent(in) :: meta_type
-    integer(kind=8), intent(in) :: nb_phasis
+    integer(kind=8), intent(in) :: jvMaterCode
+    integer(kind=8), intent(in) :: metaType
+    integer(kind=8), intent(in) :: nbPhase
     aster_logical, intent(in) :: l_temp
     real(kind=8), intent(in) :: temp
-    real(kind=8), intent(in) :: epsp(*)
-    real(kind=8), intent(out) :: h0(*)
-    real(kind=8), optional, intent(out) :: rp_(*)
-    integer(kind=8), optional, intent(out) :: maxval_
+    real(kind=8), intent(in) :: epseq(nbPhase)
+    real(kind=8), intent(out) :: h0(nbPhase)
+    real(kind=8), optional, intent(out) :: rp_(nbPhase)
+    integer(kind=8), optional, intent(out) :: nbValeMaxi_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,65 +48,75 @@ subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  j_mater      : coded material address
-! In  meta_type    : type of metallurgy
-! In  nb_phasis    : total number of phasis (cold and hot)
+! In  jvMaterCode  : coded material address
+! In  metaType     : type of metallurgy
+! In  nbPhase      : total number of phases (cold and hot)
 ! In  l_temp       : .true. if temperature command variable is affected
 ! In  temp         : temperature
-! In  epsp         : cumulated plastic strain
+! In  epseq        : cumulated plastic strain
 ! Out h0           : current hardening slope
-! Out rp_          : current isotropic hardening value
-! Out maxval_      : nombre de valeurs de la fonction r(p)
+! Out rp           : current isotropic hardening value
+! Out nbValeMaxi   : maximum number of points of traction curves for all phases
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: i_phasis
-    character(len=8) :: keyw_trac(5)
-    character(len=16) :: keyw_fact
-    integer(kind=8) :: j_prol, j_vale
-    integer(kind=8) :: nb_vale, maxval
-    character(len=8) :: para_type
-    real(kind=8) :: para_vale, r8dummy
+    character(len=16), parameter :: tractionName = 'META_TRACTION'
+    integer(kind=8), parameter :: nbProp = 5
+    character(len=8) :: propName(nbProp)
+    integer(kind=8) :: iPhase
+    integer(kind=8) :: jvProl, jvVale
+    integer(kind=8) :: nbVale, nbValeMaxi
+    character(len=8) :: paraName
+    real(kind=8) :: paraVale, young
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keyw_fact = 'META_TRACTION'
-    maxval = -1
-    if (meta_type .eq. META_STEEL) then
-        keyw_trac(1) = 'SIGM_F1'
-        keyw_trac(2) = 'SIGM_F2'
-        keyw_trac(3) = 'SIGM_F3'
-        keyw_trac(4) = 'SIGM_F4'
-        keyw_trac(5) = 'SIGM_C'
-    elseif (meta_type .eq. META_ZIRC) then
-        keyw_trac(1) = 'SIGM_F1'
-        keyw_trac(2) = 'SIGM_F2'
-        keyw_trac(3) = 'SIGM_C'
+
+! - Select name of properties for traction curve
+    if (metaType .eq. META_STEEL) then
+        propName(1) = 'SIGM_F1'
+        propName(2) = 'SIGM_F2'
+        propName(3) = 'SIGM_F3'
+        propName(4) = 'SIGM_F4'
+        propName(5) = 'SIGM_C'
+
+    elseif (metaType .eq. META_ZIRC) then
+        propName(1) = 'SIGM_F1'
+        propName(2) = 'SIGM_F2'
+        propName(3) = 'SIGM_C'
+
     else
         ASSERT(ASTER_FALSE)
     end if
+
 !
-    do i_phasis = 1, nb_phasis
-        call rctype(j_mater, 1, 'TEMP', [temp], para_vale, &
-                    para_type, keyw_factz=keyw_fact, keywz=keyw_trac(i_phasis))
-        if ((para_type .eq. 'TEMP') .and. (.not. l_temp)) then
-            call utmess('F', 'COMPOR5_5', sk=para_type)
+    nbValeMaxi = -1
+    do iPhase = 1, nbPhase
+! ----- Get informations (value and type) about parameters for traction curve
+        call rctype(jvMaterCode, 1, 'TEMP', [temp], &
+                    paraVale, paraName, &
+                    keyw_factz=tractionName, keywz=propName(iPhase))
+        if ((paraName .eq. 'TEMP') .and. (.not. l_temp)) then
+            call utmess('F', 'COMPOR5_5', sk=paraName)
         end if
-        call rctrac(j_mater, 2, keyw_trac(i_phasis), temp, j_prol, &
-                    j_vale, nb_vale, r8dummy)
+
+! ----- Get access of traction curve
+        call rctrac(jvMaterCode, 2, propName(iPhase), temp, &
+                    jvProl, jvVale, nbVale, young)
+
         if (present(rp_)) then
-            call rcfonc('V', 2, j_prol, j_vale, nb_vale, &
-                        p=epsp(i_phasis), rp=rp_(i_phasis), rprim=h0(i_phasis))
+            call rcfonc('V', 2, jvProl, jvVale, nbVale, &
+                        p=epseq(iPhase), rp=rp_(iPhase), rprim=h0(iPhase))
         else
-            call rcfonc('V', 2, j_prol, j_vale, nb_vale, &
-                        p=epsp(i_phasis), rprim=h0(i_phasis))
+            call rcfonc('V', 2, jvProl, jvVale, nbVale, &
+                        p=epseq(iPhase), rprim=h0(iPhase))
         end if
-        if (nb_vale .ge. maxval) then
-            maxval = nb_vale
+        if (nbVale .ge. nbValeMaxi) then
+            nbValeMaxi = nbVale
         end if
     end do
-    if (present(maxval_)) then
-        maxval_ = maxval
+    if (present(nbValeMaxi_)) then
+        nbValeMaxi_ = nbValeMaxi
     end if
 !
 end subroutine

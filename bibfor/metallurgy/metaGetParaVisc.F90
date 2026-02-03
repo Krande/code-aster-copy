@@ -16,8 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaVisc(poum, fami, kpg, ksp, j_mater, &
-                           meta_type, nb_phasis, eta, n, unsurn, &
+subroutine metaGetParaVisc(poum, fami, kpg, ksp, jvMaterCode, &
+                           metaType, nbPhase, &
+                           eta, n, unsurn, &
                            c, m)
 !
     implicit none
@@ -28,16 +29,11 @@ subroutine metaGetParaVisc(poum, fami, kpg, ksp, j_mater, &
 !
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: kpg
-    integer(kind=8), intent(in) :: ksp
-    integer(kind=8), intent(in) :: j_mater
-    integer(kind=8), intent(in) :: meta_type
-    integer(kind=8), intent(in) :: nb_phasis
-    real(kind=8), optional, intent(out) :: eta(*)
-    real(kind=8), optional, intent(out) :: n(*)
-    real(kind=8), optional, intent(out) :: unsurn(*)
-    real(kind=8), optional, intent(out) :: c(*)
-    real(kind=8), optional, intent(out) :: m(*)
+    integer(kind=8), intent(in) :: kpg, ksp, jvMaterCode
+    integer(kind=8), intent(in) :: metaType
+    integer(kind=8), intent(in) :: nbPhase
+    real(kind=8), optional, intent(out) :: eta(nbPhase), n(nbPhase), unsurn(nbPhase)
+    real(kind=8), optional, intent(out) :: c(nbPhase), m(nbPhase)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,9 +47,9 @@ subroutine metaGetParaVisc(poum, fami, kpg, ksp, j_mater, &
 ! In  fami         : Gauss family for integration point rule
 ! In  kpg          : current point gauss
 ! In  ksp          : current "sous-point" gauss
-! In  j_mater      : coded material address
-! In  meta_type    : type of metallurgy
-! In  nb_phasis    : total number of phasis (cold and hot)
+! In  jvMaterCode  : coded material address
+! In  metaType     : type of metallurgy
+! In  nbPhase      : total number of phasis (cold and hot)
 ! Out eta          : viscosity parameter - eta
 ! Out n            : viscosity parameter - n
 ! Out unsurn       : viscosity parameter - 1/n
@@ -62,145 +58,137 @@ subroutine metaGetParaVisc(poum, fami, kpg, ksp, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nb_resu_max = 5
-    real(kind=8) :: resu_vale(nb_resu_max)
-    integer(kind=8) :: codret(nb_resu_max)
-    character(len=8) :: resu_name(nb_resu_max)
-    integer(kind=8) :: nb_resu, i_resu
+    integer(kind=8), parameter :: nbPropMaxi = 5
+    real(kind=8) :: propVale(nbPropMaxi)
+    integer(kind=8) :: propCode(nbPropMaxi)
+    character(len=8) :: propName(nbPropMaxi)
+    integer(kind=8) :: nbProp, iProp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_resu = nb_phasis
-!
+    nbProp = nbPhase
+
 ! - Name of parameters
-!
-    if (meta_type .eq. META_STEEL) then
+    if (metaType .eq. META_STEEL) then
         if (present(eta)) then
-            resu_name(1) = 'F1_ETA'
-            resu_name(2) = 'F2_ETA'
-            resu_name(3) = 'F3_ETA'
-            resu_name(4) = 'F4_ETA'
-            resu_name(5) = 'C_ETA'
-            eta(1:nb_resu) = 0.d0
+            propName(1) = 'F1_ETA'
+            propName(2) = 'F2_ETA'
+            propName(3) = 'F3_ETA'
+            propName(4) = 'F4_ETA'
+            propName(5) = 'C_ETA'
+            eta(1:nbProp) = 0.d0
         end if
-    elseif (meta_type .eq. META_ZIRC) then
+    elseif (metaType .eq. META_ZIRC) then
         if (present(eta)) then
-            resu_name(1) = 'F1_ETA'
-            resu_name(2) = 'F2_ETA'
-            resu_name(3) = 'C_ETA'
-            eta(1:nb_resu) = 0.d0
+            propName(1) = 'F1_ETA'
+            propName(2) = 'F2_ETA'
+            propName(3) = 'C_ETA'
+            eta(1:nbProp) = 0.d0
         end if
     else
         ASSERT(ASTER_FALSE)
     end if
-!
+
 ! - Get parameters
-!
     if (present(eta)) then
-        call rcvalb(fami, kpg, ksp, poum, j_mater, &
+        call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                     ' ', 'META_VISC', 0, ' ', [0.d0], &
-                    nb_resu, resu_name, resu_vale, codret, 2)
-        do i_resu = 1, nb_resu
-            eta(i_resu) = resu_vale(i_resu)
+                    nbProp, propName, propVale, propCode, 2)
+        do iProp = 1, nbProp
+            eta(iProp) = propVale(iProp)
         end do
     end if
-!
+
 ! - Name of parameters
-!
-    if (meta_type .eq. META_STEEL) then
+    if (metaType .eq. META_STEEL) then
         if (present(n)) then
-            resu_name(1) = 'F1_N'
-            resu_name(2) = 'F2_N'
-            resu_name(3) = 'F3_N'
-            resu_name(4) = 'F4_N'
-            resu_name(5) = 'C_N'
-            n(1:nb_resu) = 20.d0
-            unsurn(1:nb_resu) = 1.d0
+            propName(1) = 'F1_N'
+            propName(2) = 'F2_N'
+            propName(3) = 'F3_N'
+            propName(4) = 'F4_N'
+            propName(5) = 'C_N'
+            n(1:nbProp) = 20.d0
+            unsurn(1:nbProp) = 1.d0
         end if
-    elseif (meta_type .eq. META_ZIRC) then
+    elseif (metaType .eq. META_ZIRC) then
         if (present(n)) then
-            resu_name(1) = 'F1_N'
-            resu_name(2) = 'F2_N'
-            resu_name(3) = 'C_N'
-            n(1:nb_resu) = 20.d0
-            unsurn(1:nb_resu) = 1.d0
+            propName(1) = 'F1_N'
+            propName(2) = 'F2_N'
+            propName(3) = 'C_N'
+            n(1:nbProp) = 20.d0
+            unsurn(1:nbProp) = 1.d0
         end if
     end if
-!
+
 ! - Get parameters
-!
-    call rcvalb(fami, kpg, ksp, poum, j_mater, &
+    call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                 ' ', 'META_VISC', 0, ' ', [0.d0], &
-                nb_resu, resu_name, resu_vale, codret, 2)
+                nbProp, propName, propVale, propCode, 2)
     if (present(n)) then
-        call rcvalb(fami, kpg, ksp, poum, j_mater, &
+        call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                     ' ', 'META_VISC', 0, ' ', [0.d0], &
-                    nb_resu, resu_name, resu_vale, codret, 2)
-        do i_resu = 1, nb_resu
-            n(i_resu) = resu_vale(i_resu)
-            unsurn(i_resu) = 1.d0/n(i_resu)
+                    nbProp, propName, propVale, propCode, 2)
+        do iProp = 1, nbProp
+            n(iProp) = propVale(iProp)
+            unsurn(iProp) = 1.d0/n(iProp)
         end do
     end if
-!
+
 ! - Name of parameters
-!
-    if (meta_type .eq. META_STEEL) then
+    if (metaType .eq. META_STEEL) then
         if (present(c)) then
-            resu_name(1) = 'F1_C'
-            resu_name(2) = 'F2_C'
-            resu_name(3) = 'F3_C'
-            resu_name(4) = 'F4_C'
-            resu_name(5) = 'C_C'
-            c(1:nb_resu) = 0.d0
+            propName(1) = 'F1_C'
+            propName(2) = 'F2_C'
+            propName(3) = 'F3_C'
+            propName(4) = 'F4_C'
+            propName(5) = 'C_C'
+            c(1:nbProp) = 0.d0
         end if
-    elseif (meta_type .eq. META_ZIRC) then
+    elseif (metaType .eq. META_ZIRC) then
         if (present(c)) then
-            resu_name(1) = 'F1_C'
-            resu_name(2) = 'F2_C'
-            resu_name(3) = 'C_C'
-            c(1:nb_resu) = 0.d0
+            propName(1) = 'F1_C'
+            propName(2) = 'F2_C'
+            propName(3) = 'C_C'
+            c(1:nbProp) = 0.d0
         end if
     end if
-!
+
 ! - Get parameters
-!
     if (present(c)) then
-        call rcvalb(fami, kpg, ksp, poum, j_mater, &
+        call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                     ' ', 'META_VISC', 0, ' ', [0.d0], &
-                    nb_resu, resu_name, resu_vale, codret, 2)
-        do i_resu = 1, nb_resu
-            c(i_resu) = resu_vale(i_resu)
+                    nbProp, propName, propVale, propCode, 2)
+        do iProp = 1, nbProp
+            c(iProp) = propVale(iProp)
         end do
     end if
-!
+
 ! - Name of parameters
-!
-    if (meta_type .eq. META_STEEL) then
+    if (metaType .eq. META_STEEL) then
         if (present(m)) then
-            resu_name(1) = 'F1_M'
-            resu_name(2) = 'F2_M'
-            resu_name(3) = 'F3_M'
-            resu_name(4) = 'F4_M'
-            resu_name(5) = 'C_M'
-            m(1:nb_resu) = 20.d0
+            propName(1) = 'F1_M'
+            propName(2) = 'F2_M'
+            propName(3) = 'F3_M'
+            propName(4) = 'F4_M'
+            propName(5) = 'C_M'
+            m(1:nbProp) = 20.d0
         end if
-    elseif (meta_type .eq. META_ZIRC) then
+    elseif (metaType .eq. META_ZIRC) then
         if (present(m)) then
-            resu_name(1) = 'F1_M'
-            resu_name(2) = 'F2_M'
-            resu_name(3) = 'C_M'
-            m(1:nb_resu) = 20.d0
+            propName(1) = 'F1_M'
+            propName(2) = 'F2_M'
+            propName(3) = 'C_M'
+            m(1:nbProp) = 20.d0
         end if
     end if
-!
+
 ! - Get parameters
-!
     if (present(m)) then
-        call rcvalb(fami, kpg, ksp, poum, j_mater, &
+        call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                     ' ', 'META_VISC', 0, ' ', [0.d0], &
-                    nb_resu, resu_name, resu_vale, codret, 2)
-        do i_resu = 1, nb_resu
-            m(i_resu) = resu_vale(i_resu)
+                    nbProp, propName, propVale, propCode, 2)
+        do iProp = 1, nbProp
+            m(iProp) = propVale(iProp)
         end do
     end if
 !
