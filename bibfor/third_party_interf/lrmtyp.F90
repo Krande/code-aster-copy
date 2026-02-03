@@ -30,10 +30,10 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "med_parameter.hf"
 #ifdef ASTER_HAVE_MED
-#include "MeshTypes_type.h"
+#include "med_parameter.hf"
 #endif
+#include "MeshTypes_type.h"
 !
     integer(kind=8), intent(out), optional :: nbtyp
     character(len=8), intent(out), optional :: nomtyp(MT_NTYMAX)

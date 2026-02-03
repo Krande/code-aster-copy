@@ -7616,6 +7616,8 @@ class CouplingMethod:
     # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
+    Lagrangian = 3
+
     Nitsche = 1
 
     Penalization = 2

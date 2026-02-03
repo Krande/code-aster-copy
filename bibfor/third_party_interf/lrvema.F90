@@ -23,9 +23,7 @@ subroutine lrvema(nomail, mfich, nochmd)
     implicit none
 !
 #include "jeveux.h"
-#ifdef ASTER_HAVE_MED
 #include "asterf_types.h"
-#endif
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_mfdfin.h"
@@ -44,7 +42,9 @@ subroutine lrvema(nomail, mfich, nochmd)
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#ifdef ASTER_HAVE_MED
 #include "med_parameter.hf"
+#endif
 #include "MeshTypes_type.h"
 !
     integer(kind=8) :: mfich
