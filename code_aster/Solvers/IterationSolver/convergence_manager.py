@@ -553,22 +553,25 @@ class ConvergenceManager(ContextMixin):
     def _trigger_check_resi_glob_maxi(self):
         name = "RESI_GLOB_RELA"
         para = self._param[name]
-        if not para.hasRef():
-            # NOTE: By default resi_glob_rela has a reference, if not return true
-            return True
 
-        if para.value is ConvergenceManager.undef:
+        if para.value is not ConvergenceManager.undef:
             # NOTE: By default this function deals with the special case
-            return True
+            return False
 
-        # NOTE: if not, verify wheter resi_glob_rela has converged or not
-        # If not converged, check resi_glob_maxi
+        if not para.hasRef():
+            # NOTE: By default resi_glob_rela has a reference
+            # If it does not, do not trigger the check of resi glob maxi
+            return False
+
+        # NOTE: Finally, verify whether resi_glob_rela has converged
+        # If not converged, trigger the check of resi_glob_maxi
         return not para.isConverged()
 
     def _check_resi_glob_maxi(self):
         name_maxi = "RESI_GLOB_MAXI"
         resi_maxi = self._param[name_maxi]
         resiMaxiRefeIsUndefined = False
+        # NOTE: By default resi_glob_maxi does not have a reference
 
         if not resi_maxi.isDefined():
 
@@ -576,8 +579,8 @@ class ConvergenceManager(ContextMixin):
 
             if self.isInitialStep():
 
-                # the initial external force could not be zero
-                # if RESI_GLOB_MAXI is undefined
+                # NOTE: the initial external force
+                # could not be zero if RESI_GLOB_MAXI is undefined
                 message = (
                     "RESI_GLOB_RELA struggles with null initial loading."
                     "Try defining as well RESI_GLOB_MAXI."
