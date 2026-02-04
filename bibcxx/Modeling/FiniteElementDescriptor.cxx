@@ -300,59 +300,6 @@ const std::string FiniteElementDescriptor::getPartitionMethod() const {
     return ModelSplitingMethodNames[(int)Centralized];
 };
 
-#ifdef ASTER_HAVE_MPI
-void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
-    // "the mesh associated to finiteElementDescriptor is not a partial mesh"
-    AS_ASSERT( getMesh()->isConnection() );
-    const ConnectionMeshPtr connectionMesh =
-        std::static_pointer_cast< ConnectionMesh >( getMesh() );
-
-    // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
-    //        "does not correspond to other FiniteElementDescriptor mesh"
-    AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
-
-    const JeveuxVectorLong &otherDofDescriptor = other->getPhysicalNodesComponentDescriptor();
-
-    const int rank = getMPIRank();
-    const int size = getMPISize();
-    int nbNodes = connectionMesh->getNumberOfNodes();
-    int nec = otherDofDescriptor->size() / other->getMesh()->getNumberOfNodes();
-
-    const JeveuxVectorLong &localNumbering = connectionMesh->getNodesLocalNumbering();
-    const JeveuxVectorLong &owner = connectionMesh->getNodesOwner();
-
-    int nbNodesLoc = 0;
-    for ( int i = 0; i < nbNodes; ++i ) {
-        if ( ( *owner )[i] == rank )
-            nbNodesLoc++;
-    }
-
-    VectorLong buffer( nec * nbNodesLoc, 0 );
-    nbNodesLoc = 0;
-    for ( int i = 0; i < nbNodes; ++i ) {
-        int nodeNum = ( *localNumbering )[i] - 1;
-        if ( ( *owner )[i] == rank ) {
-            for ( int j = 0; j < nec; ++j )
-                buffer[nbNodesLoc * nec + j] = ( *otherDofDescriptor )[nodeNum * nec + j];
-
-            nbNodesLoc++;
-        }
-    }
-
-    std::vector< VectorLong > gathered;
-    AsterMPI::all_gather( buffer, gathered );
-    buffer.clear();
-
-    _dofDescriptor->allocate( nbNodes * nec );
-    VectorLong nbNodesProc( size, 0 );
-    for ( int i = 0; i < nbNodes; ++i ) {
-        auto rowner = ( *owner )[i];
-        for ( int j = 0; j < nec; ++j )
-            ( *_dofDescriptor )[i * nec + j] = gathered[rowner][nbNodesProc[rowner] * nec + j];
-        nbNodesProc[rowner]++;
-    }
-};
-
 void FiniteElementDescriptor::addVirtualCells( const FiniteElementDescriptor &other ) {
 
     if ( !other.exists() ) {
@@ -454,6 +401,59 @@ void FiniteElementDescriptor::addVirtualCells( const FiniteElementDescriptor &ot
 
     // Final building
     this->build();
+};
+
+#ifdef ASTER_HAVE_MPI
+void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
+    // "the mesh associated to finiteElementDescriptor is not a partial mesh"
+    AS_ASSERT( getMesh()->isConnection() );
+    const ConnectionMeshPtr connectionMesh =
+        std::static_pointer_cast< ConnectionMesh >( getMesh() );
+
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
+    //        "does not correspond to other FiniteElementDescriptor mesh"
+    AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
+
+    const JeveuxVectorLong &otherDofDescriptor = other->getPhysicalNodesComponentDescriptor();
+
+    const int rank = getMPIRank();
+    const int size = getMPISize();
+    int nbNodes = connectionMesh->getNumberOfNodes();
+    int nec = otherDofDescriptor->size() / other->getMesh()->getNumberOfNodes();
+
+    const JeveuxVectorLong &localNumbering = connectionMesh->getNodesLocalNumbering();
+    const JeveuxVectorLong &owner = connectionMesh->getNodesOwner();
+
+    int nbNodesLoc = 0;
+    for ( int i = 0; i < nbNodes; ++i ) {
+        if ( ( *owner )[i] == rank )
+            nbNodesLoc++;
+    }
+
+    VectorLong buffer( nec * nbNodesLoc, 0 );
+    nbNodesLoc = 0;
+    for ( int i = 0; i < nbNodes; ++i ) {
+        int nodeNum = ( *localNumbering )[i] - 1;
+        if ( ( *owner )[i] == rank ) {
+            for ( int j = 0; j < nec; ++j )
+                buffer[nbNodesLoc * nec + j] = ( *otherDofDescriptor )[nodeNum * nec + j];
+
+            nbNodesLoc++;
+        }
+    }
+
+    std::vector< VectorLong > gathered;
+    AsterMPI::all_gather( buffer, gathered );
+    buffer.clear();
+
+    _dofDescriptor->allocate( nbNodes * nec );
+    VectorLong nbNodesProc( size, 0 );
+    for ( int i = 0; i < nbNodes; ++i ) {
+        auto rowner = ( *owner )[i];
+        for ( int j = 0; j < nec; ++j )
+            ( *_dofDescriptor )[i * nec + j] = gathered[rowner][nbNodesProc[rowner] * nec + j];
+        nbNodesProc[rowner]++;
+    }
 };
 
 void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr &other ) {
