@@ -426,6 +426,9 @@ contains
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA7'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_TRIA7)
         nbCell = nbCell+1
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA10'), cellTypeNume)
+        ASSERT(cellTypeNume .eq. MT_TRIA10)
+        nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_QUAD4)
         nbCell = nbCell+1
@@ -434,6 +437,9 @@ contains
         nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_QUAD9)
+        nbCell = nbCell+1
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD12'), cellTypeNume)
+        ASSERT(cellTypeNume .eq. MT_QUAD12)
         nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_TETRA4)
@@ -523,6 +529,9 @@ contains
         else if (cellTypeName .eq. 'TRIA7') then
             cellTopo = 'SURF'
             cellOrder = 2
+        else if (cellTypeName .eq. 'TRIA10') then
+            cellTopo = 'SURF'
+            cellOrder = 3
         else if (cellTypeName .eq. 'QUAD4') then
             cellTopo = 'SURF'
             cellOrder = 1
@@ -532,6 +541,9 @@ contains
         else if (cellTypeName .eq. 'QUAD9') then
             cellTopo = 'SURF'
             cellOrder = 2
+        else if (cellTypeName .eq. 'QUAD12') then
+            cellTopo = 'SURF'
+            cellOrder = 3
         else if (cellTypeName .eq. 'TETRA4') then
             cellTopo = 'VOLU'
             cellOrder = 1

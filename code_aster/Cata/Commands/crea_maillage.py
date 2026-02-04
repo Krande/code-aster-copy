@@ -49,6 +49,7 @@ CREA_MAILLAGE = OPER(
             "ECLA_PG",
             "HEXA20_27",
             "LINE_QUAD",
+            "LINE_CUBI",
             "MODI_MAILLE",
             "QUAD_LINE",
             "REPERE",
@@ -138,6 +139,13 @@ CREA_MAILLAGE = OPER(
     LINE_QUAD=FACT(
         statut="f",
         fr=tr("Passage linéaire -> quadratique"),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+    ),
+    LINE_CUBI=FACT(
+        statut="f",
+        fr=tr("Passage linéaire -> cubique"),
         regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),

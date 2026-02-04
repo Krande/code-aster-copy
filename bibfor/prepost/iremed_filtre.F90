@@ -225,6 +225,8 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
                 if (ityp .eq. MT_PYRAM19) ityp = MT_PYRAM13
                 if (ityp .eq. MT_PENTA21) ityp = MT_PENTA18
                 if (ityp .eq. MT_PENTA7) ityp = MT_PENTA6
+                if (ityp .eq. MT_TRIA10) ityp = MT_TRIA3
+                if (ityp .eq. MT_QUAD12) ityp = MT_QUAD4
                 zi(jtyp2+ityp-1) = zi(jtyp2+ityp-1)+1
                 zi(jma+ima-1) = zi(jtyp2+ityp-1)
                 nbmat = nbmat+1
@@ -261,6 +263,8 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
                 if (ityp .eq. MT_PYRAM19) ityp = MT_PYRAM13
                 if (ityp .eq. MT_PENTA21) ityp = MT_PENTA18
                 if (ityp .eq. MT_PENTA7) ityp = MT_PENTA6
+                if (ityp .eq. MT_TRIA10) ityp = MT_TRIA3
+                if (ityp .eq. MT_QUAD12) ityp = MT_QUAD4
                 zi(jma+ima-1) = zi(jma+ima-1)+zi(jtyp+3*(ityp-1))-1
             end if
         end do

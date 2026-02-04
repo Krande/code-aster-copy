@@ -1413,6 +1413,29 @@ class MEDPTR6(MEDPQU8):
 
 
 # ------------------------------------------------------------
+class MEDPTR10(MEDPQU8):
+    """Mechanics - Plane strain - TRIA10"""
+
+    meshType = MT.TRIA10
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),)
+    elrefe = (
+        ElrefeLoc(
+            MT.TR1,
+            gauss=(
+                "RIGI=FPG6",
+                "MASS=FPG12",
+                "FPG1=FPG1",
+                "NOEU_S=NOEU_S",
+                "NOEU=NOEU",
+                "MTGA=FPG6",
+            ),
+            mater=("RIGI", "NOEU", "FPG1", "MTGA"),
+        ),
+        ElrefeLoc(MT.SE4, gauss=("RIGI=FPG4",)),
+    )
+
+
+# ------------------------------------------------------------
 class MEDPQU9(MEDPQU8):
     """Mechanics - Plane strain - QUAD9"""
 
@@ -1432,4 +1455,27 @@ class MEDPQU9(MEDPQU8):
             mater=("RIGI", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
+    )
+
+
+# ------------------------------------------------------------
+class MEDPQU12(MEDPQU8):
+    """Mechanics - Plane strain - QUAD12"""
+
+    meshType = MT.QUAD12
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),)
+    elrefe = (
+        ElrefeLoc(
+            MT.Q12,
+            gauss=(
+                "RIGI=FPG16",
+                "MASS=FPG16",
+                "FPG1=FPG1",
+                "NOEU_S=NOEU_S",
+                "NOEU=NOEU",
+                "MTGA=FPG16",
+            ),
+            mater=("RIGI", "NOEU", "FPG1", "MTGA"),
+        ),
+        ElrefeLoc(MT.SE4, gauss=("RIGI=FPG4",)),
     )

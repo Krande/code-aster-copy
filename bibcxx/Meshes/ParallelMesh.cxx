@@ -503,6 +503,16 @@ ParallelMeshPtr ParallelMesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     return mesh_out;
 };
 
+ParallelMeshPtr ParallelMesh::convertToCubic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< ParallelMesh >();
+    ASTERINTEGER quatre = 3, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &quatre, &inf );
+    mesh_out->updateGlobalGroupOfNodes();
+    mesh_out->updateGlobalGroupOfCells();
+    mesh_out->build();
+    return mesh_out;
+};
+
 ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob,
                                                    const bool &stop ) const {
     if ( !_global2localNodeIdsPtr || _global2localNodeIdsPtr->empty() ) {

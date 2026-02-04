@@ -72,17 +72,45 @@ module crea_maillage_module
     integer(kind=4), parameter, private :: zero_ip = 0_ip, one_ip = 1_ip, two_ip = 2_ip
     integer(kind=4), parameter, private :: three_ip = 3_ip, four_ip = 4_ip
 !
+! Only for conversion - not real cells
+#define MT_NTYPE   MT_NTYMAX + 3
+#define MT_SEG5    MT_NTYMAX + 1
+!        1 --- 4 --- 3 --- 5 --- 2
+#define MT_TRIA13  MT_NTYMAX + 2
+!
+!        3
+!        | \
+!        12- 11
+!        |   | \
+!        6 - | - 5
+!        |   |   | \
+!        13 -7 ----  10
+!        |   |   |   | \
+!        1 - 8 - 4 - 9 - 2
+!
+#define MT_QUAD17  MT_NTYMAX + 3
+!
+!        4 - 15 - 7 - 14 - 3
+!        |   |    |    |   |
+!        16  --   |   --   13
+!        |   |    |    |   |
+!        8 ------ 9 ------ 6
+!        |   |    |    |   |
+!        17  --   |   --   12
+!        |   |    |    |   |
+!        1 - 10 - 5 - 11 - 2
+!
     type Mconverter
-        aster_logical :: to_convert(MT_NTYMAX) = ASTER_FALSE
-        integer(ip) :: convert_to(MT_NTYMAX) = zero_ip
-        integer(ip) :: convert_max(MT_NTYMAX) = zero_ip
-        character(len=8) :: name(MT_NTYMAX) = ' '
-        character(len=8) :: short_name(MT_NTYMAX) = ' '
-        integer(ip) :: cata_type(MT_NTYMAX) = zero_ip
-        integer(ip) :: map_type(MT_NTYMAX) = zero_ip
-        integer(ip) :: dim(MT_NTYMAX) = zero_ip
-        integer(ip) :: nno(MT_NTYMAX) = zero_ip
-        integer(ip) :: nnos(MT_NTYMAX) = zero_ip
+        aster_logical :: to_convert(MT_NTYPE) = ASTER_FALSE
+        integer(ip) :: convert_to(MT_NTYPE) = zero_ip
+        integer(ip) :: convert_max(MT_NTYPE) = zero_ip
+        character(len=8) :: name(MT_NTYPE) = ' '
+        character(len=8) :: short_name(MT_NTYPE) = ' '
+        integer(ip) :: cata_type(MT_NTYPE) = zero_ip
+        integer(ip) :: map_type(MT_NTYPE) = zero_ip
+        integer(ip) :: dim(MT_NTYPE) = zero_ip
+        integer(ip) :: nno(MT_NTYPE) = zero_ip
+        integer(ip) :: nnos(MT_NTYPE) = zero_ip
 ! ----- member functions
     contains
         procedure, public, pass :: init => init_conv
@@ -113,8 +141,8 @@ module crea_maillage_module
     type Mface
         integer(ip) :: type = zero_ip
         integer(ip) :: nnos = zero_ip
-        integer(ip) :: nodes(9) = zero_ip
-        integer(ip) :: nno_sort(9) = zero_ip
+        integer(ip) :: nodes(17) = zero_ip
+        integer(ip) :: nno_sort(17) = zero_ip
         integer(ip) :: nb_volumes = zero_ip, volumes(2) = zero_ip
         integer(ip) :: nb_edges = zero_ip, edges(4) = zero_ip
         integer(ip) :: parent = -one_ip
@@ -124,8 +152,8 @@ module crea_maillage_module
 !
     type Medge
         integer(ip) :: type = zero_ip
-        integer(ip) :: nodes(4) = zero_ip
-        integer(ip) :: nno_sort(4) = zero_ip
+        integer(ip) :: nodes(5) = zero_ip
+        integer(ip) :: nno_sort(5) = zero_ip
         integer(ip) :: parent = -one_ip
         integer(ip) :: isub = zero_ip
         integer(ip) :: cell_id = zero_ip
@@ -197,10 +225,11 @@ module crea_maillage_module
         procedure, private, pass :: add_point1
         procedure, private, pass :: add_volume
         procedure, private, pass :: barycenter
-        procedure, private, pass :: barycenter_edge
+        procedure, private, pass :: new_node_edge
         procedure, private, pass :: barycenter_face
         procedure, private, pass :: barycenter_volume
-        procedure, private, pass :: barycenter_fe
+        procedure, private, pass :: new_node
+        procedure, private, pass :: new_node_fe
         procedure, private, pass :: convert_edge
         procedure, private, pass :: convert_face
         procedure, private, pass :: convert_volume
@@ -228,6 +257,7 @@ module crea_maillage_module
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: numbering_edge, numbering_face, dividing_cell, mult_elem
     private :: sort_nodes_face, check_conformity_cell, check_conformity_face
+    private :: sort_nodes_edge
 contains
 !
 !===================================================================================================
@@ -264,7 +294,7 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer(ip), intent(in) :: nno_sort(3), nno
+        integer(ip), intent(in) :: nno_sort(5), nno
         aster_logical, intent(out) :: find
         integer(ip), intent(out) :: edge_id
 !
@@ -290,10 +320,26 @@ contains
                     end if
                 end if
                 if (ok) then
-                    if (nno_sort(nno) .ne. this%edges(edge_i)%nno_sort(nno)) then
-                        edge_i_error = edge_i
-                        ok = ASTER_FALSE
+                    if (nno == 3) then
+                        if (nno_sort(3) .ne. this%edges(edge_i)%nno_sort(3)) then
+                            edge_i_error = edge_i
+                            ok = ASTER_FALSE
+                        end if
+                    elseif (nno == 4) then
+                        if (nno_sort(3) .ne. this%edges(edge_i)%nno_sort(4) &
+                            .or. nno_sort(4) .ne. this%edges(edge_i)%nno_sort(5)) then
+                            edge_i_error = edge_i
+                            ok = ASTER_FALSE
+                        end if
+                    elseif (nno == 5) then
+                        if (nno_sort(3) .ne. this%edges(edge_i)%nno_sort(3) &
+                            .or. nno_sort(4) .ne. this%edges(edge_i)%nno_sort(4) &
+                            .or. nno_sort(5) .ne. this%edges(edge_i)%nno_sort(5)) then
+                            edge_i_error = edge_i
+                            ok = ASTER_FALSE
+                        end if
                     end if
+
                 end if
                 if (ok) then
                     find = ASTER_TRUE
@@ -331,6 +377,7 @@ contains
 ! Find face_id of face
 !
         integer(ip) :: i_face, i_node, nb_faces, face_i, face_i_error
+        integer(ip) :: offset
         aster_logical :: ok
 !
         find = ASTER_FALSE
@@ -353,8 +400,15 @@ contains
                     ok = ASTER_FALSE
                 end if
                 if (ok) then
+                    if (nno == 10_ip) then
+                        offset = 7_ip
+                    elseif (nno == 12_ip) then
+                        offset = 9_ip
+                    else
+                        offset = zero_ip
+                    end if
                     do i_node = nnos+one_ip, nno
-                        if (nno_sort(i_node) .ne. this%faces(face_i)%nno_sort(i_node)) then
+                        if (nno_sort(i_node) .ne. this%faces(face_i)%nno_sort(offset+i_node)) then
                             face_i_error = face_i
                             ok = ASTER_FALSE
                             exit
@@ -443,6 +497,27 @@ contains
 !
 ! ==================================================================================================
 !
+    subroutine sort_nodes_edge(nno, nnos, nodes)
+!
+        implicit none
+!
+        integer(ip), intent(in) :: nno, nnos
+        integer(ip), intent(inout) :: nodes(1:nno)
+!
+        ASSERT(nno <= 5)
+!
+        call qsort(nodes(1:nnos))
+!
+        if (nno == 4) then
+            call qsort(nodes(3:4))
+        elseif (nno == 5) then
+            call qsort(nodes(4:5))
+        end if
+!
+    end subroutine
+!
+! ==================================================================================================
+!
     subroutine sort_nodes_face(nno, nnos, nodes)
 !
         implicit none
@@ -450,11 +525,21 @@ contains
         integer(ip), intent(in) :: nno, nnos
         integer(ip), intent(inout) :: nodes(1:nno)
 !
-        ASSERT(nno <= 9)
+        ASSERT(nno <= 17)
 !
         call qsort(nodes(1:nnos))
 !
-        if (nno > nnos) then
+        if (nno == 12) then
+            call qsort(nodes(5:12))
+        elseif (nno == 17) then
+            call qsort(nodes(5:8))
+            call qsort(nodes(10:17))
+        elseif (nno == 10) then
+            call qsort(nodes(4:9))
+        elseif (nno == 13) then
+            call qsort(nodes(4:6))
+            call qsort(nodes(8:13))
+        elseif (nno > nnos) then
             call qsort(nodes(nnos+1:2*nnos))
         end if
 !
@@ -477,12 +562,17 @@ contains
         this%name(MT_SEG2) = "SEG2"
         this%name(MT_SEG3) = "SEG3"
         this%name(MT_SEG4) = "SEG4"
+        this%name(MT_SEG5) = "SEG5"
         this%name(MT_TRIA3) = "TRIA3"
         this%name(MT_TRIA6) = "TRIA6"
         this%name(MT_TRIA7) = "TRIA7"
+        this%name(MT_TRIA10) = "TRIA10"
+        this%name(MT_TRIA13) = "TRIA13"
         this%name(MT_QUAD4) = "QUAD4"
         this%name(MT_QUAD8) = "QUAD8"
         this%name(MT_QUAD9) = "QUAD9"
+        this%name(MT_QUAD12) = "QUAD12"
+        this%name(MT_QUAD17) = "QUAD17"
         this%name(MT_TETRA4) = "TETRA4"
         this%name(MT_TETRA10) = "TETRA10"
         this%name(MT_TETRA15) = "TETRA15"
@@ -503,12 +593,17 @@ contains
         this%short_name(MT_SEG2) = "SE2"
         this%short_name(MT_SEG3) = "SE3"
         this%short_name(MT_SEG4) = "SE4"
+        this%short_name(MT_SEG5) = "SE5"
         this%short_name(MT_TRIA3) = "TR3"
         this%short_name(MT_TRIA6) = "TR6"
         this%short_name(MT_TRIA7) = "TR7"
+        this%short_name(MT_TRIA10) = "TR1"
+        this%short_name(MT_TRIA13) = "T13"
         this%short_name(MT_QUAD4) = "QU4"
         this%short_name(MT_QUAD8) = "QU8"
         this%short_name(MT_QUAD9) = "QU9"
+        this%short_name(MT_QUAD12) = "Q12"
+        this%short_name(MT_QUAD17) = "Q17"
         this%short_name(MT_TETRA4) = "TE4"
         this%short_name(MT_TETRA10) = "T10"
         this%short_name(MT_TETRA15) = "T15"
@@ -526,15 +621,20 @@ contains
         this%short_name(MT_PENTA21) = "P21"
 !
         this%convert_max(MT_POI1) = MT_POI1
-        this%convert_max(MT_SEG2) = MT_SEG3
-        this%convert_max(MT_SEG3) = MT_SEG3
-        this%convert_max(MT_SEG4) = MT_SEG4
-        this%convert_max(MT_TRIA3) = MT_TRIA7
-        this%convert_max(MT_TRIA6) = MT_TRIA7
-        this%convert_max(MT_TRIA7) = MT_TRIA7
-        this%convert_max(MT_QUAD4) = MT_QUAD9
-        this%convert_max(MT_QUAD8) = MT_QUAD9
-        this%convert_max(MT_QUAD9) = MT_QUAD9
+        this%convert_max(MT_SEG2) = MT_SEG5
+        this%convert_max(MT_SEG3) = MT_SEG5
+        this%convert_max(MT_SEG4) = MT_SEG5
+        this%convert_max(MT_SEG5) = MT_SEG5
+        this%convert_max(MT_TRIA3) = MT_TRIA13
+        this%convert_max(MT_TRIA6) = MT_TRIA13
+        this%convert_max(MT_TRIA7) = MT_TRIA13
+        this%convert_max(MT_TRIA10) = MT_TRIA13
+        this%convert_max(MT_TRIA13) = MT_TRIA13
+        this%convert_max(MT_QUAD4) = MT_QUAD17
+        this%convert_max(MT_QUAD8) = MT_QUAD17
+        this%convert_max(MT_QUAD9) = MT_QUAD17
+        this%convert_max(MT_QUAD12) = MT_QUAD17
+        this%convert_max(MT_QUAD17) = MT_QUAD17
         this%convert_max(MT_TETRA4) = MT_TETRA15
         this%convert_max(MT_TETRA10) = MT_TETRA15
         this%convert_max(MT_TETRA15) = MT_TETRA15
@@ -563,6 +663,25 @@ contains
                 this%convert_to(i_type) = i_type
             end if
         end do
+!
+!   For specific type
+        this%cata_type(MT_SEG5) = -1
+        this%nno(MT_SEG5) = int(5, ip)
+        this%nnos(MT_SEG5) = int(2, ip)
+        this%dim(MT_SEG5) = int(1, ip)
+        this%convert_to(MT_SEG5) = MT_SEG5
+!
+        this%cata_type(MT_TRIA13) = -1
+        this%nno(MT_TRIA13) = int(13, ip)
+        this%nnos(MT_TRIA13) = int(3, ip)
+        this%dim(MT_TRIA13) = int(2, ip)
+        this%convert_to(MT_TRIA13) = MT_TRIA13
+!
+        this%cata_type(MT_QUAD17) = -1
+        this%nno(MT_QUAD17) = int(17, ip)
+        this%nnos(MT_QUAD17) = int(4, ip)
+        this%dim(MT_QUAD17) = int(2, ip)
+        this%convert_to(MT_QUAD17) = MT_QUAD17
 !
         call jedema()
 !
@@ -594,7 +713,7 @@ contains
         integer(ip) :: i_cell, nno, node_id, owner, i_type, cell_type
         real(kind=8):: start, end
         integer(ip), allocatable, dimension(:, :) :: list_type_cells
-        integer(kind=4), parameter :: nb_type = 10
+        integer(kind=4), parameter :: nb_type = 13
         integer(ip) :: nb_type_cells(nb_type)
 !
         call jemarq()
@@ -690,33 +809,42 @@ contains
             case (MT_POI1)
                 nb_type_cells(1) = nb_type_cells(1)+one_ip
                 list_type_cells(1, nb_type_cells(1)) = i_cell
-            case (MT_SEG4)
+            case (MT_SEG5)
                 nb_type_cells(2) = nb_type_cells(2)+one_ip
                 list_type_cells(2, nb_type_cells(2)) = i_cell
-            case (MT_SEG3)
-                nb_type_cells(3) = nb_type_cells(3)+one_ip
-                list_type_cells(3, nb_type_cells(3)) = i_cell
-            case (MT_TRIA7, MT_QUAD9)
+            case (MT_SEG4)
                 nb_type_cells(4) = nb_type_cells(4)+one_ip
                 list_type_cells(4, nb_type_cells(4)) = i_cell
-            case (MT_HEXA27, MT_PENTA21, MT_PYRAM19, MT_TETRA15)
+            case (MT_SEG3)
                 nb_type_cells(5) = nb_type_cells(5)+one_ip
                 list_type_cells(5, nb_type_cells(5)) = i_cell
-            case (MT_TRIA6, MT_QUAD8)
+            case (MT_TRIA13, MT_QUAD17)
+                nb_type_cells(3) = nb_type_cells(3)+one_ip
+                list_type_cells(3, nb_type_cells(3)) = i_cell
+            case (MT_TRIA10, MT_QUAD12)
                 nb_type_cells(6) = nb_type_cells(6)+one_ip
                 list_type_cells(6, nb_type_cells(6)) = i_cell
-            case (MT_PENTA18, MT_HEXA20, MT_PENTA15, MT_PYRAM13, MT_TETRA10)
+            case (MT_TRIA7, MT_QUAD9)
                 nb_type_cells(7) = nb_type_cells(7)+one_ip
                 list_type_cells(7, nb_type_cells(7)) = i_cell
-            case (MT_SEG2)
+            case (MT_HEXA27, MT_PENTA21, MT_PYRAM19, MT_TETRA15)
                 nb_type_cells(8) = nb_type_cells(8)+one_ip
                 list_type_cells(8, nb_type_cells(8)) = i_cell
-            case (MT_TRIA3, MT_QUAD4)
+            case (MT_TRIA6, MT_QUAD8)
                 nb_type_cells(9) = nb_type_cells(9)+one_ip
                 list_type_cells(9, nb_type_cells(9)) = i_cell
-            case (MT_HEXA9, MT_PENTA7, MT_HEXA8, MT_PENTA6, MT_PYRAM5, MT_TETRA4)
+            case (MT_PENTA18, MT_HEXA20, MT_PENTA15, MT_PYRAM13, MT_TETRA10)
                 nb_type_cells(10) = nb_type_cells(10)+one_ip
                 list_type_cells(10, nb_type_cells(10)) = i_cell
+            case (MT_SEG2)
+                nb_type_cells(11) = nb_type_cells(11)+one_ip
+                list_type_cells(11, nb_type_cells(11)) = i_cell
+            case (MT_TRIA3, MT_QUAD4)
+                nb_type_cells(12) = nb_type_cells(12)+one_ip
+                list_type_cells(12, nb_type_cells(12)) = i_cell
+            case (MT_HEXA9, MT_PENTA7, MT_HEXA8, MT_PENTA6, MT_PYRAM5, MT_TETRA4)
+                nb_type_cells(13) = nb_type_cells(13)+one_ip
+                list_type_cells(13, nb_type_cells(13)) = i_cell
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -1169,7 +1297,7 @@ contains
         implicit none
 !
         integer(ip), intent(in) :: cell_type
-        integer(ip), intent(out) :: nb_edge, edge_type(12), edge_loc(3, 12)
+        integer(ip), intent(out) :: nb_edge, edge_type(12), edge_loc(5, 12)
 ! --------------------------------------------------------------------------------------------------
 ! Get edge connectivity of a cell
 !
@@ -1178,7 +1306,8 @@ contains
         edge_type = zero_ip
         edge_loc = zero_ip
 !
-        if (cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
+        if (cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9 &
+            .or. cell_type == MT_QUAD12 .or. cell_type == MT_QUAD17) then
             nb_edge = four_ip
             edge_loc(1:2, 1) = int([1, 2], ip)
             edge_loc(1:2, 2) = int([2, 3], ip)
@@ -1186,20 +1315,43 @@ contains
             edge_loc(1:2, 4) = int([4, 1], ip)
             if (cell_type == MT_QUAD4) then
                 edge_type(1:nb_edge) = MT_SEG2
-            else
+            else if (cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
                 edge_type(1:nb_edge) = MT_SEG3
                 edge_loc(3, 1:nb_edge) = int([5, 6, 7, 8], ip)
+            else if (cell_type == MT_QUAD12) then
+                edge_type(1:nb_edge) = MT_SEG4
+                edge_loc(3, 1:nb_edge) = int([5, 7, 9, 11], ip)
+                edge_loc(4, 1:nb_edge) = int([6, 8, 10, 12], ip)
+            else if (cell_type == MT_QUAD17) then
+                edge_type(1:nb_edge) = MT_SEG5
+                edge_loc(3, 1:nb_edge) = int([5, 6, 7, 8], ip)
+                edge_loc(4, 1:nb_edge) = int([10, 12, 14, 16], ip)
+                edge_loc(5, 1:nb_edge) = int([11, 13, 15, 17], ip)
+            else
+                ASSERT(ASTER_FALSE)
             end if
-        elseif (cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
+        elseif (cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7 &
+                .or. cell_type == MT_TRIA10 .or. cell_type == MT_TRIA13) then
             nb_edge = three_ip
             edge_loc(1:2, 1) = int([1, 2], ip)
             edge_loc(1:2, 2) = int([2, 3], ip)
             edge_loc(1:2, 3) = int([3, 1], ip)
             if (cell_type == MT_TRIA3) then
                 edge_type(1:nb_edge) = MT_SEG2
-            else
+            elseif (cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
                 edge_type(1:nb_edge) = MT_SEG3
                 edge_loc(3, 1:nb_edge) = int([4, 5, 6], ip)
+            elseif (cell_type == MT_TRIA10) then
+                edge_type(1:nb_edge) = MT_SEG4
+                edge_loc(3, 1:nb_edge) = int([4, 6, 8], ip)
+                edge_loc(4, 1:nb_edge) = int([5, 7, 9], ip)
+            elseif (cell_type == MT_TRIA13) then
+                edge_type(1:nb_edge) = MT_SEG5
+                edge_loc(3, 1:nb_edge) = int([4, 5, 6], ip)
+                edge_loc(4, 1:nb_edge) = int([8, 10, 12], ip)
+                edge_loc(5, 1:nb_edge) = int([9, 11, 13], ip)
+            else
+                ASSERT(ASTER_FALSE)
             end if
         elseif (cell_type == MT_HEXA8 .or. cell_type == MT_HEXA9 &
                 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
@@ -1431,17 +1583,24 @@ contains
         nodes_loc = zero_ip
         nno = this%converter%nno(cell_type)
 !
-        do i_node = one_ip, nno
-            nodes_loc(i_node) = i_node
-        end do
-        if (cell_type .eq. MT_HEXA9) then
+        select case (cell_type)
+        case (MT_SEG4)
+            nodes_loc(1:4) = int([1, 2, 4, 5], ip)
+        case (MT_TRIA10)
+            nodes_loc(1:10) = int([1, 2, 3, 8, 9, 10, 11, 12, 13, 7], ip)
+        case (MT_QUAD12)
+            nodes_loc(1:12) = int([1, 2, 3, 4, 10, 11, 12, 13, 14, 15, 16, 17], ip)
+        case (MT_HEXA9)
             nodes_loc(1:8) = int([1, 2, 3, 4, 5, 6, 7, 8], ip)
             nodes_loc(9) = 27_ip
-        end if
-        if (cell_type .eq. MT_PENTA7) then
+        case (MT_PENTA7)
             nodes_loc(1:6) = int([1, 2, 3, 4, 5, 6], ip)
             nodes_loc(7) = 21_ip
-        end if
+        case default
+            do i_node = one_ip, nno
+                nodes_loc(i_node) = i_node
+            end do
+        end select
 !
     end subroutine
 !
@@ -1461,13 +1620,15 @@ contains
         sub_type = zero_ip
         sub_loc = zero_ip
 !
-        if (cell_type == MT_SEG2 .or. cell_type == MT_SEG3) then
+        if (cell_type == MT_SEG2 .or. cell_type == MT_SEG3 &
+            .or. cell_type == MT_SEG4 .or. cell_type == MT_SEG5) then
             nb_sub = 2_ip
             sub_type(1:nb_sub) = MT_SEG2
             conv_type(1:nb_sub) = cell_type
             sub_loc(1:2, 1) = int([1, 3], ip)
             sub_loc(1:2, 2) = int([2, 3], ip)
-        elseif (cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
+        elseif (cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9 &
+                .or. cell_type == MT_QUAD12 .or. cell_type == MT_QUAD17) then
             nb_sub = 4_ip
             sub_type(1:nb_sub) = MT_QUAD4
             conv_type(1:nb_sub) = cell_type
@@ -1475,7 +1636,8 @@ contains
             sub_loc(1:4, 2) = int([2, 6, 9, 5], ip)
             sub_loc(1:4, 3) = int([3, 7, 9, 6], ip)
             sub_loc(1:4, 4) = int([4, 8, 9, 7], ip)
-        elseif (cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
+        elseif (cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7 &
+                .or. cell_type == MT_TRIA10 .or. cell_type == MT_TRIA13) then
             nb_sub = 4_ip
             sub_type(1:nb_sub) = MT_TRIA3
             conv_type(1:nb_sub) = cell_type
@@ -1701,7 +1863,7 @@ contains
         integer(ip) :: volume_id
 ! ----------------------------------------------------------------------
         integer(ip) :: nno, i_face, nno_sort(27), nnos, old_size
-        integer(ip) :: nb_edges, edge_type(12), edge_loc(3, 12), edge_id, edge_nno
+        integer(ip) :: nb_edges, edge_type(12), edge_loc(5, 12), edge_id, edge_nno
         integer(ip) :: nb_faces, face_type(6), face_loc(9, 6), i_node, i_edge
         integer(ip) :: face_nno, face_nodes(27), face_id, edge_nodes(27)
         integer(ip), allocatable :: new_volumes(:)
@@ -1812,8 +1974,8 @@ contains
         integer(ip), intent(in), optional :: parent, isub
         integer(ip) :: face_id
 ! ----------------------------------------------------------------------
-        integer(ip) :: nno, nnos, nno_sort(9), i_edge, edge_id
-        integer(ip) :: nb_edge, edge_type(12), edge_loc(3, 12), i_node
+        integer(ip) :: nno, nnos, nno_sort(17), i_edge, edge_id
+        integer(ip) :: nb_edge, edge_type(12), edge_loc(5, 12), i_node
         integer(ip) :: edge_nno, edge_nodes(27), old_size
         integer(ip), allocatable :: new_faces(:)
         aster_logical :: find
@@ -1884,7 +2046,7 @@ contains
             if (this%convert_max) then
                 call this%convert_face(face_id)
             elseif (nno > nnos) then
-                call qsort(this%faces(face_id)%nno_sort(nnos+1:2*nnos))
+                call sort_nodes_face(nno, nnos, this%faces(face_id)%nno_sort)
             end if
         end if
 !
@@ -1915,17 +2077,17 @@ contains
         integer(ip), intent(in), optional :: parent, isub, face_id
         integer(ip) :: edge_id
 ! ----------------------------------------------------------------------
-        integer(ip) :: nno, nno_sort(4), old_size
+        integer(ip) :: nno, nno_sort(5), old_size, nnos
         integer(ip), allocatable :: new_edges(:)
         aster_logical :: find
 !
         ASSERT(this%converter%dim(type) == one_ip)
         nno = this%converter%nno(type)
-        nno_sort(1) = minval(nodes(1:2))
-        nno_sort(2) = maxval(nodes(1:2))
-        if (nno > 2) then
-            nno_sort(3:nno) = nodes(3:nno)
-        end if
+        nnos = this%converter%nnos(type)
+        nno_sort = zero_ip
+        nno_sort(1:nno) = nodes(1:nno)
+!
+        call sort_nodes_edge(nno, nnos, nno_sort)
 !
         call this%find_edge(nno, nno_sort, find, edge_id)
 !
@@ -1970,12 +2132,13 @@ contains
                 else
                     call this%convert_edge(edge_id)
                 end if
-            elseif (nno == 4) then
-                call qsort(this%edges(edge_id)%nno_sort(3:4))
+            elseif (nno > nnos) then
+                call sort_nodes_edge(nno, nnos, this%edges(edge_id)%nno_sort)
             end if
         end if
 !
         if (this%debug) then
+            nno = this%converter%nno(this%edges(edge_id)%type)
             print *, "Add edge: ", edge_id
             print *, "- Find: ", find
             print *, "- Type: ", this%converter%name(this%edges(edge_id)%type), &
@@ -2187,6 +2350,9 @@ contains
                 do i_node = one_ip, nno
                     v_connex(i_node) = this%nodes(this%cells(i_cell)%nodes(i_node))%id
                 end do
+                if (this%debug) then
+                    print *, "Coyp cell: ", i_cell, ": ", v_connex(1:nno)
+                end if
                 if (this%isHPC) then
                     v_maex(cell_id) = this%owner_cell(nno, this%cells(i_cell)%nodes)
                     if (v_maex(cell_id) .eq. rank) then
@@ -2353,9 +2519,9 @@ contains
         class(Mmesh), intent(inout) :: this
         integer(ip), intent(in) :: volu_id
 ! ------------------------------------------------------------------
-        integer(ip) :: volu_type, volu_type_end
-        integer(ip) :: nno, nno_end, node_id, i_face, i_node, face_type, face_nno
-        integer(ip) :: nb_edges, edge_type(12), edge_loc(3, 12), face_id
+        integer(ip) :: volu_type, volu_type_end, face_nnos, face_nno
+        integer(ip) :: nno, nno_end, node_id, i_face, i_node, face_type
+        integer(ip) :: nb_edges, edge_type(12), edge_loc(5, 12), face_id, bar_node
         integer(ip) :: nb_faces, faces_type(6), face_loc(9, 6), i_edge, owner
 !
         volu_type = this%volumes(volu_id)%type
@@ -2385,9 +2551,11 @@ contains
                 call this%convert_face(this%volumes(volu_id)%faces(i_face))
                 face_type = faces_type(i_face)
                 face_nno = this%converter%nno(face_type)
+                face_nnos = this%converter%nnos(face_type)
+                bar_node = two_ip*face_nnos+one_ip
 !
                 this%volumes(volu_id)%nodes(face_loc(face_nno, i_face)) = &
-                    this%faces(face_id)%nodes(face_nno)
+                    this%faces(face_id)%nodes(bar_node)
             end do
 ! --- Add node at barycenter
             owner = this%owner_cell(nno_end-one_ip, this%volumes(volu_id)%nodes)
@@ -2417,7 +2585,8 @@ contains
         integer(ip), intent(in) :: face_id
 ! ------------------------------------------------------------------
         integer(ip) :: face_type, face_type_end, owner
-        integer(ip) :: nno, nno_end, node_id, i_edge, i_node, nnos
+        integer(ip) :: nno, nno_end, node_id, i_edge, i_node, nnos, node_bar
+        integer(ip) :: nb_edge, edge_type(12), edge_loc(5, 12), node_idx
 !
         face_type = this%faces(face_id)%type
         nno = this%converter%nno(face_type)
@@ -2430,22 +2599,48 @@ contains
         end if
 !
         if (nno_end > nno) then
-! --- Add nodes at the middle of edges
-            if (face_type == MT_TRIA3 .or. face_type == MT_QUAD4) then
-                do i_edge = one_ip, this%faces(face_id)%nb_edges
-                    call this%convert_edge(this%faces(face_id)%edges(i_edge), face_id)
-                    this%faces(face_id)%nodes(nno+i_edge) = &
-                        this%edges(this%faces(face_id)%edges(i_edge))%nodes(3)
-                end do
-                this%faces(face_id)%nno_sort(nnos+1:2*nnos) = &
-                    this%faces(face_id)%nodes(nnos+1:2*nnos)
-                call qsort(this%faces(face_id)%nno_sort(nnos+1:2*nnos))
+            call numbering_edge(face_type_end, nb_edge, edge_type, edge_loc)
+            ASSERT(nb_edge == this%faces(face_id)%nb_edges)
+            if (face_type == MT_TRIA10) then
+                this%faces(face_id)%nodes(7) = this%faces(face_id)%nodes(10)
+                this%faces(face_id)%nno_sort(7) = this%faces(face_id)%nno_sort(10)
             end if
+! --- Add nodes at the middle of edges
+            do i_edge = one_ip, this%faces(face_id)%nb_edges
+                call this%convert_edge(this%faces(face_id)%edges(i_edge), face_id)
+                node_idx = edge_loc(3, i_edge)
+                this%faces(face_id)%nodes(node_idx) = &
+                    this%edges(this%faces(face_id)%edges(i_edge))%nodes(3)
+                if (this%faces(face_id)%nodes(i_edge) == &
+                    this%edges(this%faces(face_id)%edges(i_edge))%nodes(1)) then
+                    node_idx = edge_loc(4_ip, i_edge)
+                    this%faces(face_id)%nodes(node_idx) = &
+                        this%edges(this%faces(face_id)%edges(i_edge))%nodes(4_ip)
+                    node_idx = edge_loc(5_ip, i_edge)
+                    this%faces(face_id)%nodes(node_idx) = &
+                        this%edges(this%faces(face_id)%edges(i_edge))%nodes(5_ip)
+                else
+                    node_idx = edge_loc(4_ip, i_edge)
+                    this%faces(face_id)%nodes(node_idx) = &
+                        this%edges(this%faces(face_id)%edges(i_edge))%nodes(5_ip)
+                    node_idx = edge_loc(5_ip, i_edge)
+                    this%faces(face_id)%nodes(node_idx) = &
+                        this%edges(this%faces(face_id)%edges(i_edge))%nodes(4_ip)
+                end if
+            end do
+            this%faces(face_id)%nno_sort(nnos+1:nno_end) = &
+                this%faces(face_id)%nodes(nnos+1:nno_end)
+            call sort_nodes_face(nno_end, nnos, this%faces(face_id)%nno_sort)
 ! --- Add node at the barycenter
-            owner = this%owner_cell(nno_end-one_ip, this%faces(face_id)%nodes)
-            node_id = this%add_node(this%barycenter(face_id, two_ip), owner)
-            this%faces(face_id)%nodes(nno_end) = node_id
-            this%faces(face_id)%nno_sort(nno_end) = node_id
+            if (face_type == MT_TRIA3 .or. face_type == MT_TRIA6 &
+                .or. face_type == MT_QUAD4 .or. face_type == MT_QUAD8 &
+                .or. face_type == MT_QUAD12) then
+                node_bar = two_ip*nnos+one_ip
+                owner = this%owner_cell(node_bar-one_ip, this%faces(face_id)%nodes)
+                node_id = this%add_node(this%barycenter(face_id, two_ip), owner)
+                this%faces(face_id)%nodes(node_bar) = node_id
+                this%faces(face_id)%nno_sort(node_bar) = node_id
+            end if
         else
             ASSERT(face_type == face_type_end)
         end if
@@ -2471,7 +2666,7 @@ contains
         integer(ip), intent(in), optional :: face_id
 ! ------------------------------------------------------------------
         integer(ip) :: edge_type, edge_type_end, owner
-        integer(ip) :: nno, nno_end, node_id, i_node
+        integer(ip) :: nno, nno_end, node_id, i_node, nodes_tmp(2)
 !
         edge_type = this%edges(edge_id)%type
         nno = this%converter%nno(edge_type)
@@ -2483,24 +2678,46 @@ contains
         end if
 !
         if (nno_end > nno) then
-            if (edge_type_end == MT_SEG3) then
-                owner = this%owner_cell(two_ip, this%edges(edge_id)%nodes)
+            ! Convert to MT_SEG5
+            owner = this%owner_cell(nno, this%edges(edge_id)%nodes)
+            select case (edge_type)
+            case (MT_SEG2)
                 if (present(face_id)) then
-                    node_id = this%add_node(this%barycenter_fe(edge_id, face_id), owner)
+                    node_id = this%add_node(this%new_node_fe(edge_id, face_id, 3_ip), owner)
                 else
-                    node_id = this%add_node(this%barycenter(edge_id, one_ip), owner)
+                    node_id = this%add_node(this%new_node(edge_id, one_ip, 3_ip), owner)
                 end if
                 this%edges(edge_id)%nodes(3) = node_id
                 this%edges(edge_id)%nno_sort(3) = node_id
-            else
-                ASSERT(ASTER_FALSE)
-                node_id = this%add_node([0.d0, 0.d0, 0.d0], -one_ip)
+            case (MT_SEG4)
+                if (present(face_id)) then
+                    node_id = this%add_node(this%new_node_fe(edge_id, face_id, 3_ip), owner)
+                else
+                    node_id = this%add_node(this%new_node(edge_id, one_ip, 3_ip), owner)
+                end if
+                nodes_tmp(1:2) = this%edges(edge_id)%nodes(3:4)
                 this%edges(edge_id)%nodes(3) = node_id
+                this%edges(edge_id)%nodes(4:5) = nodes_tmp(1:2)
+                nodes_tmp(1:2) = this%edges(edge_id)%nno_sort(3:4)
                 this%edges(edge_id)%nno_sort(3) = node_id
-                node_id = this%add_node([0.d0, 0.d0, 0.d0], -one_ip)
+                this%edges(edge_id)%nno_sort(4:5) = nodes_tmp(1:2)
+            end select
+!
+            if (edge_type == MT_SEG2 .or. edge_type == MT_SEG3) then
+                if (present(face_id)) then
+                    node_id = this%add_node(this%new_node_fe(edge_id, face_id, 4_ip), owner)
+                else
+                    node_id = this%add_node(this%new_node(edge_id, one_ip, 4_ip), owner)
+                end if
                 this%edges(edge_id)%nodes(4) = node_id
                 this%edges(edge_id)%nno_sort(4) = node_id
-                call qsort(this%edges(edge_id)%nno_sort(3:4))
+                if (present(face_id)) then
+                    node_id = this%add_node(this%new_node_fe(edge_id, face_id, 5_ip), owner)
+                else
+                    node_id = this%add_node(this%new_node(edge_id, one_ip, 5_ip), owner)
+                end if
+                this%edges(edge_id)%nodes(5) = node_id
+                this%edges(edge_id)%nno_sort(5) = node_id
             end if
         else
             ASSERT(edge_type == edge_type_end)
@@ -2518,6 +2735,28 @@ contains
 !
 ! ==================================================================================================
 !
+    function new_node(this, cell_id, cell_dim, node_loc) result(coor)
+!
+        implicit none
+!
+        class(Mmesh), intent(in) :: this
+        integer(ip), intent(in) :: cell_id, cell_dim, node_loc
+        real(kind=8) :: coor(3)
+! ---------------------------------------------------------------------------------
+!
+        if (cell_dim == three_ip) then
+            ASSERT(ASTER_FALSE)
+        elseif (cell_dim == two_ip) then
+            ASSERT(ASTER_FALSE)
+        elseif (cell_dim == one_ip) then
+            coor = this%new_node_edge(cell_id, node_loc)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    end function
+!
+! ==================================================================================================
+!
     function barycenter(this, cell_id, cell_dim) result(coor)
 !
         implicit none
@@ -2532,7 +2771,7 @@ contains
         elseif (cell_dim == two_ip) then
             coor = this%barycenter_face(cell_id)
         elseif (cell_dim == one_ip) then
-            coor = this%barycenter_edge(cell_id)
+            coor = this%new_node_edge(cell_id, 3_ip)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -2540,49 +2779,111 @@ contains
 !
 ! ==================================================================================================
 !
-    function barycenter_edge(this, edge_id) result(coor)
+    function new_node_edge(this, edge_id, node_loc) result(coor)
 !
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer(ip), intent(in) :: edge_id
+        integer(ip), intent(in) :: edge_id, node_loc
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-        integer(ip) :: i_node, node
-        real(kind=8) :: basis(27)
+        integer(ip) :: i_node, node, nno, edge_type, edge_type_parent
+        integer(kind=8) :: nbNodes
+        real(kind=8) :: basis(27), coor_ref(3)
 !
         coor = 0.d0
+        edge_type = this%edges(edge_id)%type
+        nno = this%converter%nno(edge_type)
+        ASSERT(nno < 5)
 !
-        if (this%edges(edge_id)%isub == zero_ip) then
-            ! coor_ref = [0.d0, 0.d0, 0.d0]
-            ! call elrfvf("SE2", coor_ref, basis)
-            basis(1:2) = 0.5d0
-            do i_node = one_ip, two_ip
-                node = this%edges(edge_id)%nodes(i_node)
-                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
-            end do
-        else
-            if (this%edges(edge_id)%isub == one_ip) then
-                ! coor_ref = [-0.5d0, 0.d0, 0.d0]
-                ! call elrfvf("SE3", coor_ref, basis)
-                basis(1:3) = [0.375d0, -0.125d0, 0.75d0]
+        select case (node_loc)
+        case (3)
+            if (this%edges(edge_id)%isub == zero_ip) then
+                coor_ref = [0.d0, 0.d0, 0.d0]
+                call elrfvf(this%converter%short_name(edge_type), coor_ref, basis, nbNodes)
+                do i_node = one_ip, int(nbNodes, ip)
+                    node = this%edges(edge_id)%nodes(i_node)
+                    coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+                end do
             else
-                ! coor_ref = [0.5d0, 0.d0, 0.d0]
-                ! call elrfvf("SE3", coor_ref, basis)
-                basis(1:3) = [-0.125, 0.375d0, 0.75d0]
+                if (this%edges(edge_id)%isub == one_ip) then
+                    coor_ref = [-0.5d0, 0.d0, 0.d0]
+                else
+                    coor_ref = [0.5d0, 0.d0, 0.d0]
+                end if
+                ASSERT(this%edges(edge_id)%parent > zero_ip)
+                edge_type_parent = this%edges(this%edges(edge_id)%parent)%type
+                if (edge_type_parent == MT_SEG5) then
+                    edge_type_parent = MT_SEG3
+                end if
+                ASSERT(edge_type_parent .ne. MT_SEG4)
+                call elrfvf(this%converter%short_name(edge_type_parent), coor_ref, basis, nbNodes)
+                do i_node = one_ip, int(nbNodes, ip)
+                    node = this%edges(this%edges(edge_id)%parent)%nodes(i_node)
+                    coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+                end do
             end if
-            ASSERT(this%edges(edge_id)%parent > zero_ip)
-            do i_node = one_ip, three_ip
-                node = this%edges(this%edges(edge_id)%parent)%nodes(i_node)
-                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
-            end do
-        end if
+        case (4)
+            if (this%edges(edge_id)%isub == zero_ip) then
+                coor_ref = [-1.d0/3.d0, 0.d0, 0.d0]
+                call elrfvf(this%converter%short_name(edge_type), coor_ref, basis, nbNodes)
+                do i_node = one_ip, int(nbNodes, ip)
+                    node = this%edges(edge_id)%nodes(i_node)
+                    coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+                end do
+            else
+                if (this%edges(edge_id)%isub == one_ip) then
+                    coor_ref = [-2.d0/3.d0, 0.d0, 0.d0]
+                else
+                    coor_ref = [1.d0/3.d0, 0.d0, 0.d0]
+                end if
+                ASSERT(this%edges(edge_id)%parent > zero_ip)
+                edge_type_parent = this%edges(this%edges(edge_id)%parent)%type
+                ASSERT(edge_type_parent .ne. MT_SEG4)
+                if (edge_type_parent == MT_SEG5) then
+                    edge_type_parent = MT_SEG3
+                end if
+                call elrfvf(this%converter%short_name(edge_type_parent), coor_ref, basis, nbNodes)
+                do i_node = one_ip, int(nbNodes, ip)
+                    node = this%edges(this%edges(edge_id)%parent)%nodes(i_node)
+                    coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+                end do
+            end if
+        case (5)
+            if (this%edges(edge_id)%isub == zero_ip) then
+                coor_ref = [+1.d0/3.d0, 0.d0, 0.d0]
+                call elrfvf(this%converter%short_name(edge_type), coor_ref, basis, nbNodes)
+                do i_node = one_ip, int(nbNodes, ip)
+                    node = this%edges(edge_id)%nodes(i_node)
+                    coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+                end do
+            else
+                if (this%edges(edge_id)%isub == one_ip) then
+                    coor_ref = [-1.d0/3.d0, 0.d0, 0.d0]
+                else
+                    coor_ref = [+2.d0/3.d0, 0.d0, 0.d0]
+                end if
+                ASSERT(this%edges(edge_id)%parent > zero_ip)
+                edge_type_parent = this%edges(this%edges(edge_id)%parent)%type
+                ASSERT(edge_type_parent .ne. MT_SEG4)
+                if (edge_type_parent == MT_SEG5) then
+                    edge_type_parent = MT_SEG3
+                end if
+                call elrfvf(this%converter%short_name(edge_type_parent), coor_ref, basis, nbNodes)
+                do i_node = one_ip, int(nbNodes, ip)
+                    node = this%edges(this%edges(edge_id)%parent)%nodes(i_node)
+                    coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+                end do
+            end if
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
 !
     end function
 !
 ! ==================================================================================================
 !
-    function barycenter_fe(this, edge_id, face_id) result(coor)
+    function new_node_fe(this, edge_id, face_id, node_loc) result(coor)
 !
 ! --- Compute barycenter of a edge using geometry of the face
 !     It allows to preserve curvature
@@ -2590,119 +2891,335 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer(ip), intent(in) :: edge_id, face_id
+        integer(ip), intent(in) :: edge_id, face_id, node_loc
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
         integer(kind=8) :: nbnode
         integer(ip) :: i_node, node, type, parent
         real(kind=8) :: basis(27), coor_ref(3)
+        character(len=8) :: stype
 !
         coor = 0.d0
 !
         type = this%faces(face_id)%type
-        if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
-            if (this%faces(face_id)%isub == one_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [0.25d0, 0.d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [0.25d0, 0.25d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [0.d0, 0.25d0, 0.d0]
+        select case (node_loc)
+        case (3)
+            print *, type, this%faces(face_id)%isub, this%edges(edge_id)%isub
+            if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
+                if (this%faces(face_id)%isub == one_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.25d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.25d0, 0.25d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.d0, 0.25d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == two_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.75d0, 0.25d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.5d0, 0.25d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.75d0, 0.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == three_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.d0, 0.75d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.25d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.25d0, 0.75d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == four_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.5d0, 0.25d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.25d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.25d0, 0.25d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-            elseif (this%faces(face_id)%isub == two_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [0.75d0, 0.25d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [0.5d0, 0.25d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [0.75d0, 0.d0, 0.d0]
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            elseif (this%faces(face_id)%isub == three_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [0.d0, 0.75d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [0.25d0, 0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [0.25d0, 0.75d0, 0.d0]
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            elseif (this%faces(face_id)%isub == four_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [0.5d0, 0.25d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [0.25d0, 0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [0.25d0, 0.25d0, 0.d0]
+            elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
+                if (this%faces(face_id)%isub == one_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [-0.5d0, -1.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.0d0, -0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [-0.5d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [-1.d0, -0.5d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == two_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [1.0d0, -0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.5d0, 0.0d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.0d0, -0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [0.5d0, -1.0d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == three_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.5d0, 1.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.0d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.5d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [1.d0, 0.5d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == four_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [-1.0d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [-0.5d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [-0.5d0, 1.0d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
                 else
                     ASSERT(ASTER_FALSE)
                 end if
             else
                 ASSERT(ASTER_FALSE)
             end if
-        elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
-            if (this%faces(face_id)%isub == one_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [-0.5d0, -1.d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [0.0d0, -0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [-0.5d0, 0.d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == four_ip) then
-                    coor_ref = [-1.d0, -0.5d0, 0.d0]
+        case (4)
+            if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
+                if (this%faces(face_id)%isub == one_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [1.d0/6.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [2.d0/6.d0, 1.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.d0, 2.d0/6.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == two_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [5.d0/6.d0, 4.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.5d0, 2.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [4.d0/6.d0, 0.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == three_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.d0, 5.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [1.d0/6.d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [2.d0/6.d0, 4.d0/6.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == four_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.5d0, 1.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [2.d0/6.d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [1.d0/6.d0, 2.d0/6.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-            elseif (this%faces(face_id)%isub == two_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [1.0d0, -0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [0.5d0, 0.0d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [0.0d0, -0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == four_ip) then
-                    coor_ref = [0.5d0, -1.0d0, 0.d0]
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            elseif (this%faces(face_id)%isub == three_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [0.5d0, 1.d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [0.0d0, 0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [0.5d0, 0.d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == four_ip) then
-                    coor_ref = [1.d0, 0.5d0, 0.d0]
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            elseif (this%faces(face_id)%isub == four_ip) then
-                if (this%edges(edge_id)%isub == one_ip) then
-                    coor_ref = [-1.0d0, 0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == two_ip) then
-                    coor_ref = [-0.5d0, 0.d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == three_ip) then
-                    coor_ref = [0.d0, 0.5d0, 0.d0]
-                elseif (this%edges(edge_id)%isub == four_ip) then
-                    coor_ref = [-0.5d0, 1.0d0, 0.d0]
+            elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
+                if (this%faces(face_id)%isub == one_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [-2.d0/3.d0, -1.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.0d0, -2.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [-1.d0/3.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [-1.d0, -1.d0/3.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == two_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [1.0d0, -2.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [2.d0/3.d0, 0.0d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.0d0, -1.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [1.d0/3.d0, -1.0d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == three_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [2.d0/3.d0, 1.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.0d0, 2.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [1.d0/3.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [1.d0, 1.d0/3.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == four_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [-1.0d0, 2.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [-2.d0/3.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.d0, 1.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [-1.d0/3.d0, 1.0d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
                 else
                     ASSERT(ASTER_FALSE)
                 end if
             else
                 ASSERT(ASTER_FALSE)
             end if
-        else
+        case (5)
+            if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
+                if (this%faces(face_id)%isub == one_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [2.d0/6.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [1.d0/6.d0, 2.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.d0, 1.d0/6.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == two_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [4.d0/6.d0, 5.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.5d0, 1.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [5.d0/6.d0, 0.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == three_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.d0, 4.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [2.d0/6.d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [1.d0/6.d0, 5.d0/6.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == four_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [0.5d0, 2.d0/6.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [1.d0/6.d0, 0.5d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [2.d0/6.d0, 1.d0/6.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
+                if (this%faces(face_id)%isub == one_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [-1.d0/3.d0, -1.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.0d0, -1.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [-2.d0/3.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [-1.d0, -2.d0/3.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == two_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [1.0d0, -1.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [1.d0/3.d0, 0.0d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.0d0, -2.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [2.d0/3.d0, -1.0d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == three_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [1.d0/3.d0, 1.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [0.0d0, 1.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [2.d0/3.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [1.d0, 2.d0/3.d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                elseif (this%faces(face_id)%isub == four_ip) then
+                    if (this%edges(edge_id)%isub == one_ip) then
+                        coor_ref = [-1.0d0, 1.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == two_ip) then
+                        coor_ref = [-1.d0/3.d0, 0.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == three_ip) then
+                        coor_ref = [0.d0, 2.d0/3.d0, 0.d0]
+                    elseif (this%edges(edge_id)%isub == four_ip) then
+                        coor_ref = [-2.d0/3.d0, 1.0d0, 0.d0]
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        case default
             ASSERT(ASTER_FALSE)
-        end if
+        end select
 
         parent = this%faces(face_id)%parent
         ASSERT(parent > zero_ip)
-        call elrfvf(this%converter%short_name(this%faces(parent)%type), coor_ref, basis, nbnode)
+
+        if (this%faces(parent)%type == MT_QUAD17) then
+            stype = this%converter%short_name(MT_QUAD9)
+        elseif (this%faces(parent)%type == MT_TRIA13) then
+            stype = this%converter%short_name(MT_TRIA7)
+        else
+            stype = this%converter%short_name(this%faces(parent)%type)
+        end if
+
+        call elrfvf(stype, coor_ref, basis, nbnode)
         do i_node = one_ip, int(nbnode, ip)
             node = this%faces(parent)%nodes(i_node)
             coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
@@ -2730,12 +3247,20 @@ contains
         type = this%faces(face_id)%type
         stype = this%converter%short_name(type)
         if (this%faces(face_id)%isub == zero_ip) then
-            if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
+            if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7 &
+                .or. type == MT_TRIA10 .or. type == MT_TRIA13) then
                 coor_ref = [1.d0/3.d0, 1.d0/3.d0, 0.d0]
-            elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
+            elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9 &
+                    .or. type == MT_QUAD12 .or. type == MT_QUAD17) then
                 coor_ref = [0.d0, 0.d0, 0.d0]
             else
                 ASSERT(ASTER_FALSE)
+            end if
+!
+            if (type == MT_TRIA13) then
+                stype = this%converter%short_name(MT_TRIA7)
+            else if (type == MT_QUAD17) then
+                stype = this%converter%short_name(MT_QUAD8)
             end if
             call elrfvf(stype, coor_ref, basis, nbnode)
             do i_node = one_ip, int(nbnode, ip)
@@ -2773,8 +3298,15 @@ contains
 
             parent = this%faces(face_id)%parent
             ASSERT(parent > zero_ip)
-            call elrfvf(this%converter%short_name(this%faces(parent)%type), coor_ref, basis, &
-                        nbnode)
+            if (this%faces(parent)%type == MT_TRIA13) then
+                stype = this%converter%short_name(MT_TRIA7)
+            else if (this%faces(parent)%type == MT_QUAD17) then
+                stype = this%converter%short_name(MT_QUAD9)
+            else
+                stype = this%converter%short_name(this%faces(parent)%type)
+            end if
+
+            call elrfvf(stype, coor_ref, basis, nbnode)
             do i_node = one_ip, int(nbnode, ip)
                 node = this%faces(parent)%nodes(i_node)
                 coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
@@ -3110,7 +3642,7 @@ contains
         class(Mmesh), intent(in) :: this
 ! -----------------------------------------------------------------------
         integer(ip) :: i_cell, i_node, i_edge, i_face, i_volume, nno, nno1, nno2
-        integer(ip) :: nb_edges, edges_type(12), edges_loc(3, 12), edge_id
+        integer(ip) :: nb_edges, edges_type(12), edges_loc(5, 12), edge_id
         integer(ip) :: face_type, volu_type, face_id
         integer(ip) :: nb_faces, faces_type(6), faces_loc(9, 6)
 !
@@ -4361,6 +4893,10 @@ contains
         case (MT_TRIA6, MT_TRIA7, MT_QUAD8, MT_QUAD9)
             ok = cell_type2 == MT_TRIA6 .or. cell_type2 == MT_TRIA7 &
                  .or. cell_type2 == MT_QUAD8 .or. cell_type2 == MT_QUAD9
+        case (MT_TRIA10, MT_QUAD12)
+            ok = cell_type2 == MT_TRIA10 .or. cell_type2 == MT_QUAD12
+        case (MT_TRIA13, MT_QUAD17)
+            ok = cell_type2 == MT_TRIA13 .or. cell_type2 == MT_QUAD17
         case (MT_TETRA4)
             ok = cell_type2 == MT_TETRA4 .or. cell_type2 == MT_PYRAM5 &
                  .or. cell_type2 == MT_PENTA6 .or. cell_type2 == MT_PENTA7
@@ -4427,6 +4963,10 @@ contains
             ok = face_type == MT_SEG2
         case (MT_TRIA6, MT_TRIA7, MT_QUAD8, MT_QUAD9)
             ok = face_type == MT_SEG3
+        case (MT_TRIA10, MT_QUAD12)
+            ok = face_type == MT_SEG4
+        case (MT_TRIA13, MT_QUAD17)
+            ok = face_type == MT_SEG5
         case (MT_TETRA4)
             ok = face_type == MT_TRIA3
         case (MT_TETRA10)

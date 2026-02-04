@@ -307,6 +307,18 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
         end if
         cellVolu_ = 1.d0/2.d0
 
+    case ('TR1')
+        nno_ = 10
+        nnos_ = 3
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [0.d0, +1.d0, 0.d0, untiers, 2.d0/3.d0, 2.d0/3.d0, &
+                                   untiers, 0.d0, 0.d0, untiers]
+            nodeCoor(2, 1:nno_) = [0.d0, 0.d0, +1.d0, 0.d0, 0.0d0, untiers, 2.d0/3.d0, &
+                                   2.d0/3.d0, untiers, untiers]
+        end if
+        cellVolu_ = 1.d0/2.d0
+
     case ('QU4')
         nno_ = 4
         nnos_ = 4
@@ -334,6 +346,18 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
         if (present(nodeCoor)) then
             nodeCoor(1, 1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0, 0.d0, +1.d0, 0.d0, -1.d0, 0.d0]
             nodeCoor(2, 1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, 0.d0, +1.d0, 0.d0, 0.d0]
+        end if
+        cellVolu_ = 4.d0
+
+    case ('Q12')
+        nno_ = 12
+        nnos_ = 4
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0, -untiers, untiers, +1.d0, +1.d0, &
+                                   untiers, -untiers, -1.d0, -1.d0]
+            nodeCoor(2, 1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, -untiers, untiers, &
+                                   +1.d0, +1.d0, untiers, -untiers]
         end if
         cellVolu_ = 4.d0
 

@@ -61,7 +61,9 @@ static const std::map< int, int > asterToAsterAvailableTypeInMed = {
     { 29, 22 },
     { 30, 24 },
     { 70, 25 },
-    { 71, 20 }
+    { 71, 20 },
+    { 87, 7 },
+    { 88, 12 },
 };
 
 template < typename U, typename T >

@@ -4218,12 +4218,15 @@ phen.add(
         attrs=((AT.NBSIGM, "4"), (AT.D_PLAN, "OUI"), (AT.TYPMOD, "D_PLAN")),
         elements=(
             (MT.TRIA3, EL.MEDPTR3),
-            (MT.QUAD4, EL.MEDPQU4),
             (MT.TRIA6, EL.MEDPTR6),
+            (MT.TRIA10, EL.MEDPTR10),
+            (MT.QUAD4, EL.MEDPQU4),
             (MT.QUAD8, EL.MEDPQU8),
             (MT.QUAD9, EL.MEDPQU9),
+            (MT.QUAD12, EL.MEDPQU12),
             (MT.SEG2, EL.MEPLSE2),
             (MT.SEG3, EL.MEPLSE3),
+            (MT.SEG4, EL.MEPLSE4),
         ),
     ),
 )

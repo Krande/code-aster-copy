@@ -28,6 +28,7 @@ subroutine cmbqbq(main, maout, degree, info)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer(kind=8), intent(in) :: degree, info
@@ -46,7 +47,7 @@ subroutine cmbqbq(main, maout, degree, info)
 !
     type(Mmesh) :: mesh_conv
     character(len=8) :: conv_type(2)
-    integer(kind=8) :: nbma, ima, nbno
+    integer(kind=8) :: nbma, ima, nbno, dim_geom
     integer(kind=8), pointer :: listCells(:) => null()
 !
     call jemarq()
@@ -60,13 +61,19 @@ subroutine cmbqbq(main, maout, degree, info)
     if (degree == 1) then
         conv_type = ["SEG3", "SEG2"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["SEG4", "SEG2"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA6", "TRIA3"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA7", "TRIA3"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TRIA10", "TRIA3 "]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD8", "QUAD4"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD9", "QUAD4"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["QUAD12", "QUAD4 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TETRA10", "TETRA4 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
@@ -83,13 +90,19 @@ subroutine cmbqbq(main, maout, degree, info)
     elseif (degree == 2) then
         conv_type = ["SEG2", "SEG3"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["SEG4", "SEG3"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA3", "TRIA6"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA7", "TRIA6"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TRIA13", "TRIA6 "]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD4", "QUAD8"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD9", "QUAD8"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["QUAD12", "QUAD8 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TETRA4 ", "TETRA10"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
@@ -106,13 +119,19 @@ subroutine cmbqbq(main, maout, degree, info)
     elseif (degree == 3) then
         conv_type = ["SEG2", "SEG3"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["SEG4", "SEG3"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA3", "TRIA7"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA6", "TRIA7"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TRIA13", "TRIA7 "]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD4", "QUAD9"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD8", "QUAD9"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["QUAD12", "QUAD9 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TETRA4 ", "TETRA10"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
@@ -126,6 +145,29 @@ subroutine cmbqbq(main, maout, degree, info)
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["HEXA20", "HEXA27"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    elseif (degree == 4) then
+        conv_type = ["SEG2", "SEG4"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["SEG3", "SEG4"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TRIA3 ", "TRIA10"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TRIA6 ", "TRIA10"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TRIA7 ", "TRIA10"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["QUAD4 ", "QUAD12"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["QUAD8 ", "QUAD12"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["QUAD9 ", "QUAD12"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+!
+        call dismoi('DIM_GEOM', main, 'MAILLAGE', repi=dim_geom)
+        print *, dim_geom
+        if (dim_geom > 2) then
+            call utmess("F", "MESH1_16")
+        end if
     else
         ASSERT(ASTER_FALSE)
     end if

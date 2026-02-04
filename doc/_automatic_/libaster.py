@@ -794,6 +794,16 @@ class Mesh(BaseMesh):
             Mesh: the bi-quadratic mesh.
         """
 
+    def convertToCubic(self, info=1):
+        """Convert the mesh to a cubic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the cubic mesh.
+        """
+
     def convertToLinear(self, info=1):
         """Convert the mesh to a linear one.
 
@@ -15584,6 +15594,16 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             ParallelMesh: the bi-quadratic mesh.
+        """
+
+    def convertToCubic(self, info=1):
+        """Convert the mesh to a cubic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the cubic mesh.
         """
 
     def convertToLinear(self, info=1):

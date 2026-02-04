@@ -197,6 +197,16 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
                 do j = 1, 3
                     noeu_centr(1+zi(jco+18+j-1)-1) = 1
                 end do
+            elseif (dtyp(i) .eq. MT_TRIA10) then
+                jco = iadcnx+zi(ilcnx+i-1)-1
+                do j = 1, 7
+                    noeu_centr(1+zi(jco+3+j-1)-1) = 1
+                end do
+            elseif (dtyp(i) .eq. MT_QUAD12) then
+                jco = iadcnx+zi(ilcnx+i-1)-1
+                do j = 1, 8
+                    noeu_centr(1+zi(jco+4+j-1)-1) = 1
+                end do
             end if
         end do
 !
@@ -216,6 +226,10 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
                 zi(adtyp2+ima-1) = MT_PENTA18
             elseif (nadtypm(ima) .eq. MT_HEXA9) then
                 zi(adtyp2+ima-1) = MT_HEXA8
+            elseif (nadtypm(ima) .eq. MT_TRIA10) then
+                zi(adtyp2+ima-1) = MT_TRIA3
+            elseif (nadtypm(ima) .eq. MT_QUAD12) then
+                zi(adtyp2+ima-1) = MT_QUAD4
             else
                 zi(adtyp2+ima-1) = nadtypm(ima)
             end if

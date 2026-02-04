@@ -743,6 +743,46 @@ TR3TR7 = MeshType(nbno=10, dim=2, code="TT6")
 # ------------------------------------------------------------
 TR6TR7 = MeshType(nbno=13, dim=2, code="TT7")
 
+# ------------------------------------------------------------
+TRIA10 = MeshType(nbno=10, dim=2, code="TR1")
+
+
+TR1 = Elrefe()
+TR1.addLocation("NOEU", 10)
+TR1.addLocation("NOEU_S", 3)
+TR1.addLocation("FPG1", 1)
+TR1.addLocation("FPG3", 3)
+TR1.addLocation("FPG4", 4)
+TR1.addLocation("FPG6", 6)
+TR1.addLocation("FPG7", 7)
+TR1.addLocation("FPG12", 12)
+TR1.addLocation("FPG13", 13)
+TR1.addLocation("FPG16", 16)
+TR1.addLocation("FPG19", 19)
+TR1.addLocation("FPG25", 25)
+TR1.addLocation("FPG28", 28)
+TR1.addLocation("FPG33", 33)
+TR1.addLocation("FPG37", 37)
+TR1.addLocation("FPG42", 42)
+TRIA10.addElrefe(TR1)
+
+# ------------------------------------------------------------
+QUAD12 = MeshType(nbno=12, dim=2, code="Q12")
+
+Q12 = Elrefe()
+Q12.addLocation("NOEU", 12)
+Q12.addLocation("NOEU_S", 4)
+Q12.addLocation("FPG1", 1)
+Q12.addLocation("FPG4", 4)
+Q12.addLocation("FPG5", 5)
+Q12.addLocation("FPG9", 9)
+Q12.addLocation("FPG9COQ", 9)
+Q12.addLocation("FPG16", 12)
+Q12.addLocation("FPG25", 25)
+Q12.addLocation("FPG36", 36)
+Q12.addLocation("FPG49", 49)
+Q12.addLocation("FPG64", 64)
+QUAD12.addElrefe(Q12)
 
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)

@@ -338,6 +338,16 @@ Returns:
     ParallelMesh: the quadratic mesh.
         )",
               py::arg( "info" ) = 1 )
+        .def( "convertToCubic", &ParallelMesh::convertToCubic, R"(
+Convert the mesh to a cubic one.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    Mesh: the cubic mesh.
+        )",
+              py::arg( "info" ) = 1 )
         .def( "getAllMedCellsTypes", &ParallelMesh::getAllMedCellsTypes, R"(
 Return all Med types available in mesh (for all processors).
 

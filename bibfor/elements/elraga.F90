@@ -5832,7 +5832,8 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 
         end if
 
-    else if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
+    else if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7' &
+             .or. elrefa .eq. 'TR1') then
         if (fapg .eq. 'FPG1') then
             xpg(1) = un/3.d0
             ypg(1) = un/3.d0
@@ -6703,7 +6704,8 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 
         end if
 
-    else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') then
+    else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9' &
+             .or. elrefa .eq. 'Q12') then
         if (fapg .eq. 'FPG1') then
             xpg(1) = zero
             ypg(1) = zero
