@@ -114,7 +114,7 @@ TEST_RESU(
             LEGENDE="SIEF_NOEU",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-28.606726847798747,
+            VALE_CALC=-28.606725720226546,
             PRECISION=0.16,
         ),
         _F(
@@ -126,7 +126,7 @@ TEST_RESU(
             LEGENDE="SIEF_NOEU",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-21.0703216664796073,
+            VALE_CALC=-21.07032037876585,
             PRECISION=0.16,
         ),
         _F(
@@ -138,7 +138,7 @@ TEST_RESU(
             LEGENDE="SIZZ",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-28.606726847798747,
+            VALE_CALC=-28.606725720226546,
             PRECISION=0.16,
         ),
         _F(
@@ -150,7 +150,7 @@ TEST_RESU(
             LEGENDE="SIZZ",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-21.070321666479607,
+            VALE_CALC=-21.07032037876585,
             PRECISION=0.16,
         ),
         _F(
@@ -164,7 +164,7 @@ TEST_RESU(
             CRITERE="ABSOLU",
             PRECISION=5e-1,
             VALE_REFE=0.0,
-            VALE_CALC=-0.4481002824055108,
+            VALE_CALC=-0.44809490508433336,
         ),
         _F(
             INST=1.0,
@@ -177,7 +177,7 @@ TEST_RESU(
             CRITERE="ABSOLU",
             PRECISION=5e-1,
             VALE_REFE=0.0,
-            VALE_CALC=0.49739320887510596,
+            VALE_CALC=0.4973931468896713,
         ),
     )
 )

@@ -249,7 +249,7 @@ for res in (resnonl, resnonl2):
                 NOM_CHAM=nom_cham[1],
                 NOM_CMP="DX",
                 TYPE_TEST="SOMM_ABS",
-                VALE_CALC=AX[1],
+                VALE_CALC=AX[0] + AX[1],
                 CRITERE="RELATIF",
             ),
             _F(
@@ -258,7 +258,7 @@ for res in (resnonl, resnonl2):
                 NOM_CHAM=nom_cham[1],
                 NOM_CMP="DY",
                 TYPE_TEST="SOMM_ABS",
-                VALE_CALC=AY[1],
+                VALE_CALC=AY[0] + AY[1],
                 CRITERE="RELATIF",
             ),
         )

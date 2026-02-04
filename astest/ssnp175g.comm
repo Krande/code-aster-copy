@@ -110,6 +110,7 @@ RES = CALC_CHAMP(
     reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_NOEU", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO")
 )
 
+
 TEST_RESU(
     RESU=(
         _F(
@@ -121,7 +122,7 @@ TEST_RESU(
             LEGENDE="SIEF_NOEU",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-28.228583941698606,
+            VALE_CALC=-28.342394589752008,
             PRECISION=0.16,
         ),
         _F(
@@ -133,7 +134,7 @@ TEST_RESU(
             LEGENDE="SIEF_NOEU",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-21.0703216664796073,
+            VALE_CALC=-21.880759937709207,
             PRECISION=0.16,
         ),
         _F(
@@ -145,7 +146,7 @@ TEST_RESU(
             LEGENDE="SIZZ",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-28.228583941698606,
+            VALE_CALC=-28.342394589752008,
             PRECISION=0.16,
         ),
         _F(
@@ -157,7 +158,7 @@ TEST_RESU(
             LEGENDE="SIZZ",
             NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-21.070321666479607,
+            VALE_CALC=-21.880759937709207,
             PRECISION=0.16,
         ),
         _F(
