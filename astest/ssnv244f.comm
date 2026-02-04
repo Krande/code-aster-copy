@@ -161,7 +161,6 @@ TEST_RESU(
             GROUP_NO="N6",
             NOM_CMP="SIXX",
             VALE_CALC=0.159803921569,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -170,7 +169,6 @@ TEST_RESU(
             GROUP_NO="N6",
             NOM_CMP="SIXX",
             VALE_CALC=0.23359591586305611,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=150,
@@ -179,7 +177,6 @@ TEST_RESU(
             GROUP_NO="N6",
             NOM_CMP="SIXX",
             VALE_CALC=0.2061765147496824,
-            GROUP_MA="M1",
         ),
     )
 )

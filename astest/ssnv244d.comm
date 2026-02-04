@@ -246,7 +246,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-3.72905847783979e-05,
-            GROUP_MA="M1",
         ),
         # Instant 50 removed for different
         # convergence behavior in GAIA
@@ -264,7 +263,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=0.0015481029565083157,
-            GROUP_MA="M1",
         ),
         _F(
             INST=150,
@@ -273,7 +271,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=0.0028190849009670843,
-            GROUP_MA="M1",
         ),
     )
 )

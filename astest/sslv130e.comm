@@ -354,7 +354,6 @@ TEST_RESU(
             VALE_REFE=6.9282e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -367,7 +366,6 @@ TEST_RESU(
             VALE_REFE=-6.0e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -380,7 +378,6 @@ TEST_RESU(
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             PRECISION=1.0e-05,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -393,7 +390,6 @@ TEST_RESU(
             VALE_REFE=6.0e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -411,7 +407,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -424,7 +419,6 @@ TEST_RESU(
             VALE_REFE=160.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -437,7 +431,6 @@ TEST_RESU(
             VALE_REFE=-60.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -450,7 +443,6 @@ TEST_RESU(
             VALE_REFE=20.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -463,7 +455,6 @@ TEST_RESU(
             VALE_REFE=100.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -476,7 +467,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -783,7 +773,6 @@ TEST_RESU(
             VALE_REFE=6.9282e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -796,7 +785,6 @@ TEST_RESU(
             VALE_REFE=-6.0e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -809,7 +797,6 @@ TEST_RESU(
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             PRECISION=1.0e-05,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -822,7 +809,6 @@ TEST_RESU(
             VALE_REFE=6.0e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -840,7 +826,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -853,7 +838,6 @@ TEST_RESU(
             VALE_REFE=160.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -866,7 +850,6 @@ TEST_RESU(
             VALE_REFE=-60.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -879,7 +862,6 @@ TEST_RESU(
             VALE_REFE=20.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -892,7 +874,6 @@ TEST_RESU(
             VALE_REFE=100.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -905,7 +886,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -1289,7 +1269,6 @@ TEST_RESU(
             VALE_REFE=6.9282e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1302,7 +1281,6 @@ TEST_RESU(
             VALE_REFE=-6.0e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1315,7 +1293,6 @@ TEST_RESU(
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             PRECISION=1.0e-05,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1328,7 +1305,6 @@ TEST_RESU(
             VALE_REFE=6.0e-4,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -1346,7 +1322,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1359,7 +1334,6 @@ TEST_RESU(
             VALE_REFE=160.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1372,7 +1346,6 @@ TEST_RESU(
             VALE_REFE=-60.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1385,7 +1358,6 @@ TEST_RESU(
             VALE_REFE=20.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1398,7 +1370,6 @@ TEST_RESU(
             VALE_REFE=100.0,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1411,7 +1382,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=5.0e-3,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -1728,7 +1698,6 @@ TEST_RESU(
             VALE_REFE=6.9282000000000002e-4,
             CRITERE="RELATIF",
             PRECISION=0.080000000000000002,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1741,7 +1710,6 @@ TEST_RESU(
             VALE_REFE=-5.9999999999999995e-4,
             CRITERE="RELATIF",
             PRECISION=0.080000000000000002,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1754,7 +1722,6 @@ TEST_RESU(
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             PRECISION=1.0000000000000001e-05,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1767,7 +1734,6 @@ TEST_RESU(
             VALE_REFE=5.9999999999999995e-4,
             CRITERE="RELATIF",
             PRECISION=0.080000000000000002,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -1785,7 +1751,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=0.10000000000000001,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1798,7 +1763,6 @@ TEST_RESU(
             VALE_REFE=160.0,
             CRITERE="RELATIF",
             PRECISION=0.10000000000000001,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1811,7 +1775,6 @@ TEST_RESU(
             VALE_REFE=-60.0,
             CRITERE="RELATIF",
             PRECISION=0.12,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1824,7 +1787,6 @@ TEST_RESU(
             VALE_REFE=20.0,
             CRITERE="RELATIF",
             PRECISION=0.050000000000000003,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1837,7 +1799,6 @@ TEST_RESU(
             VALE_REFE=100.0,
             CRITERE="RELATIF",
             PRECISION=0.059999999999999998,
-            GROUP_MA="M1",
         ),
         _F(
             GROUP_NO="A",
@@ -1850,7 +1811,6 @@ TEST_RESU(
             VALE_REFE=138.5641,
             CRITERE="RELATIF",
             PRECISION=0.10000000000000001,
-            GROUP_MA="M1",
         ),
     )
 )

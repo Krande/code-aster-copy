@@ -310,7 +310,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-1.0464723702036468e-05,
-            GROUP_MA="M1",
         ),
         _F(
             INST=50,
@@ -319,7 +318,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=2.6811844196125302e-05,
-            GROUP_MA="M1",
         ),
         _F(
             INST=200,
@@ -328,7 +326,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=0.0002104722338937658,
-            GROUP_MA="M1",
         ),
         _F(
             INST=300,
@@ -337,7 +334,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=0.0002633844286287752,
-            GROUP_MA="M1",
         ),
     )
 )

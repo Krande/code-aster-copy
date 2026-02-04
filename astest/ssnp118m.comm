@@ -359,7 +359,6 @@ TEST_RESU(
         NOM_CMP="DX",
         VALE_CALC=1.039315519,
         VALE_REFE=1.03932,
-        GROUP_MA="CUBE",
     )
 )
 
@@ -373,7 +372,6 @@ TEST_RESU(
         NOM_CMP="DX",
         VALE_CALC=0.062353829,
         VALE_REFE=0.062350000000000003,
-        GROUP_MA="CUBE",
     )
 )
 

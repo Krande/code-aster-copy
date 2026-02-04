@@ -222,7 +222,6 @@ TEST_RESU(
             VALE_CALC=8.4e-05,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=10,
@@ -233,7 +232,6 @@ TEST_RESU(
             VALE_CALC=-1.05e-05,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=10,
@@ -243,7 +241,6 @@ TEST_RESU(
             NOM_CMP="EPXY",
             VALE_CALC=0.0,
             CRITERE="ABSOLU",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=10,
@@ -254,7 +251,6 @@ TEST_RESU(
             VALE_CALC=2.43026003 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=10,
@@ -265,7 +261,6 @@ TEST_RESU(
             VALE_CALC=0.149804992 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=10,
@@ -275,7 +270,6 @@ TEST_RESU(
             NOM_CMP="SIXY",
             VALE_CALC=0.0 * coef,
             CRITERE="ABSOLU",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=25,
@@ -286,7 +280,6 @@ TEST_RESU(
             VALE_CALC=0.0001078,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=25,
@@ -297,7 +290,6 @@ TEST_RESU(
             VALE_CALC=2.52e-05,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=25,
@@ -308,7 +300,6 @@ TEST_RESU(
             VALE_CALC=2.38e-05,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=25,
@@ -319,7 +310,6 @@ TEST_RESU(
             VALE_CALC=2.97444142 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=25,
@@ -330,7 +320,6 @@ TEST_RESU(
             VALE_CALC=1.35075222 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=25,
@@ -341,7 +330,6 @@ TEST_RESU(
             VALE_CALC=0.48946902 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=310,
@@ -352,7 +340,6 @@ TEST_RESU(
             VALE_CALC=0.00056,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=310,
@@ -363,7 +350,6 @@ TEST_RESU(
             VALE_CALC=0.0007035,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=310,
@@ -374,7 +360,6 @@ TEST_RESU(
             VALE_CALC=0.000476,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=310,
@@ -385,7 +370,6 @@ TEST_RESU(
             VALE_CALC=0.347317185 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=310,
@@ -396,7 +380,6 @@ TEST_RESU(
             VALE_CALC=0.470440003 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=310,
@@ -407,7 +390,6 @@ TEST_RESU(
             VALE_CALC=-0.402606135 * coef,
             TOLE_MACHINE=1.0e-3,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
     )
 )

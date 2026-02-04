@@ -1526,7 +1526,6 @@ TEST_RESU(
             NOM_CMP="SIXX",
             VALE_CALC=-59.2225501361,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1536,7 +1535,6 @@ TEST_RESU(
             NOM_CMP="SIYY",
             VALE_CALC=0.309334141379,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1546,7 +1544,6 @@ TEST_RESU(
             NOM_CMP="SIZZ",
             VALE_CALC=100.415918124,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1556,7 +1553,6 @@ TEST_RESU(
             NOM_CMP="SIXY",
             VALE_CALC=-0.0157650119211,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1566,7 +1562,6 @@ TEST_RESU(
             NOM_CMP="SIXZ",
             VALE_CALC=-1.04423384915,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1576,7 +1571,6 @@ TEST_RESU(
             NOM_CMP="SIYZ",
             VALE_CALC=0.00279098014792,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
     )
 )
@@ -1706,7 +1700,6 @@ TEST_RESU(
             NOM_CMP="SIXX",
             VALE_CALC=-59.2225501361,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1716,7 +1709,6 @@ TEST_RESU(
             NOM_CMP="SIYY",
             VALE_CALC=0.309334141379,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1726,7 +1718,6 @@ TEST_RESU(
             NOM_CMP="SIZZ",
             VALE_CALC=100.415918124,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1736,7 +1727,6 @@ TEST_RESU(
             NOM_CMP="SIXY",
             VALE_CALC=-0.0157650119211,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1746,7 +1736,6 @@ TEST_RESU(
             NOM_CMP="SIXZ",
             VALE_CALC=-1.04423384915,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1756,7 +1745,6 @@ TEST_RESU(
             NOM_CMP="SIYZ",
             VALE_CALC=0.00279098014791,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
     )
 )
@@ -1898,7 +1886,6 @@ TEST_RESU(
             NOM_CMP="SIXX",
             VALE_CALC=-59.2225501349,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1908,7 +1895,6 @@ TEST_RESU(
             NOM_CMP="SIYY",
             VALE_CALC=0.309334141376,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1918,7 +1904,6 @@ TEST_RESU(
             NOM_CMP="SIZZ",
             VALE_CALC=100.415918123,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1928,7 +1913,6 @@ TEST_RESU(
             NOM_CMP="SIXY",
             VALE_CALC=-0.0157650113032,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1938,7 +1922,6 @@ TEST_RESU(
             NOM_CMP="SIXZ",
             VALE_CALC=-1.04423394386,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1948,7 +1931,6 @@ TEST_RESU(
             NOM_CMP="SIYZ",
             VALE_CALC=0.00279092074794,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
     )
 )
@@ -2090,7 +2072,6 @@ TEST_RESU(
             NOM_CMP="SIXX",
             VALE_CALC=-59.2225501373,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -2100,7 +2081,6 @@ TEST_RESU(
             NOM_CMP="SIYY",
             VALE_CALC=0.309334141376,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -2110,7 +2090,6 @@ TEST_RESU(
             NOM_CMP="SIZZ",
             VALE_CALC=100.415918125,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -2120,7 +2099,6 @@ TEST_RESU(
             NOM_CMP="SIXY",
             VALE_CALC=-0.0157650112999,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -2130,7 +2108,6 @@ TEST_RESU(
             NOM_CMP="SIXZ",
             VALE_CALC=-1.04423375445,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
         _F(
             NUME_ORDRE=1,
@@ -2140,7 +2117,6 @@ TEST_RESU(
             NOM_CMP="SIYZ",
             VALE_CALC=0.00279092076664,
             CRITERE="RELATIF",
-            GROUP_MA="M901",
         ),
     )
 )

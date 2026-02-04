@@ -990,7 +990,6 @@ TEST_RESU(
             NOM_CMP="SIXX",
             VALE_CALC=-59.364717202939,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1000,7 +999,6 @@ TEST_RESU(
             NOM_CMP="SIYY",
             VALE_CALC=0.0,
             CRITERE="ABSOLU",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1010,7 +1008,6 @@ TEST_RESU(
             NOM_CMP="SIZZ",
             VALE_CALC=100.24937615787,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=1,
@@ -1020,7 +1017,6 @@ TEST_RESU(
             NOM_CMP="SIXY",
             VALE_CALC=-1.0478654084057,
             CRITERE="RELATIF",
-            GROUP_MA="M1",
         ),
     )
 )
