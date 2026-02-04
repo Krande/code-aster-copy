@@ -400,6 +400,12 @@ def env2dict(self, src):
         dico["BIND_PREFIX"] = ""
     self.end_msg("yes")
 
+    self.start_msg("Detecting virtual environment")
+    venv = os.environ.get("VIRTUAL_ENV") or "no"
+    if venv != "no":
+        dico["CONFIG_ENV"] += f"\nsource {venv}/bin/activate"
+    self.end_msg(venv)
+
     self.start_msg("Build list of testcases")
     valid = osp.join(src, "..", "validation")
     testdef = _build_def(env.BINDIR, env.ASTERDATADIR, glob(osp.join(src, "astest", "*.export")))

@@ -39,7 +39,7 @@ def configure(self):
 @Configure.conf
 def check_python(self):
     self.load("python")
-    self.check_python_version((3, 5, 0))
+    self.check_python_version((3, 6, 0))
     self.check_python_headers()
     if self.env.CC_IS_INTEL:
         self.env["LIB_PYEMBED"] = list(set(self.env["LIB_PYEMBED"]))
