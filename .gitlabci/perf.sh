@@ -51,8 +51,10 @@ python3 .devhelper/check_perf.py --extract -o ${wrkdir}/${today}.csv ${resdir}
 
 printf "\nsearching for previous data... - $(date)\n"
 csv=( $(mc ls --json ${MINIO_DIR}/${host} | jq -r '"\(.key) \(.lastModified)"') )
+echo "${csv[@]}"
 idx=0
 size=$(( ${#csv[@]} / 2 ))
+printf "${size} files found.\n"
 prev=( $(
     (
     for ((i=0;i<${size};i++)); do
@@ -70,6 +72,7 @@ prev=( $(
 
 printf "\ndownload previous data into ${wrkdir} - $(date)\n"
 # 'prev' contains: last-date last-filename
+printf "copying ${MINIO_DIR}/${host}/${prev[1]}...\n"
 mc --insecure cp ${MINIO_DIR}/${host}/${prev[1]} ${wrkdir}/${prev[0]}.csv
 
 last=${wrkdir}/last_changes_${host}.txt
