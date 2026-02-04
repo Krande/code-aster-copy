@@ -63,9 +63,9 @@ Use 'sbatch --help' for details and example below.
 """
 
 EPILOG = """Example:
-    run_sbatch --wckey=p11yb:aster --partition=bm FILE.export
+    run_sbatch --wckey=p10wb:aster --partition=bm FILE.export
 or:
-    export SBATCH_WCKEY=p11yb:aster
+    export SBATCH_WCKEY=p10wb:aster
     export SBATCH_PARTITION=bm
     run_sbatch FILE.export
 """
