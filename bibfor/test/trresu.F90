@@ -283,6 +283,14 @@ subroutine trresu(ific, nocc)
                         iret)
 !
             call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
+            call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
+            if (typch(1:4) == "NOEU") then
+                call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, nbret=ng)
+                if (ng > 0) then
+                    call utmess('F', 'MODELISA7_90')
+                end if
+            end if
+
             l_parallel_mesh = isParallelMesh(mesh)
 !
             nl1 = lxlgut(lign1)
@@ -433,7 +441,6 @@ subroutine trresu(ific, nocc)
                     end if
                     nonoeu(10:33) = nogrno
                 end if
-                call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
                 call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
                 call utcmp1(nomgd, 'RESU', iocc, noddl, ivari, variName)
 
