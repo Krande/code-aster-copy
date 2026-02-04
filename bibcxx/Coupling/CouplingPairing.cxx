@@ -113,7 +113,8 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellLagr
     { { "MECA_FACE3", "MECA_FACE6" }, "CL_T3T6" }, { { "MECA_FACE6", "MECA_FACE4" }, "CL_T6Q4" },
     { { "MECA_FACE6", "MECA_FACE8" }, "CL_T6Q8" }, { { "MECA_FACE6", "MECA_FACE9" }, "CL_T6Q9" },
     { { "MECA_FACE6", "MECA_FACE3" }, "CL_T6T3" }, { { "MECA_FACE3", "MECA_FACE3" }, "CL_T3T3" },
-    { { "MECA_FACE6", "MECA_FACE6" }, "CL_T6T6" },
+    { { "MECA_FACE6", "MECA_FACE6" }, "CL_T6T6" }, { { "CL_POI2D", "NO" }, "CL_POI2D" },
+    { { "CL_POI3D", "NO" }, "CL_POI3D" },
 };
 
 // Update also coupling_type.h
@@ -222,6 +223,104 @@ ASTERINTEGER CouplingPairing::getCplCellType( const CouplingMethod algo,
 
     // Get index of type of coupling cell
     return _model->getFiniteElementDescriptor()->getElemTypeNume( cplTypeName );
+}
+
+void CouplingPairing::createVirtualElemForOrphelanNodesForCoupling(
+    MapLong &cplElemType, const JeveuxContiguousCollectionLong meshConnectivity,
+    std::vector< VectorLong > &listCplElem, std::vector< VectorPairLong > &listCplType,
+    SetLong &slaveNodePaired, SetLong &slaveCellPaired ) {
+
+    // cplElemType: the number of elements for a given type
+    // listCplType: list of coupling cells attached to pair (cellType, iPair)
+    // listCplElem: list of coupling cells
+
+    // Get mesh
+    auto mesh = getMesh();
+    ASTERINTEGER modelDim = _model->getGeometricDimension();
+
+    ASTERINTEGER iCplPair = 0;
+
+    const auto fed = _model->getFiniteElementDescriptor();
+
+    const auto typeFE = fed->getFiniteElementType();
+    typeFE->updateValuePointer();
+
+    for ( ASTERINTEGER iZone = 0; iZone < _zones.size(); iZone++ ) {
+        const auto zone = _zones[iZone];
+
+        const auto algo = zone->getMethod();
+        AS_ASSERT( algo != CouplingMethod::Undefined );
+
+        if ( algo != CouplingMethod::Lagrangian ) {
+            continue;
+        }
+
+        // Get pairing
+        const auto listOfPairsZone = zone->getListOfPairs();
+        const auto nbPairsZone = this->getNumberOfPairs();
+
+        // Get slave cells on this zone
+        auto slaveCells = zone->getSlaveCells();
+
+        // Create vector of (virtual) coupling cells for this zone
+        VectorPairLong listCplTypeZone;
+        listCplTypeZone.reserve( slaveCells.size() );
+
+        // Find slave cells that are not paired (because of LAGR_C)
+        for ( auto &slavCellNume : slaveCells ) {
+            if ( slaveCellPaired.count( slavCellNume ) == 0 ) {
+                slaveCellPaired.insert( slavCellNume );
+
+                // Get nodes of slave cell
+                auto slav_cell_con = ( *meshConnectivity )[slavCellNume + 1]->toVector();
+
+                // Loop on nodes on slave cell
+                for ( auto &nodeNume : slav_cell_con ) {
+                    // This node hasn't been paired
+                    if ( slaveNodePaired.count( nodeNume ) == 0 ) {
+                        slaveNodePaired.insert( nodeNume );
+
+                        // Type of cell for slave: POI1
+                        std::string slavCellTypeName;
+
+                        if ( modelDim == 3 ) {
+                            slavCellTypeName = "CL_POI3D";
+                        } else {
+                            slavCellTypeName = "CL_POI2D";
+                        }
+
+                        // Type of cell for master
+                        std::string mastCellTypeName = "NO";
+
+                        // Get index of type of contact cell
+                        const ASTERINTEGER typeElemNume =
+                            this->getCplCellType( algo, slavCellTypeName, mastCellTypeName );
+                        AS_ASSERT( typeElemNume != -1 );
+
+                        // Add type of contact element
+                        if ( cplElemType.count( typeElemNume ) == 0 ) {
+                            cplElemType[typeElemNume] = 0;
+                        }
+                        cplElemType[typeElemNume] += 1;
+
+                        // New virtual element
+                        iCplPair++;
+                        listCplTypeZone.push_back( std::make_pair( typeElemNume, iCplPair ) );
+                        _cell2Zone[iCplPair - 1] = iZone;
+
+                        // Add the nodes of the new contact element
+                        listCplElem.push_back( VectorLong( { nodeNume, typeElemNume } ) );
+                    }
+                }
+            }
+        }
+        if ( !listCplTypeZone.empty() ) {
+#ifdef ASTER_DEBUG_CXX
+            std::cout << "Not paired nodes: " << listCplTypeZone.size() << std::endl;
+#endif
+            listCplType.push_back( listCplTypeZone );
+        }
+    }
 }
 
 void CouplingPairing::createVirtualElemForCoupling(
@@ -362,6 +461,9 @@ void CouplingPairing::buildFiniteElementDescriptor() {
     // Create virtual elements for coupling
     createVirtualElemForCoupling( cplElemType, meshConnectivity, listCplElem, listCplType,
                                   slaveNodePaired, slaveCellPaired );
+
+    createVirtualElemForOrphelanNodesForCoupling( cplElemType, meshConnectivity, listCplElem,
+                                                  listCplType, slaveNodePaired, slaveCellPaired );
 
     // Create finite element descriptor for virtual coupling elements
     _fed = std::make_shared< FiniteElementDescriptor >( mesh );

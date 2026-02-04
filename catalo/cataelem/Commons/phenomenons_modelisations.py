@@ -3848,6 +3848,7 @@ phen.add(
             (MT.SEG23, EL.CL_S2S3),
             (MT.SEG32, EL.CL_S3S2),
             (MT.SEG33, EL.CL_S3S3),
+            (MT.POI1, EL.CL_POI2D),
         ),
     ),
 )
@@ -3884,6 +3885,7 @@ phen.add(
             (MT.TR6TR3, EL.CL_T6T3),
             (MT.TRIA33, EL.CL_T3T3),
             (MT.TRIA66, EL.CL_T6T6),
+            (MT.POI1, EL.CL_POI3D),
         ),
     ),
 )

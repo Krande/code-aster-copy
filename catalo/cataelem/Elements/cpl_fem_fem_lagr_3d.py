@@ -775,3 +775,28 @@ class CL_T6T6(CL_Q4Q4):
 
     meshType = MT.TRIA66
     nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6)), SetOfNodes("EN2", (7, 8, 9, 10, 11, 12)))
+
+
+# ------------------------------------------------------------
+class CL_POI3D(CL_Q4Q4):
+    """
+    CL_S3S3 DERIVED FROM THE CL_S2S2 CLASS ELEMENT : SEG2/SEG2
+    LIAISON_ELEM / LAGRANGIAN / SEGMENT-TO-SEGMENT
+        Coupling FEM/FEM Element in 2D : elementary treatments
+    """
+
+    meshType = MT.POI1
+    nodes = (SetOfNodes("EN1", (1,)), SetOfNodes("EN2", ()))
+    calculs = (
+        OP.CHAR_MECA_CPL(
+            te=524,
+            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA), (SP.PGEOMER, LC.EGEOM2D)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.RIGI_CPL(te=524, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PMATUUR, MMATUUR),)),
+        OP.RIGI_ELAS_CPL(
+            te=524, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PMATUUR, MMATUUR),)
+        ),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM2D),)),
+    )

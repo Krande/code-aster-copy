@@ -127,3 +127,28 @@ class CL_S2S2(CL_S2S3):
 
     meshType = MT.SEG22
     nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", (3, 4)))
+
+
+# ------------------------------------------------------------
+class CL_POI2D(CL_S2S3):
+    """
+    CL_S3S3 DERIVED FROM THE CL_S2S2 CLASS ELEMENT : SEG2/SEG2
+    LIAISON_ELEM / LAGRANGIAN / SEGMENT-TO-SEGMENT
+        Coupling FEM/FEM Element in 2D : elementary treatments
+    """
+
+    meshType = MT.POI1
+    nodes = (SetOfNodes("EN1", (1,)), SetOfNodes("EN2", ()))
+    calculs = (
+        OP.CHAR_MECA_CPL(
+            te=524,
+            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA), (SP.PGEOMER, LC.EGEOM2D)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.RIGI_CPL(te=524, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PMATUUR, MMATUUR),)),
+        OP.RIGI_ELAS_CPL(
+            te=524, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PMATUUR, MMATUUR),)
+        ),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM2D),)),
+    )

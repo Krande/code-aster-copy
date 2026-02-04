@@ -81,6 +81,9 @@ class CouplingZonePairing : public DataStructure {
     VectorOfVectorsReal getIntersectionPoints( const ASTERINTEGER indexPair,
                                                const CoordinatesSpace coorSpace ) const;
 
+    /** @brief Get slave cells */
+    VectorLong getSlaveCells() const { return _meshPairing->getSlaveCells(); }
+
     void setMethod( const CouplingMethod algo ) { _algo = algo; }
 
     CouplingMethod getMethod() const { return _algo; };

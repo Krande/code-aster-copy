@@ -52,6 +52,11 @@ class CouplingPairing : public DataStructure {
                                        std::vector< VectorPairLong > &listCplType,
                                        SetLong &slaveNodePaired, SetLong &slaveCellPaired );
 
+    void createVirtualElemForOrphelanNodesForCoupling(
+        MapLong &cplElemType, const JeveuxContiguousCollectionLong meshConnectivity,
+        std::vector< VectorLong > &listCplElem, std::vector< VectorPairLong > &listCplType,
+        SetLong &slaveNodePaired, SetLong &slaveCellPaired );
+
     /** @brief Get index of coupling cell */
     ASTERINTEGER getCplCellType( const CouplingMethod algo, const std::string &slavCellTypeName,
                                  const std::string &mastCellTypeName ) const;
