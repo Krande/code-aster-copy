@@ -157,7 +157,7 @@ def options(self):
     group.add_option(
         "--site-packages",
         dest="spdir",
-        default=None,
+        default="auto",
         help="Python site-packages directory (absolute path or relative to PREFIX), "
         "special values: 'auto' default Python site-packages, 'no' direcly in lib.",
     )
@@ -524,14 +524,14 @@ def set_installdirs(self):
     # set relative paths for profile.sh
     for var in ("LIBDIR", "DATADIR", "LOCALEDIR"):
         self.env["RELATIVE_" + var] = osp.relpath(self.env["ASTER" + var], self.env["PREFIX"])
-    # Check if --site-packages was explicitly provided for conda/rattler builds
-    if not self.options.spdir or self.options.spdir == "no":
-        self.env.SITEPACKAGESDIR = self.env.ASTERLIBDIR
-    elif self.options.spdir == "auto":
+    # use --site-packages by default
+    if self.options.spdir == "auto":
         scheme = "posix_user" if self.env.ASTER_PLATFORM_POSIX else "nt_user"
         self.env.SITEPACKAGESDIR = sysconfig.get_path(
             "platlib", scheme=scheme, vars={"userbase": self.env.PREFIX}
         )
+    elif self.options.spdir == "no":
+        self.env.SITEPACKAGESDIR = self.env.ASTERLIBDIR
     else:
         self.env.SITEPACKAGESDIR = osp.join(self.env.PREFIX, self.options.spdir)
     self.env["RELATIVE_SITEPACKAGESDIR"] = osp.relpath(self.env.SITEPACKAGESDIR, self.env["PREFIX"])
