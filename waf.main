@@ -55,8 +55,8 @@ waf_main()
         if [ ! -z "${host}" ]; then
             export WAFBUILD_ENV="$(get_wafbuild_env ${host})"
             if [ -e "${WAFBUILD_ENV}" ]; then
+                echo "loading ${WAFBUILD_ENV}..."
                 . "${WAFBUILD_ENV}"
-                echo "loading ${WAFBUILD_ENV}"
             else
                 echo "no found: ${WAFBUILD_ENV}"
                 unset WAFBUILD_ENV
@@ -72,6 +72,10 @@ waf_main()
             echo "no found: ${WAFBUILD_ENV}"
             unset WAFBUILD_ENV
         fi
+    fi
+    if [ ! -z "${VIRTUAL_ENV}" ]; then
+        echo "re-loading virtual env from ${VIRTUAL_ENV}..."
+        source ${VIRTUAL_ENV}/bin/activate
     fi
 
     # really execute waf
