@@ -20,7 +20,9 @@ from ...Objects import MeshPairing
 import os
 import numpy as np
 import pickle
-from libaster import ContactPairing, ContactComputation, PairingMethod, CoordinatesSpace
+from libaster import (
+    PairingMethod,
+)  # ContactPairing, ContactComputation, PairingMethod, CoordinatesSpace
 
 ## -----------------------------------------------------------
 #   AVAILABLE METHODS FOR PAIRING AND MORTAR COMPUTATIONS
@@ -34,9 +36,9 @@ class AsterPairingProcess:
         r"""Constructor
 
         Args:
-            method (:class:`str`): Name of the group of the contact slave interface.
-            method (:class:`str`): Name of the group of the contact master interface.
-            method (:class:`libaster.Mesh`): aster Mesh considered for pairing
+            groupMaSlv (:class:`str`): Name of the group of the contact slave interface.
+            groupMaMas (:class:`str`): Name of the group of the contact master interface.
+            asterMesh (:class:`libaster.Mesh`): aster Mesh considered for pairing
 
         """
         self._groupMaSlv = groupMaSlv

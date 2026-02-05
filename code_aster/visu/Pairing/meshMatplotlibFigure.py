@@ -60,6 +60,20 @@ class meshMatplotlibFigure:
         index=None,
         indexPlaneProjected=None,
     ):
+        r"""Constructor
+
+        Args:
+            pairingAnalysisInstance (:class:`PairingObject`):
+            dimMatPlot (:class:`int`): space dimension
+            optionMesh (:class:`str`): should be in OPTION_MESH_VISU
+            suboptionMesh (:class:`str`): should be in SUBOPTION_MESH_VISU
+            optionPair (:class:`str`): should be in OPTION_PAIRING_VISU
+            addNodeLabel (:class:`bool`): if True, then add node labels (numbering)
+            addMeshNodes (:class:`bool`): if True, then add mesh node (bullet for nodes)
+            addLegend (:class:`bool`): if True, then plot legend
+            index (:class:`int`), optional: index of a selected cell
+            indexPlaneProjected (:class:`str`), optional: should be un INDEX_PLANE_PROJECTED
+        """
         self._pairingAnalysis = pairingAnalysisInstance
         # - Option for visualisation
         self._optionMesh = optionMesh
@@ -101,6 +115,8 @@ class meshMatplotlibFigure:
             raise ValueError(f"Key {self._optionMesh} not in OPTION_MESH_VISU definition")
 
     def setIndicesProjected(self):
+        r"""Given the option provided, defines the coordinates to be selected
+        for a 3D plot projected onto a plane."""
         if self._indexPlaneProjected == "X":
             self._indexPPx = 1
             self._indexPPy = 2
@@ -265,6 +281,12 @@ class meshMatplotlibFigure:
             self._ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.1), ncol=ncolLeg)
 
     def plotMeshStructure(self, plotParams, s):
+        r"""Plot the mesh structure (nodes and edges
+
+        Args:
+            plotParams (:class:`dict`): dictionnary of parameters for plot (colors)
+            s (:class:`float`): Opacity parameter
+        """
         # - Slave and Master get indices
         nodesSlvcoords, nodesSlvIndices = self._pairingAnalysis.getNodesCoordsFromCellIndices(
             self._SlvIndices
@@ -307,6 +329,16 @@ class meshMatplotlibFigure:
     def plotPair(
         self, pairSlvInd, pairMasInd, pairIndex, plotParams, intePts=False, inteQuad=False
     ):
+        r"""Plot a pair
+
+        Args:
+            pairSlvInd (:class:`int`): index of the slave cell
+            pairMasInd (:class:`int`): index of the master cell
+            pairIndex (:class:`int`): pair index
+            plotParams (:class:`dict`): plot parameters
+            intePts (:class:`bool`):
+            inteQuad (:class:`bool`):
+        """
         if intePts == False:
             if self._indexPlaneProjected is None:
                 # - Slave pair
@@ -372,6 +404,12 @@ class meshMatplotlibFigure:
                 raise ValueError("not implemented")
 
     def plotIntePts(self, pairIndex, s):
+        r"""Plot the intersection points for a given pair.
+
+        Args:
+            pairIndex (:class:`int`): index of the pair in the list of pairs
+            s (:class:`float`): Opacity parameter
+        """
         if self._indexPlaneProjected is None:
             # - Intersection points
             inteConvexSet = [
@@ -413,6 +451,12 @@ class meshMatplotlibFigure:
             raise ValueError("dimension of the plot is either 2 or 3")
 
     def plotQuadPts(self, pairIndex, s):
+        r"""Plot the quadrature points for a given pair.
+
+        Args:
+            pairIndex (:class:`int`): index of the pair in the list of pairs
+            s (:class:`float`): Opacity parameter
+        """
         if self._indexPlaneProjected is None:
             inteConvexSet = self._pairingAnalysis._listIntersectionPts[pairIndex]
             cell = ConvexPointSet(self._dim - self._codim, inteConvexSet, self._codim)
@@ -487,6 +531,7 @@ class meshMatplotlibFigure:
             raise ValueError("dimension of the plot is either 2 or 3")
 
     def plot(self, s=50):
+        r"""Method for generating a plot given pairing coordinates"""
         if HAS_MATPLOTLIB:
             # - Initialisation of the cells indices to plot
             self.setCellsIndices()

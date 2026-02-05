@@ -57,6 +57,11 @@ class PairingObject:
         self._flag_CellsInfos = False
 
     def getNodesCoordsFromCellIndices(self, cellIndices):
+        r"""Provide a list of nodes belonging to a given list of cells
+
+        Args:
+            cellIndices (:class:`list`): Cells indices
+        """
         if self._flag_MeshInfos:
             nodesIndices = [
                 self._asterConnectivity[ind] for ind in cellIndices
@@ -70,13 +75,14 @@ class PairingObject:
             raise ValueError("Mesh informations have not been implemented.")
 
     def checkInfosForPlot(self):
+        r"""Check if all the infos necessary for plots have been provided"""
         boolTest = self._flag_MeshInfos and self._flag_PairingInfos and self._flag_CellsInfos
         if not boolTest:
             raise ValueError(
                 f"Pairing Object not properly initialized for plot, Mesh info:{self._flag_MeshInfos}, Pairing Info:{self._flag_PairingInfos}, Cells Info: {self._flag_CellsInfos}"
             )
 
-    def plotMatplotlib(
+    def plotInteractive(
         self,
         optionMesh,
         suboptionMesh,
@@ -88,6 +94,21 @@ class PairingObject:
         s=50,
         indexPlaneProjected=None,
     ):
+        r"""Interative plot
+
+        Args:
+            optionMesh (:class:`str`): option for mesh visu (domain or interface)
+            suboptionMesh (:class:`str`): target problem
+                (all pairs ? one selected pair ?)
+            optionPair (:class:`str`): option for the level of information one seek
+                        (mesh ? pairs ? intersection points ? quadrature points ?)
+            addNodeLabel (:class:`bool`): if True, then add node labels (numbering)
+            addMeshNodes (:class:`bool`): if True, then add mesh node (bullet for nodes)
+            index (:class:`str`): index of a selected cell
+            s (:class:`float`): opacity parameter
+            indexPlaneProjected (:class:`str`): option for projection
+                    when dealing with 3D case
+        """
         self.checkInfosForPlot()
         fig = MMFig(
             self,
@@ -104,6 +125,7 @@ class PairingObject:
         fig.plot(s)
 
     def computebasicInfosFromPairs(self):
+        r"""Compute information associated to each cell in all the provided pairs"""
         # - Step 1: Compute unique indices for the first column
         unique_indices, counts = np.unique(self._listPairs[:, 0], return_counts=True)
         # Result as list [[index, number of occurrences]]
@@ -126,6 +148,7 @@ class PairingObject:
         self._listPairsDict = index_dict
 
     def getSlaveCellsPaired(self):
+        r"""Return the indices of slave cells that appear in pairs"""
         if self._listPairsBasicInfo is None:
             self.computebasicInfosFromPairs()
         return self._listPairsBasicInfo[:, 0]
@@ -170,17 +193,23 @@ class PairingAnalysisAsterFromPkl(PairingObject):
         super().__init__(dimension, masterDomain, masterInterface, slaveDomain, slaveInterface)
 
     def setMeshInfos(self, coords, asterConnectivity):
-        """Set mesh informations: node coordinates and connectivity"""
-        self._coords = np.copy(coords)  # np.copy(coords)
-        self._asterConnectivity = asterConnectivity  # np.copy(asterConnectivity)
+        r"""Set mesh informations: node coordinates and connectivity
+
+        Args:
+            coords (:class:`list`): node coordinates
+            asterConnectivity (:class:`list`): connectivity array"""
+        self._coords = np.copy(coords)
+        self._asterConnectivity = asterConnectivity
         # - Update flag
         self._flag_MeshInfos = True
 
     def setPairingInfos(self, listPairs, listIntersectionPts, listQuadraturePts):
-        """Set pairing informations:
-        list of pairs of cells
-        list of intersection points
-        list of quadrature points"""
+        r"""Set pairing informations:
+
+        Args:
+            listPairs (:class:`list`): list of pairs of cells
+            listIntersectionPts (:class:`list`): list of intersection points
+            listQuadraturePts (:class:`list`): list of quadrature points"""
         # - Set pairing information
         self._listPairs = np.copy(listPairs)
         self._listIntersectionPts = np.copy(listIntersectionPts)
@@ -191,9 +220,13 @@ class PairingAnalysisAsterFromPkl(PairingObject):
     def setCellInfos(
         self, indices_grma_slv, indices_grma_mas, indices_grma_do_slv, indices_grma_do_mas
     ):
-        """Set call informations:
-        list of indices for the slave cells (domain and interface)
-        list of indices for the slave cells (domain and interface)"""
+        r"""Set cell informations:
+
+        Args:
+            indices_grma_slv (:class:`list`): list of indices for the slave cells (interface)
+            indices_grma_mas (:class:`list`): list of indices for the master cells (interface)
+            indices_grma_do_slv (:class:`list`): list of indices for the slave cells (domain)
+            indices_grma_do_mas (:class:`list`): list of indices for the master cells (domain)"""
         # - Slave side
         self._indicesSlaveDomain = indices_grma_do_slv
         self._indicesSlaveInterface = indices_grma_slv
@@ -231,17 +264,25 @@ class PairingAnalysisAster(PairingObject):
         self.setCellInfos(asterPairingProcess)
 
     def setMeshInfos(self, asterPairingProcess):
-        """Set mesh informations: node coordinates and connectivity"""
-        self._coords = np.copy(asterPairingProcess._coords)  # np.copy(asterPairingProcess._coords)
+        r"""Set mesh informations: node coordinates and connectivity
+
+        Args:
+            asterPairingProcess (:class:`AsterPairingProcess`): previsouly computed AsterPairingProcess
+        """
+        self._coords = np.copy(asterPairingProcess._coords)
         self._asterConnectivity = asterPairingProcess._asterConnectivity
         # - Update flag
         self._flag_MeshInfos = True
 
     def setPairingInfos(self, asterPairingProcess):
-        """Set pairing informations:
+        r"""Set pairing informations:
         list of pairs of cells
         list of intersection points
-        list of quadrature points"""
+        list of quadrature points
+
+        Args:
+            asterPairingProcess (:class:`AsterPairingProcess`): previsouly computed AsterPairingProcess
+        """
         if asterPairingProcess._hasRun:
             self._listPairs = np.copy(asterPairingProcess._listPairs)
             self._listIntersectionPts = np.copy(asterPairingProcess._intePointsList)
@@ -252,9 +293,13 @@ class PairingAnalysisAster(PairingObject):
             raise ValueError("No pairing has been computed before")
 
     def setCellInfos(self, asterPairingProcess):
-        """Set call informations:
+        r"""Set call informations:
         list of indices for the slave cells (domain and interface)
-        list of indices for the slave cells (domain and interface)"""
+        list of indices for the slave cells (domain and interface)
+
+        Args:
+            asterPairingProcess (:class:`AsterPairingProcess`): previsouly computed AsterPairingProcess
+        """
         # - Slave side
         self._indicesSlaveDomain = asterPairingProcess._asterMesh.getCells(self._slvSolid)
         self._indicesSlaveInterface = asterPairingProcess._asterMesh.getCells(self._slvtInt)

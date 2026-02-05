@@ -20,6 +20,19 @@ import numpy as np
 
 
 def transformToPlanarCoords(point, ref, vec1, vec2):
+    r"""Transforms a 3D point into planar coordinates based on a basis defined by two vectors.
+    This function projects the vector from a reference point (ref) to a given point (point)
+    onto the two basis vectors (vec1, vec2), and returns the resulting 2D coordinates.
+
+    Args:
+        point (:class:`numpy.ndarray`): 3D point to transform (array of 3 elements).
+        ref (:class:`numpy.ndarray`): 3D reference point (array of 3 elements).
+        vec1 (:class:`numpy.ndarray`): First basis vector (array of 3 elements).
+        vec2 (:class:`numpy.ndarray`): Second basis vector (array of 3 elements).
+
+    Returns:
+        (:class:`numpy.ndarray`): Array of 2 elements containing the planar coordinates.
+    """
     # - Compute the vector between a given point and the ref point (ref)
     pointVector = point - ref
     # - Project on the basis vectors vec1 and vec2
@@ -148,6 +161,21 @@ class ConvexPointSet:
             raise NameError("computeArea not implemented for convex set in dim >=3")
 
     def plotEdges(self, axis_, colorGiven, linestyleGiven, alphaGiven, dimSpace, label=None):
+        r"""
+        Plots the edges of the object as a closed polygon on the given axis.
+
+        This method sorts the points if not already sorted, then plots them as a closed
+        polygon (connecting the last point back to the first) on the specified axis.
+        The plot is adapted to the dimensionality of the space (2D or 3D).
+
+        Args:
+            axis_ (:class:`matplotlib.axes.Axes`):  The axis on which to plot the edges.
+            colorGiven  (:class:`str`): The color of the plotted edges.
+            linestyleGiven  (:class:`str`):  The linestyle of the plotted edges (e.g., '-', '--', ':').
+            alphaGiven  (:class:`str`): The transparency level of the plotted edges (0.0 to 1.0).
+            dimSpace  (:class:`str`): The dimensionality of the space (2 for 2D, 3 for 3D).
+            label  (:class:`str`), optional: The label for the plot legend. If None, no label is set.
+        """
         if not self._pointSorted:
             self.sortPoints()
         initP = np.array([self._sortedPoints[0, :]])
