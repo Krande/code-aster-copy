@@ -46,13 +46,14 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids, &
 ! -----  ARGUMENTS
 #include "asterfort/bmatmc.h"
 #include "asterfort/btsig.h"
+#include "MeshTypes_type.h"
     integer(kind=8), intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
-    real(kind=8), intent(in) :: xyz(1), nharm, sigma(1)
-    real(kind=8), intent(out) :: bsigma(1)
+    real(kind=8), intent(in) :: xyz(*), nharm, sigma(npg*nbsig)
+    real(kind=8), intent(out) :: bsigma(*)
 !
 ! -----  VARIABLES LOCALES
     integer(kind=8) :: i, igau, nbinco
-    real(kind=8) :: b(nbsig, 81), jacgau
+    real(kind=8) :: b(nbsig, 3*MT_NNOMAX3D), jacgau
 
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 ! --- INITIALISATIONS :
@@ -78,7 +79,7 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids, &
 !
 !  --      CALCUL DU PRODUIT (BT)*(SIGMA)*JACOBIEN*POIDS
 !          ---------------------------------------------
-        call btsig(nbinco, nbsig, jacgau, b, sigma(1+nbsig*(igau-1)), &
+        call btsig(nbinco, nbsig, jacgau, b, sigma(1+nbsig*(igau-1):nbsig*igau), &
                    bsigma)
     end do
 !

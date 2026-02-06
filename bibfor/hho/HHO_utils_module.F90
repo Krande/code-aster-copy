@@ -239,12 +239,16 @@ contains
             long = "TRIA6"
         case ("TR7")
             long = "TRIA7"
+        case ("TR1")
+            long = "TRIA10"
         case ("QU4")
             long = "QUAD4"
         case ("QU8")
             long = "QUAD8"
         case ("QU9")
             long = "QUAD9"
+        case ("Q12")
+            long = "QUAD12"
         case ("HE8")
             long = "HEXA8"
         case ("H20")

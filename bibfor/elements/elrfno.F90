@@ -314,8 +314,8 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
         if (present(nodeCoor)) then
             nodeCoor(1, 1:nno_) = [0.d0, +1.d0, 0.d0, untiers, 2.d0/3.d0, 2.d0/3.d0, &
                                    untiers, 0.d0, 0.d0, untiers]
-            nodeCoor(2, 1:nno_) = [0.d0, 0.d0, +1.d0, 0.d0, 0.0d0, untiers, 2.d0/3.d0, &
-                                   2.d0/3.d0, untiers, untiers]
+            nodeCoor(2, 1:nno_) = [0.d0, 0.d0, +1.d0, 0.d0, 0.0d0, untiers, &
+                                   2.d0/3.d0, 2.d0/3.d0, untiers, untiers]
         end if
         cellVolu_ = 1.d0/2.d0
 

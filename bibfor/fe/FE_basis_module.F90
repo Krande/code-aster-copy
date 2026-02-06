@@ -35,6 +35,7 @@ module FE_Basis_module
 #include "asterfort/utmess.h"
 #include "FE_module.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 ! --------------------------------------------------------------------------------------------------
 !
 ! FE - generic
@@ -55,8 +56,8 @@ module FE_Basis_module
         character(len=8) :: typema = ''
 ! ----- Nombre de noeuds
         integer(kind=8) :: nbnodes = 0
-! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
-        real(kind=8), dimension(3, 27) :: coorno = 0.d0
+! ----- Coordonnees des noeuds
+        real(kind=8), dimension(3, MT_NNOMAX3D) :: coorno = 0.d0
 !
 ! ----- member function
     contains
@@ -128,7 +129,7 @@ contains
         this%typema = FESkin%typemas
         this%ndim = FESkin%ndim+1
         this%nbnodes = FESkin%nbnodes
-        this%coorno(1:3, 1:9) = FESkin%coorno
+        this%coorno(1:3, 1:MT_NNOMAX2D) = FESkin%coorno
         this%typeEF = EF_LAGRANGE
         this%l_skin = ASTER_TRUE
 !

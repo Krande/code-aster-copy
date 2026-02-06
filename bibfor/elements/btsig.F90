@@ -18,12 +18,14 @@
 
 subroutine btsig(lonlig, loncol, jacgau, bmat, sigma, bsigma)
     implicit none
+#include "MeshTypes_type.h"
+!
     integer(kind=8), intent(in) :: loncol, lonlig
-    real(kind=8), intent(in) :: jacgau, bmat(loncol, 81), sigma(1)
-    real(kind=8), intent(out) :: bsigma(1)
+    real(kind=8), intent(in) :: jacgau, bmat(loncol, 3*MT_NNOMAX3D), sigma(loncol)
+    real(kind=8), intent(out) :: bsigma(*)
 !
     integer(kind=8) :: i, j
-    real(kind=8) :: valbsi
+    real(kind=8) :: valbsi, a, b
 !-----------------------------------------------------------------------
 ! --- CALCUL DU PRODUIT (BT)*(SIGMA) ,
 ! --- AVEC LES NOTATIONS DE LA ROUTINE , CA DONNE :
@@ -42,7 +44,9 @@ subroutine btsig(lonlig, loncol, jacgau, bmat, sigma, bsigma)
     do i = 1, lonlig
         valbsi = 0.0d0
         do j = 1, loncol
-            valbsi = valbsi+bmat(j, i)*sigma(j)
+            a = sigma(j)
+            b = bmat(j, i)
+            valbsi = valbsi+a*b
         end do
 !
         bsigma(i) = bsigma(i)+valbsi*jacgau

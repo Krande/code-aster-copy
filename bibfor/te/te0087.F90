@@ -50,7 +50,7 @@ subroutine te0087(option, nomte)
     integer(kind=8) :: ndim, nno, npg, nbsig, nbEpsi
     integer(kind=8) :: kpg, iret, iEpsi
     integer(kind=8) :: jvGeom, jvDisp, jvTime, jvEpsi
-    real(kind=8) :: epsi(54), anglNaut(3), time
+    real(kind=8) :: epsi(100), anglNaut(3), time
     integer(kind=8) :: strainType
     aster_logical :: lStrainMeca
 !
@@ -62,7 +62,7 @@ subroutine te0087(option, nomte)
     nbsig = nbsigm()
     nbEpsi = nbsig
     ASSERT(nbEpsi .le. 6)
-    ASSERT(npg .le. 9)
+    ASSERT(npg .le. 25)
     epsi = 0.d0
 
 ! - Get type of strain from option

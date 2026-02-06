@@ -22,28 +22,7 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
-from code_aster.Commands import *
-from code_aster import CA
-
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
-
-builder = CA.Mesh.buildSquare(refine=1)
-
-mesh = CREA_MAILLAGE(MAILLAGE=builder, LINE_CUBI=_F(TOUT="OUI"))
-
-mesh.printMedFile("/home/C00976/tmp/test_cubi.med")
-
-# mesh_quad = LIRE_MAILLAGE(FORMAT="MED")
-
-# mesh_line = CREA_MAILLAGE(MAILLAGE=mesh_quad, QUAD_LINE=_F(TOUT="OUI"))
-
-# mesh = CREA_MAILLAGE(MAILLAGE=mesh_line, LINE_CUBI=_F(TOUT="OUI"))
-
-DEFI_FICHIER(UNITE=80, TYPE="BINARY", FICHIER="/home/C00976/tmp/test_cubi2.med")
-
-IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(MAILLAGE=mesh))
-
-assert False
 
 mesh_quad = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -82,6 +61,12 @@ depl = AFFE_CHAR_CINE(MECA_IMPO=_F(DX=0.0, DY=0.0, GROUP_MA=("Encast",)), MODELE
 
 load = AFFE_CHAR_MECA(FORCE_CONTOUR=_F(FY=1000, GROUP_MA=("load",)), MODELE=model)
 
+resnonl = MECA_STATIQUE(
+    CHAM_MATER=fieldmat,
+    EXCIT=(_F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"), _F(CHARGE=load, TYPE_CHARGE="FIXE_CSTE")),
+    MODELE=model,
+)
+
 resnonl = STAT_NON_LINE(
     CHAM_MATER=fieldmat,
     COMPORTEMENT=_F(RELATION="ELAS"),
@@ -92,13 +77,20 @@ resnonl = STAT_NON_LINE(
     ),
     INCREMENT=_F(LIST_INST=times),
     MODELE=model,
-    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_ITER=1),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
     INFO=1,
 )
 
 
 resnonl = CALC_CHAMP(
-    reuse=resnonl, CHAM_MATER=fieldmat, CRITERES=("SIEQ_NOEU",), MODELE=model, RESULTAT=resnonl
+    reuse=resnonl,
+    CHAM_MATER=fieldmat,
+    CRITERES=("SIEQ_NOEU", "SIEQ_ELGA"),
+    PROPRIETES=("MATE_ELEM", "MATE_ELGA"),
+    CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU", "SIGM_ELGA", "SIGM_NOEU"),
+    DEFORMATION=("EPSI_ELGA", "EPSI_NOEU"),
+    MODELE=model,
+    RESULTAT=resnonl,
 )
 
 TEST_RESU(
@@ -109,10 +101,10 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
-        VALE_CALC=1.81970170892,
+        VALE_CALC=1.8380085113979208,
         VALE_REFE=1.8515,
         CRITERE="RELATIF",
-        PRECISION=2.0e-2,
+        PRECISION=1.0e-2,
     )
 )
 
@@ -124,10 +116,10 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="SIEQ_NOEU",
         NOM_CMP="PRIN_3",
-        VALE_CALC=3811.257089,
+        VALE_CALC=3793.986594256191,
         VALE_REFE=3770.31,
         CRITERE="RELATIF",
-        PRECISION=2.0e-2,
+        PRECISION=1.0e-2,
     )
 )
 

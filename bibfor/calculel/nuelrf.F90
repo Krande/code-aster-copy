@@ -43,7 +43,9 @@ subroutine nuelrf(elrefe, nujni)
         elrefe .eq. 'T15' .or. elrefe .eq. 'P19' .or. elrefe .eq. 'P21' .or. &
         elrefe .eq. 'T10' .or. elrefe .eq. 'PY5' .or. elrefe .eq. 'P13' .or. &
         elrefe .eq. 'QU4' .or. elrefe .eq. 'QU8' .or. elrefe .eq. 'QU9' .or. &
+        elrefe .eq. 'Q12' .or. &
         elrefe .eq. 'TR3' .or. elrefe .eq. 'TR6' .or. elrefe .eq. 'TR7' .or. &
+        elrefe .eq. 'TR1' .or. &
         elrefe .eq. 'SE2' .or. elrefe .eq. 'SE3' .or. elrefe .eq. 'SE4' .or. &
         elrefe .eq. 'PO1' .or. elrefe .eq. 'P18' .or. elrefe .eq. 'HE9' .or. &
         elrefe .eq. 'PE7') then

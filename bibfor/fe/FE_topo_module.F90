@@ -32,6 +32,7 @@ module fe_topo_module
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
 #include "asterfort/getFESkinSubType.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,8 +58,8 @@ module fe_topo_module
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
         integer(kind=8)             :: nbnodes = 0
-! ----- Coordonnees des noeuds   (max 9 noeuds pour quad)
-        real(kind=8), dimension(3, 9):: coorno = 0.d0
+! ----- Coordonnees des noeuds
+        real(kind=8), dimension(3, MT_NNOMAX2D):: coorno = 0.d0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face
@@ -83,8 +84,8 @@ module fe_topo_module
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
         integer(kind=8)             :: nbnodes = 0
-! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
-        real(kind=8), dimension(3, 27):: coorno = 0.d0
+! ----- Coordonnees des noeuds
+        real(kind=8), dimension(3, MT_NNOMAX3D):: coorno = 0.d0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_cell
