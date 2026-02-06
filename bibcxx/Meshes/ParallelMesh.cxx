@@ -505,7 +505,7 @@ ParallelMeshPtr ParallelMesh::convertToBiQuadratic( const ASTERINTEGER info ) {
 
 ParallelMeshPtr ParallelMesh::convertToCubic( const ASTERINTEGER info ) {
     auto mesh_out = std::make_shared< ParallelMesh >();
-    ASTERINTEGER quatre = 3, inf = info;
+    ASTERINTEGER quatre = 4, inf = info;
     CALL_CMBQBQ( getName(), mesh_out->getName(), &quatre, &inf );
     mesh_out->updateGlobalGroupOfNodes();
     mesh_out->updateGlobalGroupOfCells();

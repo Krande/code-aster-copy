@@ -96,7 +96,7 @@ subroutine cmbqbq(main, maout, degree, info)
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA7", "TRIA6"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
-        conv_type = ["TRIA13", "TRIA6 "]
+        conv_type = ["TRIA10", "TRIA6 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD4", "QUAD8"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
@@ -125,7 +125,7 @@ subroutine cmbqbq(main, maout, degree, info)
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TRIA6", "TRIA7"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
-        conv_type = ["TRIA13", "TRIA7 "]
+        conv_type = ["TRIA10", "TRIA7 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD4", "QUAD9"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))

@@ -2904,7 +2904,6 @@ contains
         type = this%faces(face_id)%type
         select case (node_loc)
         case (3)
-            print *, type, this%faces(face_id)%isub, this%edges(edge_id)%isub
             if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
                 if (this%faces(face_id)%isub == one_ip) then
                     if (this%edges(edge_id)%isub == one_ip) then
