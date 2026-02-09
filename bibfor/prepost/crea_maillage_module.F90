@@ -73,7 +73,7 @@ module crea_maillage_module
     integer(kind=4), parameter, private :: three_ip = 3_ip, four_ip = 4_ip
 !
 ! Only for conversion - not real cells
-#define MT_NTYPE   MT_NTYMAX + 3
+#define MT_NTYPE   MT_NTYMAX + 4
 #define MT_SEG5    MT_NTYMAX + 1
 !        1 --- 4 --- 3 --- 5 --- 2
 #define MT_TRIA13  MT_NTYMAX + 2
@@ -99,6 +99,18 @@ module crea_maillage_module
 !        17  --   |   --   12
 !        |   |    |    |   |
 !        1 - 10 - 5 - 11 - 2
+!
+#define MT_TETRA27  MT_NTYMAX + 4
+!
+!   Sommet: 1-2-3-4
+!   Edge1 : 1-2-5-11-12
+!   Edge2 : 2-3-6-13-14
+!   Edge3 : 1-3-7-15-16
+!   Edge4 : 1-4-8-17-18
+!   Edge5 : 2-4-9-19-20
+!   Edge6 : 3-4-10-21-22
+!   Face:   23-24-25-26
+!   barycentre:  27
 !
     type Mconverter
         aster_logical :: to_convert(MT_NTYPE) = ASTER_FALSE
@@ -576,6 +588,8 @@ contains
         this%name(MT_TETRA4) = "TETRA4"
         this%name(MT_TETRA10) = "TETRA10"
         this%name(MT_TETRA15) = "TETRA15"
+        this%name(MT_TETRA20) = "TETRA20"
+        this%name(MT_TETRA27) = "TETRA27"
         this%name(MT_HEXA8) = "HEXA8"
         this%name(MT_HEXA9) = "HEXA9"
         this%name(MT_HEXA20) = "HEXA20"
@@ -607,6 +621,8 @@ contains
         this%short_name(MT_TETRA4) = "TE4"
         this%short_name(MT_TETRA10) = "T10"
         this%short_name(MT_TETRA15) = "T15"
+        this%short_name(MT_TETRA20) = "T20"
+        this%short_name(MT_TETRA27) = "T27"
         this%short_name(MT_HEXA8) = "HE8"
         this%short_name(MT_HEXA9) = "HE9"
         this%short_name(MT_HEXA20) = "H20"
@@ -635,9 +651,11 @@ contains
         this%convert_max(MT_QUAD9) = MT_QUAD17
         this%convert_max(MT_QUAD12) = MT_QUAD17
         this%convert_max(MT_QUAD17) = MT_QUAD17
-        this%convert_max(MT_TETRA4) = MT_TETRA15
-        this%convert_max(MT_TETRA10) = MT_TETRA15
-        this%convert_max(MT_TETRA15) = MT_TETRA15
+        this%convert_max(MT_TETRA4) = MT_TETRA27
+        this%convert_max(MT_TETRA10) = MT_TETRA27
+        this%convert_max(MT_TETRA15) = MT_TETRA27
+        this%convert_max(MT_TETRA20) = MT_TETRA27
+        this%convert_max(MT_TETRA27) = MT_TETRA27
         this%convert_max(MT_HEXA8) = MT_HEXA27
         this%convert_max(MT_HEXA9) = MT_HEXA27
         this%convert_max(MT_HEXA20) = MT_HEXA27
@@ -683,6 +701,12 @@ contains
         this%dim(MT_QUAD17) = int(2, ip)
         this%convert_to(MT_QUAD17) = MT_QUAD17
 !
+        this%cata_type(MT_TETRA27) = -1
+        this%nno(MT_TETRA27) = int(27, ip)
+        this%nnos(MT_TETRA27) = int(4, ip)
+        this%dim(MT_TETRA27) = int(3, ip)
+        this%convert_to(MT_TETRA27) = MT_TETRA27
+!
         call jedema()
 !
     end subroutine
@@ -713,7 +737,7 @@ contains
         integer(ip) :: i_cell, nno, node_id, owner, i_type, cell_type
         real(kind=8):: start, end
         integer(ip), allocatable, dimension(:, :) :: list_type_cells
-        integer(kind=4), parameter :: nb_type = 13
+        integer(kind=4), parameter :: nb_type = 15
         integer(ip) :: nb_type_cells(nb_type)
 !
         call jemarq()
@@ -827,24 +851,30 @@ contains
             case (MT_TRIA7, MT_QUAD9)
                 nb_type_cells(7) = nb_type_cells(7)+one_ip
                 list_type_cells(7, nb_type_cells(7)) = i_cell
-            case (MT_HEXA27, MT_PENTA21, MT_PYRAM19, MT_TETRA15)
+            case (MT_TETRA27)
                 nb_type_cells(8) = nb_type_cells(8)+one_ip
                 list_type_cells(8, nb_type_cells(8)) = i_cell
-            case (MT_TRIA6, MT_QUAD8)
+            case (MT_TETRA20)
                 nb_type_cells(9) = nb_type_cells(9)+one_ip
                 list_type_cells(9, nb_type_cells(9)) = i_cell
-            case (MT_PENTA18, MT_HEXA20, MT_PENTA15, MT_PYRAM13, MT_TETRA10)
+            case (MT_HEXA27, MT_PENTA21, MT_PYRAM19, MT_TETRA15)
                 nb_type_cells(10) = nb_type_cells(10)+one_ip
                 list_type_cells(10, nb_type_cells(10)) = i_cell
-            case (MT_SEG2)
+            case (MT_TRIA6, MT_QUAD8)
                 nb_type_cells(11) = nb_type_cells(11)+one_ip
                 list_type_cells(11, nb_type_cells(11)) = i_cell
-            case (MT_TRIA3, MT_QUAD4)
+            case (MT_PENTA18, MT_HEXA20, MT_PENTA15, MT_PYRAM13, MT_TETRA10)
                 nb_type_cells(12) = nb_type_cells(12)+one_ip
                 list_type_cells(12, nb_type_cells(12)) = i_cell
-            case (MT_HEXA9, MT_PENTA7, MT_HEXA8, MT_PENTA6, MT_PYRAM5, MT_TETRA4)
+            case (MT_SEG2)
                 nb_type_cells(13) = nb_type_cells(13)+one_ip
                 list_type_cells(13, nb_type_cells(13)) = i_cell
+            case (MT_TRIA3, MT_QUAD4)
+                nb_type_cells(14) = nb_type_cells(14)+one_ip
+                list_type_cells(14, nb_type_cells(14)) = i_cell
+            case (MT_HEXA9, MT_PENTA7, MT_HEXA8, MT_PENTA6, MT_PYRAM5, MT_TETRA4)
+                nb_type_cells(15) = nb_type_cells(15)+one_ip
+                list_type_cells(15, nb_type_cells(15)) = i_cell
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -1377,7 +1407,8 @@ contains
                 ASSERT(ASTER_FALSE)
             end if
         elseif (cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
-                cell_type == MT_TETRA15) then
+                cell_type == MT_TETRA15 .or. cell_type == MT_TETRA20 &
+                .or. cell_type == MT_TETRA27) then
             nb_edge = 6_ip
             edge_loc(1:2, 1) = int([1, 2], ip)
             edge_loc(1:2, 2) = int([2, 3], ip)
@@ -1390,6 +1421,15 @@ contains
             elseif (cell_type == MT_TETRA10 .or. cell_type == MT_TETRA15) then
                 edge_type(1:nb_edge) = MT_SEG3
                 edge_loc(3, 1:nb_edge) = int([5, 6, 7, 8, 9, 10], ip)
+            elseif (cell_type == MT_TETRA20) then
+                edge_type(1:nb_edge) = MT_SEG4
+                edge_loc(3, 1:nb_edge) = int([5, 7, 9, 11, 13, 15], ip)
+                edge_loc(4, 1:nb_edge) = int([6, 8, 10, 12, 14, 16], ip)
+            elseif (cell_type == MT_TETRA27) then
+                edge_type(1:nb_edge) = MT_SEG5
+                edge_loc(3, 1:nb_edge) = int([5, 6, 7, 8, 9, 10], ip)
+                edge_loc(4, 1:nb_edge) = int([11, 13, 15, 17, 19, 21], ip)
+                edge_loc(5, 1:nb_edge) = int([12, 14, 16, 18, 20, 22], ip)
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -1446,7 +1486,7 @@ contains
         implicit none
 !
         integer(ip), intent(in) :: cell_type
-        integer(ip), intent(out) :: nb_face, face_type(6), face_loc(9, 6)
+        integer(ip), intent(out) :: nb_face, face_type(6), face_loc(13, 6)
 ! ---------------------------------------------------------------------------------
 ! Get face connectivity of a cell
 !
@@ -1481,7 +1521,8 @@ contains
                 ASSERT(ASTER_FALSE)
             end if
         elseif (cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 &
-                .or. cell_type == MT_TETRA15) then
+                .or. cell_type == MT_TETRA15 .or. cell_type == MT_TETRA20 &
+                .or. cell_type == MT_TETRA27) then
             nb_face = 4_ip
             face_loc(1:3, 1) = int([1, 3, 2], ip)
             face_loc(1:3, 2) = int([1, 2, 4], ip)
@@ -1499,6 +1540,18 @@ contains
                     face_type(1:4) = MT_TRIA7
                     face_loc(7, 1:4) = int([11, 12, 13, 14], ip)
                 end if
+            elseif (cell_type == MT_TETRA20) then
+                face_type(1:4) = MT_TRIA10
+                face_loc(4:10, 1) = int([9, 10, 8, 7, 6, 5, 17], ip)
+                face_loc(4:10, 2) = int([5, 6, 13, 14, 12, 11, 18], ip)
+                face_loc(4:10, 3) = int([11, 12, 16, 15, 10, 9, 19], ip)
+                face_loc(4:10, 4) = int([7, 8, 15, 16, 14, 13, 20], ip)
+            elseif (cell_type == MT_TETRA27) then
+                face_type(1:4) = MT_TRIA13
+                face_loc(4:13, 1) = int([7, 6, 5, 15, 16, 14, 13, 12, 11, 23], ip)
+                face_loc(4:13, 2) = int([5, 9, 8, 11, 12, 19, 20, 18, 17, 24], ip)
+                face_loc(4:13, 3) = int([8, 10, 7, 17, 18, 22, 21, 16, 15, 25], ip)
+                face_loc(4:13, 4) = int([6, 10, 9, 13, 14, 21, 22, 20, 19, 26], ip)
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -1596,6 +1649,14 @@ contains
         case (MT_PENTA7)
             nodes_loc(1:6) = int([1, 2, 3, 4, 5, 6], ip)
             nodes_loc(7) = 21_ip
+        case (MT_TETRA15)
+            nodes_loc(1:10) = int([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], ip)
+            nodes_loc(11:14) = int([23, 24, 25, 26], ip)
+            nodes_loc(15) = 27_ip
+        case (MT_TETRA20)
+            nodes_loc(1:20) = int([1, 2, 3, 4, &
+                                   11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, &
+                                   22, 23, 24, 25, 26], ip)
         case default
             do i_node = one_ip, nno
                 nodes_loc(i_node) = i_node
@@ -1658,7 +1719,8 @@ contains
             sub_loc(1:8, 7) = int([15, 24, 27, 23, 7, 19, 26, 18], ip)
             sub_loc(1:8, 8) = int([16, 25, 27, 24, 8, 20, 26, 19], ip)
         elseif (cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
-                cell_type == MT_TETRA15) then
+                cell_type == MT_TETRA15 .or. cell_type == MT_TETRA20 .or. &
+                cell_type == MT_TETRA27) then
             nb_sub = 8_ip
             conv_type(1:nb_sub) = cell_type
             sub_type(1:nb_sub) = MT_TETRA4
@@ -1864,7 +1926,7 @@ contains
 ! ----------------------------------------------------------------------
         integer(ip) :: nno, i_face, nno_sort(27), nnos, old_size
         integer(ip) :: nb_edges, edge_type(12), edge_loc(5, 12), edge_id, edge_nno
-        integer(ip) :: nb_faces, face_type(6), face_loc(9, 6), i_node, i_edge
+        integer(ip) :: nb_faces, face_type(6), face_loc(13, 6), i_node, i_edge
         integer(ip) :: face_nno, face_nodes(27), face_id, edge_nodes(27)
         integer(ip), allocatable :: new_volumes(:)
         aster_logical :: find
@@ -2519,10 +2581,11 @@ contains
         class(Mmesh), intent(inout) :: this
         integer(ip), intent(in) :: volu_id
 ! ------------------------------------------------------------------
-        integer(ip) :: volu_type, volu_type_end, face_nnos, face_nno
+        integer(ip) :: volu_type, volu_type_end, face_nno, node_idx
         integer(ip) :: nno, nno_end, node_id, i_face, i_node, face_type
-        integer(ip) :: nb_edges, edge_type(12), edge_loc(5, 12), face_id, bar_node
-        integer(ip) :: nb_faces, faces_type(6), face_loc(9, 6), i_edge, owner
+        integer(ip) :: nb_edges, edge_type(12), edge_loc(5, 12), face_id
+        integer(ip) :: nb_faces, faces_type(6), face_loc(13, 6), i_edge, owner
+        integer(ip) :: bar_nno, face_nnos
 !
         volu_type = this%volumes(volu_id)%type
         nno = this%converter%nno(volu_type)
@@ -2534,16 +2597,39 @@ contains
         end if
 !
         if (nno_end > nno) then
-! --- Add nodes on edges
-            if (volu_type == MT_HEXA8 .or. volu_type == MT_TETRA4 .or. &
-                volu_type == MT_PYRAM5 .or. volu_type == MT_PENTA6) then
-                call numbering_edge(volu_type_end, nb_edges, edge_type, edge_loc)
-                do i_edge = one_ip, this%volumes(volu_id)%nb_edges
-                    call this%convert_edge(this%volumes(volu_id)%edges(i_edge))
-                    this%volumes(volu_id)%nodes(edge_loc(3, i_edge)) = &
-                        this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(3)
-                end do
+            if (volu_type == MT_TETRA15) then
+                this%volumes(volu_id)%nodes(27) = this%volumes(volu_id)%nodes(15)
             end if
+! --- Add nodes on edges
+            call numbering_edge(volu_type_end, nb_edges, edge_type, edge_loc)
+            ASSERT(nb_edges == this%volumes(volu_id)%nb_edges)
+            do i_edge = one_ip, nb_edges
+                call this%convert_edge(this%volumes(volu_id)%edges(i_edge))
+                node_idx = edge_loc(3, i_edge)
+                this%volumes(volu_id)%nodes(node_idx) = &
+                    this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(3)
+                if (volu_type_end == MT_TETRA27) then
+                    if (this%volumes(volu_id)%nodes(edge_loc(1_ip, i_edge)) == &
+                        this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(1)) then
+                        node_idx = edge_loc(4_ip, i_edge)
+                        this%volumes(volu_id)%nodes(node_idx) = &
+                            this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(4_ip)
+                        node_idx = edge_loc(5_ip, i_edge)
+                        this%volumes(volu_id)%nodes(node_idx) = &
+                            this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(5_ip)
+                    elseif (this%volumes(volu_id)%nodes(edge_loc(1_ip, i_edge)) == &
+                            this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(2)) then
+                        node_idx = edge_loc(4_ip, i_edge)
+                        this%volumes(volu_id)%nodes(node_idx) = &
+                            this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(5_ip)
+                        node_idx = edge_loc(5_ip, i_edge)
+                        this%volumes(volu_id)%nodes(node_idx) = &
+                            this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(4_ip)
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end if
+            end do
 ! --- Add nodes on faces
             call numbering_face(volu_type_end, nb_faces, faces_type, face_loc)
             do i_face = one_ip, this%volumes(volu_id)%nb_faces
@@ -2552,10 +2638,10 @@ contains
                 face_type = faces_type(i_face)
                 face_nno = this%converter%nno(face_type)
                 face_nnos = this%converter%nnos(face_type)
-                bar_node = two_ip*face_nnos+one_ip
+                bar_nno = two_ip*face_nnos+one_ip
 !
                 this%volumes(volu_id)%nodes(face_loc(face_nno, i_face)) = &
-                    this%faces(face_id)%nodes(bar_node)
+                    this%faces(face_id)%nodes(bar_nno)
             end do
 ! --- Add node at barycenter
             owner = this%owner_cell(nno_end-one_ip, this%volumes(volu_id)%nodes)
@@ -2599,12 +2685,12 @@ contains
         end if
 !
         if (nno_end > nno) then
-            call numbering_edge(face_type_end, nb_edge, edge_type, edge_loc)
-            ASSERT(nb_edge == this%faces(face_id)%nb_edges)
             if (face_type == MT_TRIA10) then
                 this%faces(face_id)%nodes(7) = this%faces(face_id)%nodes(10)
                 this%faces(face_id)%nno_sort(7) = this%faces(face_id)%nno_sort(10)
             end if
+            call numbering_edge(face_type_end, nb_edge, edge_type, edge_loc)
+            ASSERT(nb_edge == this%faces(face_id)%nb_edges)
 ! --- Add nodes at the middle of edges
             do i_edge = one_ip, this%faces(face_id)%nb_edges
                 call this%convert_edge(this%faces(face_id)%edges(i_edge), face_id)
@@ -3332,9 +3418,9 @@ contains
         coor = 0.d0
 !
         type = this%volumes(volu_id)%type
-        stype = this%converter%short_name(type)
         if (this%volumes(volu_id)%isub == zero_ip) then
-            if (type == MT_TETRA4 .or. type == MT_TETRA10 .or. type == MT_TETRA15) then
+            if (type == MT_TETRA4 .or. type == MT_TETRA10 .or. type == MT_TETRA15 &
+                .or. type == MT_TETRA20 .or. type == MT_TETRA27) then
                 coor_ref = [0.25d0, 0.25d0, 0.25d0]
             elseif (type == MT_HEXA8 .or. type == MT_HEXA20 .or. type == MT_HEXA27) then
                 coor_ref = [0.d0, 0.d0, 0.d0]
@@ -3346,13 +3432,18 @@ contains
             else
                 ASSERT(ASTER_FALSE)
             end if
+            stype = this%converter%short_name(type)
+            if (type == MT_TETRA15 .or. type == MT_TETRA27) then
+                stype = this%converter%short_name(MT_TETRA10)
+            end if
             call elrfvf(stype, coor_ref, basis, nbnode)
             do i_node = one_ip, int(nbnode, ip)
                 node = this%volumes(volu_id)%nodes(i_node)
                 coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
             end do
         else
-            if (type == MT_TETRA4 .or. type == MT_TETRA10 .or. type == MT_TETRA15) then
+            if (type == MT_TETRA4 .or. type == MT_TETRA10 .or. type == MT_TETRA15 &
+                .or. type == MT_TETRA20 .or. type == MT_TETRA27) then
                 if (this%volumes(volu_id)%isub == one_ip) then
                     coor_ref = [0.5d0/4.d0, 2.5d0/4.d0, 0.5d0/4.d0]
                 elseif (this%volumes(volu_id)%isub == two_ip) then
@@ -3444,7 +3535,13 @@ contains
 
             parent = this%volumes(volu_id)%parent
             ASSERT(parent > zero_ip)
-            call elrfvf(this%converter%short_name(this%volumes(parent)%type), &
+            if (this%volumes(parent)%type == MT_TETRA15 .or. &
+                this%volumes(parent)%type == MT_TETRA27) then
+                stype = this%converter%short_name(MT_TETRA10)
+            else
+                stype = this%converter%short_name(this%volumes(parent)%type)
+            end if
+            call elrfvf(stype, &
                         coor_ref, basis, nbnode)
             do i_node = one_ip, int(nbnode, ip)
                 node = this%volumes(parent)%nodes(i_node)
@@ -3643,7 +3740,7 @@ contains
         integer(ip) :: i_cell, i_node, i_edge, i_face, i_volume, nno, nno1, nno2
         integer(ip) :: nb_edges, edges_type(12), edges_loc(5, 12), edge_id
         integer(ip) :: face_type, volu_type, face_id
-        integer(ip) :: nb_faces, faces_type(6), faces_loc(9, 6)
+        integer(ip) :: nb_faces, faces_type(6), faces_loc(13, 6)
 !
 ! --- Check Nodes
         do i_cell = one_ip, this%nb_total_cells
@@ -4602,7 +4699,7 @@ contains
             select case (this%volumes(cell_id)%type)
             case (MT_HEXA8, MT_HEXA9, MT_HEXA20, MT_HEXA27)
                 typema = "HE8"
-            case (MT_TETRA4, MT_TETRA10, MT_TETRA15)
+            case (MT_TETRA4, MT_TETRA10, MT_TETRA15, MT_TETRA20, MT_TETRA27)
                 typema = "TE4"
             case (MT_PENTA6, MT_PENTA7, MT_PENTA15, MT_PENTA18, MT_PENTA21)
                 typema = "PE6"
@@ -4645,11 +4742,15 @@ contains
                     this%volumes(cell_id)%nodes(21:26) = [nodes(21), nodes(25), nodes(24), &
                                                           nodes(23), nodes(22), nodes(26)]
                     this%volumes(cell_id)%nodes(27) = nodes(27)
-                case (MT_TETRA4, MT_TETRA10, MT_TETRA15)
+                case (MT_TETRA4, MT_TETRA10, MT_TETRA15, MT_TETRA20, MT_TETRA27)
                     this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(3), nodes(2), nodes(4)]
                     this%volumes(cell_id)%nodes(5:7) = [nodes(7), nodes(6), nodes(5)]
                     this%volumes(cell_id)%nodes(8:10) = [nodes(8), nodes(9), nodes(10)]
-                    this%volumes(cell_id)%nodes(11:15) = nodes(11:15)
+                    this%volumes(cell_id)%nodes(11:16) = [nodes(15), nodes(16), &
+                                                          nodes(13), nodes(14), &
+                                                          nodes(11), nodes(12)]
+                    this%volumes(cell_id)%nodes(17:21) = nodes(17:21)
+                    this%volumes(cell_id)%nodes(22:27) = nodes(22:27)
                 case (MT_PENTA6, MT_PENTA7, MT_PENTA15, MT_PENTA18, MT_PENTA21)
                     this%volumes(cell_id)%nodes(1:3) = [nodes(1), nodes(3), nodes(2)]
                     this%volumes(cell_id)%nodes(4:6) = [nodes(4), nodes(6), nodes(5)]
@@ -4905,6 +5006,10 @@ contains
         case (MT_TETRA15)
             ok = cell_type2 == MT_TETRA15 .or. cell_type2 == MT_PYRAM19 &
                  .or. cell_type2 == MT_PENTA21
+        case (MT_TETRA20)
+            ok = cell_type2 == MT_TETRA20
+        case (MT_TETRA27)
+            ok = cell_type2 == MT_TETRA27
         case (MT_HEXA8, MT_HEXA9)
             ok = cell_type2 == MT_HEXA8 .or. cell_type2 == MT_HEXA9 &
                  .or. cell_type2 == MT_PYRAM5 .or. cell_type2 == MT_PENTA6 &
@@ -4972,6 +5077,10 @@ contains
             ok = face_type == MT_TRIA6
         case (MT_TETRA15)
             ok = face_type == MT_TRIA7
+        case (MT_TETRA20)
+            ok = face_type == MT_TRIA10
+        case (MT_TETRA27)
+            ok = face_type == MT_TRIA13
         case (MT_HEXA8, MT_HEXA9)
             ok = face_type == MT_QUAD4
         case (MT_HEXA20)

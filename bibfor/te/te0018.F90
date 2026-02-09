@@ -30,6 +30,7 @@ subroutine te0018(option, nomte)
 #include "asterfort/mb_pres.h"
 #include "asterfort/tecach.h"
 #include "asterfort/lteatt.h"
+#include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -45,7 +46,7 @@ subroutine te0018(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: mxnoeu = 9, mxnpg = 27
+    integer(kind=8), parameter :: mxnpg = 27
     aster_logical :: l_func, l_time, l_efff
     integer(kind=8) :: jv_geom, jv_time, jv_pres, jv_effe
     integer(kind=8) :: jv_vect
@@ -106,7 +107,7 @@ subroutine te0018(option, nomte)
     call elrefe_info(fami='RIGI', &
                      nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    ASSERT(nno .le. mxnoeu)
+    ASSERT(nno .le. MT_NNOMAX2D)
     ASSERT(npg .le. mxnpg)
 !
 ! - Pressure are on skin elements but DOF are volumic

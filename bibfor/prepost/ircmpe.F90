@@ -285,6 +285,24 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                     nbpg = 10
                 end if
             end if
+            ! For TETRA20
+            if (nbpg .eq. 20) then
+                if (typmai(ima) .eq. MT_TETRA4) then
+                    nbpg = 4
+                end if
+            end if
+            ! For QUAD12
+            if (nbpg .eq. 12) then
+                if (typmai(ima) .eq. MT_QUAD4) then
+                    nbpg = 4
+                end if
+            end if
+            ! For TRIA10
+            if (nbpg .eq. 10) then
+                if (typmai(ima) .eq. MT_TRIA3) then
+                    nbpg = 3
+                end if
+            end if
         end if
 
         nomfpg = 'a fac'

@@ -450,6 +450,9 @@ contains
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA15'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_TETRA15)
         nbCell = nbCell+1
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA20'), cellTypeNume)
+        ASSERT(cellTypeNume .eq. MT_TETRA20)
+        nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_PENTA6)
         nbCell = nbCell+1
@@ -553,6 +556,9 @@ contains
         else if (cellTypeName .eq. 'TETRA15') then
             cellTopo = 'VOLU'
             cellOrder = 2
+        else if (cellTypeName .eq. 'TETRA20') then
+            cellTopo = 'VOLU'
+            cellOrder = 3
         else if (cellTypeName .eq. 'PENTA6') then
             cellTopo = 'VOLU'
             cellOrder = 1

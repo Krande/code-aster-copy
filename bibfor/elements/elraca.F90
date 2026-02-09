@@ -179,6 +179,28 @@ subroutine elraca(elrefz, &
         fapg(16) = 'FPG144'
         fapg(17) = 'FPG204'
 
+    case ('T20')
+        nbfpg = 17
+        nbpg(1:nbfpg) = [nno, nnos, 1, 4, 5, 11, 15, 24, 8, &
+                         35, 46, 59, 74, 94, 117, 144, 204]
+        fapg(1) = 'NOEU'
+        fapg(2) = 'NOEU_S'
+        fapg(3) = 'FPG1'
+        fapg(4) = 'FPG4'
+        fapg(5) = 'FPG5'
+        fapg(6) = 'FPG11'
+        fapg(7) = 'FPG15'
+        fapg(8) = 'FPG24'
+        fapg(9) = 'FPG4NOS'
+        fapg(10) = 'FPG35'
+        fapg(11) = 'FPG46'
+        fapg(12) = 'FPG59'
+        fapg(13) = 'FPG74'
+        fapg(14) = 'FPG94'
+        fapg(15) = 'FPG117'
+        fapg(16) = 'FPG144'
+        fapg(17) = 'FPG204'
+
     case ('PE6')
         nbfpg = 12
         nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29, 52, 95, 168]

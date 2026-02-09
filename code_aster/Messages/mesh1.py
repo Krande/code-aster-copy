@@ -60,7 +60,6 @@ Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/D
           Cela crée une non-conformité dans le maillage."""
     ),
     15: _("""Le mot-clef MAILLAGE est obligatoire."""),
-    16: _("""La conversion vers un maillage cubique n'est pas disponible en 3D."""),
     20: _(
         """Échec lors de la création du GROUP_MA (%(k1)s), il existe déjà.
 Conseil :

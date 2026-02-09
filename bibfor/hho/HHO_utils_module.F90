@@ -261,6 +261,8 @@ contains
             long = "TETRA10"
         case ("T15")
             long = "TETRA15"
+        case ("T20")
+            long = "TETRA20"
         case ("PE6")
             long = "PENTA6"
         case ("P15")

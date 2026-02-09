@@ -244,6 +244,45 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
         end if
 !
 !
+    else if (elrefa .eq. "T20") then
+        ASSERT(nnos .eq. 4)
+        nosom(5, 1) = deuxtiers
+        nosom(5, 2) = tiers
+        nosom(6, 1) = tiers
+        nosom(6, 2) = deuxtiers
+        nosom(7, 2) = deuxtiers
+        nosom(7, 3) = tiers
+        nosom(8, 2) = tiers
+        nosom(8, 3) = deuxtiers
+        nosom(9, 1) = deuxtiers
+        nosom(9, 3) = tiers
+        nosom(10, 1) = tiers
+        nosom(10, 3) = deuxtiers
+        nosom(11, 1) = deuxtiers
+        nosom(11, 4) = deuxtiers
+        nosom(12, 1) = tiers
+        nosom(12, 4) = deuxtiers
+        nosom(13, 2) = deuxtiers
+        nosom(13, 4) = tiers
+        nosom(14, 2) = tiers
+        nosom(14, 4) = deuxtiers
+        nosom(15, 3) = deuxtiers
+        nosom(15, 4) = tiers
+        nosom(16, 3) = tiers
+        nosom(16, 4) = deuxtiers
+        nosom(17, 1) = tiers
+        nosom(17, 2) = tiers
+        nosom(17, 3) = tiers
+        nosom(18, 1) = tiers
+        nosom(18, 2) = tiers
+        nosom(18, 4) = tiers
+        nosom(19, 1) = tiers
+        nosom(19, 3) = tiers
+        nosom(19, 4) = tiers
+        nosom(20, 2) = tiers
+        nosom(20, 3) = tiers
+        nosom(20, 4) = tiers
+!
     else if (elrefa .eq. 'P13' .or. elrefa .eq. 'P19') then
         ASSERT(nnos .eq. 5)
         nosom(6, 1) = demi

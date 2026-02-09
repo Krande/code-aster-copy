@@ -222,6 +222,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
                 ityp = typma(ima)
                 if (ityp .eq. MT_HEXA9) ityp = MT_HEXA8
                 if (ityp .eq. MT_TETRA15) ityp = MT_TETRA10
+                if (ityp .eq. MT_TETRA20) ityp = MT_TETRA4
                 if (ityp .eq. MT_PYRAM19) ityp = MT_PYRAM13
                 if (ityp .eq. MT_PENTA21) ityp = MT_PENTA18
                 if (ityp .eq. MT_PENTA7) ityp = MT_PENTA6
@@ -260,6 +261,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
                 ityp = typma(ima)
                 if (ityp .eq. MT_HEXA9) ityp = MT_HEXA8
                 if (ityp .eq. MT_TETRA15) ityp = MT_TETRA10
+                if (ityp .eq. MT_TETRA20) ityp = MT_TETRA4
                 if (ityp .eq. MT_PYRAM19) ityp = MT_PYRAM13
                 if (ityp .eq. MT_PENTA21) ityp = MT_PENTA18
                 if (ityp .eq. MT_PENTA7) ityp = MT_PENTA6

@@ -220,6 +220,8 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
         do ima = 1, nbmail
             if (nadtypm(ima) .eq. MT_TETRA15) then
                 zi(adtyp2+ima-1) = MT_TETRA10
+            else if (nadtypm(ima) .eq. MT_TETRA20) then
+                zi(adtyp2+ima-1) = MT_TETRA4
             elseif (nadtypm(ima) .eq. MT_PYRAM19) then
                 zi(adtyp2+ima-1) = MT_PYRAM13
             elseif (nadtypm(ima) .eq. MT_PENTA21) then

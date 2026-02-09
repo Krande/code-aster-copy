@@ -301,7 +301,7 @@ subroutine chckma(nomu, dtol)
               MT_TRIA6, MT_TRIA7, MT_TRIA10, &
               MT_QUAD8, MT_QUAD9, MT_QUAD12, &
               MT_HEXA20, MT_HEXA27, MT_PENTA15, MT_PENTA18, MT_PENTA21, &
-              MT_PYRAM13, MT_PYRAM19, MT_TETRA10, MT_TETRA15)
+              MT_PYRAM13, MT_PYRAM19, MT_TETRA10, MT_TETRA15, MT_TETRA20)
             hasQuadraticCell = ASTER_TRUE
             exit
         end select

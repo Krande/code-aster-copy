@@ -46,7 +46,7 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: nnos_, ndim_, nno_
-    real(kind=8), parameter :: untiers = 1.d0/3.d0
+    real(kind=8), parameter :: untiers = 1.d0/3.d0, deuxtiers = 2.d0/3.d0
     real(kind=8) :: cellVolu_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -160,6 +160,34 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
             nodeCoor(2, 11:14) = [untiers, untiers, untiers, 0.d0]
             nodeCoor(3, 11:14) = [untiers, untiers, 0.d0, untiers]
             nodeCoor(1:3, 15) = [0.25d0, 0.25d0, 0.25d0]
+        end if
+        cellVolu_ = 1.d0/6.d0
+
+    case ('T20')
+        nno_ = 20
+        nnos_ = 4
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1:3, 1) = [0.d0, 1.d0, 0.d0]
+            nodeCoor(1:3, 2) = [0.d0, 0.d0, 1.d0]
+            nodeCoor(1:3, 3) = [0.d0, 0.d0, 0.d0]
+            nodeCoor(1:3, 4) = [1.d0, 0.d0, 0.d0]
+            nodeCoor(1:3, 5) = [0.d0, deuxtiers, untiers]
+            nodeCoor(1:3, 6) = [0.d0, untiers, deuxtiers]
+            nodeCoor(1:3, 7) = [0.d0, 0.d0, deuxtiers]
+            nodeCoor(1:3, 8) = [0.d0, 0.d0, untiers]
+            nodeCoor(1:3, 9) = [0.d0, deuxtiers, 0.d0]
+            nodeCoor(1:3, 10) = [0.d0, untiers, 0.d0]
+            nodeCoor(1:3, 11) = [untiers, deuxtiers, 0.d0]
+            nodeCoor(1:3, 12) = [deuxtiers, untiers, 0.d0]
+            nodeCoor(1:3, 13) = [untiers, 0.d0, deuxtiers]
+            nodeCoor(1:3, 14) = [deuxtiers, 0.d0, untiers]
+            nodeCoor(1:3, 15) = [untiers, 0.d0, 0.d0]
+            nodeCoor(1:3, 16) = [deuxtiers, 0.d0, 0.d0]
+            nodeCoor(1:3, 17) = [0.d0, untiers, untiers]
+            nodeCoor(1:3, 18) = [untiers, untiers, untiers]
+            nodeCoor(1:3, 19) = [untiers, untiers, 0.d0]
+            nodeCoor(1:3, 20) = [untiers, 0.d0, untiers]
         end if
         cellVolu_ = 1.d0/6.d0
 

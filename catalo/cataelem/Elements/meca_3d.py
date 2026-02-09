@@ -1617,3 +1617,28 @@ class MECA_TETRA4(MECA_HEXA20):
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3", "NOEU=NOEU")),
     )
+
+
+# ------------------------------------------------------------
+class MECA_TETRA20(MECA_HEXA20):
+    """Mechanics - 3D - TETRA20"""
+
+    meshType = MT.TETRA20
+    nodes = (
+        SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.T20,
+            gauss=(
+                "RIGI=FPG15",
+                "FPG1=FPG1",
+                "MASS=FPG24",
+                "NOEU=NOEU",
+                "ARLQ_1=FPG15",
+                "MTGA=FPG15",
+            ),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
+        ),
+        ElrefeLoc(MT.TR1, gauss=("RIGI=FPG12", "MASS=FPG12", "NOEU=NOEU")),
+    )

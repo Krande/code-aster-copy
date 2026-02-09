@@ -47,7 +47,7 @@ subroutine cmbqbq(main, maout, degree, info)
 !
     type(Mmesh) :: mesh_conv
     character(len=8) :: conv_type(2)
-    integer(kind=8) :: nbma, ima, nbno, dim_geom
+    integer(kind=8) :: nbma, ima, nbno
     integer(kind=8), pointer :: listCells(:) => null()
 !
     call jemarq()
@@ -76,6 +76,8 @@ subroutine cmbqbq(main, maout, degree, info)
         conv_type = ["QUAD12", "QUAD4 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TETRA10", "TETRA4 "]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TETRA20", "TETRA4 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["PENTA15", "PENTA6 "]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
@@ -106,6 +108,8 @@ subroutine cmbqbq(main, maout, degree, info)
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TETRA4 ", "TETRA10"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TETRA20", "TETRA10"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["PENTA6 ", "PENTA15"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["PENTA18", "PENTA15"]
@@ -135,6 +139,8 @@ subroutine cmbqbq(main, maout, degree, info)
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["TETRA4 ", "TETRA10"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TETRA20", "TETRA10"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["PENTA6 ", "PENTA18"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["PENTA15", "PENTA18"]
@@ -162,12 +168,11 @@ subroutine cmbqbq(main, maout, degree, info)
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
         conv_type = ["QUAD9 ", "QUAD12"]
         call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TETRA4 ", "TETRA20"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+        conv_type = ["TETRA10", "TETRA20"]
+        call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
 !
-        call dismoi('DIM_GEOM', main, 'MAILLAGE', repi=dim_geom)
-        print *, dim_geom
-        if (dim_geom > 2) then
-            call utmess("F", "MESH1_16")
-        end if
     else
         ASSERT(ASTER_FALSE)
     end if

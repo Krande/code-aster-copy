@@ -40,7 +40,8 @@ subroutine nuelrf(elrefe, nujni)
 !
     if (elrefe .eq. 'HE8' .or. elrefe .eq. 'H20' .or. elrefe .eq. 'H27' .or. &
         elrefe .eq. 'PE6' .or. elrefe .eq. 'P15' .or. elrefe .eq. 'TE4' .or. &
-        elrefe .eq. 'T15' .or. elrefe .eq. 'P19' .or. elrefe .eq. 'P21' .or. &
+        elrefe .eq. 'T15' .or. elrefe .eq. 'T20' .or. &
+        elrefe .eq. 'P19' .or. elrefe .eq. 'P21' .or. &
         elrefe .eq. 'T10' .or. elrefe .eq. 'PY5' .or. elrefe .eq. 'P13' .or. &
         elrefe .eq. 'QU4' .or. elrefe .eq. 'QU8' .or. elrefe .eq. 'QU9' .or. &
         elrefe .eq. 'Q12' .or. &

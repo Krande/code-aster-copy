@@ -258,6 +258,8 @@ contains
                 skin%typemas = "SE2"
             case (3)
                 skin%typemas = "SE3"
+            case (4)
+                skin%typemas = "SE4"
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -269,12 +271,16 @@ contains
                 skin%typemas = "TR6"
             case (7)
                 skin%typemas = "TR7"
+            case (10)
+                skin%typemas = "TR1"
             case (4)
                 skin%typemas = "QU4"
             case (8)
                 skin%typemas = "QU8"
             case (9)
                 skin%typemas = "QU9"
+            case (12)
+                skin%typemas = "Q12"
             case default
                 ASSERT(ASTER_FALSE)
             end select
