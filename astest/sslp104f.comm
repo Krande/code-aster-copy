@@ -113,7 +113,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
-        VALE_CALC=1.8380085113979208,
+        VALE_CALC=1.8398609431988189,
         VALE_REFE=1.8515,
         CRITERE="RELATIF",
         PRECISION=1.0e-2,
@@ -128,12 +128,14 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="SIEQ_NOEU",
         NOM_CMP="PRIN_3",
-        VALE_CALC=3793.986594256191,
+        VALE_CALC=3789.3206251226493,
         VALE_REFE=3770.31,
         CRITERE="RELATIF",
         PRECISION=1.0e-2,
     )
 )
 
+
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=resnonl))
 
 FIN()
