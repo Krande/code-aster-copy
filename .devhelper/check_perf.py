@@ -177,6 +177,8 @@ class PerfReport:
             file1 (Path): csv file containing the first dataframe.
             file2 (Path): csv file containing the second dataframe.
         """
+        file1 = Path(file1)
+        file2 = Path(file2)
         df1 = pd.read_csv(file1, index_col=0)
         df2 = pd.read_csv(file2, index_col=0)
         date1 = file1.stem
