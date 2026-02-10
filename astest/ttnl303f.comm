@@ -1,0 +1,203 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#       AVEC PROPRIETES VARIABLES
+# MAILLES : TETRA
+#
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+#
+# LECTURE DU MAILLAGE ----------------------------------------------
+#
+
+MAIL = LIRE_MAILLAGE(FORMAT="MED").convertToCubic()
+
+#
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ------------------------
+#
+
+TGAUCHE = DEFI_FONCTION(
+    NOM_RESU="TEMP",
+    NOM_PARA="INST",
+    VALE=(0.0e0, 200.0e0, 10.0e0, 200.0e0, 10.001e0, 100.0e0, 100.0e0, 100.0e0),
+)
+
+TDROITE = DEFI_FONCTION(NOM_RESU="TEMP", NOM_PARA="INST", VALE=(0.0e0, 100.0e0, 100.0e0, 100.0e0))
+
+CONDUC = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    NOM_RESU="LAMBDA",
+    VALE=(0.0, 2.0e2, 500.0, 7.0e2),
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+ENTHAL = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    NOM_RESU="CP",
+    VALE=(0.0, 0.0, 500.0, 4000.0e6),
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+MATER = DEFI_MATERIAU(THER_NL=_F(LAMBDA=CONDUC, BETA=ENTHAL))
+
+#
+# AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ----------------------
+#
+
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE"))
+
+CHTH = AFFE_CHAR_THER_F(
+    MODELE=MOTH,
+    TEMP_IMPO=(_F(GROUP_MA="MA_GAU", TEMP=TGAUCHE), _F(GROUP_MA="MA_DRO", TEMP=TDROITE)),
+)
+
+CHFAKE = AFFE_CHAR_THER(
+    MODELE=MOTH, SOURCE=_F(GROUP_MA="3D", SOUR=0.0), FLUX_REP=_F(GROUP_MA="MA_FACE", FLUN=0.0)
+)
+
+#
+# DEFINITION DE LA STATEGIE DE CALCUL -----------------------------
+#
+
+LR8 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0e-3, NOMBRE=10),
+        _F(JUSQU_A=1.0e-2, NOMBRE=9),
+        _F(JUSQU_A=1.0e-1, NOMBRE=9),
+        _F(JUSQU_A=1.0e0, NOMBRE=9),
+        _F(JUSQU_A=10.0e0, NOMBRE=9),
+        _F(JUSQU_A=13.0e0, NOMBRE=3),
+    ),
+)
+
+#
+# RESOLUTION ------------------------------------------------------
+#
+
+TEMPE = THER_NON_LINE(
+    MODELE=MOTH,
+    ETAT_INIT=_F(VALE=100.0),
+    INCREMENT=_F(LIST_INST=LR8),
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHTH), _F(CHARGE=CHFAKE)),
+)
+
+TEMP_10 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="TEMP", RESULTAT=TEMPE, INST=10.0
+)
+
+TEMP_13 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="TEMP", RESULTAT=TEMPE, INST=13.0
+)
+
+#
+# ANALYSE DES RESULTATS -------------------------------------------
+#
+
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="N80",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMP_10,
+            VALE_CALC=175.53100006576352,
+            VALE_REFE=176.16499999999999,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N64",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMP_10,
+            VALE_CALC=175.53126528042912,
+            VALE_REFE=176.16499999999999,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N332",
+            CRITERE="ABSOLU",
+            NOM_CMP="TEMP",
+            PRECISION=1.0,
+            CHAM_GD=TEMP_10,
+            VALE_CALC=100.04452069160226,
+            VALE_REFE=100.014,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N321",
+            CRITERE="ABSOLU",
+            NOM_CMP="TEMP",
+            PRECISION=1.0,
+            CHAM_GD=TEMP_10,
+            VALE_CALC=100.04447059915292,
+            VALE_REFE=100.014,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N17",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMP_13,
+            VALE_CALC=129.30571747683697,
+            VALE_REFE=128.125,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N80",
+            CRITERE="ABSOLU",
+            NOM_CMP="TEMP",
+            PRECISION=1.2,
+            CHAM_GD=TEMP_13,
+            VALE_CALC=129.3057232562668,
+            VALE_REFE=128.125,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N332",
+            CRITERE="ABSOLU",
+            NOM_CMP="TEMP",
+            PRECISION=1.0,
+            CHAM_GD=TEMP_13,
+            VALE_CALC=100.19729323987583,
+            VALE_REFE=100.134,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N321",
+            CRITERE="ABSOLU",
+            NOM_CMP="TEMP",
+            PRECISION=1.0,
+            CHAM_GD=TEMP_13,
+            VALE_CALC=100.197228142609,
+            VALE_REFE=100.134,
+            REFERENCE="NON_DEFINI",
+        ),
+    )
+)
+
+FIN()
+#

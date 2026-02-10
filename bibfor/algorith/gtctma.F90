@@ -73,7 +73,7 @@ subroutine gtctma(elem_coor, elem_nbnode, elem_code, elem_dime, &
         rfcoor(1) = 1.d0/3.d0
         rfcoor(2) = 1.d0/3.d0
         rfcoor(3) = 0.d0
-    case ('TR6')
+    case ('TR6', 'TR1')
         rfcoor(1) = 1.d0/3.d0
         rfcoor(2) = 1.d0/3.d0
         rfcoor(3) = 0.d0
@@ -85,7 +85,7 @@ subroutine gtctma(elem_coor, elem_nbnode, elem_code, elem_dime, &
         rfcoor(1) = 0.d0
         rfcoor(2) = 0.d0
         rfcoor(3) = 0.d0
-    case ('QU9')
+    case ('QU9', 'Q12')
         rfcoor(1) = 0.d0
         rfcoor(2) = 0.d0
         rfcoor(3) = 0.d0

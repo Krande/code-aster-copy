@@ -280,6 +280,14 @@ class THPLSE3(THPLSE2):
 
 
 # --------------------------------------------------------------------------------------------------
+class THPLSE4(THPLSE2):
+    """Thermics - Skin element 2D - SEG4"""
+
+    meshType = MT.SEG4
+    elrefe = (ElrefeLoc(MT.SE4, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# --------------------------------------------------------------------------------------------------
 class THPLSL2(THPLSE2):
     """Thermics - Skin (diag) element 2D - SEG2"""
 

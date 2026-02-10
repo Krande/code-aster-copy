@@ -99,7 +99,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
     character(len=8) :: k8b
     aster_logical :: notlin, l_excent
 !
-    real(kind=8) :: ffel2d, x(2), ff(9)
+    real(kind=8) :: ffel2d, x(2), ff(12)
     real(kind=8), pointer :: coemur(:) => null()
     integer(kind=8), pointer :: dimens(:) => null()
     real(kind=8), pointer :: direct(:) => null()
@@ -189,6 +189,8 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
                 call elrfvf('QU8', x, ff)
             else if (nbcnx .eq. 9) then
                 call elrfvf('QU9', x, ff)
+            else if (nbcnx .eq. 12) then
+                call elrfvf('Q12', x, ff)
             end if
             ffel2d = ff(1)
             ff(1) = ff(4)

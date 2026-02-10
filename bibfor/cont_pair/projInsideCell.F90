@@ -56,7 +56,8 @@ subroutine projInsideCell(pair_tole, elem_dime, elem_code, &
             xpt .le. (1.d0+pair_tole)) then
             iret = 0
         end if
-    elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6') then
+    elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6' &
+            .or. elem_code .eq. 'TR7' .or. elem_code .eq. 'TR1') then
         xpt = poin_coor(1)
         ypt = poin_coor(2)
         if (xpt .ge. -pair_tole .and. &
@@ -64,7 +65,8 @@ subroutine projInsideCell(pair_tole, elem_dime, elem_code, &
             (ypt+xpt) .le. (1.d0+pair_tole)) then
             iret = 0
         end if
-    elseif (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' .or. elem_code .eq. 'QU9') then
+    elseif (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' &
+            .or. elem_code .eq. 'QU9' .or. elem_code .eq. 'Q12') then
         xpt = poin_coor(1)
         ypt = poin_coor(2)
         if (xpt .ge. (-1.d0-pair_tole) .and. &

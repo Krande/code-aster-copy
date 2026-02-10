@@ -114,6 +114,8 @@ SE4.addLocation("FPG1", 1)
 SE4.addLocation("FPG2", 2)
 SE4.addLocation("FPG3", 3)
 SE4.addLocation("FPG4", 4)
+SE4.addLocation("FPG5", 5)
+SE4.addLocation("FPG6", 6)
 SEG4.addElrefe(SE4)
 
 
@@ -806,6 +808,9 @@ T20.addLocation("FPG117", 117)
 T20.addLocation("FPG144", 144)
 T20.addLocation("FPG204", 204)
 TETRA20.addElrefe(T20)
+
+# ------------------------------------------------------------
+SEG44 = MeshType(nbno=8, dim=1, code="S44")
 
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)

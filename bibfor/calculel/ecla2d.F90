@@ -71,7 +71,8 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini, &
 !     -----------------------------------------------------------------
 !     ELEMENT TRIANGLE
 !     -----------------------------------------------------------------
-    if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
+    if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7' &
+        .or. elrefa .eq. 'TR1') then
 !
         if (fapg .eq. 'FPG1') then
 !           -----------------
@@ -317,7 +318,8 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini, &
 !     -----------------------------------------------------------------
 !     ELEMENT QUADRANGLE
 !     -----------------------------------------------------------------
-    elseif (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') &
+    elseif (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9' &
+            .or. elrefa .eq. 'Q12') &
         then
 !
         if (fapg .eq. 'FPG1') then

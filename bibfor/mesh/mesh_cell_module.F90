@@ -131,18 +131,24 @@ contains
             cellGeom%cellCode = 'SE2'
         case ('SEG3')
             cellGeom%cellCode = 'SE3'
+        case ('SEG4')
+            cellGeom%cellCode = 'SE4'
         case ('TRIA3')
             cellGeom%cellCode = 'TR3'
         case ('TRIA6')
             cellGeom%cellCode = 'TR6'
         case ('TRIA7')
             cellGeom%cellCode = 'TR7'
+        case ('TRIA10')
+            cellGeom%cellCode = 'TR1'
         case ('QUAD4')
             cellGeom%cellCode = 'QU4'
         case ('QUAD8')
             cellGeom%cellCode = 'QU8'
         case ('QUAD9')
             cellGeom%cellCode = 'QU9'
+        case ('QUAD12')
+            cellGeom%cellCode = 'Q12'
         case default
             ASSERT(ASTER_FALSE)
         end select

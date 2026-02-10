@@ -500,16 +500,18 @@ subroutine elraca(elrefz, &
         fapg(14) = 'FPG8'
 
     case ('SE4')
-        nbfpg = 8
-        nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 3, 4]
+        nbfpg = 10
+        nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 5, 6, 3, 4]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG2'
         fapg(5) = 'FPG3'
         fapg(6) = 'FPG4'
-        fapg(7) = 'SIMP'
-        fapg(8) = 'COTES'
+        fapg(7) = 'FPG5'
+        fapg(8) = 'FPG6'
+        fapg(9) = 'SIMP'
+        fapg(10) = 'COTES'
 
     case ('PO1')
         nbfpg = 3

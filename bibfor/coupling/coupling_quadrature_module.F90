@@ -80,6 +80,8 @@ contains
             getQuadOrderFEM = 1
         case ("SE3", "TR6", "TR7", "QU8", "QU9")
             getQuadOrderFEM = 2
+        case ("SE4", "TR1", "Q12")
+            getQuadOrderFEM = 3
         case default
             ASSERT(ASTER_FALSE)
         end select
