@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 !
 interface
     subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
-                      nomnoe, nosdfu)
+                      nomast, nosdfu)
         med_idt :: idfimd
         character(len=*) :: nomamd
         integer(kind=8) :: ndim
         integer(kind=8) :: nbnoeu
         real(kind=8) :: coordo(*)
-        character(len=*) :: nomnoe(*)
+        character(len=8) :: nomast
         character(len=8) :: nosdfu
     end subroutine irmmno
 end interface
