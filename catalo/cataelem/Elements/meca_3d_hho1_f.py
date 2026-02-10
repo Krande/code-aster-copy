@@ -241,7 +241,11 @@ class MECA3DTR7_HHO1_F(MECA3DQU9_HHO1_F):
 class MECA3DGVT_HHO1_F(MECA3DTR7_HHO1_F):
     """Please document this element"""
 
+    calculs = (OP.HHO_COND_MECA(te=-1),)
+
 
 # ------------------------------------------------------------
 class MECA3DGVQ_HHO1_F(MECA3DQU9_HHO1_F):
     """Please document this element"""
+
+    calculs = (OP.HHO_COND_MECA(te=-1),)

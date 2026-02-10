@@ -26,5 +26,8 @@ import cataelem.Commons.attributes as AT
 HHO_COND_MECA = Option(
     para_in=(SP.PGEOMER, SP.PMAELS1, SP.PVEELE1),
     para_out=(SP.PMATUUR, SP.PVECTUR, SP.PMATUND, SP.PVECTUD),
-    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.HHO, "OUI"))),),
+    condition=(
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.HHO, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.TYPMOD2, "HHO_GRAD"))),
+    ),
 )

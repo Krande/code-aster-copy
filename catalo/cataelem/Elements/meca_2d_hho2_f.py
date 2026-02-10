@@ -224,6 +224,8 @@ class MECA_2D_HHO2_F(Element):
 class MECA_2DGV_HHO2_F(MECA_2D_HHO2_F):
     """Please document this element"""
 
+    calculs = (OP.HHO_COND_MECA(te=-1),)
+
 
 # ------------------------------------------------------------
 class MECA_2DAX_HHO2_F(MECA_2D_HHO2_F):
@@ -233,3 +235,5 @@ class MECA_2DAX_HHO2_F(MECA_2D_HHO2_F):
 # ------------------------------------------------------------
 class MECA_AXGV_HHO2_F(MECA_2D_HHO2_F):
     """Please document this element"""
+
+    calculs = (OP.HHO_COND_MECA(te=-1),)
