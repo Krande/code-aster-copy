@@ -90,7 +90,7 @@ class MedFileReader {
     MedFieldPtr getField( const std::string &name ) const;
 
     /** @brief get field from index */
-    MedFieldPtr getField( int index ) const { return _fields[index]; };
+    MedFieldPtr getField( int index ) const;
 
     /** @brief get file pointer */
     MedFilePointer getFilePointer() const { return _filePtr; };
@@ -105,7 +105,7 @@ class MedFileReader {
     int getMeshNumber() const;
 
     /** @brief get mesh from index */
-    MedMeshPtr getMesh( int index ) const { return _meshes[index]; };
+    MedMeshPtr getMesh( int index ) const;
 
     /** @brief get mesh from name */
     MedMeshPtr getMesh( const std::string &name ) const {

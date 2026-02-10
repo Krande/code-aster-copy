@@ -272,8 +272,11 @@ std::vector< med_int > MedMesh::getGlobalNodeNumberingAtSequence( int numdt, int
         MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE, MED_NO_GEOTYPE,
                         MED_COORDINATE, MED_NO_CMODE, &changement, &transformation );
     std::vector< med_int > globNum( nbNoT, 0 );
-    MEDmeshGlobalNumberRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
-                           MED_NO_GEOTYPE, &globNum[0] );
+    auto ier = MEDmeshGlobalNumberRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
+                                      MED_NO_GEOTYPE, &globNum[0] );
+    if ( ier != 0 ) {
+        return std::vector< med_int >();
+    }
     if ( _filePtr.isParallel() ) {
         const auto rank = getMPIRank();
         const auto nbProcs = getMPISize();
