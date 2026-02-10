@@ -3714,7 +3714,11 @@ phen.add(
             (AT.TYPMOD2, "HHO"),
             (AT.RACCORD, "OUI"),
         ),
-        elements=((MT.SEG23, EL.CP_S2S3_HHO1), (MT.SEG33, EL.CP_S3S3_HHO1)),
+        elements=(
+            (MT.SEG23, EL.CP_S2S3_HHO1),
+            (MT.SEG33, EL.CP_S3S3_HHO1),
+            (MT.SEG43, EL.CP_S4S3_HHO1),
+        ),
     ),
 )
 
@@ -3729,7 +3733,11 @@ phen.add(
             (AT.TYPMOD2, "HHO"),
             (AT.RACCORD, "OUI"),
         ),
-        elements=((MT.SEG23, EL.CP_S2S3_HHO2), (MT.SEG33, EL.CP_S3S3_HHO2)),
+        elements=(
+            (MT.SEG23, EL.CP_S2S3_HHO2),
+            (MT.SEG33, EL.CP_S3S3_HHO2),
+            (MT.SEG43, EL.CP_S4S3_HHO2),
+        ),
     ),
 )
 
@@ -3798,6 +3806,8 @@ phen.add(
             (MT.SEG23, EL.CP_S2S3),
             (MT.SEG32, EL.CP_S3S2),
             (MT.SEG33, EL.CP_S3S3),
+            (MT.SEG44, EL.CP_S4S4),
+            (MT.SEG43, EL.CP_S4S3),
         ),
     ),
 )
@@ -3851,6 +3861,8 @@ phen.add(
             (MT.SEG23, EL.CL_S2S3),
             (MT.SEG32, EL.CL_S3S2),
             (MT.SEG33, EL.CL_S3S3),
+            (MT.SEG44, EL.CL_S4S4),
+            (MT.SEG43, EL.CL_S4S3),
             (MT.POI1, EL.CL_POI2D),
         ),
     ),

@@ -127,3 +127,27 @@ class CP_S2S2(CP_S2S3):
 
     meshType = MT.SEG22
     nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", (3, 4)))
+
+
+# ------------------------------------------------------------
+class CP_S4S4(CP_S2S3):
+    """
+    CP_S3S3 DERIVED FROM THE CP_S2S2 CLASS ELEMENT : SEG2/SEG2
+    LIAISON_ELEM / PENALISATION / SEGMENT-TO-SEGMENT
+        Coupling FEM/FEM Element in 2D : elementary treatments
+    """
+
+    meshType = MT.SEG44
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6, 7, 8)))
+
+
+# ------------------------------------------------------------
+class CP_S4S3(CP_S2S3):
+    """
+    CP_S3S3 DERIVED FROM THE CP_S2S2 CLASS ELEMENT : SEG2/SEG2
+    LIAISON_ELEM / PENALISATION / SEGMENT-TO-SEGMENT
+        Coupling FEM/FEM Element in 2D : elementary treatments
+    """
+
+    meshType = MT.SEG43
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6, 7)))

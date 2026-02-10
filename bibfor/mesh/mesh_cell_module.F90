@@ -224,16 +224,18 @@ contains
         cellGeomLine = cellGeom
 
 ! ----- Change support
-        if (cellGeom%cellCode .eq. 'SE2' .or. cellGeom%cellCode .eq. 'SE3') then
+        if (cellGeom%cellCode .eq. 'SE2' .or. cellGeom%cellCode .eq. 'SE3' &
+            .or. cellGeom%cellCode .eq. 'SE4') then
             cellGeomLine%cellCode = 'SE2'
             cellGeomLine%nbNode = 2
         elseif (cellGeom%cellCode .eq. 'TR3' .or. cellGeom%cellCode .eq. 'TR6' &
-                .or. cellGeom%cellCode .eq. 'TR7') then
+                .or. cellGeom%cellCode .eq. 'TR7' .or. cellGeom%cellCode .eq. 'TR1') then
             cellGeomLine%cellCode = 'TR3'
             cellGeomLine%nbNode = 3
         else if (cellGeom%cellCode .eq. 'QU4' .or. &
                  cellGeom%cellCode .eq. 'QU8' .or. &
-                 cellGeom%cellCode .eq. 'QU9') then
+                 cellGeom%cellCode .eq. 'QU9' .or. &
+                 cellGeom%cellCode .eq. 'Q12') then
             cellGeomLine%cellCode = 'QU4'
             cellGeomLine%nbNode = 4
         else
@@ -595,15 +597,18 @@ contains
         nbNeigh = 0
         ASSERT(cellGeom%isSkin)
         if (cellGeom%cellCode == 'SE2' .or. &
-            cellGeom%cellCode == 'SE3') then
+            cellGeom%cellCode == 'SE3' .or. &
+            cellGeom%cellCode == 'SE4') then
             nbNeigh = 2
         elseif (cellGeom%cellCode == 'TR3' .or. &
                 cellGeom%cellCode == 'TR6' .or. &
-                cellGeom%cellCode == 'TR7') then
+                cellGeom%cellCode == 'TR7' .or. &
+                cellGeom%cellCode == 'TR1') then
             nbNeigh = 3
         elseif (cellGeom%cellCode == 'QU4' .or. &
                 cellGeom%cellCode == 'QU8' .or. &
-                cellGeom%cellCode == 'QU9') then
+                cellGeom%cellCode == 'QU9' .or. &
+                cellGeom%cellCode == 'Q12') then
             nbNeigh = 4
         else
             ASSERT(ASTER_FALSE)

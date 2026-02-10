@@ -50,7 +50,8 @@ subroutine projInsideCell(pair_tole, elem_dime, elem_code, &
 ! --------------------------------------------------------------------------------------------------
 !
     iret = 1
-    if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3') then
+    if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3' &
+        .or. elem_code .eq. 'SE4') then
         xpt = poin_coor(1)
         if (xpt .ge. (-1.d0-pair_tole) .and. &
             xpt .le. (1.d0+pair_tole)) then

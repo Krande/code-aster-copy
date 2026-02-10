@@ -130,6 +130,30 @@ class CL_S2S2(CL_S2S3):
 
 
 # ------------------------------------------------------------
+class CL_S4S4(CL_S2S3):
+    """
+    CL_S3S3 DERIVED FROM THE CL_S2S2 CLASS ELEMENT : SEG2/SEG2
+    LIAISON_ELEM / LAGRANGIAN / SEGMENT-TO-SEGMENT
+        Coupling FEM/FEM Element in 2D : elementary treatments
+    """
+
+    meshType = MT.SEG44
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6, 7, 8)))
+
+
+# ------------------------------------------------------------
+class CL_S4S3(CL_S2S3):
+    """
+    CL_S3S3 DERIVED FROM THE CL_S2S2 CLASS ELEMENT : SEG2/SEG2
+    LIAISON_ELEM / LAGRANGIAN / SEGMENT-TO-SEGMENT
+        Coupling FEM/FEM Element in 2D : elementary treatments
+    """
+
+    meshType = MT.SEG43
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6, 7)))
+
+
+# ------------------------------------------------------------
 class CL_POI2D(CL_S2S3):
     """
     CL_S3S3 DERIVED FROM THE CL_S2S2 CLASS ELEMENT : SEG2/SEG2

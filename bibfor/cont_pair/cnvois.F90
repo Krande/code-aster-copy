@@ -102,17 +102,23 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
                 nb_neigh = 2
             case ('SEG3')
                 nb_neigh = 2
+            case ('SEG4')
+                nb_neigh = 4
             case ('TRIA3')
                 nb_neigh = 3
             case ('TRIA6')
                 nb_neigh = 3
             case ('TRIA7')
                 nb_neigh = 3
+            case ('TRIA10')
+                nb_neigh = 10
             case ('QUAD4')
                 nb_neigh = 4
             case ('QUAD8')
                 nb_neigh = 4
             case ('QUAD9')
+                nb_neigh = 4
+            case ('QUAD12')
                 nb_neigh = 4
             case default
                 ASSERT(.false.)
@@ -140,6 +146,9 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
         case ('SEG3')
             nb_neigh = 2
             elem_code = 'SE3'
+        case ('SEG4')
+            nb_neigh = 2
+            elem_code = 'SE4'
         case ('TRIA3')
             nb_neigh = 3
             elem_code = 'TR3'
@@ -149,6 +158,9 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
         case ('TRIA7')
             nb_neigh = 3
             elem_code = 'TR7'
+        case ('TRIA10')
+            nb_neigh = 3
+            elem_code = 'TR1'
         case ('QUAD4')
             nb_neigh = 4
             elem_code = 'QU4'
@@ -158,6 +170,9 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
         case ('QUAD9')
             nb_neigh = 4
             elem_code = 'QU9'
+        case ('QUAD12')
+            nb_neigh = 4
+            elem_code = 'Q12'
         case default
             ASSERT(.false.)
         end select

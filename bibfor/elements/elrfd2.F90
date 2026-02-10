@@ -46,7 +46,7 @@ subroutine elrfd2(elrefz, x, dimd, dff2, nno, ndim)
 !        NDIM   : DIMENSION DE L'ESPACE DE L'ELREFE : 1,2 OU 3
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: x1, x2, x3, x4, d1, d2, d3, d4, x0, y0
+    real(kind=8) :: x0, y0
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0, deux = 2.d0, trois = 3.0d0, quatre = 4.d0
     real(kind=8), parameter :: six = 6.0d0, sept = 7.0d0, huit = 8.0d0
     real(kind=8), parameter :: undemi = 0.5d0, uns4 = 0.25d0
@@ -379,20 +379,12 @@ subroutine elrfd2(elrefz, x, dimd, dff2, nno, ndim)
 !         ------------------------------------------------------------------
     case ('SE4')
 !
-        x1 = -un
-        x2 = un
-        x3 = -un/3.d0
-        x4 = un/3.d0
+        x0 = x(1)
 !
-        d1 = (x1-x2)*(x1-x3)*(x1-x4)
-        d2 = (x2-x3)*(x2-x4)*(x2-x1)
-        d3 = (x3-x4)*(x3-x1)*(x3-x2)
-        d4 = (x4-x1)*(x4-x2)*(x4-x3)
-!
-        dff2(1, 1, 1) = 2*((x(1)-x2)+(x(1)-x3)+(x(1)-x4))/d1
-        dff2(1, 1, 2) = 2*((x(1)-x3)+(x(1)-x4)+(x(1)-x1))/d2
-        dff2(1, 1, 3) = 2*((x(1)-x4)+(x(1)-x1)+(x(1)-x2))/d3
-        dff2(1, 1, 4) = 2*((x(1)-x1)+(x(1)-x2)+(x(1)-x3))/d4
+        dff2(1, 1, 1) = -9.d0*(3.d0*x0-1.d0)/8.d0
+        dff2(1, 1, 2) = 9.d0*(3.d0*x0+1.d0)/8.d0
+        dff2(1, 1, 3) = 9.d0*(9.d0*x0-1.d0)/8.d0
+        dff2(1, 1, 4) = -9.d0*(9.d0*x0+1.d0)/8.d0
 !
 !         ------------------------------------------------------------------
 !         -- POUR LES ELEREFE NON ENCORE RENSEIGNES, ON REND NDIM=NNO=0

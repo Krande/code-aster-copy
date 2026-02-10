@@ -43,8 +43,10 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellNits
 const std::map< std::pair< std::string, std::string >, std::string > cplCellPena {
     { { "MEPLSE2", "MECA_2D_HHO1_F" }, "CP_S2S3_HHO1" },
     { { "MEPLSE3", "MECA_2D_HHO1_F" }, "CP_S3S3_HHO1" },
+    { { "MEPLSE4", "MECA_2D_HHO1_F" }, "CP_S4S3_HHO1" },
     { { "MEPLSE2", "MECA_2D_HHO2_F" }, "CP_S2S3_HHO2" },
     { { "MEPLSE3", "MECA_2D_HHO2_F" }, "CP_S3S3_HHO2" },
+    { { "MEPLSE4", "MECA_2D_HHO2_F" }, "CP_S4S3_HHO2" },
     { { "MEPLSE2", "MECA_2D_HHO3_F" }, "CP_S2S3_HHO3" },
     { { "MEPLSE3", "MECA_2D_HHO3_F" }, "CP_S3S3_HHO3" },
     { { "MECA_FACE4", "MECA3DQU9_HHO1_F" }, "CP_Q4Q9_HHO1" },
@@ -71,6 +73,8 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellPena
     { { "MEPLSE2", "MEPLSE3" }, "CP_S2S3" },
     { { "MEPLSE3", "MEPLSE2" }, "CP_S3S2" },
     { { "MEPLSE3", "MEPLSE3" }, "CP_S3S3" },
+    { { "MEPLSE4", "MEPLSE4" }, "CP_S4S4" },
+    { { "MEPLSE4", "MEPLSE4" }, "CP_S4S3" },
     { { "MECA_FACE4", "MECA_FACE8" }, "CP_Q4Q8" },
     { { "MECA_FACE4", "MECA_FACE9" }, "CP_Q4Q9" },
     { { "MECA_FACE4", "MECA_FACE3" }, "CP_Q4T3" },
@@ -101,6 +105,7 @@ const std::map< std::pair< std::string, std::string >, std::string > cplCellPena
 const std::map< std::pair< std::string, std::string >, std::string > cplCellLagr {
     { { "MEPLSE2", "MEPLSE2" }, "CL_S2S2" },       { { "MEPLSE2", "MEPLSE3" }, "CL_S2S3" },
     { { "MEPLSE3", "MEPLSE2" }, "CL_S3S2" },       { { "MEPLSE3", "MEPLSE3" }, "CL_S3S3" },
+    { { "MEPLSE4", "MEPLSE4" }, "CL_S4S4" },       { { "MEPLSE4", "MEPLSE3" }, "CL_S4S3" },
     { { "MECA_FACE4", "MECA_FACE8" }, "CL_Q4Q8" }, { { "MECA_FACE4", "MECA_FACE9" }, "CL_Q4Q9" },
     { { "MECA_FACE4", "MECA_FACE3" }, "CL_Q4T3" }, { { "MECA_FACE4", "MECA_FACE6" }, "CL_Q4T6" },
     { { "MECA_FACE8", "MECA_FACE4" }, "CL_Q8Q4" }, { { "MECA_FACE8", "MECA_FACE9" }, "CL_Q8Q9" },

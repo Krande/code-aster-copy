@@ -52,6 +52,12 @@ subroutine getFESkinSubType(typema, side, subtype, node_init)
     case ("S33")
         slav = "SE3"
         mast = "SE3"
+    case ("S44")
+        slav = "SE4"
+        mast = "SE4"
+    case ("S43")
+        slav = "SE4"
+        mast = "SE3"
     case ("T33")
         slav = "TR3"
         mast = "TR3"

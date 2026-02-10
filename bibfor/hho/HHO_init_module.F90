@@ -256,6 +256,12 @@ contains
             nbnodes_post = 3
             node_init = 4
             elem_dim = 1
+        elseif (typma == 'S43') then
+            typma = 'SEG2'
+            nbnodes = 2
+            nbnodes_post = 3
+            node_init = 5
+            elem_dim = 1
         elseif (typma == 'QQ6') then
             typma = 'QUAD4'
             nbnodes = 4

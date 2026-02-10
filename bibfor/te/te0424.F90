@@ -48,7 +48,7 @@ subroutine te0424(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: mxnoeu = 9, mxnpg = 27, mxmatr = 3*9*3*9, mxvect = 3*9
+    integer(kind=8), parameter :: mxnoeu = 12, mxnpg = 27, mxmatr = 3*12*3*12, mxvect = 3*12
     aster_logical :: l_func, l_time, l_efff
     integer(kind=8) :: jv_geom, jv_time, jv_pres, jv_effe
     integer(kind=8) :: jv_depm, jv_depp

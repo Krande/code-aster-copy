@@ -121,3 +121,15 @@ class CP_S3S3_HHO1(CP_S2S3_HHO1):
 
     meshType = MT.SEG33
     nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", (4, 5)), SetOfNodes("EN3", (6,)))
+
+
+# ------------------------------------------------------------
+class CP_S4S3_HHO1(CP_S2S3_HHO1):
+    """
+    CP_S3S3_HHO2 DERIVED FROM THE CP_S2S3_HHO2 CLASS ELEMENT : SEG3/SEG2
+    LIAISON_ELEM / PENALISATION / SEGMENT-TO-SEGMENT
+        Coupling FEM/HHO Element in 2D : elementary treatments
+    """
+
+    meshType = MT.SEG43
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6)), SetOfNodes("EN3", (7,)))

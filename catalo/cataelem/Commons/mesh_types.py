@@ -812,6 +812,9 @@ TETRA20.addElrefe(T20)
 # ------------------------------------------------------------
 SEG44 = MeshType(nbno=8, dim=1, code="S44")
 
+SEG43 = MeshType(nbno=7, dim=1, code="S43")
+
+
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)
 MESHTYPES = objects_from_context(globals(), MeshType)

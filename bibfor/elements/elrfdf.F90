@@ -49,7 +49,7 @@ subroutine elrfdf(elrefz, x, dff, nno_, ndim_)
     integer(kind=8) :: nno, ndim
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0, deux = 2.d0, trois = 3.0d0, quatre = 4.d0
     real(kind=8), parameter :: huit = 8.0d0, undemi = 0.5d0, uns4 = 0.25d0, uns8 = 0.125d0
-    real(kind=8) :: x0, y0, z0, al, x1, x2, x3, x4, d1, d2, d3, d4
+    real(kind=8) :: x0, y0, z0, al
     real(kind=8) :: pface1, pface2, pface3, pface4, z01, z02, z04
     real(kind=8) :: pmili1, pmili2, pmili3, pmili4
 !
@@ -1046,18 +1046,10 @@ subroutine elrfdf(elrefz, x, dff, nno_, ndim_)
 
     case ('SE4')
         x0 = x(1)
-        x1 = -un
-        x2 = un
-        x3 = -un/trois
-        x4 = un/trois
-        d1 = (x1-x2)*(x1-x3)*(x1-x4)
-        dff(1, 1) = ((x0-x2)*(x0-x3)+(x0-x2)*(x0-x4)+(x0-x3)*(x0-x4))/d1
-        d2 = (x2-x1)*(x2-x3)*(x2-x4)
-        dff(1, 2) = ((x0-x1)*(x0-x3)+(x0-x1)*(x0-x4)+(x0-x3)*(x0-x4))/d2
-        d3 = (x3-x1)*(x3-x2)*(x3-x4)
-        dff(1, 3) = ((x0-x1)*(x0-x2)+(x0-x1)*(x0-x4)+(x0-x2)*(x0-x4))/d3
-        d4 = (x4-x1)*(x4-x2)*(x4-x3)
-        dff(1, 4) = ((x0-x1)*(x0-x2)+(x0-x1)*(x0-x3)+(x0-x2)*(x0-x3))/d4
+        dff(1, 1) = -(27.d0*x0**2-18.d0*x0-1.d0)/16.d0
+        dff(1, 2) = (27.d0*x0**2+18.d0*x0-1.d0)/16.d0
+        dff(1, 3) = 9.d0*(9.d0*x0**2-2.d0*x0-3.d0)/16.d0
+        dff(1, 4) = -9.d0*(9.d0*x0**2+2.d0*x0-3.d0)/16.d0
 
     case default
         ASSERT(ASTER_FALSE)
