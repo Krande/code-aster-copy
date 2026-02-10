@@ -264,7 +264,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
 !====
 !
         call irmmno(fid, nomamd, ndim, nbnoeu, coordo, &
-                    nomnoe, nom_sd_par)
+                    nomast, nom_sd_par)
 !
 !====
 ! 5. LES MAILLES
