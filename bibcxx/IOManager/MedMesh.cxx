@@ -3,7 +3,7 @@
  * @brief Implementation de MedMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 // aslint: disable=C3010
 
@@ -324,8 +323,11 @@ std::vector< med_int > MedMesh::getGlobalNodeNumberingAtSequence( int numdt, int
         MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE, MED_NO_GEOTYPE,
                         MED_COORDINATE, MED_NO_CMODE, &changement, &transformation );
     std::vector< med_int > globNum( nbNoT, 0 );
-    MEDmeshGlobalNumberRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
-                           MED_NO_GEOTYPE, &globNum[0] );
+    auto ier = MEDmeshGlobalNumberRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
+                                      MED_NO_GEOTYPE, &globNum[0] );
+    if ( ier != 0 ) {
+        return std::vector< med_int >();
+    }
     if ( _filePtr.isParallel() ) {
         const auto rank = getMPIRank();
         const auto nbProcs = getMPISize();

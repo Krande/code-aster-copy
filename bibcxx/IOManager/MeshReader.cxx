@@ -3,7 +3,7 @@
  * @brief Implementation de MeshReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "IOManager/MeshReader.h"
 
@@ -182,6 +181,19 @@ void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
         }
         toReturn->addFamily( curFam->getId(), groupShort );
     }
+    const auto globNum = curMesh->getGlobalNodeNumberingAtSequence( -1, -1 );
+    if ( globNum.size() != 0 ) {
+        toReturn->setLocalToGlobalNodeIds( globNum );
+    } else {
+        VectorLong nodeGlobNum;
+        const auto size = toReturn->getNumberOfNodes();
+        const auto range = toReturn->getNodeRange();
+        nodeGlobNum.reserve( size );
+        for ( int i = 0; i < size; ++i ) {
+            nodeGlobNum.push_back( i + range[0] );
+        }
+        toReturn->setLocalToGlobalNodeIds( nodeGlobNum );
+    }
 }
 
 void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
@@ -233,8 +245,9 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
     // Read global node numbering
     const auto globNum = curMesh->getGlobalNodeNumberingAtSequence( -1, -1 );
     VectorLong globNum2;
-    for ( const auto &num : globNum )
+    for ( const auto &num : globNum ) {
         globNum2.push_back( num );
+    }
 
     VectorOfVectorsLong allJoints;
     for ( const auto &curDom : domains ) {
