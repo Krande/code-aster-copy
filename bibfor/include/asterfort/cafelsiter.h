@@ -24,7 +24,8 @@ interface
                          precs, ferrsyme, slsyme, uc, um, condns,&
                          astend, ascomp, sstend, sscomp,&
                          sctend, sccomp,&
-                         alpha, pivot, etat, ierr)  
+                         alpha, pivot, etat, ierr,&
+                         n_et, n_pc, n_pcac, n_ec, n_tot)
        real(kind=8) :: cequi
        real(kind=8) :: effm
        real(kind=8) :: effn
@@ -52,5 +53,10 @@ interface
        integer(kind=8) :: pivot
        integer(kind=8) :: etat
        integer(kind=8) :: ierr
+       integer(kind=8) :: n_et
+       integer(kind=8) :: n_pc
+       integer(kind=8) :: n_pcac
+       integer(kind=8) :: n_ec
+       integer(kind=8) :: n_tot
     end subroutine cafelsiter
 end interface

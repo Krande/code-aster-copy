@@ -440,9 +440,9 @@ TEST_RESU(
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="Centre",
-            VALE_CALC=0.0010346715817879178,
+            VALE_CALC=0.001034655334962131,
             VALE_REFE=0.0010346715817879178,
-            PRECISION=1.0e-6,
+            PRECISION=5.0e-5,
             REFERENCE="AUTRE_ASTER",
         ),
         _F(

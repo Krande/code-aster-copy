@@ -21,7 +21,8 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
                       precs, ferrsyme, slsyme, uc, um, condns, &
                       astend, ascomp, sstend, sscomp, &
                       sctend, sccomp, &
-                      alpha, pivot, etat, ierr)
+                      alpha, pivot, etat, ierr, &
+                      n_et, n_pc, n_pcac, n_ec, n_tot)
 
 !_______________________________________________________________________________________________
 !
@@ -69,11 +70,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
 !
     implicit none
 
-#include "asterfort/jedetr.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/juveca.h"
 #include "asterfort/verifels.h"
-#include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
 !!!!TERMES PRINCIPAUX D'ENTREE
@@ -105,6 +102,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     integer(kind=8) :: pivot
     integer(kind=8) :: etat
     integer(kind=8) :: ierr
+    integer(kind=8) :: n_et, n_pc, n_pcac, n_ec, n_tot
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -121,31 +119,30 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     integer(kind=8) :: COUNT_CARA_SYME, COUNT_CARA_NOCOMP, COUNT_CARA_SYMENOCOMP
     logical :: COND_F
     integer(kind=8) :: COUNT_F
-    integer(kind=8) :: N_ET, N_PC, N_PCAC, N_EC, N_TOT
 
-    real(kind=8), pointer :: SsTEND_ET(:) => null(), SsCOMP_ET(:) => null()
-    real(kind=8), pointer :: ScTEND_ET(:) => null(), ScCOMP_ET(:) => null()
-    real(kind=8), pointer :: AsTEND_ET(:) => null(), AsCOMP_ET(:) => null()
-    real(kind=8), pointer :: alpha_ET(:) => null(), RESIDU_ET(:) => null()
-    integer(kind=8), pointer :: PIVOT_ET(:) => null(), ETAT_ET(:) => null()
+    real(kind=8) :: SsTEND_ET(n_et), SsCOMP_ET(n_et)
+    real(kind=8) :: ScTEND_ET(n_et), ScCOMP_ET(n_et)
+    real(kind=8) :: AsTEND_ET(n_et), AsCOMP_ET(n_et)
+    real(kind=8) :: alpha_ET(n_et), RESIDU_ET(n_et)
+    integer(kind=8) :: PIVOT_ET(n_et), ETAT_ET(n_et)
 
-    real(kind=8), pointer :: SsTEND_PCAC(:) => null(), SsCOMP_PCAC(:) => null()
-    real(kind=8), pointer :: ScTEND_PCAC(:) => null(), ScCOMP_PCAC(:) => null()
-    real(kind=8), pointer :: AsTEND_PCAC(:) => null(), AsCOMP_PCAC(:) => null()
-    real(kind=8), pointer :: alpha_PCAC(:) => null(), RESIDU_PCAC(:) => null()
-    integer(kind=8), pointer :: PIVOT_PCAC(:) => null(), ETAT_PCAC(:) => null()
+    real(kind=8) :: SsTEND_PCAC(n_pcac), SsCOMP_PCAC(n_pcac)
+    real(kind=8) :: ScTEND_PCAC(n_pcac), ScCOMP_PCAC(n_pcac)
+    real(kind=8) :: AsTEND_PCAC(n_pcac), AsCOMP_PCAC(n_pcac)
+    real(kind=8) :: alpha_PCAC(n_pcac), RESIDU_PCAC(n_pcac)
+    integer(kind=8) :: PIVOT_PCAC(n_pcac), ETAT_PCAC(n_pcac)
 
-    real(kind=8), pointer :: SsTEND_EC(:) => null(), SsCOMP_EC(:) => null()
-    real(kind=8), pointer :: ScTEND_EC(:) => null(), ScCOMP_EC(:) => null()
-    real(kind=8), pointer :: AsTEND_EC(:) => null(), AsCOMP_EC(:) => null()
-    real(kind=8), pointer :: alpha_EC(:) => null(), RESIDU_EC(:) => null()
-    integer(kind=8), pointer :: PIVOT_EC(:) => null(), ETAT_EC(:) => null()
+    real(kind=8) :: SsTEND_EC(n_ec), SsCOMP_EC(n_ec)
+    real(kind=8) :: ScTEND_EC(n_ec), ScCOMP_EC(n_ec)
+    real(kind=8) :: AsTEND_EC(n_ec), AsCOMP_EC(n_ec)
+    real(kind=8) :: alpha_EC(n_ec), RESIDU_EC(n_ec)
+    integer(kind=8) :: PIVOT_EC(n_ec), ETAT_EC(n_ec)
 
-    real(kind=8), pointer :: SsTEND_TOT(:) => null(), SsCOMP_TOT(:) => null()
-    real(kind=8), pointer :: ScTEND_TOT(:) => null(), ScCOMP_TOT(:) => null()
-    real(kind=8), pointer :: AsTEND_TOT(:) => null(), AsCOMP_TOT(:) => null()
-    real(kind=8), pointer :: alpha_TOT(:) => null(), RESIDU_TOT(:) => null()
-    integer(kind=8), pointer :: PIVOT_TOT(:) => null(), ETAT_TOT(:) => null()
+    real(kind=8) :: SsTEND_TOT(2*n_tot), SsCOMP_TOT(2*n_tot)
+    real(kind=8) :: ScTEND_TOT(2*n_tot), ScCOMP_TOT(2*n_tot)
+    real(kind=8) :: AsTEND_TOT(2*n_tot), AsCOMP_TOT(2*n_tot)
+    real(kind=8) :: alpha_TOT(2*n_tot), RESIDU_TOT(2*n_tot)
+    integer(kind=8) :: PIVOT_TOT(2*n_tot), ETAT_TOT(2*n_tot)
 
     real(kind=8), dimension(2, 2) :: Dsys
     real(kind=8), dimension(2) :: SOL
@@ -173,7 +170,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     !!Intervention 05/2023 - Section non ferraillée auto-équilibrée
     call verifels(cequi, ht, bw, enrobi, enrobs, &
                   scmaxi, scmaxs, ssmax, uc, &
-                  seuil_as, seuil_as, effm, effn, verif)
+                  seuil_as, seuil_as, effm, effn, verif, n_tot)
 
     if (verif .eq. 0) then
         !OK
@@ -204,64 +201,9 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
 
     Mcalc = abs(effm)
     Ncalc = effn
-    N_ET = 11
-
-    N_PC = precs+1
-    N_PCAC = CEILING((N_PC-1)*(ht/d))+1
 
     !Determination Pivot C 'ELS'
     yc = (scmaxc/scmax)*ht
-    N_EC = CEILING(10*(scmaxc*unite_pa))+1
-
-    N_TOT = N_ET+N_PCAC+N_EC
-
-    do i = 1, 40
-        write (p(i), fmt='(A18,I2)') 'POINT_ITER_CAFELS_', i
-    end do
-
-    call wkvect(p(1), ' V V R ', N_ET, vr=SsTEND_ET)
-    call wkvect(p(2), ' V V R ', N_ET, vr=SsCOMP_ET)
-    call wkvect(p(3), ' V V R ', N_ET, vr=ScTEND_ET)
-    call wkvect(p(4), ' V V R ', N_ET, vr=ScCOMP_ET)
-    call wkvect(p(5), ' V V R ', N_ET, vr=AsTEND_ET)
-    call wkvect(p(6), ' V V R ', N_ET, vr=AsCOMP_ET)
-    call wkvect(p(7), ' V V R ', N_ET, vr=alpha_ET)
-    call wkvect(p(8), ' V V R ', N_ET, vr=RESIDU_ET)
-    call wkvect(p(9), ' V V I ', N_ET, vi=PIVOT_ET)
-    call wkvect(p(10), ' V V I ', N_ET, vi=ETAT_ET)
-
-    call wkvect(p(11), ' V V R ', N_PCAC, vr=SsTEND_PCAC)
-    call wkvect(p(12), ' V V R ', N_PCAC, vr=SsCOMP_PCAC)
-    call wkvect(p(13), ' V V R ', N_PCAC, vr=ScTEND_PCAC)
-    call wkvect(p(14), ' V V R ', N_PCAC, vr=ScCOMP_PCAC)
-    call wkvect(p(15), ' V V R ', N_PCAC, vr=AsTEND_PCAC)
-    call wkvect(p(16), ' V V R ', N_PCAC, vr=AsCOMP_PCAC)
-    call wkvect(p(17), ' V V R ', N_PCAC, vr=alpha_PCAC)
-    call wkvect(p(18), ' V V R ', N_PCAC, vr=RESIDU_PCAC)
-    call wkvect(p(19), ' V V I ', N_PCAC, vi=PIVOT_PCAC)
-    call wkvect(p(20), ' V V I ', N_PCAC, vi=ETAT_PCAC)
-
-    call wkvect(p(21), ' V V R ', N_EC, vr=SsTEND_EC)
-    call wkvect(p(22), ' V V R ', N_EC, vr=SsCOMP_EC)
-    call wkvect(p(23), ' V V R ', N_EC, vr=ScTEND_EC)
-    call wkvect(p(24), ' V V R ', N_EC, vr=ScCOMP_EC)
-    call wkvect(p(25), ' V V R ', N_EC, vr=AsTEND_EC)
-    call wkvect(p(26), ' V V R ', N_EC, vr=AsCOMP_EC)
-    call wkvect(p(27), ' V V R ', N_EC, vr=alpha_EC)
-    call wkvect(p(28), ' V V R ', N_EC, vr=RESIDU_EC)
-    call wkvect(p(29), ' V V I ', N_EC, vi=PIVOT_EC)
-    call wkvect(p(30), ' V V I ', N_EC, vi=ETAT_EC)
-
-    call wkvect(p(31), ' V V R ', N_TOT, vr=SsTEND_TOT)
-    call wkvect(p(32), ' V V R ', N_TOT, vr=SsCOMP_TOT)
-    call wkvect(p(33), ' V V R ', N_TOT, vr=ScTEND_TOT)
-    call wkvect(p(34), ' V V R ', N_TOT, vr=ScCOMP_TOT)
-    call wkvect(p(35), ' V V R ', N_TOT, vr=AsTEND_TOT)
-    call wkvect(p(36), ' V V R ', N_TOT, vr=AsCOMP_TOT)
-    call wkvect(p(37), ' V V R ', N_TOT, vr=alpha_TOT)
-    call wkvect(p(38), ' V V R ', N_TOT, vr=RESIDU_TOT)
-    call wkvect(p(39), ' V V I ', N_TOT, vi=PIVOT_TOT)
-    call wkvect(p(40), ' V V I ', N_TOT, vi=ETAT_TOT)
 
     do i = 1, N_ET
         SsTEND_ET(i) = -ssmax
@@ -612,21 +554,6 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
                 indx_ch = indx_ch+1
                 N_TOT = N_TOT+1
 
-                do j = 31, 40
-                    call juveca(p(j), N_TOT)
-                end do
-
-                call jeveuo(p(31), 'E', vr=SsTEND_TOT)
-                call jeveuo(p(32), 'E', vr=SsCOMP_TOT)
-                call jeveuo(p(33), 'E', vr=ScTEND_TOT)
-                call jeveuo(p(34), 'E', vr=ScCOMP_TOT)
-                call jeveuo(p(35), 'E', vr=AsTEND_TOT)
-                call jeveuo(p(36), 'E', vr=AsCOMP_TOT)
-                call jeveuo(p(37), 'E', vr=alpha_TOT)
-                call jeveuo(p(38), 'E', vr=RESIDU_TOT)
-                call jeveuo(p(39), 'E', vi=PIVOT_TOT)
-                call jeveuo(p(40), 'E', vi=ETAT_TOT)
-
                 do s = 1, (N_TOT-i-1)
                     SsTEND_TOT(N_TOT-s+1) = SsTEND_TOT(N_TOT-s)
                     SsCOMP_TOT(N_TOT-s+1) = SsCOMP_TOT(N_TOT-s)
@@ -803,10 +730,6 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
         pivot = 0
 
     end if
-
-    do i = 1, 40
-        call jedetr(p(i))
-    end do
 
 998 continue
 

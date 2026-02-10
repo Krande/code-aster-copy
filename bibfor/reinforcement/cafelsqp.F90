@@ -79,6 +79,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
 
     implicit none
 #include "asterfort/cafels.h"
+#include "asterfort/cafelsqp_gap.h"
 
     real(kind=8) :: cequi
     real(kind=8) :: effm
@@ -126,15 +127,13 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
     real(kind=8) :: fctm
 
 !   VARIABLES DE CALCUL DES OUVERTURES DES FISSURES A L'ELS QP
-    real(kind=8) :: f1, f2, f3, f4, f5, ssmax
+    real(kind=8) :: ssmax
     real(kind=8) :: scmaxi, scmaxs
-    real(kind=8) :: ScTracMAX, ScTracMIN, xAN
-    real(kind=8) :: hceff, rhoeff, SrmaxSUP, SrmaxINF, DESUP, DEINF
-    logical :: COND_SUP, COND_INF
     real(kind=8) :: kVAR_A, kVAR_B, kVAR_NEW
     integer(kind=8) :: COUNT_B
-    logical :: COND_A, COND_B, CONSTAT, COND_FISS, COND_NEW
+    logical :: COND_B, CONSTAT, COND_FISS
     integer(kind=8) :: Niter
+    real(kind=8) :: y, y_prev, x, x_prev, x_new, x_min, x_max
 
 !   INITIALISATION DU CODE RETOUR
     ierr = 0
@@ -172,9 +171,6 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
 
 !   CALCULS INTERMEDIAIRES
 
-    f1 = 0.8
-    f4 = 0.425
-    f5 = 1.0
     if ((fbeton*unite_pa) .le. 50) then
         fctm = 0.30*((fbeton*unite_pa)**(2.0/3.0))
     else
@@ -183,19 +179,12 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
 
     fctm = fctm/unite_pa
 
-    kVAR_A = 1.0
-    kVAR_B = 0.5
-    COND_A = .false.
-    COND_B = .false.
-    COND_FISS = .false.
-    COUNT_B = 0
-    CONSTAT = .false.
     scmaxi = sigelsqp
     scmaxs = sigelsqp
 
 !   1 - CALCUL DES DENSITES DE FERRAILLAGE A L'ELS CARA (kvarA = 1.0)
 !   ----------------------------------------------------------------------
-
+    kVAR_A = 1.0
     ssmax = kVAR_A*facier
     call cafels(cequi, effm, effn, ht, bw, &
                 enrobi, enrobs, scmaxs, scmaxi, ssmax, &
@@ -210,104 +199,27 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
 
 !   2 - VERIFICATION DE L'OUVERTURE DES FISSURES À L'ELS QP (kvarA = 1.0)
 !   ----------------------------------------------------------------------
+    call cafelsqp_gap(cequi, effm, ht, enrobi, enrobs, kt, eys, &
+                      phiinf, phisup, dnsinf, dnssup, sigmsi, sigmss, &
+                      sigmci, sigmcs, alpha, etat, unite_m, fctm, &
+                      wfins, wfini)
 
-    if ((alpha .ge. 0) .AND. (alpha .le. 1)) then
-        if (effm .gt. 0) then
-            xAN = alpha*(ht-enrobi)
-        elseif (effm .lt. 0) then
-            xAN = alpha*(ht-enrobs)
-        end if
-    else
-        xAN = -1
+    y = max(wfins-wmaxs, wfini-wmaxi)
+    COND_FISS = y .le. 0.d0
+
+    if (COND_FISS) then
+        kvarf = kVAR_A
+        goto 998
     end if
 
-    ScTracMAX = min(sigmci, sigmcs)
-    ScTracMIN = max(sigmci, sigmcs)
-    if (ScTracMIN .gt. 0) then
-        ScTracMIN = 0
-    end if
-    if (ScTracMAX .ge. 0) then
-        f2 = 0.5
-    else
-        f2 = (ScTracMIN+ScTracMAX)/(2*ScTracMAX)
-    end if
-
-    if ((sigmss .ge. 0) .OR. (dnssup .eq. 0) .OR. (etat .eq. 1)) then
-        wfins = 0
-        COND_SUP = .true.
-    else
-        if ((enrobs*unite_m) .lt. 25) then
-            f3 = 3.4
-        else
-            f3 = 3.4*((25.0/(enrobs*unite_m))**(2.0/3.0))
-        end if
-        if (xAN .ne. -1) then
-            hceff = min(2.5*enrobs, 0.5*ht, (ht-xAN)/3.0)
-        else
-            hceff = min(2.5*enrobs, 0.5*ht)
-        end if
-        rhoeff = dnssup/hceff
-        SrmaxSUP = f3*enrobs+f1*f2*f4*(phisup/rhoeff)
-        if (xAN .ne. -1) then
-            SrmaxSUP = min(SrmaxSUP, 1.3*(ht-xAN))
-        else
-            SrmaxSUP = min(SrmaxSUP, 1.3*ht)
-        end if
-        DESUP = (-sigmss-kt*(fctm/rhoeff)*(1.0+cequi*rhoeff))/eys
-        DESUP = max(DESUP, -0.6*sigmss/eys)
-        wfins = SrmaxSUP*DESUP
-        if (wfins .le. wmaxs) then
-            COND_SUP = .true.
-        else
-            COND_SUP = .false.
-        end if
-    end if
-
-    if ((sigmsi .ge. 0) .OR. (dnsinf .eq. 0) .OR. (etat .eq. 1)) then
-        wfini = 0
-        COND_INF = .true.
-    else
-        if ((enrobi*unite_m) .lt. 25) then
-            f3 = 3.4
-        else
-            f3 = 3.4*((25.0/(enrobi*unite_m))**(2.0/3.0))
-        end if
-        if (xAN .ne. -1) then
-            hceff = min(2.5*enrobi, 0.5*ht, (ht-xAN)/3.0)
-        else
-            hceff = min(2.5*enrobi, 0.5*ht)
-        end if
-        rhoeff = dnsinf/hceff
-        SrmaxINF = f3*enrobi+f1*f2*f4*(phiinf/rhoeff)
-        if (xAN .ne. -1) then
-            SrmaxINF = min(SrmaxINF, 1.3*(ht-xAN))
-        else
-            SrmaxINF = min(SrmaxINF, 1.3*ht)
-        end if
-        DEINF = (-sigmsi-kt*(fctm/rhoeff)*(1.0+cequi*rhoeff))/eys
-        DEINF = max(DEINF, -0.6*sigmsi/eys)
-        wfini = SrmaxINF*DEINF
-        if (wfini .le. wmaxi) then
-            COND_INF = .true.
-        else
-            COND_INF = .false.
-        end if
-    end if
-
-    if ((COND_SUP .eqv. (.false.)) .or. (COND_INF .eqv. (.false.))) then
-        COND_A = .false.
-    else
-        COND_A = .true.
-        COND_FISS = .true.
-    end if
-
+    COND_B = .false.
+    COUNT_B = 0
     Niter = 20
-
-    do while ((COND_B .eqv. (.false.)) .and. (COND_FISS .eqv. (.false.)) .and. (COUNT_B .le. Niter))
+    kVAR_B = 0.5
+    do while (.not. COND_B .and. COUNT_B .le. Niter)
 
 !   3 - CALCUL DES DENSITES DE FERRAILLAGE A L'ELS CARA (kvarB)
 !   ----------------------------------------------------------------------
-
         ssmax = kVAR_B*facier
         call cafels(cequi, effm, effn, ht, bw, &
                     enrobi, enrobs, scmaxs, scmaxi, ssmax, &
@@ -315,6 +227,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
                     dnsinf, dnssup, sigmsi, sigmss, &
                     sigmci, sigmcs, &
                     alpha, pivot, etat, ierr)
+        COUNT_B = COUNT_B+1
 
         if (ierr .ne. 0) then
             goto 998
@@ -323,117 +236,98 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
 !   4 - VERIFICATION DE L'OUVERTURE DES FISSURES À L'ELS QP (kvarB)
 !   ----------------------------------------------------------------------
 
-        if ((alpha .ge. 0) .AND. (alpha .le. 1)) then
-            if (effm .gt. 0) then
-                xAN = alpha*(ht-enrobi)
-            elseif (effm .lt. 0) then
-                xAN = alpha*(ht-enrobs)
-            end if
-        else
-            xAN = -1
-        end if
+        call cafelsqp_gap(cequi, effm, ht, enrobi, enrobs, kt, eys, &
+                          phiinf, phisup, dnsinf, dnssup, sigmsi, sigmss, &
+                          sigmci, sigmcs, alpha, etat, unite_m, fctm, &
+                          wfins, wfini)
 
-        ScTracMAX = min(sigmci, sigmcs)
-        ScTracMIN = max(sigmci, sigmcs)
-        if (ScTracMIN .gt. 0) then
-            ScTracMIN = 0
-        end if
-        if (ScTracMAX .ge. 0) then
-            f2 = 0.5
-        else
-            f2 = (ScTracMIN+ScTracMAX)/(2*ScTracMAX)
-        end if
-        if ((sigmss .ge. 0) .OR. (dnssup .eq. 0) .OR. (etat .eq. 1)) then
-            wfins = 0
-            COND_SUP = .true.
-        else
-            if ((enrobs*unite_m) .lt. 25) then
-                f3 = 3.4
-            else
-                f3 = 3.4*((25.0/(enrobs*unite_m))**(2.0/3.0))
-            end if
-            if (xAN .ne. -1) then
-                hceff = min(2.5*enrobs, 0.5*ht, (ht-xAN)/3.0)
-            else
-                hceff = min(2.5*enrobs, 0.5*ht)
-            end if
-            rhoeff = dnssup/hceff
-            SrmaxSUP = f3*enrobs+f1*f2*f4*(phisup/rhoeff)
-            if (xAN .ne. -1) then
-                SrmaxSUP = min(SrmaxSUP, 1.3*(ht-xAN))
-            else
-                SrmaxSUP = min(SrmaxSUP, 1.3*ht)
-            end if
-            DESUP = (-sigmss-kt*(fctm/rhoeff)*(1.0+cequi*rhoeff))/eys
-            DESUP = max(DESUP, -0.6*sigmss/eys)
-            wfins = SrmaxSUP*DESUP
-            if (wfins .le. wmaxs) then
-                COND_SUP = .true.
-            else
-                COND_SUP = .false.
-            end if
-        end if
+        y_prev = y
+        y = max(wfins-wmaxs, wfini-wmaxi)
+        COND_B = y .le. 0.d0
 
-        if ((sigmsi .ge. 0) .OR. (dnsinf .eq. 0) .OR. (etat .eq. 1)) then
-            wfini = 0
-            COND_INF = .true.
-        else
-            if ((enrobi*unite_m) .lt. 25) then
-                f3 = 3.4
-            else
-                f3 = 3.4*((25.0/(enrobi*unite_m))**(2.0/3.0))
-            end if
-            if (xAN .ne. -1) then
-                hceff = min(2.5*enrobi, 0.5*ht, (ht-xAN)/3.0)
-            else
-                hceff = min(2.5*enrobi, 0.5*ht)
-            end if
-            rhoeff = dnsinf/hceff
-            SrmaxINF = f3*enrobi+f1*f2*f4*(phiinf/rhoeff)
-            if (xAN .ne. -1) then
-                SrmaxINF = min(SrmaxINF, 1.3*(ht-xAN))
-            else
-                SrmaxINF = min(SrmaxINF, 1.3*ht)
-            end if
-            DEINF = (-sigmsi-kt*(fctm/rhoeff)*(1.0+cequi*rhoeff))/eys
-            DEINF = max(DEINF, -0.6*sigmsi/eys)
-            wfini = SrmaxINF*DEINF
-            if (wfini .le. wmaxi) then
-                COND_INF = .true.
-            else
-                COND_INF = .false.
-            end if
-        end if
-
-        if ((COND_SUP .eqv. (.false.)) .or. (COND_INF .eqv. (.false.))) then
-            COND_B = .false.
-        else
-            COND_B = .true.
-        end if
-
-        if (COND_B .eqv. (.false.)) then
+        if (.not. COND_B) then
+            kVAR_A = kVAR_B
             kVAR_B = kVAR_B/2.
-            COUNT_B = COUNT_B+1
         end if
-
-!   ----------------------------------------------------------------------
 
     end do
+
+    if (.not. COND_B) then
+        ierr = 1
+        goto 998
+    end if
+
+! RECHERCHE SECANTE
+! ------------------------------------------------------------------------
+
+    COUNT_B = 0
+    x_max = kVAR_A
+    x_min = kVAR_B
+    if (.false.) goto 20
+    COND_B = .false.
+    Niter = 5
+    do while (.not. COND_B .and. COUNT_B .le. Niter)
+
+        if (COUNT_B .eq. 0) then
+            x_prev = kVAR_B*2
+            x = kVAR_B
+        end if
+        x_new = (x*y_prev-x_prev*y)/(y_prev-y)
+        if (x_new .le. x_min .or. x_new .ge. x_max) then
+            ! divergence, on sort
+            exit
+        end if
+
+        ssmax = x_new*facier
+        call cafels(cequi, effm, effn, ht, bw, &
+                    enrobi, enrobs, scmaxs, scmaxi, ssmax, &
+                    ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                    dnsinf, dnssup, sigmsi, sigmss, &
+                    sigmci, sigmcs, &
+                    alpha, pivot, etat, ierr)
+        COUNT_B = COUNT_B+1
+
+        if (ierr .ne. 0) then
+            goto 998
+        end if
+
+        call cafelsqp_gap(cequi, effm, ht, enrobi, enrobs, kt, eys, &
+                          phiinf, phisup, dnsinf, dnssup, sigmsi, sigmss, &
+                          sigmci, sigmcs, alpha, etat, unite_m, fctm, &
+                          wfins, wfini)
+        y_prev = y
+        y = max(wfins-wmaxs, wfini-wmaxi)
+        x_prev = x
+        x = x_new
+        COND_B = abs(y/(wmaxs+wmaxi)) .le. 1d-6
+
+        ! on met à jour kvarA et kvarb pour réduire l'intervale de recherche de la dichotomie
+        if (y .gt. 0.d0 .and. x .lt. kVAR_A) then
+            kVAR_A = x
+        else if (y .lt. 0.d0 .and. x .gt. kVAR_B) then
+            kVAR_B = x
+        end if
+
+        if (COND_B) then
+            kvarf = x
+            goto 998
+        else
+            if (abs((y_prev-y)/(wmaxs+wmaxi)) .le. 1d-6) then
+                ! dy trop faible, on sort
+                exit
+            end if
+        end if
+
+    end do
+
+20  continue
 
 !   5 - ITERATION ET DETERMINATION DE LA SOLUTION DIMENSIONNANTE
 !   ----------------------------------------------------------------------
 
-    if ((COND_FISS .eqv. (.false.)) .and. (COND_B .eqv. (.false.))) then
-        CONSTAT = .true.
-        ierr = 3
-        goto 998
-    elseif (COND_FISS .eqv. (.true.)) then
-        CONSTAT = .true.
-        kVAR_NEW = kVAR_A
-        COND_NEW = COND_A
-    end if
-
-    do while (CONSTAT .eqv. (.false.))
+    COUNT_B = 0
+    CONSTAT = .false.
+    do while (.not. CONSTAT)
 
         kVAR_NEW = 0.5*(kVAR_A+kVAR_B)
 
@@ -444,134 +338,40 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
                     dnsinf, dnssup, sigmsi, sigmss, &
                     sigmci, sigmcs, &
                     alpha, pivot, etat, ierr)
+        COUNT_B = COUNT_B+1
 
         if (ierr .ne. 0) then
             goto 998
         end if
 
-        if ((alpha .ge. 0) .AND. (alpha .le. 1)) then
-        if (effm .gt. 0) then
-            xAN = alpha*(ht-enrobi)
-        elseif (effm .lt. 0) then
-            xAN = alpha*(ht-enrobs)
-        end if
-        else
-        xAN = -1
-        end if
-        ScTracMAX = min(sigmci, sigmcs)
-        ScTracMIN = max(sigmci, sigmcs)
-        if (ScTracMIN .gt. 0) then
-            ScTracMIN = 0
-        end if
-        if (ScTracMAX .ge. 0) then
-            f2 = 0.5
-        else
-            f2 = (ScTracMIN+ScTracMAX)/(2*ScTracMAX)
-        end if
-        if ((sigmss .ge. 0) .OR. (dnssup .eq. 0) .OR. (etat .eq. 1)) then
-            wfins = 0
-            COND_SUP = .true.
-        else
-            if ((enrobs*unite_m) .lt. 25) then
-                f3 = 3.4
-            else
-                f3 = 3.4*((25.0/(enrobs*unite_m))**(2.0/3.0))
-            end if
-            if (xAN .ne. -1) then
-                hceff = min(2.5*enrobs, 0.5*ht, (ht-xAN)/3.0)
-            else
-                hceff = min(2.5*enrobs, 0.5*ht)
-            end if
-            rhoeff = dnssup/hceff
-            SrmaxSUP = f3*enrobs+f1*f2*f4*(phisup/rhoeff)
-            if (xAN .ne. -1) then
-                SrmaxSUP = min(SrmaxSUP, 1.3*(ht-xAN))
-            else
-                SrmaxSUP = min(SrmaxSUP, 1.3*ht)
-            end if
-            DESUP = (-sigmss-kt*(fctm/rhoeff)*(1.0+cequi*rhoeff))/eys
-            DESUP = max(DESUP, -0.6*sigmss/eys)
-            wfins = SrmaxSUP*DESUP
-            if (wfins .le. wmaxs) then
-                COND_SUP = .true.
-            else
-                COND_SUP = .false.
-            end if
-        end if
-        if ((sigmsi .ge. 0) .OR. (dnsinf .eq. 0) .OR. (etat .eq. 1)) then
-            wfini = 0
-            COND_INF = .true.
-        else
-            if ((enrobi*unite_m) .lt. 25) then
-                f3 = 3.4
-            else
-                f3 = 3.4*((25.0/(enrobi*unite_m))**(2.0/3.0))
-            end if
-            if (xAN .ne. -1) then
-                hceff = min(2.5*enrobi, 0.5*ht, (ht-xAN)/3.0)
-            else
-                hceff = min(2.5*enrobi, 0.5*ht)
-            end if
-            rhoeff = dnsinf/hceff
-            SrmaxINF = f3*enrobi+f1*f2*f4*(phiinf/rhoeff)
-            if (xAN .ne. -1) then
-                SrmaxINF = min(SrmaxINF, 1.3*(ht-xAN))
-            else
-                SrmaxINF = min(SrmaxINF, 1.3*ht)
-            end if
-            DEINF = (-sigmsi-kt*(fctm/rhoeff)*(1.0+cequi*rhoeff))/eys
-            DEINF = max(DEINF, -0.6*sigmsi/eys)
-            wfini = SrmaxINF*DEINF
-            if (wfini .le. wmaxi) then
-                COND_INF = .true.
-            else
-                COND_INF = .false.
-            end if
-        end if
+        call cafelsqp_gap(cequi, effm, ht, enrobi, enrobs, kt, eys, &
+                          phiinf, phisup, dnsinf, dnssup, sigmsi, sigmss, &
+                          sigmci, sigmcs, alpha, etat, unite_m, fctm, &
+                          wfins, wfini)
 
-        if ((COND_SUP .eqv. (.false.)) .or. (COND_INF .eqv. (.false.))) then
-            COND_NEW = .false.
-        else
-            COND_NEW = .true.
-        end if
+        y = max(wfins-wmaxs, wfini-wmaxi)
 
-        if (COND_NEW .eqv. COND_A) then
-            kVAR_A = kVAR_NEW
-        else
+        if (y .le. 0.d0) then
             kVAR_B = kVAR_NEW
+        else
+            kVAR_A = kVAR_NEW
         end if
 
-        if ((abs(kVAR_A-kVAR_B)) .lt. (0.00001)) then
+        if (abs(kVAR_A-kVAR_B) .le. 1.d-6) then
             CONSTAT = .true.
-        end if
-
-    end do
-
-!   6 - CHOIX DE LA SOLUTION FINALE
-!   ----------------------------------------------------------------------
-
-998 continue
-
-    if (ierr .eq. 0) then
-        if (COND_FISS .eqv. (.false.)) then
-            if ((COND_A .eqv. (.true.)) .and. (COND_B .eqv. (.false.))) then
-                kVAR_NEW = kVAR_A
-            elseif ((COND_A .eqv. (.false.)) .and. (COND_B .eqv. (.true.))) then
-                kVAR_NEW = kVAR_B
-            else
-                ierr = 1
-            end if
-        end if
-        if (ierr .eq. 0) then
-            ssmax = kVAR_NEW*facier
+            kvarf = kVAR_B
+            ssmax = kvarf*facier
             call cafels(cequi, effm, effn, ht, bw, &
                         enrobi, enrobs, scmaxs, scmaxi, ssmax, &
                         ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                         dnsinf, dnssup, sigmsi, sigmss, &
                         sigmci, sigmcs, &
                         alpha, pivot, etat, ierr)
-            kvarf = kVAR_NEW
+            COUNT_B = COUNT_B+1
         end if
-    end if
+
+    end do
+
+998 continue
 
 end subroutine

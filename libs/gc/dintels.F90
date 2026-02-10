@@ -80,12 +80,12 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     integer(kind=8) :: N_ET, N_PC, N_EC, N_PCAC, N_PCACN, k
     integer(kind=8) :: N_ECN
 
-    real(kind=8), allocatable :: N_P1(:), M_P1(:)
-    real(kind=8), allocatable :: N_P2(:), M_P2(:)
-    real(kind=8), allocatable :: N_P3(:), M_P3(:)
-    real(kind=8), allocatable :: N_P4(:), M_P4(:)
-    real(kind=8), allocatable :: N_P5(:), M_P5(:)
-    real(kind=8), allocatable :: N_P6(:), M_P6(:)
+    real(kind=8) :: N_P1(abs(ntot)), M_P1(abs(ntot))
+    real(kind=8) :: N_P2(abs(ntot)), M_P2(abs(ntot))
+    real(kind=8) :: N_P3(abs(ntot)), M_P3(abs(ntot))
+    real(kind=8) :: N_P4(abs(ntot)), M_P4(abs(ntot))
+    real(kind=8) :: N_P5(abs(ntot)), M_P5(abs(ntot))
+    real(kind=8) :: N_P6(abs(ntot)), M_P6(abs(ntot))
 
 !   Paramètres de calcul
     if (uc .eq. 0) then
@@ -142,9 +142,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT A - Entièrement Tendu (ET) + Moment Positif
 !---------------------------------------------------------------
 
-    allocate (N_P1(N_ET))
-    allocate (M_P1(N_ET))
-
     do k = 1, N_ET
 
         SsINF = -ssmax
@@ -158,9 +155,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !Traitement en PIVOT A et B - Partiellement Comprimée (PC) + Moment Positif
 !--------------------------------------------------------------------------
-
-    allocate (N_P2(N_PCAC))
-    allocate (M_P2(N_PCAC))
 
     do k = 1, N_PCAC
 
@@ -189,9 +183,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT C - Entièrement Comprimée (EC) + Moment Positif
 !-------------------------------------------------------------------
 
-    allocate (N_P3(N_EC))
-    allocate (M_P3(N_EC))
-
     do k = 1, N_EC
 
         ScINF = scmaxneg*((k-1.d0)/(N_EC-1.d0))
@@ -215,9 +206,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT C - Entièrement Comprimée (EC) + Moment Negatif
 !-------------------------------------------------------------------
 
-    allocate (N_P4(N_ECN))
-    allocate (M_P4(N_ECN))
-
     do k = 1, N_ECN
 
         ScSUP = scmax*(1.d0-(k-1.d0)/(N_ECN-1.d0))
@@ -240,9 +228,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !Traitement en PIVOT A et B - Partiellement Comprimée (PC) + Moment Negatif
 !--------------------------------------------------------------------------
-
-    allocate (N_P5(N_PCACN))
-    allocate (M_P5(N_PCACN))
 
     do k = 1, N_PCACN
 
@@ -270,8 +255,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !Traitement en PIVOT A - Entièrement Tendu (ET) + Moment Negatif
 !---------------------------------------------------------------
-    allocate (N_P6(N_ET))
-    allocate (M_P6(N_ET))
 
     do k = 1, N_ET
 
@@ -316,18 +299,5 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
             mrd(k+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN) = M_P6(k)
         end do
     end if
-
-    deallocate (N_P1)
-    deallocate (N_P2)
-    deallocate (N_P3)
-    deallocate (N_P4)
-    deallocate (N_P5)
-    deallocate (N_P6)
-    deallocate (M_P1)
-    deallocate (M_P2)
-    deallocate (M_P3)
-    deallocate (M_P4)
-    deallocate (M_P5)
-    deallocate (M_P6)
 
 end subroutine
