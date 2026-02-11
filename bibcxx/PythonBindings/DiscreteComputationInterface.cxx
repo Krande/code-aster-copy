@@ -900,10 +900,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               &DiscreteComputation::getMechanicalLinearCouplingMatrix, R"(
             Compute coupling for LIAISON_MASSIF.
 
-            Returns:
-                ElementaryMatrixDisplacementReal: coupling elementary matrix.
+      Arguments:
+            varc_curr (FieldOnCellsReal): external state variables for Nitsche method.
 
-        )" )
+      Returns:
+            ElementaryMatrixDisplacementReal: coupling elementary matrix.
+
+        )",
+              py::arg( "varc_curr" ) = nullptr )
 
         .def( "getMechanicalNodalForces", &DiscreteComputation::getMechanicalNodalForces,
               R"(

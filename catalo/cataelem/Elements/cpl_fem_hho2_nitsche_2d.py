@@ -82,7 +82,8 @@ class CN_T3S3_HHO2(Element):
             para_in=(
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PPAIRR, LC.CPAIRR),
-                (OP.CHAR_MECA_CPL.PCHHOBS, CHHOBS),
+                (OP.RIGI_ELAS_CPL.PCHHOBS, CHHOBS),
+                (OP.RIGI_ELAS_CPL.PMATERR, LC.ENMATE_R),
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),

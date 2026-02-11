@@ -25,6 +25,7 @@
 #include "aster_fort_calcul.h"
 #include "aster_fort_superv.h"
 
+#include "DataFields/FieldConverter.h"
 #include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/Calcul.h"
 #include "Discretization/DiscreteComputation.h"
@@ -37,6 +38,7 @@
 #include "Modeling/Model.h"
 #include "Modeling/ParallelContactFEDescriptor.h"
 #include "Modeling/XfemModel.h"
+#include "PostProcessing/PostProcessing.h"
 #include "Utilities/Tools.h"
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatrix(
@@ -1283,7 +1285,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalCouplingMa
     return elemMatr;
 }
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCouplingMatrix() const {
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCouplingMatrix(
+    const FieldOnCellsRealPtr &externVar ) const {
 
     // Select option for matrix
     std::string option = "RIGI_ELAS_CPL";
@@ -1295,6 +1298,10 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCoup
 
     const auto listOfLoads = _phys_problem->getListOfLoads();
     const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
+
+    const auto post = std::make_shared< PostProcessing >( _phys_problem );
+    const auto mate_elga = post->computeMaterial( "ELGA", externVar );
+    const auto mate_noeu = toFieldOnNodes( mate_elga );
 
     for ( const auto &load : mecaLoadReal ) {
 
@@ -1308,6 +1315,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCoup
             // Set input field
             calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
             calcul->addInputField( "PPAIRR", pairing );
+            calcul->addInputField( "PMATERR", mate_noeu );
             calcul->addHHOField( _phys_problem->getModel() );
 
             // Add output elementary

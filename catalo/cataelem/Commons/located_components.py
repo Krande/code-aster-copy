@@ -1443,7 +1443,13 @@ EGMINMAX = LocatedComponents(
 EGMATE_R = LocatedComponents(
     phys=PHY.MATE_R,
     type="ELGA",
-    location="RIGI",
+    location="MTGA",
+    components=("X", "Y", "Z", "E", "NU", "RHO", "ALPHA", "LAMBDA", "RHO_CP"),
+)
+
+ENMATE_R = LocatedComponents(
+    phys=PHY.MATE_R,
+    type="ELNO",
     components=("X", "Y", "Z", "E", "NU", "RHO", "ALPHA", "LAMBDA", "RHO_CP"),
 )
 

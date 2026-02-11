@@ -547,7 +547,8 @@ class DiscreteComputation {
                                  const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
                                  const ASTERDOUBLE &time_step ) const;
 
-    ElementaryMatrixDisplacementRealPtr getMechanicalLinearCouplingMatrix() const;
+    ElementaryMatrixDisplacementRealPtr
+    getMechanicalLinearCouplingMatrix( const FieldOnCellsRealPtr &externVar = nullptr ) const;
 
     /**
      * @brief Compute residual reference (for RESI_REFE_RELA)

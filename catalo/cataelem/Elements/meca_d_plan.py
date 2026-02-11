@@ -1306,6 +1306,7 @@ class MEDPQU8(Element):
                 (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PSIEF_R, LC.ESIG2DR),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
+                (OP.TOU_INI_ELNO.PMATE_R, LC.ENMATE_R),
             ),
         ),
         OP.VARC_ELGA(

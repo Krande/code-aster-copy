@@ -25,9 +25,11 @@ import cataelem.Commons.attributes as AT
 
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
+PMATERR = InputParameter(phys=PHY.MATE_R, comment=""" MATE_ELNO """)
+
 
 RIGI_ELAS_CPL = Option(
-    para_in=(SP.PPAIRR, SP.PGEOMER, PCHHOBS),
+    para_in=(SP.PPAIRR, SP.PGEOMER, PCHHOBS, PMATERR),
     para_out=(SP.PMATUUR,),
     condition=(CondCalcul("+", ((AT.RACCORD, "OUI"),)),),
     comment=""" RIGI_CPL: CALCUL DE LA MATRICE ELASTIQUE

@@ -198,7 +198,19 @@ contains
 !    Initialize FEM and HHO data
 !===================================================================================================
 !
+        integer(kind=8), parameter :: nbPara = 9
+        integer(kind=8) :: jmater, iNode, nbNodes, nodes(MT_NNOMAX2D), node
+!
+        call readNitSlavMap(nbNodes, nodes)
         call cplPenaInitData(option, cplMap, cplData)
+!
+        call jevech('PMATERR', 'L', jmater)
+!
+        do iNode = 1, nbNodes
+            node = nodes(iNode)
+            cplData%E(iNode) = zr(jmater-1+nbPara*(node-1)+4)
+            cplData%nu(iNode) = zr(jmater-1+nbPara*(node-1)+5)
+        end do
 !
     end subroutine
 !

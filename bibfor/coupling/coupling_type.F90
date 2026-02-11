@@ -27,6 +27,7 @@ module coupling_type
 #include "asterfort/coupling_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "FE_basis_module.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,6 +63,8 @@ module coupling_type
         real(kind=8) :: disphhoFaceMa_curr(MSIZE_FACE_VEC) = 0.d0
 !
         real(kind=8) :: coef_pena = 0.d0
+!
+        real(kind=8), dimension(MT_NNOMAX2D) :: E = 0.d0, nu = 0.d0
     end type
 !
     public :: CouplingMap, CouplingData
