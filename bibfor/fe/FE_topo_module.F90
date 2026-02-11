@@ -231,7 +231,7 @@ contains
         implicit none
 !
         class(FE_Cell), intent(in) :: this
-        integer(kind=8), intent(in) :: nbNodes, nodes(9)
+        integer(kind=8), intent(in) :: nbNodes, nodes(MT_NNOMAX2D)
         type(FE_Skin) :: skin
 !
 ! --------------------------------------------------------------------------------------------------

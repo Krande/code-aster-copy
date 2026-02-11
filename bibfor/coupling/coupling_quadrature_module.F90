@@ -32,7 +32,7 @@ module coupling_quadrature_module
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
-#include "asterfort/coupling_penalisation_module.h"
+#include "asterfort/coupling_type.h"
 #include "asterfort/coupling_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/latrco.h"

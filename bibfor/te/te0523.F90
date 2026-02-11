@@ -23,14 +23,14 @@ subroutine te0523(option, nomte)
     use coupling_type
     use FE_quadrature_module
     use FE_topo_module
+    use HHO_matrix_module
 !
     implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/coupling_penalisation_module.h"
-#include "asterfort/writeMatrix.h"
+#include "asterfort/coupling_type.h"
 #include "asterfort/writeVector.h"
 #include "FE_basis_module.h"
 !
@@ -49,7 +49,7 @@ subroutine te0523(option, nomte)
     type(CouplingMap) :: cplLagrMap
     type(CouplingData) :: cplLagrData
     real(kind=8) :: rhs(MSIZE_CPL_LAGR_FEM)
-    real(kind=8) :: lhs(MSIZE_CPL_LAGR_FEM, MSIZE_CPL_LAGR_FEM)
+    type(HHO_matrix) :: lhs
 !
 ! --- Initialize topologie
 !
@@ -89,8 +89,8 @@ subroutine te0523(option, nomte)
 !
 ! - Write matrix
 !
-        call writeMatrix("PMATUUR", cplLagrMap%nbDoFs, cplLagrMap%nbDoFs, &
-                         ASTER_TRUE, lhs)
+        call lhs%write("PMATUUR", ASTER_TRUE)
+        call lhs%free()
 !
     else
         ASSERT(ASTER_FALSE)

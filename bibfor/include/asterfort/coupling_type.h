@@ -19,6 +19,9 @@
 ! Coupling module : Parameters <-> integer definitions
 ! -------------------------------------------------------------------------
 !
+#include "asterfort/HHO_size_module.h"
+#include "FE_basis_module.h"
+#include "MeshTypes_type.h"
 !
 ! - Offset for pairing - see CouplingPairing.cxx
 ! - Add +1 since offset C -> fortran
@@ -30,3 +33,18 @@
 #define    OFFSET_NODE_IDX_FACE  20
 #define    OFFSET_SIZE  27
 !
+!
+! - Static size - FE methods - General
+!
+! --- maximum number of basis function
+#define MSIZE_CPL_PENA 3*MT_NNOMAX2D+MSIZE_FACE_VEC
+
+! FEM-FEM with QU12/QU12 2*3*9=54
+#define MSIZE_CPL_PENA_FEM 2*3*MT_NNOMAX2D
+
+! FEM-FEM with H32/QU12
+#define MSIZE_CPL_NITS 3*MT_NNOMAX+MSIZE_FACE_VEC
+
+! FEM-FEM with QU12/QU12 6*9 + 3*9=81
+#define MSIZE_CPL_LAGR_FEM 6*MT_NNOMAX2D+3*MT_NNOMAX2D
+#define MSIZE_LAGR_FEM 3*MT_NNOMAX2D

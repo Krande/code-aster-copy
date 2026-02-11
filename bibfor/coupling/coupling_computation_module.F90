@@ -37,7 +37,7 @@ module coupling_computation_module
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/coupling_penalisation_module.h"
+#include "asterfort/coupling_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dger.h"
 #include "blas/dsyr.h"

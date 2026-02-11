@@ -35,9 +35,18 @@ namespace {
 const std::map< std::pair< std::string, std::string >, std::string > cplCellNits {
     { { "MEDPTR3", "MECA_2D_HHO1_F" }, "CN_T3S3_HHO1" },
     { { "MEDPTR6", "MECA_2D_HHO1_F" }, "CN_T6S3_HHO1" },
-    { { "MEDPQU4", "MECA_2D_HHO1_F" }, "CN_Q4S3_HHO2" },
-    { { "MEDPQU8", "MECA_2D_HHO1_F" }, "CN_Q8S3_HHO2" },
-    { { "MEDPQU9", "MECA_2D_HHO1_F" }, "CN_Q9S3_HHO3" },
+    { { "MEDPTR10", "MECA_2D_HHO1_F" }, "CN_T10S3_HHO1" },
+    { { "MEDPQU4", "MECA_2D_HHO1_F" }, "CN_Q4S3_HHO1" },
+    { { "MEDPQU8", "MECA_2D_HHO1_F" }, "CN_Q8S3_HHO1" },
+    { { "MEDPQU9", "MECA_2D_HHO1_F" }, "CN_Q9S3_HHO1" },
+    { { "MEDPQU12", "MECA_2D_HHO1_F" }, "CN_Q12S3_HHO1" },
+    { { "MEDPTR3", "MECA_2D_HHO2_F" }, "CN_T3S3_HHO2" },
+    { { "MEDPTR6", "MECA_2D_HHO2_F" }, "CN_T6S3_HHO2" },
+    { { "MEDPTR10", "MECA_2D_HHO2_F" }, "CN_T10S3_HHO2" },
+    { { "MEDPQU4", "MECA_2D_HHO2_F" }, "CN_Q4S3_HHO2" },
+    { { "MEDPQU8", "MECA_2D_HHO2_F" }, "CN_Q8S3_HHO2" },
+    { { "MEDPQU9", "MECA_2D_HHO2_F" }, "CN_Q9S3_HHO2" },
+    { { "MEDPQU12", "MECA_2D_HHO2_F" }, "CN_Q12S3_HHO2" },
 };
 
 const std::map< std::pair< std::string, std::string >, std::string > cplCellPena {
@@ -204,6 +213,10 @@ ASTERINTEGER CouplingPairing::getCplCellType( const CouplingMethod algo,
     const auto key = std::make_pair( slavCellTypeName, mastCellTypeName );
 
     if ( algo == CouplingMethod::Nitsche ) {
+        if ( mastCellTypeName.find( "HHO" ) == std::string::npos ) {
+            UTMESS( "F", "COUPLAGE_3" );
+        }
+
         auto it = cplCellNits.find( key );
         if ( it != cplCellNits.end() ) {
             cplTypeName = it->second;
@@ -537,7 +550,7 @@ FieldOnCellsRealPtr CouplingPairing::getPairingField() const {
     CALL_JEMARQ();
 
     // Field for intersection points and other thing ...
-    auto data = FieldOnCellsPtrBuilder< ASTERDOUBLE >( _fed, "CHAR_MECA_CPL", "PPAIRR" );
+    auto data = FieldOnCellsPtrBuilder< ASTERDOUBLE >( _fed, "RIGI_ELAS_CPL", "PPAIRR" );
 
     // Get pairing
     const ASTERINTEGER nbPairs = this->getNumberOfPairs();

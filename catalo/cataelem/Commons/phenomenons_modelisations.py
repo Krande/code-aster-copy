@@ -3905,6 +3905,50 @@ phen.add(
     ),
 )
 
+# -- Define COUPLING FEM/HHO elements for NITSCHE method
+
+phen.add(
+    "CPL_NIT_H1_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HN1",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.TR3SE3, EL.CN_T3S3_HHO1),
+            (MT.TR6SE3, EL.CN_T6S3_HHO1),
+            (MT.QU4SE3, EL.CN_Q4S3_HHO1),
+            (MT.QU8SE3, EL.CN_Q8S3_HHO1),
+            (MT.QU9SE3, EL.CN_Q9S3_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_NIT_H2_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HN2",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.TR3SE3, EL.CN_T3S3_HHO2),
+            (MT.TR6SE3, EL.CN_T6S3_HHO2),
+            (MT.QU4SE3, EL.CN_Q4S3_HHO2),
+            (MT.QU8SE3, EL.CN_Q8S3_HHO2),
+            (MT.QU9SE3, EL.CN_Q9S3_HHO2),
+        ),
+    ),
+)
+
 # ------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour :
 #  * Forces nodales

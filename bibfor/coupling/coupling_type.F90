@@ -24,7 +24,7 @@ module coupling_type
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/coupling_penalisation_module.h"
+#include "asterfort/coupling_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "FE_basis_module.h"
 !

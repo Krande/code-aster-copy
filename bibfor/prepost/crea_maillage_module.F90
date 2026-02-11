@@ -4807,14 +4807,16 @@ contains
         integer(ip), intent(in) :: face_i
         aster_logical, intent(out) :: modif
 !
-        integer(ip) :: nnos, nno, n1, n2, n3, c_id
+        integer(ip) :: nnos, nno, n1, n2, n3, c_id, tp
         real(kind=8) :: v0(3), v1(3), no(3)
         real(kind=8) :: bar_v(3), bar_f(3), nvf(3)
 ! ---------------------------------------------------------------------------------
 !
         modif = ASTER_FALSE
         if (this%faces(face_i)%nb_volumes == one_ip) then
-            nnos = this%converter%nnos(this%faces(face_i)%type)
+            tp = this%faces(face_i)%type
+            nno = this%converter%nno(tp)
+            nnos = this%converter%nnos(tp)
             n1 = this%faces(face_i)%nodes(1)
             n2 = this%faces(face_i)%nodes(2)
             n3 = this%faces(face_i)%nodes(nnos)
@@ -4831,15 +4833,82 @@ contains
             if (dot_product(nvf, no) <= 0.d0) then
                 this%faces(face_i)%nodes(2) = n3
                 this%faces(face_i)%nodes(nnos) = n2
-                n2 = this%faces(face_i)%nodes(nnos+1)
-                n3 = this%faces(face_i)%nodes(2*nnos)
-                this%faces(face_i)%nodes(nnos+1) = n3
-                this%faces(face_i)%nodes(2*nnos) = n2
+                if (tp .ne. MT_TRIA10 .and. tp .ne. MT_QUAD12) then
+                    n2 = this%faces(face_i)%nodes(nnos+1)
+                    n3 = this%faces(face_i)%nodes(2*nnos)
+                    this%faces(face_i)%nodes(nnos+1) = n3
+                    this%faces(face_i)%nodes(2*nnos) = n2
+                end if
                 if (nnos == four_ip) then
-                    n2 = this%faces(face_i)%nodes(nnos+2)
-                    n3 = this%faces(face_i)%nodes(nnos+3)
-                    this%faces(face_i)%nodes(nnos+2) = n3
-                    this%faces(face_i)%nodes(nnos+3) = n2
+                    if (tp == MT_QUAD8 .or. tp == MT_QUAD9 .or. tp == MT_QUAD17) then
+                        n2 = this%faces(face_i)%nodes(nnos+2)
+                        n3 = this%faces(face_i)%nodes(nnos+3)
+                        this%faces(face_i)%nodes(nnos+2) = n3
+                        this%faces(face_i)%nodes(nnos+3) = n2
+                    end if
+                    if (tp == MT_QUAD17) then
+                        n2 = this%faces(face_i)%nodes(10)
+                        n3 = this%faces(face_i)%nodes(17)
+                        this%faces(face_i)%nodes(10) = n3
+                        this%faces(face_i)%nodes(17) = n2
+                        n2 = this%faces(face_i)%nodes(11)
+                        n3 = this%faces(face_i)%nodes(16)
+                        this%faces(face_i)%nodes(11) = n3
+                        this%faces(face_i)%nodes(16) = n2
+                        n2 = this%faces(face_i)%nodes(12)
+                        n3 = this%faces(face_i)%nodes(15)
+                        this%faces(face_i)%nodes(12) = n3
+                        this%faces(face_i)%nodes(15) = n2
+                        n2 = this%faces(face_i)%nodes(13)
+                        n3 = this%faces(face_i)%nodes(14)
+                        this%faces(face_i)%nodes(13) = n3
+                        this%faces(face_i)%nodes(14) = n2
+                    elseif (tp == MT_QUAD12) then
+                        n2 = this%faces(face_i)%nodes(5)
+                        n3 = this%faces(face_i)%nodes(12)
+                        this%faces(face_i)%nodes(5) = n3
+                        this%faces(face_i)%nodes(12) = n2
+                        n2 = this%faces(face_i)%nodes(6)
+                        n3 = this%faces(face_i)%nodes(11)
+                        this%faces(face_i)%nodes(6) = n3
+                        this%faces(face_i)%nodes(11) = n2
+                        n2 = this%faces(face_i)%nodes(7)
+                        n3 = this%faces(face_i)%nodes(10)
+                        this%faces(face_i)%nodes(7) = n3
+                        this%faces(face_i)%nodes(10) = n2
+                        n2 = this%faces(face_i)%nodes(8)
+                        n3 = this%faces(face_i)%nodes(9)
+                        this%faces(face_i)%nodes(8) = n3
+                        this%faces(face_i)%nodes(9) = n2
+                    end if
+                else
+                    if (tp == MT_TRIA13) then
+                        n2 = this%faces(face_i)%nodes(8)
+                        n3 = this%faces(face_i)%nodes(13)
+                        this%faces(face_i)%nodes(8) = n3
+                        this%faces(face_i)%nodes(13) = n2
+                        n2 = this%faces(face_i)%nodes(9)
+                        n3 = this%faces(face_i)%nodes(12)
+                        this%faces(face_i)%nodes(9) = n3
+                        this%faces(face_i)%nodes(12) = n2
+                        n2 = this%faces(face_i)%nodes(10)
+                        n3 = this%faces(face_i)%nodes(11)
+                        this%faces(face_i)%nodes(10) = n3
+                        this%faces(face_i)%nodes(11) = n2
+                    elseif (tp == MT_TRIA10) then
+                        n2 = this%faces(face_i)%nodes(4)
+                        n3 = this%faces(face_i)%nodes(9)
+                        this%faces(face_i)%nodes(4) = n3
+                        this%faces(face_i)%nodes(9) = n2
+                        n2 = this%faces(face_i)%nodes(5)
+                        n3 = this%faces(face_i)%nodes(8)
+                        this%faces(face_i)%nodes(5) = n3
+                        this%faces(face_i)%nodes(8) = n2
+                        n2 = this%faces(face_i)%nodes(6)
+                        n3 = this%faces(face_i)%nodes(7)
+                        this%faces(face_i)%nodes(6) = n3
+                        this%faces(face_i)%nodes(7) = n2
+                    end if
                 end if
                 c_id = this%faces(face_i)%cell_id
                 if (c_id > zero_ip) then

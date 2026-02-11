@@ -783,7 +783,7 @@ AFFE_CHAR_MECA = OPER(
         fr=tr("Modélise le raccord entre deux massifs"),
         GROUP_MA_ESCL=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_MA_MAIT=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
-        METHODE=SIMP(statut="o", typ="TXM", into=("PENALISATION", "LAGRANGIEN")),
+        METHODE=SIMP(statut="o", typ="TXM", into=("PENALISATION", "LAGRANGIEN", "NITSCHE")),
         COEF_PENA=SIMP(statut="o", typ="R", val_min=0.0),
         # Pairing options (for segment to segment contact)
         APPARIEMENT=SIMP(statut="f", typ="TXM", defaut="MORTAR", into=("MORTAR",)),

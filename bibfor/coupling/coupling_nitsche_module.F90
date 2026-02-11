@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-module coupling_lagrangian_module
+module coupling_nitsche_module
 !
     use coupling_computation_module
     use coupling_penalisation_module
@@ -40,22 +40,21 @@ module coupling_lagrangian_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/coupling_type.h"
-#include "asterfort/coupling_type.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/jevech.h"
 #include "FE_basis_module.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Coupling - Augmented Lagrangian methods
+! Coupling - Nitsche methods
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !
-!
-    public :: cplLagrInitData
-    public :: cplLagrInitTopoFEMFEM, cplLagrInitMapFEMFEM
-    public :: cplLagrRhsFEMFEM, cplLagrLhsFEMFEM
-    private :: cplLagrAssLhsFEMFEM
+    public :: cplNitsInitTopoFEMHHO, cplNitsInitMapFEMHHO, cplNitsInitData
+    public :: cplNitsLhsFEMHHO
+    private :: readNitSlavMap, cplNitsAssLhsFEMHHO
 !
 contains
 !
@@ -64,83 +63,27 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplLagrInitTopoFEMFEM(FEFaceSl, FEFaceMa, FEFaceLagSl)
+    subroutine cplNitsInitTopoFEMHHO(FEFaceSl, FECellSl, hhoFaceMa, hhoDataMa)
 !
         implicit none
 !
-        type(FE_Skin), intent(out) :: FEFaceSl, FEFaceMa, FEFaceLagSl
-!
-!===================================================================================================
-!    Initialize FEM and FEM topology - Lagrangian
-!===================================================================================================
-!
-        call cplPenaInitTopoFEMFEM(FEFaceSl, FEFaceMa)
-        ! Same degree used for DEPL and LAGR on Slave side
-        FEFaceLagSl = FEFaceSl
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-!
-    subroutine cplLagrInitMapFEMFEM(FEFaceSl, FEFaceMa, FEFaceLagSl, cplMap)
-!
-        implicit none
-!
-        type(CouplingMap), intent(inout) :: cplMap
-        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa, FEFaceLagSl
+        type(FE_Cell), intent(out) :: FECellSl
+        type(FE_Skin), intent(out) :: FEFaceSl
+        type(HHO_Face), intent(out) :: hhoFaceMa
+        type(HHO_Data), intent(out) :: hhoDataMa
 !
 !===================================================================================================
 !    Initialize FEM and HHO topology
 !===================================================================================================
 !
-        type(FE_basis) :: FEBasisSl, FEBasisMa, FEBasisLagSl
-        integer(kind=8) :: iBase, idim
+        integer(kind=8) :: nbNodes, nodes(MT_NNOMAX2D)
 !
-        call FEBasisSl%initFace(FEFaceSl)
-        call FEBasisMa%initFace(FEFaceMa)
-        call FEBasisLagSl%initFace(FEFaceLagSl)
+        call FECellSl%init()
 !
-        cplMap%nbDoFs = 0
-        cplMap%nbDoFsFEFaceSl = 0
-        cplMap%nbDoFsFEFaceLagSl = 0
-        cplMap%nbDoFsFEFace = 0
+        call readNitSlavMap(nbNodes, nodes)
+        FEFaceSl = FECellSl%getSkin(nbNodes, nodes)
 !
-        ASSERT(FEBasisSl%size == FEFaceSl%nbnodes)
-        ASSERT(FEBasisSl%size >= FEBasisLagSl%size)
-        do iBase = 1, FEBasisSl%size
-            do idim = 1, FEBasisSl%ndim
-                cplMap%nbDoFs = cplMap%nbDoFs+1
-                cplMap%nbDoFsFEFaceSl = cplMap%nbDoFsFEFaceSl+1
-                cplMap%mapDoFsFEFaceSl(cplMap%nbDoFsFEFaceSl) = cplMap%nbDoFs
-                cplMap%nbDoFsFEFace = cplMap%nbDoFsFEFace+1
-                cplMap%mapDoFsFEFace(cplMap%nbDoFsFEFace) = cplMap%nbDoFs
-            end do
-            if (iBase <= FEBasisLagSl%size) then
-                do idim = 1, FEBasisLagSl%ndim
-                    cplMap%nbDoFs = cplMap%nbDoFs+1
-                    cplMap%nbDoFsFEFaceLagSl = cplMap%nbDoFsFEFaceLagSl+1
-                    cplMap%mapDoFsFEFaceLagSl(cplMap%nbDoFsFEFaceLagSl) = cplMap%nbDoFs
-                end do
-            end if
-        end do
-!
-        cplMap%nbDoFsFEFaceMa = 0
-!
-        ASSERT(FEBasisMa%size == FEFaceMa%nbnodes)
-        do iBase = 1, FEBasisma%size
-            do idim = 1, FEBasisMa%ndim
-                cplMap%nbDoFs = cplMap%nbDoFs+1
-                cplMap%nbDoFsFEFaceMa = cplMap%nbDoFsFEFaceMa+1
-                cplMap%mapDoFsFEFaceMa(cplMap%nbDoFsFEFaceMa) = cplMap%nbDoFs
-                cplMap%nbDoFsFEFace = cplMap%nbDoFsFEFace+1
-                cplMap%mapDoFsFEFace(cplMap%nbDoFsFEFace) = cplMap%nbDoFs
-            end do
-        end do
-!
-        ASSERT(cplMap%nbDoFs <= MSIZE_CPL_LAGR_FEM)
+        call hhoInfoInitFace(hhoFaceMa, hhoDataMa)
 !
     end subroutine
 !
@@ -149,7 +92,101 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplLagrInitData(option, cplMap, cplData)
+    subroutine readNitSlavMap(nbNodes, nodes)
+!
+        implicit none
+!
+        integer(kind=8), intent(out) :: nbNodes, nodes(MT_NNOMAX2D)
+!
+!===================================================================================================
+!    Initialize FEM and HHO topology
+!===================================================================================================
+!
+        integer(kind=8) :: jpair, iNode
+!
+! - Map Volu to Surf
+!
+        call jevech('PPAIRR', 'L', jpair)
+        nbNodes = nint(zr(jpair-1+OFFSET_NB_NODES_NITSCHE))
+!
+        do iNode = 1, nbNodes
+            nodes(iNode) = nint(zr(jpair-1+OFFSET_NODE_IDX_FACE+iNode-1))
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplNitsInitMapFEMHHO(FECellSl, hhoFaceMa, hhoDataMa, cplMap)
+!
+        implicit none
+!
+        type(FE_Cell), intent(in) :: FECellSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
+        type(HHO_Data), intent(in) :: hhoDataMa
+        type(CouplingMap), intent(inout) :: cplMap
+!
+!===================================================================================================
+!    Initialize FEM and HHO topology
+!===================================================================================================
+!
+        type(FE_basis) :: FEBasisSl
+        integer(kind=8) :: nbNodes, nodes(MT_NNOMAX2D), iBase, idim, fbs, node, iNode, iDoF
+!
+        call readNitSlavMap(nbNodes, nodes)
+        call FEBasisSl%initCell(FECellSl)
+        ASSERT(FEBasisSl%typeEF == EF_LAGRANGE)
+!
+        cplMap%nbDoFs = 0
+        cplMap%nbDoFsFECellSl = 0
+!
+        ASSERT(FEBasisSl%size == FECellSl%nbnodes)
+        do iBase = 1, FEBasisSl%size
+            do idim = 1, FEBasisSl%ndim
+                cplMap%nbDoFs = cplMap%nbDoFs+1
+                cplMap%nbDoFsFECellSl = cplMap%nbDoFsFECellSl+1
+                cplMap%mapDoFsFECellSl(cplMap%nbDoFsFECellSl) = cplMap%nbDoFs
+            end do
+        end do
+!
+        cplMap%nbDoFsFEFaceSl = 0
+        cplMap%nbDoFsFEFace = 0
+!
+        do iNode = 1, nbNodes
+            node = nodes(iNode)
+            do idim = 1, FEBasisSl%ndim
+                cplMap%nbDoFsFEFace = cplMap%nbDoFsFEFace+1
+                cplMap%nbDoFsFEFaceSl = cplMap%nbDoFsFEFaceSl+1
+                iDoF = cplMap%mapDoFsFECellSl(FEBasisSl%ndim*(node-1)+idim)
+                cplMap%mapDoFsFEFaceSl(cplMap%nbDoFsFEFaceSl) = iDoF
+                cplMap%mapDoFsFEFace(cplMap%nbDoFsFEFace) = iDoF
+            end do
+        end do
+!
+        call hhoMecaFaceDofs(hhoFaceMa, hhoDataMa, fbs)
+        cplMap%nbDoFshhoFaceMa = 0
+!
+        do iBase = 1, fbs
+            cplMap%nbDoFs = cplMap%nbDoFs+1
+            cplMap%nbDoFsFEFace = cplMap%nbDoFsFEFace+1
+            cplMap%nbDoFshhoFaceMa = cplMap%nbDoFshhoFaceMa+1
+            cplMap%mapDoFshhoFaceMa(cplMap%nbDoFshhoFaceMa) = cplMap%nbDoFs
+            cplMap%mapDoFsFEFace(cplMap%nbDoFsFEFace) = cplMap%nbDoFs
+        end do
+!
+        ASSERT(cplMap%nbDoFs <= MSIZE_CPL_NITS)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplNitsInitData(option, cplMap, cplData)
 !
         implicit none
 !
@@ -170,30 +207,32 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplLagrRhsFEMFEM(FEFaceSl, FEFaceMa, FEFaceLagSl, FEQuadSl, FEQuadMa, &
-                                cplMap, cplData, rhs)
+    subroutine cplNitsLhsFEMHHO(FEFaceSl, FECellSl, hhoFaceMa, hhoDataMa, &
+                                FEQuadSl, hhoQuadMa, cplMap, cplData, lhs)
 !
         implicit none
 !
-        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa, FEFaceLagSl
-        type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
+        type(FE_Skin), intent(in) :: FEFaceSl
+        type(FE_Cell), intent(in) :: FECellSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
+        type(HHO_Data), intent(in) :: hhoDataMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl
+        type(HHO_Quadrature), intent(in) :: hhoQuadMa
         type(CouplingMap), intent(in) :: cplMap
         type(CouplingData), intent(in) :: cplData
-        real(kind=8), intent(inout) :: rhs(MSIZE_CPL_LAGR_FEM)
+        type(HHO_matrix), intent(inout) :: lhs
 !
 !===================================================================================================
-!    Lagrangian - FEM/FEM - Compute residual
+!    NITSCHE - FEM/HHO - Compute matrix
 !===================================================================================================
 !
-        type(HHO_matrix) :: mat
+        type(HHO_matrix) :: lhs_pena
 !
-        rhs = 0.d0
+        call cplCmpPenaFEMHHOMatVec(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuadMa, &
+                                    cplData%coef_pena, lhs_pena)
 !
-        call cplLagrLhsFEMFEM(FEFaceSl, FEFaceMa, FEFaceLagSl, FEQuadSl, FEQuadMa, &
-                              cplMap, cplData, mat)
-!
-        call mat%dot(cplData%disp_curr, rhs)
-        call mat%free()
+        call cplNitsAssLhsFEMHHO(cplMap, lhs_pena, lhs)
+        call lhs_pena%free()
 !
     end subroutine
 !
@@ -202,52 +241,19 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplLagrLhsFEMFEM(FEFaceSl, FEFaceMa, FEFaceLagSl, FEQuadSl, FEQuadMa, &
-                                cplMap, cplData, lhs)
-!
-        implicit none
-!
-        type(FE_Skin), intent(in) :: FEFaceSl, FEFaceMa, FEFaceLagSl
-        type(FE_Quadrature), intent(in) :: FEQuadSl, FEQuadMa
-        type(CouplingMap), intent(in) :: cplMap
-        type(CouplingData), intent(in) :: cplData
-        type(HHO_matrix), intent(inout) :: lhs
-!
-!===================================================================================================
-!    Lagrangian - FEM/FEM - Compute matrix
-!===================================================================================================
-!
-        real(kind=8) :: matPena(MSIZE_CPL_PENA_FEM, MSIZE_CPL_PENA_FEM)
-        real(kind=8) :: matLagr(MSIZE_LAGR_FEM, MSIZE_CPL_PENA_FEM)
-!
-        call cplCmpPenaFEMFEMMatVec(FEFaceSl, FEFaceMa, FEQuadSl, FEQuadMa, &
-                                    cplData%coef_pena, matPena)
-!
-        call cplCmpLagrFEMFEMMatVec(FEFaceSl, FEFaceMa, FEFaceLagSl, FEQuadSl, FEQuadMa, matLagr)
-!
-        call cplLagrAssLhsFEMFEM(cplMap, matPena, matLagr, lhs)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-!
-    subroutine cplLagrAssLhsFEMFEM(cplMap, matPena, matLagr, lhs)
+    subroutine cplNitsAssLhsFEMHHO(cplMap, lhs_pena, lhs)
 !
         implicit none
 !
         type(CouplingMap), intent(in) :: cplMap
-        real(kind=8), intent(in) :: matPena(MSIZE_CPL_PENA_FEM, MSIZE_CPL_PENA_FEM)
-        real(kind=8), intent(in) :: matLagr(MSIZE_LAGR_FEM, MSIZE_CPL_PENA_FEM)
+        type(HHO_matrix), intent(in) :: lhs_pena
         type(HHO_matrix), intent(inout) :: lhs
 !
 !===================================================================================================
-!    Lagrangian - FEM/FEM - Assembly matrix
+!    NITSCHE - FEM/HHO - Assembly matrix
 !===================================================================================================
 !
-        integer(kind=8) :: jFESlLg, jFE, iFE, irow, jcol
+        integer(kind=8) :: jFE, iFE, irow, jcol
 !
         call lhs%initialize(cplMap%nbDoFs, cplMap%nbDoFs, 0.d0)
 !
@@ -256,17 +262,7 @@ contains
             jcol = cplMap%mapDoFsFEFace(jFE)
             do iFE = 1, cplMap%nbDoFsFEFace
                 irow = cplMap%mapDoFsFEFace(iFE)
-                lhs%m(irow, jcol) = matPena(iFE, jFE)
-            end do
-        end do
-!
-!     Term: (v^S-v^M, lag^S) and (mu^S, u^S-u^M) by symmetry
-        do jFESlLg = 1, cplMap%nbDoFsFEFaceLagSl
-            jcol = cplMap%mapDoFsFEFaceLagSl(jFESlLg)
-            do iFE = 1, cplMap%nbDoFsFEFace
-                irow = cplMap%mapDoFsFEFace(iFE)
-                lhs%m(jcol, irow) = matLagr(jFESlLg, iFE)
-                lhs%m(irow, jcol) = lhs%m(jcol, irow)
+                lhs%m(irow, jcol) = lhs_pena%m(iFE, jFE)
             end do
         end do
 !

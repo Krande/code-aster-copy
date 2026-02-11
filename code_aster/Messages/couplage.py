@@ -31,4 +31,9 @@ On n'a pas trouvé d'élément fini pour le raccord MASSIF. Ce cas n'est pas dis
 Les mailles portant une modélisation HHO doivent être uniquement utilisées uniquement dans GROUP_MA_MAIT.
 """
     ),
+    3: _(
+        """
+Le raccord massif avec la méthode NITSCHE est pour l'instant limité à utiliser une modélisation HHO dans GROUP_MA_MAIT.
+"""
+    ),
 }
