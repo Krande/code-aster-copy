@@ -47,7 +47,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
 !
     integer(kind=8) :: kpg, kno, knos, k
     real(kind=8) :: nosom(MT_NNOMAX, MT_NNOMAX)
-    real(kind=8), parameter :: demi = 0.5d0, quart = 0.25d0
+    real(kind=8), parameter :: demi = 0.5d0, quart = 0.25d0, tiers = 1.d0/3.d0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -138,7 +138,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
             nosom(26, 8) = quart
 !
             do k = 1, 8
-                nosom(MT_NNOMAX, k) = demi/4.d0
+                nosom(27, k) = 1.d0/8.d0
             end do
         end if
 !
@@ -181,6 +181,25 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
             nosom(18, 6) = quart
             nosom(18, 4) = quart
 !
+            if (elrefa .eq. 'P21') then
+!
+                nosom(19, 1) = tiers
+                nosom(19, 2) = tiers
+                nosom(19, 3) = tiers
+!
+                nosom(20, 4) = tiers
+                nosom(20, 5) = tiers
+                nosom(20, 6) = tiers
+!
+                nosom(21, 1) = 1.d0/6.d0
+                nosom(21, 2) = 1.d0/6.d0
+                nosom(21, 3) = 1.d0/6.d0
+                nosom(21, 4) = 1.d0/6.d0
+                nosom(21, 5) = 1.d0/6.d0
+                nosom(21, 6) = 1.d0/6.d0
+!
+            end if
+!
         end if
 !
     else if (elrefa .eq. 'T10' .or. elrefa .eq. 'T15') then
@@ -197,6 +216,31 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
         nosom(9, 4) = demi
         nosom(10, 3) = demi
         nosom(10, 4) = demi
+!
+        if (elrefa .eq. 'T15') then
+!
+            nosom(11, 1) = tiers
+            nosom(11, 2) = tiers
+            nosom(11, 3) = tiers
+!
+            nosom(12, 1) = tiers
+            nosom(12, 2) = tiers
+            nosom(12, 4) = tiers
+!
+            nosom(13, 1) = tiers
+            nosom(13, 3) = tiers
+            nosom(13, 4) = tiers
+!
+            nosom(14, 2) = tiers
+            nosom(14, 3) = tiers
+            nosom(14, 4) = tiers
+!
+            nosom(15, 1) = quart
+            nosom(15, 2) = quart
+            nosom(15, 3) = quart
+            nosom(15, 4) = quart
+!
+        end if
 !
 !
     else if (elrefa .eq. 'P13' .or. elrefa .eq. 'P19') then
@@ -218,6 +262,37 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
         nosom(13, 4) = demi
         nosom(13, 5) = demi
 !
+        if (elrefa .eq. 'P19') then
+!
+            nosom(14, 1) = quart
+            nosom(14, 2) = quart
+            nosom(14, 3) = quart
+            nosom(14, 4) = quart
+!
+            nosom(15, 1) = tiers
+            nosom(15, 2) = tiers
+            nosom(15, 5) = tiers
+!
+            nosom(16, 2) = tiers
+            nosom(16, 3) = tiers
+            nosom(16, 5) = tiers
+!
+            nosom(17, 3) = tiers
+            nosom(17, 4) = tiers
+            nosom(17, 5) = tiers
+!
+            nosom(18, 1) = tiers
+            nosom(18, 4) = tiers
+            nosom(18, 5) = tiers
+!
+            nosom(19, 1) = 1.d0/5.d0
+            nosom(19, 2) = 1.d0/5.d0
+            nosom(19, 3) = 1.d0/5.d0
+            nosom(19, 4) = 1.d0/5.d0
+            nosom(19, 5) = 1.d0/5.d0
+!
+        end if
+!
 !
     else if (elrefa .eq. 'TR6') then
         ASSERT(nnos .eq. 3)
@@ -237,9 +312,9 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
         nosom(5, 3) = demi
         nosom(6, 3) = demi
         nosom(6, 1) = demi
-        nosom(7, 1) = quart
-        nosom(7, 2) = quart
-        nosom(7, 3) = quart
+        nosom(7, 1) = tiers
+        nosom(7, 2) = tiers
+        nosom(7, 3) = tiers
 !
 !
     else if (elrefa .eq. 'QU8') then

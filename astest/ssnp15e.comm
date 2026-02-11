@@ -107,7 +107,6 @@ TEST_RESU(
             VALE_REFE=-6.3488499999999996e-4,
             REFERENCE="ANALYTIQUE",
             PRECISION=5.0e-3,
-            GROUP_MA="MA1",
         ),
         _F(
             INST=0.81879999999999997,
@@ -119,7 +118,6 @@ TEST_RESU(
             VALE_REFE=-1.2068700000000001e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=5.0e-3,
-            GROUP_MA="MA1",
         ),
         _F(
             INST=1.0,
@@ -131,7 +129,6 @@ TEST_RESU(
             VALE_REFE=-0.034314600000000001,
             REFERENCE="ANALYTIQUE",
             PRECISION=5.0e-3,
-            GROUP_MA="MA1",
         ),
     )
 )

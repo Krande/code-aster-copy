@@ -193,7 +193,6 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=CHPOSTS,
             NOM_CHAM="SIGM_NOEU",
-            GROUP_MA="M1",
             NOM_CMP="SIZZ",
             VALE_CALC=4.82452898e-09,
             VALE_REFE=0.0,

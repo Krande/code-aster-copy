@@ -134,7 +134,6 @@ TEST_RESU(
             NOM_CMP="NYY",
             VALE_CALC=2.0000000305,
             VALE_REFE=2.0,
-            GROUP_MA="M50",
             SOUS_POINT=2,
         ),
         _F(
@@ -146,7 +145,6 @@ TEST_RESU(
             NOM_CMP="NYY",
             VALE_CALC=3.84516042711,
             VALE_REFE=3.84429,
-            GROUP_MA="M40",
             SOUS_POINT=2,
         ),
     )
@@ -163,7 +161,6 @@ TEST_RESU(
             NOM_CMP="MXX",
             VALE_CALC=-0.0401326063002,
             VALE_REFE=-4.01497e-2,
-            GROUP_MA="M40",
             SOUS_POINT=2,
         ),
     )

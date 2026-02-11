@@ -218,7 +218,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.00551702250559,
-            GROUP_MA="M1",
         ),
         _F(
             INST=50,
@@ -227,7 +226,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.0343949883458,
-            GROUP_MA="M1",
         ),
         _F(
             INST=200,
@@ -236,7 +234,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.0641318432303,
-            GROUP_MA="M1",
         ),
         _F(
             INST=350,
@@ -245,7 +242,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.0779102139476,
-            GROUP_MA="M1",
         ),
     )
 )
@@ -273,7 +269,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.00551702250559,
-            GROUP_MA="M1",
         ),
         _F(
             INST=50,
@@ -282,7 +277,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.03443572387280919,
-            GROUP_MA="M1",
         ),
         _F(
             INST=200,
@@ -291,7 +285,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.06414531780293342,
-            GROUP_MA="M1",
         ),
         _F(
             INST=350,
@@ -300,7 +293,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.0779182892908627,
-            GROUP_MA="M1",
         ),
     )
 )

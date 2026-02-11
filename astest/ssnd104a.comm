@@ -108,7 +108,6 @@ TEST_RESU(
             GROUP_NO="N4",
             NOM_CMP="SIYY",
             VALE_CALC=-4395604.395604386,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -117,7 +116,6 @@ TEST_RESU(
             GROUP_NO="N4",
             NOM_CMP="SIYY",
             VALE_CALC=-6095848.395592693,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=100,
@@ -126,7 +124,6 @@ TEST_RESU(
             GROUP_NO="N4",
             NOM_CMP="SIYY",
             VALE_CALC=-6414253.405486886,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -238,7 +235,6 @@ TEST_RESU(
             VALE_REFE=-4395604.395604386,
             VALE_CALC=-4395604.395604386,
             PRECISION=0.0025,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -250,7 +246,6 @@ TEST_RESU(
             VALE_REFE=-6095848.395592693,
             VALE_CALC=-6108479.438786194,
             PRECISION=0.0025,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=100,
@@ -262,7 +257,6 @@ TEST_RESU(
             VALE_REFE=-6414253.405486886,
             VALE_CALC=-6513940.706164533,
             PRECISION=0.02,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -374,7 +368,6 @@ TEST_RESU(
             VALE_REFE=-4395604.395604386,
             VALE_CALC=-4395604.395604386,
             PRECISION=0.0025,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -386,7 +379,6 @@ TEST_RESU(
             VALE_REFE=-6095848.395592693,
             VALE_CALC=-6088965.121341695,
             PRECISION=0.0025,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=100,
@@ -398,7 +390,6 @@ TEST_RESU(
             VALE_REFE=-6414253.405486886,
             VALE_CALC=-6376713.408871641,
             PRECISION=0.01,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -512,7 +503,6 @@ TEST_RESU(
             VALE_REFE=-4395604.395604386,
             VALE_CALC=-4395604.395604386,
             PRECISION=0.0025,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,
@@ -524,7 +514,6 @@ TEST_RESU(
             VALE_REFE=-6095848.395592693,
             VALE_CALC=-6095514.546188494,
             PRECISION=0.0025,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=100,
@@ -536,7 +525,6 @@ TEST_RESU(
             VALE_REFE=-6414253.405486886,
             VALE_CALC=-6422868.90253851,
             PRECISION=0.0025,
-            GROUP_MA="M1",
         ),
         _F(
             NUME_ORDRE=50,

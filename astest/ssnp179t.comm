@@ -250,7 +250,6 @@ TEST_RESU(
 TEST_RESU(
     RESU=_F(
         INST=1.0,
-        GROUP_MA="load",
         RESULTAT=resnonl,
         NOM_CHAM="REAC_NODA",
         NOM_CMP="HHO_FX1",

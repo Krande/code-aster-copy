@@ -65,7 +65,6 @@ IMPR_RESU(RESU=(_F(RESULTAT=result2), _F(RESULTAT=result)), UNITE=80)
 
 TEST_RESU(
     RESU=_F(
-        GROUP_MA=("RESU_DEP",),
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
         NUME_ORDRE=1,
@@ -79,7 +78,6 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        GROUP_MA=("RESU_DEP",),
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
         NUME_ORDRE=1,

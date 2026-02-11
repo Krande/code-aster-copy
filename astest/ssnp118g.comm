@@ -188,13 +188,7 @@ U_TAC = CALC_CHAMP(
     GROUP_MA="CUBEDEG",
 )
 
-U_TAC = CALC_CHAMP(
-    reuse=U_TAC,
-    RESULTAT=U_TAC,
-    VARI_INTERNE="VARI_NOEU",
-    CONTRAINTE="SIEF_NOEU",
-    GROUP_MA="CUBEDEG",
-)
+U_TAC = CALC_CHAMP(reuse=U_TAC, RESULTAT=U_TAC, VARI_INTERNE="VARI_NOEU", CONTRAINTE="SIEF_NOEU")
 
 
 # ----------------------------------------------------------------------------------
@@ -337,7 +331,6 @@ TEST_RESU(
         NOM_CMP="SIGN",
         VALE_CALC=0.347848803,
         VALE_REFE=0.34784900000000002,
-        GROUP_MA="CUBEDEG",
     )
 )
 
@@ -352,7 +345,6 @@ TEST_RESU(
         NOM_CMP="V4",
         VALE_CALC=0.700003000,
         VALE_REFE=0.70000300000000004,
-        GROUP_MA="CUBEDEG",
     )
 )
 

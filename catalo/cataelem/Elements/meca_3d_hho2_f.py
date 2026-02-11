@@ -118,6 +118,8 @@ DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
+
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
@@ -170,6 +172,16 @@ class MECA3DQU9_HHO2_F(Element):
         ),
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+        ),
+        OP.HHO_COND_MECA(
+            te=574,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMAELS1, MMATUUR), (SP.PVEELE1, MVECTUR)),
+            para_out=(
+                (SP.PMATUUR, MMATUUR),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PMATUND, MMATUNS),
+                (SP.PVECTUD, MVECTUR),
+            ),
         ),
         OP.HHO_DEPL_MECA(
             te=427,
@@ -228,7 +240,11 @@ class MECA3DTR7_HHO2_F(MECA3DQU9_HHO2_F):
 class MECA3DGVT_HHO2_F(MECA3DTR7_HHO2_F):
     """Please document this element"""
 
+    calculs = (OP.HHO_COND_MECA(te=-1),)
+
 
 # ------------------------------------------------------------
 class MECA3DGVQ_HHO2_F(MECA3DQU9_HHO2_F):
     """Please document this element"""
+
+    calculs = (OP.HHO_COND_MECA(te=-1),)

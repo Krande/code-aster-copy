@@ -47,6 +47,7 @@ subroutine aplcpgn(mesh, newgeo, &
 #include "jeveux.h"
 #include "Contact_type.h"
 #include "asterfort/int_to_char8.h"
+#include "asterfort/mesh_pairing_type.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
@@ -93,11 +94,11 @@ subroutine aplcpgn(mesh, newgeo, &
     character(len=8) :: elem_mast_code, elem_slav_code
     character(len=8) :: elem_slav_type, elem_mast_type
     real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
-    integer(kind=8) :: nb_pair, nb_poin_inte
+    integer(kind=8) :: nb_pair, nb_poin_inte, i_dim, i_pt
     integer(kind=8) :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
     integer(kind=8) :: i_slav_neigh
     real(kind=8) :: inte_weight
-    real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL)
+    real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL), poin_inte_sl2(2, MAX_NB_INTE)
     real(kind=8) :: poin_inte_ma(SIZE_MAX_INTE_SL)
     character(len=8) :: elem_slav_name, elem_name
     integer(kind=8) :: nb_slav_start, nb_find_mast, nb_mast_start
@@ -374,8 +375,20 @@ subroutine aplcpgn(mesh, newgeo, &
                     !print*,"LIPTMA_APLC", li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
                     !            (nb_pair-1)*SIZE_MAX_INTE_SL+2)
 
+                    poin_inte_sl2 = 0.d0
+                    if (elem_slav_dime == 2) then
+                        do i_pt = 1, nb_poin_inte
+                            poin_inte_sl2(1, i_pt) = poin_inte_sl(i_pt)
+                        end do
+                    else
+                        do i_pt = 1, nb_poin_inte
+                            do i_dim = 1, 2
+                                poin_inte_sl2(i_dim, i_pt) = poin_inte_sl(2*i_pt+i_dim)
+                            end do
+                        end do
+                    end if
                     call pairAdd(elem_slav_nume, elem_mast_nume, &
-                                 nb_poin_inte, li_pt_inte_sl, &
+                                 nb_poin_inte, poin_inte_sl2, &
                                  meshPairing)
                 end if
 

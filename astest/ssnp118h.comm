@@ -331,7 +331,6 @@ TEST_RESU(
         NOM_CMP="SIGN",
         VALE_CALC=0.347848803,
         VALE_REFE=0.34784900000000002,
-        GROUP_MA="CUBEDEG",
     )
 )
 
@@ -346,7 +345,6 @@ TEST_RESU(
         NOM_CMP="V4",
         VALE_CALC=0.700003000,
         VALE_REFE=0.70000300000000004,
-        GROUP_MA="CUBEDEG",
     )
 )
 
