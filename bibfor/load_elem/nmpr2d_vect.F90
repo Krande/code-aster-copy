@@ -24,8 +24,8 @@ subroutine nmpr2d_vect(l_axis, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/vff2dn.h"
 !
     aster_logical, intent(in) :: l_axis
@@ -80,7 +80,6 @@ subroutine nmpr2d_vect(l_axis, &
 ! ----- Compute vector
         tx = -nx*pres(kpg)-ny*cisa(kpg)
         ty = -ny*pres(kpg)+nx*cisa(kpg)
-        print *, kpg, nx, ny, pres(kpg), poids
         do ino = 1, nno
             vect(1, ino) = vect(1, ino)+tx*zr(ivf+kdec+ino-1)*poids
             vect(2, ino) = vect(2, ino)+ty*zr(ivf+kdec+ino-1)*poids
