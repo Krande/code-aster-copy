@@ -46,7 +46,15 @@ class MedSequenceToOrder(Enum):
     Iteration = auto()
 
 
-def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None, model=None):
+def convertMedFieldToAster(
+    medField,
+    asterFieldName,
+    mesh,
+    componentToFill=None,
+    model=None,
+    dofNum=None,
+    zeroExtension=False,
+):
     """Convert a MedField in a code_aster Field
 
     Arguments:
@@ -55,6 +63,8 @@ def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None,
         mesh (BaseMesh): support mesh of return field
         componentToFill (list): string list of component names (eg. ["DX", "DY", "DZ"])
         model (Model): support model (in case of ELGA, ELNO or ELEM field)
+        dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
+        zeroExtension (bool): true if field can be extended to zero (when missing values)
 
     Returns:
         DataField: code_aster data field
@@ -88,7 +98,7 @@ def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None,
                 i += 1
 
         # Convert SimpleFieldOnNodes to FieldOnNodes
-        fieldToAdd = sFON.toFieldOnNodes()
+        fieldToAdd = sFON.toFieldOnNodes(dofNum, zeroExtension)
     # FieldOnCells case
     elif loc in ("ELGA", "ELNO", "ELEM"):
         if model is None:
@@ -130,7 +140,7 @@ def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None,
                         j += 1
         fED = model.getFiniteElementDescriptor()
         # Convert SimpleFieldOnells to FieldOnCells
-        fieldToAdd = sFOC.toFieldOnCells(fED, opt, param)
+        fieldToAdd = sFOC.toFieldOnCells(fED, opt, param, zeroExtension)
     else:
         raise NotImplementedError()
     return fieldToAdd
@@ -340,8 +350,10 @@ def _splitMedFileToResults(
     fieldToRead,
     resultType,
     model=None,
+    dofNum=None,
     parallel=True,
     sequenceToOrder=MedSequenceToOrder.Both,
+    zeroExtension=False,
 ):
     """Split a MED mesh and MED fields from a filename and return Result
 
@@ -350,14 +362,16 @@ def _splitMedFileToResults(
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
+        dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
         parallel (bool): True if med file must be open in parallel
         sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
+        zeroExtension (bool): true if field can be extended to zero (when missing values)
 
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
     """
-    if not isinstance(model, Model):
-        raise TypeError("model argument must be of type Model")
+    if model is not None and not isinstance(model, Model):
+        raise TypeError("model argument must be of type Model", model)
 
     if not issubclass(resultType, Result):
         raise TypeError("resultType must be a child class of Result")
@@ -370,6 +384,11 @@ def _splitMedFileToResults(
 
     if model is not None:
         mesh = model.getMesh()
+    if dofNum is not None:
+        mesh = dofNum.getMesh()
+    if model is not None and dofNum is not None:
+        if model.getMesh().getName() != dofNum.getMesh().getName():
+            raise NameError("Inconsistent meshes between Model and DOFNumbering")
 
     first = True
     # Loop over field dict given by user
@@ -391,7 +410,9 @@ def _splitMedFileToResults(
         # Loop over field "time" index
         for index, curTime in curMedFieldDict["id2time"]:
             medField = curMedFieldDict[index]
-            fieldToAdd = convertMedFieldToAster(medField, asterFieldName, mesh, None, model)
+            fieldToAdd = convertMedFieldToAster(
+                medField, asterFieldName, mesh, None, model, dofNum, zeroExtension
+            )
 
             # Add field to Result
             result.setField(fieldToAdd, asterFieldName, index)
@@ -401,7 +422,13 @@ def _splitMedFileToResults(
 
 
 def splitMedFileToResults(
-    filename, fieldToRead, resultType, model=None, sequenceToOrder=MedSequenceToOrder.Both
+    filename,
+    fieldToRead,
+    resultType,
+    model=None,
+    dofNum=None,
+    sequenceToOrder=MedSequenceToOrder.Both,
+    zeroExtension=False,
 ):
     """Split a MED mesh and MED fields from a filename and return Result
 
@@ -410,18 +437,33 @@ def splitMedFileToResults(
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
+        dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
         sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
+        zeroExtension (bool): true if field can be extended to zero (when missing values)
 
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
     """
     return _splitMedFileToResults(
-        filename, fieldToRead, resultType, model, parallel=True, sequenceToOrder=sequenceToOrder
+        filename,
+        fieldToRead,
+        resultType,
+        model=model,
+        dofNum=dofNum,
+        parallel=True,
+        sequenceToOrder=sequenceToOrder,
+        zeroExtension=zeroExtension,
     )
 
 
 def readMedFileToResults(
-    filename, fieldToRead, resultType, model=None, sequenceToOrder=MedSequenceToOrder.Both
+    filename,
+    fieldToRead,
+    resultType,
+    model=None,
+    dofNum=None,
+    sequenceToOrder=MedSequenceToOrder.Both,
+    zeroExtension=False,
 ):
     """Read a MED mesh and MED fields from a filename and return Result
 
@@ -430,11 +472,20 @@ def readMedFileToResults(
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
+        dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
         sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
+        zeroExtension (bool): true if field can be extended to zero (when missing values)
 
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
     """
     return _splitMedFileToResults(
-        filename, fieldToRead, resultType, model, parallel=False, sequenceToOrder=sequenceToOrder
+        filename,
+        fieldToRead,
+        resultType,
+        model=model,
+        dofNum=dofNum,
+        parallel=False,
+        sequenceToOrder=sequenceToOrder,
+        zeroExtension=zeroExtension,
     )

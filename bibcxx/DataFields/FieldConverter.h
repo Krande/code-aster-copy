@@ -31,6 +31,7 @@
 #include "DataFields/SimpleFieldOnCells.h"
 #include "DataFields/SimpleFieldOnNodes.h"
 #include "Meshes/ConnectionMesh.h"
+#include "Numbering/BaseDOFNumbering.h"
 #include "Supervis/Exceptions.h"
 
 //////// Convert to FieldOnNodes ////////////////
@@ -57,11 +58,12 @@ toFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
 
 template < typename ValueType >
 std::shared_ptr< FieldOnNodes< ValueType > >
-toFieldOnNodes( const SimpleFieldOnNodes< ValueType > &field ) {
+toFieldOnNodes( const SimpleFieldOnNodes< ValueType > &field, bool extensionToZero = false ) {
     auto cham_no = std::make_shared< FieldOnNodes< ValueType > >();
 
     // Convert to CHAM_NO
-    std::string prof = " ", prol0 = "NON", base = "G", kstop = "F";
+    std::string prof = " ", base = "G", kstop = "F";
+    std::string prol0 = extensionToZero ? "OUI" : "NON";
     ASTERINTEGER iret = 0;
     CALLO_CNSCNO_WRAP( field.getName(), prof, prol0, base, cham_no->getName(), kstop, &iret );
 
@@ -73,8 +75,31 @@ toFieldOnNodes( const SimpleFieldOnNodes< ValueType > &field ) {
 
 template < typename ValueType >
 std::shared_ptr< FieldOnNodes< ValueType > >
-toFieldOnNodes( const std::shared_ptr< SimpleFieldOnNodes< ValueType > > field ) {
-    return toFieldOnNodes( *field );
+toFieldOnNodes( const SimpleFieldOnNodes< ValueType > &field, const BaseDOFNumbering &dofNum,
+                bool extensionToZero = false ) {
+    auto cham_no = std::make_shared< FieldOnNodes< ValueType > >();
+
+    // Convert to CHAM_NO
+    std::string prof = dofNum.getName() + ".NUME", base = "G", kstop = "F";
+    std::string prol0 = extensionToZero ? "OUI" : "NON";
+    ASTERINTEGER iret = 0;
+    CALLO_CNSCNO_WRAP( field.getName(), prof, prol0, base, cham_no->getName(), kstop, &iret );
+
+    AS_ASSERT( iret == 0 );
+
+    cham_no->build( field.getMesh() );
+    return cham_no;
+};
+
+template < typename ValueType >
+std::shared_ptr< FieldOnNodes< ValueType > >
+toFieldOnNodes( const std::shared_ptr< SimpleFieldOnNodes< ValueType > > field,
+                const BaseDOFNumberingPtr dofNum = nullptr, bool extensionToZero = false ) {
+    if ( dofNum == nullptr ) {
+        return toFieldOnNodes( *field, extensionToZero );
+    } else {
+        return toFieldOnNodes( *field, *dofNum, extensionToZero );
+    }
 }
 
 template < typename ValueType >
@@ -195,12 +220,13 @@ toSimpleFieldOnCells( const std::shared_ptr< FieldOnCells< ValueType > > field )
 template < typename ValueType >
 std::shared_ptr< FieldOnCells< ValueType > >
 toFieldOnCells( const SimpleFieldOnCells< ValueType > &field, const FiniteElementDescriptorPtr fed,
-                const std::string option = std::string(),
-                const std::string nompar = std::string() ) {
+                const std::string option = std::string(), const std::string nompar = std::string(),
+                bool extensionToZero = true ) {
     auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
 
     // Convert to CHAM_ELEM
-    const std::string prol0 = "OUI", base = "G", kstop = "F";
+    const std::string base = "G", kstop = "F";
+    std::string prol0 = extensionToZero ? "OUI" : "NON";
     ASTERINTEGER iret = 0, nncp = 0;
     CALLO_CESCEL_WRAP( field.getName(), fed->getName(), option, nompar, prol0, &nncp, base,
                        cham_elem->getName(), kstop, &iret );
@@ -245,8 +271,8 @@ template < typename ValueType >
 std::shared_ptr< FieldOnCells< ValueType > >
 toFieldOnCells( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field,
                 const FiniteElementDescriptorPtr fed, const std::string option = std::string(),
-                const std::string nompar = std::string() ) {
-    return toFieldOnCells( *field, fed, option, nompar );
+                const std::string nompar = std::string(), bool extensionToZero = true ) {
+    return toFieldOnCells( *field, fed, option, nompar, extensionToZero );
 }
 
 #ifdef ASTER_HAVE_MPI

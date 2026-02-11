@@ -4153,13 +4153,14 @@ class SimpleFieldOnCellsReal(DataField):
                         values (list[float]): list of values to set.
         """
 
-    def toFieldOnCells(self, fed, option="", nompar=""):
+    def toFieldOnCells(self, fed, option="", nompar="", zeroExtension=True):
         """Converts to FieldOnCells
 
         Arguments:
             fed [FiniteElementDescriptor]: finite element descriptor
-            option [str] : name of option like TOUT_INI_ELGA (default: " ")
-            nompar [str] : name of parameter like DEPL_R (default: " ")
+            option [str]: name of option like TOUT_INI_ELGA (default: " ")
+            nompar [str]: name of parameter like DEPL_R (default: " ")
+            zeroExtension [bool]: true if field could be extended to zero (default: True)
 
         Returns:
             FieldOnCellsReal: field converted.
@@ -4383,8 +4384,26 @@ class SimpleFieldOnNodesReal(DataField):
                         value [float]: value to set everywhere.
         """
 
-    def toFieldOnNodes(self):
-        """Convert to FieldOnNodes
+    def toFieldOnNodes(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. toFieldOnNodes(self: libaster.SimpleFieldOnNodesReal) -> libaster.FieldOnNodesReal
+
+
+        Convert to FieldOnNodes
+
+        Returns:
+            FieldOnNodesReal: field converted
+
+
+        2. toFieldOnNodes(self: libaster.SimpleFieldOnNodesReal, dofNum: libaster.BaseDOFNumbering, zeroExtension: bool = <PythonBool.FALSE: 0>) -> libaster.FieldOnNodesReal
+
+
+        Convert to FieldOnNodes
+
+        Arguments:
+            dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
+            zeroExtension (bool): true if field can be extended to zero (when missing values)
 
         Returns:
             FieldOnNodesReal: field converted

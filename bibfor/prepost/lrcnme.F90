@@ -19,7 +19,7 @@
 subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
                   typent, nbcmpv, ncmpva, ncmpvm, iinst, &
                   numpt, numord, inst, crit, prec, &
-                  nrofic, codret, base, nonu)
+                  nrofic, prolz, codret, base, nonu)
 !_____________________________________________________________________
 !
 !     LECTURE D'UN CHAMP AUX NOEUDS - FORMAT MED
@@ -88,6 +88,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     integer(kind=8) :: nrofic, typent
     integer(kind=8) :: nbcmpv
     integer(kind=8) :: iinst, numpt, numord
+    character(len=3) :: prolz
     integer(kind=8) :: codret
     character(len=1), optional, intent(in) :: base
 !

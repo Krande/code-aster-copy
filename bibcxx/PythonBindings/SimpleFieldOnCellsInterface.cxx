@@ -262,22 +262,24 @@ Returns:
         .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers )
         .def(
             "toFieldOnCells",
-            []( const SimpleFieldOnCellsReal &f, const FiniteElementDescriptorPtr fed,
-                const std::string option,
-                const std::string nompar ) { return toFieldOnCells( f, fed, option, nompar ); },
+            []( const SimpleFieldOnCellsRealPtr &f, const FiniteElementDescriptorPtr fed,
+                const std::string option, const std::string nompar, bool extensionToZero ) {
+                return toFieldOnCells( f, fed, option, nompar, extensionToZero );
+            },
             R"(
             Converts to FieldOnCells
 
             Arguments:
                 fed [FiniteElementDescriptor]: finite element descriptor
-                option [str] : name of option like TOUT_INI_ELGA (default: " ")
-                nompar [str] : name of parameter like DEPL_R (default: " ")
+                option [str]: name of option like TOUT_INI_ELGA (default: " ")
+                nompar [str]: name of parameter like DEPL_R (default: " ")
+                zeroExtension [bool]: true if field could be extended to zero (default: True)
 
             Returns:
                 FieldOnCellsReal: field converted.
             )",
             py::arg( "fed" ), py::arg( "option" ) = std::string(),
-            py::arg( "nompar" ) = std::string() )
+            py::arg( "nompar" ) = std::string(), py::arg( "zeroExtension" ) = true )
         .def(
             "toFieldOnNodes", []( const SimpleFieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
             R"(
