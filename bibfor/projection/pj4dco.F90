@@ -150,10 +150,14 @@ subroutine pj4dco(typeSelect, &
             else if (cellTypeNume .eq. cellListType(3)) then
                 nbTria = nbTria+1
             else if (cellTypeNume .eq. cellListType(4)) then
-                nbTria = nbTria+2
+                nbTria = nbTria+1
             else if (cellTypeNume .eq. cellListType(5)) then
                 nbTria = nbTria+2
             else if (cellTypeNume .eq. cellListType(6)) then
+                nbTria = nbTria+2
+            else if (cellTypeNume .eq. cellListType(7)) then
+                nbTria = nbTria+2
+            else if (cellTypeNume .eq. cellListType(8)) then
                 nbTria = nbTria+2
             else
                 call utmess('F', 'PROJECTION4_1')
@@ -182,15 +186,17 @@ subroutine pj4dco(typeSelect, &
             cellTypeNume = typmail(iCell1)
             if ((cellTypeNume .eq. cellListType(1)) .or. &
                 (cellTypeNume .eq. cellListType(2)) .or. &
-                (cellTypeNume .eq. cellListType(3))) then
+                (cellTypeNume .eq. cellListType(3)) .or. &
+                (cellTypeNume .eq. cellListType(4))) then
                 nbTria = nbTria+1
                 zi(iatr3+(nbTria-1)*4+4) = iCell1
                 zi(iatr3+(nbTria-1)*4+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
                 zi(iatr3+(nbTria-1)*4+2) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
                 zi(iatr3+(nbTria-1)*4+3) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
-            else if ((cellTypeNume .eq. cellListType(4)) .or. &
-                     (cellTypeNume .eq. cellListType(5)) .or. &
-                     (cellTypeNume .eq. cellListType(6))) then
+            else if ((cellTypeNume .eq. cellListType(5)) .or. &
+                     (cellTypeNume .eq. cellListType(6)) .or. &
+                     (cellTypeNume .eq. cellListType(7)) .or. &
+                     (cellTypeNume .eq. cellListType(8))) then
                 nbTria = nbTria+1
                 zi(iatr3+(nbTria-1)*4+4) = iCell1
                 zi(iatr3+(nbTria-1)*4+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
