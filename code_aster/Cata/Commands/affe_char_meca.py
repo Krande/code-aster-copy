@@ -784,7 +784,14 @@ AFFE_CHAR_MECA = OPER(
         GROUP_MA_ESCL=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_MA_MAIT=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         METHODE=SIMP(statut="o", typ="TXM", into=("PENALISATION", "LAGRANGIEN", "NITSCHE")),
-        COEF_PENA=SIMP(statut="o", typ="R", val_min=0.0),
+        b_pena_opt=BLOC(
+            condition="""equal_to("METHODE", 'LAGRANGIEN')""",
+            COEF_PENA=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        ),
+        b_pena_obli=BLOC(
+            condition="""equal_to("METHODE", 'PENALISATION') or equal_to("METHODE", 'NITSCHE')""",
+            COEF_PENA=SIMP(statut="o", typ="R", val_min=0.0),
+        ),
         # Pairing options (for segment to segment contact)
         APPARIEMENT=SIMP(statut="f", typ="TXM", defaut="MORTAR", into=("MORTAR",)),
         b_zone_pair_param=BLOC(
