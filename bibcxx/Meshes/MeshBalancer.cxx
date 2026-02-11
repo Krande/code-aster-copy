@@ -117,7 +117,15 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     // Build a global numbering (if there is not)
     VectorLong nodeGlobNum;
     if ( _mesh != nullptr ) {
-        if ( _mesh->isParallel() || _mesh->isIncomplete() ) {
+        if ( !_mesh->isParallel() ) {
+            const auto size = _mesh->getNumberOfNodes();
+            nodeGlobNum.reserve( size );
+            for ( int i = 0; i < size; ++i ) {
+                // +1 is mandatory because connectivity starts at 1 in aster
+                // cf. connex = _mesh->getConnectivity();
+                nodeGlobNum.push_back( i + _range[0] + 1 );
+            }
+        } else {
             const auto &numGlob = _mesh->getLocalToGlobalNodeIds();
             numGlob->updateValuePointer();
             const auto size = numGlob->size();
@@ -126,14 +134,6 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
                 // +1 is mandatory because connectivity starts at 1 in aster
                 // cf. connex = _mesh->getConnectivity();
                 nodeGlobNum.push_back( ( *numGlob )[i] + 1 );
-            }
-        } else {
-            const auto size = _mesh->getNumberOfNodes();
-            nodeGlobNum.reserve( size );
-            for ( int i = 0; i < size; ++i ) {
-                // +1 is mandatory because connectivity starts at 1 in aster
-                // cf. connex = _mesh->getConnectivity();
-                nodeGlobNum.push_back( i + _range[0] + 1 );
             }
         }
     }
@@ -278,6 +278,19 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
         VectorLong globCellNumVect;
         _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
         sortCells( globCellNumVect, globCellNumVect2 );
+    }
+
+    if ( _mesh->isIncomplete() ) {
+        nodeGlobNum = VectorLong();
+        const auto &numGlob = _mesh->getLocalToGlobalNodeIds();
+        numGlob->updateValuePointer();
+        const auto size = numGlob->size();
+        nodeGlobNum.reserve( size );
+        for ( int i = 0; i < size; ++i ) {
+            nodeGlobNum.push_back( ( *numGlob )[i] );
+        }
+        globNodeNumVect2 = VectorLong();
+        _nodesBalancer->balanceObjectOverProcesses( nodeGlobNum, globNodeNumVect2 );
     }
 
     // Build "dummy" name vectors (for cells and nodes)
