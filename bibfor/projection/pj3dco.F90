@@ -142,10 +142,10 @@ subroutine pj3dco(typeSelect, &
             else if ((cellTypeNume .eq. cellListType(7)) .or. &
                      (cellTypeNume .eq. cellListType(8)) .or. &
                      (cellTypeNume .eq. cellListType(9)) .or. &
-                     (cellTypeNume .eq. cellListType(10))) then
-                nbTetra = nbTetra+6
-            else if ((cellTypeNume .eq. cellListType(11)) .or. &
                      (cellTypeNume .eq. cellListType(12))) then
+                nbTetra = nbTetra+6
+            else if ((cellTypeNume .eq. cellListType(10)) .or. &
+                     (cellTypeNume .eq. cellListType(11))) then
                 nbTetra = nbTetra+2
             else
                 call utmess('F', 'PROJECTION4_1')

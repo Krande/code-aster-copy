@@ -1529,11 +1529,14 @@ class DiscreteComputation:
               ElementaryVectorDisplacementReal: imposed dual vector
         """
 
-    def getMechanicalLinearCouplingMatrix(self):
+    def getMechanicalLinearCouplingMatrix(self, varc_curr=None):
         """Compute coupling for LIAISON_MASSIF.
 
+        Arguments:
+              varc_curr (FieldOnCellsReal): external state variables for Nitsche method.
+
         Returns:
-            ElementaryMatrixDisplacementReal: coupling elementary matrix.
+              ElementaryMatrixDisplacementReal: coupling elementary matrix.
         """
 
     def getMechanicalMassMatrix(self, diagonal, varc_curr=None, groupOfCells=[]):
