@@ -81,6 +81,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 #include "asterfort/immeno.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -88,7 +89,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 #include "asterfort/tbajli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
 !
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
@@ -254,9 +255,9 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 !.... TETRA4, TETRA10, PYRAM5, PYRAM13, PENTA6, PENTA15,
 !.... HEXA8, HEXA20 OU HEXA27
 !.... LA VERIFICATION A ETE EFFECTUEE EN AMONT PAR LA ROUTINE TOMABE
-!.... LE NOMBRE DE NOEUDS MAXIMAL SUR UNE MAILLE VAUT DONC 27
+!.... LE NOMBRE DE NOEUDS MAXIMAL SUR UNE MAILLE VAUT DONC MT_NNOMAX
 !
-    nnomax = 27
+    nnomax = MT_NNOMAX
     AS_ALLOCATE(vr=xyz_noemai, size=3*nnomax)
     AS_ALLOCATE(vi=cnx_maille, size=nnomax)
 !

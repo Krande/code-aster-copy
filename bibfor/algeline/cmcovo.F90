@@ -19,14 +19,18 @@
 subroutine cmcovo(main, maout, nbma, lima, prefno, &
                   prefma, inima, epais, plan, trans)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8rddg.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -48,10 +52,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
-#include "asterfort/char8_to_int.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: inima, nbma, lima(nbma)
     character(len=8) :: main, maout, prefno, prefma, plan, trans
@@ -161,7 +162,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     newma = '&&CMCOVO.NEW_MAILLE'
 !
     call wkvect(normno, 'V V R', 3*nbmin, jnorn)
-    call wkvect(lisma, 'V V I', 27*nbnin, jlisma)
+    call wkvect(lisma, 'V V I', MT_NNOMAX*nbnin, jlisma)
     call wkvect(nonuma, 'V V I', nbnin, jnbnum)
     call wkvect(newma, 'V V I', nbma, jnewm)
 !
@@ -227,7 +228,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
         do ij = 1, nbno
             ino = zi(jopt+ij-1)
             zi(jnbnum+ino-1) = zi(jnbnum+ino-1)+1
-            zi(jlisma-1+27*(ino-1)+zi(jnbnum+ino-1)) = numa
+            zi(jlisma-1+MT_NNOMAX*(ino-1)+zi(jnbnum+ino-1)) = numa
         end do
     end do
 !
@@ -237,7 +238,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     do ino = 1, nbnin
         if (noeuds(ino) .eq. 0) cycle
         nbnuma = zi(jnbnum+ino-1)
-        numa = zi(jlisma-1+27*(ino-1)+1)
+        numa = zi(jlisma-1+MT_NNOMAX*(ino-1)+1)
         ma1 = int_to_char8(numa)
         zr(jnorm+3*(ino-1)) = zr(jnorn+3*(numa-1))
         zr(jnorm+3*(ino-1)+1) = zr(jnorn+3*(numa-1)+1)
@@ -246,7 +247,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 ! ------ ON VERIFIE QUE L'ANGLE FORME PAR LES NORMALES < 90 DEGRES
 !
         do ima = 2, nbnuma
-            numa = zi(jlisma-1+27*(ino-1)+ima)
+            numa = zi(jlisma-1+MT_NNOMAX*(ino-1)+ima)
             cosvec = zr( &
                      jnorm+3*(ino-1))*zr(jnorn+3*(numa-1))+zr(jnorm+3*(ino-1)+1)*zr(jnorn+3*(&
                      &numa-1)+1)+zr(jnorm+3*(ino-1)+2)*zr(jnorn+3*(numa-1)+2 &
@@ -268,7 +269,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
         end do
 !
         do ima = 2, nbnuma
-            numa = zi(jlisma-1+27*(ino-1)+ima)
+            numa = zi(jlisma-1+MT_NNOMAX*(ino-1)+ima)
             zr(jnorm+3*(ino-1)) = zr(jnorm+3*(ino-1))+zr(jnorn+3*(numa-1))
             zr(jnorm+3*(ino-1)+1) = zr(jnorm+3*(ino-1)+1)+zr(jnorn+3*(numa-1)+1)
             zr(jnorm+3*(ino-1)+2) = zr(jnorm+3*(ino-1)+2)+zr(jnorn+3*(numa-1)+2)

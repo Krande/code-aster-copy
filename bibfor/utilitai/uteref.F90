@@ -53,10 +53,10 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
 !
     implicit none
 !
-#include "MeshTypes_type.h"
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elraca.h"
@@ -71,7 +71,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/asmpi_comm_vect.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: tyelas
     integer(kind=8) :: nnos, nno, nbpg, ndim
@@ -235,8 +235,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
             ljoint = .true.
         end if
 !
-        ASSERT(nbfpg .le. 20)
-        ASSERT(nno .le. 27)
+        ASSERT(nbfpg .le. MT_NBFAMX)
+        ASSERT(nno .le. MT_NNOMAX)
         ifam = indik8(fapg, famil, 1, nbfpg)
         if (ifam .le. 0) then
             resu = chanom(1:8)

@@ -29,9 +29,9 @@ module fe_topo_module
 #include "asterfort/assert.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/getFESkinSubType.h"
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
-#include "asterfort/getFESkinSubType.h"
 #include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -382,7 +382,7 @@ contains
 ! Out FECell           : a FE cell
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: funcGeom(27)
+        real(kind=8) :: funcGeom(MT_NNOMAX)
         integer(kind=8) :: i
 !
         funcGeom = this%func(pt)
@@ -405,7 +405,7 @@ contains
 !
         class(FE_Cell), intent(in) :: this
         real(kind=8), intent(in) :: pt(3)
-        real(kind=8) :: func(27)
+        real(kind=8) :: func(MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -433,7 +433,7 @@ contains
 !
         class(FE_Skin), intent(in) :: this
         real(kind=8), intent(in) :: pt(3)
-        real(kind=8) :: func(9)
+        real(kind=8) :: func(MT_NNOMAX2D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -460,7 +460,7 @@ contains
         implicit none
 !
         class(FE_Cell), intent(in) :: this
-        real(kind=8), dimension(3)                :: bary
+        real(kind=8), dimension(3) :: bary
 !
 ! --------------------------------------------------------------------------------------------------
 !
