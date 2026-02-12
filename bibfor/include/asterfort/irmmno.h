@@ -20,13 +20,13 @@
 !
 interface
     subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
-                      nomnoe, nosdfu)
+                      nomast, nosdfu)
         med_idt :: idfimd
         character(len=*) :: nomamd
         integer(kind=8) :: ndim
         integer(kind=8) :: nbnoeu
         real(kind=8) :: coordo(*)
-        character(len=*) :: nomnoe(*)
+        character(len=8) :: nomast
         character(len=8) :: nosdfu
     end subroutine irmmno
 end interface

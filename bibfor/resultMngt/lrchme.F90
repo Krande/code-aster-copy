@@ -103,7 +103,7 @@ subroutine lrchme(fieldNameAst, fieldNameMed, &
         call lrcnme(fieldNameAst, fieldNameMed, meshMed, meshAst, fieldQuantity, &
                     entityType, cmpNb, cmpAstName, cmpMedName, iinst, &
                     numpt, numord, inst, storeCrit, storeEpsi, &
-                    fileUnit, codret, bas2, nonu)
+                    fileUnit, prolz, codret, bas2, nonu)
     else if (fieldSupport(1:2) .eq. 'EL' .or. fieldSupport(1:2) .eq. 'CA') then
         call getvid(' ', 'MODELE', scal=nommod, nbret=iaux)
         if (iaux .eq. 0 .and. fieldSupport(1:4) .ne. 'CART') then

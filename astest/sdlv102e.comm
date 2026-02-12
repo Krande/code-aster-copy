@@ -26,6 +26,7 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Utilities import PETSc, SLEPc, get_shared_tmpdir
 from code_aster.Applications.dynamic_substructuring import macPlot
+from code_aster.MedUtils import splitMedFileToResults
 
 CA.init("--test")
 
@@ -249,6 +250,13 @@ test.assertEqual(depl1.getDescription().getName(), depl2.getDescription().getNam
 depl_ref = modes_dist.getField("DEPL", 1)
 (values_ref, (nodes_ref, cmps_ref)) = depl_ref.getValuesWithDescription()
 (values, (nodes, cmps)) = depl1.getValuesWithDescription()
+test.assertEqual(len(values_ref), len(values))
+
+myResu = splitMedFileToResults(
+    filename, {"00000025DEPL": "DEPL"}, CA.NonLinearResult, dofNum=NUME, zeroExtension=True
+)
+depl3 = myResu.getField("DEPL", 1)
+(values, (nodes, cmps)) = depl3.getValuesWithDescription()
 test.assertEqual(len(values_ref), len(values))
 
 # Project the distributed modes onto the original mesh with the original DOFNumbering

@@ -49,12 +49,12 @@ subroutine nomgfa(nogr, nbgr, dgf, nogrf, nbgf)
     saux56 = ' '
 !
     nbgf = 0
-    do 10, iaux = 1, nbgr
-    if (exigfa(dgf, iaux)) then
-        nbgf = nbgf+1
-        nogrf(nbgf) (1:24) = nogr(iaux)
-        nogrf(nbgf) (25:80) = saux56
-    end if
-10  end do
+    do iaux = 1, nbgr
+        if (exigfa(dgf, iaux)) then
+            nbgf = nbgf+1
+            nogrf(nbgf) (1:24) = nogr(iaux)
+            nogrf(nbgf) (25:80) = saux56
+        end if
+    end do
 !
 end subroutine

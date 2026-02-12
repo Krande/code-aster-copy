@@ -280,6 +280,19 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
         sortCells( globCellNumVect, globCellNumVect2 );
     }
 
+    if ( _mesh->isIncomplete() ) {
+        nodeGlobNum = VectorLong();
+        const auto &numGlob = _mesh->getLocalToGlobalNodeIds();
+        numGlob->updateValuePointer();
+        const auto size = numGlob->size();
+        nodeGlobNum.reserve( size );
+        for ( int i = 0; i < size; ++i ) {
+            nodeGlobNum.push_back( ( *numGlob )[i] );
+        }
+        globNodeNumVect2 = VectorLong();
+        _nodesBalancer->balanceObjectOverProcesses( nodeGlobNum, globNodeNumVect2 );
+    }
+
     // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();
     outMesh->create_joints( domains, globNodeNumVect2, nOwners, globCellNumVect2, graphInterfaces,

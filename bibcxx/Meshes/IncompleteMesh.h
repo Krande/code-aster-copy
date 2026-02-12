@@ -30,6 +30,7 @@
 
 #ifdef ASTER_HAVE_MPI
 
+#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NamesMap.h"
 #include "Meshes/Mesh.h"
 #include "Supervis/ResultNaming.h"
@@ -47,6 +48,8 @@ class IncompleteMesh : public Mesh {
     VectorLong _cellFamily;
     std::vector< VectorString > _nodeFamGroups;
     std::vector< VectorString > _cellFamGroups;
+    /** @brief Global node numbering */
+    JeveuxVectorLong _globalNodeIds;
 
   public:
     /**
@@ -63,7 +66,8 @@ class IncompleteMesh : public Mesh {
     /**
      * @brief Constructeur
      */
-    IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ) {};
+    IncompleteMesh( const std::string &name )
+        : Mesh( name, "MAILLAGE_I" ), _globalNodeIds( getName() + ".NUNOLG" ) {};
 
     void addFamily( int id, VectorString groups );
 
@@ -96,6 +100,14 @@ class IncompleteMesh : public Mesh {
     void setNodeFamily( const VectorLong &nf ) { _nodeFamily = nf; };
 
     void setNodeRange( const VectorLong &range ) { _nodeRange = range; };
+
+    /**
+     * @brief Get the mapping between local and global numbering of nodes
+     * @return JeveuxVector of the indirection
+     */
+    const JeveuxVectorLong getLocalToGlobalNodeIds() const { return _globalNodeIds; };
+
+    void setLocalToGlobalNodeIds( const VectorLong &l2GIds ) { ( *_globalNodeIds ) = l2GIds; };
 };
 
 /**

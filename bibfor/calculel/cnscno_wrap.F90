@@ -23,14 +23,25 @@ subroutine cnscno_wrap(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret)
 #include "asterfort/cnscno.h"
 #include "asterfort/crnggn.h"
 #include "asterfort/crnggc.h"
+#include "asterfort/exisd.h"
     !
     character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
     character(len=1) :: kstop
     integer(kind=8) :: iret
+    aster_logical :: l_exi_nume
 !
+    l_exi_nume = .false.
+    if (nume_equaz .ne. ' ') then
+        call exisd("NUME_EQUA", nume_equaz, iret)
+        if (iret .eq. 1) then
+            l_exi_nume = .true.
+        end if
+    end if
     call cnscno(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret, lprofconst=ASTER_FALSE)
-    ! create numbering
-    call crnggn(cnoz)
-    ! communicate numbering
-    call crnggc(cnoz, l_print=ASTER_FALSE)
+    if (.not. l_exi_nume) then
+        ! create numbering
+        call crnggn(cnoz)
+        ! communicate numbering
+        call crnggc(cnoz, l_print=ASTER_FALSE)
+    end if
 end subroutine

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
-                  nomnoe, nosdfu)
+                  nomast, nosdfu)
 !-----------------------------------------------------------------------
 !     ECRITURE DU MAILLAGE -  FORMAT MED - LES NOEUDS
 !        -  -     -                  -         --
@@ -40,12 +40,17 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
 #include "asterfort/as_mfrall.h"
 #include "asterfort/as_mfrblc.h"
 #include "asterfort/as_mfrdea.h"
+#include "asterfort/as_mmhaaw.h"
 #include "asterfort/as_mmhcow.h"
 #include "asterfort/as_mmhcaw.h"
+#include "asterfort/as_mmhgnw.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
@@ -55,7 +60,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
 !
     real(kind=8) :: coordo(*)
 !
-    character(len=*) :: nomnoe(*)
+    character(len=8) :: nomast
     character(len=*) :: nomamd
     character(len=8) :: nosdfu
 !
@@ -69,14 +74,18 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
 !
     integer(kind=8) :: edfuin
     parameter(edfuin=0)
+    integer(kind=8), parameter :: ednoeu = 3, tygeno = 0
 !
     integer(kind=8) :: codret
     integer(kind=8) :: iaux
     integer(kind=8) :: jcoord
     integer(kind=8) :: ifm, nivinf, rang, nbproc, start, filter(1), jaux
-    integer(kind=8) :: jnbno, nbnot, jno, nbnol, cmpt
+    integer(kind=8) :: jnbno, nbnot, jno, nbnol, cmpt, ier, dtype
+    integer(kind=8), pointer :: v_nunolg(:) => null()
+    integer(kind=8), pointer :: v_nunolg_f(:) => null()
+    integer(kind=8), pointer :: v_num_glob(:) => null()
     mpi_int :: mrank, msize
-    aster_logical :: lfu
+    aster_logical :: lfu, lnulogl
     real(kind=8) :: start1, end1
 !
     character(len=8) :: saux08
@@ -98,6 +107,11 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
     nbproc = to_aster_int(msize)
 !
     lfu = .false._1
+    lnulogl = .false._1
+    call jeexin(nomast//'.NUNOLG', ier)
+    if (ier .ne. 0) then
+        lnulogl = .true._1
+    end if
     if (nosdfu .ne. ' ') then
         lfu = .true._1
         call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
@@ -175,8 +189,55 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
         end if
     end if
-!
-    call jedetr('&&'//nompro//'NOMNOE')
+    if (lfu .and. lnulogl) then
+!         call as_mfrall(1, filter, codret)
+! !
+!         call as_mfrblc(idfimd, nbnot, 1, 1, 0, &
+!                        edfuin, 2, "", start, nbnol, &
+!                        1, nbnol, 0, filter(1), codret)
+!         if (codret .ne. 0) then
+!             saux08 = 'mfrblc'
+!             call utmess('F', 'DVP_97', sk=saux08, si=codret)
+!         end if
+! !
+!         call jeveuo(nomast//'.NUNOLG', 'L', vi=v_nunolg)
+!         call wkvect('&&'//nompro//'.NUNOLG', 'V V I', nbnol, vi=v_nunolg_f)
+!         cmpt = 0
+!         do iaux = 1, nbnoeu
+!             if (zi(jno+iaux-1) .gt. 0) then
+!                 v_nunolg_f(cmpt) = v_nunolg(iaux)
+!                 cmpt = cmpt+1
+!             end if
+!         end do
+!         ASSERT(cmpt .eq. nbnol)
+!         dtype = 10
+!         call as_mmhaaw(idfimd, nomamd, dtype, v_nunolg_f, nbnol, &
+!                        filter(1), ednoeu, tygeno, codret)
+!         if (codret .ne. 0) then
+!             saux08 = 'mmhaaw'
+!             call utmess('F', 'DVP_97', sk=saux08, si=codret)
+!         end if
+!         call jedetr('&&'//nompro//'.NUNOLG')
+! !
+!         call as_mfrdea(1, filter, codret)
+!         if (codret .ne. 0) then
+!             saux08 = 'mfrdea'
+!             call utmess('F', 'DVP_97', sk=saux08, si=codret)
+!         end if
+        call jeveuo(nomast//'.NUNOLG', 'L', vi=v_nunolg)
+        call wkvect('&&'//nompro//'.NULOGL', 'V V I', nbnot, vi=v_num_glob)
+        do iaux = 1, nbnoeu
+            if (zi(jno+iaux-1) .gt. 0) then
+                v_num_glob(zi(jno+iaux-1)) = v_nunolg(iaux)
+            end if
+        end do
+        call asmpi_comm_vect('MPI_SUM', 'I', nbnot, vi=v_num_glob)
+#ifdef ASTER_HAVE_MED
+        call as_mmhgnw(idfimd, nomamd, ednoeu, tygeno, &
+                       v_num_glob, nbnot, codret)
+#endif
+        call jedetr('&&'//nompro//'.NULOGL')
+    end if
 !
     call jedema()
 !

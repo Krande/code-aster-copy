@@ -20,10 +20,11 @@
 !
 #include "asterf_types.h"
 interface
-    subroutine as_mmhaaw(fid, maa, fam, n, filter,&
-                         typent, typgeo, cret)
+    subroutine as_mmhaaw(fid, maa, dtype, fam, n,&
+                         filter, typent, typgeo, cret)
         med_idt :: fid
         character(len=*) :: maa
+        aster_int :: dtype
         aster_int :: fam(*)
         aster_int :: n
         aster_int :: filter

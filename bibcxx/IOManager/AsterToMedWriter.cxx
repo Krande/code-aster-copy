@@ -213,18 +213,21 @@ bool AsterToMedWriter::printMesh( const ParallelMesh &toPrint,
         cellList = toPrint.getInnerCells();
     }
     auto cret = _printMeshFromList( toPrint, filename, nodeList, cellList, local, meshName );
+    const auto &nodeGN = toPrint.getLocalToGlobalNodeIds();
+    const auto rank = getMPIRank();
+    const auto nbProcs = getMPISize();
+    std::vector< med_int > globNum( nodeGN->begin(), nodeGN->end() );
+
+    auto fr = MedFileReader();
+
     if ( local ) {
-        auto fr = MedFileReader();
         fr.open( filename, MedReadWrite );
         const auto name = ( meshName != "" ) ? meshName : toPrint.getName();
         auto mesh = fr.getMesh( name );
 
         // print global numbering
-        const auto &nodeGN = toPrint.getLocalToGlobalNodeIds();
-        std::vector< med_int > globnum( nodeGN->begin(), nodeGN->end() );
-        mesh->printGlobalNodeNumberingAtSequence( MED_NO_DT, MED_NO_IT, globnum );
+        mesh->printGlobalNodeNumberingAtSequence( MED_NO_DT, MED_NO_IT, globNum );
 
-        const auto rank = getMPIRank();
         const auto rankStr = std::to_string( rank );
         const auto oppDom = toPrint.getOppositeDomains();
         int count = 0;
@@ -257,6 +260,15 @@ bool AsterToMedWriter::printMesh( const ParallelMesh &toPrint,
             mesh->printNodeJointAtSequence( jName2, MED_NO_DT, MED_NO_IT, medJoint );
             ++count;
         }
+    } else {
+        fr.openParallel( filename, MedReadWrite );
+        const auto name = ( meshName != "" ) ? meshName : toPrint.getName();
+        auto mesh = fr.getMesh( name );
+        auto innerGNum = vectorFilter< med_int >( nodeList, globNum, 1 );
+
+        std::vector< med_int > allGlobIds;
+        AsterMPI::all_gather( innerGNum, allGlobIds );
+        mesh->printGlobalNodeNumberingAtSequence( MED_NO_DT, MED_NO_IT, allGlobIds );
     }
     return cret;
 };

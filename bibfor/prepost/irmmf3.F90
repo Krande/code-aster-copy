@@ -27,9 +27,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 #include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_allgatherv_i.h"
-#include "asterc/asmpi_allgatherv_char80.h"
 #include "asterc/asmpi_allgather_i.h"
+#include "asterc/asmpi_bcast_char80.h"
 #include "asterfort/as_mfacre.h"
 #include "asterfort/as_mfrall.h"
 #include "asterfort/as_mfrblc.h"
@@ -38,12 +37,12 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/mdnofa.h"
 #include "asterfort/nomgfa.h"
 #include "asterfort/setgfa.h"
 #include "asterfort/utmess.h"
@@ -112,30 +111,24 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     parameter(edfuin=0)
     integer(kind=8) :: codret
     integer(kind=8) :: iaux, jaux, kaux
-    integer(kind=8) :: numfam, nfam, cmpt, ii
+    integer(kind=8) :: numfam, nfam, cmpt
     integer(kind=8) :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1), itypM
-    integer(kind=8) :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
-    integer(kind=8) :: jgren, jtest4, i_fama, kfama
-    integer(kind=8) :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
-    integer(kind=8) :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
+    integer(kind=8) :: nbeg, ige, ient, entfam, nbgnof, nbmal, nbmat, jtyp, dtype
+    integer(kind=8) :: fam_count, delta_family, grp_count, nfam_loc, numgrp2
+    integer(kind=8) :: jgren, nfam_max, nbbloc, nbfam_tot, rang, nbproc, numgrp
     character(len=8) :: saux08
     character(len=9) :: saux09
     character(len=64) :: nomfam
-    aster_logical :: lfamtr
     real(kind=8) :: start_time, end_time, start1, end1, start2, end2
-    mpi_int :: mrank, msize, world, taille, one4
-    character(len=80), pointer :: v_nomfag(:) => null()
-    character(len=80), pointer :: v_nomgfag(:) => null()
-    character(len=80), pointer :: v_fama(:) => null()
-    integer(kind=8), pointer :: v_nbgrg(:) => null()
-    mpi_int, pointer :: v_count(:) => null()
-    mpi_int, pointer :: v_displ(:) => null()
-    mpi_int, pointer :: v_count2(:) => null()
-    mpi_int, pointer :: v_displ2(:) => null()
+    mpi_int :: mrank, msize, world, taille, one4, root
+    character(len=80), pointer :: v_all_grp(:) => null()
+    character(len=80), pointer :: v_all_grp2(:) => null()
+    integer(kind=8), pointer :: v_nbgrp(:) => null()
+    integer(kind=8), pointer :: v_nbgrp2(:) => null()
+    integer(kind=8), pointer :: v_count(:) => null()
 
 !
 ! ----------------------------------------------------------------------------------------------
-!
 !
     if (typent .eq. tygeno) then
         saux09 = '.GROUPENO'
@@ -151,10 +144,6 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
             //saux08//' MED EN PARALLELE : '
     end if
 !
-!     NATT = NOMBRE D'ATTRIBUTS DANS UNE FAMILLE : JAMAIS. ELLES NE SONT
-!            DEFINIES QUE PAR LES GROUPES
-    natt = 0
-!
 !     NFAM = NUMERO DE LA DERNIERE FAMILLE ENREGISTREE (DE 0 A N>0)
 !     FAMILLE 0 = ENTITES N'APPARTENANT A AUCUN GROUPE
     nfam = 0
@@ -167,8 +156,12 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    if (typent .eq. tygeno) then
+        call jeveuo(nosdfu//'.NOEU', 'L', jno)
+    else
+        call jeveuo(nosdfu//'.MAIL', 'L', jma)
+    end if
     if (nbgrou .ne. 0) then
-!
 !
 ! 2.1. ==> BUT DE L'ETAPE 2.1 : CONNAITRE POUR CHAQUE ENTITE SES GROUPES
 !          D'APPARTENANCE
@@ -213,6 +206,15 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !                      . 418 514 MAILLES EN 8 629 GROUPES.
 !
         do ient = 1, nbrent
+            if (typent .eq. tygeno) then
+                if (zi(jno+ient-1) .le. 0) then
+                    cycle
+                end if
+            else
+                if (zi(jma+ient-1) .le. 0) then
+                    cycle
+                end if
+            end if
             if (nufaen(ient) .ne. 0) then
 !
 !         BOUCLE 221 : ON PARCOURT TOUTES LES FAMILLES DEJA VUES.
@@ -288,185 +290,127 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
                 numgrp = numgrp+nbgnof
             end do
 !
-            call wkvect('&&IRMMF2.NOGRFA', 'V V K80', max(1, numgrp), jgrou)
-            call wkvect('&&IRMMF2.NOMFAM', 'V V K80', max(1, nfam), jnofa)
-            call wkvect('&&IRMMF2.NBGRFA', 'V V I', max(1, nfam), jnbgr)
-            call wkvect('&&IRMMF2.NUMFAM', 'V V I', max(1, nfam), jnufa)
-!
-            call wkvect('&&IRMMF2.TEST', 'V V I', nbproc, jtest)
-            call wkvect('&&IRMMF2.COUNT', 'V V S', nbproc, vi4=v_count)
-            call wkvect('&&IRMMF2.DISPL', 'V V S', nbproc+1, vi4=v_displ)
+            call wkvect('&&IRMMF3.NOGRFA', 'V V K80', max(1, numgrp), vk80=v_all_grp)
+            call wkvect('&&IRMMF3.COUNT', 'V V I', nbproc, vi=v_count)
 !
             one4 = to_mpi_int(1)
-            call asmpi_allgather_i([nfam], one4, zi(jtest), one4, world)
+            call asmpi_allgather_i([nfam], one4, v_count, one4, world)
 !
-            nbfam_tot = 0
-            ! on compte le nb de famille totale
-            do jaux = 0, nbproc-1
-                nbfam_tot = nbfam_tot+zi(jtest+jaux)
-                v_count(jaux+1) = to_mpi_int(zi(jtest+jaux))
-                v_displ(jaux+2) = to_mpi_int(nbfam_tot)
-            end do
+            call wkvect('&&IRMMF3.NBGRPFAMTOT', 'V V I', max(1, nfam), vi=v_nbgrp)
 !
 ! On a plus de famille en HPC qu'en std car les familles sont redécoupés par sous-domaine
 ! donc 1 famille en std peut donner jusqu'à nb_sous_domaine familles dans le maillage de fin
 !
             if (infmed .gt. 1) then
+                nbfam_tot = 0
+                ! on compte le nb de famille totale
+                do jaux = 1, nbproc
+                    nbfam_tot = nbfam_tot+v_count(jaux)
+                end do
                 write (ifm, *) '<', nompro, '> ** Nombre de familles locales/globales: ', &
                     nfam, nbfam_tot, numgrp
             end if
-!
-            numfam = 0
-            do jaux = 0, rang
-                numfam = numfam+zi(jtest+jaux)
-            end do
 !
             numgrp = 0
             ! boucle sur famille locale
             do iaux = 1, nfam
 !
-! 2.3.1. ==> DETERMINATION DE LA FAMILLE : NOM, NOMS ET NUMEROS DES
-!              GROUPES ASSOCIES
-                numfam = numfam+iaux
-                if (typent .ne. tygeno) then
-                    numfam = -numfam
-                end if
-!
 !         NUMERO DE LA 1ERE ENTITE FAISANT REFERENCE A CETTE FAMILLE
                 ient = nufacr(iaux)
 !
 !         NB ET NOMS+NUMS DES GROUPES ASSOCIES A LA FAMILLE
-                codret = tabaux(1+(ient-1)*nbec)
                 call nomgfa(nomgen, nbgrou, tabaux(1+(ient-1)*nbec), nogrfa, nbgnof)
-                zi(jnufa+iaux-1) = tabaux(1+(ient-1)*nbec)
 !
-!         NOM DE LA FAMILLE : ON LE CONSTRUIT A PARTIR DU NUMERO DE FAMILLE
-!
-                jaux = iaux-1
-                call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
-!
-                ! nb de groupe de la famille
-                zi(jnbgr+iaux-1) = nbgnof
-                ! nom de la famille
-                zk80(jnofa+iaux-1) = nomfam
+                v_nbgrp(iaux) = nbgnof
                 ! noms des groupes de la famille
                 do jaux = 1, nbgnof
-                    zk80(jgrou+numgrp) = nogrfa(jaux)
+                    v_all_grp(numgrp+1) = nogrfa(jaux)
                     numgrp = numgrp+1
                 end do
             end do
-!
-            call cpu_time(end2)
-            if (infmed .gt. 1) then
-                write (ifm, *) '<', nompro, '> ** Création des ' &
-                    //'noms de familles en ', end2-start2, ' sec'
-            end if
-            call cpu_time(start1)
-!
-            call wkvect('&&IRMMF2.TEST4', 'V V I', max(1, nfam), jtest4)
-            call wkvect('&&IRMMF2.NBGRG', 'V V I', nbfam_tot, vi=v_nbgrg)
-            call wkvect('&&IRMMF2.NOMFAG', 'V V K80', nbfam_tot, vk80=v_nomfag)
-!
-            ! AllGather des noms et nb groupe par famille
-            taille = to_mpi_int(nfam)
-            call asmpi_allgatherv_i(zi(jnbgr), taille, v_nbgrg, v_count, v_displ, world)
-            call asmpi_allgatherv_char80(zk80(jnofa), taille, v_nomfag, v_count, v_displ, world)
 
-            call wkvect('&&IRMMF2.TEST12', 'V V I', nbproc, jtest12)
-            call wkvect('&&IRMMF2.COUNT2', 'V V S', nbproc, vi4=v_count2)
-            call wkvect('&&IRMMF2.DISPL2', 'V V S', nbproc+1, vi4=v_displ2)
-            one4 = to_mpi_int(1)
-            call asmpi_allgather_i([numgrp], one4, zi(jtest12), one4, world)
-!
-            ! on compte le nb de grp
-            nbgr_tot = 0
+            fam_count = 0
+            delta_family = 0
+            ! Chaque proc va envoyer ses familles
+            ! et tous les procs vont les donner au fichier MED
             do jaux = 0, nbproc-1
-                nbgr_tot = nbgr_tot+zi(jtest12+jaux)
-                v_count2(jaux+1) = to_mpi_int(zi(jtest12+jaux))
-                v_displ2(jaux+2) = to_mpi_int(nbgr_tot)
-            end do
-
-            call wkvect('&&IRMMF2.NOMGFAG', 'V V K80', nbgr_tot, vk80=v_nomgfag)
-            ! Allgather des groupes
-            taille = to_mpi_int(numgrp)
-            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, &
-                                         v_displ2, world)
-!
-            call cpu_time(end1)
-            if (infmed .gt. 1) then
-                write (ifm, *) '<', nompro, '> ** Partage des familles en ', &
-                    end1-start1, "sec."
-            end if
-!
-            ! boucle sur les familles
-            call cpu_time(start1)
-            call wkvect('&&IRMMF2.FAMA', 'V V K80', nbfam_tot, vk80=v_fama)
-            nbgr = 0
-            i_fama = 0
-            ii = 0
-            do iaux = 1, nbfam_tot
-                nomfam = v_nomfag(iaux)
-                nbgnof = v_nbgrg(iaux)
-!
-                lfamtr = ASTER_FALSE
-                do kaux = 1, i_fama
-                    if (v_fama(kaux) .eq. nomfam) then
-                        lfamtr = ASTER_TRUE
-                        kfama = kaux
-                        exit
-                    end if
-                end do
-!
-                if (.not. lfamtr) then
-                    do kaux = 1, nbgnof
-                        nogrfa(kaux) = v_nomgfag(nbgr+kaux)
+                nfam_loc = v_count(jaux+1)
+                if (nfam_loc .eq. 0) then
+                    cycle
+                end if
+                if (jaux .eq. rang) then
+                    delta_family = fam_count
+                    ASSERT(nfam_loc .eq. nfam)
+                    ! Broadcast du processeur courant vers les autres
+                    call asmpi_comm_vect('BCAST', 'I', 1, bcrank=rang, sci=numgrp)
+                    call asmpi_comm_vect('BCAST', 'I', nfam, bcrank=rang, vi=v_nbgrp)
+                    taille = numgrp
+                    root = rang
+                    call asmpi_bcast_char80(v_all_grp, taille, root, world)
+                    grp_count = 0
+                    ! Creation des familles dans le fichier MED
+                    do iaux = 1, nfam
+                        nbgnof = v_nbgrp(iaux)
+                        saux08 = int_to_char8(fam_count+1)
+                        if (typent .ne. tygeno) then
+                            nomfam = ' '
+                            nomfam = "CELL_FAMILY_"//saux08
+                            call as_mfacre(fid, nomamd, nomfam, -(fam_count+1), nbgnof, &
+                                           v_all_grp(grp_count+1), codret)
+                        else
+                            nomfam = ' '
+                            nomfam = "NODE_FAMILY_"//saux08
+                            call as_mfacre(fid, nomamd, nomfam, fam_count+1, nbgnof, &
+                                           v_all_grp(grp_count+1), codret)
+                        end if
+                        fam_count = fam_count+1
+                        grp_count = grp_count+nbgnof
                     end do
-!
-! 2.3.2. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
-!
-                    i_fama = i_fama+1
-                    if (typent .ne. tygeno) then
-                        call as_mfacre(fid, nomamd, nomfam, -i_fama, nbgnof, nogrfa, codret)
-                    else
-                        call as_mfacre(fid, nomamd, nomfam, i_fama, nbgnof, nogrfa, codret)
-                    end if
-                    if (codret .ne. 0) then
-                        saux08 = 'mfacre'
-                        call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                    end if
-                    kfama = i_fama
-                    v_fama(i_fama) = nomfam
-                end if
-                nbgr = nbgr+nbgnof
-!
-                if (iaux > v_displ(rang+1) .and. iaux <= v_displ(rang+2)) then
-                    ii = ii+1
-                    zi(jtest4+ii-1) = kfama
+                    ASSERT(grp_count .eq. numgrp)
+                else
+                    ! Recuperation des familles du processeur courant
+                    call asmpi_comm_vect('BCAST', 'I', 1, bcrank=jaux, sci=numgrp2)
+                    call wkvect('&&IRMMF3.TMP0', 'V V I', nfam_loc, vi=v_nbgrp2)
+                    call asmpi_comm_vect('BCAST', 'I', nfam_loc, bcrank=jaux, vi=v_nbgrp2)
+                    call wkvect('&&IRMMF3.TMP1', 'V V K80', numgrp2, vk80=v_all_grp2)
+                    taille = numgrp2
+                    root = jaux
+                    call asmpi_bcast_char80(v_all_grp2, taille, root, world)
+                    grp_count = 0
+                    ! Creation des familles dans le fichier MED
+                    do iaux = 1, nfam_loc
+                        nbgnof = v_nbgrp2(iaux)
+                        saux08 = int_to_char8(fam_count+1)
+                        if (typent .ne. tygeno) then
+                            nomfam = ' '
+                            nomfam = "CELL_FAMILY_"//saux08
+                            call as_mfacre(fid, nomamd, nomfam, -(fam_count+1), nbgnof, &
+                                           v_all_grp2(grp_count+1), codret)
+                        else
+                            nomfam = ' '
+                            nomfam = "NODE_FAMILY_"//saux08
+                            call as_mfacre(fid, nomamd, nomfam, fam_count+1, nbgnof, &
+                                           v_all_grp2(grp_count+1), codret)
+                        end if
+                        fam_count = fam_count+1
+                        grp_count = grp_count+nbgnof
+                    end do
+                    ASSERT(grp_count .eq. numgrp2)
+                    call jedetr('&&IRMMF3.TMP0')
+                    call jedetr('&&IRMMF3.TMP1')
                 end if
             end do
-            ASSERT(ii == nfam)
 !
-            call jedetr('&&IRMMF2.NOGRFA')
-            call jedetr('&&IRMMF2.NOMFAM')
-            call jedetr('&&IRMMF2.NBGRFA')
-            call jedetr('&&IRMMF2.NUMFAM')
-            call jedetr('&&IRMMF2.TEST')
-            call jedetr('&&IRMMF2.TEST12')
-            call jedetr('&&IRMMF2.COUNT')
-            call jedetr('&&IRMMF2.DISPL')
-            call jedetr('&&IRMMF2.COUNT2')
-            call jedetr('&&IRMMF2.DISPL2')
-            call jedetr('&&IRMMF2.NBGRG')
-            call jedetr('&&IRMMF2.NOMFAG')
-            call jedetr('&&IRMMF2.NOMGFAG')
-            call jedetr('&&IRMMF2.FAMA')
+            call jedetr('&&IRMMF3.NOGRFA')
+            call jedetr('&&IRMMF3.COUNT')
+            call jedetr('&&IRMMF3.NBGRPFAMTOT')
         end if
         if (typent .ne. tygeno) then
             do ient = 1, nbrent
                 if (nufaen(ient) .eq. 0) then
                     nufaen(ient) = 0
                 else
-                    nufaen(ient) = -zi(jtest4-nufaen(ient)-1)
+                    nufaen(ient) = nufaen(ient)-delta_family
                 end if
             end do
         else
@@ -478,12 +422,11 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
                     if (nufaen(ient) .eq. 0) then
                         nufaen(cmpt) = 0
                     else
-                        nufaen(cmpt) = zi(jtest4+nufaen(ient)-1)
+                        nufaen(cmpt) = nufaen(ient)+delta_family
                     end if
                 end if
             end do
         end if
-        call jedetr('&&IRMMF2.TEST4')
     end if
     call cpu_time(end1)
     if (infmed .gt. 1) then
@@ -515,8 +458,9 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
             saux08 = 'mfrblc'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
         end if
-        call as_mmhaaw(fid, nomamd, nufaen, nbnol, filter(1), &
-                       ednoeu, tygeno, codret)
+        dtype = 4
+        call as_mmhaaw(fid, nomamd, dtype, nufaen, nbnol, &
+                       filter(1), ednoeu, tygeno, codret)
         if (codret .ne. 0) then
             saux08 = 'mmhaaw'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -563,16 +507,18 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
                     call jeveuo('&&'//prefix//'.NUM.'//nomtyp(itypM), 'L', kaux)
 !               CREATION VECTEUR NUMEROS DE FAMILLE POUR LES MAILLES / TYPE
                     do iaux = 1, nmatyp(itypM)
+                        ient = zi(kaux-1+iaux)
                         if (zi(jma+ient-1) .gt. 0) then
                             cmpt = cmpt+1
-                            tabaux(cmpt) = nufaen(zi(kaux-1+iaux))
+                            tabaux(cmpt) = nufaen(ient)
                         end if
                     end do
                 end if
                 ASSERT(cmpt .eq. nbmal)
 !
-                call as_mmhaaw(fid, nomamd, tabaux, nbmal, filter(1), &
-                               edmail, typgeo(itypM), codret)
+                dtype = 4
+                call as_mmhaaw(fid, nomamd, dtype, tabaux, nbmal, &
+                               filter(1), edmail, typgeo(itypM), codret)
                 if (codret .ne. 0) then
                     saux08 = 'mmhaaw'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)

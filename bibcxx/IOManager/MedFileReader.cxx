@@ -34,6 +34,20 @@ MedFileReader::~MedFileReader() {
         _filePtr.close();
 };
 
+MedFieldPtr MedFileReader::getField( int index ) const {
+    if ( index >= _fields.size() ) {
+        throw std::runtime_error( "Field not available" );
+    }
+    return _fields[index];
+};
+
+MedMeshPtr MedFileReader::getMesh( int index ) const {
+    if ( index >= _meshes.size() ) {
+        throw std::runtime_error( "Mesh not available" );
+    }
+    return _meshes[index];
+};
+
 MedMeshPtr MedFileReader::createMesh( const std::string &name, const int &dim,
                                       const std::string &desc ) {
     for ( const auto &mesh : _meshes ) {

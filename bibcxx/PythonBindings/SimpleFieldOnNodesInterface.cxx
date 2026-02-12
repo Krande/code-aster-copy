@@ -69,13 +69,29 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
             )",
               py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "zero" ) = false )
         .def(
-            "toFieldOnNodes", []( const SimpleFieldOnNodesReal &f ) { return toFieldOnNodes( f ); },
+            "toFieldOnNodes",
+            []( const SimpleFieldOnNodesRealPtr &f ) { return toFieldOnNodes( f ); },
             R"(
 Convert to FieldOnNodes
 
 Returns:
     FieldOnNodesReal: field converted
         )" )
+        .def(
+            "toFieldOnNodes",
+            []( const SimpleFieldOnNodesRealPtr &f, const BaseDOFNumberingPtr &dofNum,
+                bool zeroExtension ) { return toFieldOnNodes( f, dofNum ); },
+            R"(
+Convert to FieldOnNodes
+
+Arguments:
+    dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
+    zeroExtension (bool): true if field can be extended to zero (when missing values)
+
+Returns:
+    FieldOnNodesReal: field converted
+        )",
+            py::arg( "dofNum" ), py::arg( "zeroExtension" ) = PythonBool::False )
         .def( "_restrict", &SimpleFieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given

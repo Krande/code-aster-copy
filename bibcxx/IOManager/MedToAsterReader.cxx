@@ -164,6 +164,19 @@ void MedToAsterReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toRetur
         }
         toReturn->addFamily( curFam->getId(), groupShort );
     }
+    const auto globNum = curMesh->getGlobalNodeNumberingAtSequence( -1, -1 );
+    if ( globNum.size() != 0 ) {
+        toReturn->setLocalToGlobalNodeIds( globNum );
+    } else {
+        VectorLong nodeGlobNum;
+        const auto size = toReturn->getNumberOfNodes();
+        const auto range = toReturn->getNodeRange();
+        nodeGlobNum.reserve( size );
+        for ( int i = 0; i < size; ++i ) {
+            nodeGlobNum.push_back( i + range[0] );
+        }
+        toReturn->setLocalToGlobalNodeIds( nodeGlobNum );
+    }
 }
 
 void MedToAsterReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
@@ -215,8 +228,9 @@ void MedToAsterReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
     // Read global node numbering
     const auto globNum = curMesh->getGlobalNodeNumberingAtSequence( -1, -1 );
     VectorLong globNum2;
-    for ( const auto &num : globNum )
+    for ( const auto &num : globNum ) {
         globNum2.push_back( num );
+    }
 
     VectorOfVectorsLong allJoints;
     for ( const auto &curDom : domains ) {
