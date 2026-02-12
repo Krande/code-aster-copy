@@ -73,7 +73,7 @@ subroutine te0028(option, nomte)
 !
     character(len=8) :: fami
     integer(kind=8) :: ndim, nno, igeom, imate, i, j
-    integer(kind=8), parameter :: size_init = 30, size_fenicsx = 30*30
+    integer(kind=8), parameter :: size_init = 30, size_final = 22, size_fenicsx = 30*30
 
     real(c_double) :: cst(4), coor(27), kappa, cdofs_f(12)
     ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_j
@@ -82,14 +82,19 @@ subroutine te0028(option, nomte)
     integer(c_int) :: ncst, ncd, ne0, ne1, ne2, ne3, nwinit
     integer(c_int) :: entities0(1), entities1(1), entities2(1), entities3(1)
 !
-    integer(kind=8) :: reorder(size_init)
-    real(c_double) :: signs(size_init)
+    integer(kind=8) :: reorder(size_final)
+    real(kind=8) :: signs(size_final)
     real(c_double) :: w_0(size_init)
-    real(kind=8), dimension(size_init, size_init) :: bint, bf
+    real(kind=8), dimension(size_init, size_init) :: bint
+    real(kind=8), dimension(size_final, size_final) :: bf
     real(kind=8) :: e, nu, epais, rho
     integer(kind=8) :: elas_id, igau, ipoids, npg1
     integer(kind=8) :: nnos, ivf, idfde
     character(len=16) :: elas_keyword
+
+    real(kind=8) :: AA(22, 22), BB(4, 4), CC(22, 4), DD(4, 4), CDinv(22, 4)
+    integer(kind=8) :: zz_order(22), gamma_order(4), p_order(4)
+    real(kind=8) :: AAcondensed(size_final, size_final)
 ! ---------------------------------------------------------------------
 !
 ! - Finite element informations
@@ -106,13 +111,7 @@ subroutine te0028(option, nomte)
     w_0 = 0.d0
     cdofs_f = 0.d0
     A_int = 0.d0
-    A0 = 0.d0
-    A1 = 0.d0
-    A2 = 0.d0
-    A3 = 0.d0
-    A4 = 0.d0
     bint = 0.d0
-    bf = 0.d0
 !
 ! - Geometry
 !
@@ -156,7 +155,7 @@ subroutine te0028(option, nomte)
         coor(3*i+3) = zr(igeom+3*i+2)
     end do
 
-    ! Remplissage des degrés (N1 , N2, N4, N3)
+! Remplissage des coordonées (N1, N4, N2, N3)
     cdofs_f(1) = coor(1)
     cdofs_f(2) = coor(2)
     cdofs_f(3) = coor(3)
@@ -181,15 +180,16 @@ subroutine te0028(option, nomte)
     ne3 = 1
     ncst = size(cst)
 !
-! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!MATRICE DE RIGIDITÉ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!MATRICE DE RIGIDITÉ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Appel de la fonction C++ - Matrice de rigidité -> Part1
     call BP4_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A0)
+
 ! Appel de la fonction C++ - Matrice de rigidité -> Part2
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A1)
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities1, ne1, cst, ncst, A2)
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities2, ne2, cst, ncst, A3)
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities3, ne3, cst, ncst, A4)
-!
+
 ! Remplissage de la matrice intermédiaire
     do i = 1, size_fenicsx
         A_int(i) = A0(i)+A1(i)+A2(i)+A3(i)+A4(i)
@@ -200,10 +200,28 @@ subroutine te0028(option, nomte)
             bint(i, j) = A_int((j-1)*size_init+i)
         end do
     end do
+! Recupérer les bloques
+    ! (z, z) où z = (thetha_x theta_y w)
+    AA = bint(1:22, 1:22)
+
+    ! (gamma, gamma)
+    BB = bint(23:26, 23:26)
+
+    ! (z, p) où z = (thetha_x theta_y w)
+    CC = bint(1:22, 27:30)
+
+    ! (gamma, p)
+    DD = bint(23:26, 27:30)
+
+    do j = 1, 4
+        CDinv(:, j) = CC(:, j)/DD(j, j)
+    end do
+
+    ! Condensation statique
+    AAcondensed = AA+matmul(matmul(CDinv, BB), transpose(CDinv))
 ! Reorganisation de la matrice
     ![w1, θ_y1, -θ_x1, w2, θ_y2, -θ_x2, w3, θ_y3, -θ_x3, w4, θ_y4, -θ_x4,
-    ! θ_y5, -θ_x5, gm_1, p_1, θ_y6, -θ_x6, gm_2, p_2, θ_y7, -θ_x7, gm_3, p_3,
-    ! θ_y8, -θ_x8, gm_4, p_4, θ_y9, -θ_x9]
+    ! θ_y5, -θ_x5, θ_y6, -θ_x6, θ_y7, -θ_x7, θ_y8, -θ_x8, θ_y9, -θ_x9]
     !
     reorder = (/ &
               19, 2, 1, &
@@ -211,13 +229,9 @@ subroutine te0028(option, nomte)
               22, 8, 7, &
               20, 4, 3, &
               12, 11, &
-              24, 28, &
               16, 15, &
-              26, 30, &
               14, 13, &
-              25, 29, &
               10, 9, &
-              23, 27, &
               18, 17 &
               /)
     signs = (/ &
@@ -226,21 +240,17 @@ subroutine te0028(option, nomte)
             1.d0, 1.d0, -1.d0, &
             1.d0, 1.d0, -1.d0, &
             1.d0, -1.d0, &
-            1.d0, 1.d0, &
             1.d0, -1.d0, &
-            1.d0, 1.d0, &
             1.d0, -1.d0, &
-            1.d0, 1.d0, &
             1.d0, -1.d0, &
-            1.d0, 1.d0, &
             1.d0, -1.d0 &
             /)
-    do i = 1, size_init
-        do j = 1, size_init
-            bf(i, j) = signs(i)*signs(j)*bint(reorder(i), reorder(j))
+    do i = 1, size_final
+        do j = 1, size_final
+            bf(i, j) = signs(i)*signs(j)*AAcondensed(reorder(i), reorder(j))
         end do
     end do
 !
-    call writeMatrix('PMATUUR', size_init, size_init, ASTER_TRUE, bf)
+    call writeMatrix('PMATUUR', size_final, size_final, ASTER_TRUE, bf)
 
 end subroutine
