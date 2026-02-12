@@ -132,3 +132,15 @@ rtd = { features = ["rtd"], no-default-feature = true }
 
 [tool.pixi.pypi-options]
 extra-index-urls = ["https://nexus.retd.edf.fr/repository/pypi-all/simple"]
+
+# https://github.com/scientific-python/spin
+[tool.spin]
+commands = [
+  ".spin/cmds.py:configure",
+  ".spin/cmds.py:build",
+  ".spin/cmds.py:install",
+  ".spin/cmds.py:doc",
+  ".spin/cmds.py:test",
+  ".spin/cmds.py:bootstrap",
+  ".spin/cmds.py:distclean",
+]
