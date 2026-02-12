@@ -649,6 +649,7 @@ DICT_NOM_VARI = {
     "SIGP": _("cam_clay : contrainte de confinement"),
     "SIGRN": _(" Pinto-Menegotto, contrainte cycle N"),
     "SIGT": _("norme de la contrainte tangente"),
+    "SIGY": _("Elasticity yield for isotropic hardening"),
     "SIVXX": _("variable interne pour regularisation visqueuse"),
     "SIVYY": _("variable interne pour regularisation visqueuse"),
     "SIVZZ": _("variable interne pour regularisation visqueuse"),

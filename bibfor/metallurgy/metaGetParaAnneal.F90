@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaAnneal(poum, fami, kpg, ksp, j_mater, &
-                             meta_type, nb_phase, &
-                             theta)
+subroutine metaGetParaAnneal(poum, fami, kpg, ksp, jvMaterCode, &
+                             metaType, nbPhaseCold, &
+                             annealTheta)
 !
     implicit none
 !
@@ -28,9 +28,9 @@ subroutine metaGetParaAnneal(poum, fami, kpg, ksp, j_mater, &
 !
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: kpg, ksp, j_mater
-    integer(kind=8), intent(in) :: meta_type, nb_phase
-    real(kind=8), intent(out) :: theta(*)
+    integer(kind=8), intent(in) :: kpg, ksp, jvMaterCode
+    integer(kind=8), intent(in) :: metaType, nbPhaseCold
+    real(kind=8), intent(out) :: annealTheta(2*nbPhaseCold)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,52 +44,51 @@ subroutine metaGetParaAnneal(poum, fami, kpg, ksp, j_mater, &
 ! In  fami         : Gauss family for integration point rule
 ! In  kpg          : current point gauss
 ! In  ksp          : current "sous-point" gauss
-! In  j_mater      : coded material address
-! In  meta_type    : type of metallurgy
-! In  nb_phase     : total number of phase (cold and hot)
-! Out theta        : parameters for annealing
+! In  jvMaterCode  : coded material address
+! In  metaType     : type of metallurgy
+! In  nbPhaseCold  : number of cold phases
+! Out annealTheta  : parameters for annealing
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nb_resu_max = 8
-    real(kind=8) :: resu_vale(nb_resu_max)
-    integer(kind=8) :: codret(nb_resu_max)
-    character(len=16) :: resu_name(nb_resu_max)
-    integer(kind=8) :: nb_resu, i_resu
+    integer(kind=8), parameter :: nbPropMaxi = 8
+    real(kind=8) :: propVale(nbPropMaxi)
+    integer(kind=8) :: propCode(nbPropMaxi)
+    character(len=16) :: propName(nbPropMaxi)
+    integer(kind=8) :: nbProp, iProp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_resu = 2*(nb_phase-1)
-!
+    nbProp = 2*(nbPhaseCold-1)
+
 ! - Name of parameters
-!
-    if (meta_type .eq. META_STEEL) then
-        resu_name(1) = 'C_F1_THETA'
-        resu_name(2) = 'C_F2_THETA'
-        resu_name(3) = 'C_F3_THETA'
-        resu_name(4) = 'C_F4_THETA'
-        resu_name(5) = 'F1_C_THETA'
-        resu_name(6) = 'F2_C_THETA'
-        resu_name(7) = 'F3_C_THETA'
-        resu_name(8) = 'F4_C_THETA'
-        theta(1:nb_resu) = 0.d0
-    elseif (meta_type .eq. META_ZIRC) then
-        resu_name(1) = 'C_F1_THETA'
-        resu_name(2) = 'C_F2_THETA'
-        resu_name(3) = 'F1_C_THETA'
-        resu_name(4) = 'F2_C_THETA'
-        theta(1:nb_resu) = 0.d0
+    if (metaType .eq. META_STEEL) then
+        propName(1) = 'C_F1_THETA'
+        propName(2) = 'C_F2_THETA'
+        propName(3) = 'C_F3_THETA'
+        propName(4) = 'C_F4_THETA'
+        propName(5) = 'F1_C_THETA'
+        propName(6) = 'F2_C_THETA'
+        propName(7) = 'F3_C_THETA'
+        propName(8) = 'F4_C_THETA'
+        annealTheta(1:nbProp) = 0.d0
+    elseif (metaType .eq. META_ZIRC) then
+        propName(1) = 'C_F1_THETA'
+        propName(2) = 'C_F2_THETA'
+        propName(3) = 'F1_C_THETA'
+        propName(4) = 'F2_C_THETA'
+        annealTheta(1:nbProp) = 0.d0
     else
         ASSERT(ASTER_FALSE)
     end if
 !
 ! - Get parameters
 !
-    call rcvalb(fami, kpg, ksp, poum, j_mater, &
+    call rcvalb(fami, kpg, ksp, poum, jvMaterCode, &
                 ' ', 'META_RE', 0, ' ', [0.d0], &
-                nb_resu, resu_name, resu_vale, codret, 2)
-    do i_resu = 1, nb_resu
-        theta(i_resu) = resu_vale(i_resu)
+                nbProp, propName, propVale, propCode, 2)
+    do iProp = 1, nbProp
+        annealTheta(iProp) = propVale(iProp)
     end do
 !
 end subroutine

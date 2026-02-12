@@ -23,14 +23,15 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "asterc/lccree.h"
+#include "asterc/lcdiscard.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcvari.h"
-#include "asterc/lcdiscard.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/comp_mfront_vname.h"
 #include "asterfort/comp_meca_code.h"
+#include "asterfort/comp_mfront_vname.h"
+#include "asterfort/Metallurgy_type.h"
 !
     integer(kind=8), intent(in) :: nbVari, nbVariMeca
     aster_logical, intent(in) :: l_excl
@@ -65,9 +66,10 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=6) :: metaPhasName(10)
-    character(len=8) :: metaRelaName(30)
-    character(len=16) :: metaGlobName(30)
+    integer(kind=8), parameter :: metaNbVariMaxi = 30
+    character(len=6) :: metaPhasName(META_NBPHASE_MAXI)
+    character(len=8) :: metaRelaName(metaNbVariMaxi)
+    character(len=16) :: metaGlobName(metaNbVariMaxi)
     integer(kind=8) :: idummy, idummy2, nbVariOther, iVariMeca, iVari
     character(len=16) :: compCodePy
     character(len=16) :: metaPhas, metaRela, metaGlob
@@ -111,6 +113,12 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
             ! internal integration
         else
             if (l_kit_meta) then
+! ------------- metaPhas: ACIER, ZIRC, ...
+! ------------- metaRela: internal state variables (by phase)
+! -------------           META_P_CINE_LINE, META_P_ISOT_LINE, META_P_ISOT_TRAC, META_V_CINE_LINE
+! -------------           META_V_ISOT_LINE, META_V_ISOT_TRAC
+! ------------- metaGlob: internal state variables (global)
+! -------------           META_G_ISOT_*, META_G_CINE_*
                 metaPhas = kit_comp(1)
                 metaRela = kit_comp(2)
                 metaGlob = kit_comp(3)
@@ -120,19 +128,23 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                 call lcinfo(metaPhasPy, idummy, nbMetaPhas, idummy2)
                 call lcinfo(metaRelaPy, idummy, nbVariMetaRela, idummy2)
                 call lcinfo(metaGlobPy, idummy, nbVariMetaGlob, idummy2)
-                ASSERT(nbMetaPhas .le. 10)
-                ASSERT(nbVariMetaRela .le. 30)
-                ASSERT(nbVariMetaGlob .le. 30)
+                ASSERT(nbMetaPhas .le. META_NBPHASE_MAXI)
+                ASSERT(nbVariMetaRela .le. metaNbVariMaxi)
+                ASSERT(nbVariMetaGlob .le. metaNbVariMaxi)
                 call lcvari(metaPhasPy, nbMetaPhas, metaPhasName)
                 call lcvari(metaRelaPy, nbVariMetaRela, metaRelaName)
                 call lcvari(metaGlobPy, nbVariMetaGlob, metaGlobName)
                 iVari = 0
+
+! ------------- Add internal state variables (by phase)
                 do iMetaPhas = 1, nbMetaPhas
                     do iVariMetaRela = 1, nbVariMetaRela
                         iVari = iVari+1
                         infoVari(iVari) = metaPhasName(iMetaPhas)//'##'//metaRelaName(iVariMetaRela)
                     end do
                 end do
+
+! ------------- Add internal state variables (global)
                 do iVariMetaGlob = 1, nbVariMetaGlob
                     iVari = iVari+1
                     infoVari(iVari) = metaGlobName(iVariMetaGlob)
@@ -141,6 +153,8 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                 call lcdiscard(metaPhasPy)
                 call lcdiscard(metaRelaPy)
                 call lcdiscard(metaGlobPy)
+
+! ------------- Other internal state variables (GDEF_LOG, etc.)
                 nbVariOther = nbVari-iVari
                 if (nbVariOther .ne. 0) then
                     call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
@@ -149,12 +163,14 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                     call lcvari(compCodePy, nbVariOther, infoVari(iVari+1:nbVari))
                     call lcdiscard(compCodePy)
                 end if
+
             else
                 call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
                                     post_iter, regu_visc, post_incr, &
                                     compCodePy)
                 call lcvari(compCodePy, nbVari, infoVari)
                 call lcdiscard(compCodePy)
+
             end if
         end if
     end if

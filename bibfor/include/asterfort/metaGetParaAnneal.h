@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine metaGetParaAnneal(poum     , fami    , kpg, ksp, j_mater,&
-                                 meta_type, nb_phase,&
-                                 theta)
+    subroutine metaGetParaAnneal(poum, fami, kpg, ksp, jvMaterCode, &
+                                 metaType, nbPhaseCold, &
+                                 annealTheta)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg, ksp, j_mater
-        integer(kind=8), intent(in) :: meta_type, nb_phase
-        real(kind=8), intent(out) :: theta(*)
+        integer(kind=8), intent(in) :: kpg, ksp, jvMaterCode
+        integer(kind=8), intent(in) :: metaType, nbPhaseCold
+        real(kind=8), intent(out) :: annealTheta(2*nbPhaseCold)
     end subroutine metaGetParaAnneal
 end interface

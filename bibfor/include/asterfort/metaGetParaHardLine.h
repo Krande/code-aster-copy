@@ -17,18 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine metaGetParaHardLine(poum     , fami     , kpg, ksp, j_mater,&
-                                   meta_type, nb_phasis,&
-                                   young    , coef     , h)
+    subroutine metaGetParaHardLine(poum, fami, kpg, ksp, jvMaterCode, &
+                                   metaType, nbPhase, &
+                                   young, coef, h)
+!
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        integer(kind=8), intent(in) :: j_mater
-        integer(kind=8), intent(in) :: meta_type
-        integer(kind=8), intent(in) :: nb_phasis
-        real(kind=8), intent(in) :: young
-        real(kind=8), intent(in) :: coef
-        real(kind=8), intent(out) :: h(*)
+        integer(kind=8), intent(in) :: kpg, ksp
+        integer(kind=8), intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: metaType, nbPhase
+        real(kind=8), intent(in) :: young, coef
+        real(kind=8), intent(out) :: h(nbPhase)
     end subroutine metaGetParaHardLine
 end interface

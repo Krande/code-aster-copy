@@ -166,7 +166,7 @@ subroutine meta_vpta_coef(metaRela, metaGlob, &
 ! ----- Mixing law: yield
 !
         call metaGetParaMixture('+', fami, kpg, ksp, j_mater, &
-                                l_visc, meta_type, nb_phasis, zcold_curr, fmel=fmel)
+                                l_visc, meta_type, nb_phasis, zcold_curr, fmel)
 !
 ! ----- Get point on hardening curve
 !
