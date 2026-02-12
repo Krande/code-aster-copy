@@ -193,7 +193,11 @@ class MVDPTR6(Element):
     meshType = MT.TRIA6
     nodes = (SetOfNodes("EN2", (4, 5, 6)), SetOfNodes("EN1", (1, 2, 3)))
     elrefe = (
-        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG3", "MASS=FPG6", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
+        ElrefeLoc(
+            MT.TR6,
+            gauss=("RIGI=FPG3", "MASS=FPG6", "FPG1=FPG1", "MTGA=FPG3"),
+            mater=("RIGI", "FPG1", "MTGA"),
+        ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3", "MASS=FPG6")),
         ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )
@@ -452,6 +456,24 @@ class MVDPTR6(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.MATE_ELGA(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R),),
+        ),
+        OP.MATE_ELEM(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R),),
+        ),
         OP.NSPG_NBVA(
             te=496,
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
@@ -655,7 +677,11 @@ class MVDPQS8(MVDPTR6):
     meshType = MT.QUAD8
     nodes = (SetOfNodes("EN2", (5, 6, 7, 8)), SetOfNodes("EN1", (1, 2, 3, 4)))
     elrefe = (
-        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG4", "MASS=FPG9", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
+        ElrefeLoc(
+            MT.QU8,
+            gauss=("RIGI=FPG4", "MASS=FPG9", "FPG1=FPG1", "MTGA=FPG4"),
+            mater=("RIGI", "FPG1", "MTGA"),
+        ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG9")),
         ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )

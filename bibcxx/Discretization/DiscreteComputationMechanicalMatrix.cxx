@@ -1297,34 +1297,38 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCoup
         std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel(), option );
 
     const auto listOfLoads = _phys_problem->getListOfLoads();
-    const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
 
-    const auto post = std::make_shared< PostProcessing >( _phys_problem );
-    const auto mate_elga = post->computeMaterial( "ELGA", externVar );
-    const auto mate_noeu = toFieldOnNodes( mate_elga );
+    if ( listOfLoads->hasPairingField() ) {
+        const auto post = std::make_shared< PostProcessing >( _phys_problem );
+        const auto mate_elga = post->computeMaterial( "ELGA", externVar );
+        const auto mate_noeu = toFieldOnNodes( mate_elga );
 
-    for ( const auto &load : mecaLoadReal ) {
+        const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
 
-        const auto pairing = load->getPairingField();
-        if ( pairing && pairing->exists() ) {
+        for ( const auto &load : mecaLoadReal ) {
 
-            // Prepare computing
-            CalculPtr calcul = std::make_unique< Calcul >( option );
-            calcul->setFiniteElementDescriptor( pairing->getDescription() );
+            const auto pairing = load->getPairingField();
+            if ( pairing && pairing->exists() ) {
 
-            // Set input field
-            calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
-            calcul->addInputField( "PPAIRR", pairing );
-            calcul->addInputField( "PMATERR", mate_noeu );
-            calcul->addHHOField( _phys_problem->getModel() );
+                // Prepare computing
+                CalculPtr calcul = std::make_unique< Calcul >( option );
+                calcul->setFiniteElementDescriptor( pairing->getDescription() );
 
-            // Add output elementary
-            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+                // Set input field
+                calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+                calcul->addInputField( "PPAIRR", pairing );
+                calcul->addInputField( "PMATERR", mate_noeu );
+                calcul->addHHOField( _phys_problem->getModel() );
 
-            // Computation
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+                // Add output elementary
+                calcul->addOutputElementaryTerm( "PMATUUR",
+                                                 std::make_shared< ElementaryTermReal >() );
+
+                // Computation
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                    elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+                }
             }
         }
     }

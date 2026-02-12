@@ -319,22 +319,22 @@ std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescripto
     return FEDesc;
 };
 
-VectorString ListOfLoads::getListOfMechaTyp() { return _listOfMechaTyp; }
+VectorString ListOfLoads::getListOfMechaTyp() const { return _listOfMechaTyp; }
 
-VectorString ListOfLoads::getListOfMechaFuncTyp() { return _listOfMechaFuncTyp; }
+VectorString ListOfLoads::getListOfMechaFuncTyp() const { return _listOfMechaFuncTyp; }
 
-VectorString ListOfLoads::getListOfDiriTyp() { return _listOfDiriTyp; }
+VectorString ListOfLoads::getListOfDiriTyp() const { return _listOfDiriTyp; }
 
 void ListOfLoads::setDifferentialDisplacement(
     const FieldOnNodesRealPtr differentialDisplacement ) {
     _differentialDisplacement = differentialDisplacement;
 };
 
-const FieldOnNodesRealPtr ListOfLoads::getDifferentialDisplacement() {
+const FieldOnNodesRealPtr ListOfLoads::getDifferentialDisplacement() const {
     return _differentialDisplacement;
 };
 
-bool ListOfLoads::hasDifferentialLoads() {
+bool ListOfLoads::hasDifferentialLoads() const {
     for ( const auto &typ : _listOfMechaTyp ) {
         if ( typ == "DIDI" )
             return true;
@@ -346,7 +346,7 @@ bool ListOfLoads::hasDifferentialLoads() {
     return false;
 };
 
-bool ListOfLoads::hasDifferentialDirichletBC() {
+bool ListOfLoads::hasDifferentialDirichletBC() const {
     for ( const auto &typ : _listOfDiriTyp ) {
         if ( typ == "DIDI" )
             return true;
@@ -354,8 +354,22 @@ bool ListOfLoads::hasDifferentialDirichletBC() {
     return false;
 };
 
-bool ListOfLoads::hasDifferential() {
+bool ListOfLoads::hasDifferential() const {
     return hasDifferentialLoads() or hasDifferentialDirichletBC();
 };
 
-bool ListOfLoads::hasDifferentialDisplacement() { return _differentialDisplacement != nullptr; };
+bool ListOfLoads::hasDifferentialDisplacement() const {
+    return _differentialDisplacement != nullptr;
+};
+
+bool ListOfLoads::hasPairingField() const {
+
+    for ( auto &load : _listOfMechanicalLoadsReal ) {
+        const auto pairing = load->getPairingField();
+        if ( pairing && pairing->exists() ) {
+            return true;
+        }
+    }
+
+    return false;
+};

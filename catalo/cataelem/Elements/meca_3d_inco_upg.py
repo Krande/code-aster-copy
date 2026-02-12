@@ -251,8 +251,8 @@ class MINC_HEXA20(Element):
     elrefe = (
         ElrefeLoc(
             MT.H20,
-            gauss=("RIGI=FPG8", "MASS=FPG27", "NOEU=NOEU", "FPG1=FPG1"),
-            mater=("RIGI", "MASS", "NOEU", "FPG1"),
+            gauss=("RIGI=FPG8", "MASS=FPG27", "NOEU=NOEU", "FPG1=FPG1", "MTGA=FPG8"),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.HE8, gauss=("RIGI=FPG8",)),
         ElrefeLoc(MT.HE8, gauss=("RIGI=FPG8",)),
@@ -683,6 +683,24 @@ class MINC_HEXA20(Element):
             ),
             para_out=((SP.PMATUUR, VMATUUR),),
         ),
+        OP.MATE_ELGA(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R),),
+        ),
+        OP.MATE_ELEM(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R),),
+        ),
         OP.NORME_L2(
             te=563,
             para_in=(
@@ -913,7 +931,7 @@ class MINC_TETRA10(MINC_HEXA20):
     elrefe = (
         ElrefeLoc(
             MT.T10,
-            gauss=("RIGI=FPG4", "MASS=FPG15", "NOEU=NOEU", "FPG1=FPG1"),
+            gauss=("RIGI=FPG4", "MASS=FPG15", "NOEU=NOEU", "FPG1=FPG1", "MTGA=FPG4"),
             mater=("RIGI", "MASS", "NOEU", "FPG1"),
         ),
         ElrefeLoc(MT.TE4, gauss=("RIGI=FPG4",)),
@@ -934,8 +952,8 @@ class MINC_PENTA15(MINC_HEXA20):
     elrefe = (
         ElrefeLoc(
             MT.P15,
-            gauss=("RIGI=FPG21", "MASS=FPG21", "NOEU=NOEU", "FPG1=FPG1"),
-            mater=("RIGI", "MASS", "NOEU", "FPG1"),
+            gauss=("RIGI=FPG21", "MASS=FPG21", "NOEU=NOEU", "FPG1=FPG1", "MTGA=FPG21"),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.PE6, gauss=("RIGI=FPG21",)),
         ElrefeLoc(MT.PE6, gauss=("RIGI=FPG21",)),

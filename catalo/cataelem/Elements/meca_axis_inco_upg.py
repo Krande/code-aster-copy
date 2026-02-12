@@ -238,8 +238,8 @@ class MIAXQU8(Element):
     elrefe = (
         ElrefeLoc(
             MT.QU8,
-            gauss=("RIGI=FPG4", "MASS=FPG9", "NOEU=NOEU", "FPG1=FPG1"),
-            mater=("RIGI", "MASS", "NOEU", "FPG1"),
+            gauss=("RIGI=FPG4", "MASS=FPG9", "NOEU=NOEU", "FPG1=FPG1", "MTGA=FPG4"),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4",)),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4",)),
@@ -637,6 +637,24 @@ class MIAXQU8(Element):
             ),
             para_out=((SP.PMATUUR, VMATUUR),),
         ),
+        OP.MATE_ELGA(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R),),
+        ),
+        OP.MATE_ELEM(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R),),
+        ),
         OP.NORME_L2(
             te=563,
             para_in=(
@@ -860,8 +878,8 @@ class MIAXTR6(MIAXQU8):
     elrefe = (
         ElrefeLoc(
             MT.TR6,
-            gauss=("RIGI=FPG3", "MASS=FPG6", "NOEU=NOEU", "FPG1=FPG1"),
-            mater=("RIGI", "MASS", "NOEU", "FPG1"),
+            gauss=("RIGI=FPG3", "MASS=FPG6", "NOEU=NOEU", "FPG1=FPG1", "MTGA=FPG3"),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3",)),
         ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3",)),
