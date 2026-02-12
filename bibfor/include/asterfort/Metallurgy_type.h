@@ -73,9 +73,6 @@
 #define ZNUMECOMP         4
 #define ZNBPHASE          5
 
-! Maximum number of phases
-#define META_NBPHASE_MAXI 8
-
 ! Phases for steel: total number (4 cold, 1 hot + 1 sum of cold)
 #define NBPHASESTEEL      6
 
