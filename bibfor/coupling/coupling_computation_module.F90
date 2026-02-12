@@ -37,8 +37,13 @@ module coupling_computation_module
 !
 #include "jeveux.h"
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/coupling_type.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/matrHooke3d.h"
+#include "asterfort/matrHookePlaneStrain.h"
+#include "asterfort/reereg.h"
+#include "asterfort/separ_RI_elas_3D.h"
 #include "blas/dger.h"
 #include "blas/dsyr.h"
 #include "FE_basis_module.h"
@@ -53,6 +58,8 @@ module coupling_computation_module
     public :: cplCmpPenaFEMHHOMatScal, cplCmpPenaFEMHHOMatVec
     public :: cplCmpPenaFEMFEMMatScal, cplCmpPenaFEMFEMMatVec
     public :: cplCmpLagrFEMFEMMatScal, cplCmpLagrFEMFEMMatVec
+    public :: cplCmpStressFEMHHOMat
+    private :: cplEvalElasPara, cplEvalMatrHB, cplEvalMatrHBn
 
 !
 contains
@@ -424,6 +431,250 @@ contains
         end do
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplCmpStressFEMHHOMat(FEFaceSl, FECellSl, hhoFaceMa, hhoDataMa, &
+                                     FEQuadSl, hhoQuadMa, cplData, lhs)
+!
+        implicit none
+!
+        type(FE_Skin), intent(in) :: FEFaceSl
+        type(FE_Cell), intent(in) :: FECellSl
+        type(HHO_Face), intent(in) :: hhoFaceMa
+        type(HHO_Data), intent(in) :: hhoDataMa
+        type(FE_Quadrature), intent(in) :: FEQuadSl
+        type(HHO_Quadrature), intent(in) :: hhoQuadMa
+        type(CouplingData), intent(in) :: cplData
+        type(HHO_matrix), intent(out) :: lhs
+!
+!===================================================================================================
+!    FEM/HHO - Compute matrix: (sigma(u^s).n^s, u^s-u^m)
+!              unknowns (u^s, u^m)
+!===================================================================================================
+!
+        type(HHO_basis_face) :: hhoBasisFace
+        type(FE_Basis) :: FEBasisFaceSl, FEBasisCellSl
+        real(kind=8), dimension(MAX_BS) :: BSEvalFaceSl
+        real(kind=8), dimension(3, MAX_BS) :: BSGEvalCellSl
+        real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSEvalFaceMa
+        real(kind=8) :: coor_qp_vo(3), normalSl(3), E, nu, lambda, mu
+        real(kind=8) :: stress_n(3, 3), weight, matHB(6, 3)
+        integer(kind=8) :: nbDoFsFace, nbDoFsFEFaceSl, nbDoFsFECellSl
+        integer(kind=8) :: ndim, ipg, fbs, fbs_cmp, idim, iBasis, iRow, iret, jCol
+        integer(kind=8) :: jdim, jBasis
+!
+! -- init face basis
+!
+        call FEBasisFaceSl%initFace(FEFaceSl)
+        call FEBasisCellSl%initCell(FECellSl)
+        call hhoBasisFace%initialize(hhoFaceMa)
+!
+! -- number of dofs
+!
+        ndim = FECellSl%ndim
+        call hhoTherFaceDofs(hhoFaceMa, hhoDataMa, fbs_cmp)
+        fbs = ndim*fbs_cmp
+        nbDoFsFECellSl = ndim*FEBasisCellSl%size
+        nbDoFsFEFaceSl = ndim*FEBasisFaceSl%size
+        nbDoFsFace = nbDoFsFEFaceSl+fbs
+!
+        call lhs%initialize(nbDoFsFECellSl, nbDoFsFace, 0.d0)
+!
+! -- Loop on quadrature point
+        do ipg = 1, FEQuadSl%nbQuadPoints
+            weight = FEQuadSl%weights(ipg)
+!
+! ----- Projection of node on volumic slave cell (volumic parametric space)
+!
+            coor_qp_vo = 0.d0
+            call reereg('S', FECellSl%typemas, FECellSl%nbnodes, FECellSl%coorno, &
+                        FEQuadSl%points(1:3, ipg), FECellSl%ndim, coor_qp_vo, iret, &
+                        ndim_coor_=3)
+            ASSERT(iret == 0)
+!
+! ----- Eval basis function at the quadrature point
+! -------- Compute uh and grad(uh)
+!
+            BSGEvalCellSl = FEBasisCellSl%grad(coor_qp_vo)
+            BSEvalFaceSl = FEBasisFaceSl%func(FEQuadSl%points_param(1:3, ipg))
+!
+! -------- Compute uF
+!
+            call hhoBasisFace%BSEval(hhoQuadMa%points(1:3, ipg), 0, hhoDataMa%face_degree(), &
+                                     BSEvalFaceMa)
+!
+! ------- Compute normal
+!
+            normalSl = FEFaceSl%normal(FEQuadSl%points_param(1:3, ipg))
+!
+! ------- Compute elastic parameters
+!
+            call cplEvalElasPara(cplData, FEBasisFaceSl%size, BSEvalFaceSl, E, nu, lambda, mu)
+!
+! --------  Product (sigma(u^s).n^s, u^s-u^m)
+!
+            iRow = 0
+            do iBasis = 1, FEBasisCellSl%size
+                call cplEvalMatrHB(BSGEvalCellSl(1:3, iBasis), lambda, mu, matHB)
+                call cplEvalMatrHBn(matHB, normalSl, stress_n)
+!
+! -------- Bug for the moment - FIXME - so stress_n = 0.d0 to recover penalization
+                stress_n = 0.d0
+!
+                do idim = 1, ndim
+                    iRow = iRow+1
+!
+                    jCol = 0
+                    do jBasis = 1, FEBasisFaceSl%size
+                        do jdim = 1, ndim
+                            jCol = jCol+1
+                            lhs%m(iRow, jCol) = lhs%m(iRow, jCol)+ &
+                                                weight*stress_n(jdim, idim)*BSEvalFaceSl(jBasis)
+                        end do
+                    end do
+                    do jdim = 1, ndim
+                        do jBasis = 1, fbs_cmp
+                            jCol = jCol+1
+                            lhs%m(iRow, jCol) = lhs%m(iRow, jCol)- &
+                                                weight*stress_n(jdim, idim)*BSEvalFaceMa(jBasis)
+                        end do
+                    end do
+                end do
+            end do
+        end do
+!
+        ASSERT(iRow == nbDoFsFECellSl)
+!
+        call lhs%print()
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplEvalElasPara(cplData, nbNodes, BSEvalFaceSl, E, nu, lambda, mu)
+!
+        implicit none
+!
+        type(CouplingData), intent(in) :: cplData
+        integer(kind=8), intent(in) :: nbNodes
+        real(kind=8), dimension(MAX_BS), intent(in) :: BSEvalFaceSl
+        real(kind=8), intent(out) :: E, nu, lambda, mu
+!
+!===================================================================================================
+!    Evaluate elastic parameter by interpolation
+!===================================================================================================
+!
+        integer(kind=8) :: iNode
+!
+        E = 0.d0
+        nu = 0.d0
+!
+        do iNode = 1, nbNodes
+            E = E+cplData%E(iNode)*BSEvalFaceSl(iNode)
+            nu = nu+cplData%nu(iNode)*BSEvalFaceSl(iNode)
+        end do
+!
+        lambda = E*nu/(1.d0+nu)/(1.d0-2.d0*nu)
+        mu = 0.5d0*E/(1.d0+nu)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplEvalMatrHB(grad, lambda, mu, matHB)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: grad(3), lambda, mu
+        real(kind=8), intent(out) :: matHB(6, 3)
+!
+!===================================================================================================
+!    Compute {H} : {Eps} with H the Hooke matrix for one basis function
+!    Sigma = 2*mu*eps + lambda*trace(eps)*Id
+!===================================================================================================
+!
+!
+!       sigma_xx(ux, uy, uz)
+        matHB(1, 1) = (2.d0*mu+lambda)*grad(1)
+        matHB(1, 2) = lambda*grad(2)
+        matHB(1, 3) = lambda*grad(3)
+!
+!       sigma_yy(ux, uy, uz)
+        matHB(2, 1) = lambda*grad(1)
+        matHB(2, 2) = (2.d0*mu+lambda)*grad(2)
+        matHB(2, 3) = lambda*grad(3)
+!
+!       sigma_zz(ux, uy, uz)
+        matHB(3, 1) = lambda*grad(1)
+        matHB(3, 2) = lambda*grad(2)
+        matHB(3, 3) = (2.d0*mu+lambda)*grad(3)
+!
+!       sigma_xy(ux, uy, uz)
+        matHB(4, 1) = mu*grad(2)
+        matHB(4, 2) = mu*grad(1)
+        matHB(4, 3) = 0.d0
+!
+!       sigma_xz(ux, uy, uz)
+        matHB(5, 1) = mu*grad(3)
+        matHB(5, 2) = 0.d0
+        matHB(5, 3) = mu*grad(1)
+!
+!       sigma_yz(ux, uy, uz)
+        matHB(6, 1) = 0.d0
+        matHB(6, 2) = mu*grad(3)
+        matHB(6, 3) = mu*grad(2)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+    subroutine cplEvalMatrHBn(matHB, normal, sigma_n)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: matHB(6, 3), normal(3)
+        real(kind=8), intent(out) :: sigma_n(3, 3)
+!
+!===================================================================================================
+!    Compute sigma.n
+!===================================================================================================
+!
+!       sigma_xx(ux).nx+sigma_xy(ux).ny+sigma_xz(ux).nz
+        sigma_n(1, 1) = matHB(1, 1)*normal(1)+matHB(4, 1)*normal(2)+matHB(5, 1)*normal(3)
+!       sigma_xx(uy).nx+sigma_xy(uy).ny+sigma_xz(uy).nz
+        sigma_n(1, 2) = matHB(1, 2)*normal(1)+matHB(4, 2)*normal(2)+matHB(5, 2)*normal(3)
+!       sigma_xx(uz).nx+sigma_xy(uz).ny+sigma_xz(uz).nz
+        sigma_n(1, 3) = matHB(1, 3)*normal(1)+matHB(4, 3)*normal(2)+matHB(5, 3)*normal(3)
+!
+!       sigma_yx(ux).nx+sigma_yy(ux).ny+sigma_yz(ux).nz
+        sigma_n(2, 1) = matHB(4, 1)*normal(1)+matHB(2, 1)*normal(2)+matHB(6, 1)*normal(3)
+!       sigma_yx(uy).nx+sigma_yy(uy).ny+sigma_yz(uy).nz
+        sigma_n(2, 2) = matHB(4, 2)*normal(1)+matHB(2, 2)*normal(2)+matHB(6, 2)*normal(3)
+!       sigma_yx(uz).nx+sigma_yy(uz).ny+sigma_yz(uz).nz
+        sigma_n(2, 3) = matHB(4, 3)*normal(1)+matHB(2, 3)*normal(2)+matHB(6, 3)*normal(3)
+!
+!       sigma_zx(ux).nx+sigma_zy(ux).ny+sigma_zz(ux).nz
+        sigma_n(3, 1) = matHB(5, 1)*normal(1)+matHB(6, 1)*normal(2)+matHB(3, 1)*normal(3)
+!       sigma_zx(uy).nx+sigma_zy(uy).ny+sigma_zz(uy).nz
+        sigma_n(3, 2) = matHB(5, 2)*normal(1)+matHB(6, 2)*normal(2)+matHB(3, 2)*normal(3)
+!       sigma_zx(uz).nx+sigma_zy(uz).ny+sigma_zz(uz).nz
+        sigma_n(3, 3) = matHB(5, 3)*normal(1)+matHB(6, 3)*normal(2)+matHB(3, 3)*normal(3)
+!
+    end subroutine
+!
 !===================================================================================================
 !
 !===================================================================================================

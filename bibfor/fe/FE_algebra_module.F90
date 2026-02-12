@@ -40,7 +40,7 @@ module FE_algebra_module
     public :: dgemv_T_2xn, dgemv_T_3xn, dgemv_T_4xn, dgemv_T_6xn
     public :: dgemv_2x2, dgemv_3x3, dgemv_T_4x4, dgemv_T_6x6
     public :: daxpy_1, daxpy_1x2, daxpy_1x3, daxpy_1xm, dcopy_1
-    public :: ddot_1
+    public :: ddot_1, dgemv_N_4x4, dgemv_N_6x6
 !
 contains
 !
@@ -113,6 +113,68 @@ contains
 !
 !===================================================================================================
 !
+    subroutine dgemv_N_6x6(mat, x, y, alpha)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: mat(6, *)
+        real(kind=8), intent(in) :: x(*), alpha
+        real(kind=8), intent(out) :: y(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y = alpha * mat*x
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+#ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+
+        b_lda = to_blas_int(6)
+        b_m = to_blas_int(6)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
+                   b_incy)
+#else
+!
+        y(1) = alpha*( &
+               mat(1, 1)*x(1)+mat(1, 2)*x(2)+mat(1, 3)*x(3)+mat(1, 4)*x(4)+mat(1, 5)*x(5)+ &
+               mat(1, 6)*x(6) &
+               )
+        y(2) = alpha*( &
+               mat(2, 1)*x(1)+mat(2, 2)*x(2)+mat(2, 3)*x(3)+mat(2, 4)*x(4)+mat(2, 5)*x(5)+ &
+               mat(2, 6)*x(6) &
+               )
+        y(3) = alpha*( &
+               mat(3, 1)*x(1)+mat(3, 2)*x(2)+mat(3, 3)*x(3)+mat(3, 4)*x(4)+mat(3, 5)*x(5)+ &
+               mat(3, 6)*x(6) &
+               )
+        y(4) = alpha*( &
+               mat(4, 1)*x(1)+mat(4, 2)*x(2)+mat(4, 3)*x(3)+mat(4, 4)*x(4)+mat(4, 5)*x(5)+ &
+               mat(4, 6)*x(6) &
+               )
+        y(5) = alpha*( &
+               mat(5, 1)*x(1)+mat(5, 2)*x(2)+mat(5, 3)*x(3)+mat(5, 4)*x(4)+mat(5, 5)*x(5)+ &
+               mat(5, 6)*x(6) &
+               )
+        y(6) = alpha*( &
+               mat(6, 1)*x(1)+mat(6, 2)*x(2)+mat(6, 3)*x(3)+mat(6, 4)*x(4)+mat(6, 5)*x(5)+ &
+               mat(6, 6)*x(6) &
+               )
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine dgemv_T_4x4(mat, x, y, alpha)
 !
         implicit none
@@ -146,6 +208,47 @@ contains
         y(2) = alpha*(mat(1, 2)*x(1)+mat(2, 2)*x(2)+mat(3, 2)*x(3)+mat(4, 2)*x(4))
         y(3) = alpha*(mat(1, 3)*x(1)+mat(2, 3)*x(2)+mat(3, 3)*x(3)+mat(4, 3)*x(4))
         y(4) = alpha*(mat(1, 4)*x(1)+mat(2, 4)*x(2)+mat(3, 4)*x(3)+mat(4, 4)*x(4))
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine dgemv_N_4x4(mat, x, y, alpha)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: mat(6, *)
+        real(kind=8), intent(in) :: x(*), alpha
+        real(kind=8), intent(out) :: y(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y = alpha * mat^T*x
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+#ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+        b_lda = to_blas_int(6)
+        b_m = to_blas_int(4)
+        b_n = to_blas_int(4)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
+                   b_incy)
+#else
+!
+        y(1) = alpha*(mat(1, 1)*x(1)+mat(1, 2)*x(2)+mat(1, 3)*x(3)+mat(1, 4)*x(4))
+        y(2) = alpha*(mat(2, 1)*x(1)+mat(2, 2)*x(2)+mat(2, 3)*x(3)+mat(2, 4)*x(4))
+        y(3) = alpha*(mat(3, 1)*x(1)+mat(3, 2)*x(2)+mat(3, 3)*x(3)+mat(3, 4)*x(4))
+        y(4) = alpha*(mat(4, 1)*x(1)+mat(4, 2)*x(2)+mat(4, 3)*x(3)+mat(4, 4)*x(4))
 #endif
 !
     end subroutine

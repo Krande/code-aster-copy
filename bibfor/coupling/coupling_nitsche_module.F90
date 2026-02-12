@@ -238,13 +238,18 @@ contains
 !    NITSCHE - FEM/HHO - Compute matrix
 !===================================================================================================
 !
-        type(HHO_matrix) :: lhs_pena
+        type(HHO_matrix) :: lhs_pena, lhs_stress
 !
         call cplCmpPenaFEMHHOMatVec(FEFaceSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuadMa, &
                                     cplData%coef_pena, lhs_pena)
 !
-        call cplNitsAssLhsFEMHHO(cplMap, lhs_pena, lhs)
+        call cplCmpStressFEMHHOMat(FEFaceSl, FECellSl, hhoFaceMa, hhoDataMa, FEQuadSl, hhoQuadMa, &
+                                   cplData, lhs_stress)
+!
+        call cplNitsAssLhsFEMHHO(cplMap, lhs_pena, lhs_stress, lhs)
+!
         call lhs_pena%free()
+        call lhs_stress%free()
 !
     end subroutine
 !
@@ -253,12 +258,12 @@ contains
 !===================================================================================================
 !
 !
-    subroutine cplNitsAssLhsFEMHHO(cplMap, lhs_pena, lhs)
+    subroutine cplNitsAssLhsFEMHHO(cplMap, lhs_pena, lhs_stress, lhs)
 !
         implicit none
 !
         type(CouplingMap), intent(in) :: cplMap
-        type(HHO_matrix), intent(in) :: lhs_pena
+        type(HHO_matrix), intent(in) :: lhs_pena, lhs_stress
         type(HHO_matrix), intent(inout) :: lhs
 !
 !===================================================================================================
@@ -275,6 +280,16 @@ contains
             do iFE = 1, cplMap%nbDoFsFEFace
                 irow = cplMap%mapDoFsFEFace(iFE)
                 lhs%m(irow, jcol) = lhs_pena%m(iFE, jFE)
+            end do
+        end do
+!
+!      Term: (stress(u^S).n^S, v^S-v^M) + (stress(v^S).n^S, u^S-u^M)
+        do jFE = 1, cplMap%nbDoFsFEFace
+            jcol = cplMap%mapDoFsFEFace(jFE)
+            do iFE = 1, cplMap%nbDoFsFECellSl
+                irow = cplMap%mapDoFsFECellSl(iFE)
+                lhs%m(irow, jcol) = lhs%m(irow, jcol)+lhs_stress%m(iFE, jFE)
+                lhs%m(jcol, irow) = lhs%m(jcol, irow)+lhs_stress%m(iFE, jFE)
             end do
         end do
 !
