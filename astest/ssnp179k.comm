@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -204,7 +204,6 @@ TEST_RESU(
 TEST_RESU(
     RESU=_F(
         INST=1.0,
-        GROUP_MA="load",
         RESULTAT=resnonl,
         NOM_CHAM="REAC_NODA",
         NOM_CMP="HHO_FX1",
