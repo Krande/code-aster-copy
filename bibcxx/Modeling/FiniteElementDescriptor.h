@@ -158,6 +158,8 @@ class FiniteElementDescriptor : public DataStructure {
 
     JeveuxVectorLong getFiniteElementType() const;
 
+    SetString getFiniteElementNames() const;
+
     /**
      * @brief Number of super-elements in model
      * @return Number of super elements in model

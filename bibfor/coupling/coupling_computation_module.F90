@@ -60,7 +60,6 @@ module coupling_computation_module
     public :: cplCmpLagrFEMFEMMatScal, cplCmpLagrFEMFEMMatVec
     public :: cplCmpStressFEMHHOMat
     private :: cplEvalElasPara, cplEvalMatrHB, cplEvalMatrHBn
-
 !
 contains
 !
@@ -452,7 +451,7 @@ contains
         type(HHO_matrix), intent(out) :: lhs
 !
 !===================================================================================================
-!    FEM/HHO - Compute matrix: (sigma(u^s).n^s, u^s-u^m)
+!    FEM/HHO - Compute matrix: (sigma(u^s).n^s, v^s-v^m)
 !              unknowns (u^s, u^m)
 !===================================================================================================
 !
@@ -492,7 +491,7 @@ contains
 !
             coor_qp_vo = 0.d0
             call reereg('S', FECellSl%typemas, FECellSl%nbnodes, FECellSl%coorno, &
-                        FEQuadSl%points(1:3, ipg), FECellSl%ndim, coor_qp_vo, iret, &
+                        FEQuadSl%points(1:3, ipg), ndim, coor_qp_vo, iret, &
                         ndim_coor_=3)
             ASSERT(iret == 0)
 !
@@ -507,7 +506,7 @@ contains
             call hhoBasisFace%BSEval(hhoQuadMa%points(1:3, ipg), 0, hhoDataMa%face_degree(), &
                                      BSEvalFaceMa)
 !
-! ------- Compute normal
+! ------- Compute outward normal
 !
             normalSl = FEFaceSl%normal(FEQuadSl%points_param(1:3, ipg))
 !
@@ -515,11 +514,13 @@ contains
 !
             call cplEvalElasPara(cplData, FEBasisFaceSl%size, BSEvalFaceSl, E, nu, lambda, mu)
 !
-! --------  Product (sigma(u^s).n^s, u^s-u^m)
+! --------  Product (sigma(u^s).n^s, v^s-v^m)
 !
             iRow = 0
             do iBasis = 1, FEBasisCellSl%size
+! ------------- Compute [H] : {eps}
                 call cplEvalMatrHB(BSGEvalCellSl(1:3, iBasis), lambda, mu, matHB)
+! ------------- Compute normal component
                 call cplEvalMatrHBn(matHB, normalSl, stress_n)
 !
 ! -------- Bug for the moment - FIXME - so stress_n = 0.d0 to recover penalization
@@ -528,6 +529,7 @@ contains
                 do idim = 1, ndim
                     iRow = iRow+1
 !
+! ----------------- (sigma(u^s).n^s, v^s) - sorted by node
                     jCol = 0
                     do jBasis = 1, FEBasisFaceSl%size
                         do jdim = 1, ndim
@@ -536,6 +538,8 @@ contains
                                                 weight*stress_n(jdim, idim)*BSEvalFaceSl(jBasis)
                         end do
                     end do
+!
+! ----------------- (sigma(u^s).n^s, -v^m) - sorted by dimension
                     do jdim = 1, ndim
                         do jBasis = 1, fbs_cmp
                             jCol = jCol+1
@@ -548,8 +552,6 @@ contains
         end do
 !
         ASSERT(iRow == nbDoFsFECellSl)
-!
-        call lhs%print()
 !
     end subroutine
 !
@@ -601,6 +603,7 @@ contains
 !===================================================================================================
 !    Compute {H} : {Eps} with H the Hooke matrix for one basis function
 !    Sigma = 2*mu*eps + lambda*trace(eps)*Id
+!    Component [XX, YY, ZZ, XY, XZ, YZ]
 !===================================================================================================
 !
 !

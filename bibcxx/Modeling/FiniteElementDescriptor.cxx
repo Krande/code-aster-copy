@@ -403,6 +403,21 @@ void FiniteElementDescriptor::addVirtualCells( const FiniteElementDescriptor &ot
     this->build();
 };
 
+SetString FiniteElementDescriptor::getFiniteElementNames() const {
+
+    SetString names;
+
+    _listOfGroupsOfElements->build();
+    _listOfGroupsOfElements->updateValuePointer();
+    for ( const auto &grel : _listOfGroupsOfElements ) {
+        grel->updateValuePointer();
+        const auto typeFE = ( *grel )[grel->size() - 1];
+        names.insert( this->getElemTypeName( typeFE ) );
+    }
+
+    return names;
+};
+
 #ifdef ASTER_HAVE_MPI
 void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"

@@ -275,6 +275,8 @@ contains
         call lhs%initialize(cplMap%nbDoFs, cplMap%nbDoFs, 0.d0)
 !
 !      Term: gamma/h*(v^S - v^M, u^S-u^M)
+        ASSERT(lhs_pena%nrows == cplMap%nbDoFsFEFace)
+        ASSERT(lhs_pena%ncols == cplMap%nbDoFsFEFace)
         do jFE = 1, cplMap%nbDoFsFEFace
             jcol = cplMap%mapDoFsFEFace(jFE)
             do iFE = 1, cplMap%nbDoFsFEFace
@@ -284,6 +286,8 @@ contains
         end do
 !
 !      Term: (stress(u^S).n^S, v^S-v^M) + (stress(v^S).n^S, u^S-u^M)
+        ASSERT(lhs_stress%nrows == cplMap%nbDoFsFECellSl)
+        ASSERT(lhs_stress%ncols == cplMap%nbDoFsFEFace)
         do jFE = 1, cplMap%nbDoFsFEFace
             jcol = cplMap%mapDoFsFEFace(jFE)
             do iFE = 1, cplMap%nbDoFsFECellSl
