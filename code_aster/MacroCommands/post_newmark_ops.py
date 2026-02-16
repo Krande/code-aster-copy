@@ -741,7 +741,7 @@ def post_newmark_ops(self, **args):
         ## Obtain static stress field on the auxiliary model at the sliding mesh
         ## Result with true stresses and flase material for SIRO_ELEM
 
-        __instFS = RESULTAT_PESANTEUR.LIST_PARA()["INST"][-1]
+        __instFS = RESULTAT_PESANTEUR.getAccessParameters()["INST"][-1]
 
         if args["METHODE"] == "ECLA_PG":
             __CSTPGO = CREA_CHAMP(
@@ -988,7 +988,7 @@ def post_newmark_ops(self, **args):
             __MATDYN = AFFE_MATERIAU(MAILLAGE=__mail_2, AFFE=_F(MATER=__MATBIDD, TOUT="OUI"))
             __MATDYNS = AFFE_MATERIAU(MAILLAGE=__mail_s, AFFE=_F(MATER=__MATBIDD, TOUT="OUI"))
 
-            __instSD = RESULTAT.LIST_PARA()["INST"]
+            __instSD = RESULTAT.getAccessParameters()["INST"]
 
             ## Create dynamic result with stresses from structure mesh using ECLA_PG projection
             ## on slinding mesh
