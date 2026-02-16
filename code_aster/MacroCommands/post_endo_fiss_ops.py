@@ -756,7 +756,7 @@ def post_endo_fiss_ops(
     else:
         build = "resu"
         __RESUIN = args["RESULTAT"]
-        dicVarAcc = __RESUIN.LIST_VARI_ACCES()
+        dicVarAcc = __RESUIN.getAccessParameters()
         if args.get("NUME_ORDRE") is not None:
             nume_ordre = args.get("NUME_ORDRE")
             if nume_ordre not in dicVarAcc["NUME_ORDRE"]:

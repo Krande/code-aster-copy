@@ -316,7 +316,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 "OUI",
             ):  # in the case of CALC_MODES on several bands, OUI is reset to GLOBAL
                 dicomode = {}
-                dicomode = __nomre0.LIST_VARI_ACCES()
+                dicomode = __nomre0.getAccessParameters()
                 if len(dicomode["FREQ"]) != 0:
                     raux_ini = dicomode["FREQ"][0]
                     raux_fin = dicomode["FREQ"][-1]

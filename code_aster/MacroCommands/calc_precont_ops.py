@@ -109,7 +109,7 @@ def calc_precont_ops(
         if reuse is None:
             __TMIN = __L1[0]
         else:
-            __dico = reuse.LIST_VARI_ACCES()
+            __dico = reuse.getAccessParameters()
             __TMIN = __dico["INST"][-1]
     else:
         __TMIN = dIncrement["INST_INIT"]

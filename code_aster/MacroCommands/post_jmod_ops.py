@@ -2275,7 +2275,7 @@ def post_jmod_ops(
                 LPfissSup += lst
 
             LPfissSup = list(set(LPfissSup))
-            dicLPfissSup = RESULTAT.LIST_VARI_ACCES()
+            dicLPfissSup = RESULTAT.getAccessParameters()
 
             __ncoorfisSup = POST_RELEVE_T(
                 ACTION=_F(
@@ -2330,7 +2330,7 @@ def post_jmod_ops(
                 LPfissInf += lst
 
             LPfissInf = list(set(LPfissInf))
-            dicLPfissInf = RESULTAT.LIST_VARI_ACCES()
+            dicLPfissInf = RESULTAT.getAccessParameters()
 
             __ncoorfisInf = POST_RELEVE_T(
                 ACTION=_F(
@@ -5308,7 +5308,7 @@ def post_jmod_ops(
         #   --------------------------------------------------------------------------
         #   GET CALCULATED INSTANTS
         #
-        dico = __RESU.LIST_VARI_ACCES()
+        dico = __RESU.getAccessParameters()
 
         if INST is not None:
             PRECISION = args["PRECISION"]

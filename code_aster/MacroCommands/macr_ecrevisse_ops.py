@@ -163,7 +163,7 @@ def macr_ecrevisse_ops(self, **args):
         # jusqu'a l'instant recherche, puis de la nouvelle a partir de cet instant
         # ainsi le nume_ordre de la nouvelle liste correspond au nume_ordre de
         # l'ancienne
-        __dico1 = _THINIT.LIST_VARI_ACCES()
+        __dico1 = _THINIT.getAccessParameters()
         _list_precedente = __dico1["INST"]
         _list_numordre_prec = __dico1["NUME_ORDRE"]
         try:

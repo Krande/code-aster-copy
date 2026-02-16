@@ -30,9 +30,9 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
     if RESU_SUPL_THER == "OUI":
         RESU_THER_UNIT = args["RESU_THER_UNIT"]
         # instants et numero d'ordre de calcul pour la thermique
-        list_instant = RESU_THER_UNIT.LIST_VARI_ACCES()["INST"]
+        list_instant = RESU_THER_UNIT.getAccessParameters()["INST"]
         nbinst = len(list_instant)
-        lnume_ordre = RESU_THER_UNIT.LIST_VARI_ACCES()["NUME_ORDRE"]
+        lnume_ordre = RESU_THER_UNIT.getAccessParameters()["NUME_ORDRE"]
         final = [None] * nbinst
         arguments_affe = ()
         for i in range(nbinst):
@@ -103,9 +103,9 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
 
     ############## Calcul du resultat mecanique ########################################
     # liste des instants et numeros d'ordre de calcul
-    list_instant = RESU_MECA_UNIT.LIST_VARI_ACCES()["INST"]
+    list_instant = RESU_MECA_UNIT.getAccessParameters()["INST"]
     nbinst = len(list_instant)
-    lnume_ordre = RESU_MECA_UNIT.LIST_VARI_ACCES()["NUME_ORDRE"]
+    lnume_ordre = RESU_MECA_UNIT.getAccessParameters()["NUME_ORDRE"]
 
     # recuperation des champs en entree - on recupere tous les champs
     # mais la macro n'agit que sur DEPL, SIEF_ELGA et TEMP

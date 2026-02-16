@@ -242,7 +242,9 @@ class DynaHarmo(Resultat):
 
     def extr_freq(self):
         vari_acces = list(
-            zip(self.obj.LIST_VARI_ACCES()["NUME_ORDRE"], self.obj.LIST_VARI_ACCES()["FREQ"])
+            zip(
+                self.obj.getAccessParameters()["NUME_ORDRE"], self.obj.getAccessParameters()["FREQ"]
+            )
         )
         return vari_acces
 

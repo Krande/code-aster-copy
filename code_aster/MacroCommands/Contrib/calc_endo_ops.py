@@ -330,7 +330,7 @@ def calc_endo_ops(
             except ConvergenceError:
                 formerTangent = True
 
-            tfin = __INIT.LIST_VARI_ACCES()["INST"][-1]
+            tfin = __INIT.getAccessParameters()["INST"][-1]
 
             __INIT_DEPL = CREA_CHAMP(
                 OPERATION="EXTR",
