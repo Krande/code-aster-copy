@@ -173,7 +173,7 @@ class ModeMeca(Resultat):
                 cara_mod["NOEUD_CMP"].append(resu_stat[ind_ordr])
             else:  # mode dynamique
                 for ind_list in liste:
-                    cara_mod[ind_list].append(self.obj.LIST_PARA()[ind_list][ind_ordr])
+                    cara_mod[ind_list].append(self.obj.getParameters()[ind_list][ind_ordr])
                 cara_mod["NOEUD_CMP"].append(None)
 
         self.cara_mod = cara_mod

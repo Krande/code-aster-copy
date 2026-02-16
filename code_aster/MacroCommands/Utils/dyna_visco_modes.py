@@ -116,7 +116,7 @@ def dyna_visco_modes(
     if TYPE_MODE in ["REEL", "BETA_REEL"]:
         UTMESS("I", "DYNAVISCO_4")
     if TYPE_MODE == "COMPLEXE":
-        eigendamping = _modes.LIST_PARA()["AMOR_REDUIT"]
+        eigendamping = _modes.getParameters()["AMOR_REDUIT"]
         UTMESS("I", "DYNAVISCO_6")
     for k in range(0, len(eigenfreq)):
         if TYPE_MODE in ["REEL", "BETA_REEL"]:

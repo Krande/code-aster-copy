@@ -126,7 +126,7 @@ def dyna_visco_modes_calc(
 
         freq1 = freq2[__numod]
         if TYPE_MODE == "COMPLEXE":
-            amor_red1 = __modtmp.LIST_PARA()["AMOR_REDUIT"][__numod]
+            amor_red1 = __modtmp.getParameters()["AMOR_REDUIT"][__numod]
 
         if __numod + 1 == nmode:
             nmode = nmode + 5

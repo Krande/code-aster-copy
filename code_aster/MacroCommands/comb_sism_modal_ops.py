@@ -642,7 +642,7 @@ class Resu:
         if type_resu is None:
             return
 
-        _, nume_ordres, _, _ = filter_ordre_freq(self._mode_meca.LIST_PARA(), type_resu)
+        _, nume_ordres, _, _ = filter_ordre_freq(self._mode_meca.getParameters(), type_resu)
         list_axe = type_resu.get("LIST_AXE")
         list_appui = type_resu.get("LIST_APPUI")
         tout_appui = type_resu.get("TOUT_APPUI")
@@ -1505,7 +1505,7 @@ def comb_sism_modal_ops(self, **args):
 
     # exploring mode_meca
     mesh = mode_meca.getMesh()
-    list_para = mode_meca.LIST_PARA()
+    list_para = mode_meca.getParameters()
 
     # get numeber of orders of modes to be combined
     freqs, nume_ordres, nume_modes, gene_masses = filter_ordre_freq(list_para, args)

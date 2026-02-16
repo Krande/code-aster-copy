@@ -164,9 +164,6 @@ class ExtendedResult:
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder
 
-    def LIST_PARA(self):
-        return self.getParameters()
-
     def _createIndexFromParameter(self, para, value, crit, prec):
         """
         Create the index corresponding to a given value of an access parameter.

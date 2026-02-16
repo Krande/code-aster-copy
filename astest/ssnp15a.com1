@@ -24,7 +24,7 @@ POURSUITE(CODE="OUI")
 
 import numpy as NP
 
-para = U.LIST_PARA()
+para = U.getParameters()
 var = U.getAccessParameters()
 
 # test des numeros d'ordre
