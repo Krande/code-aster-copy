@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
+subroutine nzcomp_prep(jvMaterCode, metaName, metaPara)
 !
     use Metallurgy_type
     use MetallurgySteel_Compute_module
@@ -28,7 +28,7 @@ subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 #include "asterfort/Metallurgy_type.h"
 !
     integer(kind=8), intent(in) :: jvMaterCode
-    character(len=16), intent(in) :: metaType
+    character(len=16), intent(in) :: metaName
     type(META_MaterialParameters), intent(out) :: metaPara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  jvMaterCode      : coded material address
-! In  metaType         : type of phase
+! In  metaName         : type of phase
 ! Out metaPara         : material parameters for metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,18 +49,18 @@ subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (metaType .eq. 'ACIER') then
+    if (metaName .eq. 'ACIER') then
 ! ----- Get material parameters for steel
         call metaSteelGetParameters(jvMaterCode, metaSteelPara)
 ! ----- Get material parameters for TRC curve
         call metaSteelTRCGetParameters(jvMaterCode, metaSteelPara)
-    else if (metaType .eq. 'ACIER_REVENU') then
+    else if (metaName .eq. 'ACIER_REVENU') then
 ! ----- Get material parameters for steel
         call metaSteelGetParameters(jvMaterCode, metaSteelPara)
         call metaSteelTemperGetParameters(jvMaterCode, metaSteelPara)
-    elseif (metaType .eq. 'ZIRC') then
+    elseif (metaName .eq. 'ZIRC') then
 ! ----- Depending on temperature: too early here !
-    elseif (metaType .eq. 'VIDE') then
+    elseif (metaName .eq. 'VIDE') then
 ! ----- Nothing
     else
         ASSERT(ASTER_FALSE)

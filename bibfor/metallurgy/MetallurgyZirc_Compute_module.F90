@@ -40,21 +40,21 @@ contains
 ! Get initial phases for zirc
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine metaInitZircGetPhases(jvPhaseIn, phase_tot)
+    subroutine metaInitZircGetPhases(jvPhaseIn, phaseSum)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         integer(kind=8), intent(in) :: jvPhaseIn
-        real(kind=8), intent(out) :: phase_tot
+        real(kind=8), intent(out) :: phaseSum
 ! ----- Local
         integer(kind=8) :: iPhase
 !   ------------------------------------------------------------------------------------------------
 !
-        phase_tot = 0.d0
+        phaseSum = 0.d0
         do iPhase = 1, PZIRC_NB
             if (zr(jvPhaseIn-1+iPhase) .eq. r8vide() .or. isnan(zr(jvPhaseIn-1+iPhase))) then
                 call utmess('F', 'META1_45')
             end if
-            phase_tot = phase_tot+zr(jvPhaseIn-1+iPhase)
+            phaseSum = phaseSum+zr(jvPhaseIn-1+iPhase)
         end do
 !
 !   ------------------------------------------------------------------------------------------------

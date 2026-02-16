@@ -73,10 +73,10 @@ subroutine te0551(option, nomte)
     ! poum = '+'
 
 ! - Type of phases
-    if (nbVari .eq. NBVARIWAECKEL) then
+    if (nbVari .eq. NBVARISTEEL) then
         nbPhase = PSTEEL_NB
         metaType = "ACIER"
-    else if (nbVari .eq. NBVARIJMA) then
+    else if (nbVari .eq. NBVARISTEELR) then
         nbPhase = PRSTEEL_NB
         metaType = "ACIER_REVENU"
     else

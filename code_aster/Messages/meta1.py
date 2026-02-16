@@ -26,10 +26,7 @@ cata_msg = {
         """Il n'est pas possible de calculer la dureté (DURT_ELNO) pour les phases de type %(k1)s."""
     ),
     4: _(
-        """L'état initial donné par l'utilisateur dans CALC_META n'est pas de la bonne taille: on attend au moins %(i1)d variables mais on en a seulement %(i2)d."""
-    ),
-    43: _(
-        """L'état métallurgique initial produit par CREA_CHAMP est incomplet. Pour l'acier revenu, il faut renseigner les sept phases."""
+        """L'état initial donné par l'utilisateur dans CALC_META n'est pas de la bonne taille: on attend %(i1)d variables mais on en a seulement %(i2)d."""
     ),
     44: _(
         """L'état métallurgique initial produit par CREA_CHAMP est incomplet. Pour l'acier, il faut renseigner les cinq phases."""

@@ -15,22 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Metallurgy_type.h"
 !
 interface
-    subroutine nzcompTemper(metaPara, numeComp, &
-                            nbVari, nbVariTemper, nbVariPrev, &
+    subroutine nzcompTemper(metaParaTemper, numeCompTemper, &
+                            nbVari, nbVariTemper, &
                             deltaTime12, &
-                            temp1, temp2, &
-                            prevMetaIsTemper, &
-                            metaPrev, metaCurr, metaCurrTemper)
+                            infoTemper, metaIn, metaOut)
         use Metallurgy_type
-        type(META_MaterialParameters), intent(in) :: metaPara
-        integer(kind=8), intent(in) :: numeComp, nbVari, nbVariTemper
-        real(kind=8), intent(in) ::  deltaTime12
-        real(kind=8), intent(in) :: temp1, temp2
-        aster_logical, intent(in) :: prevMetaIsTemper
-        real(kind=8), intent(in) :: metaPrev(nbVariPrev)
-        real(kind=8), intent(in) :: metaCurr(nbVari)
-        real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
+        type(META_MaterialParameters), intent(in) :: metaParaTemper
+        integer(kind=8), intent(in) :: numeCompTemper
+        integer(kind=8), intent(in) :: nbVari, nbVariTemper
+        real(kind=8), intent(in) :: deltaTime12
+        real(kind=8), intent(in) :: infoTemper(NB_PARAIN_TEMPER)
+        real(kind=8), intent(in) :: metaIn(nbVari)
+        real(kind=8), intent(out) :: metaOut(nbVariTemper)
     end subroutine nzcompTemper
 end interface

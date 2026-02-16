@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine mtdorc(factorKeyword, model, comporMeta)
+    subroutine mtdorc(factorKeyword, model, comporMeta, lEmptyMap)
         character(len=16), intent(in) :: factorKeyword
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: comporMeta
+        aster_logical, intent(out) :: lEmptyMap
     end subroutine mtdorc
 end interface

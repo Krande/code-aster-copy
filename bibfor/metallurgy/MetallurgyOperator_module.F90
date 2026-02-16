@@ -355,9 +355,7 @@ contains
         lchin(4) = chtime
         lpain(5) = 'PPHASIN'
         lchin(5) = metaIn
-        lpain(6) = 'PCOMPME'
-        lchin(6) = metaParaOperator%comporMeta
-        nbIn = 6
+        nbIn = 5
 
         if (forTemper) then
             nbIn = nbIn+1
@@ -367,6 +365,9 @@ contains
             lpain(nbIn) = 'PPHASEP'
             lchin(nbIn) = metaPrev_
         else
+            nbIn = nbIn+1
+            lpain(nbIn) = 'PCOMPME'
+            lchin(nbIn) = metaParaOperator%comporMeta
             nbIn = nbIn+1
             lpain(nbIn) = 'PTEMPAR'
             lchin(nbIn) = temp_0_
@@ -609,9 +610,13 @@ contains
         call getvtx(' ', 'OPTION', nbval=nbOption, vect=metaParaOperator%listOption, nbret=nbRet)
         metaParaOperator%nbOption = nbOption
 
+! ----- Metallirgical ?
+        call getfac('COMPORTEMENT', nbocc)
+        metaParaOperator%hasMetaLaw = nbocc .ne. 0
+
 ! ----- Tempering ?
         call getfac('REVENU', nbocc)
-        metaParaOperator%hasTemper = nbocc .ne. 0
+        metaParaOperator%hasTemperLaw = nbocc .ne. 0
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -661,52 +666,57 @@ contains
         character(len=16), parameter :: factorKeyword = "COMPORTEMENT"
         character(len=16), parameter :: factorKeywordTemper = "REVENU"
         integer(kind=8) :: numphi, numeStore_1, numeStore_2, iStore
+        aster_logical :: lEmptyMap
 !   ------------------------------------------------------------------------------------------------
 !
         call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', &
                     repk=metaParaOperator%modelLigrel)
 
-! ----- Create list of cells to compute
-        ! call exlima(factorKeyword, 1, "V", metaParaOperator%model, metaParaOperator%metaLigrel)
+        if (metaParaOperator%hasMetaLaw) then
 
-! ----- Get initial state
-        call metaGetInitialState(metaParaOperator%resultName, metaInitUser, numeFieldInit)
+! --------- Get initial state
+            call metaGetInitialState(metaParaOperator%resultName, metaInitUser, numeFieldInit)
 
-! ----- Construct map for behaviour
-        call mtdorc(factorKeyword, metaParaOperator%model, metaParaOperator%comporMeta)
+! --------- Construct map for behaviour
+            call mtdorc(factorKeyword, metaParaOperator%model, metaParaOperator%comporMeta, &
+                        lEmptyMap)
+            ASSERT(.not. lEmptyMap)
 
-! ----- Prepare dynamic field from behaviour
-        call detrsd('CHAM_ELEM_S', metaParaOperator%comporMeta)
-        call cesvar(' ', metaParaOperator%comporMeta, &
-                    metaParaOperator%modelLigrel, metaParaOperator%comporMeta)
+! --------- Prepare dynamic field from behaviour
+            call detrsd('CHAM_ELEM_S', metaParaOperator%comporMeta)
+            call cesvar(' ', metaParaOperator%comporMeta, &
+                        metaParaOperator%modelLigrel, metaParaOperator%comporMeta)
 
-! ----- Prepare field to manage TRC curves in elementary computation
-        call metaPrepTRCWorkingField(metaParaOperator)
+! --------- Prepare field to manage TRC curves in elementary computation
+            call metaPrepTRCWorkingField(metaParaOperator)
 
-! ----- Compute initial field for metallurgy if required and store it
-        if (numeFieldInit .eq. 0) then
-            numphi = 1
-            numeStore_1 = metaParaOperator%listStore(1)
-            call metaPrepInitialState(metaParaOperator, numeStore_1, metaInitUser)
-            numeStore_2 = metaParaOperator%listStore(2)
-            call metaPrepInitialState(metaParaOperator, numeStore_2, metaInitUser)
-        else
-            numphi = 0
-            do iStore = 2, metaParaOperator%nbStore
-                if (metaParaOperator%listStore(iStore) .eq. numeFieldInit) then
-                    numphi = iStore-1
-                end if
-            end do
+! --------- Compute initial field for metallurgy if required and store it
+            if (numeFieldInit .eq. 0) then
+                numphi = 1
+                numeStore_1 = metaParaOperator%listStore(1)
+                call metaPrepInitialState(metaParaOperator, numeStore_1, metaInitUser)
+                numeStore_2 = metaParaOperator%listStore(2)
+                call metaPrepInitialState(metaParaOperator, numeStore_2, metaInitUser)
+            else
+                numphi = 0
+                do iStore = 2, metaParaOperator%nbStore
+                    if (metaParaOperator%listStore(iStore) .eq. numeFieldInit) then
+                        numphi = iStore-1
+                    end if
+                end do
+            end if
+
+! --------- Apply metallurgical behaviour
+            call metaComp(metaParaOperator, numphi)
         end if
 
-! ----- Apply metallurgical behaviour
-        call metaComp(metaParaOperator, numphi)
-
 ! ----- Tempering
-        if (metaParaOperator%hasTemper) then
+        if (metaParaOperator%hasTemperLaw) then
 ! --------- Construct map behaviour (tempering)
             call mtdorc(factorKeywordTemper, metaParaOperator%model, &
-                        metaParaOperator%comporMetaTemper)
+                        metaParaOperator%comporMetaTemper, &
+                        lEmptyMap)
+            ASSERT(.not. lEmptyMap)
 
 ! --------- Prepare dynamic field from behaviour
             call detrsd('CHAM_ELEM_S', metaParaOperator%comporMetaTemper)

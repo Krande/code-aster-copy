@@ -21,7 +21,7 @@ interface
                       nbPhase, nbVari, &
                       deltaTime01, deltaTime12, time2, &
                       tempInit, temp1, temp2, &
-                      metaPrev, metaCurr, &
+                      metaIn, metaOut, &
                       lNodeDebug_)
         use Metallurgy_type
         integer(kind=8), intent(in) :: jvMaterCode
@@ -29,8 +29,8 @@ interface
         integer(kind=8), intent(in) :: numeComp, nbPhase, nbVari
         real(kind=8), intent(in) :: deltaTime01, deltaTime12, time2
         real(kind=8), intent(in) :: tempInit, temp1, temp2
-        real(kind=8), intent(in) :: metaPrev(nbVari)
-        real(kind=8), intent(out) :: metaCurr(nbVari)
+        real(kind=8), intent(in) :: metaIn(nbVari)
+        real(kind=8), intent(out) :: metaOut(nbVari)
         aster_logical, optional, intent(in) :: lNodeDebug_
     end subroutine nzcomp
 end interface

@@ -23,15 +23,15 @@ subroutine te0321(option, nomte)
     use MetallurgySteel_Compute_module, only: metatInitSteelSetField, metaSteelCheckFieldSize
     use MetallurgyZirc_Compute_module, only: metaInitCheckTransitionTime
     use MetallurgyZirc_Compute_module, only: metaInitZircGetPhases, metatInitZircSetField
-    !
+!
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 #include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -50,12 +50,11 @@ subroutine te0321(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nbVariSteel = 9, nbVariZirc = 5
-    character(len=16) :: metaType
-    real(kind=8) :: ms0, phase_tot, phase_ucold
+    character(len=16), pointer :: comporMeta(:) => null()
+    character(len=16) :: metaName
+    real(kind=8) :: ms0, phaseSum, phaseColdSum, grainSize
     integer(kind=8) :: nbNode, nbPhase, nbVari
     integer(kind=8) :: jvMater, jvTemp, jvPhaseIn, jvPhaseOut
-    character(len=16), pointer :: comporMeta(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,54 +71,62 @@ subroutine te0321(option, nomte)
     call jevech('PPHASOUT', 'E', jvPhaseOut)
 
 ! - Parameters from map
-    metaType = comporMeta(ZMETATYPE)
+    metaName = comporMeta(ZMETATYPE)
     read (comporMeta(ZNBPHASE), '(I16)') nbPhase
     read (comporMeta(ZNBVARI), '(I16)') nbVari
 
 ! - Check size of field
-    call metaSteelCheckFieldSize(metaType, jvPhaseIn)
+    call metaSteelCheckFieldSize(metaName, jvPhaseIn)
 
 ! - Values required for META_INIT_ELNO vector
-    phase_tot = 0.d0
+    phaseSum = 0.d0
 
-    if (metaType(1:5) .eq. 'ACIER') then
-
+    if (metaName .eq. 'ACIER') then
 ! ----- Get all phases
-        call metaInitSteelGetPhases(metaType, jvPhaseIn, phase_tot)
+        call metaInitSteelGetPhases(metaName, jvPhaseIn, phaseSum)
 
 ! ----- Check size of grain
-        call metaInitSteelCheckGrainSize(nbPhase, jvPhaseIn)
+        call metaInitSteelCheckGrainSize(jvPhaseIn, grainSize)
 
 ! ----- Compute sum of "cold" phases
-        call metaInitSteelSumCold(metaType, jvPhaseIn, phase_tot, phase_ucold)
+        call metaInitSteelSumCold(metaName, jvPhaseIn, phaseSum, phaseColdSum)
 
 ! ----- Get martensite temperature
         call metaInitSteelGetMartensite(jvMater, ms0)
 
-    else if (metaType .eq. 'ZIRC') then
+    else if (metaName .eq. 'ZIRC') then
 ! ----- Get all phases
-        call metaInitZircGetPhases(jvPhaseIn, phase_tot)
+        call metaInitZircGetPhases(jvPhaseIn, phaseSum)
 
 ! ----- Check transition time
         call metaInitCheckTransitionTime(nbPhase, jvPhaseIn)
+
+    else if (metaName .eq. 'VIDE') then
+
     else
-        WRITE (6, *) "METATYPE: ", metaType
+        WRITE (6, *) "METANAME: ", metaName
         ASSERT(ASTER_FALSE)
+
     end if
 !
-    if (abs(phase_tot-1.d0) .gt. 1.d-2) then
-        call utmess('F', 'META1_48', sr=phase_tot)
+    if (abs(phaseSum-1.d0) .gt. 1.d-2) then
+        call utmess('F', 'META1_48', sr=phaseSum)
     end if
 
 ! - Set META_INI_ELNO field
-    if (metaType(1:5) .eq. 'ACIER') then
-        call metatInitSteelSetField(metaType, &
-                                    nbPhase, nbNode, nbVari, MT_NNOMAX3D, nbVariSteel, &
+    if (metaName .eq. 'ACIER') then
+        ASSERT(nbVari .eq. NBVARISTEEL)
+        call metatInitSteelSetField(nbNode, nbVari, MT_NNOMAX3D, NBVARISTEEL, &
                                     jvTemp, jvPhaseIn, jvPhaseOut, &
-                                    ms0, phase_ucold)
-    else if (metaType .eq. 'ZIRC') then
-        call metatInitZircSetField(nbPhase, nbNode, nbVari, MT_NNOMAX3D, nbVariZirc, &
+                                    ms0, phaseColdSum, grainSize)
+
+    else if (metaName .eq. 'ZIRC') then
+        ASSERT(nbVari .eq. NBVARIZIRC)
+        call metatInitZircSetField(nbPhase, nbNode, nbVari, MT_NNOMAX3D, NBVARIZIRC, &
                                    jvTemp, jvPhaseIn, jvPhaseOut)
+
+    else if (metaName .eq. 'VIDE') then
+
     else
         ASSERT(ASTER_FALSE)
     end if

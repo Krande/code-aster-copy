@@ -67,7 +67,7 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8), parameter :: metaNbVariMaxi = 30
-    character(len=6) :: metaPhasName(META_NBPHASE_MAXI)
+    character(len=6) :: metaPhasName(META_MECA_NBPHASE_MAXI)
     character(len=8) :: metaRelaName(metaNbVariMaxi)
     character(len=16) :: metaGlobName(metaNbVariMaxi)
     integer(kind=8) :: idummy, idummy2, nbVariOther, iVariMeca, iVari
@@ -128,7 +128,7 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                 call lcinfo(metaPhasPy, idummy, nbMetaPhas, idummy2)
                 call lcinfo(metaRelaPy, idummy, nbVariMetaRela, idummy2)
                 call lcinfo(metaGlobPy, idummy, nbVariMetaGlob, idummy2)
-                ASSERT(nbMetaPhas .le. META_NBPHASE_MAXI)
+                ASSERT(nbMetaPhas .le. META_MECA_NBPHASE_MAXI)
                 ASSERT(nbVariMetaRela .le. metaNbVariMaxi)
                 ASSERT(nbVariMetaGlob .le. metaNbVariMaxi)
                 call lcvari(metaPhasPy, nbMetaPhas, metaPhasName)

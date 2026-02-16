@@ -254,7 +254,7 @@ class THPLQU4(Element):
             para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.META_ELNO(
-            te=67,
+            te=64,
             para_in=(
                 (SP.PCOMPME, LC.CCOMPOT),
                 (SP.PCOMPMT, LC.CCOMPOT),

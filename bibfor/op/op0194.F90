@@ -20,7 +20,6 @@ subroutine op0194()
 !
     use Metallurgy_type
     use MetallurgyOperator_module
-!
     implicit none
 !
 #include "asterfort/infmaj.h"

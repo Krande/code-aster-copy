@@ -15,21 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Metallurgy_type.h"
 !
 interface
     subroutine zjma(metaSteelPara, &
-                    nbVari, nbVariTemper, nbVariPrev, &
-                    temp1, temp2, &
+                    nbVari, nbVariTemper, &
                     deltaTime12, &
-                    prevMetaIsTemper, &
-                    metaPrev, metaCurr, metaCurrTemper)
+                    infoTemper, metaIn, metaOut)
         use Metallurgy_type
-        integer(kind=8), intent(in) :: nbVari, nbVariTemper
         type(META_SteelParameters), intent(in) :: metaSteelPara
-        real(kind=8), intent(in) :: deltaTime12, temp1, temp2
-        aster_logical, intent(in) :: prevMetaIsTemper
-        real(kind=8), intent(in) :: metaPrev(nbVariPrev)
-        real(kind=8), intent(in) :: metaCurr(nbVari)
-        real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
+        integer(kind=8), intent(in) :: nbVari, nbVariTemper
+        real(kind=8), intent(in) :: deltaTime12
+        real(kind=8), intent(in) :: infoTemper(NB_PARAIN_TEMPER), metaIn(nbVari)
+        real(kind=8), intent(out) :: metaOut(nbVariTemper)
     end subroutine zjma
 end interface
