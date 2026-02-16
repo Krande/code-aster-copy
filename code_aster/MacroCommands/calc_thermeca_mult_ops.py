@@ -109,11 +109,10 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
 
     # recuperation des champs en entree - on recupere tous les champs
     # mais la macro n'agit que sur DEPL, SIEF_ELGA et TEMP
-    dico_champ = RESU_MECA_UNIT.LIST_CHAMPS()
     nomschamps = []
-    for cle in dico_champ.keys():
-        if len(dico_champ[cle]) > 0:
-            nomschamps.append(cle)
+    for field_name in RESU_MECA_UNIT.getFieldsNames():
+        if RESU_MECA_UNIT.getIndexesForFieldName(field_name):
+            nomschamps.append(field_name)
 
     nbchamps = len(nomschamps)
 

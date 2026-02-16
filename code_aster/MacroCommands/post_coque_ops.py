@@ -34,7 +34,10 @@ def post_coque_ops(self, RESULTAT, COOR_POINT, CHAM, NUME_ORDRE=None, INST=None,
     MasquerAlarme("MODELISA4_9")
 
     assert RESULTAT.getType() in ("EVOL_ELAS", "EVOL_NOLI")
-    dico = RESULTAT.LIST_CHAMPS()
+    dico = {
+        fieldName: RESULTAT.getIndexesForFieldName(fieldName)
+        for fieldName in RESULTAT.getFieldsNames()
+    }
     dico2 = RESULTAT.getAccessParameters()
     # si ni INST ni NUME_ORDRE ne sont presents, on prend le premier
     # instant calcule

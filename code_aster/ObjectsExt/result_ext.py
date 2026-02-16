@@ -164,10 +164,6 @@ class ExtendedResult:
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder
 
-    def LIST_CHAMPS(self):
-        """aster.GetResu(self.getName(), "CHAMPS")"""
-        return {fieldName: self.getIndexesForFieldName(fieldName) for fieldName in self.getFieldsNames()}
-
     def LIST_PARA(self):
         return aster.GetResu(self.getName(), "PARAMETRES")
         #return self.getAccessParameters()
