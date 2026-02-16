@@ -165,13 +165,16 @@ class ExtendedResult:
     internalStateBuilder = ResultStateBuilder
 
     def LIST_CHAMPS(self):
-        return aster.GetResu(self.getName(), "CHAMPS")
+        """aster.GetResu(self.getName(), "CHAMPS")"""
+        return {fieldName: self.getIndexesForFieldName(fieldName) for fieldName in self.getFieldsNames()}
 
     def LIST_VARI_ACCES(self):
-        return aster.GetResu(self.getName(), "VARI_ACCES")
+        """return aster.GetResu(self.getName(), "VARI_ACCES")"""
+        return self.getAccessParameters()
 
     def LIST_PARA(self):
         return aster.GetResu(self.getName(), "PARAMETRES")
+        #return self.getAccessParameters()
 
     def _createIndexFromParameter(self, para, value, crit, prec):
         """

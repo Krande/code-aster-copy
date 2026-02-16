@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
@@ -112,12 +111,12 @@ def dyna_visco_modes(
     #########################################################
     # PRINTING OF THE EIGENMODES
     UTMESS("I", "DYNAVISCO_3")
-    eigenfreq = aster.GetResu(_modes.getName(), "VARI_ACCES")["FREQ"]
+    eigenfreq = _modes.getAccessParameters()["FREQ"]
 
     if TYPE_MODE in ["REEL", "BETA_REEL"]:
         UTMESS("I", "DYNAVISCO_4")
     if TYPE_MODE == "COMPLEXE":
-        eigendamping = aster.GetResu(_modes.getName(), "PARAMETRES")["AMOR_REDUIT"]
+        eigendamping = _modes.LIST_PARA()["AMOR_REDUIT"]
         UTMESS("I", "DYNAVISCO_6")
     for k in range(0, len(eigenfreq)):
         if TYPE_MODE in ["REEL", "BETA_REEL"]:

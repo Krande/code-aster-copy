@@ -19,7 +19,6 @@
 
 import numpy as NP
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CALC_TABLE, CREA_CHAMP, CREA_TABLE, FORMULE
 from ..Objects import Function as fonction_sdaster
@@ -80,8 +79,8 @@ def post_bordet_ops(
     __RESU = CALC_CHAMP(RESULTAT=RESULTAT, CRITERES="SIEQ_ELGA", DEFORMATION="EPSP_ELGA")
 
     # Recuperation de la liste des instants et des ordres de calcul
-    list_ordre = aster.GetResu(__RESU.getName(), "VARI_ACCES")["NUME_ORDRE"]
-    list_inst = aster.GetResu(__RESU.getName(), "VARI_ACCES")["INST"]
+    list_ordre = __RESU.getAccessParameters()["NUME_ORDRE"]
+    list_inst = __RESU.getAccessParameters()["INST"]
 
     #
     # On va travailler en ordre ; si l'utilisateur entre un instant, on va le

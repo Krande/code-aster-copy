@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import CREA_CHAMP, CREA_RESU, FORMULE
 
@@ -136,7 +135,7 @@ def post_liquefaction_ops(self, AXE, RESULTAT, CRITERE, **args):
         )
 
     ### Acces aux numeros d'ordre de RESULTAT pour l'indicage de la boucle
-    __dico = aster.GetResu(RESULTAT.getName(), "VARI_ACCES")
+    __dico = RESULTAT.getAccessParameters()
     __numo = __dico["NUME_ORDRE"]
     __n = __numo[-1]
     ### Initialisation des variables de la boucle

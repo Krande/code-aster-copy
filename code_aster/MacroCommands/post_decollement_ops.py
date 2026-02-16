@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     AFFE_MATERIAU,
@@ -103,7 +102,7 @@ def post_decollement_ops(self, RESULTAT, NOM_CHAM, NOM_CMP, GROUP_MA, INFO, **ar
 
     __surf = __tbSurf0.EXTR_TABLE().values()["INTE_X1"][0]
 
-    __linst = aster.GetResu(RESULTAT.getName(), "VARI_ACCES")["INST"]
+    __linst = RESULTAT.getAccessParameters()["INST"]
 
     # Calcul de la surface des noeuds décollés
     __pct = []
