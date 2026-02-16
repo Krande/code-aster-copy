@@ -13678,7 +13678,7 @@ class Result(DataStructure):
             bool: True if the result exists else False
         """
 
-    def getAccessParameters(self):
+    def getAccessParameters(self, only_access=True):
         """Return the access parameters of the result as Python dict.
 
         Returns:
@@ -13916,6 +13916,13 @@ class Result(DataStructure):
 
         Returns:
             int: number of index stored.
+        """
+
+    def getParameters(self, only_access=False):
+        """Return the parameters of the result as Python dict.
+
+        Returns:
+            dict{str : list[int,float,str]}: Dict of values for each parameter variable.
         """
 
     def getTable(self, identifier):

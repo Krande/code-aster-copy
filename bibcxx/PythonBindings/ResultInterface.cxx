@@ -314,13 +314,20 @@ Get the last time value stored in the result
 Returns:
     float: last time value.
         )" )
-        .def( "getAccessParameters", &Result::getAccessParameters, R"(
+        .def( "getParameters", &Result::getParameters, R"(
+Return the parameters of the result as Python dict.
+
+Returns:
+    dict{str : list[int,float,str]}: Dict of values for each parameter variable.
+        )",
+              py::arg( "only_access" ) = false )
+        .def( "getAccessParameters", &Result::getParameters, R"(
 Return the access parameters of the result as Python dict.
 
 Returns:
     dict{str : list[int,float,str]}: Dict of values for each access variable.
-        )" )
-
+        )",
+              py::arg( "only_access" ) = true )
         .def( "createIndexFromParameter",
               py::overload_cast< const std::string &, const std::string & >(
                   &Result::createIndexFromParameter ),

@@ -165,8 +165,7 @@ class ExtendedResult:
     internalStateBuilder = ResultStateBuilder
 
     def LIST_PARA(self):
-        return aster.GetResu(self.getName(), "PARAMETRES")
-        #return self.getAccessParameters()
+        return self.getParameters()
 
     def _createIndexFromParameter(self, para, value, crit, prec):
         """
