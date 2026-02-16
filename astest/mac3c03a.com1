@@ -26,9 +26,9 @@ RESU_C2 = CALC_MAC3COEUR(
     DEFORMATION=_F(RESU_INIT=INI_C2, UNITE_THYC=32, NIVE_FLUENCE=3),
 )
 
-post_c1 = RESU_C1.LIST_PARA()["INST"][-1]
-post_i2 = INI_C2.LIST_PARA()["INST"][-1]
-post_c2 = RESU_C2.LIST_PARA()["INST"][-1]
+post_c1 = RESU_C1.getAccessParameters()["INST"][-1]
+post_i2 = INI_C2.getAccessParameters()["INST"][-1]
+post_c2 = RESU_C2.getAccessParameters()["INST"][-1]
 
 TABC1_BB = CREA_TABLE(
     RESU=_F(

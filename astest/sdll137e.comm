@@ -247,10 +247,6 @@ BAMOSTRU = DEFI_BASE_MODALE(RITZ=_F(MODE_MECA=MODEET), INTERF_DYNA=INTSTRU)
 # Les matrices projetees PHI^T.M.PHI et PHI^T.K.PHI sont basees sur
 # des matrices Met K fausses, car le modele peut etre faux.
 # On cree un macr_elem contenant les valeurs modales identifiees.
-# RECUPERATION AUTOMATIQUE DES PARAMETRES :
-##freq = MODMESU.LIST_PARA()['FREQ']
-##amor = MODMESU.LIST_PARA()['AMOR_REDUIT']
-##mass = MODMESU.LIST_PARA()['MASS_GENE']
 
 # ECRITURE MANUELLE DES PARAMETRES (POUR SE METTRE EN )
 freq = [9.3125, 39.267000000000003, 58.335999999999984, 163.28, 244.06000000000003]
