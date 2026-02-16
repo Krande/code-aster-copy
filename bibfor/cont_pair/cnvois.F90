@@ -103,7 +103,7 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
             case ('SEG3')
                 nb_neigh = 2
             case ('SEG4')
-                nb_neigh = 4
+                nb_neigh = 2
             case ('TRIA3')
                 nb_neigh = 3
             case ('TRIA6')
@@ -111,7 +111,7 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
             case ('TRIA7')
                 nb_neigh = 3
             case ('TRIA10')
-                nb_neigh = 10
+                nb_neigh = 3
             case ('QUAD4')
                 nb_neigh = 4
             case ('QUAD8')

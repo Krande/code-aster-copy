@@ -77,11 +77,13 @@ subroutine apinte_prma_n(proj_tole, elem_dime, &
 ! --- Projection only vertex of slave cell
 !
     nb_node_proj = elem_slav_nbnode
-    if (elem_slav_code == "SE3") then
+    if (elem_slav_code == "SE3" .or. elem_slav_code == "SE4") then
         nb_node_proj = 2
-    elseif (elem_slav_code == "QU8" .or. elem_slav_code == "QU9") then
+    elseif (elem_slav_code == "QU8" .or. elem_slav_code == "QU9" &
+            .or. elem_slav_code == "Q12") then
         nb_node_proj = 4
-    elseif (elem_slav_code == "TR6" .or. elem_slav_code == "TR7") then
+    elseif (elem_slav_code == "TR6" .or. elem_slav_code == "TR7" &
+            .or. elem_slav_code == "TR1") then
         nb_node_proj = 3
     end if
 
@@ -91,7 +93,7 @@ subroutine apinte_prma_n(proj_tole, elem_dime, &
     elseif (elem_mast_code(1:2) == "TR") then
         elem_mast_line_code = "TR3"
         elem_mast_line_nbnode = 3
-    elseif (elem_mast_code(1:2) == "QU") then
+    elseif (elem_mast_code(1:2) == "QU" .or. elem_mast_code == "Q12") then
         elem_mast_line_code = "QU4"
         elem_mast_line_nbnode = 4
     else

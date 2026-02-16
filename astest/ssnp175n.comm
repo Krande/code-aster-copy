@@ -19,13 +19,15 @@
 
 from code_aster.Commands import *
 from code_aster import CA
-from ssnp175a_func import create_grp_2d
+from ssnp175a_func import create_grp_3d
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 Mail0 = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
-Mail = create_grp_2d(Mail0)
+Mail0 = create_grp_3d(Mail0)
+
+Mail = CREA_MAILLAGE(MAILLAGE=Mail0, MODI_HHO=_F(GROUP_MA="Bas"))
 
 
 Mail = MODI_MAILLAGE(
@@ -38,14 +40,15 @@ MODI = AFFE_MODELE(
     MAILLAGE=Mail,
     AFFE=(
         _F(
-            GROUP_MA=("Haut", "LIAISON_Haut", "Pres", "Sym_Haut"),
+            GROUP_MA=("Haut", "LIAISON_Haut", "Pres", "Symx_Haut", "Symy_Haut"),
             PHENOMENE="MECANIQUE",
-            MODELISATION="D_PLAN",
+            MODELISATION="3D",
         ),
         _F(
-            GROUP_MA=("Bas", "LIAISON_Bas", "Encast", "Sym_Bas"),
+            GROUP_MA=("Bas", "LIAISON_Bas", "Encast", "Symx_Bas", "Symy_Bas"),
             PHENOMENE="MECANIQUE",
-            MODELISATION="D_PLAN",
+            MODELISATION="3D_HHO",
+            FORMULATION="QUADRATIQUE",
         ),
     ),
 )
@@ -64,13 +67,21 @@ RACCORD = AFFE_CHAR_MECA(
         GROUP_MA_MAIT="LIAISON_Bas",
         METHODE="PENALISATION",
         COEF_PENA=E,
-        TYPE_APPA="RAPIDE",
     ),
-    DDL_IMPO=(_F(GROUP_MA="Sym_Bas", DX=0), _F(GROUP_MA="Encast", DY=0)),
 )
 
+CINE_HHO = AFFE_CHAR_CINE(
+    MODELE=MODI,
+    MECA_IMPO=(
+        _F(GROUP_MA="Symx_Bas", DX=0),
+        _F(GROUP_MA="Symy_Bas", DY=0),
+        _F(GROUP_MA="Encast", DZ=0),
+    ),
+)
 
-CINE_FEM = AFFE_CHAR_CINE(MODELE=MODI, MECA_IMPO=(_F(GROUP_MA="Sym_Haut", DX=0),))
+CINE_FEM = AFFE_CHAR_CINE(
+    MODELE=MODI, MECA_IMPO=(_F(GROUP_MA="Symx_Haut", DX=0), _F(GROUP_MA="Symy_Haut", DY=0))
+)
 
 CHAR_PRES = AFFE_CHAR_MECA(MODELE=MODI, PRES_REP=_F(GROUP_MA="Pres", PRES=25))
 
@@ -83,7 +94,12 @@ RES = MECA_NON_LINE(
     INFO=1,
     MODELE=MODI,
     CHAM_MATER=AFFE,
-    EXCIT=(_F(CHARGE=CINE_FEM), _F(CHARGE=CHAR_PRES, FONC_MULT=RAMPE), _F(CHARGE=RACCORD)),
+    EXCIT=(
+        _F(CHARGE=CINE_FEM),
+        _F(CHARGE=CINE_HHO),
+        _F(CHARGE=CHAR_PRES, FONC_MULT=RAMPE),
+        _F(CHARGE=RACCORD),
+    ),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     INCREMENT=_F(LIST_INST=lisi),
     COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
@@ -105,10 +121,10 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             NOM_CHAM="SIEF_NOEU",
             LEGENDE="SIEF_NOEU",
-            NOM_CMP="SIYY",
+            NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-25.0000000000001,
-            PRECISION=0.05,
+            VALE_CALC=-28.12217555209404,
+            PRECISION=0.16,
         ),
         _F(
             INST=1.0,
@@ -117,10 +133,10 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             NOM_CHAM="SIEF_NOEU",
             LEGENDE="SIEF_NOEU",
-            NOM_CMP="SIYY",
+            NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-24.99999999999956,
-            PRECISION=1e-4,
+            VALE_CALC=-21.982095069253656,
+            PRECISION=0.16,
         ),
         _F(
             INST=1.0,
@@ -128,11 +144,11 @@ TEST_RESU(
             RESULTAT=RES,
             REFERENCE="ANALYTIQUE",
             NOM_CHAM="SIGM_NOEU",
-            LEGENDE="SIYY",
-            NOM_CMP="SIYY",
+            LEGENDE="SIZZ",
+            NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-25.0000000000001,
-            PRECISION=1e-4,
+            VALE_CALC=-28.12217555209404,
+            PRECISION=0.16,
         ),
         _F(
             INST=1.0,
@@ -140,11 +156,11 @@ TEST_RESU(
             RESULTAT=RES,
             REFERENCE="ANALYTIQUE",
             NOM_CHAM="SIGM_NOEU",
-            LEGENDE="SIYY",
-            NOM_CMP="SIYY",
+            LEGENDE="SIZZ",
+            NOM_CMP="SIZZ",
             VALE_REFE=-25.0,
-            VALE_CALC=-24.99999999999956,
-            PRECISION=1e-4,
+            VALE_CALC=-21.982095069253656,
+            PRECISION=0.16,
         ),
         _F(
             INST=1.0,
@@ -155,9 +171,9 @@ TEST_RESU(
             LEGENDE="SIXY",
             NOM_CMP="SIXY",
             CRITERE="ABSOLU",
-            ORDRE_GRANDEUR=1e-5,
+            PRECISION=5e-1,
             VALE_REFE=0.0,
-            VALE_CALC=0.0,
+            VALE_CALC=-0.3615973656895613,
         ),
         _F(
             INST=1.0,
@@ -168,11 +184,20 @@ TEST_RESU(
             LEGENDE="SIXY",
             NOM_CMP="SIXY",
             CRITERE="ABSOLU",
-            ORDRE_GRANDEUR=1e-5,
+            PRECISION=5e-1,
             VALE_REFE=0.0,
-            VALE_CALC=0.0,
+            VALE_CALC=0.3018210749744031,
         ),
     )
 )
+
+RES2 = MECA_STATIQUE(
+    INFO=1,
+    MODELE=MODI,
+    CHAM_MATER=AFFE,
+    EXCIT=(_F(CHARGE=CINE_FEM), _F(CHARGE=CINE_HHO), _F(CHARGE=RACCORD)),
+    INST=1.0,
+)
+
 
 FIN()

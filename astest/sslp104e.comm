@@ -28,14 +28,17 @@ mesh_quad = LIRE_MAILLAGE(FORMAT="MED")
 
 mesh_line = CREA_MAILLAGE(MAILLAGE=mesh_quad, QUAD_LINE=_F(TOUT="OUI"))
 
-mesh = CREA_MAILLAGE(MAILLAGE=mesh_line, LINE_CUBI=_F(TOUT="OUI"))
+mesh_line = DEFI_GROUP(
+    reuse=mesh_line, MAILLAGE=mesh_line, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI")
+)
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh_line, LINE_CUBI=_F(GROUP_MA="TOUT"))
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Encast", "load")))
 
 mesh = DEFI_GROUP(
     reuse=mesh,
     MAILLAGE=mesh,
-    CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"),
     CREA_GROUP_NO=_F(NOM="B", OPTION="ENV_SPHERE", POINT=(24, 22), RAYON=1e-3, PRECISION=0.01),
 )
 

@@ -53,6 +53,10 @@ subroutine aptype(elem_type, &
         elem_code = 'SE3'
         elem_nbnode = 3
         elem_dime = 2
+    case ('SEG4')
+        elem_code = 'SE4'
+        elem_nbnode = 4
+        elem_dime = 2
     case ('TRIA3')
         elem_code = 'TR3'
         elem_nbnode = 3
@@ -60,6 +64,14 @@ subroutine aptype(elem_type, &
     case ('TRIA6')
         elem_code = 'TR6'
         elem_nbnode = 6
+        elem_dime = 3
+    case ('TRIA7')
+        elem_code = 'TR7'
+        elem_nbnode = 7
+        elem_dime = 3
+    case ('TRIA10')
+        elem_code = 'TR1'
+        elem_nbnode = 10
         elem_dime = 3
     case ('QUAD4')
         elem_code = 'QU4'
@@ -72,6 +84,10 @@ subroutine aptype(elem_type, &
     case ('QUAD9')
         elem_code = 'QU9'
         elem_nbnode = 9
+        elem_dime = 3
+    case ('QUAD12')
+        elem_code = 'Q12'
+        elem_nbnode = 12
         elem_dime = 3
     case default
         ASSERT(ASTER_FALSE)

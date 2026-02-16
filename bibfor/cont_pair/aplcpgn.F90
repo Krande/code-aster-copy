@@ -403,14 +403,16 @@ subroutine aplcpgn(mesh, newgeo, &
 !
 ! ------------- Number of neighbours
 !
-                    if (elem_mast_code == 'SE2' .or. elem_mast_code == 'SE3') then
+                    if (elem_mast_code == 'SE2' .or. elem_mast_code == 'SE3' &
+                        .or. elem_mast_code == 'SE4') then
                         nb_mast_neigh = 2
                         tole_weight = 0.5
-                    elseif (elem_mast_code == 'TR3' .or. elem_mast_code == 'TR6') then
+                    elseif (elem_mast_code == 'TR3' .or. elem_mast_code == 'TR6' &
+                            .or. elem_mast_code == 'TR7' .or. elem_mast_code == 'TR1') then
                         nb_mast_neigh = 3
                         tole_weight = 0.05
                     elseif (elem_mast_code == 'QU4' .or. elem_mast_code == 'QU8' .or. &
-                            elem_mast_code == 'QU9') then
+                            elem_mast_code == 'QU9' .or. elem_mast_code == 'Q12') then
                         nb_mast_neigh = 4
                         tole_weight = 0.4
                     else

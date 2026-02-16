@@ -45,15 +45,19 @@ subroutine apelem_getcenter(elem_code, ksi1_cent, ksi2_cent)
     ksi2_cent = 0.d0
 !
     if (elem_code .eq. 'SE2' .or. &
-        elem_code .eq. 'SE3') then
+        elem_code .eq. 'SE3' .or. &
+        elem_code .eq. 'SE4') then
         ksi1_cent = 0.d0
     elseif (elem_code .eq. 'TR3' .or. &
-            elem_code .eq. 'TR6') then
+            elem_code .eq. 'TR6' .or. &
+            elem_code .eq. 'TR7' .or. &
+            elem_code .eq. 'TR1') then
         ksi1_cent = 1.d0/3.d0
         ksi2_cent = 1.d0/3.d0
     elseif (elem_code .eq. 'QU4' .or. &
             elem_code .eq. 'QU8' .or. &
-            elem_code .eq. 'QU9') then
+            elem_code .eq. 'QU9' .or. &
+            elem_code .eq. 'Q12') then
         ksi1_cent = 0.d0
         ksi2_cent = 0.d0
     else

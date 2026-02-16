@@ -49,6 +49,11 @@ subroutine gapGetParamCoor(elem_code, para_coor)
     elseif (elem_code .eq. 'SE2') then
         para_coor(1, 1) = -1.d0
         para_coor(1, 2) = 1.d0
+    elseif (elem_code .eq. 'SE4') then
+        para_coor(1, 1) = -1.d0
+        para_coor(1, 2) = 1.d0
+        para_coor(1, 3) = -1.d0/3.d0
+        para_coor(1, 4) = 1.d0/3.d0
     elseif (elem_code .eq. 'TR3') then
         para_coor(1, 1) = 0.d0
         para_coor(2, 1) = 0.d0
