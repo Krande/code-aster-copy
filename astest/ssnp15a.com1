@@ -25,7 +25,7 @@ POURSUITE(CODE="OUI")
 import numpy as NP
 
 para = U.LIST_PARA()
-var = U.LIST_VARI_ACCES()
+var = U.getAccessParameters()
 
 # test des numeros d'ordre
 nbord = len(var["NUME_ORDRE"])

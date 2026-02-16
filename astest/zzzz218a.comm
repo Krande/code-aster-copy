@@ -257,7 +257,7 @@ RMECA = MACR_ECREVISSE(
     INFO=1,
 )
 
-# dico = RMECA.LIST_VARI_ACCES()
+# dico = RMECA.getAccessParameters()
 # print 'dico[NUME_ORDRE]', dico['NUME_ORDRE']
 # print 'dico[INST]', dico['INST']
 

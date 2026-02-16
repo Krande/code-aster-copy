@@ -277,7 +277,7 @@ TEST_TABLE(
 )
 
 
-nume = RESU2.LIST_VARI_ACCES()["NUME_ORDRE"][-1]
+nume = RESU2.getAccessParameters()["NUME_ORDRE"][-1]
 
 # Comparaison a une resolution 3D du meme probleme
 

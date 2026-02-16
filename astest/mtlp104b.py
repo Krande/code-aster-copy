@@ -165,7 +165,7 @@ result2 = CREA_RESU(
     ),
 )
 
-L_inst0 = result.LIST_VARI_ACCES()["INST"]
+L_inst0 = result.getAccessParameters()["INST"]
 
 ####################################################################################################
 #

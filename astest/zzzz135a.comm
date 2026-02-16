@@ -284,7 +284,7 @@ RESHY = STAT_NON_LINE(
     MODELE=modHY,
 )
 
-linst_resurep = RESHY.LIST_VARI_ACCES()["INST"]
+linst_resurep = RESHY.getAccessParameters()["INST"]
 instp = linst_resurep[-1]
 instm = linst_resurep[0]
 

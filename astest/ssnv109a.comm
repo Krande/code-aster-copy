@@ -183,7 +183,7 @@ IMPR_TABLE(
 
 zero_init = 1e-5
 
-inst = np.array(RESU.LIST_VARI_ACCES()["INST"])
+inst = np.array(RESU.getAccessParameters()["INST"])
 inst = inst[inst >= 1]  # on ne calcule qu'à partir du chargement installé
 nbinst = len(inst)
 

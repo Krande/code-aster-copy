@@ -23,7 +23,7 @@
 POURSUITE(CODE="OUI")
 
 # 1. On verifie qu'un seul pas de temps est présent dans le concept 'resu'.
-l_para = resu.LIST_VARI_ACCES()
+l_para = resu.getAccessParameters()
 ref = 1
 val = len(l_para["NUME_ORDRE"])
 print(
@@ -53,7 +53,7 @@ resu = STAT_NON_LINE(
 )
 
 # 2.1. On vérifie que le pas supplémentaire est dans le concept 'resu'.
-l_para = resu.LIST_VARI_ACCES()
+l_para = resu.getAccessParameters()
 ref += 1
 val = len(l_para["NUME_ORDRE"])
 print(

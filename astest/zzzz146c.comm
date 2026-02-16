@@ -24,7 +24,6 @@ import math
 
 # CONVERSION DES PARAMETRE MOHR-COULOMB AUX DRUCKER-PRAGER
 def MC2DP(c, phi):
-
     phi = phi / 180 * math.pi
     A = 2 * math.sin(phi) / (3 - math.sin(phi))
     S = 6 * c * math.cos(phi) / (3 - math.sin(phi))
@@ -127,7 +126,9 @@ TABFS = CALC_STAB_PENTE(
     GROUP_MA=("range_pente",),
     NB_TRANCHE=5,
     RAFF_MAIL=_F(NB_RAFF_MAXI=1),
-    CHAM_PRES=_F(RESULTAT=CHPROJ, INST=CHPROJ.LIST_VARI_ACCES()["INST"][-1], ALGO_PRES="INVERSE"),
+    CHAM_PRES=_F(
+        RESULTAT=CHPROJ, INST=CHPROJ.getAccessParameters()["INST"][-1], ALGO_PRES="INVERSE"
+    ),
     X1_MINI=3.0,
     X1_MAXI=3.0,
     X2_MINI=13.2,
