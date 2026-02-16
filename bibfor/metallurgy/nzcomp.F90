@@ -20,11 +20,10 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
                   nbPhase, nbVari, &
                   deltaTime01, deltaTime12, time2, &
                   tempInit, temp1, temp2, &
-                  metaPrev, metaCurr, &
+                  metaIn, metaOut, &
                   lNodeDebug_)
 !
     use Metallurgy_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -38,8 +37,8 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
     integer(kind=8), intent(in) :: numeComp, nbPhase, nbVari
     real(kind=8), intent(in) :: deltaTime01, deltaTime12, time2
     real(kind=8), intent(in) :: tempInit, temp1, temp2
-    real(kind=8), intent(in) :: metaPrev(nbVari)
-    real(kind=8), intent(out) :: metaCurr(nbVari)
+    real(kind=8), intent(in) :: metaIn(nbVari)
+    real(kind=8), intent(out) :: metaOut(nbVari)
     aster_logical, optional, intent(in) :: lNodeDebug_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,8 +60,8 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
 ! In  deltaTime01         : increment of time [N-1, N]
 ! In  deltaTime12         : increment of time [N, N+1]
 ! In  time2               : value of time N+1
-! In  metaPrev            : value of internal state variable at previous time step
-! Out metaCurr            : value of internal state variable at current time step
+! In  metaIn              : value of internal state variable at previous time step
+! Out metaOut             : value of internal state variable at current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,13 +82,14 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
         call zedgar(jvMaterCode, nbPhase, &
                     temp1, temp2, &
                     time2, deltaTime12, &
-                    metaPrev, metaCurr)
+                    metaIn, metaOut)
     case (2)
         metaPara%steel%lNodeDebug = lNodeDebug
         call zacier(metaPara%steel, nbPhase, nbVari, &
                     tempInit, temp1, temp2, &
                     deltaTime01, deltaTime12, &
-                    metaPrev, metaCurr)
+                    metaIn, metaOut)
+
     case default
         call utmess('F', 'COMPOR1_43', si=numeComp)
 

@@ -17,14 +17,11 @@
 ! --------------------------------------------------------------------
 !
 subroutine zjma(metaSteelPara, &
-                nbVari, nbVariTemper, nbVariPrev, &
-                temp1, temp2, &
+                nbVari, nbVariTemper, &
                 deltaTime12, &
-                prevMetaIsTemper, &
-                metaPrev, metaCurr, metaCurrTemper)
+                infoTemper, metaIn, metaOut)
 !
     use Metallurgy_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -32,13 +29,11 @@ subroutine zjma(metaSteelPara, &
 #include "asterfort/assert.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer(kind=8), intent(in) :: nbVari, nbVariTemper, nbVariPrev
     type(META_SteelParameters), intent(in) :: metaSteelPara
-    real(kind=8), intent(in) :: deltaTime12, temp1, temp2
-    aster_logical, intent(in) :: prevMetaIsTemper
-    real(kind=8), intent(in) :: metaPrev(nbVariPrev)
-    real(kind=8), intent(in) :: metaCurr(nbVari)
-    real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
+    integer(kind=8), intent(in) :: nbVari, nbVariTemper
+    real(kind=8), intent(in) :: deltaTime12
+    real(kind=8), intent(in) :: infoTemper(NB_PARAIN_TEMPER), metaIn(nbVari)
+    real(kind=8), intent(out) :: metaOut(nbVariTemper)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,52 +41,48 @@ subroutine zjma(metaSteelPara, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  metaSteelPara      : parameters for metallurgy of steel
-! In  metaPrev           : value of internal state variable at previous time step
-! Out metaCurr           : value of internal state variable at current time step
+! In  metaSteelPara       : parameters for metallurgy of steel
+! In  nbVari              : number of internal state variables without tempering
+! In  nbVariTemper        : number of internal state variables with tempering
+! In  deltaTime12         : increment of time [N, N+1]
+! In  infoTemper          : value parameters for tempering
+! In  metaIn              : value of internal state variable without tempering
+! Out metaOut             : value of internal state variable with tempering
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: tempPgPrev
-    real(kind=8) :: deltaTemp
+    real(kind=8), parameter :: kelvin = 273.0d0
+    real(kind=8) :: tempPgPrev, tempPgCurr, tempPgIncr, tempTempering, tempHold
     integer(kind=8) :: cyclTherPrev, cyclTherCurr
     real(kind=8) :: ZTildeMartPrev, ZTildeBainPrev
     real(kind=8) :: ZTildeMartCurr, ZTildeBainCurr
     real(kind=8) :: tau_0_bain, tau_0_mart
-    real(kind=8) :: tempTempering, tempPgCurr
     real(kind=8) :: ZBainBrut, ZMartBrut
     real(kind=8) :: ZBainRevePrev, ZMartRevePrev
     real(kind=8) :: ZBainBaseCurr, ZMartBaseCurr
     real(kind=8) :: ZBainReveCurr, ZMartReveCurr
     real(kind=8) :: ZBainTotaPrev, ZMartTotaPrev
     real(kind=8) :: bainCoefB, bainCoefN
-    real(kind=8) :: martCoefB, martCoefN, tempHold
+    real(kind=8) :: martCoefB, martCoefN
     real(kind=8) :: R, delta_H, C0, deltaTimeEqui, Pa
-    real(kind=8), parameter :: kelvin = 273.0d0
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    deltaTemp = abs(temp2-temp1)
+    ASSERT(nbVariTemper .eq. NBVARISTEELR)
 
-! - Get previous internal state variables
-    if (prevMetaIsTemper) then
-        tempPgPrev = metaPrev(STEEL_TEMP+NBPHASESTEELR)
-        cyclTherPrev = nint(metaPrev(THER_CYCL+NBPHASESTEELR))
-        ZBainRevePrev = metaPrev(PRBAINITER)
-        ZMartRevePrev = metaPrev(PRMARTENSR)
-    else
-        tempPgPrev = metaPrev(STEEL_TEMP+NBPHASESTEEL)
-        ZBainRevePrev = 0.d0
-        ZMartRevePrev = 0.d0
-        cyclTherPrev = 0
-    end if
+! - Get temperatures
+    tempPgPrev = infoTemper(1)
+    tempPgCurr = metaIn(STEEL_TEMP)
+    tempPgIncr = abs(tempPgCurr-tempPgPrev)
 
 ! - Get internal state variables without tempering
-    tempPgCurr = metaCurr(STEEL_TEMP+NBPHASESTEEL)
-    ZBainBrut = metaCurr(PBAINITE)
-    ZMartBrut = metaCurr(PMARTENS)
+    ZBainBrut = metaIn(PBAINITE)
+    ZMartBrut = metaIn(PMARTENS)
 
-    deltaTemp = abs(tempPgCurr-tempPgPrev)
+! - Get parameters
+    cyclTherPrev = nint(infoTemper(2))
+    ZBainRevePrev = infoTemper(3)
+    ZMartRevePrev = infoTemper(4)
 
 ! - Compute ratio
     ZBainTotaPrev = ZBainRevePrev+ZBainBrut
@@ -160,7 +151,7 @@ subroutine zjma(metaSteelPara, &
             elseif (cyclTherPrev .eq. 1) then
                 ZTildeMartCurr = 0.d0
                 ZTildeBainCurr = 0.d0
-                if (deltaTemp .ge. r8prem()) then
+                if (tempPgIncr .ge. r8prem()) then
                     cyclTherCurr = 2
                 end if
             else if (cyclTherPrev .eq. 0) then
@@ -181,17 +172,17 @@ subroutine zjma(metaSteelPara, &
     end if
 
 ! - Update internal state variables
-    metaCurrTemper(PRFERRITE) = metaCurr(PFERRITE)
-    metaCurrTemper(PRPERLITE) = metaCurr(PPERLITE)
-    metaCurrTemper(PRBAINITEB) = ZBainBaseCurr
-    metaCurrTemper(PRMARTENSB) = ZMartBaseCurr
-    metaCurrTemper(PRBAINITER) = ZBainReveCurr
-    metaCurrTemper(PRMARTENSR) = ZMartReveCurr
-    metaCurrTemper(PRAUSTENITE) = metaCurr(PAUSTENITE)
-    metaCurrTemper(PRSUMCOLD) = 1.d0-metaCurr(PAUSTENITE)
-    metaCurrTemper(SIZE_GRAIN+NBPHASESTEELR) = metaCurr(SIZE_GRAIN+NBPHASESTEEL)
-    metaCurrTemper(STEEL_TEMP+NBPHASESTEELR) = metaCurr(STEEL_TEMP+NBPHASESTEEL)
-    metaCurrTemper(TEMP_MARTENSITE+NBPHASESTEELR) = metaCurr(TEMP_MARTENSITE+NBPHASESTEEL)
-    metaCurrTemper(THER_CYCL+NBPHASESTEELR) = cyclTherCurr
+    metaOut(PRFERRITE) = metaIn(PFERRITE)
+    metaOut(PRPERLITE) = metaIn(PPERLITE)
+    metaOut(PRBAINITEB) = ZBainBaseCurr
+    metaOut(PRMARTENSB) = ZMartBaseCurr
+    metaOut(PRBAINITER) = ZBainReveCurr
+    metaOut(PRMARTENSR) = ZMartReveCurr
+    metaOut(PRAUSTENITE) = metaIn(PAUSTENITE)
+    metaOut(PRSUMCOLD) = 1.d0-metaIn(PAUSTENITE)
+    metaOut(SIZE_GRAINR) = metaIn(SIZE_GRAIN)
+    metaOut(STEEL_TEMPR) = metaIn(STEEL_TEMP)
+    metaOut(TEMP_MARTENSITER) = metaIn(TEMP_MARTENSITE)
+    metaOut(THER_CYCL) = cyclTherCurr
 !
 end subroutine

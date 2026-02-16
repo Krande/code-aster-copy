@@ -16,12 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtdorc(factorKeyword, model, comporMeta)
+subroutine mtdorc(factorKeyword, model, comporMeta, lEmptyMap)
 !
     use Metallurgy_type
-!
     implicit none
 !
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meta_clean.h"
 #include "asterfort/comp_meta_info.h"
@@ -30,13 +31,13 @@ subroutine mtdorc(factorKeyword, model, comporMeta)
 #include "asterfort/comp_meta_read.h"
 #include "asterfort/comp_meta_save.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/nocart.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
 !
     character(len=16), intent(in) :: factorKeyword
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: comporMeta
+    aster_logical, intent(out) :: lEmptyMap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,10 +61,12 @@ subroutine mtdorc(factorKeyword, model, comporMeta)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    lEmptyMap = ASTER_TRUE
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - Create datastructure to prepare comportement
     call comp_meta_info(factorKeyword, metaPrepBehaviour)
+    lEmptyMap = metaPrepBehaviour%nbFactorKeyword .eq. 0
 
 ! - Create COMPOR <CARTE>
     call comp_init(mesh, comporMeta, 'V', nbCmp)

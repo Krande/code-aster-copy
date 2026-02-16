@@ -24,7 +24,6 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
 !
     use Metallurgy_type
     use MetallurgySteel_Compute_module
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -55,8 +54,8 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
 ! In  temp2               : temperature at time N+1
 ! In  deltaTime01         : increment of time [N-1, N]
 ! In  deltaTime12         : increment of time [N, N+1]
-! In  metaPrev            : value of internal state variable at previous time step
-! Out metaCurr            : value of internal state variable at current time step
+! In  metaPrev              : value of internal state variable at previous time step
+! Out metaCurr             : value of internal state variable at current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,21 +63,21 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
     real(kind=8) :: tpoint
     real(kind=8) :: zeq1, zeq2, zAustPrev, zAustCurr
     real(kind=8) :: dPrev, dCurr
-    integer(kind=8) :: j, nbStep, nbHist
+    integer(kind=8) :: j, nbStep, nbHistTRC
     aster_logical :: l_cold, lMultiStep
     real(kind=8), parameter :: un = 1.d0, zero = 0.d0
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(nbPhase .eq. NBPHASESTEEL)
-    ASSERT(nbVari .eq. NBVARIWAECKEL)
+    ASSERT(nbVari .eq. NBVARISTEEL)
 
 ! - Get material parameters for steel
-    nbHist = metaSteelPara%trc%nbHist
+    nbHistTRC = metaSteelPara%trc%nbHist
 
-! - Temperature
-    metaCurr(nbPhase+STEEL_TEMP) = temp2
-    metaCurr(nbPhase+TEMP_MARTENSITE) = metaPrev(nbPhase+TEMP_MARTENSITE)
+! - Get temperatures
+    metaCurr(STEEL_TEMP) = temp2
+    metaCurr(TEMP_MARTENSITE) = metaPrev(TEMP_MARTENSITE)
     tpoint = (temp1-temp0)/deltaTime01
 
 ! - Proportion of austenite
@@ -113,18 +112,18 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
         call metaSteelCooling(metaSteelPara, &
                               temp0, temp1, temp2, &
                               nbStep, deltaTime01, deltaTime12, &
-                              nbVari, nbPhase, nbHist, &
+                              nbVari, nbHistTRC, &
                               metaPrev, metaCurr)
     else
 
 10      continue
-        dPrev = metaPrev(nbPhase+SIZE_GRAIN)
+        dPrev = metaPrev(SIZE_GRAIN)
         call metaSteelHeating(metaSteelPara, &
                               temp0, temp1, temp2, &
                               nbStep, deltaTime01, deltaTime12, &
                               zAustPrev, &
                               dPrev, dCurr, zAustCurr)
-        metaCurr(nbPhase+SIZE_GRAIN) = dCurr
+        metaCurr(SIZE_GRAIN) = dCurr
 
 ! ----- Check bounds
         if (zAustCurr .gt. (un-epsi)) then

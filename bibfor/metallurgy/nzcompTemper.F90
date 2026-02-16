@@ -16,15 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcompTemper(metaPara, numeComp, &
-                        nbVari, nbVariTemper, nbVariPrev, &
+subroutine nzcompTemper(metaParaTemper, numeCompTemper, &
+                        nbVari, nbVariTemper, &
                         deltaTime12, &
-                        temp1, temp2, &
-                        prevMetaIsTemper, &
-                        metaPrev, metaCurr, metaCurrTemper)
+                        infoTemper, metaIn, metaOut)
 !
     use Metallurgy_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -32,14 +29,13 @@ subroutine nzcompTemper(metaPara, numeComp, &
 #include "asterfort/zjma.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    type(META_MaterialParameters), intent(in) :: metaPara
-    integer(kind=8), intent(in) :: numeComp, nbVari, nbVariTemper, nbVariPrev
+    type(META_MaterialParameters), intent(in) :: metaParaTemper
+    integer(kind=8), intent(in) :: numeCompTemper
+    integer(kind=8), intent(in) :: nbVari, nbVariTemper
     real(kind=8), intent(in) :: deltaTime12
-    real(kind=8), intent(in) :: temp1, temp2
-    aster_logical, intent(in) :: prevMetaIsTemper
-    real(kind=8), intent(in) :: metaPrev(nbVariPrev)
-    real(kind=8), intent(in) :: metaCurr(nbVari)
-    real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
+    real(kind=8), intent(in) :: infoTemper(NB_PARAIN_TEMPER)
+    real(kind=8), intent(in) :: metaIn(nbVari)
+    real(kind=8), intent(out) :: metaOut(nbVariTemper)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,33 +45,29 @@ subroutine nzcompTemper(metaPara, numeComp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  metaPara            : material parameters for metallurgy
-! In  numeComp            : index of behaviour law for metallurgy
-! In  nbPhase             : number of phases
-! In  nbVari              : number of internal state variables
-! In  tempInit            : temperature at time N-1
+! In  metaParaTemper      : material parameters for tempering for metallurgy
+! In  numeCompTemper      : index of tempering law for metallurgy
+! In  nbVari              : number of internal state variables without tempering
+! In  nbVariTemper        : number of internal state variables with tempering
+! In  deltaTime12         : increment of time [N, N+1]
 ! In  temp1               : temperature at time N
 ! In  temp2               : temperature at time N+1
-! In  deltaTime01         : increment of time [N-1, N]
-! In  deltaTime12         : increment of time [N, N+1]
-! In  metaPrev            : value of internal state variable at previous time step
-! In  metaCurr            : value of internal state variable at current time step without tempering
-! Out metaCurrTemper      : value of internal state variable at current time step with tempering
+! In  infoTemper          : value parameters for tempering
+! In  metaIn              : value of internal state variable without tempering
+! Out metaOut             : value of internal state variable with tempering
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    select case (numeComp)
+    select case (numeCompTemper)
 
     case (3)
-        call zjma(metaPara%steel, &
-                  nbVari, nbVariTemper, nbVariPrev, &
-                  temp1, temp2, &
+        call zjma(metaParaTemper%steel, &
+                  nbVari, nbVariTemper, &
                   deltaTime12, &
-                  prevMetaIsTemper, &
-                  metaPrev, metaCurr, metaCurrTemper)
+                  infoTemper, metaIn, metaOut)
 
     case default
-        call utmess('F', 'COMPOR1_43', si=numeComp)
+        call utmess('F', 'COMPOR1_43', si=numeCompTemper)
 
     end select
 !

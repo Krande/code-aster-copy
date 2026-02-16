@@ -69,7 +69,7 @@ subroutine te0353(option, nomte)
     real(kind=8) :: dfdx(MT_NNOMAX2D), dfdy(MT_NNOMAX2D), poids, r, co_axis
     real(kind=8) :: coef, trans
     real(kind=8) :: zcold_curr
-    real(kind=8) :: phasPrev(META_NBPHASE_MAXI), phasCurr(META_NBPHASE_MAXI), temp
+    real(kind=8) :: phasPrev(META_MECA_NBPHASE_MAXI), phasCurr(META_MECA_NBPHASE_MAXI), temp
     aster_logical :: l_axi, l_temp
     character(len=16) :: elasKeyword
     character(len=16) :: metaRela, metaGlob
@@ -98,7 +98,7 @@ subroutine te0353(option, nomte)
 ! - Get type of phases
     metaPhasName = compor(META_PHAS)
     call metaGetType(metaType, nbPhases)
-    ASSERT(nbPhases .le. META_NBPHASE_MAXI)
+    ASSERT(nbPhases .le. META_MECA_NBPHASE_MAXI)
 
     if ((metaType .ne. META_NONE) .and. (relaComp .ne. 'META_LEMA_ANI') .and. &
         metaPhasName .ne. "VIDE") then

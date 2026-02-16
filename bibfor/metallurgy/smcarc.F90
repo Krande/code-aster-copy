@@ -17,30 +17,30 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0413
 !
-subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
+subroutine smcarc(nbHistTRC, ftrc, trc, &
                   coef, fmod, &
                   metaSteelPara, &
                   tempCurr, tPoint, deltaTime, &
-                  metaPrev, metaCurr)
+                  nbVari, metaPrev, metaCurr)
 !
     use Metallurgy_type
-!
     implicit none
 !
+#include "asterfort/Metallurgy_type.h"
+#include "asterfort/metaSteelGrainSize.h"
+#include "asterfort/metaSteelTRCPolynom.h"
 #include "asterfort/smcaba.h"
 #include "asterfort/smcavo.h"
 #include "asterfort/smcomo.h"
-#include "asterfort/metaSteelTRCPolynom.h"
-#include "asterfort/metaSteelGrainSize.h"
-#include "asterfort/Metallurgy_type.h"
 !
-    integer(kind=8), intent(in) :: nb_hist, nbPhase
-    real(kind=8), intent(inout) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
+    integer(kind=8), intent(in) :: nbHistTRC
+    real(kind=8), intent(inout) :: ftrc((3*nbHistTRC), 3), trc((3*nbHistTRC), 5)
     real(kind=8), intent(in)  :: coef(*), fmod(*)
     type(META_SteelParameters), intent(in) :: metaSteelPara
     real(kind=8), intent(in) :: tempCurr, tPoint, deltaTime
-    real(kind=8), intent(in) :: metaPrev(:)
-    real(kind=8), intent(out) :: metaCurr(:)
+    integer(kind=8), intent(in) :: nbVari
+    real(kind=8), intent(in) :: metaPrev(nbVari)
+    real(kind=8), intent(out) :: metaCurr(nbVari)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,8 +50,7 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nb_hist             : number of graph in TRC diagram
-! In  nbPhase             : number of phases
+! In  nbHistTRC          : number of graph in TRC diagram
 ! IO  trc                 : values of functions for TRC diagram
 ! IO  ftrc                : values of derivatives (by temperature) of functions for TRC diagram
 ! In  coef                : parameters from TRC diagrams (P5 polynom)
@@ -93,11 +92,11 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
         metaCurr(PPERLITE) = metaPrev(PPERLITE)
         metaCurr(PBAINITE) = metaPrev(PBAINITE)
         metaCurr(PMARTENS) = metaPrev(PMARTENS)
-        metaCurr(nbPhase+TEMP_MARTENSITE) = metaSteelPara%ms0
+        metaCurr(TEMP_MARTENSITE) = metaSteelPara%ms0
     else
 
 ! ----- Température de transformation martensitique courante Ms(t)
-        tmf = metaPrev(nbPhase+TEMP_MARTENSITE)-(log(0.01d0))/metaSteelPara%alpha-15.d0
+        tmf = metaPrev(TEMP_MARTENSITE)-(log(0.01d0))/metaSteelPara%alpha-15.d0
 
         if ((sumColdPrev .ge. 0.999d0) .or. (tempCurr .lt. tmf)) then
 ! --------- Nothing changes: hot phase only
@@ -105,10 +104,10 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
             metaCurr(PPERLITE) = metaPrev(PPERLITE)
             metaCurr(PBAINITE) = metaPrev(PBAINITE)
             metaCurr(PMARTENS) = metaPrev(PMARTENS)
-            metaCurr(nbPhase+TEMP_MARTENSITE) = metaPrev(nbPhase+TEMP_MARTENSITE)
+            metaCurr(TEMP_MARTENSITE) = metaPrev(TEMP_MARTENSITE)
         else
 ! --------- Compute increment of phases
-            if (tempCurr .lt. metaPrev(nbPhase+TEMP_MARTENSITE)) then
+            if (tempCurr .lt. metaPrev(TEMP_MARTENSITE)) then
                 dz(PFERRITE) = zero
                 dz(PPERLITE) = zero
                 dz(PBAINITE) = zero
@@ -117,27 +116,27 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
                 if (a .eq. 0.d0) then
                     temp_incr_eff = tPoint
                 else
-                    temp_incr_eff = tPoint*exp(a*(metaPrev(nbPhase+SIZE_GRAIN)-dref))
+                    temp_incr_eff = tPoint*exp(a*(metaPrev(SIZE_GRAIN)-dref))
                 end if
 
 ! ------------- Compute functions from TRC diagram
-                call smcomo(coef, fmod, tempCurr, nb_hist, &
+                call smcomo(coef, fmod, tempCurr, nbHistTRC, &
                             ftrc, trc)
 
                 if (temp_incr_eff .gt. (trc(1, 4)*(un+epsi))) then
 ! ----------------- Before first value from TRC diagrams
-                    dz(PFERRITE) = ftrc(1, PFERRITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
-                    dz(PPERLITE) = ftrc(1, PPERLITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
-                    dz(PBAINITE) = ftrc(1, PBAINITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
+                    dz(PFERRITE) = ftrc(1, PFERRITE)*(metaCurr(STEEL_TEMP)-tempCurr)
+                    dz(PPERLITE) = ftrc(1, PPERLITE)*(metaCurr(STEEL_TEMP)-tempCurr)
+                    dz(PBAINITE) = ftrc(1, PBAINITE)*(metaCurr(STEEL_TEMP)-tempCurr)
 
-                elseif (temp_incr_eff .lt. (trc(nb_hist, 4)*(un-epsi))) then
+                elseif (temp_incr_eff .lt. (trc(nbHistTRC, 4)*(un-epsi))) then
 ! ----------------- After last value from TRC diagrams
                     dz(PFERRITE) = &
-                        ftrc(nb_hist, PFERRITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
+                        ftrc(nbHistTRC, PFERRITE)*(metaCurr(STEEL_TEMP)-tempCurr)
                     dz(PPERLITE) = &
-                        ftrc(nb_hist, PPERLITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
+                        ftrc(nbHistTRC, PPERLITE)*(metaCurr(STEEL_TEMP)-tempCurr)
                     dz(PBAINITE) = &
-                        ftrc(nb_hist, PBAINITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
+                        ftrc(nbHistTRC, PBAINITE)*(metaCurr(STEEL_TEMP)-tempCurr)
                 else
 ! ----------------- Find the six nearest TRC curves
                     x(1) = metaPrev(PFERRITE)
@@ -145,19 +144,19 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
                     x(3) = metaPrev(PBAINITE)
                     x(4) = temp_incr_eff
                     x(5) = tempCurr
-                    call smcavo(x, nb_hist, trc, ind)
+                    call smcavo(x, nbHistTRC, trc, ind)
 
 ! ----------------- Compute barycenter and update increments of phases
-                    call smcaba(x, nb_hist, trc, ftrc, ind, &
+                    call smcaba(x, nbHistTRC, trc, ftrc, ind, &
                                 dz)
-                    if ((metaCurr(nbPhase+STEEL_TEMP)-tempCurr) .gt. zero) then
+                    if ((metaCurr(STEEL_TEMP)-tempCurr) .gt. zero) then
                         dz(PFERRITE) = zero
                         dz(PPERLITE) = zero
                         dz(PBAINITE) = zero
                     else
-                        dz(PFERRITE) = dz(PFERRITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
-                        dz(PPERLITE) = dz(PPERLITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
-                        dz(PBAINITE) = dz(PBAINITE)*(metaCurr(nbPhase+STEEL_TEMP)-tempCurr)
+                        dz(PFERRITE) = dz(PFERRITE)*(metaCurr(STEEL_TEMP)-tempCurr)
+                        dz(PPERLITE) = dz(PPERLITE)*(metaCurr(STEEL_TEMP)-tempCurr)
+                        dz(PBAINITE) = dz(PBAINITE)*(metaCurr(STEEL_TEMP)-tempCurr)
                     end if
                 end if
             end if
@@ -167,14 +166,14 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
 
 ! --------- Compute new martensite temperature
             if ((sumFerritePrev .ge. austeniteMin) .and. (metaPrev(PMARTENS) .eq. zero)) then
-                metaCurr(nbPhase+TEMP_MARTENSITE) = metaSteelPara%ms0+akm*sumFerritePrev+bkm
+                metaCurr(TEMP_MARTENSITE) = metaSteelPara%ms0+akm*sumFerritePrev+bkm
             else
-                metaCurr(nbPhase+TEMP_MARTENSITE) = metaPrev(nbPhase+TEMP_MARTENSITE)
+                metaCurr(TEMP_MARTENSITE) = metaPrev(TEMP_MARTENSITE)
             end if
 
 ! --------- Compute proportion of martensite
             zMartPrev = 1.d0-sumFerritePrev
-            if ((metaCurr(nbPhase+STEEL_TEMP) .gt. metaCurr(nbPhase+TEMP_MARTENSITE)) .or. &
+            if ((metaCurr(STEEL_TEMP) .gt. metaCurr(TEMP_MARTENSITE)) .or. &
                 (zMartPrev .lt. 0.01d0)) then
                 metaCurr(PMARTENS) = metaPrev(PMARTENS)
             else
@@ -185,7 +184,7 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
                 else
 
                     incrTempMart = &
-                        max(0.d0, metaCurr(nbPhase+TEMP_MARTENSITE)-metaCurr(nbPhase+STEEL_TEMP))
+                        max(0.d0, metaCurr(TEMP_MARTENSITE)-metaCurr(STEEL_TEMP))
 
                     metaCurr(PMARTENS) = zMartPrev* &
                                          (un-exp(metaSteelPara%alpha*incrTempMart))
@@ -226,6 +225,6 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
     call metaSteelGrainSize(metaSteelPara, &
                             tempCurr, deltaTime, deltaTime, &
                             zaust, coef_phase, &
-                            metaPrev(nbPhase+SIZE_GRAIN), metaCurr(nbPhase+SIZE_GRAIN))
+                            metaPrev(SIZE_GRAIN), metaCurr(SIZE_GRAIN))
 !
 end subroutine

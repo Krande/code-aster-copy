@@ -16,23 +16,31 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+! ==================================================================================================
+!
+! Types for the management of metallurgy
+!
+! ==================================================================================================
+!
 module Metallurgy_type
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Metallurgy_type.h"
+! ==================================================================================================
+! Global variables
+! ==================================================================================================
+! ==================================================================================================
+! ==================================================================================================
 !
-! --------------------------------------------------------------------------------------------------
+! CALC_META operator
 !
-! Metallurgy
-!
-! Define types for datastructures
-!
-! --------------------------------------------------------------------------------------------------
-!
-
-! - Metallurgy - Parameters for operator
+! ==================================================================================================
+! ==================================================================================================
+! ==================================================================================================
+! Type: parameters of CALC_META operator
+! ==================================================================================================
     type META_ParaOperator
 ! ----- Name of output datastructure
         character(len=8) :: resultName = " "
@@ -54,11 +62,15 @@ module Metallurgy_type
         character(len=24) :: comporMeta = "&&OP0194.COMPOR"
         aster_logical :: hasTRC = ASTER_FALSE
         character(len=24) :: TRCField = "&&SMEVOL.ADRESSES"
-! ----- Flag for tempering
-        aster_logical :: hasTemper = ASTER_FALSE
+! ----- Flag to compute phases
+        aster_logical :: hasMetaLaw = ASTER_FALSE
+! ----- Flag to compute phases with tempering law
+        aster_logical :: hasTemperLaw = ASTER_FALSE
     end type META_ParaOperator
 
-! - Metallurgy - Parameters for behaviour
+! ==================================================================================================
+! Type: parameters for COMPOR_META map
+! ==================================================================================================
     type META_ParaBehaviour
 ! ----- Keyword RELATION (steel, zirc, etc.)
         character(len=16) :: metaType = ' '
@@ -72,7 +84,9 @@ module Metallurgy_type
         integer(kind=8) :: numeComp = 0
     end type META_ParaBehaviour
 
-! - Metallurgy - Preparation - Map for parameters of behaviours (COMPOR_META)
+! ==================================================================================================
+! Type: parameters to build COMPOR_META map
+! ==================================================================================================
     type META_PrepBehaviour
 ! ----- Factor keyword to read
         character(len=16) :: factorKeyword = " "
@@ -83,7 +97,13 @@ module Metallurgy_type
 ! ----- Flag for tempering
         aster_logical :: hasTemper = ASTER_FALSE
     end type META_PrepBehaviour
-
+! ==================================================================================================
+! ==================================================================================================
+!
+! Phases of steel
+!
+! ==================================================================================================
+! ==================================================================================================
 ! - Metallurgy - Parameters for austenite phase
     type META_AusteniteParameters
         real(kind=8) :: lambda0 = 0.d0
@@ -103,7 +123,7 @@ module Metallurgy_type
         real(kind=8) :: lowerSpeed = 0.d0
     end type META_TRCMartensiteLaw
 
-! - Metallurgy - Parameters for tempering
+! - Metallurgy - Parameters for tempering phases
     type META_TemperingParameters
         real(kind=8) :: bainite_b = 0.d0
         real(kind=8) :: bainite_n = 0.d0
@@ -122,7 +142,9 @@ module Metallurgy_type
         type(META_TRCAusteniteGrain) :: austeniteGrain
     end type META_TRCParameters
 
-! - Metallurgy - Parameters for steel
+! ==================================================================================================
+! Type: parameters for behaviour law integration
+! ==================================================================================================
     type META_SteelParameters
         aster_logical :: lNodeDebug = ASTER_FALSE
         real(kind=8) :: ar3 = 0.d0
@@ -140,7 +162,16 @@ module Metallurgy_type
         type(META_TRCParameters) :: trc
     end type META_SteelParameters
 
-! - Metallurgy - Parameters for zircaloy
+! - Metallurgy - Parameters for hardness
+    type META_HardnessParameters
+        character(len=16) :: metaType = ' '
+        real(kind=8) :: hardSteel(PRSTEEL_NB) = 0.d0
+    end type META_HardnessParameters
+! ==================================================================================================
+!
+! Phases of zircaloy
+!
+! ==================================================================================================
     type META_ZircParameters
         real(kind=8) :: tdeq = 0.d0
         real(kind=8) :: k = 0.d0
@@ -155,17 +186,14 @@ module Metallurgy_type
         real(kind=8) :: ar = 0.d0
         real(kind=8) :: br = 0.d0
     end type META_ZircParameters
-
-! - Metallurgy - Parameters for material
+! ==================================================================================================
+!
+! Parameters for material
+!
+! ==================================================================================================
     type META_MaterialParameters
         type(META_SteelParameters) :: steel
         type(META_ZircParameters) :: zirc
     end type META_MaterialParameters
-
-! - Metallurgy - Parameters for hardness
-    type META_HardnessParameters
-        character(len=16) :: metaType = ' '
-        real(kind=8) :: hardSteel(PRSTEEL_NB) = 0.d0
-    end type META_HardnessParameters
 !
 end module
