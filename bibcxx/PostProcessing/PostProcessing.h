@@ -96,6 +96,10 @@ class PostProcessing {
      *         equivalent moment for piping studies*/
     FieldOnCellsRealPtr computeMaxResultantForPipe( const ResultPtr &resu,
                                                     const std::string &field_name ) const;
+
+    /** @brief Compute MATE_ELGA/MATE_ELEM/MATE_ELNO */
+    FieldOnCellsRealPtr computeMaterial( const std::string &loc,
+                                         const FieldOnCellsRealPtr &externVar = nullptr ) const;
 };
 
 using PostProcessingPtr = std::shared_ptr< PostProcessing >;

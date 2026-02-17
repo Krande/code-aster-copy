@@ -23,8 +23,8 @@ subroutine gtvois(v_connex, v_connex_lcum, list_elem, nb_elem, elem_nume, elem_c
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/utlisi.h"
 #include "asterfort/assert.h"
+#include "asterfort/utlisi.h"
 !
 !
     integer(kind=8), pointer :: v_connex(:)
@@ -70,13 +70,15 @@ subroutine gtvois(v_connex, v_connex_lcum, list_elem, nb_elem, elem_nume, elem_c
 !
 ! - Get list of nodes of current element
 !
-    if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3') then
+    if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3' .or. elem_code .eq. 'SE4') then
         nb_node = 2
         nb_dime = 1
-    elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6') then
+    elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6' .or. elem_code .eq. 'TR7' &
+            .or. elem_code .eq. 'TR1') then
         nb_node = 3
         nb_dime = 2
-    elseif (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' .or. elem_code .eq. 'QU9') then
+    elseif (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' .or. elem_code .eq. 'QU9' &
+            .or. elem_code .eq. 'Q12') then
         nb_node = 4
         nb_dime = 2
     else

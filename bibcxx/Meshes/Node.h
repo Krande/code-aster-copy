@@ -105,6 +105,11 @@ class Node {
     ASTERINTEGER size( void ) const { return 3; }
 };
 
+inline std::ostream &operator<<( std::ostream &os, const Node &n ) {
+    os << "Node(" << n.getId() << ") = [" << n.x() << ", " << n.y() << ", " << n.z() << "]";
+    return os;
+}
+
 /**
  * @typedef MeshCoordinatesFieldPtr
  * @brief Definition d'un champ aux noeuds de double

@@ -470,6 +470,21 @@ class THPLQU9(THPLQU4):
     )
 
 
+# ------------------------------------------------------------
+class THPLQU12(THPLQU4):
+    """Thermics - PLAN - QUAD12"""
+
+    meshType = MT.QUAD12
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),)
+    elrefe = (
+        ElrefeLoc(
+            MT.Q12,
+            gauss=("RIGI=FPG16", "MASS=FPG16", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("RIGI", "FPG1", "MASS"),
+        ),
+    )
+
+
 # --------------------------------------------------------------------------------------------------
 class THPLTR3(THPLQU4):
     """Thermics - PLAN - TRIA3"""
@@ -494,5 +509,20 @@ class THPLTR6(THPLQU4):
             MT.TR6,
             gauss=("RIGI=FPG6", "MASS=FPG6", "FPG1=FPG1", "NOEU=NOEU"),
             mater=("FPG1", "RIGI", "MASS"),
+        ),
+    )
+
+
+# ------------------------------------------------------------
+class THPLTR10(THPLQU4):
+    """Thermics - PLAN - TRIA10"""
+
+    meshType = MT.TRIA10
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),)
+    elrefe = (
+        ElrefeLoc(
+            MT.TR1,
+            gauss=("RIGI=FPG12", "MASS=FPG12", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("RIGI", "FPG1", "MASS"),
         ),
     )

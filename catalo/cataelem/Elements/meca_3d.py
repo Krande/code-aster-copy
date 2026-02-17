@@ -882,6 +882,11 @@ class MECA_HEXA20(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PNEUTER, LC.N9NEUT_R)),
             para_out=((OP.GRAD_NEUT9_R.PGNEUTR, LC.G27NEUTR),),
         ),
+        OP.HHO_DEPL_MECA(
+            te=131,
+            para_in=((SP.PDEPLPR, DDL_MECA),),
+            para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DDL_MECA),),
+        ),
         OP.INDIC_ENER(
             te=491,
             para_in=(
@@ -1389,6 +1394,7 @@ class MECA_HEXA20(Element):
                 (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PSIEF_R, LC.ESIG3DR),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
+                (OP.TOU_INI_ELNO.PMATE_R, LC.ENMATE_R),
             ),
         ),
         OP.VARC_ELGA(
@@ -1611,4 +1617,29 @@ class MECA_TETRA4(MECA_HEXA20):
             mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3", "NOEU=NOEU")),
+    )
+
+
+# ------------------------------------------------------------
+class MECA_TETRA20(MECA_HEXA20):
+    """Mechanics - 3D - TETRA20"""
+
+    meshType = MT.TETRA20
+    nodes = (
+        SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.T20,
+            gauss=(
+                "RIGI=FPG15",
+                "FPG1=FPG1",
+                "MASS=FPG24",
+                "NOEU=NOEU",
+                "ARLQ_1=FPG15",
+                "MTGA=FPG15",
+            ),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
+        ),
+        ElrefeLoc(MT.TR1, gauss=("RIGI=FPG12", "MASS=FPG12", "NOEU=NOEU")),
     )

@@ -326,6 +326,14 @@ class THER_FACE6(THER_FACE3):
 
 
 # --------------------------------------------------------------------------------------------------
+class THER_FACE10(THER_FACE3):
+    """Thermics - Skin element 3D - TRIA10"""
+
+    meshType = MT.TRIA10
+    elrefe = (ElrefeLoc(MT.TR1, gauss=("RIGI=FPG12", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# --------------------------------------------------------------------------------------------------
 class THER_FACE8(THER_FACE3):
     """Thermics - Skin element 3D - QUAD8"""
 

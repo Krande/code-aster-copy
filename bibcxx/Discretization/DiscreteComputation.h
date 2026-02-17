@@ -534,6 +534,23 @@ class DiscreteComputation {
                       const FieldOnNodesRealPtr coef_frot ) const;
 
     /**
+     * @brief Compute coupling forces
+     */
+
+    FieldOnNodesRealPtr getMechanicalCouplingForces( const FieldOnNodesRealPtr displ_prev,
+                                                     const FieldOnNodesRealPtr displ_step,
+                                                     const ASTERDOUBLE &time_prev,
+                                                     const ASTERDOUBLE &time_step ) const;
+
+    ElementaryMatrixDisplacementRealPtr
+    getMechanicalCouplingMatrix( const FieldOnNodesRealPtr displ_prev,
+                                 const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
+                                 const ASTERDOUBLE &time_step ) const;
+
+    ElementaryMatrixDisplacementRealPtr
+    getMechanicalLinearCouplingMatrix( const FieldOnCellsRealPtr &externVar = nullptr ) const;
+
+    /**
      * @brief Compute residual reference (for RESI_REFE_RELA)
      */
     FieldOnNodesRealPtr

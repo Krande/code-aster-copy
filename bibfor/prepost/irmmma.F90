@@ -157,6 +157,11 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
         nbCellType(MT_TETRA15) = 0
         lnocen = ASTER_TRUE
     end if
+    if (nbCellType(MT_TETRA20) .ne. 0) then
+        nbCellType(MT_TETRA4) = nbCellType(MT_TETRA4)+nbCellType(MT_TETRA20)
+        nbCellType(MT_TETRA20) = 0
+        lnocen = ASTER_TRUE
+    end if
     if (nbCellType(MT_PYRAM19) .ne. 0) then
         nbCellType(MT_PYRAM13) = nbCellType(MT_PYRAM13)+nbCellType(MT_PYRAM19)
         nbCellType(MT_PYRAM19) = 0
@@ -175,6 +180,16 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
     if (nbCellType(MT_PENTA7) .ne. 0) then
         nbCellType(MT_PENTA6) = nbCellType(MT_PENTA6)+nbCellType(MT_PENTA7)
         nbCellType(MT_PENTA7) = 0
+        lnocen = ASTER_TRUE
+    end if
+    if (nbCellType(MT_TRIA10) .ne. 0) then
+        nbCellType(MT_TRIA3) = nbCellType(MT_TRIA3)+nbCellType(MT_TRIA10)
+        nbCellType(MT_TRIA10) = 0
+        lnocen = ASTER_TRUE
+    end if
+    if (nbCellType(MT_QUAD12) .ne. 0) then
+        nbCellType(MT_QUAD4) = nbCellType(MT_QUAD4)+nbCellType(MT_QUAD12)
+        nbCellType(MT_QUAD12) = 0
         lnocen = ASTER_TRUE
     end if
 !     LES NOEUDS N'ONT PAS ÉTE RETIRÉS DU MAILLAGE, ILS SONT IMPRIMÉS AVEC IRMMNO
@@ -229,9 +244,12 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
 !       CAS PARTICULIER - MAILLE NON SUPPORTEE PAR MED
         if (iCellType .eq. MT_HEXA9) iCellType = MT_HEXA8
         if (iCellType .eq. MT_TETRA15) iCellType = MT_TETRA10
+        if (iCellType .eq. MT_TETRA20) iCellType = MT_TETRA4
         if (iCellType .eq. MT_PYRAM19) iCellType = MT_PYRAM13
         if (iCellType .eq. MT_PENTA21) iCellType = MT_PENTA18
         if (iCellType .eq. MT_PENTA7) iCellType = MT_PENTA6
+        if (iCellType .eq. MT_TRIA10) iCellType = MT_TRIA3
+        if (iCellType .eq. MT_QUAD12) iCellType = MT_QUAD4
         ipoin = point(iCell)
         nbCellType(iCellType) = nbCellType(iCellType)+1
 !       NOM DE LA MAILLE DE TYPE ITYP DANS VECT NOM MAILLES

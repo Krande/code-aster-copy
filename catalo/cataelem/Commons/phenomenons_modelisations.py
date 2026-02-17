@@ -301,10 +301,13 @@ phen.add(
             (MT.PENTA15, EL.MECA_PENTA15),
             (MT.PENTA18, EL.MECA_PENTA18),
             (MT.TETRA10, EL.MECA_TETRA10),
+            (MT.TETRA20, EL.MECA_TETRA20),
             (MT.QUAD9, EL.MECA_FACE9),
             (MT.QUAD8, EL.MECA_FACE8),
             (MT.TRIA6, EL.MECA_FACE6),
+            (MT.TRIA10, EL.MECA_FACE10),
             (MT.SEG3, EL.MECA_ARETE3),
+            (MT.SEG4, EL.MECA_ARETE4),
             (MT.PYRAM5, EL.MECA_PYRAM5),
             (MT.PYRAM13, EL.MECA_PYRAM13),
         ),
@@ -3698,6 +3701,254 @@ phen.add(
     ),
 )
 
+# -- Define COUPLING FEM/HHO elements for PENALISATION method
+
+phen.add(
+    "CPL_PEN_H1_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HP2",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.SEG23, EL.CP_S2S3_HHO1),
+            (MT.SEG33, EL.CP_S3S3_HHO1),
+            (MT.SEG43, EL.CP_S4S3_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H2_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HP2",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.SEG23, EL.CP_S2S3_HHO2),
+            (MT.SEG33, EL.CP_S3S3_HHO2),
+            (MT.SEG43, EL.CP_S4S3_HHO2),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H1_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="H31",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.QU4QU9, EL.CP_Q4Q9_HHO1),
+            (MT.QU8QU9, EL.CP_Q8Q9_HHO1),
+            (MT.QUAD99, EL.CP_Q9Q9_HHO1),
+            (MT.TR3QU9, EL.CP_T3Q9_HHO1),
+            (MT.TR6QU9, EL.CP_T6Q9_HHO1),
+            (MT.QU4TR7, EL.CP_Q4T7_HHO1),
+            (MT.QU8TR7, EL.CP_Q8T7_HHO1),
+            (MT.QU9TR7, EL.CP_Q9T7_HHO1),
+            (MT.TR3TR7, EL.CP_T3T7_HHO1),
+            (MT.TR6TR7, EL.CP_T6T9_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H2_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="H32",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.QU4QU9, EL.CP_Q4Q9_HHO2),
+            (MT.QU8QU9, EL.CP_Q8Q9_HHO2),
+            (MT.QUAD99, EL.CP_Q9Q9_HHO2),
+            (MT.TR3QU9, EL.CP_T3Q9_HHO2),
+            (MT.TR6QU9, EL.CP_T6Q9_HHO2),
+            (MT.QU4TR7, EL.CP_Q4T7_HHO2),
+            (MT.QU8TR7, EL.CP_Q8T7_HHO2),
+            (MT.QU9TR7, EL.CP_Q9T7_HHO2),
+            (MT.TR3TR7, EL.CP_T3T7_HHO2),
+            (MT.TR6TR7, EL.CP_T6T9_HHO2),
+        ),
+    ),
+)
+
+# -- Define COUPLING FEM/FEM elements for PENALISATION method
+
+phen.add(
+    "CPL_PEN_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="CP2",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.SEG22, EL.CP_S2S2),
+            (MT.SEG23, EL.CP_S2S3),
+            (MT.SEG32, EL.CP_S3S2),
+            (MT.SEG33, EL.CP_S3S3),
+            (MT.SEG44, EL.CP_S4S4),
+            (MT.SEG43, EL.CP_S4S3),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="CP3",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.QU4QU8, EL.CP_Q4Q8),
+            (MT.QU4QU9, EL.CP_Q4Q9),
+            (MT.QU4TR3, EL.CP_Q4T3),
+            (MT.QU4TR6, EL.CP_Q4T6),
+            (MT.QU8QU4, EL.CP_Q8Q4),
+            (MT.QU8QU9, EL.CP_Q8Q9),
+            (MT.QU8TR3, EL.CP_Q8T3),
+            (MT.QU8TR6, EL.CP_Q8T6),
+            (MT.QU9QU4, EL.CP_Q9Q4),
+            (MT.QU9QU8, EL.CP_Q9Q8),
+            (MT.QU9TR3, EL.CP_Q9T3),
+            (MT.QU9TR6, EL.CP_Q9T6),
+            (MT.QUAD44, EL.CP_Q4Q4),
+            (MT.QUAD88, EL.CP_Q8Q8),
+            (MT.QUAD99, EL.CP_Q9Q9),
+            (MT.TR3QU4, EL.CP_T3Q4),
+            (MT.TR3QU8, EL.CP_T3Q8),
+            (MT.TR3QU9, EL.CP_T3Q9),
+            (MT.TR3TR6, EL.CP_T3T6),
+            (MT.TR6QU4, EL.CP_T6Q4),
+            (MT.TR6QU8, EL.CP_T6Q8),
+            (MT.TR6QU9, EL.CP_T6Q9),
+            (MT.TR6TR3, EL.CP_T6T3),
+            (MT.TRIA33, EL.CP_T3T3),
+            (MT.TRIA66, EL.CP_T6T6),
+        ),
+    ),
+)
+
+# -- Define COUPLING FEM/FEM elements for LAGRANGIAN method
+
+phen.add(
+    "CPL_LAG_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="CL2",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.SEG22, EL.CL_S2S2),
+            (MT.SEG23, EL.CL_S2S3),
+            (MT.SEG32, EL.CL_S3S2),
+            (MT.SEG33, EL.CL_S3S3),
+            (MT.SEG44, EL.CL_S4S4),
+            (MT.SEG43, EL.CL_S4S3),
+            (MT.POI1, EL.CL_POI2D),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_LAG_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="CL3",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.QU4QU8, EL.CL_Q4Q8),
+            (MT.QU4QU9, EL.CL_Q4Q9),
+            (MT.QU4TR3, EL.CL_Q4T3),
+            (MT.QU4TR6, EL.CL_Q4T6),
+            (MT.QU8QU4, EL.CL_Q8Q4),
+            (MT.QU8QU9, EL.CL_Q8Q9),
+            (MT.QU8TR3, EL.CL_Q8T3),
+            (MT.QU8TR6, EL.CL_Q8T6),
+            (MT.QU9QU4, EL.CL_Q9Q4),
+            (MT.QU9QU8, EL.CL_Q9Q8),
+            (MT.QU9TR3, EL.CL_Q9T3),
+            (MT.QU9TR6, EL.CL_Q9T6),
+            (MT.QUAD44, EL.CL_Q4Q4),
+            (MT.QUAD88, EL.CL_Q8Q8),
+            (MT.QUAD99, EL.CL_Q9Q9),
+            (MT.TR3QU4, EL.CL_T3Q4),
+            (MT.TR3QU8, EL.CL_T3Q8),
+            (MT.TR3QU9, EL.CL_T3Q9),
+            (MT.TR3TR6, EL.CL_T3T6),
+            (MT.TR6QU4, EL.CL_T6Q4),
+            (MT.TR6QU8, EL.CL_T6Q8),
+            (MT.TR6QU9, EL.CL_T6Q9),
+            (MT.TR6TR3, EL.CL_T6T3),
+            (MT.TRIA33, EL.CL_T3T3),
+            (MT.TRIA66, EL.CL_T6T6),
+            (MT.POI1, EL.CL_POI3D),
+        ),
+    ),
+)
+
+# -- Define COUPLING FEM/HHO elements for NITSCHE method
+
+phen.add(
+    "CPL_NIT_H1_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HN1",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.TR3SE3, EL.CN_T3S3_HHO1),
+            (MT.TR6SE3, EL.CN_T6S3_HHO1),
+            (MT.QU4SE3, EL.CN_Q4S3_HHO1),
+            (MT.QU8SE3, EL.CN_Q8S3_HHO1),
+            (MT.QU9SE3, EL.CN_Q9S3_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_NIT_H2_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HN2",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.TR3SE3, EL.CN_T3S3_HHO2),
+            (MT.TR6SE3, EL.CN_T6S3_HHO2),
+            (MT.QU4SE3, EL.CN_Q4S3_HHO2),
+            (MT.QU8SE3, EL.CN_Q8S3_HHO2),
+            (MT.QU9SE3, EL.CN_Q9S3_HHO2),
+        ),
+    ),
+)
+
 # ------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour :
 #  * Forces nodales
@@ -4026,12 +4277,15 @@ phen.add(
         attrs=((AT.NBSIGM, "4"), (AT.D_PLAN, "OUI"), (AT.TYPMOD, "D_PLAN")),
         elements=(
             (MT.TRIA3, EL.MEDPTR3),
-            (MT.QUAD4, EL.MEDPQU4),
             (MT.TRIA6, EL.MEDPTR6),
+            (MT.TRIA10, EL.MEDPTR10),
+            (MT.QUAD4, EL.MEDPQU4),
             (MT.QUAD8, EL.MEDPQU8),
             (MT.QUAD9, EL.MEDPQU9),
+            (MT.QUAD12, EL.MEDPQU12),
             (MT.SEG2, EL.MEPLSE2),
             (MT.SEG3, EL.MEPLSE3),
+            (MT.SEG4, EL.MEPLSE4),
         ),
     ),
 )
@@ -6011,10 +6265,12 @@ phen.add(
             (MT.HEXA20, EL.THER_HEXA20),
             (MT.PENTA15, EL.THER_PENTA15),
             (MT.TETRA10, EL.THER_TETRA10),
+            (MT.TETRA20, EL.THER_TETRA20),
             (MT.PYRAM13, EL.THER_PYRAM13),
-            (MT.QUAD9, EL.THER_FACE9),
             (MT.QUAD8, EL.THER_FACE8),
+            (MT.QUAD9, EL.THER_FACE9),
             (MT.TRIA6, EL.THER_FACE6),
+            (MT.TRIA10, EL.THER_FACE10),
         ),
     ),
 )
@@ -6311,10 +6567,13 @@ phen.add(
             (MT.TRIA3, EL.THPLTR3),
             (MT.QUAD4, EL.THPLQU4),
             (MT.TRIA6, EL.THPLTR6),
+            (MT.TRIA10, EL.THPLTR10),
             (MT.QUAD8, EL.THPLQU8),
             (MT.QUAD9, EL.THPLQU9),
+            (MT.QUAD12, EL.THPLQU12),
             (MT.SEG2, EL.THPLSE2),
             (MT.SEG3, EL.THPLSE3),
+            (MT.SEG4, EL.THPLSE4),
         ),
     ),
 )

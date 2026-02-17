@@ -102,6 +102,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.CouplingMethod` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.CouplingMethod
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.CrackShape` object
 ********************************************************************************
 

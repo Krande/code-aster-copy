@@ -22,16 +22,16 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/gtvois.h"
 #include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/gtvois.h"
 #include "asterfort/utlisi.h"
-#include "asterfort/assert.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -102,15 +102,23 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
                 nb_neigh = 2
             case ('SEG3')
                 nb_neigh = 2
+            case ('SEG4')
+                nb_neigh = 2
             case ('TRIA3')
                 nb_neigh = 3
             case ('TRIA6')
+                nb_neigh = 3
+            case ('TRIA7')
+                nb_neigh = 3
+            case ('TRIA10')
                 nb_neigh = 3
             case ('QUAD4')
                 nb_neigh = 4
             case ('QUAD8')
                 nb_neigh = 4
             case ('QUAD9')
+                nb_neigh = 4
+            case ('QUAD12')
                 nb_neigh = 4
             case default
                 ASSERT(.false.)
@@ -138,12 +146,21 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
         case ('SEG3')
             nb_neigh = 2
             elem_code = 'SE3'
+        case ('SEG4')
+            nb_neigh = 2
+            elem_code = 'SE4'
         case ('TRIA3')
             nb_neigh = 3
             elem_code = 'TR3'
         case ('TRIA6')
             nb_neigh = 3
             elem_code = 'TR6'
+        case ('TRIA7')
+            nb_neigh = 3
+            elem_code = 'TR7'
+        case ('TRIA10')
+            nb_neigh = 3
+            elem_code = 'TR1'
         case ('QUAD4')
             nb_neigh = 4
             elem_code = 'QU4'
@@ -153,6 +170,9 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
         case ('QUAD9')
             nb_neigh = 4
             elem_code = 'QU9'
+        case ('QUAD12')
+            nb_neigh = 4
+            elem_code = 'Q12'
         case default
             ASSERT(.false.)
         end select

@@ -30,6 +30,7 @@
 #include "Modeling/PhysicalQuantityManager.h"
 #include "Modeling/PhysicsAndModelings.h"
 #include "ParallelUtilities/AsterMPI.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const std::string &type,
@@ -63,6 +64,12 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
     : FiniteElementDescriptor( name, "LIGREL", mesh ) {};
 
+FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name,
+                                                  const FiniteElementDescriptor &fed )
+    : FiniteElementDescriptor( name, "LIGREL", fed.getMesh() ) {
+    *this = fed;
+};
+
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ) {};
 
@@ -78,6 +85,26 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
     this->build();
+};
+
+FiniteElementDescriptor &FiniteElementDescriptor::operator=(
+    const FiniteElementDescriptor &toCopy ) { // JeveuxVector to be duplicated
+    *( _numberOfDelayedNumberedConstraintNodes ) =
+        *( toCopy._numberOfDelayedNumberedConstraintNodes );
+    *( _parameters ) = *( toCopy._parameters );
+    *( _dofDescriptor ) = *( toCopy._dofDescriptor );
+    *( _listOfGroupsOfElements ) = *( toCopy._listOfGroupsOfElements );
+    *( _groupsOfCellsNumberByElement ) = *( toCopy._groupsOfCellsNumberByElement );
+    *( _virtualCellsDescriptor ) = *( toCopy._virtualCellsDescriptor );
+    *( _dofOfDelayedNumberedConstraintNodes ) = *( toCopy._dofOfDelayedNumberedConstraintNodes );
+    *( _virtualNodesNumbering ) = *( toCopy._virtualNodesNumbering );
+    *( _superElementsDescriptor ) = *( toCopy._superElementsDescriptor );
+    *( _nameOfNeighborhoodStructure ) = *( toCopy._nameOfNeighborhoodStructure );
+    *( _typeOfCells ) = *( toCopy._typeOfCells );
+    // Pointers to be copied
+    _partition = toCopy._partition;
+
+    return *this;
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
@@ -244,14 +271,25 @@ bool FiniteElementDescriptor::build() {
     return true;
 };
 
-ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string elemTypeName ) const {
+ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string &elemTypeName ) const {
 
     ASTERINTEGER elemTypeNume;
     JeveuxChar32 objName( " " );
-    std::string name = "&CATA.TE.NOMTE";
-    CALLO_JEXNOM( objName, name, elemTypeName );
+    std::string cata = "&CATA.TE.NOMTE";
+    CALLO_JEXNOM( objName, cata, elemTypeName );
     CALLO_JENONU( objName, &elemTypeNume );
     return elemTypeNume;
+};
+
+std::string FiniteElementDescriptor::getElemTypeName( const ASTERINTEGER &elemTypeNume ) const {
+
+    JeveuxChar32 objName( " " );
+    JeveuxChar24 elemTypeName;
+    std::string cata = "&CATA.TE.NOMTE";
+    ASTERINTEGER nume = elemTypeNume;
+    CALLO_JEXNUM( objName, cata, &nume );
+    CALLO_JENUNO( objName, elemTypeName );
+    return strip( elemTypeName.toString() );
 };
 
 const std::string FiniteElementDescriptor::getPartitionMethod() const {
@@ -260,6 +298,124 @@ const std::string FiniteElementDescriptor::getPartitionMethod() const {
     }
 
     return ModelSplitingMethodNames[(int)Centralized];
+};
+
+void FiniteElementDescriptor::addVirtualCells( const FiniteElementDescriptor &other ) {
+
+    if ( !other.exists() ) {
+        return;
+    }
+
+    if ( getMesh() != other.getMesh() ) {
+        raiseAsterError( "Les deux objets n'ont pas le même maillage support." );
+    }
+
+    if ( !exists() ) {
+        *this = other;
+    }
+
+    if ( !other._virtualCellsDescriptor->exists() ) {
+        return;
+    }
+    if ( other._virtualCellsDescriptor->size() == 0 ) {
+        return;
+    }
+
+    VectorOfVectorsLong nema;
+    _virtualCellsDescriptor->build();
+    other._virtualCellsDescriptor->build();
+
+    nema.reserve( _virtualCellsDescriptor->size() + other._virtualCellsDescriptor->size() );
+    const ASTERINTEGER offset = _virtualCellsDescriptor->size();
+    for ( const auto &vcell : _virtualCellsDescriptor ) {
+        nema.push_back( vcell->toVector() );
+    }
+
+    for ( const auto &vcell : other._virtualCellsDescriptor ) {
+        nema.push_back( vcell->toVector() );
+    }
+
+    _virtualCellsDescriptor->deallocate();
+    _virtualCellsDescriptor->allocate( nema );
+
+    std::map< ASTERINTEGER, VectorLong > mapLiel;
+
+    _listOfGroupsOfElements->build();
+    _listOfGroupsOfElements->updateValuePointer();
+    for ( const auto &grel : _listOfGroupsOfElements ) {
+        auto cells = grel->toVector();
+        if ( cells.size() > 1 ) {
+            const auto typeFE = cells.back();
+            cells.pop_back();
+            if ( mapLiel.count( typeFE ) > 0 ) {
+                mapLiel[typeFE].insert( mapLiel[typeFE].end(), cells.begin(), cells.end() );
+            } else {
+                mapLiel[typeFE] = cells;
+            }
+        }
+    }
+
+    other._listOfGroupsOfElements->build();
+    other._listOfGroupsOfElements->updateValuePointer();
+    for ( const auto &grel : other._listOfGroupsOfElements ) {
+        auto cells = grel->toVector();
+        // add only grel of virtual cells
+        if ( cells.size() > 1 && cells[0] < 0 ) {
+            const auto typeFE = cells.back();
+            cells.pop_back();
+
+            std::transform( cells.begin(), cells.end(), cells.begin(),
+                            [offset]( ASTERINTEGER idx ) { return idx - offset; } );
+
+            if ( mapLiel.count( typeFE ) > 0 ) {
+                mapLiel[typeFE].insert( mapLiel[typeFE].end(), cells.begin(), cells.end() );
+            } else {
+                mapLiel[typeFE] = cells;
+            }
+        }
+    }
+
+    // Number of groups of elements and length of FED for coupling element
+    ASTERINTEGER nbGrel = mapLiel.size(), lielLont = 0;
+    for ( const auto &[type, cells] : mapLiel ) {
+        lielLont += cells.size();
+        nbGrel += 1;
+    }
+    lielLont += nbGrel;
+
+    _listOfGroupsOfElements->deallocate();
+    _listOfGroupsOfElements->allocate( nbGrel, lielLont, Variable );
+
+    // Add  elements for each GREL
+    for ( auto [type, cells] : mapLiel ) {
+        cells.push_back( type );
+        _listOfGroupsOfElements->push_back( cells );
+    }
+
+    // Adapt FED
+    CALLO_ADALIG_WRAP( this->getName() );
+    std::string base = "G";
+    CALLO_CORMGI( base, this->getName() );
+    bool l_calc_rigi = false;
+    CALLO_INITEL( this->getName(), (ASTERLOGICAL *)&l_calc_rigi );
+
+    // Final building
+    this->build();
+};
+
+SetString FiniteElementDescriptor::getFiniteElementNames() const {
+
+    SetString names;
+
+    _listOfGroupsOfElements->build();
+    _listOfGroupsOfElements->updateValuePointer();
+    for ( const auto &grel : _listOfGroupsOfElements ) {
+        grel->updateValuePointer();
+        const auto typeFE = ( *grel )[grel->size() - 1];
+        names.insert( this->getElemTypeName( typeFE ) );
+    }
+
+    return names;
 };
 
 #ifdef ASTER_HAVE_MPI

@@ -48,7 +48,6 @@ subroutine elrfvf(elrefz, x, ff, nno_)
     real(kind=8) :: x0, y0, z0, al, z01, z02, z04, pface1
     real(kind=8) :: pface2
     real(kind=8) :: pface3, pface4, pmili1, pmili2, pmili3, pmili4
-    real(kind=8) :: x1, x2, x3, x4, d1, d2, d3, d4
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0, deux = 2.d0, quatre = 4.d0
     real(kind=8), parameter :: undemi = 0.5d0, uns4 = 0.25d0, uns8 = 0.125d0
 !
@@ -73,14 +72,6 @@ subroutine elrfvf(elrefz, x, ff, nno_)
     pmili2 = 0.d0
     pmili3 = 0.d0
     pmili4 = 0.0
-    x1 = 0.d0
-    x2 = 0.d0
-    x3 = 0.d0
-    x4 = 0.d0
-    d1 = 0.d0
-    d2 = 0.d0
-    d3 = 0.d0
-    d4 = 0.0
 
 ! - Get coordinates of nodes for geometric support
     call elrfno(elrefz, nno)
@@ -305,6 +296,33 @@ subroutine elrfvf(elrefz, x, ff, nno_)
         ff(10) = quatre*x0*al
         ff(11:15) = 0.d0
 
+    case ('T20')
+        x0 = x(1)
+        y0 = x(2)
+        z0 = x(3)
+
+        ff(1) = y0*(3.d0*y0-2)*(3.d0*y0-1.d0)/2.d0
+        ff(2) = z0*(3.d0*z0-2)*(3.d0*z0-1.d0)/2.d0
+        ff(3) = -(y0+x0+z0-1.d0)*(3.d0*y0+3.d0*x0+3.d0*z0-2)* &
+                (3.d0*y0+3.d0*x0+3.d0*z0-1.d0)/2.d0
+        ff(4) = x0*(3.d0*x0-2)*(3.d0*x0-1.d0)/2.d0
+        ff(5) = 9.d0*y0*z0*(3.d0*y0-1.d0)/2.d0
+        ff(6) = 9.d0*y0*z0*(3.d0*z0-1.d0)/2.d0
+        ff(7) = -9.d0*z0*(3.d0*z0-1.d0)*(y0+x0+z0-1.d0)/2.d0
+        ff(8) = 9.d0*z0*(y0+x0+z0-1.d0)*(3.d0*y0+3.d0*x0+3.d0*z0-2)/2.d0
+        ff(9) = -9.d0*y0*(3.d0*y0-1.d0)*(y0+x0+z0-1.d0)/2.d0
+        ff(10) = 9.d0*y0*(y0+x0+z0-1.d0)*(3.d0*y0+3.d0*x0+3.d0*z0-2)/2.d0
+        ff(11) = 9.d0*y0*x0*(3.d0*y0-1.d0)/2.d0
+        ff(12) = 9.d0*y0*x0*(3.d0*x0-1.d0)/2.d0
+        ff(13) = 9.d0*x0*z0*(3.d0*z0-1.d0)/2.d0
+        ff(14) = 9.d0*x0*z0*(3.d0*x0-1.d0)/2.d0
+        ff(15) = 9.d0*x0*(y0+x0+z0-1.d0)*(3.d0*y0+3.d0*x0+3.d0*z0-2)/2.d0
+        ff(16) = -9.d0*x0*(3.d0*x0-1.d0)*(y0+x0+z0-1.d0)/2.d0
+        ff(17) = -27.d0*y0*z0*(y0+x0+z0-1.d0)
+        ff(18) = 27.d0*y0*x0*z0
+        ff(19) = -27.d0*y0*x0*(y0+x0+z0-1.d0)
+        ff(20) = -27.d0*x0*z0*(y0+x0+z0-1.d0)
+
     case ('PY5')
         x0 = x(1)
         y0 = x(2)
@@ -421,6 +439,20 @@ subroutine elrfvf(elrefz, x, ff, nno_)
         ff(6) = quatre*y0*(un-y0-4.0d0*x0+3.0d0*x0*(x0+y0))
         ff(7) = 27.0d0*x0*y0*(un-x0-y0)
 
+    case ('TR1')
+        x0 = x(1)
+        y0 = x(2)
+        ff(1) = -(y0+x0-1.d0)*(3.d0*y0+3.d0*x0-2.d0)*(3.d0*y0+3.d0*x0-1.d0)/2.d0
+        ff(2) = x0*(3.d0*x0-2.d0)*(3.d0*x0-1.d0)/2.d0
+        ff(3) = y0*(3.d0*y0-2.d0)*(3.d0*y0-1.d0)/2.d0
+        ff(4) = 9.d0*x0*(y0+x0-1.d0)*(3.d0*y0+3.d0*x0-2.d0)/2.d0
+        ff(5) = -9.d0*x0*(3.d0*x0-1.d0)*(y0+x0-1.d0)/2.d0
+        ff(6) = 9.d0*y0*x0*(3.d0*x0-1.d0)/2.d0
+        ff(7) = 9.d0*y0*x0*(3.d0*y0-1.d0)/2.d0
+        ff(8) = -9.d0*y0*(3.d0*y0-1.d0)*(y0+x0-1.d0)/2.d0
+        ff(9) = 9.d0*y0*(y0+x0-1.d0)*(3.d0*y0+3.d0*x0-2.d0)/2.d0
+        ff(10) = -27.d0*y0*x0*(y0+x0-1.d0)
+
     case ('QU4')
         x0 = x(1)
         y0 = x(2)
@@ -454,6 +486,22 @@ subroutine elrfvf(elrefz, x, ff, nno_)
         ff(8) = al31(x0)*al32(y0)
         ff(9) = al32(x0)*al32(y0)
 
+    case ('Q12')
+        x0 = x(1)
+        y0 = x(2)
+        ff(1) = (y0-1.d0)*(x0-1.d0)*(9.d0*y0**2+9.d0*x0**2-10.d0)/32.d0
+        ff(2) = -(y0-1.d0)*(x0+1.d0)*(9.d0*y0**2+9.d0*x0**2-10.d0)/32.d0
+        ff(3) = (y0+1.d0)*(x0+1.d0)*(9.d0*y0**2+9.d0*x0**2-10.d0)/32.d0
+        ff(4) = -(y0+1.d0)*(x0-1.d0)*(9.d0*y0**2+9.d0*x0**2-10.d0)/32.d0
+        ff(5) = -9.d0*(y0-1.d0)*(x0-1.d0)*(x0+1.d0)*(3.d0*x0-1.d0)/32.d0
+        ff(6) = 9.d0*(y0-1.d0)*(x0-1.d0)*(x0+1.d0)*(3.d0*x0+1.d0)/32.d0
+        ff(7) = 9.d0*(y0-1.d0)*(y0+1.d0)*(3.d0*y0-1.d0)*(x0+1.d0)/32.d0
+        ff(8) = -9.d0*(y0-1.d0)*(y0+1.d0)*(3.d0*y0+1.d0)*(x0+1.d0)/32.d0
+        ff(9) = -9.d0*(y0+1.d0)*(x0-1.d0)*(x0+1.d0)*(3.d0*x0+1.d0)/32.d0
+        ff(10) = 9.d0*(y0+1.d0)*(x0-1.d0)*(x0+1.d0)*(3.d0*x0-1.d0)/32.d0
+        ff(11) = 9.d0*(y0-1.d0)*(y0+1.d0)*(3.d0*y0+1.d0)*(x0-1.d0)/32.d0
+        ff(12) = -9.d0*(y0-1.d0)*(y0+1.d0)*(3.d0*y0-1.d0)*(x0-1.d0)/32.d0
+
     case ('PO1')
         ff(1) = un
 
@@ -470,18 +518,10 @@ subroutine elrfvf(elrefz, x, ff, nno_)
 
     case ('SE4')
         x0 = x(1)
-        x1 = -1.d0
-        x2 = 1.d0
-        x3 = -1.d0/3.d0
-        x4 = 1.d0/3.d0
-        d1 = (x1-x2)*(x1-x3)*(x1-x4)
-        ff(1) = (x0-x2)*(x0-x3)*(x0-x4)/d1
-        d2 = (x2-x1)*(x2-x3)*(x2-x4)
-        ff(2) = (x0-x1)*(x0-x3)*(x0-x4)/d2
-        d3 = (x3-x1)*(x3-x2)*(x3-x4)
-        ff(3) = (x0-x1)*(x0-x2)*(x0-x4)/d3
-        d4 = (x4-x1)*(x4-x2)*(x4-x3)
-        ff(4) = (x0-x1)*(x0-x2)*(x0-x3)/d4
+        ff(1) = -(x0-un)*(3.d0*x0-un)*(3.d0*x0+un)/16.d0
+        ff(2) = (x0+un)*(3.d0*x0-un)*(3.d0*x0+un)/16.d0
+        ff(3) = 9.d0*(x0-un)*(x0+un)*(3.d0*x0-un)/16.d0
+        ff(4) = -9.d0*(x0-un)*(x0+un)*(3.d0*x0+un)/16.d0
 
     case default
         ASSERT(ASTER_FALSE)

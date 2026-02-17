@@ -19,12 +19,13 @@
 subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
                   coor, nbmavo, mailvo, coince)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -36,7 +37,7 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: nbCell, nbmavo, mailvo(*)
     real(kind=8) :: coor(*)
@@ -88,7 +89,7 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
     integer(kind=8) :: p1, p2, p3, p4, jm3d, nbmat, im1, im2
     integer(kind=8) :: iCell, cellNume, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
     integer(kind=8) :: ifm, niv, ipos, cellTypeNume
-    integer(kind=8) :: lisnoe(27), indmai
+    integer(kind=8) :: lisnoe(MT_NNOMAX), indmai
     aster_logical :: first
     character(len=8) :: k8b, nomail, cellTypeName
     character(len=16) :: oper, k16b
@@ -125,7 +126,7 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
         cellNume = listCellNume(iCell)
         cellTypeNume = typmail(cellNume)
         nnoe = zi(p2+cellNume)-zi(p2-1+cellNume)
-        ASSERT(nnoe .le. 27)
+        ASSERT(nnoe .le. MT_NNOMAX)
         do ino = 1, nnoe
             lisnoe(ino) = zi(p1-1+zi(p2+cellNume-1)+ino-1)
         end do

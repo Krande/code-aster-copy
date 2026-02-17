@@ -794,6 +794,16 @@ class Mesh(BaseMesh):
             Mesh: the bi-quadratic mesh.
         """
 
+    def convertToCubic(self, info=1):
+        """Convert the mesh to a cubic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the cubic mesh.
+        """
+
     def convertToLinear(self, info=1):
         """Convert the mesh to a linear one.
 
@@ -1431,6 +1441,32 @@ class DiscreteComputation:
             ElementaryMatrix: elementary linear acoustic matrices
         """
 
+    def getMechanicalCouplingForces(self, displ_prev, displ_step, time_prev, time_step):
+        """Compute coupling for LIAISON_MASSIF.
+
+        Arguments:
+            displ_prev (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+
+        Returns:
+            FieldOnNodesReal: coupling forces
+        """
+
+    def getMechanicalCouplingMatrix(self, displ_prev, displ_step, time_prev, time_step):
+        """Compute coupling for LIAISON_MASSIF.
+
+        Arguments:
+            displ_prev (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+
+        Returns:
+            ElementaryMatrixDisplacementReal: coupling elementary matrix.
+        """
+
     def getMechanicalDampingMatrix(
         self,
         getMechanicalMassMatrix=None,
@@ -1491,6 +1527,16 @@ class DiscreteComputation:
 
         Returns:
               ElementaryVectorDisplacementReal: imposed dual vector
+        """
+
+    def getMechanicalLinearCouplingMatrix(self, varc_curr=None):
+        """Compute coupling for LIAISON_MASSIF.
+
+        Arguments:
+              varc_curr (FieldOnCellsReal): external state variables for Nitsche method.
+
+        Returns:
+              ElementaryMatrixDisplacementReal: coupling elementary matrix.
         """
 
     def getMechanicalMassMatrix(self, diagonal, varc_curr=None, groupOfCells=[]):
@@ -2675,6 +2721,13 @@ class FieldOnCellsReal(DataField):
 
         Returns:
             float: dot product
+        """
+
+    def exists(self):
+        """The field exists or not ?
+
+        Returns:
+            Bool
         """
 
     def getComponents(self):
@@ -7515,6 +7568,208 @@ class ContactComputation:
         """
 
 
+# class CouplingMethod in libaster
+
+
+class CouplingMethod:
+    """Enumeration for coupling method."""
+
+    # Method resolution order:
+    #     CouplingMethod
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Readonly properties defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: object) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Lagrangian = 3
+
+    Nitsche = 1
+
+    Penalization = 2
+
+    Undefined = 0
+
+
+# class CouplingZonePairing in libaster
+
+
+class CouplingZonePairing(DataStructure):
+    """Object to create contact pairing."""
+
+    # Method resolution order:
+    #     CouplingZonePairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.CouplingZonePairing, arg0: libaster.BaseMesh, arg1: int) -> None
+
+        2. __init__(self: libaster.CouplingZonePairing, arg0: libaster.BaseMesh) -> None
+        """
+
+    def check(self, model):
+        """Check common nodes and normals.
+
+        Arguments:
+            model [Model]: model.
+        """
+
+    def setCoefficient(self, coef_pena):
+        """Set penalization's coefficient.
+
+        Arguments:
+            coef_pena [float]: penalization's coefficient.
+        """
+
+    def setMasterGroupsOfCells(self, groups_name):
+        """Set master's side.
+
+        Arguments:
+            groups_name [list[str]]: list of groups.
+        """
+
+    def setMethod(self, method):
+        """Set method.
+
+        Returns:
+            method [CouplingMethod]: method.
+        """
+
+    def setPairingParameters(self, parameters):
+        """Set pairing parameters.
+
+        Arguments:
+            parameters [PairingParameter]: PairingParameterPtr.
+        """
+
+    def setSlaveGroupsOfCells(self, groups_name):
+        """Set slave's side.
+
+        Arguments:
+            groups_name [list[str]]: list of groups.
+        """
+
+    def setVerbosity(self, verbosity):
+        """Set verbosity.
+
+        Arguments:
+            verbosity [float]: verbosity level.
+        """
+
+
+# class CouplingPairing in libaster
+
+
+class CouplingPairing(DataStructure):
+    """Object to create contact pairing."""
+
+    # Method resolution order:
+    #     CouplingPairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0, arg1):
+        pass
+
+    def addZone(self, zone):
+        """Add a new zone of coupling;
+
+        Argument:
+            zone [CouplingZonePairing]: zone.
+        """
+
+    def compute(self):
+        """Compute the pairing quantitie
+
+        Returns:
+            bool: True if the pairing quantities are updated appropriately
+        """
+
+    def getFiniteElementDescriptor(self):
+        """Return Finite Element Descriptor for virtual cells from pairing.
+
+        Returns:
+            FiniteElementDescriptor: finite element for virtual cells
+        """
+
+    def getMesh(self):
+        """Mesh
+
+        Returns:
+            BaseMesh: the mesh
+        """
+
+    def getNumberOfPairs(self):
+        """Return number of pairs
+
+        Returns:
+            int: number of pairs
+        """
+
+    def getPairingField(self):
+        """Get intersection points
+
+        Returns:
+            FieldOnCellsReal: intersection points.
+        """
+
+
 # class BaseAssemblyMatrix in libaster
 
 
@@ -10026,6 +10281,13 @@ class MechanicalLoadReal(DataStructure):
     def getModel(self):
         pass
 
+    def getPairingField(self):
+        """Return pairing intersection.
+
+        Returns:
+            FieldOnCellsReal: pairing intersection.
+        """
+
     def getTable(self, identifier):
         """Extract a Table from the datastructure.
 
@@ -10038,6 +10300,13 @@ class MechanicalLoadReal(DataStructure):
 
     def hasLoadField(self, arg0):
         pass
+
+    def setPairingField(self, pairs):
+        """Set pairing intersection.
+
+        Arguments:
+            pairs (FieldOnCellsReal): pairing intersection.
+        """
 
     def updateValuePointers(self):
         pass
@@ -14385,6 +14654,20 @@ class PhysicalProblem:
             bool: True - if the model is thermal
         """
 
+    def setContactFED(self, virtualCell):
+        """Set virtual cells from contact pairing
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+        """
+
+    def setContactSlaveFED(self, contact):
+        """Set virtual cells from contact definition
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+        """
+
     def setDOFNumbering(self, dofNum):
         """Set the DOF numbering
 
@@ -14397,20 +14680,6 @@ class PhysicalProblem:
 
         Arguments:
             loads (ListOfLoads): a pointer to the list of loads
-        """
-
-    def setVirtualCell(self, virtualCell):
-        """Set virtual cells from contact pairing
-
-        Arguments:
-            virtualCell (FiniteElementDescriptor)): a pointer to the FED
-        """
-
-    def setVirtualSlavCell(self, contact):
-        """Set virtual cells from contact definition
-
-        Arguments:
-            virtualCell (FiniteElementDescriptor)): a pointer to the FED
         """
 
     def zeroDirichletBCDOFs(self, arg0):
@@ -15328,6 +15597,16 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             ParallelMesh: the bi-quadratic mesh.
+        """
+
+    def convertToCubic(self, info=1):
+        """Convert the mesh to a cubic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the cubic mesh.
         """
 
     def convertToLinear(self, info=1):

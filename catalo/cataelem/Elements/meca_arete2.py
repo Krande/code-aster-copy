@@ -113,3 +113,11 @@ class MECA_ARETE3(MECA_ARETE2):
 
     meshType = MT.SEG3
     elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG3",)),)
+
+
+# ------------------------------------------------------------
+class MECA_ARETE4(MECA_ARETE2):
+    """Please document this element"""
+
+    meshType = MT.SEG4
+    elrefe = (ElrefeLoc(MT.SE4, gauss=("RIGI=FPG4",)),)

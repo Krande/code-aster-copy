@@ -253,6 +253,62 @@ PostProcessing::computeStructuralStress( const FieldOnNodesRealPtr displ, const 
     return strx_elga;
 };
 
+/** @brief Compute MATE_ELGA/MATE_ELEM/MATE_ELNO */
+FieldOnCellsRealPtr PostProcessing::computeMaterial( const std::string &loc,
+                                                     const FieldOnCellsRealPtr &externVar ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+
+    // Select option to compute
+    std::string option = "MATE_ELGA";
+    std::string loc_option = "ELGA";
+
+    if ( loc == "ELEM" ) {
+        option = "MATE_ELEM";
+        loc_option = "ELEM";
+    }
+
+    // Prepare computing: the main object
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( currModel );
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+    if ( currMater->hasExternalStateVariable() ) {
+        if ( !externVar || !externVar->exists() ) {
+            AS_ABORT( "External state variables vector is missing" )
+        }
+        calcul->addInputField( "PVARCPR", externVar );
+    }
+
+    // Get Finite Element Descriptor
+    FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
+
+    // Create output field
+    auto mate = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, option, "PMATERR" );
+
+    // Add output field
+    calcul->addOutputField( "PMATERR", mate );
+
+    // Compute
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+    };
+
+    if ( loc == "ELNO" ) {
+        return mate->asLocalization( "ELNO" );
+    }
+
+    return mate;
+};
+
 /** @brief Compute max value of EFGE_ELNO or EGRU_ELNO based on the maximum of the
  *         equivalent moment for piping studies*/
 FieldOnCellsRealPtr

@@ -25,12 +25,12 @@
 
 #include "astercxx.h"
 
-#include "DataFields/FieldOnNodes.h"
 #include "DataFields/MeshCoordinatesField.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/Mesh.h"
 #include "Meshes/MeshEnum.h"
+#include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
 class MeshPairing : public DSWithCppPickling {
@@ -229,7 +229,8 @@ class MeshPairing : public DSWithCppPickling {
     };
 
     /** @brief Main subroutine for pairing */
-    ASTERBOOL compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole, ASTERDOUBLE &area_tole );
+    ASTERBOOL compute( const ASTERDOUBLE &dist_pairing, const ASTERDOUBLE &pair_tole,
+                       const ASTERDOUBLE &area_tole );
 
     /** @brief Clear pairing result */
     void clearResult();

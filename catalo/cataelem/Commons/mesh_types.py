@@ -114,6 +114,8 @@ SE4.addLocation("FPG1", 1)
 SE4.addLocation("FPG2", 2)
 SE4.addLocation("FPG3", 3)
 SE4.addLocation("FPG4", 4)
+SE4.addLocation("FPG5", 5)
+SE4.addLocation("FPG6", 6)
 SEG4.addElrefe(SE4)
 
 
@@ -464,7 +466,7 @@ HEXA27.addElrefe(H27)
 TETRA15 = MeshType(nbno=15, dim=3, code="T15")
 
 T15 = Elrefe()
-T15.addLocation("NOEU", 4)
+T15.addLocation("NOEU", 15)
 T15.addLocation("NOEU_S", 4)
 T15.addLocation("FPG1", 1)
 T15.addLocation("FPG4", 4)
@@ -487,7 +489,7 @@ TETRA15.addElrefe(T15)
 PENTA21 = MeshType(nbno=21, dim=3, code="P21")
 
 P21 = Elrefe()
-P21.addLocation("NOEU", 18)
+P21.addLocation("NOEU", 21)
 P21.addLocation("NOEU_S", 6)
 P21.addLocation("FPG1", 1)
 P21.addLocation("FPG6", 6)
@@ -503,7 +505,7 @@ PENTA21.addElrefe(P21)
 PYRAM19 = MeshType(nbno=19, dim=3, code="P19")
 
 P19 = Elrefe()
-P19.addLocation("NOEU", 13)
+P19.addLocation("NOEU", 19)
 P19.addLocation("NOEU_S", 5)
 P19.addLocation("FPG1", 1)
 P19.addLocation("FPG1B", 1)
@@ -727,6 +729,91 @@ QU9SE2 = MeshType(nbno=11, dim=1, code="QS5")
 
 # ------------------------------------------------------------
 QU9SE3 = MeshType(nbno=12, dim=1, code="QS6")
+
+# ------------------------------------------------------------
+QU4TR7 = MeshType(nbno=11, dim=2, code="QT8")
+
+# ------------------------------------------------------------
+QU8TR7 = MeshType(nbno=15, dim=2, code="QT9")
+
+# ------------------------------------------------------------
+QU9TR7 = MeshType(nbno=16, dim=2, code="QT0")
+
+# ------------------------------------------------------------
+TR3TR7 = MeshType(nbno=10, dim=2, code="TT6")
+
+# ------------------------------------------------------------
+TR6TR7 = MeshType(nbno=13, dim=2, code="TT7")
+
+# ------------------------------------------------------------
+TRIA10 = MeshType(nbno=10, dim=2, code="TR1")
+
+
+TR1 = Elrefe()
+TR1.addLocation("NOEU", 10)
+TR1.addLocation("NOEU_S", 3)
+TR1.addLocation("FPG1", 1)
+TR1.addLocation("FPG3", 3)
+TR1.addLocation("FPG4", 4)
+TR1.addLocation("FPG6", 6)
+TR1.addLocation("FPG7", 7)
+TR1.addLocation("FPG12", 12)
+TR1.addLocation("FPG13", 13)
+TR1.addLocation("FPG16", 16)
+TR1.addLocation("FPG19", 19)
+TR1.addLocation("FPG25", 25)
+TR1.addLocation("FPG28", 28)
+TR1.addLocation("FPG33", 33)
+TR1.addLocation("FPG37", 37)
+TR1.addLocation("FPG42", 42)
+TRIA10.addElrefe(TR1)
+
+# ------------------------------------------------------------
+QUAD12 = MeshType(nbno=12, dim=2, code="Q12")
+
+Q12 = Elrefe()
+Q12.addLocation("NOEU", 12)
+Q12.addLocation("NOEU_S", 4)
+Q12.addLocation("FPG1", 1)
+Q12.addLocation("FPG4", 4)
+Q12.addLocation("FPG5", 5)
+Q12.addLocation("FPG9", 9)
+Q12.addLocation("FPG9COQ", 9)
+Q12.addLocation("FPG16", 16)
+Q12.addLocation("FPG25", 25)
+Q12.addLocation("FPG36", 36)
+Q12.addLocation("FPG49", 49)
+Q12.addLocation("FPG64", 64)
+QUAD12.addElrefe(Q12)
+
+# ------------------------------------------------------------
+TETRA20 = MeshType(nbno=20, dim=3, code="T20")
+
+T20 = Elrefe()
+T20.addLocation("NOEU", 20)
+T20.addLocation("NOEU_S", 4)
+T20.addLocation("FPG1", 1)
+T20.addLocation("FPG4", 4)
+T20.addLocation("FPG4NOS", 8)
+T20.addLocation("FPG5", 5)
+T20.addLocation("FPG11", 11)
+T20.addLocation("FPG15", 15)
+T20.addLocation("FPG24", 24)
+T20.addLocation("FPG35", 35)
+T20.addLocation("FPG46", 46)
+T20.addLocation("FPG59", 59)
+T20.addLocation("FPG74", 74)
+T20.addLocation("FPG94", 94)
+T20.addLocation("FPG117", 117)
+T20.addLocation("FPG144", 144)
+T20.addLocation("FPG204", 204)
+TETRA20.addElrefe(T20)
+
+# ------------------------------------------------------------
+SEG44 = MeshType(nbno=8, dim=1, code="S44")
+
+SEG43 = MeshType(nbno=7, dim=1, code="S43")
+
 
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)

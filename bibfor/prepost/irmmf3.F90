@@ -482,9 +482,12 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
             itypM = ityp
             if (itypM .eq. MT_HEXA9) itypM = MT_HEXA8
             if (itypM .eq. MT_TETRA15) itypM = MT_TETRA10
+            if (itypM .eq. MT_TETRA20) itypM = MT_TETRA20
             if (itypM .eq. MT_PYRAM19) itypM = MT_PYRAM13
             if (itypM .eq. MT_PENTA21) itypM = MT_PENTA18
             if (itypM .eq. MT_PENTA7) itypM = MT_PENTA6
+            if (itypM .eq. MT_TRIA10) itypM = MT_TRIA3
+            if (itypM .eq. MT_QUAD12) itypM = MT_QUAD4
             nbmat = zi(jtyp+3*(itypM-1)+2)
             if (nbmat .ne. 0) then
                 start = zi(jtyp+3*(itypM-1))

@@ -195,7 +195,8 @@ subroutine pj2dtr(corrMeshTemp, corrMesh, &
 !       si nuno2 est identique au 2eme noeud du tria3
 !       c'est que le tria3 est en "dessous" :
 
-        if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
+        if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7' &
+            .or. elrefa .eq. 'TR1') then
             do kk = 1, 3
                 x1 = crrefe(1, kk)
                 x2 = crrefe(2, kk)
@@ -203,7 +204,8 @@ subroutine pj2dtr(corrMeshTemp, corrMesh, &
                 eta = eta+pjef_cf(ideca1+kk)*x2
             end do
 
-        else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') then
+        else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9' &
+                 .or. elrefa .eq. 'Q12') then
             if (nuno2 .eq. tria3(1+4*(itr-1)+2)) then
 !               SI 1ER TRIANGLE :
                 do kk = 1, 3

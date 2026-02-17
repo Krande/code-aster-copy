@@ -28,7 +28,7 @@ subroutine elraca(elrefz, &
 #include "MeshTypes_type.h"
 !
     character(len=*), intent(in)            :: elrefz
-    integer(kind=8), optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
+    integer(kind=8), optional, intent(out)  :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
     real(kind=8), optional, intent(out)     :: nodeCoor_(3*MT_NNOMAX), cellVolu_
     character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
 !
@@ -158,6 +158,28 @@ subroutine elraca(elrefz, &
         fapg(7) = 'FPG4NOS'
 
     case ('T15')
+        nbfpg = 17
+        nbpg(1:nbfpg) = [nno, nnos, 1, 4, 5, 11, 15, 24, 8, &
+                         35, 46, 59, 74, 94, 117, 144, 204]
+        fapg(1) = 'NOEU'
+        fapg(2) = 'NOEU_S'
+        fapg(3) = 'FPG1'
+        fapg(4) = 'FPG4'
+        fapg(5) = 'FPG5'
+        fapg(6) = 'FPG11'
+        fapg(7) = 'FPG15'
+        fapg(8) = 'FPG24'
+        fapg(9) = 'FPG4NOS'
+        fapg(10) = 'FPG35'
+        fapg(11) = 'FPG46'
+        fapg(12) = 'FPG59'
+        fapg(13) = 'FPG74'
+        fapg(14) = 'FPG94'
+        fapg(15) = 'FPG117'
+        fapg(16) = 'FPG144'
+        fapg(17) = 'FPG204'
+
+    case ('T20')
         nbfpg = 17
         nbpg(1:nbfpg) = [nno, nnos, 1, 4, 5, 11, 15, 24, 8, &
                          35, 46, 59, 74, 94, 117, 144, 204]
@@ -357,6 +379,27 @@ subroutine elraca(elrefz, &
         fapg(15) = 'FPG37'
         fapg(16) = 'FPG42'
 
+    case ('TR1')
+        nbfpg = 16
+        nbpg(1:nbfpg) = [nno, nnos, 1, 3, 4, 6, 7, 12, 13, 16, &
+                         19, 25, 28, 33, 37, 42]
+        fapg(1) = 'NOEU'
+        fapg(2) = 'NOEU_S'
+        fapg(3) = 'FPG1'
+        fapg(4) = 'FPG3'
+        fapg(5) = 'FPG4'
+        fapg(6) = 'FPG6'
+        fapg(7) = 'FPG7'
+        fapg(8) = 'FPG12'
+        fapg(9) = 'FPG13'
+        fapg(10) = 'FPG16'
+        fapg(11) = 'FPG19'
+        fapg(12) = 'FPG25'
+        fapg(13) = 'FPG28'
+        fapg(14) = 'FPG33'
+        fapg(15) = 'FPG37'
+        fapg(16) = 'FPG42'
+
     case ('QU4')
         nbfpg = 12
         nbpg(1:nbfpg) = [nno, nnos, 1, 4, 9, 16, 25, 36, 49, 64, &
@@ -386,6 +429,21 @@ subroutine elraca(elrefz, &
         fapg(7) = 'FPG4NOS'
 
     case ('QU9')
+        nbfpg = 11
+        nbpg(1:nbfpg) = [nno, nnos, 1, 4, 9, 9, 16, 25, 36, 49, 64]
+        fapg(1) = 'NOEU'
+        fapg(2) = 'NOEU_S'
+        fapg(3) = 'FPG1'
+        fapg(4) = 'FPG4'
+        fapg(5) = 'FPG9'
+        fapg(6) = 'FPG9COQ'
+        fapg(7) = 'FPG16'
+        fapg(8) = 'FPG25'
+        fapg(9) = 'FPG36'
+        fapg(10) = 'FPG49'
+        fapg(11) = 'FPG64'
+
+    case ('Q12')
         nbfpg = 11
         nbpg(1:nbfpg) = [nno, nnos, 1, 4, 9, 9, 16, 25, 36, 49, 64]
         fapg(1) = 'NOEU'
@@ -442,16 +500,18 @@ subroutine elraca(elrefz, &
         fapg(14) = 'FPG8'
 
     case ('SE4')
-        nbfpg = 8
-        nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 3, 4]
+        nbfpg = 10
+        nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 5, 6, 3, 4]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG2'
         fapg(5) = 'FPG3'
         fapg(6) = 'FPG4'
-        fapg(7) = 'SIMP'
-        fapg(8) = 'COTES'
+        fapg(7) = 'FPG5'
+        fapg(8) = 'FPG6'
+        fapg(9) = 'SIMP'
+        fapg(10) = 'COTES'
 
     case ('PO1')
         nbfpg = 3

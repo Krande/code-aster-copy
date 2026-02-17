@@ -61,31 +61,15 @@ subroutine gtctma(elem_coor, elem_nbnode, elem_code, elem_dime, &
 !
     ctcoor(1:3) = 0.d0
     select case (elem_code)
-    case ('SE2')
+    case ('SE2', 'SE3', 'SE4')
         rfcoor(1) = 0.d0
         rfcoor(2) = 0.d0
         rfcoor(3) = 0.d0
-    case ('SE3')
-        rfcoor(1) = 0.d0
-        rfcoor(2) = 0.d0
-        rfcoor(3) = 0.d0
-    case ('TR3')
+    case ('TR3', 'TR6', 'TR7', 'TR1')
         rfcoor(1) = 1.d0/3.d0
         rfcoor(2) = 1.d0/3.d0
         rfcoor(3) = 0.d0
-    case ('TR6')
-        rfcoor(1) = 1.d0/3.d0
-        rfcoor(2) = 1.d0/3.d0
-        rfcoor(3) = 0.d0
-    case ('QU4')
-        rfcoor(1) = 0.d0
-        rfcoor(2) = 0.d0
-        rfcoor(3) = 0.d0
-    case ('QU8')
-        rfcoor(1) = 0.d0
-        rfcoor(2) = 0.d0
-        rfcoor(3) = 0.d0
-    case ('QU9')
+    case ('QU4', 'QU8', 'QU9', 'Q12')
         rfcoor(1) = 0.d0
         rfcoor(2) = 0.d0
         rfcoor(3) = 0.d0

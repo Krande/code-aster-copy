@@ -23,7 +23,6 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
     implicit none
 !
 #include "jeveux.h"
-#include "MeshTypes_type.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -34,6 +33,7 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
 #ifdef ASTER_HAVE_MED
 #include "med_parameter.hf"
 #endif
+#include "MeshTypes_type.h"
 !
     integer(kind=8), intent(out), optional :: nbtyp
     character(len=8), intent(out), optional :: nomtyp(MT_NTYMAX)
@@ -98,7 +98,11 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                                                          'HEXA9   ', 'PENTA7  ', 'TR3SE2  ', &
                                                          'TR3SE3  ', 'TR6SE2  ', 'TR6SE3  ', &
                                                          'QU4SE2  ', 'QU4SE3  ', 'QU8SE2  ', &
-                                                         'QU8SE3  ', 'QU9SE2  ', 'QU9SE3  '/)
+                                                         'QU8SE3  ', 'QU9SE2  ', 'QU9SE3  ', &
+                                                         'QU4TR7  ', 'QU8TR7  ', 'QU9TR7  ', &
+                                                         'TR3TR7  ', 'TR6TR7  ', 'TRIA10  ', &
+                                                         'QUAD12  ', 'TETRA20 ', 'SEG44   ', &
+                                                         'SEG43   '/)
     integer(kind=8), parameter :: nummed(MT_NTYMAX) = (/ &
                                   MED_POINT1, MED_SEG2, MED_UNDEF_GEOTYPE, &
                                   MED_SEG3, MED_UNDEF_GEOTYPE, MED_SEG4, &
@@ -126,7 +130,11 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE/)
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE/)
 !
 ! --------------------------------------------------------------------------------------------------
 !

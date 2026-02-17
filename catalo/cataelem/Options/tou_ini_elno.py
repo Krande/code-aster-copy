@@ -58,6 +58,8 @@ PHYDR_R = OutputParameter(phys=PHY.HYDR_R, type="ELNO")
 
 PFLUX_R = OutputParameter(phys=PHY.FLUX_R, type="ELNO")
 
+PMATE_R = OutputParameter(phys=PHY.MATE_R, type="ELNO")
+
 
 TOU_INI_ELNO = Option(
     para_in=(),
@@ -75,6 +77,7 @@ TOU_INI_ELNO = Option(
         PSIEF_R,
         PSOUR_R,
         PVARI_R,
+        PMATE_R,
     ),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"),)),

@@ -40,12 +40,13 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
 !
 ! ARGUMENTS
 ! ---------
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 !
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -55,7 +56,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
 #include "asterfort/jexnum.h"
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
     character(len=8) :: mailla, caelem
     character(len=24) :: nmabet, gromai
     integer(kind=8) :: nbmabe
@@ -72,7 +73,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
 !
     integer(kind=8) :: i, j, k, iad2, inok
     integer(kind=8) :: jmabet, jconn, jtabco, jgmai
-    integer(kind=8) :: nunoe(27)
+    integer(kind=8) :: nunoe(MT_NNOMAX)
     integer(kind=8) :: igrand, iasmax, iasedi, inomcp
     integer(kind=8) :: nbcmp, nbec, irep, iasbon, ii, icode, izone
     integer(kind=8) :: ilima, nbmaza, irvep, jj

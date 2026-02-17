@@ -25,6 +25,7 @@
 #include "aster_fort_calcul.h"
 #include "aster_fort_superv.h"
 
+#include "DataFields/FieldConverter.h"
 #include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/Calcul.h"
 #include "Discretization/DiscreteComputation.h"
@@ -37,6 +38,7 @@
 #include "Modeling/Model.h"
 #include "Modeling/ParallelContactFEDescriptor.h"
 #include "Modeling/XfemModel.h"
+#include "PostProcessing/PostProcessing.h"
 #include "Utilities/Tools.h"
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatrix(
@@ -862,8 +864,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
     // Select option for matrix
     std::string option = "RIGI_CONT";
 
-    auto Fed_Slave = _phys_problem->getVirtualSlavCell();
-    auto Fed_pair = _phys_problem->getVirtualCell();
+    auto Fed_Slave = _phys_problem->getContactSlaveFED();
+    auto Fed_pair = _phys_problem->getContactFED();
 
 #ifdef ASTER_HAVE_MPI
     const auto pCFED = std::dynamic_pointer_cast< ParallelContactFEDescriptor >( Fed_pair );
@@ -1232,3 +1234,127 @@ DiscreteComputation::getImpedanceWaveMatrix( const VectorString &groupOfCells ) 
     elemMatr->build();
     return elemMatr;
 };
+
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalCouplingMatrix(
+    const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step ) const {
+
+    // Select option for matrix
+    std::string option = "RIGI_CPL";
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel(), option );
+
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
+
+    for ( const auto &load : mecaLoadReal ) {
+
+        const auto pairing = load->getPairingField();
+        if ( pairing && pairing->exists() ) {
+
+            // Prepare computing
+            CalculPtr calcul = std::make_unique< Calcul >( option );
+            calcul->setFiniteElementDescriptor( pairing->getDescription() );
+
+            // Set input field
+            calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+            calcul->addInputField( "PDEPLMR", displ_prev );
+            calcul->addInputField( "PDEPLPR", displ_step );
+            calcul->addInputField( "PPAIRR", pairing );
+            calcul->addHHOField( _phys_problem->getModel() );
+
+            // Add time fields
+            calcul->addTimeField( "PINSTMR", time_prev );
+            calcul->addTimeField( "PINSTPR", time_prev + time_step );
+
+            // Add output elementary
+            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+
+            // Computation
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+            }
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+}
+
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCouplingMatrix(
+    const FieldOnCellsRealPtr &externVar ) const {
+
+    // Select option for matrix
+    std::string option = "RIGI_ELAS_CPL";
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel(), option );
+
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+
+    if ( listOfLoads->hasPairingField() ) {
+
+        FieldOnNodesRealPtr mate_noeu = nullptr;
+
+        const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
+
+        for ( const auto &load : mecaLoadReal ) {
+
+            const auto pairing = load->getPairingField();
+            if ( pairing && pairing->exists() ) {
+
+                // Prepare computing
+                CalculPtr calcul = std::make_unique< Calcul >( option );
+                const auto fed = pairing->getDescription();
+                calcul->setFiniteElementDescriptor( fed );
+
+                // Set input field
+                calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+                calcul->addInputField( "PPAIRR", pairing );
+                calcul->addHHOField( _phys_problem->getModel() );
+
+                // Check if MATE_ELGA has to computed
+
+                if ( !mate_noeu ) {
+
+                    bool exiNitsche = false;
+
+                    const auto FEnames = fed->getFiniteElementNames();
+
+                    for ( const auto &name : FEnames ) {
+                        if ( name.starts_with( "CN_" ) ) {
+                            exiNitsche = true;
+                            break;
+                        }
+                    }
+
+                    if ( exiNitsche ) {
+                        const auto post = std::make_shared< PostProcessing >( _phys_problem );
+                        const auto mate_elga = post->computeMaterial( "ELGA", externVar );
+                        mate_noeu = toFieldOnNodes( mate_elga );
+                    }
+                }
+                calcul->addInputField( "PMATERR", mate_noeu );
+
+                // Add output elementary
+                calcul->addOutputElementaryTerm( "PMATUUR",
+                                                 std::make_shared< ElementaryTermReal >() );
+
+                // Computation
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                    elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+                }
+            }
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+}

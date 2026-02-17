@@ -39,8 +39,9 @@ module mesh_cell_module
     private :: cellPoinAdjustSeg, cellPoinAdjustTria, cellPoinAdjustQuad
 ! ==================================================================================================
     private
-#include "asterc/r8nnem.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfno.h"
@@ -49,7 +50,6 @@ module mesh_cell_module
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "jeveux.h"
 #include "MeshTypes_type.h"
 ! ==================================================================================================
 contains
@@ -131,16 +131,24 @@ contains
             cellGeom%cellCode = 'SE2'
         case ('SEG3')
             cellGeom%cellCode = 'SE3'
+        case ('SEG4')
+            cellGeom%cellCode = 'SE4'
         case ('TRIA3')
             cellGeom%cellCode = 'TR3'
         case ('TRIA6')
             cellGeom%cellCode = 'TR6'
+        case ('TRIA7')
+            cellGeom%cellCode = 'TR7'
+        case ('TRIA10')
+            cellGeom%cellCode = 'TR1'
         case ('QUAD4')
             cellGeom%cellCode = 'QU4'
         case ('QUAD8')
             cellGeom%cellCode = 'QU8'
         case ('QUAD9')
             cellGeom%cellCode = 'QU9'
+        case ('QUAD12')
+            cellGeom%cellCode = 'Q12'
         case default
             ASSERT(ASTER_FALSE)
         end select
@@ -216,15 +224,18 @@ contains
         cellGeomLine = cellGeom
 
 ! ----- Change support
-        if (cellGeom%cellCode .eq. 'SE2' .or. cellGeom%cellCode .eq. 'SE3') then
+        if (cellGeom%cellCode .eq. 'SE2' .or. cellGeom%cellCode .eq. 'SE3' &
+            .or. cellGeom%cellCode .eq. 'SE4') then
             cellGeomLine%cellCode = 'SE2'
             cellGeomLine%nbNode = 2
-        elseif (cellGeom%cellCode .eq. 'TR3' .or. cellGeom%cellCode .eq. 'TR6') then
+        elseif (cellGeom%cellCode .eq. 'TR3' .or. cellGeom%cellCode .eq. 'TR6' &
+                .or. cellGeom%cellCode .eq. 'TR7' .or. cellGeom%cellCode .eq. 'TR1') then
             cellGeomLine%cellCode = 'TR3'
             cellGeomLine%nbNode = 3
         else if (cellGeom%cellCode .eq. 'QU4' .or. &
                  cellGeom%cellCode .eq. 'QU8' .or. &
-                 cellGeom%cellCode .eq. 'QU9') then
+                 cellGeom%cellCode .eq. 'QU9' .or. &
+                 cellGeom%cellCode .eq. 'Q12') then
             cellGeomLine%cellCode = 'QU4'
             cellGeomLine%nbNode = 4
         else
@@ -586,15 +597,18 @@ contains
         nbNeigh = 0
         ASSERT(cellGeom%isSkin)
         if (cellGeom%cellCode == 'SE2' .or. &
-            cellGeom%cellCode == 'SE3') then
+            cellGeom%cellCode == 'SE3' .or. &
+            cellGeom%cellCode == 'SE4') then
             nbNeigh = 2
         elseif (cellGeom%cellCode == 'TR3' .or. &
                 cellGeom%cellCode == 'TR6' .or. &
-                cellGeom%cellCode == 'TR7') then
+                cellGeom%cellCode == 'TR7' .or. &
+                cellGeom%cellCode == 'TR1') then
             nbNeigh = 3
         elseif (cellGeom%cellCode == 'QU4' .or. &
                 cellGeom%cellCode == 'QU8' .or. &
-                cellGeom%cellCode == 'QU9') then
+                cellGeom%cellCode == 'QU9' .or. &
+                cellGeom%cellCode == 'Q12') then
             nbNeigh = 4
         else
             ASSERT(ASTER_FALSE)
@@ -701,7 +715,7 @@ contains
                 poinCoorPara(1) .le. (1.d0+toleInside)) then
                 cellPoinInside = ASTER_TRUE
             end if
-        elseif (cellCode .eq. 'TR3' .or. cellCode .eq. 'TR6') then
+        elseif (cellCode .eq. 'TR3' .or. cellCode .eq. 'TR6' .or. cellCode .eq. 'TR7') then
             if (poinCoorPara(1) .ge. -toleInside .and. &
                 poinCoorPara(2) .ge. -toleInside .and. &
                 (poinCoorPara(2)+poinCoorPara(1)) .le. (1.d0+toleInside)) then

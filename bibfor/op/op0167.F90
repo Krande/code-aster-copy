@@ -46,6 +46,7 @@ subroutine op0167()
 #include "asterfort/cmcovo.h"
 #include "asterfort/cmcrea.h"
 #include "asterfort/cmhho.h"
+#include "asterfort/cmlclc.h"
 #include "asterfort/cmlqlq.h"
 #include "asterfort/cmmoma.h"
 #include "asterfort/cmqlql.h"
@@ -122,7 +123,7 @@ subroutine op0167()
     integer(kind=8) :: nbGrNodeIn, nbGrNodeOut
     integer(kind=8) :: nbCellInGrOut, nbCellInGrIn, nbNodeInGrOut, nbNodeInGrIn
     integer(kind=8) :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
-    integer(kind=8) :: nbField, oldInsideCells, newInsideCells
+    integer(kind=8) :: nbField, oldInsideCells, newInsideCells, nbOccLineCubi
     integer(kind=8) :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     integer(kind=8) :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
     integer(kind=8) :: iOccQuadTria, iad, nbOccRaff, rank, nbproc, pCellShift, iProc
@@ -188,6 +189,7 @@ subroutine op0167()
     call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nbGeomFibre)
     call getfac('CREA_FISS', nbOccCreaFiss)
     call getfac('LINE_QUAD', nbOccLineQuad)
+    call getfac('LINE_CUBI', nbOccLineCubi)
     call getfac('QUAD_LINE', nbOccQuadLine)
     call getfac('MODI_MAILLE', nbOccModiMaille)
     call getfac('RAFFINEMENT', nbOccRaff)
@@ -302,6 +304,32 @@ subroutine op0167()
         end if
         call jeveuo(jvCellNume, 'L', vi=listCellNume)
         call cmlqlq(meshIn, meshOut, nbCell, listCellNume)
+        goto 350
+    end if
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   For "LINE_Cubi"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (nbOccLineCubi .gt. 0) then
+        ASSERT(nbOccLineCubi .eq. 1)
+        call jeexin(meshIn//'.NOMACR', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_7')
+        end if
+        call jeexin(meshIn//'.ABSC_CURV', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_8')
+        end if
+        keywfact = 'LINE_CUBI'
+        call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+        if (nbCell .ne. nbCellIn) then
+            call utmess('A', 'MESH1_4', sk=keywfact)
+        end if
+        call jeveuo(jvCellNume, 'L', vi=listCellNume)
+        call cmlclc(meshIn, meshOut, nbCell, listCellNume)
         goto 350
     end if
 !

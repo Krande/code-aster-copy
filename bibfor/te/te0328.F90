@@ -39,8 +39,8 @@ subroutine te0328(option, nomte)
 !
     aster_logical :: posi, nega
     character(len=24) :: valk(2)
-    real(kind=8) :: poids
-    integer(kind=8) :: igeom, ipoids, ivf, idfde, ndim, npg, nno, jgano, nnos
+    real(kind=8) :: jaco
+    integer(kind=8) :: igeom, idfde, ndim, npg, nno
     integer(kind=8) :: kp, icodr
     integer(kind=8) :: iadzi, iazk24, codret
 !
@@ -48,21 +48,21 @@ subroutine te0328(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCODRET', 'E', icodr)
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, &
+                     jdfde=idfde)
 !
     posi = .false.
     nega = .false.
     do kp = 1, npg
         if (ndim .eq. 3) then
-            call dfdm3j(nno, kp, idfde, zr(igeom), poids)
+            call dfdm3j(nno, kp, idfde, zr(igeom), jaco)
         else if (ndim .eq. 2) then
-            call dfdm2j(nno, kp, idfde, zr(igeom), poids)
+            call dfdm2j(nno, kp, idfde, zr(igeom), jaco)
         else
             goto 999
         end if
-        if (poids .lt. 0.d0) nega = .true.
-        if (poids .gt. 0.d0) posi = .true.
+        if (jaco .lt. 0.d0) nega = .true.
+        if (jaco .gt. 0.d0) posi = .true.
     end do
 !
 !

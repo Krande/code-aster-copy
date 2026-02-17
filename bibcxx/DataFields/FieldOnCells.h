@@ -93,14 +93,7 @@ class FieldOnCells : public DataField {
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
-        // JeveuxVector to be duplicated
-        *( _descriptor ) = *( toCopy._descriptor );
-        *( _reference ) = *( toCopy._reference );
-        *( _values ) = *( toCopy._values );
-        *( _title ) = *( toCopy._title );
-        // Pointers to be copied
-        setDescription( toCopy._dofDescription );
-        updateValuePointers();
+        *this = toCopy;
     }
 
     /** @brief constructor */
@@ -170,6 +163,19 @@ class FieldOnCells : public DataField {
         _reference->deallocate();
         _values->deallocate();
         _dofDescription = nullptr;
+    };
+
+    /**
+     * @brief Surcharge de l'operateur =
+     */
+    FieldOnCells &operator=( const FieldOnCells &toCopy ) {
+        *_descriptor = *toCopy._descriptor;
+        *_reference = *toCopy._reference;
+        *_values = *toCopy._values;
+        *_title = *toCopy._title;
+        setDescription( toCopy._dofDescription );
+        updateValuePointers();
+        return *this;
     };
 
     /**

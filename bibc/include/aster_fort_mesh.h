@@ -130,10 +130,10 @@ extern void DEFSSPPSS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, 
 extern void DEFPSSSSSPPPPPPPPPPPS( PAIRWRAP, pairwrap, ASTERINTEGER *, const char *, STRING_SIZE,
                                    const char *, STRING_SIZE, const char *, STRING_SIZE,
                                    const char *, STRING_SIZE, const char *, STRING_SIZE,
-                                   ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *,
+                                   const ASTERDOUBLE *, const ASTERDOUBLE *, const ASTERDOUBLE *,
                                    ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
-                                   ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, const char *,
-                                   STRING_SIZE );
+                                   ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                   const char *, STRING_SIZE );
 
 #define CALLO_INTECELLAREAWRAP( a, b, c, d )                                                       \
     CALLOPPP( INTECELLAREAWRAP, intecellareawrap, a, b, c, d )

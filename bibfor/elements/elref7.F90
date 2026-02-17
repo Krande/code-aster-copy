@@ -88,6 +88,12 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1, &
         nbf = 4
         elref1 = 'SE3'
 !
+    else if (elrefv(1:3) .eq. 'Q12') then
+        tymvol = -2
+        ndegre = 3
+        nbf = 4
+        elref1 = 'SE4'
+!
 ! 1.2. ==> TRIANGLES
 !
     else if (elrefv(1:3) .eq. 'TR3') then
@@ -107,6 +113,12 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1, &
         ndegre = 2
         nbf = 3
         elref1 = 'SE3'
+!
+    else if (elrefv(1:3) .eq. 'TR1') then
+        tymvol = -1
+        ndegre = 3
+        nbf = 3
+        elref1 = 'SE4'
 !
 !====
 ! 2. LA DESCRIPTION DES FACES DES VOLUMES 3D
@@ -167,6 +179,12 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1, &
         ndegre = 2
         nbf = 4
         elref1 = 'TR6'
+!
+    else if (elrefv(1:3) .eq. 'T20') then
+        tymvol = 3
+        ndegre = 3
+        nbf = 4
+        elref1 = 'TR1'
 !
 ! 2.4. ==> PYRAMIDES
 !

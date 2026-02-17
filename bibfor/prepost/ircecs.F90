@@ -335,6 +335,15 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx, &
                         else if (ktype .eq. 'TETRA15') then
                             nnoe = nnoe-5
                             lnocen = ASTER_TRUE
+                        else if (ktype .eq. 'TETRA20') then
+                            nnoe = 4
+                            lnocen = ASTER_TRUE
+                        else if (ktype .eq. 'QUAD12') then
+                            nnoe = 4
+                            lnocen = ASTER_TRUE
+                        else if (ktype .eq. 'TRIA3') then
+                            nnoe = 3
+                            lnocen = ASTER_TRUE
                         else if (ktype .eq. 'SEG4') then
                             nnoe = nnoe-2
                             call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), itseg2)

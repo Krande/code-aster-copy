@@ -565,3 +565,16 @@ class THER_TETRA4(THER_HEXA20):
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
     )
+
+
+# --------------------------------------------------------------------------------------------------
+class THER_TETRA20(THER_HEXA20):
+    """Thermics - 3D - TETRA10"""
+
+    meshType = MT.TETRA20
+    elrefe = (
+        ElrefeLoc(
+            MT.T20, gauss=("RIGI=FPG24", "FPG1=FPG1", "MASS=FPG24"), mater=("FPG1", "RIGI", "MASS")
+        ),
+        ElrefeLoc(MT.TR1, gauss=("RIGI=FPG12", "MASS=FPG12")),
+    )

@@ -267,6 +267,14 @@ MeshPtr Mesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     return mesh_out;
 };
 
+MeshPtr Mesh::convertToCubic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER quatre = 4, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &quatre, &inf );
+    mesh_out->build();
+    return mesh_out;
+};
+
 void Mesh::addNodeLabels( const VectorString &labels ) {
     const auto &size = labels.size();
     if ( getNumberOfNodes() != size ) {

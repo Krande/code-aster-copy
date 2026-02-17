@@ -463,6 +463,15 @@ class MECA_FACE6(MECA_FACE3):
 
 
 # ---------------------------------------------------------------------------------------------------
+class MECA_FACE10(MECA_FACE3):
+    """Skin element for 3D isoparametric elements - On TR10"""
+
+    meshType = MT.TRIA10
+    attrs = ((AT.BORD_ISO, "OUI"),)
+    elrefe = (ElrefeLoc(MT.TR1, gauss=("RIGI=FPG12",), mater=("RIGI",)),)
+
+
+# ---------------------------------------------------------------------------------------------------
 class MECA_FACE8(MECA_FACE3):
     """Skin element for 3D isoparametric elements - On QU8"""
 

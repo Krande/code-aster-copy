@@ -684,8 +684,7 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     // Select option for matrix
     std::string option = "CHAR_MECA_CONT";
 
-    auto Fed_Slave = _phys_problem->getVirtualSlavCell();
-    auto Fed_pair = _phys_problem->getVirtualCell();
+    auto Fed_pair = _phys_problem->getContactFED();
 #ifdef ASTER_HAVE_MPI
     const auto pCFED = std::dynamic_pointer_cast< ParallelContactFEDescriptor >( Fed_pair );
     if ( pCFED ) {
@@ -1043,3 +1042,62 @@ FieldOnNodesRealPtr DiscreteComputation::getResidualReference(
 
     return vectAsse;
 };
+
+FieldOnNodesRealPtr DiscreteComputation::getMechanicalCouplingForces(
+    const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step ) const {
+
+    // Select option for vector
+    std::string option = "CHAR_MECA_CPL";
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    auto elemVect =
+        std::make_shared< ElementaryVectorDisplacementReal >( _phys_problem->getModel() );
+
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    const auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
+
+    for ( const auto &load : mecaLoadReal ) {
+
+        const auto pairing = load->getPairingField();
+        if ( pairing && pairing->exists() ) {
+
+            // Prepare computing
+            CalculPtr calcul = std::make_unique< Calcul >( option );
+            calcul->setFiniteElementDescriptor( pairing->getDescription() );
+
+            // Set input field
+            calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+            calcul->addInputField( "PDEPLMR", displ_prev );
+            calcul->addInputField( "PDEPLPR", displ_step );
+            calcul->addInputField( "PPAIRR", pairing );
+            calcul->addHHOField( _phys_problem->getModel() );
+
+            // Add time fields
+            calcul->addTimeField( "PINSTMR", time_prev );
+            calcul->addTimeField( "PINSTPR", time_prev + time_step );
+
+            // Add output elementary
+            calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+            // Computation
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
+            }
+        }
+    }
+
+    elemVect->build();
+
+    if ( elemVect->hasElementaryTerm() ) {
+        return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    }
+
+    FieldOnNodesRealPtr vectAsse =
+        std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+    vectAsse->setValues( 0.0 );
+    vectAsse->build();
+    return vectAsse;
+}

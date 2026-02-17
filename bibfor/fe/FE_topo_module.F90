@@ -23,14 +23,16 @@ module fe_topo_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
-#include "asterfort/teattr.h"
-#include "asterfort/jevech.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
-#include "jeveux.h"
+#include "asterfort/getFESkinSubType.h"
+#include "asterfort/jevech.h"
+#include "asterfort/teattr.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,7 +43,7 @@ module fe_topo_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: FE_Cell, FE_Skin
-    private :: normal_face, init_face, func_face, print_face
+    private :: normal_face, init_face, func_face, print_face, diameter_face
 !
 !===================================================================================================
 !
@@ -49,15 +51,15 @@ module fe_topo_module
 !
     type FE_Skin
 ! ----- Dimension topologique
-        integer(kind=8)                     :: ndim = 0
+        integer(kind=8)             :: ndim = 0
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Type maille short
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
-        integer(kind=8)                     :: nbnodes = 0
-! ----- Coordonnees des noeuds   (max 9 noeuds pour quad)
-        real(kind=8), dimension(3, 9):: coorno = 0.d0
+        integer(kind=8)             :: nbnodes = 0
+! ----- Coordonnees des noeuds
+        real(kind=8), dimension(3, MT_NNOMAX2D):: coorno = 0.d0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face
@@ -65,6 +67,7 @@ module fe_topo_module
         procedure, public, pass :: init => init_face
         procedure, public, pass :: normal => normal_face
         procedure, public, pass :: updateCoordinates => updateCoordinatesFace
+        procedure, public, pass :: diameter => diameter_face
 
     end type FE_Skin
 !
@@ -74,15 +77,15 @@ module fe_topo_module
 !
     type FE_Cell
 ! ----- Dimension topologique
-        integer(kind=8)                     :: ndim = 0
+        integer(kind=8)             :: ndim = 0
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Type maille
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
-        integer(kind=8)                     :: nbnodes = 0
-! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
-        real(kind=8), dimension(3, 27):: coorno = 0.d0
+        integer(kind=8)             :: nbnodes = 0
+! ----- Coordonnees des noeuds
+        real(kind=8), dimension(3, MT_NNOMAX3D):: coorno = 0.d0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_cell
@@ -91,6 +94,7 @@ module fe_topo_module
         procedure, public, pass :: evalCoor => coor_cell
         procedure, public, pass :: barycenter => bary_cell
         procedure, public, pass :: updateCoordinates
+        procedure, public, pass :: getSkin
     end type FE_Cell
 !
 contains
@@ -179,10 +183,27 @@ contains
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
         integer(kind=8) :: inode, idim, iret, jv_geom
+        character(len=8) :: typ
 ! --------------------------------------------------------------------------------------------------
 !
-        call teattr('S', 'TYPMA', this%typemas, iret)
+        call teattr('S', 'TYPMA', typ, iret)
         ASSERT(iret == 0)
+!
+        select case (typ)
+        case ("TS1", "TS2")
+            this%typemas = "TR3"
+        case ("TS3", "TS4")
+            this%typemas = "TR6"
+        case ("QS1", "QS2")
+            this%typemas = "QU4"
+        case ("QS3", "QS4")
+            this%typemas = "QU8"
+        case ("QS5", "QS6")
+            this%typemas = "QU9"
+        case default
+            this%typemas = typ
+        end select
+!
         call elrfno(this%typemas, nno=this%nbnodes, ndim=this%ndim)
         call CellNameS2L(this%typemas, this%typema)
 !
@@ -205,11 +226,93 @@ contains
 !
 !===================================================================================================
 !
-    subroutine init_face(this)
+    function getSkin(this, nbNodes, nodes) result(skin)
+!
+        implicit none
+!
+        class(FE_Cell), intent(in) :: this
+        integer(kind=8), intent(in) :: nbNodes, nodes(MT_NNOMAX2D)
+        type(FE_Skin) :: skin
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Initialize a FE Skin from a FE_Cell
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out FESkin           : a FE face
+! --------------------------------------------------------------------------------------------------
+!
+        aster_logical, parameter :: l_debug = ASTER_FALSE
+        integer(kind=8) :: inode, idim, node
+! --------------------------------------------------------------------------------------------------
+!
+        skin%nbnodes = nbNodes
+        skin%ndim = this%ndim-1
+!
+        if (this%ndim == 2) then
+            select case (nbNodes)
+            case (2)
+                skin%typemas = "SE2"
+            case (3)
+                skin%typemas = "SE3"
+            case (4)
+                skin%typemas = "SE4"
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        else
+            select case (nbNodes)
+            case (3)
+                skin%typemas = "TR3"
+            case (6)
+                skin%typemas = "TR6"
+            case (7)
+                skin%typemas = "TR7"
+            case (10)
+                skin%typemas = "TR1"
+            case (4)
+                skin%typemas = "QU4"
+            case (8)
+                skin%typemas = "QU8"
+            case (9)
+                skin%typemas = "QU9"
+            case (12)
+                skin%typemas = "Q12"
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        end if
+!
+        call CellNameS2L(skin%typemas, skin%typema)
+!
+! - Get coordinates
+!
+        do inode = 1, skin%nbnodes
+            node = nodes(inode)
+            do idim = 1, this%ndim
+                skin%coorno(idim, inode) = this%coorno(idim, node)
+            end do
+        end do
+!
+        if (l_debug) then
+            call skin%print()
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine init_face(this, side)
 !
         implicit none
 !
         class(FE_Skin), intent(out) :: this
+        character(len=*), optional, intent(in) :: side
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -219,15 +322,24 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out FESkin           : a FE cell
+! Out FESkin           : a FE face
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer(kind=8) :: inode, idim, iret, jv_geom
+        integer(kind=8) :: inode, idim, iret, jv_geom, node_init, node_idx
+        character(len=8) :: side_, sub_type
 ! --------------------------------------------------------------------------------------------------
 !
         call teattr('S', 'TYPMA', this%typemas, iret)
         ASSERT(iret == 0)
+!
+        node_init = 1
+        if (present(side)) then
+            side_ = side
+            call getFESkinSubType(this%typemas, side_, sub_type, node_init)
+            this%typemas = sub_type
+        end if
+!
         call elrfno(this%typemas, nno=this%nbnodes, ndim=this%ndim)
         call CellNameS2L(this%typemas, this%typema)
 !
@@ -235,8 +347,9 @@ contains
 !
         call jevech('PGEOMER', 'L', jv_geom)
         do inode = 1, this%nbnodes
+            node_idx = node_init-1+inode-1
             do idim = 1, this%ndim+1
-                this%coorno(idim, inode) = zr(jv_geom+(inode-1)*(this%ndim+1)+idim-1)
+                this%coorno(idim, inode) = zr(jv_geom+node_idx*(this%ndim+1)+idim-1)
             end do
         end do
 !
@@ -269,7 +382,7 @@ contains
 ! Out FECell           : a FE cell
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: funcGeom(27)
+        real(kind=8) :: funcGeom(MT_NNOMAX)
         integer(kind=8) :: i
 !
         funcGeom = this%func(pt)
@@ -292,7 +405,7 @@ contains
 !
         class(FE_Cell), intent(in) :: this
         real(kind=8), intent(in) :: pt(3)
-        real(kind=8) :: func(27)
+        real(kind=8) :: func(MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -320,7 +433,7 @@ contains
 !
         class(FE_Skin), intent(in) :: this
         real(kind=8), intent(in) :: pt(3)
-        real(kind=8) :: func(9)
+        real(kind=8) :: func(MT_NNOMAX2D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -347,7 +460,7 @@ contains
         implicit none
 !
         class(FE_Cell), intent(in) :: this
-        real(kind=8), dimension(3)                :: bary
+        real(kind=8), dimension(3) :: bary
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -473,5 +586,43 @@ contains
         end do
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function diameter_face(this)
+!
+        implicit none
+!
+        class(FE_Skin), intent(in) :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Initialize a FE Skin from a FE_Cell
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In FESkin           : a FE face
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: inode, jnode, nnos
+        real(kind=8), dimension(3) :: vector
+! --------------------------------------------------------------------------------------------------
+!
+        diameter_face = 0.d0
+!
+        call elrfno(this%typemas, nnos=nnos)
+!
+        do inode = 1, nnos
+            do jnode = inode+1, nnos
+                vector(1:3) = this%coorno(1:3, inode)-this%coorno(1:3, jnode)
+                diameter_face = max(norm2(vector), diameter_face)
+            end do
+        end do
+!
+    end function
 !
 end module

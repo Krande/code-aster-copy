@@ -300,6 +300,12 @@ PCONFR = InputParameter(
 """,
 )
 
+PPAIRR = InputParameter(
+    phys=PHY.N120_R,
+    comment=""" INFORMATION AUX POINTS POUR LE CONTACT - VOIR MMCHML
+""",
+)
+
 PCONOIN = InputParameter(
     phys=PHY.SIEF_R,
     comment="""  PCONOIN : CHAMP DE CONTRAINTES ELNO ANCIEN REPERE

@@ -1,0 +1,142 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+########################################################################
+#          TEST DE VERIFICATION EN ELASTICITE                          #
+#                       MEMBRANE DE COOK                               #
+########################################################################
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+mesh_quad = LIRE_MAILLAGE(FORMAT="MED")
+
+mesh_line = CREA_MAILLAGE(MAILLAGE=mesh_quad, QUAD_LINE=_F(TOUT="OUI"))
+
+mesh_line = DEFI_GROUP(
+    reuse=mesh_line, MAILLAGE=mesh_line, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI")
+)
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh_line, LINE_CUBI=_F(GROUP_MA="TOUT"))
+
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Encast", "load")))
+
+mesh = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_NO=_F(NOM="B", OPTION="ENV_SPHERE", POINT=(24, 22), RAYON=1e-3, PRECISION=0.01),
+)
+
+model = AFFE_MODELE(
+    AFFE=_F(MODELISATION=("D_PLAN",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
+)
+
+mater = DEFI_MATERIAU(ELAS=_F(E=200e3, NU=0.3))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MAILLAGE=mesh, MODELE=model)
+
+rampe = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="LINEAIRE", PROL_GAUCHE="EXCLU"
+)
+
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
+
+times = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_NIVEAU=3)
+)
+
+depl_x = AFFE_CHAR_CINE(MECA_IMPO=_F(DX=0.0, GROUP_MA=("Encast",)), MODELE=model, INFO=1)
+
+depl_y = AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0.0, GROUP_MA=("Encast",)), MODELE=model, INFO=1)
+
+
+load = AFFE_CHAR_MECA(
+    FORCE_CONTOUR=_F(FY=1000, GROUP_MA=("load",)),
+    PRES_REP=_F(PRES=0.0, GROUP_MA=("load",)),
+    MODELE=model,
+)
+
+resu = MECA_STATIQUE(
+    CHAM_MATER=fieldmat,
+    EXCIT=(
+        _F(CHARGE=depl_x, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=depl_y, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=load, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    MODELE=model,
+)
+
+resnonl = STAT_NON_LINE(
+    CHAM_MATER=fieldmat,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    CONVERGENCE=_F(RESI_REFE_RELA=1e-3, SIGM_REFE=200),
+    EXCIT=(
+        _F(CHARGE=depl_x, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=depl_y, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=model,
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
+    INFO=1,
+)
+
+
+resnonl = CALC_CHAMP(
+    reuse=resnonl,
+    CHAM_MATER=fieldmat,
+    CRITERES=("SIEQ_NOEU", "SIEQ_ELGA"),
+    PROPRIETES=("MATE_ELEM", "MATE_ELGA"),
+    CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU", "SIGM_ELGA", "SIGM_NOEU"),
+    DEFORMATION=("EPSI_ELGA", "EPSI_NOEU"),
+    MODELE=model,
+    RESULTAT=resnonl,
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("A",),
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=resnonl,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        VALE_CALC=1.8380085113979208,
+        VALE_REFE=1.8515,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("B",),
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=resnonl,
+        NOM_CHAM="SIEQ_NOEU",
+        NOM_CMP="PRIN_3",
+        VALE_CALC=3793.986594256191,
+        VALE_REFE=3770.31,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
+
+
+FIN()

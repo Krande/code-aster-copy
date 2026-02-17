@@ -469,6 +469,13 @@ POUX = Attribute(
 """,
 )
 
+RACCORD = Attribute(
+    value=("OUI",),
+    comment="""
+  RACCORD = 'OUI' : l'element est utilise (en sous-terrain) pour la mise en oeuvre de raccord.
+""",
+)
+
 SECH = Attribute(
     value=("OUI",),
     comment="""

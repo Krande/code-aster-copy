@@ -23,7 +23,7 @@ interface
                       ivf, idfde, xyz, nharm, sigma,&
                       bsigma)
         integer(kind=8), intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
-        real(kind=8), intent(in) :: xyz(1), nharm, sigma(1)
-        real(kind=8), intent(out) :: bsigma(1)
+        real(kind=8), intent(in) :: xyz(*), nharm, sigma(npg*nbsig)
+        real(kind=8), intent(out) :: bsigma(*)
     end subroutine bsigmc
 end interface

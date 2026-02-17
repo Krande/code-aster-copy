@@ -18,6 +18,7 @@
 !
 subroutine inmat6(elrefa, fapg, mganos)
 !
+! aslint: disable=C0110
     implicit none
 !
 #include "MeshTypes_type.h"
@@ -94,11 +95,13 @@ subroutine inmat6(elrefa, fapg, mganos)
         elref2 = 'PE6'
     else if ((elrefa .eq. 'P13') .or. (elrefa .eq. 'P19')) then
         elref2 = 'PY5'
-    else if ((elrefa .eq. 'T10') .or. (elrefa .eq. 'T15')) then
+    else if ((elrefa .eq. 'T10') .or. (elrefa .eq. 'T15') .or. (elrefa .eq. 'T20')) then
         elref2 = 'TE4'
-    else if ((elrefa .eq. 'TR6') .or. (elrefa .eq. 'TR7')) then
+    else if ((elrefa .eq. 'TR6') .or. (elrefa .eq. 'TR7') &
+             .or. (elrefa .eq. 'TR1')) then
         elref2 = 'TR3'
-    else if ((elrefa .eq. 'QU8') .or. (elrefa .eq. 'QU9')) then
+    else if ((elrefa .eq. 'QU8') .or. (elrefa .eq. 'QU9') &
+             .or. (elrefa .eq. 'Q12')) then
         elref2 = 'QU4'
     else if ((elrefa .eq. 'SE3') .or. (elrefa .eq. 'SE4')) then
         elref2 = 'SE2'

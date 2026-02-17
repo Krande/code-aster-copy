@@ -45,7 +45,7 @@ subroutine te0573(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: mxnoeu = 3, mxnpg = 4, mxvect = 2*3, mxmatr = 2*3*2*3
+    integer(kind=8), parameter :: mxnoeu = 4, mxnpg = 4, mxvect = 2*4, mxmatr = 2*4*2*4
     aster_logical :: l_func, l_time
     aster_logical :: l_axis
     integer(kind=8) :: jv_geom, jv_time, jv_pres

@@ -113,9 +113,9 @@ subroutine lcptga(elem_dime, tria_coor, gauss_family, &
             gauss_coor(i_dime, i_gauss) = xpgpr(i_dime)
         end do
         if (eleref .eq. 'TR3') then
-            gauss_weight(i_gauss) = 2*area*gauxx_weight(i_gauss)
+            gauss_weight(i_gauss) = 2.d0*area*gauxx_weight(i_gauss)
         elseif (eleref .eq. 'SE2') then
-            gauss_weight(i_gauss) = 1/2.d0*area*gauxx_weight(i_gauss)
+            gauss_weight(i_gauss) = 0.5d0*area*gauxx_weight(i_gauss)
         else
             ASSERT(.false.)
         end if

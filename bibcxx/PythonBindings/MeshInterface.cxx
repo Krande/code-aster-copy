@@ -252,6 +252,16 @@ Returns:
     Mesh: the quadratic mesh.
         )",
               py::arg( "info" ) = 1 )
+        .def( "convertToCubic", &Mesh::convertToCubic, R"(
+Convert the mesh to a cubic one.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    Mesh: the cubic mesh.
+        )",
+              py::arg( "info" ) = 1 )
         .def( "addNodeLabels", &Mesh::addNodeLabels, R"(
       Add node labels.
 

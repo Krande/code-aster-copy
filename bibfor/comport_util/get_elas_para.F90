@@ -134,6 +134,25 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    er = 0.d0
+    nur = 0.d0
+    gr = 0.d0
+    ei = 0.d0
+    nui = 0.d0
+    gi = 0.d0
+    e1r = 0.d0
+    e2r = 0.d0
+    e3r = 0.d0
+    e1i = 0.d0
+    e2i = 0.d0
+    e3i = 0.d0
+    g1r = 0.d0
+    g2r = 0.d0
+    g3r = 0.d0
+    g1i = 0.d0
+    g2i = 0.d0
+    g3i = 0.d0
+!
     nb_para = 0
     para_name = ' '
     para_vale = 0.d0

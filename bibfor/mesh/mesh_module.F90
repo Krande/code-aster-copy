@@ -426,6 +426,9 @@ contains
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA7'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_TRIA7)
         nbCell = nbCell+1
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA10'), cellTypeNume)
+        ASSERT(cellTypeNume .eq. MT_TRIA10)
+        nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_QUAD4)
         nbCell = nbCell+1
@@ -435,6 +438,9 @@ contains
         call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_QUAD9)
         nbCell = nbCell+1
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD12'), cellTypeNume)
+        ASSERT(cellTypeNume .eq. MT_QUAD12)
+        nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_TETRA4)
         nbCell = nbCell+1
@@ -443,6 +449,9 @@ contains
         nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA15'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_TETRA15)
+        nbCell = nbCell+1
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA20'), cellTypeNume)
+        ASSERT(cellTypeNume .eq. MT_TETRA20)
         nbCell = nbCell+1
         call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), cellTypeNume)
         ASSERT(cellTypeNume .eq. MT_PENTA6)
@@ -523,6 +532,9 @@ contains
         else if (cellTypeName .eq. 'TRIA7') then
             cellTopo = 'SURF'
             cellOrder = 2
+        else if (cellTypeName .eq. 'TRIA10') then
+            cellTopo = 'SURF'
+            cellOrder = 3
         else if (cellTypeName .eq. 'QUAD4') then
             cellTopo = 'SURF'
             cellOrder = 1
@@ -532,6 +544,9 @@ contains
         else if (cellTypeName .eq. 'QUAD9') then
             cellTopo = 'SURF'
             cellOrder = 2
+        else if (cellTypeName .eq. 'QUAD12') then
+            cellTopo = 'SURF'
+            cellOrder = 3
         else if (cellTypeName .eq. 'TETRA4') then
             cellTopo = 'VOLU'
             cellOrder = 1
@@ -541,6 +556,9 @@ contains
         else if (cellTypeName .eq. 'TETRA15') then
             cellTopo = 'VOLU'
             cellOrder = 2
+        else if (cellTypeName .eq. 'TETRA20') then
+            cellTopo = 'VOLU'
+            cellOrder = 3
         else if (cellTypeName .eq. 'PENTA6') then
             cellTopo = 'VOLU'
             cellOrder = 1

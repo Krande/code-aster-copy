@@ -583,6 +583,8 @@ CONDPLA = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 CONDPLR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[10]",))
 
+CPAIRR = LocatedComponents(phys=PHY.N120_R, type="ELEM", components=("X[27]",))
+
 CPESANR = LocatedComponents(phys=PHY.PESA_R, type="ELEM", components=("G", "AG", "BG", "CG"))
 
 CPHASES = LocatedComponents(phys=PHY.VAR2_R, type="ELEM", components=("V[9]",))
@@ -1441,7 +1443,13 @@ EGMINMAX = LocatedComponents(
 EGMATE_R = LocatedComponents(
     phys=PHY.MATE_R,
     type="ELGA",
-    location="RIGI",
+    location="MTGA",
+    components=("X", "Y", "Z", "E", "NU", "RHO", "ALPHA", "LAMBDA", "RHO_CP"),
+)
+
+ENMATE_R = LocatedComponents(
+    phys=PHY.MATE_R,
+    type="ELNO",
     components=("X", "Y", "Z", "E", "NU", "RHO", "ALPHA", "LAMBDA", "RHO_CP"),
 )
 

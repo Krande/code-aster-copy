@@ -22,12 +22,10 @@ subroutine lrvema(nomail, mfich, nochmd)
     use as_med_module, only: as_med_open
     implicit none
 !
-#include "asterf_types.h"
-#ifdef ASTER_HAVE_MED
-#include "med_parameter.hf"
-#endif
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/as_mfdfin.h"
 #include "asterfort/as_mfdncn.h"
 #include "asterfort/as_mficlo.h"
@@ -44,8 +42,10 @@ subroutine lrvema(nomail, mfich, nochmd)
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#ifdef ASTER_HAVE_MED
+#include "med_parameter.hf"
+#endif
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: mfich
     character(len=8) :: nomail
@@ -108,7 +108,11 @@ subroutine lrvema(nomail, mfich, nochmd)
                                                          'HEXA9   ', 'PENTA7  ', 'TR3SE2  ', &
                                                          'TR3SE3  ', 'TR6SE2  ', 'TR6SE3  ', &
                                                          'QU4SE2  ', 'QU4SE3  ', 'QU8SE2  ', &
-                                                         'QU8SE3  ', 'QU9SE2  ', 'QU9SE3  '/)
+                                                         'QU8SE3  ', 'QU9SE2  ', 'QU9SE3  ', &
+                                                         'QU4TR7  ', 'QU8TR7  ', 'QU9TR7  ', &
+                                                         'TR3TR7  ', 'TR6TR7  ', 'TRIA10  ', &
+                                                         'QUAD12  ', 'TETRA20 ', 'SEG44   ', &
+                                                         'SEG43   '/)
     integer(kind=8), parameter :: nummed(MT_NTYMAX) = (/ &
                                   MED_POINT1, MED_SEG2, MED_UNDEF_GEOTYPE, &
                                   MED_SEG3, MED_UNDEF_GEOTYPE, MED_SEG4, &
@@ -136,7 +140,11 @@ subroutine lrvema(nomail, mfich, nochmd)
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE/)
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE/)
 !
 ! --------------------------------------------------------------------------------------------------
 !

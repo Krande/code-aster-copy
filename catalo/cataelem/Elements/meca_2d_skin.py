@@ -320,6 +320,15 @@ class MEPLSE3(MEPLSE2):
 
 
 # ---------------------------------------------------------------------------------------------------
+class MEPLSE4(MEPLSE2):
+    """Skin element for 2D isoparametric elements - On SE4"""
+
+    meshType = MT.SEG4
+    attrs = ((AT.BORD_ISO, "OUI"),)
+    elrefe = (ElrefeLoc(MT.SE4, gauss=("RIGI=FPG4",), mater=("RIGI",)),)
+
+
+# ---------------------------------------------------------------------------------------------------
 class MEAXSE2(MEPLSE2):
     """Skin element for 2D isoparametric elements/axi - On SE2"""
 

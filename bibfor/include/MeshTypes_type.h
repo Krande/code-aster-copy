@@ -18,12 +18,12 @@
 !
 
 ! Total number of cell types
-#define MT_NTYMAX  81
+#define MT_NTYMAX  91
 ! Total number of real (physical) cell types
-#define MT_NPHMAX  25
+#define MT_NPHMAX  28
 ! Maximum number of nodes of all cells
 #define MT_NNOMAX   27
-#define MT_NNOMAX2D 9
+#define MT_NNOMAX2D 12
 #define MT_NNOMAX3D 27
 ! Maximum number of families for integration schemes
 #define MT_NBFAMX  20
@@ -37,12 +37,15 @@
 #define MT_TRIA3   7
 #define MT_TRIA6   9
 #define MT_TRIA7   11
+#define MT_TRIA10  87
 #define MT_QUAD4   12
 #define MT_QUAD8   14
 #define MT_QUAD9   16
+#define MT_QUAD12  88
 #define MT_TETRA4  18
 #define MT_TETRA10 19
 #define MT_TETRA15 28
+#define MT_TETRA20 89
 #define MT_PENTA6  20
 #define MT_PENTA15 21
 #define MT_PENTA18 22

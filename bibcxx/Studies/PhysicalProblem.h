@@ -65,10 +65,10 @@ class PhysicalProblem {
     BaseDOFNumberingPtr _dofNume;
 
     /** @brief Virtual cells for contact (in definition) */
-    FiniteElementDescriptorPtr _virtualSlavCell;
+    FiniteElementDescriptorPtr _contactSlaveFED;
 
     /** @brief Virtual cells for contact (in algorithm) */
-    FiniteElementDescriptorPtr _virtualCell;
+    FiniteElementDescriptorPtr _contactFED;
 
     /** @brief External state variable: reference field */
     FieldOnCellsRealPtr _externVarRefe;
@@ -119,20 +119,18 @@ class PhysicalProblem {
     void setListOfLoads( const ListOfLoadsPtr loads );
 
     /** @brief Set virtual cells for contact (definition) */
-    void setVirtualSlavCell( const FiniteElementDescriptorPtr virtualSlavCell ) {
-        _virtualSlavCell = virtualSlavCell;
+    void setContactSlaveFED( const FiniteElementDescriptorPtr contactSlaveFED ) {
+        _contactSlaveFED = contactSlaveFED;
     };
 
     /** @brief Set virtual cells for contact (algorithm) */
-    void setVirtualCell( const FiniteElementDescriptorPtr virtualCell ) {
-        _virtualCell = virtualCell;
-    };
+    void setContactFED( const FiniteElementDescriptorPtr contactFED ) { _contactFED = contactFED; };
 
     /** @brief Get virtual cells for contact (definition) */
-    FiniteElementDescriptorPtr getVirtualSlavCell() const { return _virtualSlavCell; };
+    FiniteElementDescriptorPtr getContactSlaveFED() const { return _contactSlaveFED; };
 
     /** @brief Get virtual cells cells for contact (algorithm) */
-    FiniteElementDescriptorPtr getVirtualCell() const { return _virtualCell; };
+    FiniteElementDescriptorPtr getContactFED() const { return _contactFED; };
 
     /** @brief Get behaviour properties */
     BehaviourPropertyPtr getBehaviourProperty() const { return _behavProp; };

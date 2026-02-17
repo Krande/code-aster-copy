@@ -25,7 +25,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
-#include "blas/ddot.h"
+#include "MeshTypes_type.h"
     integer(kind=8) :: nbnmai, lnmail(*), lnm3d(*), ndim, norien, ifm, niv
     real(kind=8) :: coor(*)
     aster_logical :: reorie
@@ -47,12 +47,10 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 !
-    integer(kind=8), parameter :: nbnomx = 27
     integer(kind=8) :: i, ic, n1, n2, n3, nbnsm, nbns3d, ino, nbnoe
-    integer(kind=8) :: lisnoe(nbnomx)
+    integer(kind=8) :: lisnoe(MT_NNOMAX)
     real(kind=8) :: coon1(3), coon2(3), coon3(3), n1n2(3), n1n3(3)
     real(kind=8) :: n(3), norme, n1g(3), xg3d(3), xgm(3), xgn, zero
-    blas_int :: b_incx, b_incy, b_n
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -149,10 +147,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
     n1g = xg3d-xgm
 !
     call normev(n1g, norme)
-    b_n = to_blas_int(3)
-    b_incx = to_blas_int(1)
-    b_incy = to_blas_int(1)
-    xgn = ddot(b_n, n1g, b_incx, n, b_incy)
+    xgn = dot_product(n1g, n)
 !
 ! --- SI XGN > 0, LA NORMALE A LA MAILLE DE PEAU
 ! --- EST DIRIGEE VERS L'INTERIEUR DU VOLUME, IL FAUT
@@ -167,17 +162,29 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
             nbnoe = nbnmai
         end if
         ino = 0
-        do i = nbnsm, 1, -1
-            ino = ino+1
-            lnmail(i) = lisnoe(ino)
-        end do
-        if (nbnsm .ne. nbnoe) then
-            ino = 0
-            do i = nbnoe-1, nbnsm+1, -1
+        if (tpmail == "SEG4") then
+            lnmail(1:4) = [lisnoe(2), lisnoe(1), lisnoe(4), lisnoe(3)]
+        elseif (tpmail == "TRIA10") then
+            lnmail(1:10) = [lisnoe(3), lisnoe(2), lisnoe(1), &
+                            lisnoe(7), lisnoe(6), lisnoe(5), lisnoe(4), lisnoe(9), lisnoe(8), &
+                            lisnoe(10)]
+        elseif (tpmail == "QUAD12") then
+            lnmail(1:12) = [lisnoe(4), lisnoe(3), lisnoe(2), lisnoe(1), &
+                            lisnoe(10), lisnoe(9), lisnoe(8), lisnoe(7), &
+                            lisnoe(6), lisnoe(5), lisnoe(12), lisnoe(11)]
+        else
+            do i = nbnsm, 1, -1
                 ino = ino+1
-                lnmail(i) = lisnoe(ino+nbnsm)
+                lnmail(i) = lisnoe(ino)
             end do
-            lnmail(nbnoe) = lisnoe(nbnoe)
+            if (nbnsm .ne. nbnoe) then
+                ino = 0
+                do i = nbnoe-1, nbnsm+1, -1
+                    ino = ino+1
+                    lnmail(i) = lisnoe(ino+nbnsm)
+                end do
+                lnmail(nbnoe) = lisnoe(nbnoe)
+            end if
         end if
         if (niv .eq. 2) then
             write (ifm, *) ' REORIENTATION MAILLE ', nomail, ' NOEUDS ', ( &

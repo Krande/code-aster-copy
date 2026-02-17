@@ -20,16 +20,17 @@ subroutine te0088(option, nomte)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/evalPressure.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
-#include "asterfort/evalPressure.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/nmpr2d_vect.h"
 #include "asterfort/tecach.h"
-#include "asterfort/lteatt.h"
+#include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -43,7 +44,7 @@ subroutine te0088(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: mxnoeu = 9, mxnpg = 27
+    integer(kind=8), parameter :: mxnoeu = MT_NNOMAX2D, mxnpg = 27
     aster_logical :: l_func, l_time, l_axis
     integer(kind=8) :: jv_geom, jv_time, jv_pres
     integer(kind=8) :: jv_vect

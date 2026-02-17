@@ -246,8 +246,8 @@ class MVCA_HEXA20(Element):
     elrefe = (
         ElrefeLoc(
             MT.H20,
-            gauss=("RIGI=FPG8", "MASS=FPG27", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("RIGI", "FPG1"),
+            gauss=("RIGI=FPG8", "MASS=FPG27", "FPG1=FPG1", "NOEU=NOEU", "MTGA=FPG8"),
+            mater=("RIGI", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.HE8, gauss=("RIGI=FPG8", "MASS=FPG27")),
         ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU")),
@@ -524,6 +524,24 @@ class MVCA_HEXA20(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.MATE_ELGA(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R),),
+        ),
+        OP.MATE_ELEM(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R),),
+        ),
         OP.NSPG_NBVA(
             te=496,
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
@@ -738,8 +756,8 @@ class MVCA_TETRA10(MVCA_HEXA20):
     elrefe = (
         ElrefeLoc(
             MT.T10,
-            gauss=("RIGI=FPG4", "MASS=FPG15", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("RIGI", "FPG1"),
+            gauss=("RIGI=FPG4", "MASS=FPG15", "FPG1=FPG1", "NOEU=NOEU", "MTGA=FPG4"),
+            mater=("RIGI", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.TE4, gauss=("RIGI=FPG4", "MASS=FPG15")),
         ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6", "NOEU=NOEU")),
@@ -758,8 +776,8 @@ class MVCA_PENTA15(MVCA_HEXA20):
     elrefe = (
         ElrefeLoc(
             MT.P15,
-            gauss=("RIGI=FPG6", "MASS=FPG21", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("RIGI", "FPG1"),
+            gauss=("RIGI=FPG6", "MASS=FPG21", "FPG1=FPG1", "NOEU=NOEU", "MTGA=FPG6"),
+            mater=("RIGI", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.PE6, gauss=("RIGI=FPG6", "MASS=FPG6")),
         ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU")),
@@ -776,8 +794,8 @@ class MVCA_PYRAM13(MVCA_HEXA20):
     elrefe = (
         ElrefeLoc(
             MT.P13,
-            gauss=("RIGI=FPG5", "MASS=FPG10", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("RIGI", "FPG1"),
+            gauss=("RIGI=FPG5", "MASS=FPG10", "FPG1=FPG1", "NOEU=NOEU", "MTGA=FPG5"),
+            mater=("RIGI", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.PY5, gauss=("RIGI=FPG5", "MASS=FPG5")),
         ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU")),

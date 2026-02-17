@@ -40,9 +40,8 @@ module LoadKinematic_module
     private :: kineLoadLinkProjPara
 ! ==================================================================================================
     private
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "MeshTypes_type.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -52,19 +51,20 @@ module LoadKinematic_module
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
 #include "asterfort/pj3dcoSupInf.h"
 #include "asterfort/pj4dco.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
 
 contains
 ! ==================================================================================================
@@ -292,7 +292,7 @@ contains
         integer(kind=8), pointer :: cellMast(:) => null(), nodeSlav(:) => null()
         integer(kind=8), pointer :: nodeElim(:) => null()
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE = 2*27 + 3 = 57
-        integer(kind=8), parameter :: nbTermMaxi = 57
+        integer(kind=8), parameter :: nbTermMaxi = 2*MT_NNOMAX+3
         type(KINE_LIST_RELA) :: kineListRela
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1818,7 +1818,7 @@ contains
         character(len=19), intent(out) :: listLineRela
 ! - Local
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE EN 3D = 1 + 3*27 (max maille: 27 noeuds)
-        integer(kind=8), parameter :: nbTermMaxi = 82
+        integer(kind=8), parameter :: nbTermMaxi = 1+3*MT_NNOMAX
         character(len=80), parameter :: title = 'LIAISON_PROJ'
         character(len=16), parameter :: factorKeyword = 'LIAISON_PROJ'
         character(len=8), parameter :: physQuanName = "DEPL_R"

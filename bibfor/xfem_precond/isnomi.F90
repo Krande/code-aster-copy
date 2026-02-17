@@ -44,7 +44,7 @@ function isnomi(elrefa, ino)
     if (elrefa .eq. 'HE8' .or. elrefa .eq. 'H20' .or. elrefa .eq. 'H27') then
         nnos = 8
         goto 100
-    else if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10') then
+    else if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10' .or. elrefa .eq. 'T20') then
         nnos = 4
         goto 100
     else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18') then
@@ -53,10 +53,12 @@ function isnomi(elrefa, ino)
     else if (elrefa .eq. 'PY5' .or. elrefa .eq. 'P13') then
         nnos = 5
         goto 100
-    else if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
+    else if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7' &
+             .or. elrefa .eq. 'TR1') then
         nnos = 3
         goto 100
-    else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') then
+    else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9' &
+             .or. elrefa .eq. 'Q12') then
         nnos = 4
         goto 100
     else if (elrefa .eq. 'SE2' .or. elrefa .eq. 'SE3' .or. elrefa .eq. 'SE4') then

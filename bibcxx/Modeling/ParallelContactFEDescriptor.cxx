@@ -93,7 +93,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
 
     VectorInt virtualCellToKeep;
     VectorInt meshNodesToKeep( owner.size(), -1 );
-    _virtualCellToKeep = VectorLong( explorer.size(), 1 );
+    _contactFEDToKeep = VectorLong( explorer.size(), 1 );
     // Dans cette map, on stocke en face du numero physique :
     //  - le numero global du faux Lagrange
     //  - le numéro des processeurs qui possedent ce Lagrange
@@ -159,7 +159,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
         if ( allElemNodesToKeep ) {
             if ( keepElem ) {
                 virtualCellToKeep.push_back( numElem );
-                _virtualCellToKeep[numElem] = nbElemToKeep - 1;
+                _contactFEDToKeep[numElem] = nbElemToKeep - 1;
                 --nbElemToKeep;
                 for ( const auto &num2 : tmpVec ) {
                     ++totalSizeToKeep;
@@ -299,9 +299,9 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
         auto &curLM = _lielMatching[lielPos];
         for ( const auto &val : colObj ) {
             if ( val < 0 ) {
-                if ( _virtualCellToKeep[-val - 1] != 1 ) {
+                if ( _contactFEDToKeep[-val - 1] != 1 ) {
                     curLM.push_back( curPos );
-                    toLiel[nbCollObj - 1].push_back( _virtualCellToKeep[-val - 1] );
+                    toLiel[nbCollObj - 1].push_back( _contactFEDToKeep[-val - 1] );
                     addedElem = true;
                     ++totalCollSize;
                 }
@@ -433,7 +433,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
 
     VectorInt virtualCellToKeep;
     VectorInt meshNodesToKeep( owner.size(), -1 );
-    _virtualCellToKeep = VectorLong( explorer.size(), 1 );
+    _contactFEDToKeep = VectorLong( explorer.size(), 1 );
     // Dans cette map, on stocke en face du numero physique :
     //  - le numero global du faux Lagrange
     //  - le numéro des processeurs qui possedent ce Lagrange
@@ -679,9 +679,9 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
         auto &curLM = _lielMatching[lielPos];
         for ( const auto &val : colObj ) {
             if ( val < 0 ) {
-                if ( _virtualCellToKeep[-val - 1] != 1 ) {
+                if ( _contactFEDToKeep[-val - 1] != 1 ) {
                     curLM.push_back( curPos );
-                    toLiel[nbCollObj - 1].push_back( _virtualCellToKeep[-val - 1] );
+                    toLiel[nbCollObj - 1].push_back( _contactFEDToKeep[-val - 1] );
                     addedElem = true;
                     ++totalCollSize;
                 }
