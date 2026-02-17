@@ -90,6 +90,8 @@ mesh0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("BOUNDARIES")))
+
 mesh = DEFI_GROUP(
     reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="2D", TOUT="OUI", TYPE_MAILLE="2D")
 )
@@ -109,7 +111,19 @@ for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
         MODELE=model, MECA_IMPO=_F(GROUP_MA="BOUNDARIES", DX=uR[form], DY=uZ[form])
     )
 
-    load = AFFE_CHAR_MECA_F(MODELE=model, FORCE_INTERNE=_F(GROUP_MA="2D", FX=fR[form], FY=fZ[form]))
+    load = AFFE_CHAR_MECA_F(
+        MODELE=model,
+        FORCE_INTERNE=_F(GROUP_MA="2D", FX=fR[form], FY=fZ[form]),
+        PRES_REP=_F(GROUP_MA="BOUNDARIES", PRES=zero),
+        FORCE_CONTOUR=_F(GROUP_MA="BOUNDARIES", FX=zero, FY=zero),
+    )
+
+    # fake load
+    load0 = AFFE_CHAR_MECA(
+        MODELE=model,
+        FORCE_INTERNE=_F(GROUP_MA="2D", FX=0.0, FY=0.0),
+        FORCE_CONTOUR=_F(GROUP_MA="BOUNDARIES", FX=0.0, FY=0.0),
+    )
 
     # solve linear system
     LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
@@ -118,7 +132,7 @@ for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
         MODELE=model,
         CHAM_MATER=mater,
         INCREMENT=_F(LIST_INST=LREEL),
-        EXCIT=(_F(CHARGE=bc), _F(CHARGE=load)),
+        EXCIT=(_F(CHARGE=bc), _F(CHARGE=load), _F(CHARGE=load0)),
     )
 
     u_sol = resu.getField("DEPL", para="INST", value=1.0)
@@ -151,5 +165,11 @@ for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
 
     l2_diff = (matM * u_diff).dot(u_diff)
     test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
+
+    # for keyword coverage
+    rigi_elem = CALC_MATR_ELEM(MODELE=model, OPTION="RIGI_MECA", CHAM_MATER=mater)
+    amor_elem = CALC_MATR_ELEM(
+        MODELE=model, OPTION="AMOR_MECA", CHAM_MATER=mater, RIGI_MECA=rigi_elem, MASS_MECA=matEM
+    )
 
 FIN()

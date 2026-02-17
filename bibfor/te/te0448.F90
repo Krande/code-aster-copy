@@ -101,7 +101,6 @@ subroutine te0448(nomopt, nomte)
         typmod(1) = '3D'
     case (2)
         if (lteatt('AXIS', 'OUI')) then
-            ASSERT(ASTER_FALSE)
             typmod(1) = 'AXIS'
         else if (lteatt('C_PLAN', 'OUI')) then
             ASSERT(ASTER_FALSE)
