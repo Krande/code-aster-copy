@@ -41,20 +41,26 @@ class Contact : public DataStructure {
   private:
     /** @brief La SD est-elle vide ? */
     bool _isEmpty;
+
     /** @brief Modele */
     ModelPtr _model;
+
     /** @brief Ligel ".CHME.LIGRE" */
     FiniteElementDescriptorPtr _FEDesc;
-    // all formulations
-    /** @brief V K8 ".CHME.MODEL.NOMO" */
-    JeveuxVectorChar8 _model_name;
-    /** @brief V I  ".PARACI         " */
-    JeveuxVectorLong _integer_params;
-    /** @brief V R  ".PARACR         " */
-    JeveuxVectorReal _real_params;
-    /** @brief V K8 ".TYPE           " */
-    JeveuxVectorChar8 _contact_type;
-    // liaison_unil formulation
+
+    /** @brief Object to model (JEVEUX name) */
+    JeveuxVectorChar8 _modelName;
+
+    /** @brief Object for type of load */
+    JeveuxVectorChar8 _loadType;
+
+    /** @brief Global parameters (integers) - PARACI" */
+    JeveuxVectorLong _paraInteger;
+
+    /** @brief Global parameters (reals) - PARACR " */
+    JeveuxVectorReal _paraReal;
+
+    // For LIAISON UNIL
     /** @brief V I  ".UNILATE.NDIMCU " */
     JeveuxVectorLong _ndim_unilate;
     /** @brief V K8 ".UNILATE.CMPGCU " */
@@ -69,114 +75,89 @@ class Contact : public DataStructure {
     JeveuxVectorLong _poinoe_unilate;
     /** @brief V R  ".UNILATE.COEFPE " */
     JeveuxVectorReal _coefpe_unilate;
-    // unilateral formulation
-    /** @brief  V I  ".CONTACT.NDIMCO " */
+
+    // General parameters for contact
+    /** @brief Size and dimensions ".CONTACT.NDIMCO " */
     JeveuxVectorLong _ndimco;
-    // continious and discrete formulation
-    /** @brief V I  ".CONTACT.METHCO " */
+    /** @brief Methods and algorithms (by zone)  ".CONTACT.METHCO " */
     JeveuxVectorLong _methco;
-    /** @brief V K8 ".CONTACT.DIRAPP " */
+    /** @brief For DIRE_APPA keyword (by zone) ".CONTACT.DIRAPP " */
     JeveuxVectorChar8 _dirapp;
-    /** @brief V K8 ".CONTACT.DIRNOR " */
+    /** @brief For VECT_ESCL/VECT_MAIT keywords (by zone) ".CONTACT.DIRNOR " */
     JeveuxVectorChar8 _dirnor;
-    /** @brief V K8 ".CONTACT.JFO1CO " */
+    /** @brief For DIST_MAIT keyword (by zone) ".CONTACT.JFO1CO " */
     JeveuxVectorChar8 _jfo1co;
-    /** @brief V K8 ".CONTACT.JFO2CO " */
+    /** @brief For DIST_ESCL keyword (by zone) ".CONTACT.JFO2CO " */
     JeveuxVectorChar8 _jfo2co;
-    /** @brief V R  ".CONTACT.TOLECO " */
+    /** @brief For TOLE_PROJ_EXT, RESI_APPA, DIST_APPA and TOLE_INTERP keywords (by zone)
+     * ".CONTACT.TOLECO " */
     JeveuxVectorReal _toleco;
-    /** @brief V R  ".CONTACT.JEUCOQ " */
+    /** @brief For gap from shell/plate (by zone)  ".CONTACT.JEUCOQ " */
     JeveuxVectorReal _jeucoq;
-    /** @brief V R  ".CONTACT.JEUPOU " */
+    /** @brief For gap from beam (by zone)  ".CONTACT.JEUPOU " */
     JeveuxVectorReal _jeupou;
 
-    /** @brief V I  ".CONTACT.PZONECO" */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.PZONECO" */
     JeveuxVectorLong _pzoneco;
-    /** @brief V I  ".CONTACT.PSUMACO" */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.PSUMACO" */
     JeveuxVectorLong _psumaco;
-    /** @brief V I  ".CONTACT.PSUNOCO" */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.PSUNOCO" */
     JeveuxVectorLong _psunoco;
-    /** @brief V I  ".CONTACT.MAILCO " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.MAILCO " */
     JeveuxVectorLong _mailco;
-    /** @brief V I  ".CONTACT.NOEUCO " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.NOEUCO " */
     JeveuxVectorLong _noeuco;
-    /** @brief V I  ".CONTACT.MANOCO " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.MANOCO " */
     JeveuxVectorLong _manoco;
-    /** @brief V I  ".CONTACT.PMANOCO" */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.PMANOCO" */
     JeveuxVectorLong _pmanoco;
-    /** @brief V I  ".CONTACT.NOMACO " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.NOMACO " */
     JeveuxVectorLong _nomaco;
-    /** @brief V I  ".CONTACT.PNOMACO" */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.PNOMACO" */
     JeveuxVectorLong _pnomaco;
-
-    /** @brief V I  ".CONTACT.PSSNOCO" */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.PSSNOCO" */
     JeveuxVectorLong _pssnoco;
-    /** @brief V I  ".CONTACT.SSNOCO " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.SSNOCO " */
     JeveuxVectorLong _ssnoco;
-
-    /** @brief V I  ".CONTACT.TYPENO " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.TYPENO " */
     JeveuxVectorLong _typeno;
-    /** @brief V I  ".CONTACT.TYPEMA " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.TYPEMA " */
     JeveuxVectorLong _typema;
-    /** @brief V I  ".CONTACT.MAESCL " */
+    /** @brief To describe mesh of surfaces (by zone) ".CONTACT.MAESCL " */
     JeveuxVectorLong _maescl;
 
-    // discrete formulation
-    /** @brief V R  ".CONTACT.CARADF " */
+    /** @brief Parameters for DISCRETE contact (by zone) ".CONTACT.CARADF " */
     JeveuxVectorReal _caradf;
-
-    // continious formulation
-    /** @brief V R  ".CONTACT.CARACF " */
+    /** @brief Parameters for CONTINUE contact (by zone) ".CONTACT.CARACF " */
     JeveuxVectorReal _caracf;
-    /** @brief V I  ".CONTACT.PSANOFR" */
+
+    /** @brief For SANS_GROUP_NO/SANS_GROUP_NO_FR keywords (by zone) ".CONTACT.PSANOFR" */
     JeveuxVectorLong _psanofr;
-    /** @brief V I  ".CONTACT.SANOFR " */
     JeveuxVectorLong _sanofr;
-    /** @brief V I  ".CONTACT.EXCLFR " */
     JeveuxVectorLong _exclfr;
 
-    // xfem formulation
-    /** @brief V R  ".CONTACT.CARAXF " */
-    JeveuxVectorReal _caraxf;
-    /** @brief V K8 ".CONTACT.XFIMAI " */
-    JeveuxVectorChar8 _xfimai;
-    /** @brief V K24 ".CONTACT.XNRELL " */
-    JeveuxVectorChar24 _xnrell;
-    /** @brief V I  ".CONTACT.MAESCX " */
-    JeveuxVectorLong _maescx;
-
-    // lac contact
-    /** @brief V I  ".CONTACT.PTRDCLC" */
+    /** @brief Indirection DECOUPE_LAC/DEFI_CONTACT  ".CONTACT.PTRDCLC" */
     JeveuxVectorLong _ptrdclc;
 
   public:
-    /**
-     * @typedef ContactPt
-     * @brief Pointeur intelligent vers un Contact
-     */
-    typedef std::shared_ptr< Contact > ContactPtr;
-    /**
-     * @brief Constructeur
-     */
+    using ContactPtr = std::shared_ptr< Contact >;
+
+    /** @brief No default constructor */
     Contact() = delete;
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with given name */
     Contact( const std::string name, const ModelPtr model );
-    /**
-     * @brief Constructeur
-     */
+
+    /** @brief Constructor with automatic name */
     Contact( const ModelPtr model );
 
+    /** @brief Get model */
     ModelPtr getModel() const;
+
+    /** @brief Get finite element descriptor */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const;
 };
 
-/**
- * @typedef ContactPt
- * @brief Pointeur intelligent vers un Contact
- */
-typedef std::shared_ptr< Contact > ContactPtr;
+using ContactPtr = std::shared_ptr< Contact >;
 
 #endif /* CONTACT_H_ */

@@ -52,6 +52,7 @@ subroutine op0030()
 #include "asterfort/jemarq.h"
 #include "asterfort/lgtlgr.h"
 #include "asterfort/utmess.h"
+#include "Contact_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +68,7 @@ subroutine op0030()
     character(len=16) :: k16dummy
     character(len=19), parameter :: slavElemLigr = '&&OP0030.LIGRET', ligrelTmp = '&&OP0030.LIGREL'
     character(len=19) :: contLigrel
-    integer(kind=8) :: cont_form, algo_cont
+    integer(kind=8) :: contForm, algo_cont
     aster_logical :: lallv
     character(len=24) :: sdcont_defi
     aster_logical :: lLineRela
@@ -79,7 +80,7 @@ subroutine op0030()
     call infmaj()
 
 ! - Initializations
-    cont_form = 0
+    contForm = CONT_FORM_UNDEF
     call asmpi_comm('GET', mpicou)
     call asmpi_info(mpicou, size=nb_proc)
 
@@ -108,10 +109,10 @@ subroutine op0030()
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
 
 ! - Get contact formulation
-    call caform(cont_form)
+    call caform(contForm)
 
 ! - Check mesh (for LAC method)
-    call check_model(mesh, cont_form)
+    call check_model(mesh, contForm)
 
 ! - Create general datastructure
     call defContactCreateObjects(sdcont)
@@ -119,11 +120,11 @@ subroutine op0030()
 ! - Read and create datastructures
     lLineRela = ASTER_FALSE
     listRela = " "
-    if (cont_form .eq. 4) then
+    if (contForm .eq. CONT_FORM_UNIL) then
         call caliun(sdcont, mesh, model)
     else
         call calico(sdcont, mesh, model, &
-                    geomDime, cont_form, &
+                    geomDime, contForm, &
                     slavElemLigr, lLineRela, listRela)
     end if
 
@@ -141,7 +142,7 @@ subroutine op0030()
     end if
 
 ! - MPI forbidden for some methods (issue25897)
-    if ((cont_form .eq. 1) .or. (cont_form .eq. 4)) then
+    if ((contForm .eq. 1) .or. (contForm .eq. 4)) then
         algo_cont = cfdisi(sdcont_defi, 'ALGO_CONT')
         if (nb_proc .gt. 1 .and. algo_cont .ne. 2) then
             call dismoi('PARTITION', model//'.MODELE', 'LIGREL', repk=partit)
@@ -154,7 +155,7 @@ subroutine op0030()
 
 ! - New <LIGREL>
     lallv = cfdisl(sdcont_defi, 'ALL_VERIF')
-    if (cont_form .eq. 2 .or. cont_form .eq. 5) then
+    if (contForm .eq. 2 .or. contForm .eq. 5) then
         if (.not. lallv) then
             call lgtlgr('V', slavElemLigr, ligrelTmp)
             call detrsd('LIGRET', slavElemLigr)
@@ -173,7 +174,7 @@ subroutine op0030()
     end if
 
 ! - Check mesh orientation (normals)
-    if ((cont_form .eq. 1) .or. (cont_form .eq. 2) .or. (cont_form .eq. 5)) then
+    if ((contForm .eq. 1) .or. (contForm .eq. 2) .or. (contForm .eq. 5)) then
         call chveno(valeType, mesh, model)
     end if
 !

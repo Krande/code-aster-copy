@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "Contact_type.h"
 !
 interface
-    subroutine caform(cont_form)
-        integer(kind=8), intent(out) :: cont_form
+    subroutine caform(contForm)
+        integer(kind=8), intent(out) :: contForm
     end subroutine caform
 end interface

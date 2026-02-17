@@ -29,10 +29,10 @@ Contact::Contact( const std::string name, const ModelPtr model )
       _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".CONT.LIGRE",
                                                             _model->getMesh() ) ),
       _isEmpty( false ),
-      _model_name( JeveuxVectorChar8( getName() + ".CHME.MODEL.NOMO" ) ),
-      _integer_params( JeveuxVectorLong( getName() + ".PARACI" ) ),
-      _real_params( JeveuxVectorReal( getName() + ".PARACR" ) ),
-      _contact_type( JeveuxVectorChar8( getName() + ".TYPE" ) ),
+      _modelName( JeveuxVectorChar8( getName() + ".CHME.MODEL.NOMO" ) ),
+      _paraInteger( JeveuxVectorLong( getName() + ".PARACI" ) ),
+      _paraReal( JeveuxVectorReal( getName() + ".PARACR" ) ),
+      _loadType( JeveuxVectorChar8( getName() + ".TYPE" ) ),
       _ndim_unilate( JeveuxVectorLong( getName() + ".UNILATE.NDIMCU" ) ),
       _cmpg_unilate( JeveuxVectorChar8( getName() + ".UNILATE.CMPGCU" ) ),
       _coed_unilate( JeveuxVectorChar8( getName() + ".UNILATE.COED" ) ),
@@ -68,10 +68,6 @@ Contact::Contact( const std::string name, const ModelPtr model )
       _psanofr( JeveuxVectorLong( getName() + ".CONTACT.PSANOFR" ) ),
       _sanofr( JeveuxVectorLong( getName() + ".CONTACT.SANOFR" ) ),
       _exclfr( JeveuxVectorLong( getName() + ".CONTACT.EXCLFR" ) ),
-      _caraxf( JeveuxVectorReal( getName() + ".CONTACT.CARAXF" ) ),
-      _xfimai( JeveuxVectorChar8( getName() + ".CONTACT.XFIMAI" ) ),
-      _xnrell( JeveuxVectorChar24( getName() + ".CONTACT.XNRELL" ) ),
-      _maescx( JeveuxVectorLong( getName() + ".CONTACT.MAESCX" ) ),
       _ptrdclc( JeveuxVectorLong( getName() + ".CONTACT.PTRDCLC" ) ) {};
 
 Contact::Contact( const ModelPtr model ) : Contact( ResultNaming::getNewResultName(), model ) {};

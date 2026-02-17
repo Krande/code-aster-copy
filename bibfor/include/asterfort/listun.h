@@ -15,17 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine listun(noma, motfac, nzocu, nopono, nnocu,&
-                      nolino)
-        character(len=8) :: noma
-        character(len=16) :: motfac
-        integer(kind=8) :: nzocu
-        character(len=24) :: nopono
-        integer(kind=8) :: nnocu
-        character(len=24) :: nolino
+    subroutine listun(mesh, zoneKeyword, nbUnilZone, &
+                      noponoJv, nolinoJv, nbNodeUnil)
+        character(len=8), intent(in) :: mesh
+        integer(kind=8), intent(in) :: nbUnilZone
+        character(len=16), intent(in) :: zoneKeyword
+        character(len=24), intent(in) :: noponoJv, nolinoJv
+        integer(kind=8), intent(out) :: nbNodeUnil
     end subroutine listun
 end interface

@@ -15,23 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
-                      compcu, nopono, nolino, lisnoe, poinoe,&
-                      nnoco)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=16) :: motfac
-        integer(kind=8) :: nzocu
-        character(len=24) :: nbgdcu
-        character(len=24) :: compcu
-        character(len=24) :: nopono
-        character(len=24) :: nolino
-        character(len=24) :: lisnoe
-        character(len=24) :: poinoe
-        integer(kind=8) :: nnoco
+    subroutine elimun(mesh, model, zoneKeyword, nbUnilZone, &
+                      nbgdcuJv, compcuJv, noponoJv, nolinoJv, &
+                      lisnoeJv, poinoeJv, &
+                      nbNodeUnil)
+        character(len=8), intent(in) :: mesh, model
+        character(len=16), intent(in) :: zoneKeyword
+        integer(kind=8), intent(in) :: nbUnilZone
+        character(len=24), intent(in) :: nbgdcuJv, compcuJv, noponoJv, nolinoJv
+        character(len=24), intent(in) :: lisnoeJv, poinoeJv
+        integer(kind=8), intent(inout) :: nbNodeUnil
     end subroutine elimun
 end interface

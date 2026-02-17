@@ -15,55 +15,36 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine listun(noma, motfac, nzocu, nopono, nnocu, &
-                  nolino)
 !
+subroutine listun(mesh, zoneKeyword, nbUnilZone, &
+                  noponoJv, nolinoJv, nbNodeUnil)
 !
     implicit none
-#include "jeveux.h"
+!
 #include "asterfort/exnode.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nbnode.h"
-    character(len=8) :: noma
-    character(len=16) :: motfac
-    integer(kind=8) :: nzocu
-    character(len=24) :: nopono, nolino
-    integer(kind=8) :: nnocu
 !
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: mesh
+    integer(kind=8), intent(in) :: nbUnilZone
+    character(len=16), intent(in) :: zoneKeyword
+    character(len=24), intent(in) :: noponoJv, nolinoJv
+    integer(kind=8), intent(out) :: nbNodeUnil
 !
-! ROUTINE CONTACT (LIAISON_UNILATERALE - LECTURE)
+! --------------------------------------------------------------------------------------------------
 !
-! STOCKAGE DES NOEUDS
+! DEFI_CONTACT
 !
-! ----------------------------------------------------------------------
+! Get nodes from definition of LIAISON_UNILATER
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MOTFAC : MOT_CLEF FACTEUR POUR LIAISON UNILATERALE
-! IN  NZOCU  : NOMBRE DE ZONES DE LIAISON_UNILATERALE
-! OUT NOPONO : NOM DE L'OBJET JEVEUX CONTENANT LE VECTEUR D'INDIRECTION
-! OUT NOLINO : NOM DE L'OBJET JEVEUX CONTENANT LA LISTE DES NOEUDS
-! OUT NNOCU  : NOMBRE DE TOTAL DE NOEUDS POUR TOUTES LES OCCURRENCES
+! In  mesh             : name of mesh
+! In  nbUnilZone       : number of zones with LIAISON_UNILATER
+! Out nbNodeUnil       : total number of nodes in LIAISON_UNILATER
 !
+! --------------------------------------------------------------------------------------------------
 !
+    call nbnode(mesh, zoneKeyword, nbUnilZone, noponoJv, nbNodeUnil)
+    call exnode(mesh, zoneKeyword, nbUnilZone, nbNodeUnil, nolinoJv)
 !
-!
-!
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- COMPTE DES NOEUDS
-!
-    call nbnode(noma, motfac, nzocu, nopono, nnocu)
-!
-! --- LECTURE DES NOEUDS
-!
-    call exnode(noma, motfac, nzocu, nnocu, nolino)
-!
-    call jedema()
 end subroutine
