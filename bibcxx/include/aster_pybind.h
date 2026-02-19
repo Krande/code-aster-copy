@@ -47,7 +47,7 @@ static auto define_pickling() {
                        []( const py::tuple &tup ) { return std::make_shared< DSType >( tup ); } );
 };
 
-/** @brief Explicit mark that pickling is not supported by an object */
+/** @brief Explicitly marks that pickling is not supported by an object */
 template < typename DSType >
 static auto disable_pickling() {
     return []( const DSType &obj ) { return 1; };
