@@ -24,7 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 // aslint: disable=C3012
 
 #include "IOManager/MedField.h"
