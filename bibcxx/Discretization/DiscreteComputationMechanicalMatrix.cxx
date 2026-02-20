@@ -1328,7 +1328,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalLinearCoup
                     const auto FEnames = fed->getFiniteElementNames();
 
                     for ( const auto &name : FEnames ) {
-                        if ( name.starts_with( "CN_" ) ) {
+                        if ( name.substr( 0, 3 ) == "CN_" ) {
                             exiNitsche = true;
                             break;
                         }

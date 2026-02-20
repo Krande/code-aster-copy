@@ -634,7 +634,7 @@ def copy_resultfiles(files, copybase, test=False):
                 if obj.isdir and not osp.exists(obj.path):
                     os.makedirs(obj.path)
                 dst = obj.path
-                if osp.isdir(filename):
+                if osp.isdir(filename) and obj.filetype != "nom":
                     dst = osp.join(obj.path, osp.basename(filename))
                 copy(filename, dst, verbose=True)
 
