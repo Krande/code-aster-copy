@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -649,6 +649,7 @@ DICT_NOM_VARI = {
     "SIGP": _("cam_clay : contrainte de confinement"),
     "SIGRN": _(" Pinto-Menegotto, contrainte cycle N"),
     "SIGT": _("norme de la contrainte tangente"),
+    "SIGY": _("Elasticity yield for isotropic hardening"),
     "SIVXX": _("variable interne pour regularisation visqueuse"),
     "SIVYY": _("variable interne pour regularisation visqueuse"),
     "SIVZZ": _("variable interne pour regularisation visqueuse"),

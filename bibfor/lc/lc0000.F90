@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -348,11 +348,15 @@ subroutine lc0000(BEHinteg, &
                     nvi, dsidep, codret)
     case (15)
 ! ----- KIT_META
-        call lc0015(fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, epsm, &
-                    deps, sigm, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    nvi, dsidep, codret)
+        call lc0015(BEHinteg, &
+                    option, angmas, typmod, &
+                    fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, &
+                    neps, epsm, deps, &
+                    nsig, sigm, &
+                    nvi, vim, &
+                    sigp, vip, &
+                    ndsde, dsidep, codret)
 
     case (16)
 !     DRUCK_PRAGER

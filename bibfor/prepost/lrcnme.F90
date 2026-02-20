@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,9 @@
 subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
                   typent, nbcmpv, ncmpva, ncmpvm, iinst, &
                   numpt, numord, inst, crit, prec, &
-                  nrofic, codret, base, nonu)
+                  nrofic, prolz, codret, base, nonu)
 !_____________________________________________________________________
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !     LECTURE D'UN CHAMP AUX NOEUDS - FORMAT MED
 !     -    -       -         -               --
 !-----------------------------------------------------------------------
@@ -89,6 +88,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     integer(kind=8) :: nrofic, typent
     integer(kind=8) :: nbcmpv
     integer(kind=8) :: iinst, numpt, numord
+    character(len=3) :: prolz
     integer(kind=8) :: codret
     character(len=1), optional, intent(in) :: base
 !

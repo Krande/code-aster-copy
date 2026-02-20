@@ -3,7 +3,7 @@
  * @brief Interface python de SimpleFieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/SimpleFieldOnNodesInterface.h"
 
@@ -71,13 +69,29 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
             )",
               py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "zero" ) = false )
         .def(
-            "toFieldOnNodes", []( const SimpleFieldOnNodesReal &f ) { return toFieldOnNodes( f ); },
+            "toFieldOnNodes",
+            []( const SimpleFieldOnNodesRealPtr &f ) { return toFieldOnNodes( f ); },
             R"(
 Convert to FieldOnNodes
 
 Returns:
     FieldOnNodesReal: field converted
         )" )
+        .def(
+            "toFieldOnNodes",
+            []( const SimpleFieldOnNodesRealPtr &f, const BaseDOFNumberingPtr &dofNum,
+                bool zeroExtension ) { return toFieldOnNodes( f, dofNum ); },
+            R"(
+Convert to FieldOnNodes
+
+Arguments:
+    dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
+    zeroExtension (bool): true if field can be extended to zero (when missing values)
+
+Returns:
+    FieldOnNodesReal: field converted
+        )",
+            py::arg( "dofNum" ), py::arg( "zeroExtension" ) = PythonBool::False )
         .def( "_restrict", &SimpleFieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given

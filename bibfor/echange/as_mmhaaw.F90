@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhaaw(fid, maa, fam, n, filter, &
-                     typent, typgeo, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
+subroutine as_mmhaaw(fid, maa, dtype, fam, n, &
+                     filter, typent, typgeo, cret)
 !
     implicit none
 #include "asterf_types.h"
@@ -41,7 +40,7 @@ subroutine as_mmhaaw(fid, maa, fam, n, filter, &
     med_int, allocatable :: fam4(:)
     mdnont = -1
     mdnoit = -1
-    dtyp4 = 4
+    dtyp4 = dtype
     fidm = to_med_idt(fid)
     allocate (fam4(n))
     call conv_int('ast->med', n, vi_ast=fam, vi_med=fam4)
@@ -56,7 +55,6 @@ subroutine as_mmhaaw(fid, maa, fam, n, filter, &
 #else
     mdnont = -1
     mdnoit = -1
-    dtype = 4
     call mmhaaw(fid, maa, dtype, mdnont, mdnoit, &
                 typent, typgeo, filter, fam, cret)
 #endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,12 +63,12 @@ subroutine lc1015(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (compor(META_PHAS) .eq. 'ACIER') then
+    if (compor(META_PHAS) .eq. 'ACIER_MECA') then
         call lcgdpm(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, vim, option, sigp, &
                     vip, dsidep, codret)
-    else if (compor(META_PHAS) .eq. 'ZIRC') then
+    else if (compor(META_PHAS) .eq. 'ZIRC_MECA') then
         call nzgdzi(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, vim, option, sigp, &

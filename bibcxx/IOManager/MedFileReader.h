@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,8 +23,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 // aslint: disable=C3012
 
@@ -85,7 +83,7 @@ class MedFileReader {
     MedFieldPtr getField( const std::string &name ) const;
 
     /** @brief get field from index */
-    MedFieldPtr getField( int index ) const { return _fields[index]; };
+    MedFieldPtr getField( int index ) const;
 
     /** @brief get all field names */
     std::vector< std::string > getFieldNames() const;
@@ -97,7 +95,7 @@ class MedFileReader {
     int getMeshNumber() const;
 
     /** @brief get mesh from index */
-    MedMeshPtr getMesh( int index ) const { return _meshes[index]; };
+    MedMeshPtr getMesh( int index ) const;
 
     /** @brief get number of profile */
     int getProfileNumber() const;

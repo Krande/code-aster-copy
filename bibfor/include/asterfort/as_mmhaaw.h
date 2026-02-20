@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,11 @@
 !
 #include "asterf_types.h"
 interface
-    subroutine as_mmhaaw(fid, maa, fam, n, filter,&
-                         typent, typgeo, cret)
+    subroutine as_mmhaaw(fid, maa, dtype, fam, n,&
+                         filter, typent, typgeo, cret)
         med_idt :: fid
         character(len=*) :: maa
+        aster_int :: dtype
         aster_int :: fam(*)
         aster_int :: n
         aster_int :: filter

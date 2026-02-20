@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis,&
-                                   l_temp , temp     ,&
-                                   epsp   , h0       , rp_      , maxval_)
-        integer(kind=8), intent(in) :: j_mater
-        integer(kind=8), intent(in) :: meta_type
-        integer(kind=8), intent(in) :: nb_phasis
+    subroutine metaGetParaHardTrac(jvMaterCode, metaType, nbPhase, &
+                                   l_temp, temp, &
+                                   epseq, h0, rp_, nbValeMaxi_)
+        integer(kind=8), intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: metaType
+        integer(kind=8), intent(in) :: nbPhase
         aster_logical, intent(in) :: l_temp
         real(kind=8), intent(in) :: temp
-        real(kind=8), intent(in) :: epsp(*)
-        real(kind=8), intent(out) :: h0(*)
-        real(kind=8), optional, intent(out) :: rp_(*)
-        integer(kind=8), optional, intent(out) :: maxval_
+        real(kind=8), intent(in) :: epseq(nbPhase)
+        real(kind=8), intent(out) :: h0(nbPhase)
+        real(kind=8), optional, intent(out) :: rp_(nbPhase)
+        integer(kind=8), optional, intent(out) :: nbValeMaxi_
     end subroutine metaGetParaHardTrac
 end interface
