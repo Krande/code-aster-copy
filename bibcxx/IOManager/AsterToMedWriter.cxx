@@ -366,29 +366,52 @@ bool AsterToMedWriter::_printMeshFromList( const BaseMesh &toPrint,
     const auto connectivity = toPrint.getConnectivity();
     connectivity->updateValuePointer();
     int curType = 1;
+    const auto endIter = asterMedMatching.end();
     for ( const auto &cellIds : cellByType ) {
-        if ( cellIds.size() == 0 ) {
+        const auto &curIter = asterMedMatching.find( curType );
+        if ( curIter == endIter ) {
             ++curType;
             continue;
         }
-        const auto &firstCell = ( *connectivity )[cellIds[0] + 1];
-        const auto nodeNbInCell = firstCell->size();
-        const auto cellNb = cellIds.size();
-        std::vector< med_int > curConn( nodeNbInCell * cellNb, 0 );
-        std::vector< med_int > curFamilies( cellNb, 0 );
-        int curPos = 0, posInFamilies = 0;
-        for ( const auto &j : cellIds ) {
-            const auto &curCell = ( *connectivity )[j + 1];
-            for ( int k = 0; k < nodeNbInCell; ++k ) {
-                curConn[curPos] = medGNum[( *curCell )[k] - 1] + 1;
-                ++curPos;
-            }
-            curFamilies[posInFamilies] = allCellFamily[j];
-            ++posInFamilies;
-        }
         const auto &geotype = asterMedMatching.at( curType );
-        if ( medTypeToRenumber.count( geotype ) != 0 ) {
-            curConn = asterToMedRenumbering( geotype, curConn, cellNb );
+        bool empty = false, localEmpty = false;
+        if ( !local ) {
+            const auto &partDesc = mapMedTypeCellsByProc.at( geotype );
+            if ( partDesc[0] == 0 )
+                empty = true;
+            if ( cellIds.size() == 0 )
+                localEmpty = true;
+        } else if ( cellIds.size() == 0 ) {
+            empty = true;
+        }
+        if ( empty ) {
+            ++curType;
+            continue;
+        }
+        std::vector< med_int > curConn, curFamilies;
+        int nodeNbInCell = 0;
+        const auto cellNb = cellIds.size();
+        if ( !localEmpty ) {
+            const auto &firstCell = ( *connectivity )[cellIds[0] + 1];
+            nodeNbInCell = firstCell->size();
+            curConn = std::vector< med_int >( nodeNbInCell * cellNb, 0 );
+            curFamilies = std::vector< med_int >( cellNb, 0 );
+            int curPos = 0, posInFamilies = 0;
+            for ( const auto &j : cellIds ) {
+                const auto &curCell = ( *connectivity )[j + 1];
+                for ( int k = 0; k < nodeNbInCell; ++k ) {
+                    curConn[curPos] = medGNum[( *curCell )[k] - 1] + 1;
+                    ++curPos;
+                }
+                curFamilies[posInFamilies] = allCellFamily[j];
+                ++posInFamilies;
+            }
+            if ( medTypeToRenumber.count( geotype ) != 0 ) {
+                curConn = asterToMedRenumbering( geotype, curConn, cellNb );
+            }
+        }
+        if ( !local ) {
+            nodeNbInCell = AsterMPI::max( nodeNbInCell );
         }
         MedFilterPtr medCellFilter( nullptr ), medCellFamFilter( nullptr );
         // create filters for parallel print
@@ -557,8 +580,10 @@ void AsterToMedWriter::_buildFilterInformations(
         }
     }
     // store it in a map
+    const auto &end = asterMedMatching.end();
     for ( int i = 0; i < maxCellType; ++i ) {
-        if ( cellIdByType[i].size() != 0 ) {
+        const auto &curIter = asterMedMatching.find( i + 1 );
+        if ( curIter != end ) {
             const auto &toCopy = cumCellNbByType[i];
             const auto medType = asterMedMatching.at( i + 1 );
             mapMedTypeCellsByProc[medType] = { toCopy[nbProcs], toCopy[rank + 1] - toCopy[rank],
