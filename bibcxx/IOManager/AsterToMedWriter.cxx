@@ -410,7 +410,9 @@ bool AsterToMedWriter::_printMeshFromList( const BaseMesh &toPrint,
                 curConn = asterToMedRenumbering( geotype, curConn, cellNb );
             }
         }
-        nodeNbInCell = AsterMPI::max( nodeNbInCell );
+        if ( !local ) {
+            nodeNbInCell = AsterMPI::max( nodeNbInCell );
+        }
         MedFilterPtr medCellFilter( nullptr ), medCellFamFilter( nullptr );
         // create filters for parallel print
         if ( !local ) {
