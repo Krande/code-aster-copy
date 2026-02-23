@@ -819,7 +819,7 @@ class BaseRunner:
         # get field in mode_statique
         if self._option == "VITE":  # on accepte que VITE = DEPL * omega (pseudo-vitesse relative)
             phi_ps = pseudo_mode.getField("DEPL", index_pseudo_mode).getValues()
-            UTMESS("F", "SEISME_10", valk=option)
+            UTMESS("F", "SEISME_10", valk=self._option)
             # pseudo-mode
             R_c = (phi_ps * w_r - pr_wr2_phi) * s_r_freq_cut
         if self._option == "ACCE_ABSOLU":
@@ -1167,12 +1167,12 @@ class MultiAppuiRunner(BaseRunner):
                 UTMESS("F", "SEISME_68", valk=(nom_appui, direction, appui_cmp))
 
         if self._option == "VITE":  # pseudo-mode is not allowed
-            UTMESS("F", "SEISME_10", valk=option)
+            UTMESS("F", "SEISME_10", valk=self._option)
             R_c_noeud = (phi_ps.getValues() * w_r - pr_wr2_phi) * s_r_freq_cut
         elif (
             self._option == "ACCE_ABSOLU"
         ):  # correction by pseudo-mode is not allowed for ACCE_ABSOLU in mutl_appui
-            UTMESS("F", "SEISME_10", valk=option)
+            UTMESS("F", "SEISME_10", valk=self._option)
             R_c_noeud = np.zeros(phi_ps.size())
         else:
             R_c_noeud = (phi_ps.getValues() - pr_wr2_phi) * s_r_freq_cut
@@ -1402,15 +1402,15 @@ class MultiAppuiRunner(BaseRunner):
                 # Automatic correction for ACCE_ABSOLU: not used in mult-appui
                 if self._option == "ACCE_ABSOLU":
                     # raise fatal error message to stop
-                    UTMESS("F", "SEISME_10", valk=option)
+                    UTMESS("F", "SEISME_10", valk=self._option)
                     spectre = spectres[direction][0]
 
                     # unit field
                     acce_unitaire = self._mode_meca.getField("DEPL", 1).copy()
                     acce_unitaire.setValues({f"D{direction}": 1.0}, [])
                     # recalculate pr_wr2_phi for acce_absolu
-                    pr_wr2_phi = (d_fact_partici[direction])[:, None] * self._phis
-                    pr_wr2_phi = pr_wr2_phi[self._freqs <= self._freq_coup]
+                    pr_wr2_phi_all = fact_partici[:, None] * self._phis
+                    pr_wr2_phi = pr_wr2_phi_all[self._freqs <= self._freq_coup]
                     # i_appui=0 : only first support to be considered
                     index_dir = spectres[0][0].index(direction)
                     s_r_freq_cut = (
