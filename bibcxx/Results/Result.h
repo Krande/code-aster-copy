@@ -456,7 +456,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get dict of access variables and their values
      * @return py::dict
      */
-    py::dict getAccessParameters() const;
+    py::dict getParameters( bool only_access = false ) const;
 
     /**
      * @brief Get the list of fields on nodes

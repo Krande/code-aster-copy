@@ -102,7 +102,7 @@ CHBID = CREA_CHAMP(
     PROL_ZERO="OUI",
     AFFE=_F(TOUT="OUI", NOM_CMP=("X",), VALE=1.0),
 )
-dico = RESUV2.LIST_VARI_ACCES()
+dico = RESUV2.getAccessParameters()
 NBNUM = dico["NUME_ORDRE"][-1]
 instants = dico["INST"]
 print(instants)

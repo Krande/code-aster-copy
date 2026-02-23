@@ -51,7 +51,7 @@ tempHold = 610.0
 
 def calc_revenu_last_inst1(RESUin__, thermalModel):
     # Extraction de la liste d instant
-    L_inst0 = RESUin__.LIST_VARI_ACCES()["INST"]
+    L_inst0 = RESUin__.getAccessParameters()["INST"]
 
     Temp__0 = RESUin__.getField("META_ELNO", para="INST", value=L_inst0[-1])
 
@@ -350,7 +350,7 @@ result = CREA_RESU(
     ),
 )
 
-L_inst0 = result.LIST_VARI_ACCES()["INST"]
+L_inst0 = result.getAccessParameters()["INST"]
 
 ####################################################################################################
 #

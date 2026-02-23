@@ -97,13 +97,6 @@ RESU_TOT = STAT_NON_LINE(
     SOLVEUR=_F(METHODE="LDLT"),
 )
 
-####dico = RESU_TOT.LIST_PARA()
-
-####print dico['ERRE_TPS_LOC']
-
-####print dico['ERRE_TPS_GLOB']
-####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
-
 RESU_TOT = CALC_ERREUR(
     reuse=RESU_TOT, RESULTAT=RESU_TOT, LIST_INST=LI, OPTION=("ERME_ELEM", "ERME_ELNO")
 )

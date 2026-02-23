@@ -156,10 +156,10 @@ class ModeMeca(Resultat):
             "NUME_MODE": [],  # VOIR SI ON A VRAIMENT BESOIN DE CELUI-LA. SIMPLIFIER AU MAX
             "NOEUD_CMP": [],
         }
-        resu_stat = self.obj.LIST_PARA()["NOEUD_CMP"]
-        nume_ordr = self.obj.LIST_PARA()["NUME_ORDRE"]
-        cara_mod["NUME_MODE"] = self.obj.LIST_PARA()["NUME_MODE"]
-        cara_mod["NUME_ORDRE"] = self.obj.LIST_PARA()["NUME_ORDRE"]
+        resu_stat = self.obj.getAccessParameters()["NOEUD_CMP"]
+        nume_ordr = self.obj.getAccessParameters()["NUME_ORDRE"]
+        cara_mod["NUME_MODE"] = self.obj.getAccessParameters()["NUME_MODE"]
+        cara_mod["NUME_ORDRE"] = self.obj.getAccessParameters()["NUME_ORDRE"]
 
         # Rangement des donnees modales selon le type : statique ou dynamique
         # Si une donnee est incompatible avec le type (exemple : la frequence d'un mode statique), on remplit par None
@@ -173,7 +173,7 @@ class ModeMeca(Resultat):
                 cara_mod["NOEUD_CMP"].append(resu_stat[ind_ordr])
             else:  # mode dynamique
                 for ind_list in liste:
-                    cara_mod[ind_list].append(self.obj.LIST_PARA()[ind_list][ind_ordr])
+                    cara_mod[ind_list].append(self.obj.getParameters()[ind_list][ind_ordr])
                 cara_mod["NOEUD_CMP"].append(None)
 
         self.cara_mod = cara_mod
@@ -242,7 +242,9 @@ class DynaHarmo(Resultat):
 
     def extr_freq(self):
         vari_acces = list(
-            zip(self.obj.LIST_VARI_ACCES()["NUME_ORDRE"], self.obj.LIST_VARI_ACCES()["FREQ"])
+            zip(
+                self.obj.getAccessParameters()["NUME_ORDRE"], self.obj.getAccessParameters()["FREQ"]
+            )
         )
         return vari_acces
 
@@ -274,8 +276,8 @@ class DynaHarmo(Resultat):
         les modes statiques quand ils le sont"""
         cara_mod = {"NUME_ORDRE": [], "FREQ": [], "NOEUD_CMP": []}
 
-        cara_mod["NUME_ORDRE"] = self.obj.LIST_PARA()["NUME_ORDRE"]
-        cara_mod["FREQ"] = self.obj.LIST_PARA()["FREQ"]
+        cara_mod["NUME_ORDRE"] = self.obj.getAccessParameters()["NUME_ORDRE"]
+        cara_mod["FREQ"] = self.obj.getAccessParameters()["FREQ"]
         cara_mod["NOEUD_CMP"] = [None] * len(cara_mod["FREQ"])
 
         self.cara_mod = cara_mod

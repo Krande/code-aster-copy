@@ -238,7 +238,7 @@ def calc_endo_ops(
 
         __INIT = STAT_NON_LINE(**para)
 
-        iteglob = __INIT.LIST_PARA()["ITER_GLOB"][-1]
+        iteglob = __INIT.getParameters()["ITER_GLOB"][-1]
 
         # Convergence
         if iteglob <= 5:
@@ -266,7 +266,7 @@ def calc_endo_ops(
 
             # Estimation of the load amplitude to reach the damage threshold
 
-            eta = __INIT.LIST_PARA()["ETA_PILOTAGE"][-1]
+            eta = __INIT.getParameters()["ETA_PILOTAGE"][-1]
 
             # Direct computation up to the amplitude eta without damaging
 
@@ -330,7 +330,7 @@ def calc_endo_ops(
             except ConvergenceError:
                 formerTangent = True
 
-            tfin = __INIT.LIST_VARI_ACCES()["INST"][-1]
+            tfin = __INIT.getAccessParameters()["INST"][-1]
 
             __INIT_DEPL = CREA_CHAMP(
                 OPERATION="EXTR",

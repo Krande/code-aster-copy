@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 import numpy as NP
 
 from ...Cata.Syntax import _F
@@ -115,7 +114,7 @@ def dyna_visco_modes_calc(
             VERI_MODE=_F(STOP_ERREUR="OUI", SEUIL=1.0e-3, STURM="NON"),
         )
 
-        freq2 = aster.GetResu(__modtmp.getName(), "VARI_ACCES")["FREQ"]
+        freq2 = __modtmp.getAccessParameters()["FREQ"]
         dfreq = abs(freq1 - freq2[0])
         __numod = 0
 
@@ -127,7 +126,7 @@ def dyna_visco_modes_calc(
 
         freq1 = freq2[__numod]
         if TYPE_MODE == "COMPLEXE":
-            amor_red1 = aster.GetResu(__modtmp.getName(), "PARAMETRES")["AMOR_REDUIT"][__numod]
+            amor_red1 = __modtmp.getParameters()["AMOR_REDUIT"][__numod]
 
         if __numod + 1 == nmode:
             nmode = nmode + 5

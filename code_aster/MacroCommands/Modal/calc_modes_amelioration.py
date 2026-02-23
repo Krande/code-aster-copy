@@ -77,7 +77,7 @@ def calc_modes_amelioration(self, modes, TYPE_RESU, INFO, **args):
         return modes
 
     # 1.2 detect too closed eigen values (gap < CALC_* / SEUIL_*)
-    list_vp = modes.LIST_PARA()[type_vp]  # list of the eigen values
+    list_vp = modes.getParameters()[type_vp]  # list of the eigen values
     seuil_vp = args["CALC_" + type_vp]["SEUIL_" + type_vp]
     # One reproduces here the detection performed in the routine vpgsmm.F90
     seuilr = 100.0 * seuil_vp

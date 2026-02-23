@@ -299,7 +299,7 @@ class ModSpec(object):
             dict: dict of the modal analysis parameters
         """
         if self._para is None:
-            self._para = self.mode_meca.LIST_PARA()
+            self._para = self.mode_meca.getParameters()
         return self._para
 
     def getFreq(self):

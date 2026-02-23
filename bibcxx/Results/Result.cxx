@@ -517,7 +517,7 @@ ConstantFieldOnCellsRealPtr Result::getConstantFieldOnCellsReal( const std::stri
     return result;
 };
 
-py::dict Result::getAccessParameters() const {
+py::dict Result::getParameters( bool only_access ) const {
 
     py::dict returnDict;
     std::string var_name, str_val, typevar, nosuff;
@@ -552,7 +552,7 @@ py::dict Result::getAccessParameters() const {
         item->updateValuePointer();
         typevar = strip( ( *item )[3].toString() );
 
-        if ( typevar == "ACCES" ) {
+        if ( typevar == "ACCES" or ( typevar == "PARA" and !only_access ) ) {
             var_name = strip( _accessVariables->getStringFromIndex( item->getIndex() ) );
             nosuff = strip( ( *item )[0].toString() );
             ivar = std::stoi( strip( ( *item )[1].toString() ) );

@@ -616,7 +616,7 @@ class StatDyna:
         fid.close()
         self.pas_inst_impe = float(data[1])
         self.nb_inst = properties["STAT_DYNA"]["NB_INST"]
-        self.inst_init = self.resu_snl.LIST_PARA()["INST"][-1]
+        self.inst_init = self.resu_snl.getAccessParameters()["INST"][-1]
 
     def run(self):
         """Execute static-dynamic transition"""
@@ -640,7 +640,7 @@ class StatDyna:
         _chsol = self.calc_chsol_equi()
         self.add_charge(_chsol)
 
-        _lreel = DEFI_LIST_REEL(VALE=self.resu_snl.LIST_PARA()["INST"])
+        _lreel = DEFI_LIST_REEL(VALE=self.resu_snl.getAccessParameters()["INST"])
         _linst = DEFI_LIST_INST(METHODE="AUTO", DEFI_LIST=_F(LIST_INST=_lreel))
 
         _ResuSNL = STAT_NON_LINE(

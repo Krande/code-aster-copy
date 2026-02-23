@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAMP, CALC_TABLE, CREA_TABLE, MACR_LIGN_COUPE
 from ..Objects.table_py import Table
@@ -35,8 +34,11 @@ def post_coque_ops(self, RESULTAT, COOR_POINT, CHAM, NUME_ORDRE=None, INST=None,
     MasquerAlarme("MODELISA4_9")
 
     assert RESULTAT.getType() in ("EVOL_ELAS", "EVOL_NOLI")
-    dico = aster.GetResu(RESULTAT.getName(), "CHAMPS")
-    dico2 = aster.GetResu(RESULTAT.getName(), "VARI_ACCES")
+    dico = {
+        fieldName: RESULTAT.getIndexesForFieldName(fieldName)
+        for fieldName in RESULTAT.getFieldsNames()
+    }
+    dico2 = RESULTAT.getAccessParameters()
     # si ni INST ni NUME_ORDRE ne sont presents, on prend le premier
     # instant calcule
     if not INST and not NUME_ORDRE:
@@ -72,8 +74,6 @@ def post_coque_ops(self, RESULTAT, COOR_POINT, CHAM, NUME_ORDRE=None, INST=None,
                     )
                 else:
                     UTMESS("F", "POST0_19", vali=NUME_ORDRE)
-
-    dico = aster.GetResu(RESULTAT.getName(), "CHAMPS")
 
     # Appel MACR_LIGN_COUPE :
     motscles = {}

@@ -164,15 +164,6 @@ class ExtendedResult:
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder
 
-    def LIST_CHAMPS(self):
-        return aster.GetResu(self.getName(), "CHAMPS")
-
-    def LIST_VARI_ACCES(self):
-        return aster.GetResu(self.getName(), "VARI_ACCES")
-
-    def LIST_PARA(self):
-        return aster.GetResu(self.getName(), "PARAMETRES")
-
     def _createIndexFromParameter(self, para, value, crit, prec):
         """
         Create the index corresponding to a given value of an access parameter.

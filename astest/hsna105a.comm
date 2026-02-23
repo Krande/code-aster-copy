@@ -166,7 +166,7 @@ for k in range(1, NB_PAS + 1):
         #      sur le maillage thermique
         depth = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=dep, MAILLAGE_1=MAIL_MEC, MAILLAGE_2=MAIL_THE)
 
-        l_para = RESU_MEC.LIST_VARI_ACCES()
+        l_para = RESU_MEC.getAccessParameters()
         nb_nu_ord = len(l_para["NUME_ORDRE"])
 
         if nb_nu_ord == 2:
@@ -391,7 +391,7 @@ for k in range(1, NB_PAS + 1):
         #      sur le maillage thermique
         depth = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=dep, MAILLAGE_1=MAIL_MEC, MAILLAGE_2=MAIL_THE)
 
-        l_para = RESU_MEC.LIST_VARI_ACCES()
+        l_para = RESU_MEC.getAccessParameters()
         nb_nu_ord = len(l_para["NUME_ORDRE"])
         dnb_nu_or = nb_nu_ord - nb_nu_orb
 

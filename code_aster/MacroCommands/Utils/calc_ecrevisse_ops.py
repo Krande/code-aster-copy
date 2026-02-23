@@ -191,7 +191,7 @@ def calc_ecrevisse_ops(self, **args):
             del dCONVERGENCE[i]
 
     # INSTANTS
-    _l_inst = dRESULTAT["MECANIQUE"].LIST_VARI_ACCES()
+    _l_inst = dRESULTAT["MECANIQUE"].getAccessParameters()
     if "INST" in dRESULTAT:
         Inst_Ecrevisse = dRESULTAT["INST"]
     else:

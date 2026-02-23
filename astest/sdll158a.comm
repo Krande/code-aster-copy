@@ -158,7 +158,7 @@ PROJ_BASE(
     NUME_DDL_GENE=CO("nddlm"),
 )
 
-Nb_modes = len(MODES_1.LIST_VARI_ACCES()["FREQ"])
+Nb_modes = len(MODES_1.getAccessParameters()["FREQ"])
 
 # Calcul des modes_gene pour orthogonaliser la base modale
 MODES_2 = CALC_MODES(

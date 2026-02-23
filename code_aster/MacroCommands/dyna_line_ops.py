@@ -1157,7 +1157,7 @@ class DynaLineBasis:
         ichamp = 0
         affe_crea_resu = []
         for mode_intf in l_mode_intf:
-            dico = mode_intf.LIST_PARA()
+            dico = mode_intf.getParameters()
             for nume_ordre in dico["NUME_ORDRE"]:
                 ichamp += 1
                 __champ = CREA_CHAMP(

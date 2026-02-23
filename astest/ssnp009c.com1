@@ -118,7 +118,7 @@ TAB_FS_1 = CALC_STAB_PENTE(
     NB_TRANCHE=15,
     SUCCION="OUI",
     CHAM_PRES=_F(
-        RESULTAT=REproj, INST=REproj.LIST_VARI_ACCES()["INST"][-1], ALGO_PRES="PROJECTION"
+        RESULTAT=REproj, INST=REproj.getAccessParameters()["INST"][-1], ALGO_PRES="PROJECTION"
     ),
     X1_MINI=5.35,
     X1_MAXI=5.35,
@@ -140,7 +140,9 @@ TAB_FS_2 = CALC_STAB_PENTE(
     NB_TRANCHE=15,
     SUCCION="OUI",
     CHAM_PRES=_F(
-        RESULTAT=REproj, NUME_ORDRE=REproj.LIST_VARI_ACCES()["NUME_ORDRE"][-1], ALGO_PRES="INVERSE"
+        RESULTAT=REproj,
+        NUME_ORDRE=REproj.getAccessParameters()["NUME_ORDRE"][-1],
+        ALGO_PRES="INVERSE",
     ),
     X1_MINI=5.35,
     X1_MAXI=5.35,

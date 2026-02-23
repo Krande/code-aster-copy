@@ -33,7 +33,7 @@ def calc_pression_ops(self, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PRECISION, *
     """
 
     typ_resu = RESULTAT.getType()
-    insts = args.get("INST") or RESULTAT.LIST_VARI_ACCES()["INST"]
+    insts = args.get("INST") or RESULTAT.getAccessParameters()["INST"]
 
     model = RESULTAT.getModel()
     MAILLAGE = RESULTAT.getMesh()

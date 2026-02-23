@@ -756,7 +756,7 @@ def post_endo_fiss_ops(
     else:
         build = "resu"
         __RESUIN = args["RESULTAT"]
-        dicVarAcc = __RESUIN.LIST_VARI_ACCES()
+        dicVarAcc = __RESUIN.getAccessParameters()
         if args.get("NUME_ORDRE") is not None:
             nume_ordre = args.get("NUME_ORDRE")
             if nume_ordre not in dicVarAcc["NUME_ORDRE"]:
@@ -788,11 +788,10 @@ def post_endo_fiss_ops(
     # CONTROLS ON THE INPUT FIELDS
     #
     if build == "resu":
-        ChampsResu = __RESUIN.LIST_CHAMPS()
-        lstChampsResu = list(ChampsResu.keys())
+        lstChampsResu = __RESUIN.getFieldsNames()
         if NOM_CHAM not in lstChampsResu:
             UTMESS("F", "POST0_42")
-        elif nume_ordre not in ChampsResu[NOM_CHAM]:
+        elif nume_ordre not in __RESUIN.getIndexesForFieldName(NOM_CHAM):
             UTMESS("F", "POST0_41")
         else:
             pass

@@ -170,7 +170,7 @@ EVOL = STAT_NON_LINE(
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
 )
 
-dico = EVOL.LIST_VARI_ACCES()
+dico = EVOL.getAccessParameters()
 l_inst = dico["INST"]
 inst.append(l_inst[-1])
 
@@ -201,7 +201,7 @@ EVOL = STAT_NON_LINE(
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
 )
 
-dico = EVOL.LIST_VARI_ACCES()
+dico = EVOL.getAccessParameters()
 l_inst = dico["INST"]
 inst.append(l_inst[-1])
 
@@ -232,7 +232,7 @@ EVOL = STAT_NON_LINE(
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
 )
 
-dico = EVOL.LIST_VARI_ACCES()
+dico = EVOL.getAccessParameters()
 l_inst = dico["INST"]
 inst.append(l_inst[-1])
 

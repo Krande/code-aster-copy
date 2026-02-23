@@ -142,11 +142,11 @@ def observation_ops(
             num_ordr = RESULTAT.getIndexes()
 
             if RESULTAT.getType() == "EVOL_ELAS":
-                list_inst = RESULTAT.LIST_VARI_ACCES()["INST"]
+                list_inst = RESULTAT.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_TRANS":
-                list_inst = RESULTAT.LIST_VARI_ACCES()["INST"]
+                list_inst = RESULTAT.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_HARMO":
-                list_freq = RESULTAT.LIST_VARI_ACCES()["FREQ"]
+                list_freq = RESULTAT.getAccessParameters()["FREQ"]
 
             liste = []
 
@@ -588,11 +588,11 @@ def observation_ops(
 
             __chamf = [None] * len(indice)
             if RESULTAT.getType() == "EVOL_ELAS":
-                list_inst = __proj.LIST_VARI_ACCES()["INST"]
+                list_inst = __proj.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_TRANS":
-                list_inst = __proj.LIST_VARI_ACCES()["INST"]
+                list_inst = __proj.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_HARMO":
-                list_freq = __proj.LIST_VARI_ACCES()["FREQ"]
+                list_freq = __proj.getAccessParameters()["FREQ"]
 
             liste = []
 

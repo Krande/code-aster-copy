@@ -901,8 +901,8 @@ def macPlot(
     lMode2 = list2 or range(1, nModes2 + 1)
     lMode11 = list1 or range(nModes1)
     lMode22 = list2 or range(nModes2)
-    lFreq1 = lres1[0].LIST_VARI_ACCES()["FREQ"]
-    lFreq2 = lres2[0].LIST_VARI_ACCES()["FREQ"]
+    lFreq1 = lres1[0].getAccessParameters()["FREQ"]
+    lFreq2 = lres2[0].getAccessParameters()["FREQ"]
     rhof = fluid_material.RCVALE("FLUIDE", nomres=("RHO"), stop=2)[0][0] if fluid_material else 1.0
     # start MAC computation : MAC = MAC1 **2 / MAC2 / MAC3
     MAC1 = np.zeros((nModes2, nModes1))

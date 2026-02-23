@@ -139,8 +139,6 @@ for k in range(1, nbadap + 1):
         SOLVEUR=_F(METHODE="LDLT"),
     )
 
-    ####dico = RESU_00.LIST_PARA()
-
     RESU[k] = CALC_ERREUR(
         reuse=RESU[k], RESULTAT=RESU[k], LIST_INST=LI1, OPTION=("ERME_ELEM", "ERME_ELNO")
     )

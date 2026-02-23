@@ -135,7 +135,7 @@ def combinaison_ferraillage_ops(self, **args):
         ),
     )
 
-    nc = resu.LIST_VARI_ACCES()["NOM_CAS"]
+    nc = resu.getAccessParameters()["NOM_CAS"]
     UTMESS("I", "COMBFERR_13", valk="\n    ".join(nc))
 
     return resu
@@ -236,8 +236,8 @@ def lstInst(ncas, comb, resultat):
     type_combo = [None] * ncas  # list of string as type of combo
 
     # Recuperer les numéros d'ordre et les noms des cas de chargement associés
-    resu_nume_ordre = resultat.LIST_VARI_ACCES()["NUME_ORDRE"]
-    resu_nom_cas = resultat.LIST_VARI_ACCES()["NOM_CAS"]
+    resu_nume_ordre = resultat.getAccessParameters()["NUME_ORDRE"]
+    resu_nom_cas = resultat.getAccessParameters()["NOM_CAS"]
 
     # Elimination du vide dans [resu_nom_cas]
     for idx, val in enumerate(resu_nom_cas):

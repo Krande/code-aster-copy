@@ -532,7 +532,7 @@ def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, is_symmetric, dic
 
     Ltot = list(set(Ltot))
 
-    dico = RESULTAT.LIST_VARI_ACCES()
+    dico = RESULTAT.getAccessParameters()
 
     if ndim == 2:
         nomcmp = ("DX", "DY")
@@ -2147,7 +2147,7 @@ def post_k1_k2_k3_ops(
     else:
         type_para = "INST"
 
-    dico_list_var = RESULTAT.LIST_VARI_ACCES()
+    dico_list_var = RESULTAT.getAccessParameters()
 
     for ino in range(0, Nbnofo):
         if INFO == 2:
