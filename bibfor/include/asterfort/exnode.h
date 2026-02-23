@@ -15,15 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
-        character(len=8) :: noma
-        character(len=16) :: motfac
-        integer(kind=8) :: nzocu
-        integer(kind=8) :: nnocu
-        character(len=24) :: nolino
+    subroutine exnode(mesh, zoneKeyword, nbUnilZone, nbNodeUnil, nolinoJv)
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(in) :: zoneKeyword
+        integer(kind=8), intent(in) :: nbUnilZone
+        character(len=24), intent(in) :: nolinoJv
+        integer(kind=8), intent(in) :: nbNodeUnil
     end subroutine exnode
 end interface

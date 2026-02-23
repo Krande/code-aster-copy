@@ -80,9 +80,9 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepBehaviour)
 
 ! ----- Check define in Metallurgy_type.h
         if (metaLaw .eq. "WAECKEL") then
-            ASSERT(nbVari .eq. NBVARIWAECKEL)
+            ASSERT(nbVari .eq. NBVARISTEEL)
         elseif (metaLaw .eq. "JMA") then
-            ASSERT(nbVari .eq. NBVARIJMA)
+            ASSERT(nbVari .eq. NBVARISTEELR)
         end if
 
 ! ----- Set options

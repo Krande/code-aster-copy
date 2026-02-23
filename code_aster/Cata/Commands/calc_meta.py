@@ -77,7 +77,7 @@ CALC_META = OPER(
             ),
         ),
         COMPORTEMENT=FACT(
-            statut="o",
+            statut="f",
             max=1,
             RELATION=SIMP(statut="o", typ="TXM", into=("ACIER", "ZIRC", "ACIER_REVENU")),
             b_acier=BLOC(

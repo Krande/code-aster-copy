@@ -16,89 +16,57 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nbnode(noma, motfac, nzocu, nopono, nnocu)
-!
+subroutine nbnode(mesh, zoneKeyword, nbUnilZone, noponoJv, nbNodeUnil)
 !
     implicit none
-#include "jeveux.h"
+!
+#include "asterfort/getnode.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: noma
-    character(len=16) :: motfac
-    integer(kind=8) :: nzocu
-    character(len=24) :: nopono
-    integer(kind=8) :: nnocu
 !
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: zoneKeyword
+    integer(kind=8), intent(in) :: nbUnilZone
+    character(len=24), intent(in) :: noponoJv
+    integer(kind=8), intent(out) :: nbNodeUnil
 !
-! ROUTINE CONTACT (LIAISON_UNILATERALE - LECTURE)
+! --------------------------------------------------------------------------------------------------
 !
-! DECOMPTE DES NOEUDS AFFECTES PAR ZONE
+! DEFI_CONTACT
 !
-! ----------------------------------------------------------------------
+! Count nodes from definition of LIAISON_UNILATER
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MOTFAC : MOT_CLEF FACTEUR POUR LIAISON UNILATERALE
-! IN  NZOCU  : NOMBRE DE ZONES DE LIAISON_UNILATERALE
-! OUT NOPONO : NOM DE L'OBJET JEVEUX CONTENANT LE VECTEUR D'INDIRECTION
-! OUT NNOCU  : NOMBRE DE TOTAL DE NOEUDS POUR TOUTES LES OCCURRENCES
+! In  mesh             : name of mesh
+! In  nbUnilZone       : number of zones with LIAISON_UNILATER
+! Out nbNodeUnil       : total number of nodes in LIAISON_UNILATER
 !
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24), parameter :: listNode = '&&NBNODE.NOEU.NOEU'
+    integer(kind=8) :: iUnilZone, nbNodeRead
+    integer(kind=8), pointer :: nopono(:) => null()
 !
-!
-    character(len=8) :: k8bla
-    integer(kind=8) :: izone
-    integer(kind=8) :: jnp
-    integer(kind=8) :: nbmocl
-    character(len=16) :: limocl(2), tymocl(2)
-    character(len=24) :: listmn, listnn
-    integer(kind=8) :: nbmano, nbnono, nbno
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
-    call wkvect(nopono, 'V V I', nzocu+1, jnp)
-!
-    zi(jnp) = 1
-    nnocu = 0
-    nbmocl = 2
-    k8bla = ' '
-!
-! --- NOM DES SD TEMPORAIRES
-!
-    listmn = '&&NBNODE.MAIL.NOEU'
-    listnn = '&&NBNODE.NOEU.NOEU'
-!
-! --- ON COMPTE LES NOEUDS DES ZONES
-!
-    do izone = 1, nzocu
-        tymocl(1) = 'GROUP_MA'
-        tymocl(2) = 'MAILLE'
-        limocl(1) = 'GROUP_MA'
-        limocl(2) = 'MAILLE'
-        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone, &
-                    nbmocl, limocl, tymocl, listmn, nbmano)
-!
-        tymocl(1) = 'GROUP_NO'
-        tymocl(2) = 'NOEUD'
-        limocl(1) = 'GROUP_NO'
-        limocl(2) = 'NOEUD'
-        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone, &
-                    nbmocl, limocl, tymocl, listnn, nbnono)
-        nbno = nbmano+nbnono
-        nnocu = nnocu+nbno
-        zi(jnp+izone) = zi(jnp+izone-1)+nbno
+
+! - Initializations
+    nbNodeUnil = 0
+
+! - Create object
+    call wkvect(noponoJv, 'V V I', nbUnilZone+1, vi=nopono)
+    nopono(1) = 1
+
+    do iUnilZone = 1, nbUnilZone
+        call getnode(mesh, zoneKeyword, iUnilZone, ' ', listNode, nbNodeRead)
+        nbNodeUnil = nbNodeUnil+nbNodeRead
+        nopono(iUnilZone+1) = nopono(iUnilZone)+nbNodeRead
+        call jedetr(listNode)
     end do
-!
-    call jedetr(listmn)
-    call jedetr(listnn)
 !
     call jedema()
 !

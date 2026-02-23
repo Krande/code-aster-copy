@@ -52,30 +52,23 @@ contains
 ! Get initial phases for steel
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine metaInitSteelGetPhases(metaType, jvPhaseIn, phase_tot)
+    subroutine metaInitSteelGetPhases(metaName, jvPhaseIn, phaseSum)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: metaType
+        character(len=16), intent(in) :: metaName
         integer(kind=8), intent(in) :: jvPhaseIn
-        real(kind=8), intent(out) :: phase_tot
+        real(kind=8), intent(out) :: phaseSum
 ! ----- Local
         integer(kind=8) :: iPhase
 !   ------------------------------------------------------------------------------------------------
 !
-        phase_tot = 0.d0
-        if (metaType .eq. 'ACIER') then
+        phaseSum = 0.d0
+        if (metaName .eq. 'ACIER') then
             do iPhase = 1, PSTEEL_NB
                 if (zr(jvPhaseIn-1+iPhase) .eq. r8vide() .or. isnan(zr(jvPhaseIn-1+iPhase))) then
                     call utmess('F', 'META1_44')
                 end if
-                phase_tot = phase_tot+zr(jvPhaseIn-1+iPhase)
-            end do
-        elseif (metaType .eq. 'ACIER_REVENU') then
-            do iPhase = 1, PRSTEEL_NB
-                if (zr(jvPhaseIn-1+iPhase) .eq. r8vide() .or. isnan(zr(jvPhaseIn-1+iPhase))) then
-                    call utmess('F', 'META1_43')
-                end if
-                phase_tot = phase_tot+zr(jvPhaseIn-1+iPhase)
+                phaseSum = phaseSum+zr(jvPhaseIn-1+iPhase)
             end do
         else
             ASSERT(ASTER_FALSE)
@@ -90,15 +83,18 @@ contains
 ! Check size of grain
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine metaInitSteelCheckGrainSize(nbPhase, jvPhaseIn)
+    subroutine metaInitSteelCheckGrainSize(jvPhaseIn, grainSize)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer(kind=8), intent(in) :: nbPhase, jvPhaseIn
+        integer(kind=8), intent(in) :: jvPhaseIn
+        real(kind=8), intent(out) :: grainSize
 !   ------------------------------------------------------------------------------------------------
 !
-        if (zr(jvPhaseIn-1+nbPhase+SIZE_GRAIN) .eq. r8vide() .or. &
-            isnan(zr(jvPhaseIn-1+nbPhase+SIZE_GRAIN))) then
+        if (zr(jvPhaseIn-1+SIZE_GRAIN) .eq. r8vide() .or. &
+            isnan(zr(jvPhaseIn-1+SIZE_GRAIN))) then
             call utmess('F', 'META1_46')
+        else
+            grainSize = zr(jvPhaseIn-1+SIZE_GRAIN)
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -110,31 +106,24 @@ contains
 ! Compute sum of cold phases
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine metaInitSteelSumCold(metaType, jvPhaseIn, phase_tot, phase_ucold)
+    subroutine metaInitSteelSumCold(metaName, jvPhaseIn, phaseSum, phaseColdSum)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: metaType
+        character(len=16), intent(in) :: metaName
         integer(kind=8), intent(in) :: jvPhaseIn
-        real(kind=8), intent(in) :: phase_tot
-        real(kind=8), intent(out) :: phase_ucold
+        real(kind=8), intent(in) :: phaseSum
+        real(kind=8), intent(out) :: phaseColdSum
 ! ----- Local
         real(kind=8) :: phase_scold
 !   ------------------------------------------------------------------------------------------------
 !
-        phase_ucold = 0.d0
-        if (metaType .eq. 'ACIER') then
-            phase_scold = phase_tot-zr(jvPhaseIn-1+PAUSTENITE)
-            phase_ucold = zr(jvPhaseIn-1+PSUMCOLD)
-            if (abs(phase_scold-phase_ucold) .gt. 1.d-2 .or. phase_ucold .eq. r8vide()) then
+        phaseColdSum = 0.d0
+        if (metaName .eq. 'ACIER') then
+            phase_scold = phaseSum-zr(jvPhaseIn-1+PAUSTENITE)
+            phaseColdSum = zr(jvPhaseIn-1+PSUMCOLD)
+            if (abs(phase_scold-phaseColdSum) .gt. 1.d-2 .or. phaseColdSum .eq. r8vide()) then
                 call utmess('A', 'META1_49')
-                phase_ucold = phase_scold
-            end if
-        elseif (metaType .eq. 'ACIER_REVENU') then
-            phase_scold = phase_tot-zr(jvPhaseIn-1+PRAUSTENITE)
-            phase_ucold = zr(jvPhaseIn-1+PRSUMCOLD)
-            if (abs(phase_scold-phase_ucold) .gt. 1.d-2 .or. phase_ucold .eq. r8vide()) then
-                call utmess('A', 'META1_49')
-                phase_ucold = phase_scold
+                phaseColdSum = phase_scold
             end if
         else
             ASSERT(ASTER_FALSE)
@@ -176,57 +165,34 @@ contains
 ! Set initial field for metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine metatInitSteelSetField(metaType, &
-                                      nbPhase, nbNode, nbVari, nbNodeMaxi, nbVariSteel, &
+    subroutine metatInitSteelSetField(nbNode, nbVari, nbNodeMaxi, nbVariSteel, &
                                       jvTemp, jvPhaseIn, jvPhaseOut, &
-                                      ms0, phase_ucold)
+                                      ms0, phaseColdSum, grainSize)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: metaType
-        integer(kind=8), intent(in) :: nbPhase, nbNode, nbVari
+        integer(kind=8), intent(in) :: nbNode, nbVari
         integer(kind=8), intent(in) :: nbNodeMaxi, nbVariSteel
         integer(kind=8), intent(in) :: jvTemp, jvPhaseIn, jvPhaseOut
-        real(kind=8), intent(in) :: ms0, phase_ucold
+        real(kind=8), intent(in) :: ms0, phaseColdSum, grainSize
 ! ----- Local
         integer(kind=8) :: iNode, iVari, iPhase
         real(kind=8) :: metaSteel(nbNodeMaxi*nbVariSteel), temp0
 !   ------------------------------------------------------------------------------------------------
 !
         metaSteel = 0.d0
-        if (metaType .eq. 'ACIER') then
-            do iNode = 1, nbNode
-                temp0 = zr(jvTemp+iNode-1)
-                do iPhase = 1, PSTEEL_NB
-                    metaSteel(nbVari*(iNode-1)+iPhase) = zr(jvPhaseIn-1+iPhase)
-                end do
-                metaSteel(nbVari*(iNode-1)+PSUMCOLD) = phase_ucold
-                metaSteel(nbVari*(iNode-1)+nbPhase+SIZE_GRAIN) = zr(jvPhaseIn-1+nbPhase+SIZE_GRAIN)
-                metaSteel(nbVari*(iNode-1)+nbPhase+TEMP_MARTENSITE) = ms0
-                metaSteel(nbVari*(iNode-1)+nbPhase+STEEL_TEMP) = temp0
-                ASSERT(nbVari .eq. PSTEEL_NB+1+3)
-                do iVari = 1, nbVari
-                    zr(jvPhaseOut+nbVari*(iNode-1)-1+iVari) = metaSteel(nbVari*(iNode-1)+iVari)
-                end do
+        do iNode = 1, nbNode
+            temp0 = zr(jvTemp+iNode-1)
+            do iPhase = 1, PSTEEL_NB
+                metaSteel(nbVari*(iNode-1)+iPhase) = zr(jvPhaseIn-1+iPhase)
             end do
-        elseif (metaType .eq. 'ACIER_REVENU') then
-            do iNode = 1, nbNode
-                temp0 = zr(jvTemp+iNode-1)
-                do iPhase = 1, PRSTEEL_NB
-                    metaSteel(nbVari*(iNode-1)+iPhase) = zr(jvPhaseIn-1+iPhase)
-                end do
-                metaSteel(nbVari*(iNode-1)+PRSUMCOLD) = phase_ucold
-                metaSteel(nbVari*(iNode-1)+nbPhase+SIZE_GRAIN) = zr(jvPhaseIn-1+nbPhase+SIZE_GRAIN)
-                metaSteel(nbVari*(iNode-1)+nbPhase+TEMP_MARTENSITE) = ms0
-                metaSteel(nbVari*(iNode-1)+nbPhase+STEEL_TEMP) = temp0
-                metaSteel(nbVari*(iNode-1)+nbPhase+THER_CYCL) = 0.d0
-                ASSERT(nbVari .eq. PRSTEEL_NB+1+4)
-                do iVari = 1, nbVari
-                    zr(jvPhaseOut+nbVari*(iNode-1)-1+iVari) = metaSteel(nbVari*(iNode-1)+iVari)
-                end do
+            metaSteel(nbVari*(iNode-1)+PSUMCOLD) = phaseColdSum
+            metaSteel(nbVari*(iNode-1)+SIZE_GRAIN) = grainSize
+            metaSteel(nbVari*(iNode-1)+TEMP_MARTENSITE) = ms0
+            metaSteel(nbVari*(iNode-1)+STEEL_TEMP) = temp0
+            do iVari = 1, nbVari
+                zr(jvPhaseOut+nbVari*(iNode-1)-1+iVari) = metaSteel(nbVari*(iNode-1)+iVari)
             end do
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -237,29 +203,25 @@ contains
 ! Check size of field
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine metaSteelCheckFieldSize(metaType, jvPhaseIn)
+    subroutine metaSteelCheckFieldSize(metaName, jvPhaseIn)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: metaType
+        character(len=16), intent(in) :: metaName
         integer(kind=8), intent(in) :: jvPhaseIn
 ! ----- Local
         integer(kind=8), parameter :: sizeFieldMaxi = 9
         integer(kind=8) :: iVari, fieldSize
 !   ------------------------------------------------------------------------------------------------
-!
+!*
         fieldSize = 0
         do iVari = 1, sizeFieldMaxi
             if (zr(jvPhaseIn-1+iVari) .ne. r8vide()) then
                 fieldSize = fieldSize+1
             end if
         end do
-        if (metaType .eq. 'ACIER') then
-            if (fieldSize .lt. PVARIINIT) then
+        if (metaName .eq. 'ACIER') then
+            if (fieldSize .ne. PVARIINIT) then
                 call utmess("F", "META1_4", ni=2, vali=[PVARIINIT, fieldSize])
-            end if
-        elseif (metaType .eq. 'ACIER_REVENU') then
-            if (fieldSize .ne. PRVARIINIT) then
-                call utmess("F", "META1_4", ni=2, vali=[PRVARIINIT, fieldSize])
             end if
         end if
 !
@@ -402,7 +364,7 @@ contains
         real(kind=8), parameter :: toleTemp = 10.
         integer(kind=8) :: jvPftrc
         integer(kind=8) :: nbcb1, nbcb2, nblexp
-        integer(kind=8) :: codret, nbTrc, nbHist, nbExp, iHist, iExp
+        integer(kind=8) :: codret, nbTrc, nbHistTRC, nbExp, iHist, iExp
         integer(kind=8) :: jftrc, jtrc
         integer(kind=8) :: iadexp, iadckm, iadtrc, shift
         real(kind=8) :: tempAR3FromMate, tempAR3FromTRC
@@ -415,18 +377,18 @@ contains
         jtrc = zi(jvPftrc+1)
         call rcadma(jvMaterCode, 'META_ACIER', 'TRC', iadtrc, codret, 1)
         nbcb1 = nint(zr(iadtrc+1))
-        nbHist = nint(zr(iadtrc+2))
-        nbcb2 = nint(zr(iadtrc+1+2+nbcb1*nbHist))
-        nblexp = nint(zr(iadtrc+1+2+nbcb1*nbHist+1))
-        nbTrc = nint(zr(iadtrc+1+2+nbcb1*nbHist+2+nbcb2*nblexp+1))
+        nbHistTRC = nint(zr(iadtrc+2))
+        nbcb2 = nint(zr(iadtrc+1+2+nbcb1*nbHistTRC))
+        nblexp = nint(zr(iadtrc+1+2+nbcb1*nbHistTRC+1))
+        nbTrc = nint(zr(iadtrc+1+2+nbcb1*nbHistTRC+2+nbcb2*nblexp+1))
         ASSERT(nbTrc .eq. 1)
-        iadexp = 5+nbcb1*nbHist
-        iadckm = 7+nbcb1*nbHist+nbcb2*nblexp
+        iadexp = 5+nbcb1*nbHistTRC
+        iadckm = 7+nbcb1*nbHistTRC+nbcb2*nblexp
         metaSteelPara%trc%jv_ftrc = jftrc
         metaSteelPara%trc%jv_trc = jtrc
         metaSteelPara%trc%iadexp = iadexp
         metaSteelPara%trc%iadtrc = iadtrc
-        metaSteelPara%trc%nbHist = nbHist
+        metaSteelPara%trc%nbHist = nbHistTRC
 
 ! ----- Parameters for martensite evolution
         metaSteelPara%trc%martensiteLaw%austeniteMin = zr(iadtrc+iadckm-1+1)
@@ -441,7 +403,7 @@ contains
 ! ----- Check consistency of temperature
         tempAR3FromMate = metaSteelPara%ar3
         shift = 0
-        do iHist = 1, nbHist
+        do iHist = 1, nbHistTRC
             nbExp = nint(zr(iadtrc+11+9*(iHist-1)))
             lCooling = ASTER_FALSE
             do iExp = 1, nbExp-1
@@ -473,11 +435,11 @@ contains
 ! Get parameters for hardness un metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine metaHardnessGetParameters(jvMaterCode, metaType, metaHardnessPara)
+    subroutine metaHardnessGetParameters(jvMaterCode, metaName, metaHardnessPara)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         integer(kind=8), intent(in) :: jvMaterCode
-        character(len=16), intent(in) :: metaType
+        character(len=16), intent(in) :: metaName
         type(META_HardnessParameters), intent(inout) :: metaHardnessPara
 ! ----- Local
         integer(kind=8), parameter :: kpg = 1, spt = 1
@@ -502,12 +464,12 @@ contains
                                                                              'C_DURT        '/)
 !   ------------------------------------------------------------------------------------------------
 !
-        if (metaType .eq. "ACIER") then
+        if (metaName .eq. "ACIER") then
             call rcvalb(fami, kpg, spt, poum, jvMaterCode, &
                         ' ', 'DURT_META', 1, 'TEMP', [0.d0], &
                         nbParaHard, paraHardName, paraHardVale, codretHard, 2)
             metaHardnessPara%hardSteel(1:PSTEEL_NB) = paraHardVale
-        else if (metaType .eq. "ACIER_REVENU") then
+        else if (metaName .eq. "ACIER_REVENU") then
             call rcvalb(fami, kpg, spt, poum, jvMaterCode, &
                         ' ', 'DURT_META', 1, 'TEMP', [0.d0], &
                         nbParaHardTemp, paraHardTempName, paraHardTempVale, codretHardTemp, 2)
@@ -528,14 +490,14 @@ contains
     subroutine metaSteelCooling(metaSteelPara, &
                                 temp0, temp1, temp2, &
                                 nbStep, deltaTime01, deltaTime12, &
-                                nbVari, nbPhase, nbHist, &
+                                nbVari, nbHistTRC, &
                                 metaPrev, metaCurr)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         integer(kind=8), intent(in) :: nbStep
         real(kind=8), intent(in) :: temp0, temp1, temp2
         real(kind=8), intent(in) :: deltaTime01, deltaTime12
-        integer(kind=8), intent(in) :: nbVari, nbPhase, nbHist
+        integer(kind=8), intent(in) :: nbVari, nbHistTRC
         type(META_SteelParameters), intent(in) :: metaSteelPara
         real(kind=8), intent(in) :: metaPrev(nbVari)
         real(kind=8), intent(out) :: metaCurr(nbVari)
@@ -544,27 +506,27 @@ contains
         integer(kind=8) :: iStep
 !   ------------------------------------------------------------------------------------------------
 !
-        ASSERT(nbVari .eq. 9)
+        ASSERT(nbVari .eq. NBVARISTEEL)
         metaDumm = metaPrev
         deltaTimeStep = deltaTime12/dble(nbStep)
 
         do iStep = 1, nbStep
             tempStep = temp1+(temp2-temp1)*dble(iStep-1)/dble(nbStep)
-            metaCurr(nbPhase+STEEL_TEMP) = temp1+ &
-                                           (dble(iStep)*(temp2-temp1))/dble(nbStep)
+            metaCurr(STEEL_TEMP) = temp1+ &
+                                   (dble(iStep)*(temp2-temp1))/dble(nbStep)
             if (nbStep .eq. 1) then
                 tPoint = (temp1-temp0)/deltaTime01
             else
-                tPoint = (metaCurr(nbPhase+STEEL_TEMP)-tempStep)/deltaTimeStep
+                tPoint = (metaCurr(STEEL_TEMP)-tempStep)/deltaTimeStep
             end if
-            call smcarc(nbHist, nbPhase, &
+            call smcarc(nbHistTRC, &
                         zr(metaSteelPara%trc%jv_ftrc), &
                         zr(metaSteelPara%trc%jv_trc), &
                         zr(metaSteelPara%trc%iadtrc+3), &
                         zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
                         metaSteelPara, &
                         tempStep, tPoint, deltaTime01, &
-                        metaDumm, metaCurr)
+                        nbVari, metaDumm, metaCurr)
             metaDumm(:) = metaCurr(:)
         end do
 !

@@ -19,11 +19,10 @@
 subroutine zacier(metaSteelPara, nbPhase, nbVari, &
                   temp0, temp1, temp2, &
                   deltaTime01, deltaTime12, &
-                  metaPrev, metaCurr)
+                  metaIn, metaOut)
 !
     use Metallurgy_type
     use MetallurgySteel_Compute_module
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -34,8 +33,8 @@ subroutine zacier(metaSteelPara, nbPhase, nbVari, &
     integer(kind=8), intent(in) :: nbPhase, nbVari
     real(kind=8), intent(in) :: temp0, temp1, temp2
     real(kind=8), intent(in) :: deltaTime01, deltaTime12
-    real(kind=8), intent(in) :: metaPrev(nbVari)
-    real(kind=8), intent(out) :: metaCurr(nbVari)
+    real(kind=8), intent(in) :: metaIn(nbVari)
+    real(kind=8), intent(out) :: metaOut(nbVari)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,15 +52,15 @@ subroutine zacier(metaSteelPara, nbPhase, nbVari, &
 ! In  temp2               : temperature at time N+1
 ! In  deltaTime01         : increment of time [N-1, N]
 ! In  deltaTime12         : increment of time [N, N+1]
-! In  metaPrev            : value of internal state variable at previous time step
-! Out metaCurr            : value of internal state variable at current time step
+! In  metaIn              : value of internal state variable at previous time step
+! Out metaOut             : value of internal state variable at current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call zwaeckel(metaSteelPara, nbPhase, nbVari, &
                   temp0, temp1, temp2, &
                   deltaTime01, deltaTime12, &
-                  metaPrev, metaCurr)
-    call metaSteelCheckPhases(nbVari, metaCurr)
+                  metaIn, metaOut)
+    call metaSteelCheckPhases(nbVari, metaOut)
 !
 end subroutine

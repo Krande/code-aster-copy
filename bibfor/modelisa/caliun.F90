@@ -16,25 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caliun(sdcont_, mesh_, model_)
-!
+subroutine caliun(sdcontZ, meshZ, modelZ)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/assert.h"
 #include "asterfort/caraun.h"
 #include "asterfort/creaun.h"
 #include "asterfort/elimun.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/listun.h"
 #include "asterfort/surfun.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "Contact_type.h"
+#include "jeveux.h"
 !
-    character(len=*), intent(in) :: sdcont_, mesh_, model_
+    character(len=*), intent(in) :: sdcontZ, meshZ, modelZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,92 +46,84 @@ subroutine caliun(sdcont_, mesh_, model_)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  model            : name of model
 ! In  mesh             : name of mesh
+! In  model            : name of model
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: zoneKeyword = "ZONE"
     character(len=8) :: sdcont, mesh, model
-    character(len=16) :: keywf
-    integer(kind=8) :: iform
-    integer(kind=8) :: nb_unil_zone, nnocu, ntcmp
-    character(len=24) :: nolino, nopono
-    character(len=24) :: lisnoe, poinoe
-    character(len=24) :: nbgdcu, coefcu, compcu, multcu, penacu
-    character(len=24) :: sdunil_defi, sdcont_defi
-    character(len=24) :: ndimcu
-    integer(kind=8) :: jdim
-    character(len=24) :: sdcont_paraci
-    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
-    character(len=24) :: sdcont_paracr
-    real(kind=8), pointer :: v_sdcont_paracr(:) => null()
+    integer(kind=8) :: nbUnilZone, nbNodeUnil, ntCmp
+    character(len=24), parameter :: nbgdcuJv = '&&CALIUN.NBGDCU', coefcuJv = '&&CARAUN.COEFCU'
+    character(len=24), parameter :: compcuJv = '&&CARAUN.COMPCU', multcuJv = '&&CARAUN.MULTCU'
+    character(len=24), parameter :: penacuJv = '&&CARAUN.PENACU'
+    character(len=24), parameter :: noponoJv = '&&CALIUN.PONOEU', nolinoJv = '&&CALIUN.LINOEU'
+    character(len=24), parameter :: lisnoeJv = '&&CALIUN.LISNOE', poinoeJv = '&&CALIUN.POINOE'
+    character(len=24) :: sdunilDefi
+    character(len=24) :: sdunilNdimcuJv
+    integer(kind=8), pointer :: sdunilNdimcu(:) => null()
+    character(len=24) :: sdcontParaciJv
+    integer(kind=8), pointer :: sdcontParaci(:) => null()
+    character(len=24) :: sdcontParacrJv
+    real(kind=8), pointer :: sdcontParacr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
-    model = model_(1:8)
-    sdcont = sdcont_
-    mesh = mesh_
-    iform = 4
-    keywf = 'ZONE'
-    sdcont_defi = sdcont(1:8)//'.CONTACT'
-    sdunil_defi = sdcont(1:8)//'.UNILATE'
-!
+    model = modelZ
+    sdcont = sdcontZ
+    mesh = meshZ
+    sdunilDefi = sdcont(1:8)//'.UNILATE'
+
 ! - Datastructure for contact definition
-!
-    sdcont_paraci = sdcont(1:8)//'.PARACI'
-    call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
-    sdcont_paracr = sdcont(1:8)//'.PARACR'
-    call jeveuo(sdcont_paracr, 'E', vr=v_sdcont_paracr)
-!
+    sdcontParaciJv = sdcont(1:8)//'.PARACI'
+    call jeveuo(sdcontParaciJv, 'E', vi=sdcontParaci)
+    sdcontParacrJv = sdcont(1:8)//'.PARACR'
+    call jeveuo(sdcontParacrJv, 'E', vr=sdcontParacr)
+
 ! - Number of zones
-!
-    call getfac(keywf, nb_unil_zone)
-    if (nb_unil_zone .ne. 0) then
-! ----- Create datastructure for general parameters
-        v_sdcont_paraci(4) = iform
-        ndimcu = sdunil_defi(1:16)//'.NDIMCU'
-        call wkvect(ndimcu, 'G V I', 2, jdim)
-! ----- Set datastructure for general parameters
-        nbgdcu = '&&CALIUN.NBGDCU'
-        compcu = '&&CARAUN.COMPCU'
-        multcu = '&&CARAUN.MULTCU'
-        coefcu = '&&CARAUN.COEFCU'
-        penacu = '&&CARAUN.PENACU'
-        call caraun(sdcont, nb_unil_zone, nbgdcu, coefcu, &
-                    compcu, multcu, penacu, ntcmp)
-! ----- Get list of nodes
-        nopono = '&&CALIUN.PONOEU'
-        nolino = '&&CALIUN.LINOEU'
-        call listun(mesh, keywf, nb_unil_zone, nopono, nnocu, &
-                    nolino)
-! ----- Clean list of nodes
-        lisnoe = '&&CALIUN.LISNOE'
-        poinoe = '&&CALIUN.POINOE'
-        call elimun(mesh, model, keywf, nb_unil_zone, nbgdcu, &
-                    compcu, nopono, nolino, lisnoe, poinoe, &
-                    nnocu)
-! ----- Get list of components
-        call creaun(sdcont, mesh, model, nb_unil_zone, nnocu, &
-                    lisnoe, poinoe, nbgdcu, coefcu, compcu, &
-                    multcu, penacu)
-! ----- Debug
-        call surfun(sdcont, mesh)
-! ----- Clean
-        call jedetr(nolino)
-        call jedetr(nopono)
-        call jedetr(lisnoe)
-        call jedetr(poinoe)
-        call jedetr(nbgdcu)
-        call jedetr(coefcu)
-        call jedetr(compcu)
-        call jedetr(multcu)
-        call jedetr(penacu)
-!
-    end if
+    call getfac(zoneKeyword, nbUnilZone)
+    ASSERT(nbUnilZone .ne. 0)
+
+! - Create datastructure for general parameters
+    sdunilNdimcuJv = sdunilDefi(1:16)//'.NDIMCU'
+    call wkvect(sdunilNdimcuJv, 'G V I', 2, vi=sdunilNdimcu)
+
+! - Set datastructure for general parameters
+    call caraun(sdcont, zoneKeyword, nbUnilZone, &
+                nbgdcuJv, coefcuJv, &
+                compcuJv, multcuJv, penacuJv, ntCmp)
+
+! - Get list of nodes
+    call listun(mesh, zoneKeyword, nbUnilZone, &
+                noponoJv, nolinoJv, nbNodeUnil)
+
+! - Clean list of nodes
+    call elimun(mesh, model, zoneKeyword, nbUnilZone, &
+                nbgdcuJv, compcuJv, noponoJv, nolinoJv, &
+                lisnoeJv, poinoeJv, &
+                nbNodeUnil)
+
+! - Get list of components
+    call creaun(sdcont, mesh, model, nbUnilZone, nbNodeUnil, &
+                lisnoeJv, poinoeJv, nbgdcuJv, coefcuJv, compcuJv, &
+                multcuJv, penacuJv)
+
+! - Debug
+    call surfun(sdcont, mesh)
+
+! - Clean temporary objects
+    call jedetr(nolinoJv)
+    call jedetr(noponoJv)
+    call jedetr(lisnoeJv)
+    call jedetr(poinoeJv)
+    call jedetr(nbgdcuJv)
+    call jedetr(coefcuJv)
+    call jedetr(compcuJv)
+    call jedetr(multcuJv)
+    call jedetr(penacuJv)
 !
     call jedema()
 !

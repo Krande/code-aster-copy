@@ -73,41 +73,61 @@
 #define ZNUMECOMP         4
 #define ZNBPHASE          5
 
-! Phases for steel: total number (4 cold, 1 hot + 1 sum of cold)
+! Maximum number of phases from user
+#define META_META_NBPHASE_MAXI 12
+
+! ==================================================================================================
+! Standard steel
+! ==================================================================================================
+! Total number of phases (4 cold, 1 hot + 1 sum of cold)
 #define NBPHASESTEEL      6
 
-! Index of internal state variable for steel
-! After list of phases (add NBPHASESTEEL)
-#define SIZE_GRAIN        1
-#define STEEL_TEMP        2
-#define TEMP_MARTENSITE   3
+! Index of internal state variable for standard steel
+#define SIZE_GRAIN        7
+#define STEEL_TEMP        8
+#define TEMP_MARTENSITE   9
 
-! Number of  internal states variables required for initial state
+! Number of internal state variables required for initial state (nb phases + size of grain)
 #define PVARIINIT         7
 
-! For steel, law : waeckel
-#define NBVARIWAECKEL     9
+! Number of internal state variables for standard steel
+#define NBVARISTEEL       9
 
-! For steel, law : jma
-#define NBVARIJMA         12
+! ==================================================================================================
+! Steel with tempering
+! ==================================================================================================
+! Total number of phases (6 cold, 1 hot + 1 sum of cold)
+#define NBPHASESTEELR     8
 
-! Phases for zircaloy
+! Index of internal state variable for tempering steel
+#define SIZE_GRAINR       9
+#define STEEL_TEMPR       10
+#define TEMP_MARTENSITER  11
+#define THER_CYCL         12
+
+! Number of internal states variables required for initial state
+#define PRVARIINIT        9
+
+! Number of internal state variables for tempering steel
+#define NBVARISTEELR      12
+
+! ==================================================================================================
+! Zircaloy
+! ==================================================================================================
 ! For next ones: add total number of phases to access in internal state variable vector
 #define ZIRC_TEMP        1
 #define TIME_TRAN        2
 
-! - Phases for steel with tempering: total number (6 cold, 1 hot + 1 sum of cold)
-#define NBPHASESTEELR     8
+! Number of internal state variables for Zircaloy
+#define NBVARIZIRC       5
 
-! Same as standard steel:
-! #define SIZE_GRAIN        1
-! #define STEEL_TEMP        2
-! #define TEMP_MARTENSITE   3
-#define THER_CYCL         4
-! Number of  internal states variables required for initial state
-#define PRVARIINIT        9
+! ==================================================================================================
+! Parameters for algorithm
+! ==================================================================================================
+! Size of vector for input parameters for tempering steel
+#define NB_PARAIN_TEMPER 4
 
-! - Kinetic
+! Kinetic
 #define COOLING          0
 #define HEATING          1
 
@@ -124,7 +144,7 @@
 !
 ! ==================================================================================================
 ! Maximum number of phases from user
-#define META_NBPHASE_MAXI 5
+#define META_MECA_NBPHASE_MAXI 5
 
 ! - Index for internal state variables - Isotropic hardening: updated elasticity yield
 #define IDX_I_SIGY       6
