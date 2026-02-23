@@ -443,6 +443,8 @@ def macr_recal(
     restant, temps_iter, err = reca_utilitaires.temps_CPU(restant, temps_iter)
     para, val, borne_inf, borne_sup = reca_utilitaires.transforme_list_Num(LIST_PARA, RESU_EXP)
     val_init = copy.copy(val)
+    # Initialisation du compteur d'erreurs
+    ier = 0
 
     # Fonctionnelle en sortie (vectorielle ou scalaire)
     if METHODE in ["FMIN", "FMINBFGS", "FMINNCG", "GENETIQUE", "HYBRIDE"]:
