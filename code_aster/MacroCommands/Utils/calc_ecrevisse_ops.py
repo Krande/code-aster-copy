@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import os
+import sys
 import shutil
 from copy import copy
 from math import atan2, cos, degrees, radians, sin
@@ -618,7 +619,7 @@ def calc_ecrevisse_ops(self, **args):
             # -------------------------------------------------------------
             #           EXTRACTION DES RESULTATS D ECREVISSE
             # Creation de la table
-            __TABFISS_i = TAB2.EXTR_TABLE()
+            __TABFISS_i = __TAB_i.EXTR_TABLE()
 
             nb_lignes_table = len(__TABFISS_i["COTES"])
             # Re-definition des cotes utilisateur (on elimine l effet de la
@@ -784,7 +785,7 @@ def calc_ecrevisse_ops(self, **args):
             #  Nom de la fissure
             nom_fiss = dFISSURE["GROUP_MA"][0] + "-" + dFISSURE["GROUP_MA"][1]
             __TABFISS_i = __TABFISS_i.EXTR_TABLE()
-            __DEBFISS_i = DEB2.EXTR_TABLE()
+            __DEBFISS_i = __DEB_i.EXTR_TABLE()
             __TABFISS_i["FISSURE"] = [nom_fiss] * nb_lignes_table
             __DEBFISS_i["FISSURE"] = [nom_fiss]
 
