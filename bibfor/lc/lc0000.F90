@@ -233,7 +233,7 @@ subroutine lc0000(BEHinteg, &
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8), dimension(6), parameter:: r2 = [1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
-    integer(kind=8), parameter :: nvi_regu_visc = 8, nvi_gdef_log = 6
+    integer(kind=8), parameter :: nvi_regu_visc = 8, nvi_gdef_log = 6, nvi_rest_ecro = 7
     integer(kind=8):: nvi, idx_regu_visc, numlcEff, ndimsi
     real(kind=8):: sigm(nsig), epsm(neps), deps(neps)
     integer(kind=8) :: ndt, ndi
@@ -270,6 +270,9 @@ subroutine lc0000(BEHinteg, &
     if (BEHinteg%behavPara%lReguVisc) then
         nvi = nvi-nvi_regu_visc
         idx_regu_visc = nvi+1
+    end if
+    if (BEHinteg%behavPara%lAnnealing) then
+        nvi = nvi-nvi_rest_ecro
     end if
     ASSERT(nvi .ge. 1)
 
