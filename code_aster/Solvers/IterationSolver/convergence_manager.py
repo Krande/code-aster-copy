@@ -34,6 +34,7 @@ class ConvergenceManager(ContextMixin):
     __needs__ = ("problem", "state", "stepper", "keywords")
 
     _param = _residual_reference = None
+    _scaling_reference = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     class UnDefined:
@@ -340,6 +341,18 @@ class ConvergenceManager(ContextMixin):
             return ConvergenceManager.undef
         return self._param.get(name).value
 
+    def _set_scaling_reference(self, value):
+        if self._scaling_reference is None:
+            self._scaling_reference = value
+        self._scaling_reference = max(value, self._scaling_reference)
+
+    def _tiny_value(self, get_abs=False):
+        abs = np.finfo(np.float64).eps  # around 1e-16
+        rel = np.finfo(np.float32).eps  # around 1e-7
+        if self.isInitialStep() or self._scaling_reference is None or get_abs:
+            return abs
+        return max(abs, rel * self._scaling_reference)
+
     @property
     def _residuals(self):
         return [
@@ -491,11 +504,15 @@ class ConvergenceManager(ContextMixin):
         # info = residual.getValuesWithDescription()[1]
         # print(f"MaxAbs for node {info[0][idx]+1} dof {info[1][idx]}")
         scaling = self.getRelativeScaling(residuals)
+
+        if self.isInitialStep():
+            self._set_scaling_reference(scaling)
+
         resi_rela.value = resi_maxi.value
         residual_rela = residual.copy()
 
         # TODO: find a better minimum value
-        if scaling < self._tiny_value:
+        if scaling < self._tiny_value(get_abs=False):
             # Division by zero
             resi_rela.value = ConvergenceManager.undef
             residual_rela.setValues([-1] * residual_rela.size())
@@ -528,31 +545,33 @@ class ConvergenceManager(ContextMixin):
 
         resi_geom = self.setdefault("RESI_GEOM")
         # TODO: find a better minimum value
-        if diag < self._tiny_value:
+        if diag < self._tiny_value(get_abs=True):
             resi_geom.value = ConvergenceManager.undef
         else:
             resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
-    def _check_resi_glob_rela(self):
+    def _trigger_check_resi_glob_maxi(self):
         name = "RESI_GLOB_RELA"
         para = self._param[name]
-        if not para.isDefined():
-            # If not defined, return True
-            return True
 
-        if para.isConverged():
-            # Special case only
-            return True
-        return True
+        if para.value is not ConvergenceManager.undef:
+            # NOTE: By default this function deals with the special case
+            return False
 
-    @property
-    def _tiny_value(self):
-        return np.finfo(float).tiny
+        if not para.hasRef():
+            # NOTE: By default resi_glob_rela has a reference
+            # If it does not, do not trigger the check of resi glob maxi
+            return False
+
+        # NOTE: Finally, verify whether resi_glob_rela has converged
+        # If not converged, trigger the check of resi_glob_maxi
+        return not para.isConverged()
 
     def _check_resi_glob_maxi(self):
         name_maxi = "RESI_GLOB_MAXI"
         resi_maxi = self._param[name_maxi]
         resiMaxiRefeIsUndefined = False
+        # NOTE: By default resi_glob_maxi does not have a reference
 
         if not resi_maxi.isDefined():
 
@@ -560,26 +579,27 @@ class ConvergenceManager(ContextMixin):
 
             if self.isInitialStep():
 
-                # the initial external force could not be zero
-                # if RESI_GLOB_MAXI is undefined
+                # NOTE: the initial external force
+                # could not be zero if RESI_GLOB_MAXI is undefined
                 message = (
                     "RESI_GLOB_RELA struggles with null initial loading."
                     "Try defining as well RESI_GLOB_MAXI."
                     "Verify modelisation or use another criterion."
                 )
-                raise logger.warning(message)
+                logger.warning(message)
+                raise ValueError()
 
             # TODO: find a better minimum value
-            # e.g. use the history of previous solutions
             name_rela = "RESI_GLOB_RELA"
             para = self._param[name_rela]
-            resi_maxi.reference = para.reference if para.hasRef() else self._tiny_value
-
-            # TODO: Find a better location for the information message
-            # UTMESS("I", "MECANONLINE2_98", valr=(resi_maxi.value, resi_maxi.reference))
+            resi_maxi.reference = (
+                para.reference if para.hasRef() else self._tiny_value(get_abs=False)
+            )
 
         resiMaxiIsConverged = resi_maxi.isConverged()
         if resiMaxiRefeIsUndefined:
+            # TODO: verify if here is the right place to send the alarm
+            # UTMESS("I", "MECANONLINE2_98", valr=(resi_maxi.value, resi_maxi.reference))
             resi_maxi.reference = ConvergenceManager.undef
 
         if not resiMaxiIsConverged:
@@ -594,6 +614,9 @@ class ConvergenceManager(ContextMixin):
         Returns:
             bool: *True* if converged, *False* otherwise.
         """
+        # # NOTE: For the moment this convergence criteria is for VERIF=TOUT
+        # verif = self.get_keyword("CONVERGENCE", "VERIF")
+        # # TODO: implement convergence criteria for AU_MOINS_UN
 
         logger.debug("isConverged ? %r", self._param)
         defined = [(name, para) for name, para in self._param.items() if para.isDefined()]
@@ -602,18 +625,17 @@ class ConvergenceManager(ContextMixin):
             return False
 
         for name, para in self._param.items():
-            if name == "RESI_GLOB_RELA" and para.value == ConvergenceManager.undef:
-                # See special case, pass next name, para
+            if name == "RESI_GLOB_RELA" and para.value is ConvergenceManager.undef:
+                # See special case, continue to next name, para
                 continue
             if not para.isConverged():
                 logger.debug("parameter %s is not converged", name)
                 return False
 
         # Special case
-        if self._check_resi_glob_rela():
-            return True
-        if not self._check_resi_glob_maxi():
-            return False
+        if self._trigger_check_resi_glob_maxi():
+            return self._check_resi_glob_maxi()
+
         return True
 
     def isPrediction(self):
