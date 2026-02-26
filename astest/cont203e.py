@@ -199,6 +199,7 @@ test.assertEqual(AsterPairing._asterMesh, ma)
 
 # - Pairing procedure
 AsterPairing.run()
+test.assertEqual(len(AsterPairing._listPairs), 7)
 test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._intePointsList))
 test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._quadPointsList))
 

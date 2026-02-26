@@ -49,7 +49,7 @@ dimMesh = 3
 # - If True, then choose a specific option, else loop over all the options
 specific_visu_option = True
 # - Option test to run
-option_test = 23
+option_test = 2
 # - Dictionnary of options
 option_dict = {
     2: {  # - Visualisation of the two interfaces of the mesh
@@ -267,16 +267,17 @@ option_dict = {
     #     "index": 18,
     #     "indexPlaneProjected": "Z",
     # },
-    23: {  # - Visualisation of all the quadrature points of
-        # the pairs to which the slave cell of index = 18 belongs
-        "optionMesh": "selectSlvCell",
-        "suboptionMesh": "givenSlvIndex",
-        "optionPair": "quadPoints",
-        "addMeshNodes": True,
-        "addLegend": True,
-        "index": 18,
-        "indexPlaneProjected": "Z",
-    },
+    ## -- NOT AVAILABLE YET
+    # 23: {  # - Visualisation of all the quadrature points of
+    #     # the pairs to which the slave cell of index = 18 belongs
+    #     "optionMesh": "selectSlvCell",
+    #     "suboptionMesh": "givenSlvIndex",
+    #     "optionPair": "quadPoints",
+    #     "addMeshNodes": True,
+    #     "addLegend": True,
+    #     "index": 18,
+    #     "indexPlaneProjected": "Z",
+    # },
 }
 
 ## -------------------------------------------------------
@@ -304,6 +305,7 @@ test.assertEqual(AsterPairing._asterMesh, ma)
 
 # - Pairing procedure
 AsterPairing.run()
+test.assertEqual(len(AsterPairing._listPairs) == 73)
 test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._intePointsList))
 test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._quadPointsList))
 
