@@ -284,9 +284,9 @@ class PairingAnalysisAster(PairingObject):
             asterPairingProcess (:class:`AsterPairingProcess`): previsouly computed AsterPairingProcess
         """
         if asterPairingProcess._hasRun:
-            self._listPairs = np.copy(asterPairingProcess._listPairs)
-            self._listIntersectionPts = np.copy(asterPairingProcess._intePointsList)
-            self._listQuadraturePts = np.copy(asterPairingProcess._quadPointsList)
+            self._listPairs = asterPairingProcess._listPairs
+            self._listIntersectionPts = asterPairingProcess._intePointsList
+            self._listQuadraturePts = asterPairingProcess._quadPointsList
             # - Update flag
             self._flag_PairingInfos = True
         else:
