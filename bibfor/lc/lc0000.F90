@@ -27,10 +27,11 @@ subroutine lc0000(BEHinteg, &
 !
     use Behaviour_type
     use Behaviour_module
-!
+    use MetallurgyMeca_module
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/lc0001.h"
 #include "asterfort/lc0002.h"
@@ -110,9 +111,6 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc8057.h"
 #include "asterfort/lc8146.h"
 #include "asterfort/lc8331.h"
-#include "asterfort/lcvisc.h"
-#include "asterfort/utmess.h"
-#include "asterfort/assert.h"
 #include "asterfort/lc9040.h"
 #include "asterfort/lc9041.h"
 #include "asterfort/lc9043.h"
@@ -121,6 +119,8 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc9056.h"
 #include "asterfort/lc9058.h"
 #include "asterfort/lc9077.h"
+#include "asterfort/lcvisc.h"
+#include "asterfort/utmess.h"
 #include "asterfort/lc9078.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
@@ -234,7 +234,10 @@ subroutine lc0000(BEHinteg, &
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8), dimension(6), parameter:: r2 = [1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
-    integer(kind=8), parameter :: nvi_regu_visc = 8, nvi_gdef_log = 6, nvi_rest_ecro = 7
+    integer(kind=8), parameter :: nvi_regu_visc = 8, nvi_gdef_log = 6
+    aster_logical :: lHardIsot, lHardKine, lHardMixed
+    character(len=16) :: relaComp
+    integer(kind=8) :: nviRestEcro
     integer(kind=8):: nvi, idx_regu_visc, numlcEff, ndimsi
     real(kind=8):: sigm(nsig), epsm(neps), deps(neps)
     integer(kind=8) :: ndt, ndi
@@ -273,7 +276,9 @@ subroutine lc0000(BEHinteg, &
         idx_regu_visc = nvi+1
     end if
     if (BEHinteg%behavPara%lAnnealing) then
-        nvi = nvi-nvi_rest_ecro
+        relaComp = compor(RELA_NAME)
+        call metaAnnealGetType(relaComp, lHardIsot, lHardKine, lHardMixed, nviRestEcro)
+        nvi = nvi-nviRestEcro
     end if
     ASSERT(nvi .ge. 1)
 

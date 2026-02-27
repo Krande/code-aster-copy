@@ -21,12 +21,12 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom="REST_ECRO",
+    nom="REST_ECRO_ISOT",
     lc_type=("DIVERS",),
     doc="""Restauration d'écrouissage""",
     num_lc=0,
-    nb_vari=7,
-    nom_vari=("ECRO_EPSEQ", "ECRO_X1", "ECRO_X2", "ECRO_X3", "ECRO_X4", "ECRO_X5", "ECRO_X6"),
+    nb_vari=1,
+    nom_vari=("ECRO_EPSEQ",),
     mc_mater=None,
     modelisation=("3D", "AXIS", "C_PLAN", "D_PLAN"),
     deformation=("PETIT",),
