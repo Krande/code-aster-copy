@@ -33,6 +33,11 @@ cata_msg = {
  avec les lois des joints JOINT_MECA_FROT, JOINT_MECA_RUPT et JOINT_MECA_ENDO.
  """
     ),
+    4: _(
+        """
+ Les rigidités normale RIGI_NOR et tangentielle RIGI_TAN doivent être renseignées pour utiliser CZM_FROT_MIX avec ADHE='ELAS' (cas d'une adhérence élastique linéaire). Si vous ne souhaitez pas renseigner ces deux rigidités, vous pouvez utiliser ADHE='PARFAITE' (cas d'une adhérence parfaite).
+ """
+    ),
     87: _(
         """
 Le contact de type LAC n'est utilisable qu'avec le préconditionneur LDLT_SP pour les solveurs GCPC et PETSc.

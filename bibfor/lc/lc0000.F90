@@ -121,6 +121,7 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc9056.h"
 #include "asterfort/lc9058.h"
 #include "asterfort/lc9077.h"
+#include "asterfort/lc9078.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
     integer(kind=8) :: imate, ndim, nvi_all, kpg, ksp
@@ -954,6 +955,12 @@ subroutine lc0000(BEHinteg, &
                     sigp, vip, ndsde, dsidep, codret)
     case (9077)
         call lc9077(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (9078)
+        call lc9078(BEHinteg, fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &
