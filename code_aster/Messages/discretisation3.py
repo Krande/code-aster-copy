@@ -47,18 +47,7 @@ Nombre de pas maximum: %(i1)d
     23: _("""La valeur maximale du résidu est de %(r1)13.6G ."""),
     30: _("""Si cet événement se déclenche, on arrête le calcul."""),
     31: _("""Si cet événement se déclenche, on découpe le pas de temps."""),
-    32: _(
-        """Si cet événement se déclenche, on fait quelques itérations de Newton supplémentaires."""
-    ),
-    35: _("""Si cet événement se déclenche, on adapte le coefficient de pénalisation."""),
     36: _("""Si cet événement se déclenche, on continue le calcul."""),
-    41: _(
-        """On peut augmenter au maximum de %(r1).2f %% le nombre d'itérations mais quand ce maximum sera atteint, on ne découpera pas le pas de temps."""
-    ),
-    42: _(
-        """On peut augmenter au maximum de %(r1).2f %% le nombre d'itérations et quand ce maximum sera atteint, on pourra découper le pas de temps."""
-    ),
-    45: _("""On ne dépassera pas un coefficient de %(r1)13.6G."""),
     50: _("""Le schéma d'adaptation %(i1)d du pas de temps ne se déclenche pas."""),
     51: _("""Le schéma d'adaptation %(i1)d du pas de temps se déclenche à tous les instants."""),
     52: _("""Le schéma d'adaptation %(i1)d du pas de temps se déclenche pour un seuil donné."""),

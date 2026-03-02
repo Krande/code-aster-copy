@@ -58,11 +58,9 @@ subroutine nmcerr(sddisc, iterGlobMaxi, iterGlobElas, pasMiniElas, resiGlobMaxi,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: pcentIterPlus
     integer(kind=8) :: resiType, nbIter, maxIter, minIter
     integer(kind=8) :: maxIterGeom, nbIterGeom
-    integer(kind=8) :: nbIterAdd
-    integer(kind=8) :: iEchec, nbEchec, iterSup, nbIterCont
+    integer(kind=8) :: iterSup, nbIterCont
     character(len=24) :: sddiscIfcvName
     real(kind=8), pointer :: sddiscIfcv(:) => null()
     character(len=24) :: sddiscIfreName
@@ -77,16 +75,8 @@ subroutine nmcerr(sddisc, iterGlobMaxi, iterGlobElas, pasMiniElas, resiGlobMaxi,
     minIter = min(iterGlobMaxi, iterGlobElas)
     iterSup = 0
 
-! - NOMBRE D'ITERATIONS AUTORISEES EN PLUS
-    nbIterAdd = 0
-    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nbEchec)
-    do iEchec = 1, nbEchec
-        call utdidt('L', sddisc, 'ECHE', 'PCENT_ITER_PLUS', index_=iEchec, valr_=pcentIterPlus)
-        nbIterAdd = max(nbIterAdd, nint(pcentIterPlus))
-    end do
-
 ! - NOMBRE MAXIMUM D'ITERATIONS
-    nbIter = ceil(maxIter*(1.d0+nbIterAdd/100.0d0))
+    nbIter = maxIter
 
 ! - CREATION DU VECTEUR D'INFORMATIONS SUR LA CONVERGENCE
     sddiscIfcvName = sddisc(1:19)//'.IFCV'
