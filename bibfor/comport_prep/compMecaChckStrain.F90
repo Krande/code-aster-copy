@@ -161,7 +161,7 @@ subroutine compMecaChckStrain(iComp, &
             lSolidShell = lteatt('MODELI', 'SSH', typel=elemTypeName)
 
 ! --------- Specific checks: alarm (outside loop on cells)
-            if (l_dkt .and. defoComp .eq. 'PETIT_REAC') then
+            if ((l_dkt .or. l_coq3d) .and. defoComp .eq. 'PETIT_REAC') then
                 lPetitReac = ASTER_TRUE
             end if
 
@@ -279,7 +279,12 @@ subroutine compMecaChckStrain(iComp, &
     end do
 !
     if (lPetitReac) then
-        call utmess('A', 'COMPOR1_50')
+        if (l_dkt) then
+            call utmess('F', 'COMPOR1_50')
+        else
+            call utmess('F', 'COMPOR1_62')
+        end if
+
     end if
     if (lGrotGdep) then
         call utmess('A', 'COMPOR1_47')

@@ -58,7 +58,7 @@ subroutine te0414(option, nomte)
     character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
     integer(kind=8) :: nb1, jcret, codret
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
-    integer(kind=8) :: i, i1, i2, ibid, ideplm, ideplp, jvMaterc, jvCarcri
+    integer(kind=8) :: ibid, ideplm, ideplp, jvMaterc, jvCarcri
     integer(kind=8) :: jvGeom, jmatr, lzr, nb2, nddlet, lzi
     integer(kind=8) :: jvInstmr, jvInstpr
     character(len=16), pointer :: compor(:) => null()
@@ -135,16 +135,6 @@ subroutine te0414(option, nomte)
             call vdpnlr(BEHInteg, option, nomte, codret)
         end if
     else if (defoComp(1:5) .eq. 'PETIT') then
-        if (defoComp(6:10) .eq. '_REAC') then
-            call utmess('A', 'PLATE1_13')
-            do i = 1, nb2-1
-                i1 = 3*(i-1)
-                i2 = 6*(i-1)
-                zr(jvGeom+i1) = zr(jvGeom+i1)+zr(ideplm+i2)+zr(ideplp+i2)
-                zr(jvGeom+i1+1) = zr(jvGeom+i1+1)+zr(ideplm+i2+1)+zr(ideplp+i2+1)
-                zr(jvGeom+i1+2) = zr(jvGeom+i1+2)+zr(ideplm+i2+2)+zr(ideplp+i2+2)
-            end do
-        end if
         call vdxnlr(BEHInteg, &
                     option, nomte, zr(jvGeom), matloc, nb1, &
                     codret)
