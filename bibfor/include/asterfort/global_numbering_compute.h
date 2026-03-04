@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine crnlgn(nume_equa)
-        character(len=19) :: nume_equa
-    end subroutine crnlgn
+    subroutine global_numbering_compute(nume_equa)
+        character(len=*) :: nume_equa
+    end subroutine global_numbering_compute
 end interface

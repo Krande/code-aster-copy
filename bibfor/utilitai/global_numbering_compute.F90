@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crnggn(chamnz)
+subroutine global_numbering_compute(nume_equa)
     implicit none
 #include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_comm.h"
@@ -40,13 +40,13 @@ subroutine crnggn(chamnz)
 #include "asterfort/nbec.h"
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
-    character(len=*) :: chamnz
+    character(len=19) :: nume_equa
 
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
     integer(kind=8) :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
-    integer(kind=8) :: nbddll, i_proc, ino, iret, nbcmp
+    integer(kind=8) :: nbddll, i_proc, ino, iret, nbcmp, nlili
     integer(kind=8) :: numero_noeud, numero_cmp, rang, nbproc, jrefn
     integer(kind=8) :: nec, numloc, nbddl_lag
     integer(kind=8) :: pos, i_ddl, jnbddl, gd, nec_max
@@ -66,7 +66,7 @@ subroutine crnggn(chamnz)
     integer(kind=8), pointer :: v_mdlag(:) => null()
 !
     character(len=8) :: k8bid, mesh
-    character(len=19) :: nomlig, nume_equa, chamno
+    character(len=19) :: nomlig
     character(len=24) :: owner, mult1, mult2
 !
 !----------------------------------------------------------------------
@@ -84,15 +84,15 @@ subroutine crnggn(chamnz)
 !
     call jemarq()
 !
-    chamno = chamnz
+    call jeexin(nume_equa//'.NULG', iret)
+    if (iret .ne. 0) goto 999
 !
     call asmpi_comm('GET', mpicou)
+!
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-!   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
-    call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=nume_equa)
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
 !
@@ -111,7 +111,7 @@ subroutine crnggn(chamnz)
     call jeveuo(nume_equa//'.NEQU', 'L', vi=v_nequ)
     call jeveuo(nume_equa//'.DELG', 'L', vi=v_delg)
     nbddll = v_nequ(1)
-
+!
 !   Creation de la numerotation globale
     call wkvect(nume_equa//'.NULG', 'G V I', max(nbddll, 1), vi=v_nugll)
     call wkvect(nume_equa//'.PDDL', 'G V I', max(nbddll, 1), vi=v_posdd)
@@ -140,7 +140,16 @@ subroutine crnggn(chamnz)
 !
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
     call jeveuo(nume_equa//'.PRNO', 'E', idprn1)
-    call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili, k8bid)
+    if (nlili .eq. 1) then
+        ! si la longueur de la collection '.PRNO' est 1, on ne peut pas utiliser
+        ! l'attribut '.LONCUM'. On crée un objet temporaire contenant le
+        ! décalage pour le seul de la collection qui vaut donc 0
+        call wkvect('&&CRNLGN.IDPRN', 'V V I', 1, idprn2)
+        zi(idprn2) = 0
+    else
+        call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    end if
     call jelira(nume_equa//'.PRNO', 'NMAXOC', ntot, k8bid)
 !
 ! --- On numérote les lagranges des noeuds tardifs
@@ -230,13 +239,14 @@ subroutine crnggn(chamnz)
     call jedetr("&&CRNUGL.MULT_DDL")
     call jedetr("&&CRNUGL.MULT_DDL2")
     call jedetr('&&CRNULG.NBDDLL')
+    call jedetr('&&CRNLGN.IDPRN')
 !
 999 continue
 !
     call jedema()
 #else
     character(len=14) :: k14
-    k14 = chamnz
+    k14 = nume_equa
 #endif
 !
 end subroutine

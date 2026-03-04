@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crnlgc(nume_equa)
+subroutine global_numbering_communicate(nume_equa)
     implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_i.h"
@@ -33,6 +33,7 @@ subroutine crnlgc(nume_equa)
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/isdeco.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -61,7 +62,7 @@ subroutine crnlgc(nume_equa)
 !
     integer(kind=8) :: rang, nbproc, jrefn, iaux, nddll
     integer(kind=8) :: nb_comm, icmp, ico2, nbcmp
-    integer(kind=8) :: idprn1, idprn2, ili, ili2
+    integer(kind=8) :: idprn1, idprn2, ili, ili2, neql
     integer(kind=8) :: nec, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
     integer(kind=8) :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom
     integer(kind=8) :: nbddll, jnequ, nddl, jenco2, jcpne2, numpr2
@@ -113,13 +114,19 @@ subroutine crnlgc(nume_equa)
     call asmpi_info(rank=mrank, size=mnbproc)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(mnbproc)
-    DEBUG_MPI('crnlgc', rang, nbproc)
+    DEBUG_MPI('crnggc', rang, nbproc)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
     nomgdr = zk24(jrefn+1) (1:8)
-
+!
+!   SI LE MAILLAGE N'EST PAS PARALLELE, ON SORT
+    if (.not. isParallelMesh(mesh)) goto 999
+    call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
+!
+    call dismoi('NB_EQUA', nume_equa, 'NUME_EQUA', repi=neql)
+!
     call jeveuo(nume_equa//'.NULG', 'E', vi=v_nugll)
     call jeveuo(nume_equa//'.PDDL', 'E', vi=v_posdd)
     call jeexin(nume_equa//'.REFP', iret)
@@ -128,19 +135,19 @@ subroutine crnlgc(nume_equa)
     end if
 !
 ! -- Création du graphe de comm
-    meshj = mesh//".JOIN"
-    name = nume_equa(1:14)//".JOIN.DOMJ"
+    meshj = mesh//'.JOIN'
+    name = nume_equa(1:14)//'.JOIN.DOMJ'
     call gnomsd(nume_equa, name, 10, 14)
     joints = name(1:19)
     zk24(jrefn-1+5) = joints
-    domj = joints//".DOMJ"
-    send = joints//".SEND"
-    recv = joints//".RECV"
-    gcom = joints//".GCOM"
-    pgid = joints//".PGID"
-    comm_name = '&CRNULG.COMM'
-    tag_name = '&CRNULG.TAG'
-    call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
+    domj = joints//'.DOMJ'
+    send = joints//'.SEND'
+    recv = joints//'.RECV'
+    gcom = joints//'.GCOM'
+    pgid = joints//'.PGID'
+    comm_name = '&CRNUGG.COMM'
+    tag_name = '&CRNUGG.TAG'
+    call create_graph_comm(mesh, 'MAILLAGE_P', nb_comm, comm_name, tag_name)
 !
     if (nb_comm > 0) then
         call jedupo(meshj//'.DOMJ', 'G', domj, ASTER_FALSE)
@@ -149,10 +156,10 @@ subroutine crnlgc(nume_equa)
         call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
         call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
         call jeveuo(meshj//'.DOMJ', 'L', vi=v_dom)
-        call jeveuo(meshj//'.GCOM', 'L', vi=v_gco)
-        call jeveuo(meshj//'.PGID', 'L', vi4=v_pgid)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
+        call jeveuo(gcom, 'L', vi=v_gco)
+        call jeveuo(pgid, 'L', vi4=v_pgid)
         mpicou = to_mpi_int(v_gco(1))
     end if
 
@@ -177,23 +184,21 @@ subroutine crnlgc(nume_equa)
 !
     call dismoi('NUM_GD_SI', nume_equa, 'NUME_EQUA', repi=gd)
     nec = nbec(gd)
-    call wkvect('&&CRNULG.NEC', 'V V I', nec, jencod)
-    call wkvect('&&CRNULG.NEC2', 'V V I', nec, jenco2)
+    call wkvect('&&CRNUGG.NEC', 'V V I', nec, jencod)
+    call wkvect('&&CRNUGG.NEC2', 'V V I', nec, jenco2)
 
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgdr), 'L', iad)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgdr), 'LONMAX', ncmpmx, k8bid)
-    call wkvect('&&CRNULG.CMP', 'V V I', ncmpmx, jcpnec)
-    call wkvect('&&CRNULG.CMP2', 'V V I', ncmpmx, jcpne2)
+    call wkvect('&&CRNUGG.CMP', 'V V I', ncmpmx, jcpnec)
+    call wkvect('&&CRNUGG.CMP2', 'V V I', ncmpmx, jcpne2)
 !
 !   Il faut maintenant communiquer les numeros partages
-!   NOTE : On pourrait sans doute se passer d'une communication puisque celui qui recoit
-!          sait ce qu'il attend et celui qui envoit pourrait tout envoyer
     do iaux = 1, nb_comm
         domj_i = v_comm(iaux)
         numpro = v_dom(domj_i)
         numpr2 = v_pgid(numpro+1)
-        nojoie = jexnum(meshj//".SEND", domj_i)
-        nojoir = jexnum(meshj//".RECV", domj_i)
+        nojoie = jexnum(meshj//'.SEND', domj_i)
+        nojoir = jexnum(meshj//'.RECV', domj_i)
         call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
         call jeveuo(nojoir, 'L', jjoinr)
         call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
@@ -205,8 +210,8 @@ subroutine crnlgc(nume_equa)
         numpr4 = to_mpi_int(numpr2)
         lgenve1 = nbnoee*(1+nec)+1
         lgenvr1 = nbnoer*(1+nec)+1
-        call wkvect('&&CRNULG.NOEUD_NEC_E1', 'V V I', lgenvr1, jenvoi1)
-        call wkvect('&&CRNULG.NOEUD_NEC_R1', 'V V I', lgenve1, jrecep1)
+        call wkvect('&&CRNUGG.NOEUD_NEC_E1', 'V V I', lgenvr1, jenvoi1)
+        call wkvect('&&CRNUGG.NOEUD_NEC_R1', 'V V I', lgenve1, jrecep1)
 !
         lgenve2 = nbnoee*(1+nec)+1
         lgenvr2 = nbnoer*(1+nec)+1
@@ -216,13 +221,22 @@ subroutine crnlgc(nume_equa)
         nb_ddl_envoi = 0
         do jaux = 1, nbnoer
             poscom = (jaux-1)*(1+nec)+1
+!           Numero local (pour le proc courant)
             numno1 = zi(jjoinr+2*(jaux-1))
+!           Numero local (pour le proc d'en face)
             numno2 = zi(jjoinr+2*jaux-1)
             zi(jenvoi1+poscom) = numno2
             do iec = 1, nec
                 zi(jenvoi1+poscom+iec) = zzprno(1, numno1, 2+iec)
             end do
-            nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
+!           On ne souhaite recevoir les num de ddl globaux que du processeur
+!           qui les possedent (cela explique le if( v_noex(numno1).eq.numpr2 ) )
+!           Malgré tout, on envoie tout au proc d'en face (numeros de noeuds et
+!           entiers codes) car il s'attend a avoir une liste dimensionnee a la
+!           taille du raccord (cela explique le remplissage de zi(jenvoi1+...)
+            if (v_noex(numno1) .eq. numpro) then
+                nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
+            end if
         end do
         zi(jenvoi1) = nb_ddl_envoi
         n4e = to_mpi_int(lgenvr1)
@@ -230,24 +244,34 @@ subroutine crnlgc(nume_equa)
         call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
                               zi(jrecep1), n4r, numpr4, tag4, mpicou)
 
-        call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', max(1, zi(jrecep1)), jenvoi2)
-        call wkvect('&&CRNULG.NUM_DDL_GLOB_R', 'V V I', max(1, zi(jenvoi1)), jrecep2)
+        call wkvect('&&CRNUGG.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1)+1, jenvoi2)
+        call wkvect('&&CRNUGG.NUM_DDL_GLOB_R', 'V V I', zi(jenvoi1)+1, jrecep2)
 
         nbddl = 0
         if (zi(jrecep1) > 0) then
-            call jecroc(jexnum(send, iaux))
+!           On dimensionne le raccord a la taille du nombre de ddl attendus
+!           par le proc d'en face
             call jeecra(jexnum(send, domj_i), 'LONMAX', zi(jrecep1))
-            call jeecra(jexnum(send, domj_i), 'LONUTI', zi(jrecep1))
             call jeveuo(jexnum(send, domj_i), 'E', jnujoi1)
 !
             do jaux = 1, nbnoee
                 poscom = (jaux-1)*(1+nec)+1
                 numno1 = zi(jrecep1+poscom)
+!               Si on ne possede pas le noeud : on envoie rien (cf.
+!               if( v_noex(numno1).ne.numpr2 ) then plus bas
+                if (v_noex(numno1) .ne. rang) then
+                    cycle
+                end if
 !
                 nddl = zzprno(1, numno1, 1)
-                nddlg = v_nugll(nddl)
+                nbcmp = zzprno(1, numno1, 2)
+                if (nbcmp .eq. 0) then
+                    nddlg = -1
+                else
+                    nddlg = v_nugll(nddl)
+                end if
 !
-!           Recherche des composantes demandees
+!               Recherche des composantes demandees
                 do iec = 1, nec
                     zi(jencod+iec-1) = zzprno(1, numno1, 2+iec)
                     zi(jenco2+iec-1) = zi(jrecep1+poscom+iec)
@@ -256,52 +280,59 @@ subroutine crnlgc(nume_equa)
                 call isdeco(zi(jenco2), zi(jcpne2), ncmpmx)
                 ico2 = 0
                 do icmp = 1, ncmpmx
-                    if (zi(jcpnec+icmp-1) .eq. 1) then
-                        if (zi(jcpne2+icmp-1) .eq. 1) then
-                            ASSERT(nddlg .ne. -1)
-                            zi(jenvoi2+nbddl) = nddlg+ico2
-                            zi(jnujoi1+nbddl) = nddl+ico2
-                            nbddl = nbddl+1
-                        end if
+!                   Comme on est sur un noeud possede par le proc courant,
+!                   si le proc d'en face attend un ddl (ie composante presente),
+!                   il faut necessairement que la composante soit aussi presente
+!                   sur ce proc (d'ou ASSERT(zi(jcpnec+icmp-1) .ne. 0))
+                    if (zi(jcpne2+icmp-1) .eq. 1) then
+                        ASSERT(zi(jcpnec+icmp-1) .ne. 0)
+                        ASSERT(nddlg .ne. -1)
+                        zi(jenvoi2+nbddl+1) = nddlg+ico2
+                        zi(jnujoi1+nbddl) = nddl+ico2
+                        nbddl = nbddl+1
                         ico2 = ico2+1
                     end if
                 end do
             end do
+            ASSERT(zi(jrecep1) .eq. nbddl)
+            zi(jenvoi2) = nbddl
         end if
 !
-        ASSERT(zi(jrecep1) .eq. nbddl)
-        n4e = to_mpi_int(nbddl)
-        n4r = to_mpi_int(nb_ddl_envoi)
+        n4e = to_mpi_int(nbddl+1)
+        n4r = to_mpi_int(nb_ddl_envoi+1)
         call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
                               zi(jrecep2), n4r, numpr4, tag4, mpicou)
 
-        if (nb_ddl_envoi > 0) then
-            call jecroc(jexnum(recv, iaux))
+        if (zi(jrecep2) > 0) then
             call jeecra(jexnum(recv, domj_i), 'LONMAX', nb_ddl_envoi)
-            call jeecra(jexnum(recv, domj_i), 'LONUTI', nb_ddl_envoi)
             call jeveuo(jexnum(recv, domj_i), 'E', jnujoi2)
 !
-            curpos = 0
+            curpos = 1
             do jaux = 1, nbnoer
                 numno1 = zi(jjoinr+2*(jaux-1))
+!               On ne regarde que les noeuds possedes par le proc d'en face
+!               puisque c'est ce qu'il a envoye
+                if (v_noex(numno1) .ne. numpro) then
+                    cycle
+                end if
                 nddll = zzprno(1, numno1, 1)
                 nbcmp = zzprno(1, numno1, 2)
                 do icmp = 0, nbcmp-1
-                    ASSERT(zi(jrecep2+curpos) .ne. -1)
                     v_nugll(nddll+icmp) = zi(jrecep2+curpos)
                     v_posdd(nddll+icmp) = numpro
-                    zi(jnujoi2+curpos) = nddll+icmp
+                    zi(jnujoi2+curpos-1) = nddll+icmp
                     curpos = curpos+1
                 end do
             end do
-            ASSERT(curpos .eq. nb_ddl_envoi)
+            ASSERT(curpos-1 .eq. nb_ddl_envoi)
+            ASSERT(curpos-1 .eq. zi(jrecep2))
         end if
 !
-        call jedetr('&&CRNULG.NUM_DDL_GLOB_E')
-        call jedetr('&&CRNULG.NUM_DDL_GLOB_R')
+        call jedetr('&&CRNUGG.NUM_DDL_GLOB_E')
+        call jedetr('&&CRNUGG.NUM_DDL_GLOB_R')
 !
-        call jedetr('&&CRNULG.NOEUD_NEC_E1')
-        call jedetr('&&CRNULG.NOEUD_NEC_R1')
+        call jedetr('&&CRNUGG.NOEUD_NEC_E1')
+        call jedetr('&&CRNUGG.NOEUD_NEC_R1')
     end do
     call jedetr(comm_name)
     call jedetr(tag_name)
@@ -325,16 +356,16 @@ subroutine crnlgc(nume_equa)
             ili2 = ili
         end if
         call jeexin(jexnum(nume_equa//'.PRNO', ili), exipr)
-        call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
+        call create_graph_comm(nomlig, 'LIGREL', nb_comm, comm_name, tag_name)
         if (nb_comm > 0) then
             call jeveuo(comm_name, 'L', vi=v_comm)
             call jeveuo(tag_name, 'L', vi=v_tag)
-            call dismoi("JOINTS", nomlig, "LIGREL", repk=joints, arret="F")
-            domj = joints//".DOMJ"
-            send = joints//".SEND"
-            recv = joints//".RECV"
-            pgid = joints//".PGID"
-            gcom = joints//".GCOM"
+            call dismoi('JOINTS', nomlig, 'LIGREL', repk=joints, arret='F')
+            domj = joints//'.DOMJ'
+            send = joints//'.SEND'
+            recv = joints//'.RECV'
+            pgid = joints//'.PGID'
+            gcom = joints//'.GCOM'
             call jeveuo(pgid, 'L', vi4=v_pgid)
             call jeveuo(domj, 'L', vi=v_dom)
             call jeveuo(gcom, 'L', vi=v_gco)
@@ -432,7 +463,7 @@ subroutine crnlgc(nume_equa)
         call jedetr(tag_name)
     end do
 !
-    call jedetc('V', '&&CRNULG', 1)
+    call jedetc('V', '&&CRNUGG', 1)
     call jedetr('&&CRNLGC.IDPRN')
 !
 ! --- Vérification de la numérotation
@@ -440,12 +471,13 @@ subroutine crnlgc(nume_equa)
 !   NOMBRE DE DDL LOCAUX
     call jeveuo(nume_equa//'.NEQU', 'L', jnequ)
     nbddll = zi(jnequ)
-    call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
     do iaux = 1, nbddll
         nuno = v_deeq((iaux-1)*2+1)
         if (nuno .le. 0) cycle
         if (nuno .ne. 0) then
-            ASSERT(v_posdd(iaux) == v_noex(nuno))
+            if (v_posdd(iaux) .ne. v_noex(nuno)) then
+                call utmess('F', 'ASSEMBLA_9')
+            end if
         else
             ASSERT(v_posdd(iaux) .ne. -1)
         end if
@@ -461,7 +493,7 @@ subroutine crnlgc(nume_equa)
                 if (zi(idprn1-1+(ino-1)*(2+nec)+2) .gt. 0) nno = nno+1
             end if
         end do
-        call asmpi_comm_vect("MPI_SUM", "I", sci=nno)
+        call asmpi_comm_vect('MPI_SUM', 'I', sci=nno)
 !
         call jeexin(nume_equa//'.MDLA', iret)
         if (iret .ne. 0) then
@@ -470,7 +502,7 @@ subroutine crnlgc(nume_equa)
         else
             nlag = 0
         end if
-        call asmpi_comm_vect("MPI_SUM", "I", sci=nlag)
+        call asmpi_comm_vect('MPI_SUM', 'I', sci=nlag)
 !
         vali(1) = zi(jnequ+1)
         vali(2) = zi(jnequ+1)-nlag
@@ -497,6 +529,8 @@ subroutine crnlgc(nume_equa)
         flush (130+rang)
         flush (190+rang)
     end if
+!
+999 continue
 !
     call jedema()
 #else

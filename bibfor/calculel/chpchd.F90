@@ -33,8 +33,8 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsces.h"
 #include "asterfort/cnscno.h"
-#include "asterfort/crnggc.h"
-#include "asterfort/crnggn.h"
+#include "asterfort/global_numbering_compute.h"
+#include "asterfort/global_numbering_communicate.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
@@ -100,7 +100,7 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
     character(len=3) :: prol0, exixfm
     character(len=8) :: ma, ma2, tychi, nomgd, param, model
     character(len=16) :: cas, option, nomcmd, kbid
-    character(len=19) :: cesmod, ces1, cns1, mnoga, ligrel, ces2, chsnpg
+    character(len=19) :: cesmod, ces1, cns1, mnoga, ligrel, ces2, chsnpg, nume_equa
     character(len=24) :: valk(4)
     aster_logical :: bool
 !
@@ -247,10 +247,11 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
         call cgocns(chin, 'V', cns1, celmod)
         if (cas(7:10) == "NOEU") then
             call cnscno(cns1, ' ', 'NON', base, chou, 'F', ibid, lprofconst=ASTER_FALSE)
+            call dismoi('NUME_EQUA', chou, 'CHAM_NO', repk=nume_equa)
             ! create numbering
-            call crnggn(chou)
+            call global_numbering_compute(nume_equa)
             ! communicate numbering
-            call crnggc(chou)
+            call global_numbering_communicate(nume_equa)
         elseif (cas(7:10) == "ELNO") then
             call cnsces(cns1, 'ELNO', cesmod, ' ', 'V', ces1)
 !

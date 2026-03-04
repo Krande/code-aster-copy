@@ -43,10 +43,6 @@ class ParallelContactFEDescriptor : public FiniteElementDescriptor {
   protected:
     /** @brief Matching numbering between keeped delayed elements and base elements */
     VectorLong _contactFEDToKeep;
-    /** @brief Join to send */
-    std::vector< JeveuxVectorLong > _joinToSend;
-    /** @brief Join to receive */
-    std::vector< JeveuxVectorLong > _joinToReceive;
     /** @brief All joints */
     JointsPtr _joints;
     /** @brief Delayed nodes owner */
@@ -57,8 +53,6 @@ class ParallelContactFEDescriptor : public FiniteElementDescriptor {
     JeveuxVectorLong _outerMultiplicity;
     /** @brief Global numbering for delayed nodes */
     JeveuxVectorLong _globalNumberingVirtualNodes;
-    /** @brief slave delayed node number */
-    JeveuxVectorLong _slaveDNNumber;
     FiniteElementDescriptorPtr _FEDesc;
     /** @brief Element matching in element group list */
     VectorOfVectorsLong _lielMatching;

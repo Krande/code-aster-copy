@@ -70,7 +70,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
       _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
       _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
       _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) ),
-      _slaveDNNumber( JeveuxVectorLong( getName() + ".NBES" ) ),
       _FEDesc( FEDesc ),
       _localDelayedIdToGlobalNodeId( JeveuxVectorLong( getName() + ".LOGL" ) ),
       _globalNodeIdToLocalDelayed( JeveuxVectorLong( getName() + ".GLLO" ) ),
@@ -121,9 +120,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
     VectorOfVectorsLong vCellToAdd;
     std::set< int > cellAldreadyAdd;
     const bool addSlaveNodes = ( explorer.size() == 0 ? true : false );
-
-    _slaveDNNumber->allocate( 1 );
-    ( *_slaveDNNumber )[0] = localVNodeNumber;
 
     // On commence par regarder les noeuds et elements qui doivent etre
     // gardes dans le nouveau ligrel
@@ -401,7 +397,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
       _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
       _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
       _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) ),
-      _slaveDNNumber( JeveuxVectorLong( getName() + ".NBES" ) ),
       _FEDesc( FEDesc ),
       _localDelayedIdToGlobalNodeId( JeveuxVectorLong( getName() + ".LOGL" ) ),
       _globalNodeIdToLocalDelayed( JeveuxVectorLong( getName() + ".GLLO" ) ),
@@ -516,8 +511,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
             toLiel[nbCollObj - 1].push_back( type );
         nbCollObj++;
     }
-    _slaveDNNumber->allocate( 1 );
-    ( *_slaveDNNumber )[0] = localVNodeNumber;
 
     // On commence par regarder les noeuds et elements qui doivent etre
     // gardes dans le nouveau ligrel

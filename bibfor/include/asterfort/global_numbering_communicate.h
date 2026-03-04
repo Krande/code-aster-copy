@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine crnlgc(nume_equa)
-        character(len=19) :: nume_equa
-    end subroutine crnlgc
+    subroutine global_numbering_communicate(nume_equa)
+        character(len=*), intent(in) :: nume_equa
+    end subroutine global_numbering_communicate
 end interface
