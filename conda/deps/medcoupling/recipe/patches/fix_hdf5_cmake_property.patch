@@ -1,0 +1,16 @@
+--- a/deps/config/cmake/FindSalomeHDF5.cmake
++++ b/deps/config/cmake/FindSalomeHDF5.cmake
+@@ -90,7 +90,10 @@
+     SET(_suffix "-shared")
+     SET(HDF5_LIBRARIES "${_target_prefix}hdf5${_suffix}")
+   ENDIF()
+-  GET_PROPERTY(_lib_lst SOURCE ${HDF5_LIBRARIES} PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG)
++  SET(_lib_lst "")
++  LIST(GET HDF5_LIBRARIES 0 _first_hdf5_lib)
++  IF(TARGET ${_first_hdf5_lib})
++    GET_PROPERTY(_lib_lst TARGET ${_first_hdf5_lib} PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG)
++  ENDIF()
+   FOREACH(s ${_lib_lst})
+     STRING(FIND "${s}" "mpi." _res)   # should cover WIN(?) and LINUX
+     IF(_res GREATER -1)
+

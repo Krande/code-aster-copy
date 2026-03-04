@@ -1,0 +1,49 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -114,12 +114,10 @@ MED_FIND_MPI()
+ IF(MEDFILE_BUILD_PYTHON)
+   FIND_PACKAGE(SWIG REQUIRED)
+   INCLUDE(${SWIG_USE_FILE})
+   IF (${SWIG_VERSION} VERSION_GREATER_EQUAL "4.3.0")
+     set(CMAKE_SWIG_FLAGS "-DSWIG_GE_40300 ${CMAKE_SWIG_FLAGS}")
+   ENDIF()
+- 
+-  FIND_PACKAGE(PythonInterp REQUIRED)  # to get version string ...
+-  FIND_PACKAGE(PythonLibs REQUIRED)
++  FIND_PACKAGE(Python COMPONENTS Interpreter Development REQUIRED)
+ ENDIF()
+ 
+ ## Creation of files med_config.h.cmake
+diff --git a/python/CMakeLists.txt b/python/CMakeLists.txt
+--- a/python/CMakeLists.txt
++++ b/python/CMakeLists.txt
+@@ -1,7 +1,7 @@
+ INCLUDE(${SWIG_USE_FILE})
+ 
+ INCLUDE_DIRECTORIES(
+-  ${PYTHON_INCLUDE_DIRS}
++  ${Python_INCLUDE_DIRS}
+   ${PROJECT_SOURCE_DIR}/include
+   ${PROJECT_BINARY_DIR}/include
+   ${HDF5_INCLUDE_DIRS}
+@@ -31,11 +31,17 @@ SET(_link_libs medC)
+ # We only need to actually link to python libs on windows
+ IF (APPLE)
+   LIST(APPEND _link_libs "-undefined dynamic_lookup")
+ ELSEIF(WIN32)
+-  LIST(APPEND _link_libs "${PYTHON_LIBRARIES}")
++  LIST(APPEND _link_libs "${Python_LIBRARIES}")
+ ENDIF ()
+ 
+-SET(_install_dir lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages/med)
++MESSAGE("CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
++MESSAGE("Python_SITELIB: ${Python_SITELIB}")
++FILE(RELATIVE_PATH _install_dir "${CMAKE_INSTALL_PREFIX}" "${Python_SITELIB}")
++SET(_install_dir "${_install_dir}/med")
++MESSAGE("_install_dir: ${_install_dir}")
++FILE(TO_CMAKE_PATH "${_install_dir}" _install_dir)
++MESSAGE("Installing python package to: ${_install_dir}")
+ 
+ # Ensure we will be able to run the Python tests from the build tree by outputing
+ # files into the package folder:

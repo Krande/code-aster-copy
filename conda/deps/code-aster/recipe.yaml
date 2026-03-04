@@ -1,0 +1,98 @@
+schema_version: 1
+
+context:
+  name: code-aster
+  source_version: "17.3.12"
+  win_build: "1"
+  version: ${{ source_version + "." + win_build }}
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - path: ../../..
+    filter:
+      exclude:
+        - "*/.git/*"
+        - "*/.github/*"
+        - "*/.gitlab/*"
+        - "*/.junie/*"
+        - "*/build/*"
+        - "*/output/*"
+        - "*/conda_debug/*"
+        - "*/conda/*"
+
+build:
+  number: 0
+  string: py${{ python | replace('.', '') }}_nompi_release_INT64_h${{ hash }}_0
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ compiler('fortran') }}
+    - pyyaml
+    - waf ==2.1.5
+    - clang
+    - setuptools
+  host:
+    - python
+    - pyyaml
+    - numpy
+    - libboost-devel
+    - mkl-devel
+    - libblas
+    - liblapack
+    - libxml2
+    - zlib
+    - scipy
+    - hdf5
+    - metis
+    - mfront
+    - mgis
+    - psutil
+    # locally-built deps (from conda/deps/output)
+    - libmed
+    - libscotch
+    - scotch
+    - medcoupling
+    - mumps-seq
+  run:
+    - scipy
+    - "libblas * *mkl"
+    - "liblapack * *mkl"
+    - hdf5
+    - metis
+    - mumps-seq
+    - mfront
+    - mgis
+    - libmed
+    - libscotch
+    - scotch
+    - medcoupling
+    - intel-fortran-rt
+    - ${{ pin_compatible('numpy', upper_bound='x.x') }}
+
+
+tests:
+  - script:
+      - run_ctest --resutest=${{ env.get("OUTPUT_DIR", default="temp\\seq") }}/nompi -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results --clean
+      - if errorlevel 1 exit 1
+    requirements:
+      run:
+        - cmake
+  - python:
+      imports:
+        - code_aster
+      pip_check: false
+
+
+about:
+  license: GPL-3.0-only AND CECILL-C AND Apache-2.0 AND LGPL-3.0-only
+  summary: Code_Aster - a finite element solver (dev build with local deps)
+  homepage: https://www.code-aster.org
+
+extra:
+  recipe-maintainers:
+    - Krande

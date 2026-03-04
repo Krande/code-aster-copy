@@ -1,0 +1,44 @@
+From a60e893bc7a20577defb9986986820ae32498fe5 Mon Sep 17 00:00:00 2001
+From: Min RK <benjaminrk@gmail.com>
+Date: Thu, 7 Aug 2025 14:59:38 -0700
+Subject: [PATCH 3/6] win fix ssize_t
+
+fix missing ssize_t on Windows
+---
+ src/libscotch/common_file_compress.c   | 4 ++++
+ src/libscotch/common_file_decompress.c | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/src/libscotch/common_file_compress.c b/src/libscotch/common_file_compress.c
+index 5255cdc..83d6955 100644
+--- a/src/libscotch/common_file_compress.c
++++ b/src/libscotch/common_file_compress.c
+@@ -69,6 +69,10 @@
+ #include "lzma.h"
+ #endif /* COMMON_FILE_COMPRESS_LZMA */
+ 
++#if defined COMMON_OS_WINDOWS
++#define ssize_t SSIZE_T
++#endif
++
+ /*
+ **  The static definitions.
+ */
+diff --git a/src/libscotch/common_file_decompress.c b/src/libscotch/common_file_decompress.c
+index 6e80222..4c0231f 100644
+--- a/src/libscotch/common_file_decompress.c
++++ b/src/libscotch/common_file_decompress.c
+@@ -69,6 +69,10 @@
+ #include "lzma.h"
+ #endif /* COMMON_FILE_COMPRESS_LZMA */
+ 
++#if defined COMMON_OS_WINDOWS
++#define ssize_t SSIZE_T
++#endif
++
+ /*
+ **  The static definitions.
+ */
+-- 
+2.49.0
+

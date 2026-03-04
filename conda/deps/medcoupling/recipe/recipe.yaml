@@ -1,0 +1,83 @@
+schema_version: 1
+
+context:
+  name: medcoupling
+  mpi: ${{ mpi or "nompi" }}
+  version: 9.14.0
+  build: 5
+  mpi_prefix: ${{ "nompi" if mpi == "nompi" else "mpi_" + mpi }}
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - url: https://github.com/SalomePlatform/medcoupling/archive/refs/tags/V${{ version | replace('.', '_') }}.tar.gz
+    sha256: d4699b564fe1a113663649b9ff1c353314509763a5aca756569e6f4de8940049
+  - url: https://github.com/SalomePlatform/configuration/archive/refs/tags/V${{ version | replace('.', '_') }}.tar.gz
+    sha256: 9ff6cacfc272ef75211dee555b67acc50ec9dee1862676d429c24c13a60c6052
+    target_directory: deps/config
+    patches:
+      - patches/fix_hdf5_cmake_property.patch
+
+build:
+  number: ${{ build|int + 100 if mpi == "nompi" else build|int }}
+  string: py${{ python | version_to_buildstring }}_${{ mpi_prefix }}_h${{ hash }}_${{ build }}
+  skip: osx
+  prefix_detection:
+    ignore_binary_files: true
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - ${{ compiler('cxx') }}
+    - if: not win
+      then: make
+      else: ninja
+    - cmake <4
+    - swig >=4.0.2
+  host:
+    - python
+    - numpy
+    - libboost-devel
+    - zlib
+    - hdf5
+    - libxml2-devel
+    - libmed * *${{ mpi }}*
+    - if: mpi != 'nompi'
+      then:
+        - petsc
+        - ${{ mpi }}
+  run:
+    - python
+    - ${{ pin_compatible('numpy') }}
+    - if: mpi != 'nompi'
+      then: ${{ mpi }}
+  run_exports:
+    - ${{ pin_subpackage(name, upper_bound='x.x') }}
+
+tests:
+  - python:
+      imports:
+        - medcoupling
+        - MEDRenumber
+        - MEDCouplingRemapper
+        - MEDLoader
+        - MEDPartitioner
+        - if: win or osx
+          then: MEDCouplingCompat
+
+about:
+  license: LGPL-2.1-or-later
+  license_file: COPYING
+  summary: The MEDCoupling tool gathers several powerful functionalities around the input and output data of simulation codes (meshes and fields mainly)
+  description: |
+    The MEDCoupling tool gathers several powerful functionalities around the input and output data of simulation codes (meshes and fields mainly)
+  homepage: https://github.com/SalomePlatform/medcoupling
+  repository: https://github.com/SalomePlatform/medcoupling
+  documentation: https://docs.salome-platform.org/latest/dev/MEDCoupling/user/html/index.html
+
+extra:
+  recipe-maintainers:
+    - Krande

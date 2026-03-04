@@ -1,0 +1,24 @@
+diff --git a/python/med_enum_typemap.i b/python/med_enum_typemap.i
+--- a/python/med_enum_typemap.i
++++ b/python/med_enum_typemap.i
+@@ -109,7 +109,7 @@
+   if (pclass == NULL) printf("%s\n","Can't get class $1_basetype");
+   Py_DECREF(pmod);
+   pargs  = Py_BuildValue("(i)",*$1);
+-  pinst  = PyEval_CallObject(pclass, pargs);
++  pinst  = PyObject_Call(pclass, pargs, NULL);
+   if (pinst == NULL) printf("%s\n","Can't instanciate class $1_basetype");
+ #if defined(SWIG_GE_40300)
+   $result=SWIG_Python_AppendOutput($result, pinst, $isvoid);
+diff --git a/python/med_enumtest_typemap.i b/python/med_enumtest_typemap.i
+--- a/python/med_enumtest_typemap.i
++++ b/python/med_enumtest_typemap.i
+@@ -128,7 +128,7 @@
+   if (pclass == NULL) printf("%s\n","Can't get class $1_basetype");
+   Py_DECREF(pmod);
+   pargs  = Py_BuildValue("(i)",*$1);
+-  pinst  = PyEval_CallObject(pclass, pargs);
++  pinst  = PyObject_Call(pclass, pargs, NULL);
+   if (pinst == NULL) printf("%s\n","Can't instanciate class $1_basetype");
+ #if defined(SWIG_GE_40300)
+   $result=SWIG_Python_AppendOutput($result, pinst, $isvoid);

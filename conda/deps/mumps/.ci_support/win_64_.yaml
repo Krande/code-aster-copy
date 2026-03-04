@@ -1,0 +1,22 @@
+c_compiler:
+- vs2022
+c_stdlib:
+- vs
+fortran_compiler:
+- flang
+fortran_compiler_version:
+- '21'
+libblas:
+- 3.9.* *mkl
+liblapack:
+- 3.9.* *mkl
+mpi:
+- nompi
+mpich:
+- '5'
+openmpi:
+- '5'
+scotch_intsize:
+- '64'
+target_platform:
+- win-64

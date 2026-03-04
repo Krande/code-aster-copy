@@ -1,0 +1,35 @@
+c_stdlib:
+  - vs
+
+c_stdlib_version:
+  - 2022
+
+c_compiler:
+  - vs2022
+
+cxx_compiler:
+  - vs2022
+
+fortran_compiler:   # [win]
+  - ifx             # [win]
+
+fortran_compiler_version:   # [win]
+  - '2025.*'                # [win]
+
+impi_devel:                 # [win]
+  - 2021.17                 # [win]
+
+libblas:
+  - "3.9 *mkl"
+
+liblapack:
+  - "3.9 *mkl"
+
+vc:
+  - 14
+
+python:
+  - 3.12
+
+clang:
+  - 19

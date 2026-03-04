@@ -1,0 +1,360 @@
+schema_version: 1
+
+context:
+  name: scotch
+  version: "7.0.11"
+  build_number: 2
+
+recipe:
+  name: ${{ name }}-pkgs
+  version: ${{ version }}
+
+source:
+  url: https://gitlab.inria.fr/scotch/scotch/-/archive/v${{ version }}/scotch-v${{ version }}.tar.gz
+  sha256: ce1ea6e16ca36ae91426a360f639c8f575fccebc0116fbcb381f164c5e862768
+  patches:
+    - 0001-put-metis-headers-in-include-scotch.patch
+    - 0002-fix-ptesmumps.h.patch
+    - 0003-win-fix-ssize_t.patch
+    - if: win
+      then: 0004-win-fix-context.c.patch
+    - 0005-use-external-dummysizes.patch
+    - 0006-win-fix-graph-match-scan.patch
+    - 0007-allow-overriding-pthread_mutex_t-size.patch
+
+build:
+  number: ${{ build_number }}
+
+outputs:
+  - package:
+      name: libscotch
+    build:
+      string: int${{ intsize }}_h${{ hash }}_${{ build_number }}
+      script:
+        - if: unix
+          then: ${RECIPE_DIR}/build-scotch.sh
+        - if: win
+          then: "%RECIPE_DIR%\\bld-scotch.bat"
+    requirements:
+      build:
+        - ${{ compiler('c') }}
+        - ${{ stdlib("c") }}
+        - ${{ compiler('fortran') }}
+        - cmake
+        - make
+        - if: win
+          then: ninja
+        - if: build_platform != target_platform
+          then: ${{ mpi }}
+        - if: unix
+          then: bison <3.8
+        - if: unix
+          then: flex
+        - if: win
+          then: winflexbison
+      host:
+        - zlib
+        - bzip2
+        - liblzma-devel
+        - if: mpi != 'nompi'
+          then: ${{ mpi }}
+        - if: mpi == 'impi-devel'
+          then: impi-devel
+        - if: win and mklbuild != 'mkl'
+          then: pthreads-win32
+      run:
+        - if: win and mklbuild != 'mkl'
+          then: pthreads-win32
+      run_exports:
+        - ${{ pin_subpackage('libscotch', upper_bound='x.x.x') }}
+        - libscotch * int${{ intsize }}_*
+      ignore_run_exports:
+        from_package:
+          - ${{ mpi }}
+    tests:
+      - script:
+          - if: unix
+            then: cat $PREFIX/include/scotch.h
+          # check libraries exist
+          - if: unix
+            then: test -f "${PREFIX}/lib/libscotch${SHLIB_EXT}"
+          - if: unix
+            then: test -f "${PREFIX}/lib/libscotcherr${SHLIB_EXT}"
+          - if: unix
+            then: test -f "${PREFIX}/lib/libscotcherrexit${SHLIB_EXT}"
+          - if: unix
+            then: test -f "${PREFIX}/lib/libesmumps${SHLIB_EXT}"
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\scotch.lib (exit 0) else (exit 1)
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\scotcherr.lib (exit 0) else (exit 1)
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\scotcherrexit.lib (exit 0) else (exit 1)
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\esmumps.lib (exit 0) else (exit 1)
+          # check headers
+          - if: unix
+            then: test -f "${PREFIX}/include/scotch.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\scotch.h (exit 0) else (exit 1)
+          - if: unix
+            then: test -f "${PREFIX}/include/scotchf.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\scotchf.h (exit 0) else (exit 1)
+          - if: unix
+            then: test -f "${PREFIX}/include/esmumps.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\esmumps.h (exit 0) else (exit 1)
+          # metis.h should be in scotch/ subdirectory, not top-level
+          - if: unix
+            then: test ! -f "${PREFIX}/include/metis.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\metis.h (exit 1) else (exit 0)
+          - if: unix
+            then: test -f "${PREFIX}/include/scotch/metis.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\scotch\\metis.h (exit 0) else (exit 1)
+          # gord should NOT be in libscotch (it's in scotch)
+          - if: unix
+            then: test ! -f "${PREFIX}/bin/gord"
+          - if: win
+            then: if exist %PREFIX%\\Library\\bin\\gord.exe (exit 1) else (exit 0)
+          # cmake config
+          - if: unix
+            then: test -f "$PREFIX/lib/cmake/scotch/SCOTCHConfig.cmake"
+          - if: win
+            then: if not exist %LIBRARY_PREFIX%\\lib\\cmake\\scotch\\SCOTCHConfig.cmake exit 1
+        files:
+          recipe:
+            - test/test_scotch.c
+          source:
+            - src/libscotch/common.h
+            - src/libscotch/module.h
+            - src/check/test_scotch_graph_color.c
+            - src/check/data/m4x4.grf
+        requirements:
+          run:
+            - ${{ compiler('c') }}
+            - ${{ compiler('cxx') }}
+            - python 3.12.*
+
+  - package:
+      name: libptscotch
+    build:
+      skip:
+        - mpi == 'nompi'
+      string: int${{ intsize }}_h${{ hash }}_${{ build_number }}
+      script:
+        - cmake --install ./build --component=libptscotch
+    requirements:
+      build:
+        - cmake
+        - if: mpi == 'openmpi' and build_platform != target_platform
+          then: ${{ mpi }}
+      host:
+        - ${{ mpi }}
+      run:
+        - ${{ pin_subpackage("libscotch", exact=True) }}
+        - if: mpi == 'msmpi'
+          then: ${{ pin_compatible("msmpi", upper_bound="x.x") }}
+      run_exports:
+        - ${{ pin_subpackage('libptscotch', upper_bound='x.x.x') }}
+        - libptscotch * int${{ intsize }}_*
+    tests:
+      - script:
+          - if: unix
+            then: cat $PREFIX/include/ptscotch.h
+          # check libraries exist
+          - if: unix
+            then: test -f "${PREFIX}/lib/libptscotch${SHLIB_EXT}"
+          - if: unix
+            then: test -f "${PREFIX}/lib/libptscotcherr${SHLIB_EXT}"
+          - if: unix
+            then: test -f "${PREFIX}/lib/libptscotcherrexit${SHLIB_EXT}"
+          - if: unix
+            then: test -f "${PREFIX}/lib/libptesmumps${SHLIB_EXT}"
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\ptscotch.lib (exit 0) else (exit 1)
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\ptscotcherr.lib (exit 0) else (exit 1)
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\ptscotcherrexit.lib (exit 0) else (exit 1)
+          - if: win
+            then: if exist %PREFIX%\\Library\\lib\\ptesmumps.lib (exit 0) else (exit 1)
+          # check headers
+          - if: unix
+            then: test -f "${PREFIX}/include/ptscotch.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\ptscotch.h (exit 0) else (exit 1)
+          - if: unix
+            then: test -f "${PREFIX}/include/ptscotchf.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\ptscotchf.h (exit 0) else (exit 1)
+          - if: unix
+            then: test -f "${PREFIX}/include/esmumps.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\esmumps.h (exit 0) else (exit 1)
+          - if: unix
+            then: test ! -f "${PREFIX}/include/ptesmumps.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\ptesmumps.h (exit 1) else (exit 0)
+          - if: unix
+            then: test -f "${PREFIX}/include/scotch/parmetis.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\scotch\\parmetis.h (exit 0) else (exit 1)
+          - if: unix
+            then: test ! -f "${PREFIX}/include/parmetis.h"
+          - if: win
+            then: if exist %PREFIX%\\Library\\include\\parmetis.h (exit 1) else (exit 0)
+          - if: unix
+            then: test ! -f "${PREFIX}/bin/dgord"
+          - if: win
+            then: if exist %PREFIX%\\Library\\bin\\dgord.exe (exit 1) else (exit 0)
+        files:
+          recipe:
+            - test/test_ptscotch.cxx
+            - test/test_scotch_dgraph_check.c
+          source:
+            - src/check/data/m4x4.grf
+        requirements:
+          run:
+            - ${{ compiler('c') }}
+            - ${{ compiler('cxx') }}
+            - python 3.12.*
+    about:
+      summary: "PT-SCOTCH: (Parallel) Static Mapping, Graph, Mesh and Hypergraph Partitioning, and Parallel and Sequential Sparse Matrix Ordering Package"
+
+  - package:
+      name: scotch
+    build:
+      string: int${{ intsize }}_h${{ hash }}_${{ build_number }}
+      script:
+        - if: unix
+          then: ${RECIPE_DIR}/build-scotch.sh
+        - if: win
+          then: "%RECIPE_DIR%\\bld-scotch-tools.bat"
+      variant:
+        use_keys:
+          - mpi
+    requirements:
+      build:
+        - ${{ compiler('c') }}
+        - ${{ stdlib("c") }}
+        - ${{ compiler('fortran') }}
+        - cmake
+        - make
+        - if: win
+          then: ninja
+        - if: unix
+          then: bison <3.8
+        - if: unix
+          then: flex
+        - if: win
+          then: winflexbison
+      host:
+        - zlib
+        - bzip2
+        - liblzma-devel
+        - if: mpi != 'nompi'
+          then: ${{ mpi }}
+        - if: win and mklbuild != 'mkl'
+          then: pthreads-win32
+      run:
+        - ${{ pin_subpackage('libscotch', exact=True) }}
+      run_exports:
+        - ${{ pin_subpackage('libscotch', upper_bound='x.x.x') }}
+        - libscotch * int${{ intsize }}_*
+    tests:
+      - files:
+          recipe:
+            - test/cube_8.msh
+            - test/small1.grf
+        script:
+          - if: unix
+            then: test -f "${PREFIX}/bin/gord"
+          - if: win
+            then: if exist %PREFIX%\\Library\\bin\\gord.exe (exit 0) else (exit 1)
+          - if: unix
+            then: test ! -f "${PREFIX}/bin/dgord"
+          - if: win
+            then: if exist %PREFIX%\\Library\\bin\\dgord.exe (exit 1) else (exit 0)
+          - mord -V
+          - gmap -V
+          - gord -V
+          - gotst -V
+          - gscat -V
+          - if: unix
+            then: ls -la
+          - mord test/cube_8.msh
+          - gord test/small1.grf
+          - gpart 3 test/small1.grf
+          - gscat 3 test/small1.grf 'small1-%r of %p.grf'
+
+  - package:
+      name: ptscotch
+    build:
+      skip:
+        - mpi == 'nompi'
+      string: int${{ intsize }}_h${{ hash }}_${{ build_number }}
+      script: cmake --install ./build --component=ptscotch
+      variant:
+        use_keys:
+          - mpi
+    requirements:
+      build:
+        - cmake
+      run:
+        - ${{ pin_subpackage('libptscotch', exact=True) }}
+        - ${{ pin_subpackage('scotch', exact=True) }}
+      run_exports:
+        - ${{ pin_subpackage('libptscotch', upper_bound='x.x.x') }}
+        - libptscotch * int${{ intsize }}_*
+    tests:
+      - files:
+          recipe:
+            - test/small1.grf
+        script:
+          - if: unix
+            then: test -f "${PREFIX}/bin/gord"
+          - if: win
+            then: if exist %PREFIX%\\Library\\bin\\gord.exe (exit 0) else (exit 1)
+          - if: unix
+            then: test -f "${PREFIX}/bin/dgord"
+          - if: win
+            then: if exist %PREFIX%\\Library\\bin\\dgord.exe (exit 0) else (exit 1)
+          - dggath -V
+          - dgmap -V
+          - dgord -V
+          - dgscat -V
+          - dgtst -V
+          - mpiexec -n 2 dgord test/small1.grf
+          - mpiexec -n 2 dgtst test/small1.grf
+          - mpiexec -n 2 dgpart 3 test/small1.grf
+          - mpiexec -n 2 dgscat test/small1.grf 'small1-%r of %p.grf'
+          - mpiexec -n 2 dggath 'small1-%r of %p.grf'
+    about:
+      summary: "PT-SCOTCH: (Parallel) Static Mapping, Graph, Mesh and Hypergraph Partitioning, and Parallel and Sequential Sparse Matrix Ordering Package"
+
+about:
+  license: CECILL-C
+  license_file: doc/CeCILL-C_V1-en.txt
+  summary: "SCOTCH: Static Mapping, Graph, Mesh and Hypergraph Partitioning, and Parallel and Sequential Sparse Matrix Ordering Package"
+  description: |
+    Software package and libraries for sequential and parallel
+    graph partitioning, static mapping and clustering, sequential
+    mesh and hypergraph partitioning, and sequential and parallel
+    sparse matrix block ordering.
+  homepage: https://www.labri.fr/perso/pelegrin/scotch/
+  repository: https://gitlab.inria.fr/scotch/scotch
+  documentation: http://gforge.inria.fr/docman/?group_id=248&dirid=326
+
+extra:
+  feedstock-name: scotch
+  recipe-maintainers:
+    - basnijholt
+    - dalcinl
+    - minrk
+    - davidbrochart
+    - SylvainCorlay
+    - Tobias-Fischer
+    - matthiasdiener

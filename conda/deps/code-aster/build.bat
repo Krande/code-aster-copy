@@ -51,7 +51,8 @@ set LIBPATH=%PREF_ROOT%/libs %LIBPATH%
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 
 set CFLAGS=%CFLAGS% /FS /MD
-set CXXFLAGS=%CXXFLAGS% /MD
+:: Override CXXFLAGS: use c++20 for MGIS std::span support, keep /EHs and /permissive-
+set CXXFLAGS=/std:c++20 /EHs /permissive- /MD
 
 echo "Using Intel Fortran LLVM IFX compiler"
 set FC_SEARCH=ifort
@@ -76,15 +77,9 @@ set CFLAGS=%CFLAGS% /Z7 /Oy- /FS
 set CXXFLAGS=%CXXFLAGS% /Z7 /Oy- /FS
 set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
 
-:: Create dll debug pdb
-if "%build_type%" == "debug" (
-    echo "Building debug version with runtime checks"
-    set FCFLAGS=%FCFLAGS% /check:stack
-    set LDFLAGS=%LDFLAGS% /OPT:NOREF /OPT:NOICF
-) else (
-    echo "Building release version with debug symbols"
-    set LDFLAGS=%LDFLAGS% /OPT:REF /OPT:ICF
-)
+:: Release build with debug symbols
+echo "Building release version with debug symbols"
+set LDFLAGS=%LDFLAGS% /OPT:REF /OPT:ICF
 
 :: Add Math libs
 set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
@@ -92,8 +87,8 @@ set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_d
 :: Add threading libs
 @REM set LDFLAGS=%LDFLAGS% pthread.lib
 
-:: Add mumps libs
-set LDFLAGS=%LDFLAGS% mpiseq.lib esmumps.lib scotch.lib scotcherr.lib scotcherrexit.lib
+:: Add mumps libs (mpiseq is compiled into mumps_common on Windows)
+set LDFLAGS=%LDFLAGS% mumps_common.lib dmumps.lib smumps.lib cmumps.lib zmumps.lib pord.lib esmumps.lib scotch.lib scotcherr.lib scotcherrexit.lib
 
 :: Add metis libs
 set LDFLAGS=%LDFLAGS% metis.lib
@@ -106,11 +101,7 @@ set INCLUDES_BIBC=%PREF_ROOT%/include %SRC_DIR%/bibfor/include %INCLUDES_BIBC%
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN ASTER_PLATFORM_MSVC64
 
 set DEFINES=%DEFINES% ASTER_INT8
-if "%int_type%" == "64" (
-    echo "Using 64-bit integer type"
-) else (
-    echo "Using 32-bit integer type"
-)
+echo "Using 64-bit integer type"
 
 python %RECIPE_DIR%\config\update_version.py
 
@@ -142,15 +133,11 @@ waf configure ^
   --without-repo
 
 if errorlevel 1 (
-    type %SRC_DIR%/build/%build_type%/config.log
+    type "%SRC_DIR%\build\config.log"
     exit 1
 )
 
-if "%build_type%" == "debug" (
-    waf install_debug
-) else (
-    waf install
-)
+waf install
 
 if errorlevel 1 exit 1
 

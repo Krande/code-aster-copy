@@ -44,3 +44,7 @@ build/*
 build-cmake/*
 output/
 test_output/
+.claude/
+
+# old submodule dirs (can be deleted)
+conda/deps/*-feedstock/

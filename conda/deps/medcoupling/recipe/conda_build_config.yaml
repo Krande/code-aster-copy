@@ -1,0 +1,6 @@
+mpi:
+  - nompi
+  - openmpi  # [not win]
+
+openmpi:
+  - 5

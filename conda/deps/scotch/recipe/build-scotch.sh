@@ -1,0 +1,93 @@
+#!/bin/bash
+
+set -ex
+
+cd $SRC_DIR
+
+if [[ $(uname) == "Darwin" ]]; then
+  shared_flags="-Wl,-undefined -Wl,dynamic_lookup"
+else
+  shared_flags="-Wl,-shared"
+fi
+
+if [[ "$CONDA_BUILD_CROSS_COMPILATION" == 1 ]]; then
+  # Build dummysizes helper executable
+  (
+    mkdir -p $SRC_DIR/src/dummysizes/build-host
+    pushd $SRC_DIR/src/dummysizes/build-host
+
+    cp $RECIPE_DIR/CMakeLists-dummysizes.txt $SRC_DIR/src/dummysizes/CMakeLists.txt
+
+    export CC=$CC_FOR_BUILD
+    export LDFLAGS=${LDFLAGS//$PREFIX/$BUILD_PREFIX}
+    export PKG_CONFIG_PATH=${PKG_CONFIG_PATH//$PREFIX/$BUILD_PREFIX}
+
+    # Unset them as we're ok with builds that are either slow or non-portable
+    unset CFLAGS
+    
+    case "$target_platform" in
+      # compute this with native sizeof(pthread_mutex_t) on each platform
+      # ordering/partitioning may crash if these are wrong
+      linux-aarch64)
+        mutex_size=48
+        ;;
+      linux-ppc64le)
+        mutex_size=40
+        ;;
+      osx-arm64)
+        mutex_size=64
+        ;;
+    esac
+
+    cmake .. \
+      -D CMAKE_BUILD_TYPE=Release \
+      -D CMAKE_PREFIX_PATH=$BUILD_PREFIX \
+      -D CMAKE_INSTALL_PREFIX=$BUILD_PREFIX \
+      -D CMAKE_INSTALL_LIBDIR=lib \
+      -D ENABLE_TESTS=OFF \
+      -D MPI_DETERMINE_LIBRARY_VERSION=OFF \
+      -D MPI_DETERMINE_Fortran_CAPABILITIES=OFF \
+      -D PTHREAD_MUTEX_SIZE=${mutex_size} \
+      -D INTSIZE=${intsize} \
+      -D SCOTCH_VERSION=$(echo ${PKG_VERSION} | cut -d. -f 1) \
+      -D SCOTCH_RELEASE=$(echo ${PKG_VERSION} | cut -d. -f 2) \
+      -D SCOTCH_PATCHLEVEL=$(echo ${PKG_VERSION} | cut -d. -f 3) \
+      -D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP=True
+
+    cmake --build . --parallel ${CPU_COUNT:-1} --verbose
+  )
+
+  # Set flag to not build dummysizes in main build
+  BUILD_DUMMYSIZES=OFF
+  # Cross-compile run results
+  export CMAKE_ARGS="${CMAKE_ARGS} \
+    -DMPI_RUN_RESULT_C_libver_mpi_normal:INTERNAL=1 \
+    -DMPI_RUN_RESULT_C_libver_mpi_normal__TRYRUN_OUTPUT:STRING=\"\" \
+    -DMPI_RUN_RESULT_Fortran_libver_mpi_F08_MODULE:INTERNAL=1 \
+    -DMPI_RUN_RESULT_Fortran_libver_mpi_F08_MODULE__TRYRUN_OUTPUT:STRING=\"\" \
+  "
+else
+  BUILD_DUMMYSIZES=ON
+fi
+
+cmake ${CMAKE_ARGS} \
+  -D CMAKE_BUILD_TYPE=Release \
+  -D CMAKE_SHARED_LINKER_FLAGS="$shared_flags" \
+  -D CMAKE_INSTALL_PREFIX=$PREFIX \
+  -D ENABLE_TESTS=OFF \
+  -D BUILD_SHARED_LIBS=ON \
+  -D BUILD_DUMMYSIZES=$BUILD_DUMMYSIZES \
+  -D INTSIZE=${intsize} \
+  -D LIBSCOTCHERR=scotcherr \
+  -D LIBPTSCOTCHERR=ptscotcherr \
+  -D MPI_DETERMINE_LIBRARY_VERSION=OFF \
+  -D MPI_DETERMINE_Fortran_CAPABILITIES=OFF \
+  -B build \
+  .
+
+cmake --build ./build --parallel ${CPU_COUNT}
+cmake --install ./build --component=libscotch
+
+# check SCOTCH_VERSION fields
+cat $PREFIX/include/scotch.h
+grep VERSION $PREFIX/include/scotch.h
