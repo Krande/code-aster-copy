@@ -419,7 +419,13 @@ def find_ifort_win32(conf):
 
     v.FC_NAME = 'IFORT'
     if not v.LINK_FC:
-        conf.find_program(linker_name, var='LINK_FC', path_list=path, mandatory=True)
+        if conda_intel:
+            # For conda builds, use MSVC link.exe directly instead of XILINK.
+            # XILINK searches PATH for link.exe and often finds Git's /usr/bin/link
+            # instead of MSVC's link.exe, causing "Expected linker not found" errors.
+            conf.find_program('LINK', var='LINK_FC', path_list=path, mandatory=True)
+        else:
+            conf.find_program(linker_name, var='LINK_FC', path_list=path, mandatory=True)
     if not v.AR:
         conf.find_program(lib_name, path_list=path, var='AR', mandatory=True)
         v.ARFLAGS = ['/nologo']

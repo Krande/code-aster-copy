@@ -105,7 +105,7 @@ def check_bibcxx_depends(self):
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
     if self.env.CXX_NAME == 'msvc':
-        self.check_cxx_compiler_options("/std:c++17")
+        self.check_cxx_compiler_options("/std:c++20")
         # Allow writing to PDB files from multiple processes
         self.check_cxx_compiler_options("/FS")
         # Enable unwind semantics for C++ exceptions

@@ -100,6 +100,11 @@ def check_mgis(self):
     opts = self.options
     if opts.enable_mfront is False:
         raise Errors.ConfigurationError("MGIS disabled")
+    # On Windows, MGIS headers use std::string/std::string_view/std::span without
+    # including them. Force-include the necessary standard headers.
+    if self.env.ASTER_PLATFORM_MSVC64:
+        for hdr in ("string", "string_view", "span"):
+            self.env.append_unique("CXXFLAGS", "/FI%s" % hdr)
     # for MGIS
     self.check_mgis_headers()
     self.check_mgis_api_version(1)
