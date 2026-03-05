@@ -435,13 +435,55 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     all_lib_gen_tasks = [bibfor_lib_task, bibfor_ext_lib_task, clib_lib_task,
                          bibcxx_lib_task, gc_lib_task_gen, bibaster_lib_task]
 
-    # bibfor.dll depends on bibcxx.lib, bibc.lib, bibfor_ext.lib, and AsterGC.lib
-    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs + fcext_lib_task_outputs + gc_task_outputs
+    # Resolve external library .lib files (MED, MUMPS, etc.) as waf nodes
+    # so they can be added as direct inputs to link tasks.
+    # This is more reliable than LINKFLAGS on Windows where the link command
+    # may not properly expand env variables.
+    env = self.env
+    external_lib_nodes = []
+    external_uselibs = ["MED", "MUMPS", "SCOTCH", "METIS", "MATH", "HDF5", "MPI", "OPENMP"]
+    seen_ext_libs = set()
+    for uselib in external_uselibs:
+        for var_prefix in ("LIB_", "STLIB_"):
+            for lib in env.get_flat(var_prefix + uselib).split():
+                if lib and lib not in seen_ext_libs:
+                    seen_ext_libs.add(lib)
+        for var_prefix in ("LIBPATH_", "STLIBPATH_"):
+            for p in env[var_prefix + uselib]:
+                if p:
+                    lib_dir = pathlib.Path(p)
+                    for lib_name in list(seen_ext_libs):
+                        lib_file = lib_dir / f"{lib_name}.lib"
+                        if lib_file.exists():
+                            node = self.bld.root.find_node(lib_file.as_posix())
+                            if node and node not in external_lib_nodes:
+                                external_lib_nodes.append(node)
+    # Also check LDFLAGS for additional library files
+    for flag in env["LDFLAGS"]:
+        if flag and flag.endswith(".lib") and not flag.startswith("/"):
+            lib_name_only = flag.replace(".lib", "")
+            if lib_name_only not in seen_ext_libs:
+                seen_ext_libs.add(lib_name_only)
+                # Search in LDFLAGS paths
+                for flag2 in env["LDFLAGS"]:
+                    if flag2.startswith("/LIBPATH:"):
+                        p = flag2[len("/LIBPATH:"):]
+                        lib_file = pathlib.Path(p) / flag
+                        if lib_file.exists():
+                            node = self.bld.root.find_node(lib_file.as_posix())
+                            if node and node not in external_lib_nodes:
+                                external_lib_nodes.append(node)
+
+    Logs.info(f"[run_mvsc_lib_gen] Found {len(external_lib_nodes)} external library nodes: "
+              f"{[n.name for n in external_lib_nodes]}")
+
+    # bibfor.dll depends on bibcxx.lib, bibc.lib, bibfor_ext.lib, AsterGC.lib, and external libs
+    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs + fcext_lib_task_outputs + gc_task_outputs + external_lib_nodes
     for lib_task in all_lib_gen_tasks:
         fclib_task.set_run_after(lib_task)
 
-    # bibfor_ext.dll depends on bibfor.lib, bibcxx.lib, bibc.lib, and AsterGC.lib
-    fcext_lib_task.inputs += fclib_task_outputs + bibcxx_task_outputs + clib_task_outputs + gc_task_outputs
+    # bibfor_ext.dll depends on bibfor.lib, bibcxx.lib, bibc.lib, AsterGC.lib, and external libs
+    fcext_lib_task.inputs += fclib_task_outputs + bibcxx_task_outputs + clib_task_outputs + gc_task_outputs + external_lib_nodes
     for lib_task in all_lib_gen_tasks:
         fcext_lib_task.set_run_after(lib_task)
 
@@ -585,9 +627,35 @@ def set_flags(self) -> None:
         for dep_lib in dependency_map[archive_name]:
             args.append(dep_lib)
 
-    Logs.debug(f"{archive_name=} extra flags {args} for {name=}")
+    # Add external library dependencies (MED, MUMPS, etc.) for Fortran libraries.
+    # Waf's propagate_uselib_vars should handle this, but on Windows with MSVC
+    # the libraries don't reliably reach the linker through the standard mechanism.
+    if archive_name in ("bibfor", "bibfor_ext", "bibc", "bibcxx", "aster"):
+        external_uselibs = ["MED", "MUMPS", "SCOTCH", "METIS", "MATH", "HDF5", "MPI", "OPENMP", "NUMPY"]
+        seen_libs = set()
+        seen_paths = set()
+        for uselib in external_uselibs:
+            for var_prefix in ("LIB_", "STLIB_"):
+                for lib in self.env.get_flat(var_prefix + uselib).split():
+                    if lib and lib not in seen_libs:
+                        seen_libs.add(lib)
+                        lib_name = f"{lib}.lib" if not lib.endswith(".lib") else lib
+                        args.append(lib_name)
+            for var_prefix in ("LIBPATH_", "STLIBPATH_"):
+                for p in getattr(self.env, var_prefix + uselib, []):
+                    if p and p not in seen_paths:
+                        seen_paths.add(p)
+                        args.append(f"/LIBPATH:{p}")
+        # Also pass through LDFLAGS from the environment (may contain additional libs)
+        for flag in getattr(self.env, "LDFLAGS", []):
+            if flag and flag not in args:
+                args.append(flag)
+        Logs.info(f"[set_flags] {archive_name} external libs from env: {seen_libs}")
+        Logs.info(f"[set_flags] {archive_name} external paths from env: {seen_paths}")
+        Logs.info(f"[set_flags] {archive_name} LDFLAGS from env: {list(getattr(self.env, 'LDFLAGS', []))}")
+
+    Logs.info(f"[set_flags] {archive_name} total link args count: {len(args)}")
     self.link_task.env.append_unique("LINKFLAGS", args)
-    # log the entire LINKFLAGS
     Logs.debug(f"{archive_name=}: {self.link_task.env.LINKFLAGS=}")
 
 @TaskGen.feature("cxxshlib", "fcshlib", "cshlib")

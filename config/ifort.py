@@ -25,7 +25,7 @@ def ifort_modifier_win32(self):
     v.FCSTLIB_MARKER = ''
     v.FCSHLIB_MARKER = ''
     v.FCLIB_ST = v.FCSTLIB_ST = '%s.lib'
-    v.FCLIBPATH_ST = v.STLIBPATH_ST = '/LIBPATH:%s'
+    v.FCLIBPATH_ST = v.FCSTLIBPATH_ST = v.STLIBPATH_ST = '/LIBPATH:%s'
     v.FCINCPATH_ST = '/I%s'
     v.FCDEFINES_ST = '/D%s'
     v.fcprogram_PATTERN = v.fcprogram_test_PATTERN = '%s.exe'

@@ -285,6 +285,7 @@ def configure(self):
     self.add_os_flags("CXXFLAGS")
     self.add_os_flags("FCFLAGS")
     self.add_os_flags("LINKFLAGS")
+    self.add_os_flags("LDFLAGS")
     self.add_os_flags("DEFINES")
     self.add_os_flags("WAFBUILD_ENV")
     self.add_os_flags("CFLAGS_ASTER_DEBUG")

@@ -1,0 +1,39 @@
+name: ci-condadev-build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - win-support
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: condadev-build (Windows)
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: '1'
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          environments: condadev
+          activate-environment: condadev
+          cache: false
+
+      - name: Build Code_Aster (condadev)
+        shell: bash
+        run: |
+          pixi run -e condadev cbuild-dev
+
+      - name: If failed build, upload log
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuildLog-condadev-${{ github.run_id }}
+          path: ${{ github.workspace }}/output/bld/rattler-build_code-aster_*/work/build

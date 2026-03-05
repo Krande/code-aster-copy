@@ -187,7 +187,7 @@ set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_d
 :: set LDFLAGS=%LDFLAGS% pthread.lib
 
 :: Add mumps libs
-set LDFLAGS=%LDFLAGS% mpiseq.lib esmumps.lib scotch.lib scotcherr.lib scotcherrexit.lib
+set LDFLAGS=%LDFLAGS% dmumps.lib zmumps.lib smumps.lib cmumps.lib mumps_common.lib pord.lib mpiseq.lib esmumps.lib scotch.lib scotcherr.lib scotcherrexit.lib
 
 :: Add metis libs
 set LDFLAGS=%LDFLAGS% metis.lib
