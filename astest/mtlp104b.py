@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -204,9 +204,19 @@ result = CALC_META(
     RESULTAT=result,
     ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
     COMPORTEMENT=_F(RELATION="ACIER", TOUT="OUI", LOI_META="WAECKEL"),
+    OPTION=("META_ELNO", "DURT_ELNO"),
+)
+
+result = CALC_META(
+    reuse=result,
+    MODELE=thermalModel,
+    CHAM_MATER=materialField,
+    RESULTAT=result,
+    ETAT_INIT=_F(EVOL_THER=result, INST_INIT=2.0),
     REVENU=_F(RELATION="ACIER_REVENU", TOUT="OUI", LOI_META="JMA"),
     OPTION=("META_ELNO", "DURT_ELNO"),
 )
+
 
 ####################################################################################################
 #

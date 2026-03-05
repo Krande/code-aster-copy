@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@ interface
     subroutine zacier(metaSteelPara, nbPhase, nbVari, &
                       tpg0, tpg1, tpg2, &
                       dt10, dt21, &
-                      metaPrev, metaCurr)
+                      metaIn, metaOut)
         use Metallurgy_type
         type(META_SteelParameters), intent(in) :: metaSteelPara
         integer(kind=8), intent(in) :: nbPhase, nbVari
         real(kind=8), intent(in) :: tpg0, tpg1, tpg2
         real(kind=8), intent(in) :: dt10, dt21
-        real(kind=8), intent(in) :: metaPrev(nbVari)
-        real(kind=8), intent(out) :: metaCurr(nbVari)
+        real(kind=8), intent(in) :: metaIn(nbVari)
+        real(kind=8), intent(out) :: metaOut(nbVari)
     end subroutine zacier
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine mtdorc(factorKeyword, model, comporMeta)
+    subroutine mtdorc(factorKeyword, model, comporMeta, lEmptyMap)
         character(len=16), intent(in) :: factorKeyword
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: comporMeta
+        aster_logical, intent(out) :: lEmptyMap
     end subroutine mtdorc
 end interface
