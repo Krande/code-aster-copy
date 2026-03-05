@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: condadev-build (Windows)
+  build-deps:
+    name: Build Dependencies (Windows)
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: windows-latest
     steps:
@@ -26,10 +26,51 @@ jobs:
           activate-environment: condadev
           cache: false
 
-      - name: Build Code_Aster (condadev)
+      - name: Build local dependencies
         shell: bash
         run: |
-          pixi run -e condadev cbuild-dev
+          pixi run -e condadev build-deps
+
+      - name: Upload dependency packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: condadev-deps-${{ github.run_id }}
+          path: conda/deps/output
+          retention-days: 7
+
+      - name: If failed, upload build logs
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: DepsLog-condadev-${{ github.run_id }}
+          path: output/bld/rattler-build_*/work
+
+  build-aster:
+    name: Build Code_Aster (Windows)
+    needs: build-deps
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: '1'
+
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: v0.59.0
+          environments: condadev
+          activate-environment: condadev
+          cache: false
+
+      - name: Download dependency packages
+        uses: actions/download-artifact@v4
+        with:
+          name: condadev-deps-${{ github.run_id }}
+          path: conda/deps/output
+
+      - name: Build Code_Aster
+        shell: bash
+        run: |
+          pixi run -e condadev cbuild-dev --skip-existing=all
 
       - name: If failed build, upload log
         if: ${{ failure() }}
