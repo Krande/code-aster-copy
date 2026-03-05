@@ -1,6 +1,6 @@
 @ECHO ON
 
-setlocal ENABLEDELAYEDEXPANSION
+setlocal
 
 mkdir build
 cd build
@@ -8,12 +8,12 @@ cd build
 :: Needed by IFX
 set "LIB=%BUILD_PREFIX%\Library\lib;%LIB%"
 set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%INCLUDE%"
-set "CMAKE_ARGS=!CMAKE_ARGS! -D HDF5_BUILD_FORTRAN:BOOL=ON"
 
-set FCFLAGS=/fpp /nologo %FCFLAGS%
+set FCFLAGS=/fpp /nologo /names:lowercase /assume:underscore %FCFLAGS%
 
 cmake -G "Ninja" ^
   %CMAKE_ARGS% ^
+  -D HDF5_BUILD_FORTRAN:BOOL=ON ^
   -D Python_FIND_STRATEGY:STRING=LOCATION ^
   -D Python_FIND_REGISTRY:STRING=NEVER ^
   -D Python3_ROOT_DIR:FILEPATH="%PREFIX%" ^
