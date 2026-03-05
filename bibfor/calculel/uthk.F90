@@ -282,11 +282,13 @@ subroutine uthk(nomte, geom, hk, ndim, niv, &
         tabaux(28) = (x5-x8)**2+(y5-y8)**2+(z5-z8)**2
 !
         hk = max( &
-             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7), &
-             tabaux(8), tabaux(9), tabaux(10), tabaux(11), tabaux(12), tabaux(13), tabaux(14), &
-             tabaux(15), tabaux(16), tabaux(17), tabaux(18), tabaux(19), tabaux(20), tabaux(21), &
-             tabaux(22), tabaux(23), tabaux(24), tabaux(25), tabaux(26), tabaux(27), tabaux(28) &
-             )
+             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7))
+        hk = max(hk, &
+             tabaux(8), tabaux(9), tabaux(10), tabaux(11), tabaux(12), tabaux(13), tabaux(14))
+        hk = max(hk, &
+             tabaux(15), tabaux(16), tabaux(17), tabaux(18), tabaux(19), tabaux(20), tabaux(21))
+        hk = max(hk, &
+             tabaux(22), tabaux(23), tabaux(24), tabaux(25), tabaux(26), tabaux(27), tabaux(28))
 !
 !====
 ! 5. PENTAEDRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
@@ -323,10 +325,10 @@ subroutine uthk(nomte, geom, hk, ndim, niv, &
         tabaux(15) = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
 !
         hk = max( &
-             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7), &
+             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7))
+        hk = max(hk, &
              tabaux(8), tabaux(9), tabaux(10), tabaux(11), tabaux(12), tabaux(13), tabaux(14), &
-             tabaux(15) &
-             )
+             tabaux(15))
 !
 !====
 ! 6. PYRAMIDE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
