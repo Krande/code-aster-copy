@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
+subroutine pmdocc(comporList, nbVari, multComp)
 !
     use BehaviourPrepare_type
 !
@@ -37,7 +37,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 !
     character(len=16), intent(out) :: compor(COMPOR_SIZE)
     integer(kind=8), intent(out) :: nbVari
-    character(len=16), intent(out) :: type_comp, mult_comp
+    character(len=16), intent(out) :: multComp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +49,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 !
 ! Out compor           : list of parameters for constitutive law
 ! Out nbVari           : number of internal variables
-! Out type_comp        : type of comportment (INCR/ELAS)
-! Out mult_comp        : multi-comportment (DEFI_COMPOR for PMF)
+! Out multComp         : multi-comportment (DEFI_COMPOR for PMF)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,9 +62,9 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 ! --------------------------------------------------------------------------------------------------
 !
     nbVari = 0
-    type_comp = ' '
-    mult_comp = ' '
-    compor(1:COMPOR_SIZE) = 'VIDE'
+
+    multComp = ' '
+    comporList(1:COMPOR_SIZE) = 'VIDE'
 
 ! - Initial state
     call getfac('SIGM_INIT', nbocc1)
@@ -87,9 +86,8 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 
 ! - Some properties
     nbVari = prepMapCompor%prepPara(1)%nbVari
-    rela_comp = prepMapCompor%prepPara(1)%rela_comp
-    type_comp = prepMapCompor%prepPara(1)%type_comp
-    mult_comp = prepMapCompor%prepPara(1)%mult_comp
+    relaComp = prepMapCompor%prepPara(1)%rela_comp
+    multComp = prepMapCompor%prepPara(1)%mult_comp
 
 ! - Detection of specific cases
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)

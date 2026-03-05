@@ -68,7 +68,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     real(kind=8) :: newins, newdt, deltac
     real(kind=8) :: inst, prec, valr(2)
     real(kind=8) :: insfin, insref
-    aster_logical :: ladap, uncrok
+    aster_logical :: ladap, uncrok, lOutOFTime
     character(len=24) :: tpsite
     integer(kind=8) :: jiter
     integer(kind=8) :: nb_inst, nmax, inspas
@@ -112,8 +112,8 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
 ! --- PROCHAIN INSTANT DE PASSAGE OBLIGATOIRE (JALON) ?
 !
-    call nmjalo(sddisc, inst, prec, jalon)
-    if (jalon .eq. r8vide()) goto 999
+    call nmjalo(sddisc, inst, prec, jalon, lOutOFTime)
+    if (lOutOFTime) goto 999
 !
 ! --- NOMBRE DE SCHEMAS D'ADAPTATION : NADAPT
 !

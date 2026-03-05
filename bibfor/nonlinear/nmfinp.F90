@@ -51,6 +51,7 @@ subroutine nmfinp(sddisc, numeInst, lastTimeStep)
     real(kind=8) :: prec, jalon, timeCurr
     character(len=16) :: metlis
     integer(kind=8) :: nbStepMaxi
+    aster_logical :: lOutOFTime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,8 +83,8 @@ subroutine nmfinp(sddisc, numeInst, lastTimeStep)
 
 ! -  Detect last time step by automatic time stepping
     if (metlis .eq. 'AUTO') then
-        call nmjalo(sddisc, timeCurr, prec, jalon)
-        if (jalon .eq. r8vide()) then
+        call nmjalo(sddisc, timeCurr, prec, jalon, lOutOFTime)
+        if (lOutOFTime) then
             lastTimeStep = ASTER_TRUE
         end if
     end if

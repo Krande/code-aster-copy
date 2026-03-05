@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterf_types.h"
 !
 interface
-    subroutine nmjalo(sddisc, inst, prec, jalon)
-        character(len=19) :: sddisc
-        real(kind=8) :: inst
-        real(kind=8) :: prec
-        real(kind=8) :: jalon
+    subroutine nmjalo(sddisc, timeCurr, prec, jalon, lOutOFTime)
+        character(len=19), intent(in) :: sddisc
+        real(kind=8), intent(in) :: timeCurr, prec
+        real(kind=8), intent(out) :: jalon
+        aster_logical, intent(out) :: lOutOFTime
     end subroutine nmjalo
 end interface
