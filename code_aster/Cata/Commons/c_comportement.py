@@ -179,7 +179,7 @@ def C_COMPORTEMENT(command):
             )
         if command == "MECA_NON_LINE":
             opts["b_anneal"] = BLOC(
-                condition="""is_in("RELATION", ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_CIN1_CHAB','VMIS_CIN2_CHAB'))""",
+                condition="""is_in("RELATION", ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_ISOT_NL','VMIS_CIN1_CHAB','VMIS_CIN2_CHAB'))""",
                 fr=tr("Restauration d'écrouissage"),
                 POST_INCR=SIMP(statut="f", typ="TXM", into=("REST_ECRO", "SANS")),
             )
