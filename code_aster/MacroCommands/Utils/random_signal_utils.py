@@ -380,7 +380,7 @@ def fonctm_gam(ltemps, a1, a2, a3):
 # parametres
 
 
-def f_opta(x0, ltemps, n1, n2):
+def f_opta(x0, ltemps, t1, t2):
     alpha = x0[0]
     beta = x0[1]
     if alpha <= 1.0:
@@ -389,6 +389,8 @@ def f_opta(x0, ltemps, n1, n2):
         resu = 1000.0
     else:
         qt = fonctm_gam(ltemps, 1.0, alpha, beta)
+        n1 = NP.searchsorted(ltemps, t1)
+        n2 = NP.searchsorted(ltemps, t2)
         ener, PINI, PFIN = f_ENER_qt(ltemps, qt, n1, n2)
         resu = sqrt((PINI - 0.05) ** 2 + (PFIN - 0.95) ** 2)
     return resu
