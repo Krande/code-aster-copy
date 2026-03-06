@@ -82,8 +82,7 @@ subroutine nmmaba(icodma, rela_comp, e, dsde, sigy, &
 !
     if ((rela_comp .ne. 'ELAS') .and. (rela_comp .ne. 'VMIS_ISOT_LINE') .and. &
         (rela_comp .ne. 'VMIS_CINE_LINE') .and. (rela_comp .ne. 'VMIS_ASYM_LINE') .and. &
-        (rela_comp .ne. 'PINTO_MENEGOTTO') .and. (rela_comp .ne. 'GRILLE_CINE_LINE') .and. &
-        (rela_comp .ne. 'GRILLE_ISOT_LINE') .and. (rela_comp .ne. 'GRILLE_PINTO_MEN')) then
+        (rela_comp .ne. 'GRILLE_CINE_LINE') .and. (rela_comp .ne. 'GRILLE_ISOT_LINE')) then
         call utmess('F', 'COMPOR4_32', sk=rela_comp)
     end if
 !
@@ -124,38 +123,6 @@ subroutine nmmaba(icodma, rela_comp, e, dsde, sigy, &
         if (codres(2) .ne. 0) valres(2) = 0.d0
         dsde = valres(1)
         sigy = valres(2)
-    end if
-!
-! --- CARACTERISTIQUES MODELE PINTO MENEGOTTO
-!
-    if ((rela_comp .eq. 'PINTO_MENEGOTTO') .or. (rela_comp .eq. 'GRILLE_PINTO_MEN')) then
-!
-        nbres = 12
-!
-!
-        call r8inir(nbval, 0.d0, valres, 1)
-        nbpar = 0
-        nompar = '  '
-        valpar = 0.d0
-!
-        call rcvalb(fami, 1, 1, '+', icodma, &
-                    ' ', 'PINTO_MENEGOTTO', nbpar, nompar, [valpar], &
-                    nbres, nompim, valres, codres, 0)
-        if (codres(7) .ne. 0) valres(7) = -1.d0
-        cstpm(1) = e
-        cstpm(2) = valres(1)
-        cstpm(3) = valres(2)
-        cstpm(4) = valres(3)
-        cstpm(10) = valres(4)
-        cstpm(5) = valres(5)
-        cstpm(6) = valres(6)
-        cstpm(7) = valres(7)
-        cstpm(8) = valres(8)
-        cstpm(9) = valres(9)
-        cstpm(11) = valres(10)
-        cstpm(12) = valres(11)
-        cstpm(13) = valres(12)
-!
     end if
 !
 end subroutine

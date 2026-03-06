@@ -523,7 +523,6 @@ DICT_NOM_VARI = {
     "INDIENDN": _("indicateur d'endommagement normal =0 sain, =1 endommagé, =2 cassé"),
     "INDIENDO": _("indicateur d'endommagement"),
     "INDIENDT": _("indicateur d'endommagement tangentiel =0 sain, =1 endommagé, =2 cassé"),
-    "INDIFLAM": _("indicateur de flambement"),
     # "INDIHYDR": _("indicateur d'irréversibilité hydrique"),
     "INDIOUV": _(
         "JOINT_MECA_FROT/CZM_FROT_MIX : indicateur d'ouverture complète =0 fermé, =1 ouvert"

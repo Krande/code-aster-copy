@@ -31,7 +31,6 @@ subroutine nmco1d(BEHInteg, &
 #include "asterfort/comp1d.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dis.h"
-#include "asterfort/nm1dpm.h"
 #include "asterfort/nmmaba.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -66,10 +65,7 @@ subroutine nmco1d(BEHInteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: cine, isot, pinto, com1d, elas, cinegc
-    real(kind=8) :: e, et, sigy
-    integer(kind=8), parameter :: nvarpi = 8, ncstpm = 13
-    real(kind=8) :: cstpm(ncstpm)
+    aster_logical :: cine, isot, com1d, elas, cinegc
     real(kind=8) :: em, ep, depsth, depsm, val(1)
     integer(kind=8) :: codres(1)
 ! --------------------------------------------------------------------------------------------------
@@ -78,7 +74,6 @@ subroutine nmco1d(BEHInteg, &
     isot = .false.
     cine = .false.
     cinegc = .false.
-    pinto = .false.
     com1d = .false.
     codret = 0
     sigp = 0.d0
@@ -89,8 +84,6 @@ subroutine nmco1d(BEHInteg, &
         cine = .true.
     else if (rela_comp(1:12) .eq. 'VMIS_CINE_GC') then
         cinegc = .true.
-    else if (rela_comp(1:16) .eq. 'GRILLE_PINTO_MEN') then
-        pinto = .true.
     else if (rela_comp(1:4) .eq. 'ELAS') then
         elas = .true.
     else
@@ -153,14 +146,5 @@ subroutine nmco1d(BEHInteg, &
                     epsm, deps, angmas, vim, vip, &
                     sigp, dsidep, codret)
 !
-    else if (pinto) then
-        call nmmaba(imate, rela_comp, e, et, sigy, &
-                    ncstpm, cstpm)
-        call verift(fami, kpg, ksp, 'T', imate, &
-                    epsth_=depsth)
-        depsm = deps-depsth
-        call nm1dpm(fami, kpg, ksp, imate, option, &
-                    nvarpi, ncstpm, cstpm, sigm, vim, &
-                    depsm, vip, sigp, dsidep)
     end if
 end subroutine

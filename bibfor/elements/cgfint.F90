@@ -197,8 +197,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
         if (relaCable .eq. 'ELAS' .or. relaCable .eq. 'VMIS_ISOT_TRAC' .or. &
             relaCable .eq. 'VMIS_ISOT_LINE' .or. &
             relaCable .eq. 'CORR_ACIER' .or. relaCable .eq. 'VMIS_CINE_LINE' .or. &
-            relaCable .eq. 'PINTO_MENEGOTTO' .or. relaCable .eq. 'VMIS_ASYM_LINE' .or. &
-            relaCable .eq. 'SANS') then
+            relaCable .eq. 'VMIS_ASYM_LINE' .or. relaCable .eq. 'SANS') then
             call nmiclg('RIGI', g, 1, option, relaCable, &
                         mat, epsm, deps, sigm(1, g)/a, vim(1, g), &
                         sigcab, vip(1, g), dsidep, carcri, codret)
