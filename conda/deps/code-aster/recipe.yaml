@@ -77,11 +77,12 @@ requirements:
 
 tests:
   - script:
-      - run_ctest --resutest=${{ env.get("OUTPUT_DIR", default="temp\\seq") }}/nompi -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results --clean
+      - run_ctest --resutest=${{ env.get("OUTPUT_DIR", default="temp\\seq") }}\nompi -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results --clean
       - if errorlevel 1 exit 1
     requirements:
       run:
         - cmake
+        - pyyaml
   - python:
       imports:
         - code_aster
