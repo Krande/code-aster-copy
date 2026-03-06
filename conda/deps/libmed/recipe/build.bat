@@ -31,17 +31,25 @@ cmake -G "Ninja" ^
 
 if errorlevel 1 exit 1
 
+:: First pass: build everything (Fortran symbols exported as UPPERCASE)
+ninja
+if errorlevel 1 exit 1
+
+:: Add lowercase+underscore aliases (e.g. mfacre_ = MFACRE) to auto-generated .def files
+:: so that code_aster compiled with /names:lowercase /assume:underscore can link against libmed
+python %RECIPE_DIR%\fix_exports.py .
+if errorlevel 1 exit 1
+
+:: Force re-link by deleting DLLs (ninja won't detect .def changes)
+del /Q src\medC.dll src\medfwrap.dll src\med.dll 2>NUL
+
+:: Second pass: re-link DLLs so they export both MFACRE and mfacre_
 ninja
 if errorlevel 1 exit 1
 
 mkdir %SP_DIR%\med
 if errorlevel 1 exit 1
 ninja install
-if errorlevel 1 exit 1
-
-:: Regenerate import libraries with lowercase+underscore aliases (e.g. mfacre_ = MFACRE)
-:: so that code_aster compiled with /names:lowercase /assume:underscore can link against libmed
-python %RECIPE_DIR%\fix_exports.py %LIBRARY_BIN% %LIBRARY_LIB%
 if errorlevel 1 exit 1
 
 copy %LIBRARY_BIN%\mdump4.exe %LIBRARY_BIN%\mdump.exe
