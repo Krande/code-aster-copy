@@ -198,6 +198,7 @@ cbuild-dev = { cmd = [
   "rattler-build", "build",
   "-r", "conda/deps/code-aster/recipe.yaml",
   "-m", "conda/deps/code-aster/config.yaml",
+  "--output-dir", "conda/deps/output",
   "-c", "./conda/deps/output",
   "-c", "conda-forge"
 ], depends-on = ["build-deps"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" }, description = "Build code-aster using locally-built deps" }
