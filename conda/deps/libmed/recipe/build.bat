@@ -9,11 +9,12 @@ cd build
 set "LIB=%BUILD_PREFIX%\Library\lib;%LIB%"
 set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%INCLUDE%"
 
-set FCFLAGS=/fpp /nologo /names:lowercase /assume:underscore %FCFLAGS%
+set FCFLAGS=/fpp /nologo %FCFLAGS%
 
 cmake -G "Ninja" ^
   %CMAKE_ARGS% ^
   -D HDF5_BUILD_FORTRAN:BOOL=ON ^
+  -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS:BOOL=ON ^
   -D Python_FIND_STRATEGY:STRING=LOCATION ^
   -D Python_FIND_REGISTRY:STRING=NEVER ^
   -D Python3_ROOT_DIR:FILEPATH="%PREFIX%" ^
@@ -29,11 +30,18 @@ cmake -G "Ninja" ^
   ..
 
 if errorlevel 1 exit 1
+
 ninja
 if errorlevel 1 exit 1
+
 mkdir %SP_DIR%\med
 if errorlevel 1 exit 1
 ninja install
+if errorlevel 1 exit 1
+
+:: Regenerate import libraries with lowercase+underscore aliases (e.g. mfacre_ = MFACRE)
+:: so that code_aster compiled with /names:lowercase /assume:underscore can link against libmed
+python %RECIPE_DIR%\fix_exports.py %LIBRARY_BIN% %LIBRARY_LIB%
 if errorlevel 1 exit 1
 
 copy %LIBRARY_BIN%\mdump4.exe %LIBRARY_BIN%\mdump.exe

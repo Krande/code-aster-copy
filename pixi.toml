@@ -205,6 +205,5 @@ cbuild-dev = { cmd = [
 ctest-dev = { cmd = [
   "rattler-build", "test",
   "-c", "./conda/deps/output",
-  "-c", "https://repo.prefix.dev/code-aster",
   "-c", "conda-forge"
 ], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" }, description = "Test code-aster package" }
