@@ -19,7 +19,6 @@
 subroutine pmdocc(comporList, nbVari, multComp)
 !
     use BehaviourPrepare_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -35,7 +34,7 @@ subroutine pmdocc(comporList, nbVari, multComp)
 #include "asterfort/setBehaviourTypeValue.h"
 #include "asterfort/Behaviour_type.h"
 !
-    character(len=16), intent(out) :: compor(COMPOR_SIZE)
+    character(len=16), intent(out) :: comporList(COMPOR_SIZE)
     integer(kind=8), intent(out) :: nbVari
     character(len=16), intent(out) :: multComp
 !
@@ -86,7 +85,6 @@ subroutine pmdocc(comporList, nbVari, multComp)
 
 ! - Some properties
     nbVari = prepMapCompor%prepPara(1)%nbVari
-    relaComp = prepMapCompor%prepPara(1)%rela_comp
     multComp = prepMapCompor%prepPara(1)%mult_comp
 
 ! - Detection of specific cases
@@ -96,10 +94,10 @@ subroutine pmdocc(comporList, nbVari, multComp)
     end if
 
 ! - Save informations in the field <COMPOR>
-    call setBehaviourTypeValue(prepMapCompor, comporList_=compor(1:COMPOR_SIZE))
+    call setBehaviourTypeValue(prepMapCompor, comporList_=comporList(1:COMPOR_SIZE))
 
 ! - Prepare informations about internal variables
-    call comp_meca_pvar(comporList_=compor, comporInfo=comporInfo)
+    call comp_meca_pvar(comporList_=comporList, comporInfo=comporInfo)
 
 ! - Print informations about internal variables
     call imvari(comporInfo)

@@ -132,7 +132,7 @@ subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc, &
 !
     if (l_error) then
         call nmimpx(ds_print)
-        call nmerim(sderro)
+        call nmerim(sderro, sddisc)
     end if
 !
 ! - Print event messages

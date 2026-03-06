@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmerim(sderro)
-        character(len=24) :: sderro
+    subroutine nmerim(sderro, sddisc)
+        character(len=24), intent(in) :: sderro
+        character(len=19), intent(in) :: sddisc
     end subroutine nmerim
 end interface

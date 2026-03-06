@@ -22,17 +22,18 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
     implicit none
 !
 #include "asterf_types.h"
-#include "event_def.h"
 #include "asterfort/assert.h"
+#include "asterfort/evenPrtIncrQuan.h"
+#include "asterfort/getFailEvent.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmacto.h"
 #include "asterfort/nmerge.h"
 #include "asterfort/nmimpx.h"
 #include "asterfort/nmlecv.h"
 #include "asterfort/nmltev.h"
-#include "asterfort/utmess.h"
-#include "asterfort/getFailEvent.h"
 #include "asterfort/NonLinear_type.h"
+#include "asterfort/utmess.h"
+#include "event_def.h"
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=24), intent(in) :: sderro
@@ -59,7 +60,7 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
 !
     aster_logical :: lacti, cvbouc, lerrei, l_sep_line, lldcbo
     integer(kind=8) :: iFailActi
-    integer(kind=8) :: iEvent
+    integer(kind=8) :: iEven
     character(len=24) :: eventEACTJv, eventENIVJv, eventEMSGJv
     integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
@@ -86,10 +87,10 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
     call jeveuo(eventEMSGJv, 'L', vk24=eventEMSG)
 
 ! - Print event messages - Algorithm
-    do iEvent = 1, ZEVEN
-        eventState = eventEACT(iEvent)
-        eventLevel = eventENIV(iEvent) (1:9)
-        eventMesg = eventEMSG(iEvent)
+    do iEven = 1, ZEVEN
+        eventState = eventEACT(iEven)
+        eventLevel = eventENIV(iEven) (1:9)
+        eventMesg = eventEMSG(iEven)
         if (eventLevel(1:4) .eq. 'EVEN' .and. (eventState .eq. EVENT_IS_ACTIVE)) then
             if (eventMesg .ne. ' ') then
                 if (l_sep_line) then
@@ -124,7 +125,7 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
                 else if (eventMesg .eq. 'MECANONLINE10_20') then
                     call utmess('I', 'MECANONLINE10_20')
                 else if (eventMesg .eq. 'MECANONLINE10_24') then
-                    call utmess('I', 'MECANONLINE10_24')
+                    call evenPrtIncrQuan("ERRE", sddisc, iEven)
                 else if (eventMesg .eq. 'MECANONLINE10_26') then
                     call utmess('I', 'MECANONLINE10_26')
                 else if (eventMesg .eq. 'MECANONLINE10_25') then
@@ -163,7 +164,7 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
             if (l_sep_line) then
                 call nmimpx(ds_print)
             end if
-            call utmess('I', 'MECANONLINE10_24')
+            call evenPrtIncrQuan("ERRE", sddisc, iFailActi)
         end if
     end if
 !

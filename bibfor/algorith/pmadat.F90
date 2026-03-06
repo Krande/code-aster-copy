@@ -155,19 +155,15 @@ subroutine pmadat(sddisc, numeInst, nbIter)
 
             if (compr8(timeCurr+dt, 'GT', jalon, prec, 1)) then
                 dt = jalon-timeCurr
-
             else if (compr8(timeCurr+dt, 'GT', jalon-pasMini, prec, 1)) then
                 dt = jalon-timeCurr
                 call utdidt('E', sddisc, 'LIST', 'DT-', valr_=dt)
-
             else
                 call utdidt('E', sddisc, 'LIST', 'DT-', valr_=dt)
             end if
             call utmess('I', 'ADAPTATION_6', sr=dt)
-            if (actionType .ne. ADAP_ACT_IMPLEX) then
-                if (dt .lt. pasMini) then
-                    call utmess('F', 'ADAPTATION_11', sr=dt)
-                end if
+            if (dt .lt. pasMini) then
+                call utmess('F', 'ADAPTATION_11', sr=dt)
             end if
 
             timeNew = timeCurr+dt

@@ -16,31 +16,34 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmerim(sderro)
+subroutine nmerim(sderro, sddisc)
 !
     implicit none
 !
 #include "asterfort/assert.h"
+#include "asterfort/evenPrtIncrQuan.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
     character(len=24), intent(in) :: sderro
+    character(len=19), intent(in) :: sddisc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (SD ERREUR)
+! MECA_NON_LINE - Print management
 !
-! EMISSION MESSAGE ERRREUR
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IN  SDERRO : SD ERREUR
+! Print error message
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: iEvent
+! In  sderro           : name of datastructure for error management (events)
+! In  sddisc           : name of datastructure for time discretization
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: iEven
     integer(kind=8) :: eventState
     character(len=9) :: eventLevel
     character(len=24) :: eventMesg
@@ -61,10 +64,10 @@ subroutine nmerim(sderro)
     call jeveuo(eventEMSGJv, 'L', vk24=eventEMSG)
 
 ! - Print error messages
-    do iEvent = 1, ZEVEN
-        eventState = eventEACT(iEvent)
-        eventLevel = eventENIV(iEvent) (1:9)
-        eventMesg = eventEMSG(iEvent)
+    do iEven = 1, ZEVEN
+        eventState = eventEACT(iEven)
+        eventLevel = eventENIV(iEven) (1:9)
+        eventMesg = eventEMSG(iEven)
         if ((eventLevel(1:3) .eq. 'ERR') .and. (eventState .eq. EVENT_IS_ACTIVE)) then
             if (eventMesg .eq. 'MECANONLINE10_1') then
                 call utmess('I', 'MECANONLINE10_1')
@@ -95,7 +98,7 @@ subroutine nmerim(sderro)
             else if (eventMesg .eq. 'MECANONLINE10_20') then
                 call utmess('I', 'MECANONLINE10_20')
             else if (eventMesg .eq. 'MECANONLINE10_24') then
-                call utmess('I', 'MECANONLINE10_24')
+                call evenPrtIncrQuan("ERRE", sddisc, iEven)
             else if (eventMesg .eq. 'MECANONLINE10_36') then
                 call utmess('I', 'MECANONLINE10_36')
             else if (eventMesg .eq. 'MECANONLINE10_14') then

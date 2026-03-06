@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine getAdapAction(sddisc, iAdap, actionType)
+    subroutine evenPrtIncrQuan(mesgOrigZ, sddisc, index, newdt_)
+        character(len=*), intent(in) :: mesgOrigZ
         character(len=19), intent(in) :: sddisc
-        integer(kind=8), intent(in) :: iAdap
-        integer(kind=8), intent(out) :: actionType
-    end subroutine getAdapAction
+        integer(kind=8), intent(in) :: index
+        real(kind=8), optional, intent(in) :: newdt_
+    end subroutine evenPrtIncrQuan
 end interface
