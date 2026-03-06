@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: irmela.zentner at edf.fr
 
 
 """Commande GENE_ACCE_SEISME"""
@@ -795,7 +793,7 @@ class SimulatorDSPScalar(Simulator):
             _f_out = DEFI_FONCTION(
                 ABSCISSE=tuple(generator.sampler.liste_temps),
                 ORDONNEE=tuple(Xt),
-                **self.para_fonc_traj
+                **self.para_fonc_traj,
             )
             generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
             generator.tab.referenceToDataStructure.append(_f_out)
@@ -840,7 +838,7 @@ class SimulatorDSPVector(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(accef),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 if self.TYPE == "COEF_CORR":
@@ -884,7 +882,7 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     if self.TYPE == "COEF_CORR":
@@ -1009,7 +1007,7 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     if self.TYPE == "COEF_CORR":
                         nom_acce = "ACCE" + str(nba)
@@ -1044,7 +1042,7 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     if self.TYPE == "COEF_CORR":
@@ -1083,7 +1081,7 @@ class SimulatorSPECScalar(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(Xt),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
                 generator.tab.referenceToDataStructure.append(_f_out)
@@ -1158,7 +1156,7 @@ class SimulatorSPECScalar(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(Xt),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
@@ -1173,7 +1171,7 @@ class SimulatorSPECScalar(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(Xt),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 generator.tab.append({"NUME_ORDRE": self.ntir + 1, "FONCTION": _f_out.getName()})
@@ -1205,7 +1203,7 @@ class SimulatorSPECPhase(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     nom_no = self.liste_nom[nba - 1]
@@ -1291,7 +1289,7 @@ class SimulatorSPECPhase(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(accef),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     nom_no = self.liste_nom[nba - 1]
@@ -1313,7 +1311,7 @@ class SimulatorSPECPhase(Simulator):
                     _f_out = DEFI_FONCTION(
                         ABSCISSE=tuple(generator.sampler.liste_temps),
                         ORDONNEE=tuple(acce),
-                        **self.para_fonc_traj
+                        **self.para_fonc_traj,
                     )
                     generator.tab.referenceToDataStructure.append(_f_out)
                     nom_no = self.liste_nom[nba - 1]
@@ -1344,7 +1342,7 @@ class SimulatorDSPPhase(Simulator):
                 _f_out = DEFI_FONCTION(
                     ABSCISSE=tuple(generator.sampler.liste_temps),
                     ORDONNEE=tuple(accef),
-                    **self.para_fonc_traj
+                    **self.para_fonc_traj,
                 )
                 generator.tab.referenceToDataStructure.append(_f_out)
                 nom_no = liste_nom[nba - 1]
