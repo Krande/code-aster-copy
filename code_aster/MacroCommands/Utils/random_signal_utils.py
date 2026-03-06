@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: irmela.zentner at edf.fr
 
 # Routines for random signal generation
 """random_signal_utils.py
@@ -302,10 +301,7 @@ def calc_dsp_FR(lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0):
     q0 = w0**2
     q1 = 2.0 * amor * w0
     valkt = NP.array(
-        [
-            (R0**2 + R1**2 * FREQ**2) / ((w0**2 - FREQ**2) ** 2 + q1**2 * FREQ**2)
-            for FREQ in lfreq
-        ]
+        [(R0**2 + R1**2 * FREQ**2) / ((w0**2 - FREQ**2) ** 2 + q1**2 * FREQ**2) for FREQ in lfreq]
     )
     # CP filter
     if FREQ_CORNER > 0.0:
@@ -314,8 +310,7 @@ def calc_dsp_FR(lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0):
         amocp = 1.0
         valcp = NP.array(
             [
-                FREQ**4
-                / (4.0 * (amocp**2) * (wcp**2) * FREQ**2 + (wcp**2 - FREQ**2) ** 2)
+                FREQ**4 / (4.0 * (amocp**2) * (wcp**2) * FREQ**2 + (wcp**2 - FREQ**2) ** 2)
                 for FREQ in lfreq
             ]
         )
