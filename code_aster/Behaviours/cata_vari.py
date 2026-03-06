@@ -192,7 +192,6 @@ DICT_NOM_VARI = {
         "JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 2"
     ),
     "DEPSPEQ": _("incrément de déformation plastique équivalente"),
-    "DEPS-TH": _("PINTO-MENEGOTTO V5"),
     "DETOPTG": _("Hujeux : déterminant de la matrice tangente"),
     "DFLU": _("FLUA_ENDO_PORO endomagement par fluage"),
     "DINSTM": _("Incrément de temps"),
@@ -358,7 +357,6 @@ DICT_NOM_VARI = {
     "EPSEYZ": _("déformation élastique composante YZ"),
     "EPSEZZ": _("déformation élastique composante ZZ"),
     "EPSGRD": _("déformation de grandissement."),
-    "EPSM+V5": _(" Pinto-Menegotto, déformation totale"),
     "EPSP1": _("GLRC_DAMAGE : extension membranaire plastique 1"),
     "EPSP2": _("GLRC_DAMAGE : extension membranaire plastique 2"),
     "EPSP3": _("GLRC_DAMAGE : extension membranaire plastique 3"),
@@ -373,8 +371,6 @@ DICT_NOM_VARI = {
     "EPSPYY": _("déformation plastique composante YY"),
     "EPSPYZ": _("déformation plastique composante YZ"),
     "EPSPZZ": _("déformation plastique composante ZZ"),
-    "EPSRN-1": _("déformation du cycle précédent  Pinto-Menegotto"),
-    "EPSRN": _("déformation du cycle actuel, Pinto-Menegotto"),
     "EPSVEQ": _("déformation visqueuse équivalente cumulée"),
     "EPSVOLME": _("déformations volumiques élastiques mécaniques"),
     "EPSVOLTH": _("déformations volumiques élastiques thermiques"),
@@ -521,7 +517,6 @@ DICT_NOM_VARI = {
     "INDIC": _(
         "LETK : indicateur de la position de l'etat de contrainte par rapport aux seuils viscoplastiques"
     ),
-    "INDICYCL": _(" Pinto-Menegotto, indicateur d'activation du comportement cyclique"),
     "INDIDISS": _("Indicateur de dissipation =0 si régime linéaire, =1 si régime dissipatif."),
     "INDIEND1": _("indicateur d'endommagement pour la flexion positive"),
     "INDIEND2": _("indicateur d'endommagement pour la flexion négative"),
@@ -651,7 +646,6 @@ DICT_NOM_VARI = {
     "SIGMVISC": ("Estimation de la part des contraintes liée à la viscosité "),
     "SIGN_GLO": _("contrainte mécanique normale (sans pression de fluide)"),
     "SIGP": _("cam_clay : contrainte de confinement"),
-    "SIGRN": _(" Pinto-Menegotto, contrainte cycle N"),
     "SIGT": _("norme de la contrainte tangente"),
     "SIGY": _("Elasticity yield for isotropic hardening"),
     "SIVXX": _("variable interne pour regularisation visqueuse"),
