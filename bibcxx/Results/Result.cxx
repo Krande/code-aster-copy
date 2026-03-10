@@ -340,6 +340,8 @@ void Result::setMaterialField( const MaterialFieldPtr &mater, bool exists_ok ) {
 };
 
 void Result::setModel( const ModelPtr &model, bool exists_ok ) {
+    const auto fed = model->getFiniteElementDescriptor();
+    _fieldBuilder.addFiniteElementDescriptor( fed );
     auto allStorageIndexes = getIndexes();
     for ( auto &storageIndex : allStorageIndexes ) {
         setModel( model, storageIndex, exists_ok );
@@ -1023,146 +1025,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
             std::string name( strip( ( *obj )[internalIndex].toString() ) );
             if ( name != "" ) {
                 const ASTERINTEGER storageIndex = ( *_serialNumber )[internalIndex];
-                CALL_JEMARQ();
-                std::string questi( "TYPE_CHAMP" );
-                const std::string typeco( "CHAMP" );
-                ASTERINTEGER repi = 0, ier = 0;
-                JeveuxChar32 repk( " " );
-                const std::string arret( "C" );
-
-                CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
-                const std::string resu( strip( repk.toString() ) );
-
-                questi = "TYPE_SCA";
-                repk = " ";
-                CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
-                const std::string scalaire( strip( repk.toString() ) );
-
-                if ( resu == "NOEU" ) {
-                    AS_ASSERT( _mesh != nullptr );
-                    if ( scalaire == "R" ) {
-                        if ( _dictOfMapOfFieldOnNodesReal.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfFieldOnNodesReal[nomSymb] = MapOfFieldOnNodesReal();
-                        }
-
-                        if ( _dictOfMapOfFieldOnNodesReal[nomSymb].count( storageIndex ) == 0 ) {
-                            FieldOnNodesRealPtr result =
-                                _fieldBuilder.buildFieldOnNodes< ASTERDOUBLE >( name, _mesh );
-                            _dictOfMapOfFieldOnNodesReal[nomSymb][storageIndex] = result;
-                        }
-                    } else if ( scalaire == "C" ) {
-                        if ( _dictOfMapOfFieldOnNodesComplex.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfFieldOnNodesComplex[nomSymb] = MapOfFieldOnNodesComplex();
-                        }
-
-                        if ( _dictOfMapOfFieldOnNodesComplex[nomSymb].count( storageIndex ) == 0 ) {
-                            FieldOnNodesComplexPtr result =
-                                _fieldBuilder.buildFieldOnNodes< ASTERCOMPLEX >( name, _mesh );
-                            _dictOfMapOfFieldOnNodesComplex[nomSymb][storageIndex] = result;
-                        }
-                    } else {
-                        AS_ABORT( "Type not supported: " + scalaire );
-                    }
-
-                } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
-                    if ( scalaire == "R" ) {
-                        if ( _dictOfMapOfFieldOnCellsReal.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfFieldOnCellsReal[nomSymb] = MapOfFieldOnCellsReal();
-                        }
-
-                        if ( _dictOfMapOfFieldOnCellsReal[nomSymb].count( storageIndex ) == 0 ) {
-                            AS_ASSERT( _mesh != nullptr );
-                            auto result =
-                                _fieldBuilder.buildFieldOnCells< ASTERDOUBLE >( name, _mesh );
-                            _dictOfMapOfFieldOnCellsReal[nomSymb][storageIndex] = result;
-                        }
-                    } else if ( scalaire == "C" ) {
-                        if ( _dictOfMapOfFieldOnCellsComplex.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfFieldOnCellsComplex[nomSymb] = MapOfFieldOnCellsComplex();
-                        }
-
-                        if ( _dictOfMapOfFieldOnCellsComplex[nomSymb].count( storageIndex ) == 0 ) {
-                            AS_ASSERT( _mesh != nullptr );
-                            auto result =
-                                _fieldBuilder.buildFieldOnCells< ASTERCOMPLEX >( name, _mesh );
-                            _dictOfMapOfFieldOnCellsComplex[nomSymb][storageIndex] = result;
-                        }
-                    } else if ( scalaire == "I" ) {
-                        if ( _dictOfMapOfFieldOnCellsLong.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfFieldOnCellsLong[nomSymb] = MapOfFieldOnCellsLong();
-                        }
-
-                        if ( _dictOfMapOfFieldOnCellsLong[nomSymb].count( storageIndex ) == 0 ) {
-                            AS_ASSERT( _mesh != nullptr );
-                            auto result =
-                                _fieldBuilder.buildFieldOnCells< ASTERINTEGER >( name, _mesh );
-                            _dictOfMapOfFieldOnCellsLong[nomSymb][storageIndex] = result;
-                        }
-                    } else {
-                        AS_ABORT( "Type not supported: " + scalaire );
-                    }
-                } else if ( resu == "CART" ) {
-                    if ( scalaire == "K16" ) {
-                        if ( _dictOfMapOfConstantFieldOnCellsChar16.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfConstantFieldOnCellsChar16[nomSymb] =
-                                MapOfConstantFieldOnCellsChar16();
-                        }
-
-                        if ( _dictOfMapOfConstantFieldOnCellsChar16[nomSymb].count(
-                                 storageIndex ) == 0 ) {
-                            AS_ASSERT( _mesh != nullptr );
-                            auto result = _fieldBuilder.buildConstantFieldOnCells< JeveuxChar16 >(
-                                name, _mesh );
-                            _dictOfMapOfConstantFieldOnCellsChar16[nomSymb][storageIndex] = result;
-                        }
-                    } else if ( scalaire == "R" ) {
-                        if ( _dictOfMapOfConstantFieldOnCellsReal.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfConstantFieldOnCellsReal[nomSymb] =
-                                MapOfConstantFieldOnCellsReal();
-                        }
-
-                        if ( _dictOfMapOfConstantFieldOnCellsReal[nomSymb].count( storageIndex ) ==
-                             0 ) {
-                            AS_ASSERT( _mesh != nullptr );
-                            auto result = _fieldBuilder.buildConstantFieldOnCells< ASTERDOUBLE >(
-                                name, _mesh );
-                            _dictOfMapOfConstantFieldOnCellsReal[nomSymb][storageIndex] = result;
-                        }
-                    } else {
-                        AS_ABORT( "Type not supported: " + scalaire );
-                    }
-                } else if ( resu == "VGEN" ) {
-                    if ( scalaire == "R" ) {
-                        if ( _dictOfMapOfGeneralizedVectorReal.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfGeneralizedVectorReal[nomSymb] =
-                                MapOfGeneralizedVectorReal();
-                        }
-
-                        if ( _dictOfMapOfGeneralizedVectorReal[nomSymb].count( storageIndex ) ==
-                             0 ) {
-                            GeneralizedAssemblyVectorRealPtr result(
-                                new GeneralizedAssemblyVectorReal( name ) );
-                            _dictOfMapOfGeneralizedVectorReal[nomSymb][storageIndex] = result;
-                        }
-                    } else if ( scalaire == "C" ) {
-                        if ( _dictOfMapOfGeneralizedVectorComplex.count( nomSymb ) == 0 ) {
-                            _dictOfMapOfGeneralizedVectorComplex[nomSymb] =
-                                MapOfGeneralizedVectorComplex();
-                        }
-
-                        if ( _dictOfMapOfGeneralizedVectorComplex[nomSymb].count( storageIndex ) ==
-                             0 ) {
-                            GeneralizedAssemblyVectorComplexPtr result(
-                                new GeneralizedAssemblyVectorComplex( name ) );
-                            _dictOfMapOfGeneralizedVectorComplex[nomSymb][storageIndex] = result;
-                        }
-                    } else {
-                        AS_ABORT( "Type not supported: " + scalaire );
-                    }
-                } else {
-                    std::cout << "Field not build : " << name << " (" << resu << ")" << std::endl;
-                }
-                CALL_JEDEMA();
+                addFieldFromString( nomSymb, name, storageIndex );
             }
         }
         ++cmpt;
@@ -1195,6 +1058,138 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
 
     CALL_JEDEMA();
     return update_tables();
+};
+
+void Result::addFieldFromString( const std::string &nomSymb, const std::string &name,
+                                 ASTERINTEGER storageIndex ) {
+    CALL_JEMARQ();
+    std::string questi( "TYPE_CHAMP" );
+    const std::string typeco( "CHAMP" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+
+    CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
+    const std::string resu( strip( repk.toString() ) );
+
+    questi = "TYPE_SCA";
+    repk = " ";
+    CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
+    const std::string scalaire( strip( repk.toString() ) );
+
+    if ( resu == "NOEU" ) {
+        AS_ASSERT( _mesh != nullptr );
+        if ( scalaire == "R" ) {
+            if ( _dictOfMapOfFieldOnNodesReal.count( nomSymb ) == 0 ) {
+                _dictOfMapOfFieldOnNodesReal[nomSymb] = MapOfFieldOnNodesReal();
+            }
+
+            if ( _dictOfMapOfFieldOnNodesReal[nomSymb].count( storageIndex ) == 0 ) {
+                FieldOnNodesRealPtr result =
+                    _fieldBuilder.buildFieldOnNodes< ASTERDOUBLE >( name, _mesh );
+                _dictOfMapOfFieldOnNodesReal[nomSymb][storageIndex] = result;
+            }
+        } else if ( scalaire == "C" ) {
+            if ( _dictOfMapOfFieldOnNodesComplex.count( nomSymb ) == 0 ) {
+                _dictOfMapOfFieldOnNodesComplex[nomSymb] = MapOfFieldOnNodesComplex();
+            }
+
+            if ( _dictOfMapOfFieldOnNodesComplex[nomSymb].count( storageIndex ) == 0 ) {
+                FieldOnNodesComplexPtr result =
+                    _fieldBuilder.buildFieldOnNodes< ASTERCOMPLEX >( name, _mesh );
+                _dictOfMapOfFieldOnNodesComplex[nomSymb][storageIndex] = result;
+            }
+        } else {
+            AS_ABORT( "Type not supported: " + scalaire );
+        }
+
+    } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
+        if ( scalaire == "R" ) {
+            if ( _dictOfMapOfFieldOnCellsReal.count( nomSymb ) == 0 ) {
+                _dictOfMapOfFieldOnCellsReal[nomSymb] = MapOfFieldOnCellsReal();
+            }
+
+            if ( _dictOfMapOfFieldOnCellsReal[nomSymb].count( storageIndex ) == 0 ) {
+                AS_ASSERT( _mesh != nullptr );
+                auto result = _fieldBuilder.buildFieldOnCells< ASTERDOUBLE >( name, _mesh );
+                _dictOfMapOfFieldOnCellsReal[nomSymb][storageIndex] = result;
+            }
+        } else if ( scalaire == "C" ) {
+            if ( _dictOfMapOfFieldOnCellsComplex.count( nomSymb ) == 0 ) {
+                _dictOfMapOfFieldOnCellsComplex[nomSymb] = MapOfFieldOnCellsComplex();
+            }
+
+            if ( _dictOfMapOfFieldOnCellsComplex[nomSymb].count( storageIndex ) == 0 ) {
+                AS_ASSERT( _mesh != nullptr );
+                auto result = _fieldBuilder.buildFieldOnCells< ASTERCOMPLEX >( name, _mesh );
+                _dictOfMapOfFieldOnCellsComplex[nomSymb][storageIndex] = result;
+            }
+        } else if ( scalaire == "I" ) {
+            if ( _dictOfMapOfFieldOnCellsLong.count( nomSymb ) == 0 ) {
+                _dictOfMapOfFieldOnCellsLong[nomSymb] = MapOfFieldOnCellsLong();
+            }
+
+            if ( _dictOfMapOfFieldOnCellsLong[nomSymb].count( storageIndex ) == 0 ) {
+                AS_ASSERT( _mesh != nullptr );
+                auto result = _fieldBuilder.buildFieldOnCells< ASTERINTEGER >( name, _mesh );
+                _dictOfMapOfFieldOnCellsLong[nomSymb][storageIndex] = result;
+            }
+        } else {
+            AS_ABORT( "Type not supported: " + scalaire );
+        }
+    } else if ( resu == "CART" ) {
+        if ( scalaire == "K16" ) {
+            if ( _dictOfMapOfConstantFieldOnCellsChar16.count( nomSymb ) == 0 ) {
+                _dictOfMapOfConstantFieldOnCellsChar16[nomSymb] = MapOfConstantFieldOnCellsChar16();
+            }
+
+            if ( _dictOfMapOfConstantFieldOnCellsChar16[nomSymb].count( storageIndex ) == 0 ) {
+                AS_ASSERT( _mesh != nullptr );
+                auto result =
+                    _fieldBuilder.buildConstantFieldOnCells< JeveuxChar16 >( name, _mesh );
+                _dictOfMapOfConstantFieldOnCellsChar16[nomSymb][storageIndex] = result;
+            }
+        } else if ( scalaire == "R" ) {
+            if ( _dictOfMapOfConstantFieldOnCellsReal.count( nomSymb ) == 0 ) {
+                _dictOfMapOfConstantFieldOnCellsReal[nomSymb] = MapOfConstantFieldOnCellsReal();
+            }
+
+            if ( _dictOfMapOfConstantFieldOnCellsReal[nomSymb].count( storageIndex ) == 0 ) {
+                AS_ASSERT( _mesh != nullptr );
+                auto result = _fieldBuilder.buildConstantFieldOnCells< ASTERDOUBLE >( name, _mesh );
+                _dictOfMapOfConstantFieldOnCellsReal[nomSymb][storageIndex] = result;
+            }
+        } else {
+            AS_ABORT( "Type not supported: " + scalaire );
+        }
+    } else if ( resu == "VGEN" ) {
+        if ( scalaire == "R" ) {
+            if ( _dictOfMapOfGeneralizedVectorReal.count( nomSymb ) == 0 ) {
+                _dictOfMapOfGeneralizedVectorReal[nomSymb] = MapOfGeneralizedVectorReal();
+            }
+
+            if ( _dictOfMapOfGeneralizedVectorReal[nomSymb].count( storageIndex ) == 0 ) {
+                GeneralizedAssemblyVectorRealPtr result(
+                    new GeneralizedAssemblyVectorReal( name ) );
+                _dictOfMapOfGeneralizedVectorReal[nomSymb][storageIndex] = result;
+            }
+        } else if ( scalaire == "C" ) {
+            if ( _dictOfMapOfGeneralizedVectorComplex.count( nomSymb ) == 0 ) {
+                _dictOfMapOfGeneralizedVectorComplex[nomSymb] = MapOfGeneralizedVectorComplex();
+            }
+
+            if ( _dictOfMapOfGeneralizedVectorComplex[nomSymb].count( storageIndex ) == 0 ) {
+                GeneralizedAssemblyVectorComplexPtr result(
+                    new GeneralizedAssemblyVectorComplex( name ) );
+                _dictOfMapOfGeneralizedVectorComplex[nomSymb][storageIndex] = result;
+            }
+        } else {
+            AS_ABORT( "Type not supported: " + scalaire );
+        }
+    } else {
+        std::cout << "Field not build : " << name << " (" << resu << ")" << std::endl;
+    }
+    CALL_JEDEMA();
 };
 
 bool Result::exists() const { return _symbolicNamesOfFields.exists(); };

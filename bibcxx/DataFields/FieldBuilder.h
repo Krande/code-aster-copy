@@ -53,17 +53,7 @@ class FieldBuilder {
      * @brief Add a existing FiniteElementDescriptor in FieldBuilder
      */
     FiniteElementDescriptorPtr newFiniteElementDescriptor( const std::string &name,
-                                                           const BaseMeshPtr mesh ) {
-        if ( _setLigrel.count( strip( name ) ) > 0 ) {
-            raiseAsterError( "LIGREL already exists: " + name );
-        }
-
-        auto curDesc = std::make_shared< FiniteElementDescriptor >( name, mesh );
-
-        addFiniteElementDescriptor( curDesc );
-
-        return curDesc;
-    };
+                                                           const BaseMeshPtr mesh );
 
     /**
      * @brief Add a existing EquationNumbering in FieldBuilder

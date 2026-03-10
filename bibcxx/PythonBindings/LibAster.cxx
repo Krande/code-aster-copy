@@ -161,6 +161,7 @@
 #include "PythonBindings/PtScotchPartitionerInterface.h"
 #include "PythonBindings/ResultBalancerInterface.h"
 #include "PythonBindings/ResultInterface.h"
+#include "PythonBindings/ResultManagerInterface.h"
 #include "PythonBindings/ResultNamingInterface.h"
 #include "PythonBindings/SetLoggingLevelInterface.h"
 #include "PythonBindings/SimpleFieldOnCellsInterface.h"
@@ -372,4 +373,5 @@ PYBIND11_MODULE( libaster, mod ) {
     exportModelingUtilitiesToPython( mod );
     exportSyntaxSaverToPython( mod );
     exportMeshUtilsToPython( mod );
+    exportResultManagerToPython( mod );
 };

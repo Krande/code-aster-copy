@@ -46,3 +46,16 @@ EquationNumberingPtr FieldBuilder::newEquationNumbering( const std::string &name
 
     return curDesc;
 };
+
+FiniteElementDescriptorPtr FieldBuilder::newFiniteElementDescriptor( const std::string &name,
+                                                                     const BaseMeshPtr mesh ) {
+    if ( _setLigrel.count( strip( name ) ) > 0 ) {
+        raiseAsterError( "LIGREL already exists: " + name );
+    }
+
+    auto curDesc = std::make_shared< FiniteElementDescriptor >( name, mesh );
+
+    addFiniteElementDescriptor( curDesc );
+
+    return curDesc;
+};

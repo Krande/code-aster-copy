@@ -33,6 +33,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 #include "asterfort/rsutrg.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
+#include "asterc/add_field_in_current_result.h"
 !
     integer(kind=8) :: iordr
     character(len=*) :: nomsd, nomsy
@@ -119,6 +120,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     call jeveuo(jexnum(nomd2//'.TACH', ibid), 'E', jtach)
 !
     zk24(jtach+irang-1) (1:19) = chnote
+    call add_field_in_current_result(nomd2, noms2, chnote, iordr)
 !
 !
 !     -- SI LE CHAMP EST UN CHAM_ELEM MPI_INCOMPLET, ON LE COMPLETE:
