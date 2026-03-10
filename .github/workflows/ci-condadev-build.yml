@@ -26,6 +26,14 @@ jobs:
           activate-environment: condadev
           cache: false
 
+      - name: Clean source cache
+        shell: bash
+        run: |
+          # Workaround for rattler-build Windows bug: multi-output recipes
+          # fail with "directory not empty" (os error 145) when extracting
+          # shared source for the second output
+          rm -rf conda/deps/output/src_cache
+
       - name: Build local dependencies
         shell: bash
         run: |
