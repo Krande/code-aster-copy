@@ -22,64 +22,15 @@ project(MUMPS Fortran C)
 # Options
 ###############################################################################
 
-option(USE_ILP64 "Use 64-bit default integers (ILP64, Windows only)" OFF)
 
-# Intel Fortran (ifx/ifort) name mangling: match -DAdd_ convention (lowercase + underscore)
-# Also add /Z7 /traceback for embedded debug info and stack traces
-if(WIN32)
-  if(CMAKE_Fortran_COMPILER_ID MATCHES "IntelLLVM" OR CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} /names:lowercase /assume:underscore /Z7 /traceback")
-    message(STATUS "Intel Fortran: name mangling + debug symbols + traceback")
-  endif()
-  # Embed debug info in C objects too (avoids separate PDB management)
-  string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Z7")
+find_package(BLAS)
+if(NOT BLAS_FOUND)
+  message(FATAL_ERROR "BLAS not found")
 endif()
 
-if(USE_ILP64 AND WIN32)
-  # Detect Fortran compiler and set appropriate ILP64 flags
-  if(CMAKE_Fortran_COMPILER_ID MATCHES "IntelLLVM" OR CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} /integer-size:64")
-    message(STATUS "ILP64 mode with Intel Fortran: /integer-size:64")
-  else()
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fdefault-integer-8")
-    message(STATUS "ILP64 mode with flang: -fdefault-integer-8")
-  endif()
-  add_compile_definitions(INTSIZE64)
-  message(STATUS "ILP64 mode: C MUMPS_INT=int64_t")
-endif()
-
-if(WIN32)
-  # On Windows with conda-forge MKL, FindBLAS can't locate the libraries
-  # because they use non-standard names (*_dll.lib).
-  if(USE_ILP64)
-    # ILP64 mode: use MKL with 64-bit integer interface
-    find_library(MKL_ILP64 mkl_intel_ilp64_dll)
-    find_library(MKL_THREAD mkl_intel_thread_dll)
-    find_library(MKL_CORE mkl_core_dll)
-    find_library(MKL_OMP libiomp5md)
-    if(MKL_ILP64 AND MKL_THREAD AND MKL_CORE AND MKL_OMP)
-      set(BLAS_LIBRARIES ${MKL_ILP64} ${MKL_THREAD} ${MKL_CORE} ${MKL_OMP})
-      set(LAPACK_LIBRARIES ${MKL_ILP64} ${MKL_THREAD} ${MKL_CORE} ${MKL_OMP})
-      message(STATUS "Using MKL ILP64: ${MKL_ILP64}")
-    else()
-      message(FATAL_ERROR "MKL ILP64 libraries not found (needed for USE_ILP64)")
-    endif()
-  else()
-    # LP64 mode: use mkl_rt (same as code_aster)
-    find_library(MKL_RT mkl_rt)
-    if(MKL_RT)
-      set(BLAS_LIBRARIES ${MKL_RT})
-      set(LAPACK_LIBRARIES ${MKL_RT})
-      message(STATUS "Using MKL via mkl_rt: ${MKL_RT}")
-    else()
-      find_package(BLAS REQUIRED)
-      find_package(LAPACK REQUIRED)
-    endif()
-  endif()
-else()
-  find_package(BLAS REQUIRED)
-  find_package(LAPACK REQUIRED)
+find_package(LAPACK)
+if(NOT LAPACK_FOUND)
+  message(FATAL_ERROR "LAPACK not found")
 endif()
 
 # -DWITH_MPI
@@ -188,11 +139,6 @@ if(NOT WITH_MPI)
     libseq/mpic.c
     libseq/mpi.F
   )
-endif()
-
-if(WIN32)
-  # Add linker flags for full debug info in DLLs
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG:FULL")
 endif()
 
 add_library(mumps_common STATIC ${COMMON_MOD} ${COMMON_OTHER} ${C_COMMON})
@@ -347,10 +293,6 @@ add_executable(${ARITH}simpletest ${EXAMPLE})
 target_link_libraries(${ARITHLIB} mumps_common pord ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 target_link_libraries(${ARITH}simpletest ${ARITHLIB} mumps_common pord ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 install(TARGETS ${ARITHLIB})
-# Install PDB files alongside DLLs for debug stack traces
-if(WIN32)
-  install(FILES $<TARGET_PDB_FILE:${ARITHLIB}> DESTINATION bin OPTIONAL)
-endif()
 install(FILES include/${ARITH}mumps_struc.h include/${ARITH}mumps_c.h DESTINATION include)
 
 endforeach(ARITH)

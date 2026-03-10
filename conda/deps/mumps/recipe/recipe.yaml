@@ -78,6 +78,8 @@ outputs:
             - libscotch * int${{ scotch_intsize }}_*
           else:
             - mkl-devel
+            - llvm-openmp
+            - llvm-openmp-fortran
       run:
         - if: not win
           then:
