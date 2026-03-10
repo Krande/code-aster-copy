@@ -15,7 +15,7 @@ source:
     - ifdef-openmp.patch
 
 build:
-  number: 2
+  number: 6
 
 outputs:
   - package:
@@ -78,8 +78,6 @@ outputs:
             - libscotch * int${{ scotch_intsize }}_*
           else:
             - mkl-devel
-            - llvm-openmp
-            - llvm-openmp-fortran
       run:
         - if: not win
           then:

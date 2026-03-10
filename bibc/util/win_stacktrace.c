@@ -102,7 +102,7 @@ void win_print_stacktrace(FILE* fp) {
 
         // Get the executable path to set up symbol search path
         char exePath[MAX_PATH];
-        char symbolPath[MAX_PATH * 4];
+        char symbolPath[MAX_PATH * 8];
         GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
         // Extract directory from exe path
@@ -111,12 +111,21 @@ void win_print_stacktrace(FILE* fp) {
             *lastSlash = '\0';
         }
 
-        // Build symbol search path: exe directory;current directory;_NT_SYMBOL_PATH
+        // Also search conda environment Library/bin and Library/lib for PDBs
+        const char* condaPrefix = getenv("CONDA_PREFIX");
         const char* ntSymbolPath = getenv("_NT_SYMBOL_PATH");
+
+        // Build symbol search path: exe dir;conda dirs;current dir;_NT_SYMBOL_PATH
+        int pos = 0;
+        pos += snprintf(symbolPath + pos, sizeof(symbolPath) - pos, "%s", exePath);
+        if (condaPrefix) {
+            pos += snprintf(symbolPath + pos, sizeof(symbolPath) - pos,
+                           ";%s\\Library\\bin;%s\\Library\\lib;%s\\Lib\\site-packages",
+                           condaPrefix, condaPrefix, condaPrefix);
+        }
+        pos += snprintf(symbolPath + pos, sizeof(symbolPath) - pos, ";.");
         if (ntSymbolPath) {
-            snprintf(symbolPath, sizeof(symbolPath), "%s;.;%s", exePath, ntSymbolPath);
-        } else {
-            snprintf(symbolPath, sizeof(symbolPath), "%s;.", exePath);
+            snprintf(symbolPath + pos, sizeof(symbolPath) - pos, ";%s", ntSymbolPath);
         }
 
         // Initialize with symbol search path

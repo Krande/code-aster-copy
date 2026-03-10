@@ -82,6 +82,10 @@ def build(self):
         install_path=lib_install_path,
     )
     # ... except for subroutines linked against external libraries
+    # On MSVC/Windows, bibfor_ext must link against bibfor so that Jeveux
+    # COMMON blocks (exported as DATA from bibfor.dll) are shared rather
+    # than each DLL getting its own private copy.
+    use_ext = use + ["asterbibfor"] if self.env.ASTER_PLATFORM_MSVC64 else use
     self(
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor_ext",
@@ -89,7 +93,7 @@ def build(self):
         rpath="$ORIGIN",
         source=src_ext,
         defines=["WITHOUT_INT64"],
-        use=use,
+        use=use_ext,
         env=env.derive(),
         install_path=lib_install_path,
     )

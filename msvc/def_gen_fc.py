@@ -161,13 +161,29 @@ def generate_def_file(symbols, output_file):
     - Therefore we only emit the exact names we discovered with dumpbin from the
       object files participating in this library.
     """
+    # Jeveux COMMON block symbols that must be exported as DATA so that other DLLs
+    # (bibfor_ext) share the same memory rather than getting private copies.
+    # On Linux, COMMON blocks are shared across .so files via the global symbol table.
+    # On Windows, each DLL gets its own copy unless we explicitly export them as DATA.
+    jeveux_common_blocks = {
+        "I4VAJE", "IVARJE", "RVARJE", "CVARJE", "LVARJE", "KVARJE",
+    }
+
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("LIBRARY bibfor\n")
         f.write("EXPORTS\n")
         for s in symbols:
-            f.write(f"    {s}\n")
+            if s.upper() in jeveux_common_blocks:
+                f.write(f"    {s} DATA\n")
+            else:
+                f.write(f"    {s}\n")
 
-    print(f"Generated {output_file} with {len(symbols)} exports")
+    # Report how many COMMON blocks were found and exported as DATA
+    found_commons = [s for s in symbols if s.upper() in jeveux_common_blocks]
+    print(f"Generated {output_file} with {len(symbols)} exports "
+          f"({len(found_commons)} Jeveux COMMON blocks as DATA)")
+    if found_commons:
+        print(f"  COMMON DATA exports: {', '.join(sorted(found_commons))}")
 
 
 def _read_def_exports(def_path: Path):

@@ -3,7 +3,7 @@ schema_version: 1
 context:
   name: code-aster
   source_version: "17.3.12"
-  win_build: "1"
+  win_build: "10"
   version: ${{ source_version + "." + win_build }}
 
 package:
@@ -82,6 +82,7 @@ tests:
     requirements:
       run:
         - cmake
+        - ninja
         - pyyaml
   - python:
       imports:

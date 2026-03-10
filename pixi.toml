@@ -191,7 +191,7 @@ def-gen-all = { cmd = "echo Def generation complete", depends-on = ["def-bibfor"
 [feature.condadev]
 channels = ["conda-forge"]
 platforms = ["win-64"]
-dependencies = { rattler-build = "*", python = "3.12.*" }
+dependencies = { rattler-build = "*", python = "3.12.*" , zstandard = ">=0.25.0,<0.26" }
 
 [feature.condadev.target.win-64.tasks]
 cbuild-dev = { cmd = [

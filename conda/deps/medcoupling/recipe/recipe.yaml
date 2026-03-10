@@ -4,7 +4,7 @@ context:
   name: medcoupling
   mpi: ${{ mpi or "nompi" }}
   version: 9.14.0
-  build: 5
+  build: 6
   mpi_prefix: ${{ "nompi" if mpi == "nompi" else "mpi_" + mpi }}
 
 package:

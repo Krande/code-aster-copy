@@ -75,10 +75,15 @@ echo "Configuring build with traceback support"
 set FCFLAGS=%FCFLAGS% /Z7 /traceback
 set CFLAGS=%CFLAGS% /Z7 /Oy- /FS
 set CXXFLAGS=%CXXFLAGS% /Z7 /Oy- /FS
+:: IMPORTANT: Set both LINKFLAGS and LDFLAGS with /DEBUG:FULL
+:: waf's PDB detection (in config/msvc.py and config/ifort.py) checks LINKFLAGS,
+:: not LDFLAGS. Without /DEBUG:FULL in LINKFLAGS, PDB files won't be generated or installed.
+set LINKFLAGS=%LINKFLAGS% /DEBUG:FULL /INCREMENTAL:NO
 set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
 
 :: Release build with debug symbols
 echo "Building release version with debug symbols"
+set LINKFLAGS=%LINKFLAGS% /OPT:REF /OPT:ICF
 set LDFLAGS=%LDFLAGS% /OPT:REF /OPT:ICF
 
 :: Add Math libs
@@ -140,5 +145,17 @@ if errorlevel 1 (
 waf install
 
 if errorlevel 1 exit 1
+
+:: Copy PDB files alongside DLLs for debug stack traces
+echo "Copying PDB files for debug support"
+for %%f in ("%SRC_DIR%\build\*.pdb") do (
+    echo "  Copying %%~nxf to %LIBRARY_PREFIX%\bin\"
+    copy "%%f" "%LIBRARY_PREFIX%\bin\" >nul 2>&1
+)
+:: Also check subdirectories where waf may place PDBs
+for /R "%SRC_DIR%\build" %%f in (*.pdb) do (
+    echo "  Copying %%~nxf to %LIBRARY_PREFIX%\bin\"
+    copy "%%f" "%LIBRARY_PREFIX%\bin\" >nul 2>&1
+)
 
 endlocal
