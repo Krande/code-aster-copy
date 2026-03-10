@@ -28,7 +28,7 @@ jobs:
       - name: Build Code_Aster
         shell: bash
         run: |
-          pixi run -e condadev cbuild-dev --skip-existing=all
+          pixi run -e condadev cbuild-dev --no-test --skip-existing=all
 
       - name: If failed build, upload log
         if: ${{ failure() }}
@@ -36,3 +36,16 @@ jobs:
         with:
           name: BuildLog-condadev-${{ github.run_id }}
           path: ${{ github.workspace }}/output/bld/rattler-build_code-aster_*/work/build
+
+      - name: Run tests
+        continue-on-error: true
+        shell: bash
+        run: |
+          pixi run -e condadev ctest-dev
+
+      - name: Save test results to artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults-condadev-${{ github.run_id }}
+          path: "${{ github.workspace }}/test_output"
