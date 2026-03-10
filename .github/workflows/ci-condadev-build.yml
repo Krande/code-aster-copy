@@ -37,11 +37,24 @@ jobs:
           name: BuildLog-condadev-${{ github.run_id }}
           path: ${{ github.workspace }}/output/bld/rattler-build_code-aster_*/work/build
 
+      - name: Find built package
+        shell: pixi run -e condadev python {0}
+        run: |
+          import pathlib, os
+          output_dir = pathlib.Path("conda/deps/output").resolve()
+          conda_files = list(output_dir.rglob("code-aster*.conda"))
+          if len(conda_files) != 1:
+              raise ValueError(f"Expected 1 code-aster .conda file, found {len(conda_files)}: {conda_files}")
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write(f"CONDA_FILE={conda_files[0].as_posix()}\n")
+
       - name: Run tests
         continue-on-error: true
         shell: bash
+        env:
+          OUTPUT_DIR: "${{ github.workspace }}/test_output"
         run: |
-          pixi run -e condadev ctest-dev
+          rattler-build test --package-file "$CONDA_FILE" -c ./conda/deps/output -c conda-forge
 
       - name: Save test results to artifacts
         if: ${{ always() }}
