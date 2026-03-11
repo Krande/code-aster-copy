@@ -31,6 +31,6 @@ from .exceptions_ext import (
     SolverError,
     TimeLimitError,
 )
-from .ExecuteCommand import CO, ExecuteCommand, ExecuteMacro, UserMacro
+from .ExecuteCommand import CO, ExecuteCommand, ExecuteMacro, UserMacro, loop_on_dsdict
 from .Serializer import FinalizeOptions, Serializer, loadObjects, saveObjects
 from .visitors import GenericVisitor

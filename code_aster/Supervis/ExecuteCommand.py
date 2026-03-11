@@ -75,7 +75,7 @@ from ..Cata.Language.SyntaxObjects import _F
 from ..Cata.SyntaxChecker import CheckerError, checkCommandSyntax
 from ..Cata.SyntaxUtils import force_list, mixedcopy, remove_none, search_for
 from ..Messages import UTMESS, MessageLog
-from ..Objects import DataStructure, NamedTuple, PyDataStructure
+from ..Objects import DataStructure, DataStructureDict, NamedTuple, PyDataStructure
 from ..Utilities import (
     DEBUG,
     ExecutionParameter,
@@ -1024,6 +1024,80 @@ def command_time(counter, cpu, system, elapsed):
         str: String representation.
     """
     return MessageLog.GetText("I", "SUPERVIS2_75", vali=counter, valr=(cpu, system, elapsed))
+
+
+class loop_on_dsdict:
+    """Decorator on ExecuteCommand that overloads 'run\_' method to
+    loop on each result of a DataStructureDict.
+
+    Arguments:
+        mark (str): Possible paths to keywords that may hold the DataStructureDict
+            object. Format: "mcf1/mcs1|mcf2/mcs2|mcs3|..."
+    """
+
+    def __init__(dec, mark: str):
+        dec._mark: str = mark
+
+    def __call__(dec, command):
+        command._orig_run_ = command.run_
+
+        def run_(self, **kwargs):
+            """Run the command."""
+
+            def path_(kwds: dict):
+                """Return the path to the relevant keyword"""
+                candidates = dec._mark.split("|")
+                for key in candidates:
+                    store = kwds
+                    mcs = key.split("/")
+                    if len(mcs) < 2:
+                        mcf = None
+                    else:
+                        mcf = mcs.pop(0)
+                        if not kwds.get(mcf):
+                            mcf = None
+                            continue
+                        store = kwds[mcf]
+                    mcs = mcs.pop(0)
+                    if store.get(mcs):
+                        return mcf, mcs
+                return None, None
+
+            def extr_(kwds: dict, path: tuple[str]):
+                """Return the value of the relevant keyword"""
+                mcf, mcs = path
+                if mcf:
+                    kwds = kwds[mcf]
+                return kwds[mcs]
+
+            def set_(kwds: dict, path: tuple[str], value: DataStructureDict):
+                """Set the value of the relevant keyword"""
+                mcf, mcs = path
+                if mcf:
+                    kwds = kwds[mcf]
+                kwds[mcs] = value
+
+            path = path_(kwargs)
+            if not isinstance(extr_(kwargs, path), DataStructureDict):
+                return command._orig_run_(self, **kwargs)
+
+            keywords = mixedcopy(kwargs)
+            input = extr_(keywords, path)
+            in_place = "reuse" in keywords
+            if in_place:
+                output = keywords["reuse"]
+            else:
+                output = type(input)()
+
+            for key in input:
+                set_(keywords, path, input[key])
+                if in_place:
+                    keywords["reuse"] = extr_(keywords, path)
+                output[key] = command._orig_run_(self, **keywords)
+            return output
+
+        command.run_ = run_
+        return command
 
 
 class ExceptHookManager:

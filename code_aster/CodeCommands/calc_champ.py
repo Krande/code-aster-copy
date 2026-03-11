@@ -18,11 +18,10 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from ..Cata.SyntaxUtils import mixedcopy
-from ..Objects import DataStructureDict
-from ..Supervis import ExecuteCommand
+from ..Supervis import ExecuteCommand, loop_on_dsdict
 
 
+@loop_on_dsdict("RESULTAT")
 class ComputeAdditionalField(ExecuteCommand):
     """Command that computes additional fields in a
     :class:`~code_aster.Objects.Result`.
@@ -112,65 +111,6 @@ class ComputeAdditionalField(ExecuteCommand):
                     self._result.addDependency(elem)
             except RuntimeError:
                 pass
-
-    def run_(self, **kwargs):
-        """Run the command."""
-        mark = "RESULTAT"
-
-        # mark = "ETAT_INIT/EVOL_NOLI"
-        # mark = "RESULTAT|RESU_FINAL"
-        # mark = "MCF1/MCS|MCF2/MCS2"
-        def path_(kwds: dict, mark: str):
-            """Return the path to the relevant keyword"""
-            candidates = mark.split("|")
-            for key in candidates:
-                store = kwds
-                mcs = key.split("/")
-                if len(mcs) < 2:
-                    mcf = None
-                else:
-                    mcf = mcs.pop(0)
-                    if not kwds.get(mcf):
-                        mcf = None
-                        continue
-                    store = kwds[mcf]
-                mcs = mcs.pop(0)
-                if store.get(mcs):
-                    return mcf, mcs
-            return None, None
-
-        def extr_(kwds: dict, path: tuple[str]):
-            """Return the value of the relevant keyword"""
-            mcf, mcs = path
-            if mcf:
-                kwds = kwds[mcf]
-            return kwds[mcs]
-
-        def set_(kwds: dict, path: tuple[str], value: DataStructureDict):
-            """Set the value of the relevant keyword"""
-            mcf, mcs = path
-            if mcf:
-                kwds = kwds[mcf]
-            kwds[mcs] = value
-
-        path = path_(kwargs, mark)
-        if not isinstance(extr_(kwargs, path), DataStructureDict):
-            return super().run_(**kwargs)
-
-        keywords = mixedcopy(kwargs)
-        input = extr_(keywords, path)
-        in_place = "reuse" in keywords
-        if in_place:
-            output = keywords["reuse"]
-        else:
-            output = type(input)()
-
-        for key in input:
-            set_(keywords, path, input[key])
-            if in_place:
-                keywords["reuse"] = extr_(keywords, path)
-            output[key] = super().run_(**keywords)
-        return output
 
 
 CALC_CHAMP = ComputeAdditionalField.run
