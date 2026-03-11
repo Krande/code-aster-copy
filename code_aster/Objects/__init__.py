@@ -53,7 +53,6 @@ from .datastructure_py import (
     NamedTuple,
     PyDataStructure,
     ThermalResultDict,
-    DryingResultDict,
     ElasticResultDict,
     NonLinearResultDict,
     UnavailableObject,

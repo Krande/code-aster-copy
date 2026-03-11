@@ -73,6 +73,13 @@ ther_dict["13"] = CREA_RESU(
 )
 
 test.assertEqual(len(ther_dict), 2, msg="check len()")
+test.assertFalse("11" in ther_dict, msg="check not contains")
+test.assertTrue("12" in ther_dict, msg="check contains")
+test.assertSequenceEqual(
+    [key for key in ther_dict], list(ther_dict.keys()), msg="check iter / keys"
+)
+test.assertIn(ther_dict["12"], ther_dict.values(), msg="check values")
+
 test.assertIsNone(ther_dict.get("unknown"), msg="check invalid access")
 with test.assertRaises(KeyError):
     _ = ther_dict["unknown"]
