@@ -76,10 +76,14 @@ outputs:
             - metis
             - libscotch
             - libscotch * int${{ scotch_intsize }}_*
-          else:
-            - mkl-devel
+        # flang needs LLVM OpenMP runtime; ifx needs MKL headers/libs
+        - if: win and fortran_compiler == 'flang'
+          then:
             - llvm-openmp
             - llvm-openmp-fortran
+        - if: win and fortran_compiler == 'ifx'
+          then:
+            - mkl-devel
       run:
         - if: not win
           then:

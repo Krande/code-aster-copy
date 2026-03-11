@@ -122,7 +122,7 @@ description = "Build scotch from local feedstock"
 cmd = [
   "rattler-build", "build",
   "-r", "conda/deps/mumps/recipe",
-  "-m", "conda/deps/mumps/.ci_support/win_64_.yaml",
+  "-m", "conda/deps/mumps/.ci_support/win_64_fortran_compilerifxfortran_compiler_version2025._libblas3.9.___mklliblapack3.9.___mkl.yaml",
   "--output-dir", "conda/deps/output",
   "-c", "./conda/deps/output",
   "-c", "conda-forge"
@@ -130,7 +130,7 @@ cmd = [
 depends-on = ["build-scotch"]
 inputs = [
   "conda/deps/mumps/recipe/**",
-  "conda/deps/mumps/.ci_support/win_64_.yaml"
+  "conda/deps/mumps/.ci_support/win_64_fortran_compilerifxfortran_compiler_version2025._libblas3.9.___mklliblapack3.9.___mkl.yaml"
 ]
 outputs = ["conda/deps/output/win-64/mumps-*.conda"]
 description = "Build mumps (uses local scotch)"

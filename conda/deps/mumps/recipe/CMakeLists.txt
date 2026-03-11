@@ -22,15 +22,35 @@ project(MUMPS Fortran C)
 # Options
 ###############################################################################
 
+option(MUMPS_USE_IFX "Link C runtime libs for ifx builds" OFF)
 
-find_package(BLAS)
-if(NOT BLAS_FOUND)
-  message(FATAL_ERROR "BLAS not found")
+# Intel Fortran (ifx/ifort) name mangling: match -DAdd_ convention (lowercase + underscore)
+# Also add /Z7 /traceback for embedded debug info and stack traces
+if(WIN32)
+  if(CMAKE_Fortran_COMPILER_ID MATCHES "IntelLLVM" OR CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} /names:lowercase /assume:underscore /Z7 /traceback")
+    message(STATUS "Intel Fortran: name mangling + debug symbols + traceback")
+  endif()
+  # Embed debug info in C objects too (avoids separate PDB management)
+  string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Z7")
 endif()
 
-find_package(LAPACK)
-if(NOT LAPACK_FOUND)
-  message(FATAL_ERROR "LAPACK not found")
+if(WIN32)
+  # On Windows with conda-forge MKL, FindBLAS can't locate the libraries
+  # because they use non-standard names (*_dll.lib). Try mkl_rt first.
+  find_library(MKL_RT mkl_rt)
+  if(MKL_RT)
+    set(BLAS_LIBRARIES ${MKL_RT})
+    set(LAPACK_LIBRARIES ${MKL_RT})
+    message(STATUS "Using MKL via mkl_rt: ${MKL_RT}")
+  else()
+    find_package(BLAS REQUIRED)
+    find_package(LAPACK REQUIRED)
+  endif()
+else()
+  find_package(BLAS REQUIRED)
+  find_package(LAPACK REQUIRED)
 endif()
 
 # -DWITH_MPI
@@ -45,6 +65,11 @@ if(WITH_MPI)
   else()
     set(WITH_MPI OFF)
   endif()
+endif()
+
+if(WIN32)
+  # Add linker flags for full debug info in DLLs
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG:FULL")
 endif()
 
 include_directories(
@@ -291,8 +316,17 @@ target_compile_definitions(${ARITHLIB} PRIVATE -DAdd_)
 target_compile_definitions(${ARITHLIB} PRIVATE -DMUMPS_CALL=__declspec\(dllexport\))
 add_executable(${ARITH}simpletest ${EXAMPLE})
 target_link_libraries(${ARITHLIB} mumps_common pord ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+# When ifx links a Fortran DLL containing C objects (from mumps_common),
+# the C runtime import libraries are not added automatically.
+if(WIN32 AND MUMPS_USE_IFX)
+  target_link_libraries(${ARITHLIB} ucrt vcruntime msvcrt)
+endif()
 target_link_libraries(${ARITH}simpletest ${ARITHLIB} mumps_common pord ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 install(TARGETS ${ARITHLIB})
+# Install PDB files alongside DLLs for debug stack traces
+if(WIN32)
+  install(FILES $<TARGET_PDB_FILE:${ARITHLIB}> DESTINATION bin OPTIONAL)
+endif()
 install(FILES include/${ARITH}mumps_struc.h include/${ARITH}mumps_c.h DESTINATION include)
 
 endforeach(ARITH)
