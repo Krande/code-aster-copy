@@ -68,7 +68,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         else:
             self._result = NonLinearResult()
         self._result.setMesh(keywords["MODELE"].getMesh())
-        self._result.setModel(keywords["MODELE"])
+        self._result.addFiniteElementDescriptor(keywords["MODELE"].getFiniteElementDescriptor())
         if "ETAT_INIT" in keywords:
             etat = keywords["ETAT_INIT"]
             fields = ["DEPL", "VITE", "ACCE"]

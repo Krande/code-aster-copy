@@ -35,6 +35,12 @@ extern "C" void DEFSSSP( ADD_FIELD_IN_CURRENT_RESULT, add_field_in_current_resul
                          _IN char *nomsym, _IN STRING_SIZE lnosy, ASTERINTEGER *iordr ) {
     auto instance = ResultManager::getInstance();
     auto resu = ResultManager::getInstance()->getCurrentResult();
+    if ( resu != nullptr ) {
+        const std::string resName( strip( std::string( nomres, lres ) ) );
+        if ( resName != resu->getName() ) {
+            return;
+        }
+    }
     std::string resuName( nomres, lres ), test1( nomcham, lnoch ), test2( nomsym, lnosy );
     auto name = strip( test2 );
     auto nomSymb = strip( test1 );

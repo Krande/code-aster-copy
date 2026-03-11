@@ -4,7 +4,6 @@
 /**
  * @file ResultManager.h
  * @brief Fichier entete de la classe ResultManager
- * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
@@ -30,12 +29,13 @@
 
 /**
  * @class ResultManager
- * @brief Cette classe correspond a
- * @author Nicolas Sellenet
+ * @brief This class is usefull to manage Result from Fortran
  */
 class ResultManager {
   protected:
     using ResultManagerPtr = std::shared_ptr< ResultManager >;
+
+    /** @brief Result to fill in */
     ResultPtr _currentResult;
 
     ResultManager() : _currentResult( nullptr ) {};
@@ -47,18 +47,31 @@ class ResultManager {
      */
     void operator=( const ResultManager & ) = delete;
 
+    /**
+     * @brief Add field to currentResult from string names
+     * @param nomSymb symbolic name (eg: DEPL)
+     * @param name real Jeveux name
+     * @param storageIndex Index to store field
+     */
     void addFieldToResult( const std::string &nomSymb, const std::string &name,
                            ASTERINTEGER storageIndex );
 
+    /** @brief Get static ResultManager instance */
     static ResultManagerPtr getInstance() {
         static ResultManagerPtr instance( new ResultManager() );
         return instance;
     };
 
+    /** @brief Get current result to fill */
     ResultPtr getCurrentResult() const { return _currentResult; };
 
+    /** @brief Release current result */
     void releaseCurrentResult() { _currentResult = nullptr; };
 
+    /**
+     * @brief Set result to fill (from Fortran)
+     * @param result Result
+     */
     void setCurrentResult( const ResultPtr &result ) { _currentResult = result; };
 };
 
