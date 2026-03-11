@@ -56,9 +56,10 @@ set CXXFLAGS=/std:c++20 /EHs /permissive- /MD
 
 echo "Using Intel Fortran LLVM IFX compiler"
 set FC_SEARCH=ifort
-:: Note: /integer-size:64 and /real-size:64 are NOT set here.
-:: waf handles them via FCFLAGS_INT64 (applied only to bibfor, not bibfor_ext).
-set FCFLAGS=%FCFLAGS% /fpp /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /traceback /nologo
+:: Global /integer-size:64 /real-size:64 required: bibfor_ext calls bibfor functions
+:: that expect 8-byte INTEGER args. Without the global flag, plain INTEGER in
+:: bibfor_ext is 4-byte, causing ABI mismatches (ifx has no -fallow-argument-mismatch).
+set FCFLAGS=%FCFLAGS% /fpp /integer-size:64 /real-size:64 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /traceback /nologo
 :: Add lib paths
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 :: Set up paths for Intel Fortran compiler in conda environment
