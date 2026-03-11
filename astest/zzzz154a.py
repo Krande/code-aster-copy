@@ -28,6 +28,11 @@ test = CA.TestCase()
 
 mesh = CA.Mesh.buildSquare()
 
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
+
+mater = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0))
+fieldmat = AFFE_MATERIAU(MODELE=model, AFFE=_F(TOUT="OUI", MATER=mater))
+
 ther1 = CREA_CHAMP(
     MAILLAGE=mesh,
     TYPE_CHAM="NOEU_TEMP_R",
@@ -97,8 +102,27 @@ dict_test = MACRO_TEST(
 )
 
 # test printing of dict-like objects
-
 IMPR_RESU(RESU=_F(RESULTAT=ther_dict), UNITE=80)
+
+# only TEMP
+for result in ther_dict.values():
+    test.assertIn("TEMP", result.getFieldsNames(), msg="check only TEMP")
+    test.assertNotIn("FLUX_ELGA", result.getFieldsNames(), msg="check only TEMP")
+
+# without reuse
+output = CALC_CHAMP(RESULTAT=ther_dict, MODELE=model, CHAM_MATER=fieldmat, THERMIQUE="FLUX_ELGA")
+for result in output.values():
+    test.assertNotIn("TEMP", result.getFieldsNames(), msg="check TEMP+FLUX")
+    test.assertIn("FLUX_ELGA", result.getFieldsNames(), msg="check TEMP+FLUX")
+
+# in place
+ther_dict = CALC_CHAMP(
+    reuse=ther_dict, RESULTAT=ther_dict, MODELE=model, CHAM_MATER=fieldmat, THERMIQUE="FLUX_ELGA"
+)
+for result in ther_dict.values():
+    test.assertIn("TEMP", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+    test.assertIn("FLUX_ELGA", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+
 
 test.printSummary()
 

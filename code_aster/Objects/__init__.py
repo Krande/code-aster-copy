@@ -49,12 +49,12 @@ from .config_dependent import (
 from .datastructure_py import (
     AsFloat,
     AsInteger,
+    DataStructureDict,
     ElasticResultDict,
     NamedTuple,
+    NonLinearResultDict,
     PyDataStructure,
     ThermalResultDict,
-    ElasticResultDict,
-    NonLinearResultDict,
     UnavailableObject,
 )
 from .Serialization import InternalStateBuilder

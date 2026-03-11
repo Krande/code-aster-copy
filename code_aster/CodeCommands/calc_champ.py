@@ -18,6 +18,8 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from ..Cata.SyntaxUtils import mixedcopy
+from ..Objects import DataStructureDict
 from ..Supervis import ExecuteCommand
 
 
@@ -110,6 +112,26 @@ class ComputeAdditionalField(ExecuteCommand):
                     self._result.addDependency(elem)
             except RuntimeError:
                 pass
+
+    def run_(self, **kwargs):
+        """Run the command."""
+        if not isinstance(kwargs.get("RESULTAT"), DataStructureDict):
+            return super().run_(**kwargs)
+
+        keywords = mixedcopy(kwargs)
+        input = keywords["RESULTAT"]
+        in_place = "reuse" in keywords
+        if in_place:
+            output = keywords["reuse"]
+        else:
+            output = type(input)()
+
+        for key in keywords["RESULTAT"]:
+            keywords["RESULTAT"] = input[key]
+            if in_place:
+                keywords["reuse"] = keywords["RESULTAT"]
+            output[key] = CALC_CHAMP(**keywords)
+        return output
 
 
 CALC_CHAMP = ComputeAdditionalField.run
