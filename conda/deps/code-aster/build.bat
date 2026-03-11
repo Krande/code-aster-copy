@@ -58,7 +58,6 @@ echo "Using Intel Fortran LLVM IFX compiler"
 set FC_SEARCH=ifort
 :: Note: /integer-size:64 and /real-size:64 are NOT set here.
 :: waf handles them via FCFLAGS_INT64 (applied only to bibfor, not bibfor_ext).
-:: Setting them globally would pollute waf size-detection probes (e.g. MUMPS int size).
 set FCFLAGS=%FCFLAGS% /fpp /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /traceback /nologo
 :: Add lib paths
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs

@@ -8,7 +8,7 @@ copy %RECIPE_DIR%\CMakeLists.txt %src%\CMakeLists.txt
 :: LP64: use 32-bit MUMPS_INT (matches Linux/conda-forge default)
 copy %src%\src\mumps_int_def32_h.in %src%\include\mumps_int_def.h
 
-:: For ifx: set up compiler paths
+:: For ifx: set up compiler paths and name-mangling flags
 set "MUMPS_USE_IFX=OFF"
 set "EXTRA_FC_FLAGS="
 set "FC_COMPILER_ARG="
@@ -26,7 +26,7 @@ if not errorlevel 1 (
     set "MUMPS_USE_IFX=ON"
     if errorlevel 1 exit 1
 )
-echo MUMPS build: MUMPS_USE_IFX=%MUMPS_USE_IFX%
+echo MUMPS build: MUMPS_USE_IFX=%MUMPS_USE_IFX% scotch_intsize=%scotch_intsize%
 
 mkdir build
 cd build
