@@ -44,7 +44,9 @@ CALC_CHAMP = OPER(
     MODELE=SIMP(statut="f", typ=modele_sdaster),
     CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
-    RESULTAT=SIMP(statut="o", typ=resultat_sdaster, fr=tr("Resultat d'une commande globale")),
+    RESULTAT=SIMP(
+        statut="o", typ=(resultat_sdaster, ds_dict), fr=tr("Resultat d'une commande globale")
+    ),
     regles=(
         EXCLUS(
             "TOUT_ORDRE",
