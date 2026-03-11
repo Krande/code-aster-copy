@@ -30,7 +30,16 @@ void exportResultManagerToPython( py::module_ &mod ) {
     py::class_< ResultManager, ResultManagerPtr >( mod, "ResultManager" )
         // fake initFactoryPtr: created by subclass
         // fake initFactoryPtr: created by subclass
-        .def_static( "getInstance", &ResultManager::getInstance )
-        .def( "setCurrentResult", &ResultManager::setCurrentResult )
-        .def( "releaseCurrentResult", &ResultManager::releaseCurrentResult );
+        .def_static( "getInstance", &ResultManager::getInstance, R"(
+Get singleton instance of ResultManager class
+        )" )
+        .def( "setCurrentResult", &ResultManager::setCurrentResult, R"(
+Set result which will be enrich during calculation
+
+Argument:
+    result (Result): result to enrich
+        )",
+              py::arg( "result" ) )
+        .def( "releaseCurrentResult", &ResultManager::releaseCurrentResult, R"(
+Release result )" );
 };

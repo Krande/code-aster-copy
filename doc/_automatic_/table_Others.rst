@@ -77,6 +77,7 @@
    * - :py:class:`~code_aster.Objects.PressureReal`
    * - :py:class:`~code_aster.Objects.PtScotchPartitioner`
    * - :py:class:`~code_aster.Objects.PythonBool`
+   * - :py:class:`~code_aster.Objects.ResultManager`
    * - :py:class:`~code_aster.Objects.ResultNaming`
    * - :py:class:`~code_aster.Objects.StructuralForceReal`
    * - :py:class:`~code_aster.Objects.SyntaxSaver`

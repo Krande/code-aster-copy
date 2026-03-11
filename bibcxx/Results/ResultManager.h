@@ -59,7 +59,7 @@ class ResultManager {
 
     void releaseCurrentResult() { _currentResult = nullptr; };
 
-    void setCurrentResult( const ResultPtr &resu ) { _currentResult = resu; };
+    void setCurrentResult( const ResultPtr &result ) { _currentResult = result; };
 };
 
 using ResultManagerPtr = std::shared_ptr< ResultManager >;
