@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
+! aslint: disable=W1504, C0110, W0413
 !
 subroutine nmvprk(fami, kpg, ksp, ndim, &
-                  typmod, imat, comp, crit, timed, &
+                  typmod, imat, compor, carcri, timed, &
                   timef, neps, epsdt, depst, sigd, &
                   nvi, vind, opt, angmas, sigf, &
                   vinf, dsde, iret, mult_comp_)
 !
     implicit none
 !
-#include "jeveux.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/calsig.h"
 #include "asterfort/gerpas.h"
 #include "asterfort/lcdpeq.h"
@@ -35,6 +35,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
 #include "asterfort/lcrksg.h"
 #include "asterfort/lcsmelas.h"
 #include "blas/dcopy.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,6 +120,8 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
 !
     character(len=*) :: fami
     integer(kind=8), intent(in) :: nvi
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     integer(kind=8) :: imat, ndim, ndt, ndi, nr, kpg, ksp, i, nbphas, itmax
     integer(kind=8) :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps
     integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
@@ -134,7 +137,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
     integer(kind=8) :: nbcomm(nmat, 3), numhsr(nmat), iret
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsdt(neps), depst(neps)
     real(kind=8) :: rbid
-    real(kind=8) :: toler, ymfs, crit(*), vind(*), vinf(*), timed, timef
+    real(kind=8) :: toler, ymfs, vind(*), vinf(*), timed, timef
     real(kind=8) :: sigd(6), sigf(6), dsde(6, *), angmas(*)
     real(kind=8) :: cothe(nmat), dcothe(nmat), pgl(3, 3), epsd(9)
     real(kind=8) :: coeff(nmat), dcoeff(nmat), coel(nmat), dtime, x
@@ -143,7 +146,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
     character(len=3) :: matcst
     character(len=8) :: mod, typma, typmod(*)
     character(len=11) :: meting
-    character(len=16) :: comp(*), opt, rela_comp, defo_comp, mult_comp
+    character(len=16) ::  opt, relaComp, defoComp, mult_comp
     character(len=24) :: cpmono(5*nmat+1)
     blas_int :: b_incx, b_incy, b_n
     common/tdim/ndt, ndi
@@ -153,18 +156,18 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    itmax = int(crit(1))
-    toler = crit(3)
+    itmax = int(carcri(1))
+    toler = carcri(3)
     meting = 'RUNGE_KUTTA'
     mod = typmod(1)
-    rela_comp = comp(1)
-    defo_comp = comp(3)
+    relaComp = compor(RELA_NAME)
+    defoComp = compor(DEFO)
     mult_comp = ' '
     if (present(mult_comp_)) then
         mult_comp = mult_comp_
     end if
     gdef = 0
-    if (defo_comp .eq. 'SIMO_MIEHE') gdef = 1
+    if (defoComp .eq. 'SIMO_MIEHE') gdef = 1
 !
 !     YMFS EST UTILISE LORS DU CALCUL D ERREUR COMME MINIMUM DE
 !     CHAQUE COMPOSANTE DE VINT. L IDEAL SERAIT DE RENTRER CE
@@ -175,12 +178,12 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
 ! --  RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 !                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 !
-    call lcmate(fami, kpg, ksp, comp, &
+    call lcmate(fami, kpg, ksp, compor, &
                 mod, imat, nmat, rbid, rbid, &
                 rbid, 1, typma, hsr, materd, &
                 materf, matcst, nbcomm, cpmono, angmas, &
                 pgl, 0, toler, ndt, ndi, &
-                nr, crit, nvi, vind, nfs, &
+                nr, carcri, nvi, vind, nfs, &
                 nsg, toutms, nhsr, numhsr, sigd, &
                 mult_comp)
 !
@@ -211,7 +214,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
 !
 !     INITIALISATIONS PARTICULIERES POUR CERTAINES LOIS
 !
-    call lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
+    call lcrkin(ndim, opt, relaComp, materf, nbcomm, &
                 cpmono, nmat, mod, nvi, sigd, &
                 sigf, vind, vinf, nbphas, iret)
     if (iret .eq. 9) then
@@ -220,7 +223,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
         goto 999
     end if
 !
-    call gerpas(fami, kpg, ksp, rela_comp, mod, &
+    call gerpas(fami, kpg, ksp, relaComp, mod, &
                 imat, matcst, nbcomm, cpmono, nbphas, &
                 nvi, nmat, vinf, dtime, itmax, &
                 toler, ymfs, cothe, coeff, dcothe, &
@@ -233,22 +236,22 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
 !
 ! --  CALCUL DES CONTRAINTES
 !
-    if ((rela_comp .eq. 'MONOCRISTAL') .and. (gdef .eq. 1)) then
-        call lcrksg(rela_comp, nvi, vinf, epsd, detot, &
+    if ((relaComp .eq. 'MONOCRISTAL') .and. (gdef .eq. 1)) then
+        call lcrksg(relaComp, nvi, vinf, epsd, detot, &
                     nmat, coel, sigf)
     else
         call calsig(fami, kpg, ksp, vinf, mod, &
-                    rela_comp, vinf, x, dtime, epsd, &
+                    relaComp, vinf, x, dtime, epsd, &
                     detot, nmat, coel, sigf)
     end if
 !
-    call lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
+    call lcdpeq(vind, vinf, relaComp, nbcomm, cpmono, &
                 nmat, nvi, sigf, detot, epsd, &
                 materf, pgl)
 !
 900 continue
 !
-    if (opt(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONOCRISTAL') then
+    if (opt(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. relaComp .eq. 'MONOCRISTAL') then
         call lcsmelas(epsdt, depst, dsde, nmat=nmat, materd_=materd)
         iret = 0
         goto 999

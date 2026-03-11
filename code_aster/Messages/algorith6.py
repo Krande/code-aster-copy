@@ -286,11 +286,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """
     ),
-    88: _(
-        """
- erreur dans le type de comportement
-"""
-    ),
     92: _(
         """
  pas de contraintes planes

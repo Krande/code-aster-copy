@@ -15,21 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
 subroutine plasbe(BEHinteg, &
                   fami, kpg, ksp, typmod, imat, l_epsi_varc, &
-                  crit, epsdt, depst, sigd, vind, &
+                  carcri, epsdt, depst, sigd, vind, &
                   opt, sigf, vinf, dsde, &
                   icomp, nvi, irteti)
 !
     use Behaviour_type
-!
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8nnem.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/betcvx.h"
 #include "asterfort/betimp.h"
 #include "asterfort/betjpl.h"
@@ -43,6 +43,7 @@ subroutine plasbe(BEHinteg, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
 
 !       ================================================================
@@ -186,7 +187,7 @@ subroutine plasbe(BEHinteg, &
     parameter(nmat=90)
     parameter(tneg=-1.d3)
 !
-    real(kind=8) :: crit(*)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: vind(*), vinf(*)
     real(kind=8) :: tempd, tempf
     real(kind=8) :: epsd(6), deps(6)
@@ -210,8 +211,8 @@ subroutine plasbe(BEHinteg, &
 ! --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 !
     irteti = 0
-    itmax = int(crit(1))
-    toler = crit(3)
+    itmax = int(carcri(1))
+    toler = carcri(3)
 !        LOI      = COMP(1)
     mod = typmod(1)
     nseuil = 0

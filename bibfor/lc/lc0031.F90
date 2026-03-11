@@ -15,24 +15,28 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504
 !
 subroutine lc0031(fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, &
-                  epsm, deps, sigm, vim, option, &
+                  epsm, deps, sigm, nvi, vim, option, &
                   angmas, sigp, vip, typmod, &
-                  nvi, dsidep, codret)
+                  dsidep, codret)
 !
     implicit none
 !
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/nmveei.h"
 #include "asterfort/nmvprk.h"
 #include "asterfort/utlcal.h"
 !
     integer(kind=8) :: imate, ndim, kpg, ksp, codret, nvi, neps
-    real(kind=8) :: carcri(*), angmas(*), instam, instap
-    real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    real(kind=8) :: angmas(*), instam, instap
+    real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(nvi), vip(nvi)
     real(kind=8) :: dsidep(6, 6)
-    character(len=16) :: compor(*), option
+    character(len=16) :: option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 !

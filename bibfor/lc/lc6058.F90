@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504,C1505,W0104
 !
-subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
+subroutine lc6058(BEHinteg, &
+                  fami, kpg, ksp, ndim, &
                   typmod, imate, compor, carcri, instam, &
                   instap, neps, epsm, deps, nsig, &
                   sigm, nvi, vim, option, angmas, &
@@ -26,7 +27,6 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
     use Behaviour_type
     use BehaviourMGIS_module
     use logging_module, only: DEBUG, LOGLEVEL_MGIS, is_enabled
-!
     implicit none
 !
 #include "asterc/mgis_get_number_of_props.h"
@@ -37,12 +37,12 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
+#include "asterfort/lcgrad.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/mfront_get_mater_value.h"
+#include "asterfort/rcvalb.h"
 #include "asterfort/use_orient.h"
 #include "asterfort/utmess.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/lcgrad.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami

@@ -29,7 +29,7 @@ interface
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in) :: fami
         integer(kind=8), intent(in) :: kpg, ksp, ndim
-        character(len=8), intent(in) :: typmod(*)
+        character(len=8), intent(in) :: typmod(2)
         integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)

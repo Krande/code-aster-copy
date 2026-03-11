@@ -20,15 +20,15 @@
 subroutine lc0032(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, &
-                  epsm, deps, sigm, vim, option, &
+                  epsm, deps, sigm, nvi, vim, option, &
                   angmas, sigp, vip, &
-                  typmod, icomp, nvi, &
+                  typmod, icomp, &
                   dsidep, codret)
 !
     use Behaviour_type
-!
     implicit none
 !
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/nmvprk.h"
 #include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
@@ -39,22 +39,20 @@ subroutine lc0032(BEHinteg, &
     integer(kind=8), intent(in) :: ksp
     integer(kind=8), intent(in) :: ndim
     integer(kind=8), intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE), option
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
-    integer(kind=8), intent(in) :: neps
+    integer(kind=8), intent(in) :: neps, nvi
     real(kind=8), intent(in) :: epsm(neps)
     real(kind=8), intent(in) :: deps(neps)
     real(kind=8), intent(in) :: sigm(6)
-    real(kind=8), intent(in) :: vim(*)
-    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: vim(nvi)
     real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(6)
-    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(out) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
     integer(kind=8), intent(in) :: icomp
-    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 !
@@ -85,6 +83,7 @@ subroutine lc0032(BEHinteg, &
                     epsm, deps, sigm, &
                     vim, option, angmas, sigp, vip, &
                     dsidep, icomp, nvi, codret)
+
     else if (algo_inte .eq. 'RUNGE_KUTTA') then
         meting = 'RUNGE_KUTTA'
         call nmvprk(fami, kpg, ksp, ndim, typmod, &
@@ -92,5 +91,6 @@ subroutine lc0032(BEHinteg, &
                     neps, epsm, deps, sigm, nvi, vim, &
                     option, angmas, sigp, vip, dsidep, &
                     codret)
+
     end if
 end subroutine

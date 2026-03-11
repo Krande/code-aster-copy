@@ -25,9 +25,9 @@ subroutine lc0059(BEHinteg, &
                   typmod, icomp, dsidep, codret)
 !
     use Behaviour_type
-!
     implicit none
 !
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/plasti.h"
 #include "asterfort/srcomp.h"
 #include "asterfort/utlcal.h"
@@ -37,8 +37,8 @@ subroutine lc0059(BEHinteg, &
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
     integer(kind=8), intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE), option
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
     integer(kind=8), intent(in) :: neps
@@ -48,7 +48,6 @@ subroutine lc0059(BEHinteg, &
     real(kind=8), intent(in) :: sigm(nsig)
     integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
-    character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)

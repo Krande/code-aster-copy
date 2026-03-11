@@ -19,17 +19,17 @@
 !
 subroutine lc0137(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
-                  compor, mult_comp, carcri, instam, instap, &
-                  neps, epsm, deps, sigm, vim, option, &
+                  compor, multComp, carcri, instam, instap, &
+                  neps, epsm, deps, sigm, nvi, vim, option, &
                   angmas, sigp, vip, &
                   typmod, icomp, &
-                  nvi, dsidep, codret)
+                  dsidep, codret)
 !
     use Behaviour_type
-!
     implicit none
 !
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/nmvprk.h"
 #include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
@@ -39,24 +39,22 @@ subroutine lc0137(BEHinteg, &
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
     integer(kind=8), intent(in) :: ndim
-    integer(kind=8), intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
-    character(len=16), intent(in) :: mult_comp
-    real(kind=8), intent(in) :: carcri(*)
-    real(kind=8), intent(in) :: instam
-    real(kind=8), intent(in) :: instap
+    integer(kind=8), intent(in) :: imate, nvi
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    character(len=16), intent(in) :: multComp
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    real(kind=8), intent(in) :: instam, instap
     integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps)
     real(kind=8), intent(in) :: deps(neps)
     real(kind=8), intent(in) :: sigm(6)
-    real(kind=8), intent(in) :: vim(*)
+    real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(6)
-    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(out) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
     integer(kind=8), intent(in) :: icomp
-    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 !
@@ -72,35 +70,41 @@ subroutine lc0137(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: algo_inte
+    character(len=16) :: algoInte, relaComp
     character(len=11) :: meting
     common/meti/meting
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (compor(1) .eq. 'POLYCRISTAL') then
+    relaComp = COMPOR(RELA_NAME)
+    if (relaComp .eq. 'POLYCRISTAL') then
         call nmvprk(fami, kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     neps, epsm, deps, sigm, nvi, vim, &
                     option, angmas, sigp, vip, dsidep, &
-                    codret, mult_comp)
-    elseif (compor(1) .eq. 'MONOCRISTAL') then
-        call utlcal('VALE_NOM', algo_inte, carcri(6))
-        if (algo_inte(1:6) .eq. 'NEWTON') then
-            meting = algo_inte(1:11)
+                    codret, multComp)
+
+    elseif (relaComp .eq. 'MONOCRISTAL') then
+        call utlcal('VALE_NOM', algoInte, carcri(6))
+        if (algoInte(1:6) .eq. 'NEWTON') then
+            meting = algoInte(1:11)
             call plasti(BEHinteg, &
                         fami, kpg, ksp, typmod, imate, &
                         compor, carcri, instam, instap, &
                         epsm, deps, sigm, &
                         vim, option, angmas, sigp, vip, &
-                        dsidep, icomp, nvi, codret, mult_comp)
-        else if (algo_inte .eq. 'RUNGE_KUTTA') then
+                        dsidep, icomp, nvi, codret, multComp)
+
+        else if (algoInte .eq. 'RUNGE_KUTTA') then
             meting = 'RUNGE_KUTTA'
             call nmvprk(fami, kpg, ksp, ndim, typmod, &
                         imate, compor, carcri, instam, instap, &
                         neps, epsm, deps, sigm, nvi, vim, &
                         option, angmas, sigp, vip, dsidep, &
-                        codret, mult_comp)
+                        codret, multComp)
+        else
+            write (6, *) 'ALGOInte:', algoInte
+            ASSERT(ASTER_FALSE)
         end if
     else
         ASSERT(ASTER_FALSE)

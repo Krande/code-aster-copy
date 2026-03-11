@@ -15,13 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine lc0059(BEHinteg,&
-                      fami, kpg, ksp, imate,&
-                      compor, carcri, instam, instap, neps, epsm,&
-                      deps, nsig, sigm, nvi, vim, option, angmas,&
-                      sigp, vip,&
+    subroutine lc0059(BEHinteg, &
+                      fami, kpg, ksp, imate, &
+                      compor, carcri, instam, instap, neps, epsm, &
+                      deps, nsig, sigm, nvi, vim, option, angmas, &
+                      sigp, vip, &
                       typmod, icomp, dsidep, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -29,8 +30,8 @@ interface
         integer(kind=8), intent(in) :: kpg
         integer(kind=8), intent(in) :: ksp
         integer(kind=8), intent(in) :: imate
-        character(len=16), intent(in) :: compor(*)
-        real(kind=8), intent(in) :: carcri(*)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE), option
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
         integer(kind=8), intent(in) :: neps
@@ -40,7 +41,6 @@ interface
         real(kind=8), intent(in) :: deps(neps)
         real(kind=8), intent(in) :: sigm(nsig)
         real(kind=8), intent(in) :: vim(nvi)
-        character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(nsig)
         real(kind=8), intent(out) :: vip(nvi)

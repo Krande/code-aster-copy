@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504,C1505,W0104
 !
-subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
+subroutine lc0058(BEHinteg, &
+                  fami, kpg, ksp, ndim, &
                   typmod, imate, compor, carcri, instam, &
                   instap, neps, epsm, deps, nsig, &
                   sigm, nvi, vim, option, angmas, &
@@ -26,7 +27,6 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     use Behaviour_type
     use BehaviourMGIS_module
     use logging_module, only: DEBUG, LOGLEVEL_MGIS, is_enabled
-!
     implicit none
 !
 #include "asterc/mgis_debug.h"

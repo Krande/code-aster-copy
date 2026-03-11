@@ -16,30 +16,30 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
+subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
                             option, sigm, sig, vip, dsidep, &
-                            crit, iret, t2iu)
+                            carcri, iret, t2iu)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jevech.h"
-#include "asterfort/glrc_recup_mate.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/glrc_lc.h"
+#include "asterfort/glrc_recup_mate.h"
+#include "asterfort/jevech.h"
 #include "asterfort/nmcine.h"
 #include "asterfort/nmisot.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rrlds.h"
 #include "asterfort/trlds.h"
-!
+#include "jeveux.h"
 !
     integer(kind=8) :: imate, iret
     real(kind=8) :: epsm(6), deps(6), vim(*), ep
-    real(kind=8) :: crit(*)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: sigm(*), sig(*), vip(*), dsidep(6, *), t2iu(4)
-    character(len=16) :: option, compor
+    character(len=16), intent(in) :: option, relaPlas
 ! ----------------------------------------------------------------------
 !
 !      LOI GLOBALE COUPLEE POUR LES PLAQUES/COQUES DKTG
@@ -61,7 +61,8 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
     real(kind=8) :: tandam(6, 6), tanepl(6, 6), sigpd(6), deda(6), residu
-    real(kind=8) :: crbid(13), inbid, sigpp(6), rac2, emda(6)
+    real(kind=8) :: sigpp(6), rac2, emda(6)
+    real(kind=8) :: carcriDummy(CARCRI_SIZE)
     real(kind=8) :: empl(6), depzz, eps2d(6), deps2d(6), d22, d21eps
     real(kind=8) :: tan3d(6, 6)
     real(kind=8) :: sig2dm(6), sig2dp(6), scm(4), sigpeq, critcp, signul, prec
@@ -72,8 +73,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
     character(len=8) :: typmod(2)
 !
     rac2 = sqrt(2.d0)
-!
-    call r8inir(13, 0.d0, crbid, 1)
+    carcriDummy = 0.d0
 !
 ! ---EPAISSEUR TOTALE :
     call jevech('PCACOQU', 'L', icara)
@@ -85,27 +85,27 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
 !
 !-----NOMBRE DE VARIABLES INTERNES DU MODELE, SANS CELLE POUR
 !-----LA CONTRAINTE PLANE
-    if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
+    if (relaPlas(1:14) .eq. 'VMIS_CINE_LINE') then
         nvv = 31
-    else if (compor(1:10) .eq. 'VMIS_ISOT_') then
+    else if (relaPlas(1:10) .eq. 'VMIS_ISOT_') then
         nvv = 26
     end if
 !
 !-----TOLERANCE POUR LA CONTRAINTE HORS PLAN
 !
 !
-    critcp = crit(3)
-    signul = crit(3)
-    ncpmax = nint(crit(9))
+    critcp = carcri(3)
+    signul = carcri(3)
+    ncpmax = nint(carcri(9))
 !
     if (ncpmax .le. 1) then
         ncpmax = 15
     end if
 !
-    prec = crit(8)
+    prec = carcri(8)
 !
     if (resi) then
-        nsgmax = nint(crit(1))
+        nsgmax = nint(carcri(1))
     else
         nsgmax = 1
     end if
@@ -126,7 +126,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
     call glrc_lc(demp, demp, vip, 'RIGI_MECA_TANG  ', demp, &
                  vip, cel, lambda, deuxmu, lamf, &
                  deumuf, gt, gc, gf, seuil, &
-                 alpha, alfmc, crit, &
+                 alpha, alfmc, carcri, &
                  epsi_c, epsi_els, epsi_lim, iret, &
                  ep, is_param_opt, val_param_opt, t2iu)
 !
@@ -178,7 +178,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
         call glrc_lc(emmp, demp, vim, 'FULL_MECA       ', sigpd, &
                      vip, tandam, lambda, deuxmu, lamf, &
                      deumuf, gt, gc, gf, seuil, &
-                     alpha, alfmc, crit, &
+                     alpha, alfmc, carcri, &
                      epsi_c, epsi_els, epsi_lim, iret, &
                      ep, is_param_opt, val_param_opt, t2iu)
 !
@@ -223,19 +223,19 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
 !
 !---------VMIS_CINE_LINE--------------------
             call r8inir(6, 0.d0, sig2dp, 1)
-            if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
+            if (relaPlas(1:14) .eq. 'VMIS_CINE_LINE') then
                 call nmcine('RIGI', 1, 1, 3, imate, &
-                            compor, crbid(1:10), inbid, inbid, eps2d, &
+                            carcriDummy, &
                             deps2d, sig2dm, vim(19), 'FULL_MECA       ', sig2dp, &
                             vip(19), tan3d, iret)
 !
 !---------VMIS_ISOT_LINE--------------------
-            else if (compor(1:14) .eq. 'VMIS_ISOT_LINE') then
+            else if (relaPlas(1:14) .eq. 'VMIS_ISOT_LINE') then
 !     --    POUR POUVOIR UTILISER NMISOT
                 typmod(1) = '3D  '
                 typmod(2) = '        '
                 call nmisot('RIGI', 1, 1, 3, typmod, ASTER_TRUE, &
-                            imate, 'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm, &
+                            imate, relaPlas, carcriDummy, deps2d, sig2dm, &
                             vim(19), 'FULL_MECA       ', sig2dp, vip(19), tan3d, &
                             iret)
             end if

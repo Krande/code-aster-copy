@@ -19,12 +19,11 @@
 subroutine lc7047(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
                   instam, instap, epsm, &
-                  deps, vim, option, &
+                  deps, nvi, vim, option, &
                   sigp, vip, typmod, &
                   dsidep, codret)
 !
     use Behaviour_type
-!
     implicit none
 !
 #include "asterfort/lcejdm.h"
@@ -34,15 +33,14 @@ subroutine lc7047(BEHinteg, &
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
     integer(kind=8), intent(in) :: ndim
-    integer(kind=8), intent(in) :: imate
-    real(kind=8), intent(in) :: instam
-    real(kind=8), intent(in) :: instap
+    integer(kind=8), intent(in) :: imate, nvi
+    real(kind=8), intent(in) :: instam, instap
     real(kind=8), intent(in) :: epsm(6)
     real(kind=8), intent(in) :: deps(6)
-    real(kind=8), intent(in) :: vim(*)
+    real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(out) :: sigp(6)
-    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(out) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret

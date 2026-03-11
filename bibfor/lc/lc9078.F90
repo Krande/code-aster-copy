@@ -17,8 +17,9 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,W1306,C1505
 !
-subroutine lc9078(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                  compor, carcri, instam, instap, neps, epsm, &
+subroutine lc9078(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
                   ndsde, dsidep, codret)
@@ -38,7 +39,6 @@ subroutine lc9078(BEHinteg, fami, kpg, ksp, ndim, imate, &
     integer(kind=8), intent(in) :: ksp
     integer(kind=8), intent(in) :: ndim
     integer(kind=8), intent(in) :: imate
-    character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap

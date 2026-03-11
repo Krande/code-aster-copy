@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
-                      imat, comp, crit, timed, timef,&
-                      neps, epsdt, depst, sigd, nvi, vind,&
-                      opt, angmas, sigf, vinf, dsde,&
+    subroutine nmvprk(fami, kpg, ksp, ndim, typmod, &
+                      imat, compor, carcri, timed, timef, &
+                      neps, epsdt, depst, sigd, nvi, vind, &
+                      opt, angmas, sigf, vinf, dsde, &
                       iret, mult_comp_)
         integer(kind=8) :: neps
         character(len=*) :: fami
@@ -29,8 +30,8 @@ interface
         integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
         integer(kind=8) :: imat
-        character(len=16) :: comp(*)
-        real(kind=8) :: crit(*)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8) :: timed
         real(kind=8) :: timef
         real(kind=8) :: epsdt(neps)

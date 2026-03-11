@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504
 !
 subroutine lcmate(fami, kpg, ksp, comp, mod, &
                   imat, nmat, tempd, tempf, tref, impexp, &
@@ -105,32 +106,38 @@ subroutine lcmate(fami, kpg, ksp, comp, mod, &
     end if
     rela_comp = comp(1)
     if (rela_comp .eq. 'ROUSS_PR') then
+        ! call notAnisot(angmas)
         call rslmat(fami, kpg, ksp, mod, imat, &
                     nmat, materd, materf, matcst, ndt, &
                     ndi, nr, nvi, vind)
 !
     else if (rela_comp .eq. 'ROUSS_VISC') then
+        ! call notAnisot(angmas)
         call rsvmat(fami, kpg, ksp, mod, imat, &
                     nmat, materd, materf, matcst, ndt, &
                     ndi, nr, nvi, vind)
 !
     else if (rela_comp .eq. 'VISCOCHAB') then
+        ! call notAnisot(angmas)
         call cvmmat(fami, kpg, ksp, mod, imat, &
                     nmat, materd, materf, matcst, typma, &
                     ndt, ndi, nr, crit, vind, &
                     nvi, sigd)
 !
     else if (rela_comp .eq. 'VENDOCHAB' .or. rela_comp .eq. 'VISC_ENDO_LEMA') then
+        ! call notAnisot(angmas)
         call vecmat(fami, kpg, ksp, mod, rela_comp, &
                     imat, nmat, materd, materf, matcst, &
                     typma, ndt, ndi, nr, nvi)
 !
     else if (rela_comp(1:6) .eq. 'LAIGLE') then
+        ! call notAnisot(angmas)
         call lglmat(mod, imat, nmat, tempd, materd, &
                     materf, matcst, ndt, ndi, nr, &
                     nvi)
 !
     elseif ((rela_comp .eq. 'HOEK_BROWN') .or. (rela_comp .eq. 'HOEK_BROWN_EFF')) then
+        ! call notAnisot(angmas)
         call hbrmat(mod, imat, nmat, tempd, materd, &
                     materf, matcst, ndt, ndi, nr, &
                     nvi)
@@ -158,21 +165,25 @@ subroutine lcmate(fami, kpg, ksp, comp, mod, &
         typma = 'COHERENT'
 !
     else if (rela_comp .eq. 'IRRAD3M') then
+        ! call notAnisot(angmas)
         call irrmat(fami, kpg, ksp, mod, imat, &
                     nmat, itmax, toler, materd, materf, &
                     matcst, ndt, ndi, nr, nvi)
 !
     else if (rela_comp .eq. 'LETK') then
+        ! call notAnisot(angmas)
         call lkimat(mod, imat, nmat, materd, materf, &
                     matcst, ndt, ndi, nvi, nr)
         typma = 'COHERENT'
 !
     else if (rela_comp .eq. 'LKR') then
+        ! call notAnisot(angmas)
         call srimat(mod, imat, nmat, tempd, tempf, tref, materd, materf, &
                     matcst, ndt, ndi, nvi, nr)
         typma = 'COHERENT'
 !
     else if (rela_comp .eq. 'HAYHURST') then
+        ! call notAnisot(angmas)
         call haymat(fami, kpg, ksp, mod, imat, &
                     nmat, '-', materd(1, 1), materd(1, 2), nvi, &
                     nr)

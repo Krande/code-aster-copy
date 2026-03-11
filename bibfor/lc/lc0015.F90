@@ -18,7 +18,7 @@
 ! aslint: disable=W1504,W0104,C1505
 !
 subroutine lc0015(BEHinteg, &
-                  option, angmas, typmod, &
+                  option, typmod, &
                   fami, kpg, ksp, ndim, jvMaterCode, &
                   compor, carcri, timePrev, timeCurr, &
                   neps, epsm, deps, &
@@ -41,7 +41,6 @@ subroutine lc0015(BEHinteg, &
 !
     type(Behaviour_Integ), intent(in):: BEHinteg
     character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: angmas(3)
     character(len=8), intent(in) :: typmod(2)
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg, ksp, ndim, jvMaterCode

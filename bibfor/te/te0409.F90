@@ -197,7 +197,7 @@ subroutine te0409(option, nomte)
     real(kind=8) :: epsi_c, epsi_els, epsi_lim, val_param_opt(10)
 !
     character(len=16), pointer :: compor(:) => null()
-    character(len=16) :: type_comp, mult_comp, rela_plas, rela_comp, defo_comp
+    character(len=16) :: type_comp, mult_comp, relaPlas, rela_comp, defo_comp
 !
     integer(kind=8)      ::  codret2(1)
     character(len=32) :: elasKeyword
@@ -694,8 +694,8 @@ subroutine te0409(option, nomte)
             call coqgth(zi(imate), rela_comp, 'RIGI', ipg, ep, epsm, deps)
 !               -- endommagement plus plasticite
             call r8inir(3, r8vide(), angmas, 1)
-            rela_plas = compor(PLAS_NAME)
-            call kit_glrc_dm_vmis(zi(imate), rela_plas, epsm, deps, ecr, &
+            relaPlas = compor(PLAS_NAME)
+            call kit_glrc_dm_vmis(zi(imate), relaPlas, epsm, deps, ecr, &
                                   option, sigm, sig, ecrp, dsidep, &
                                   zr(icarcr), codret, t2iu)
         else

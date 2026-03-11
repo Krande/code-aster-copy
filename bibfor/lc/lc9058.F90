@@ -47,7 +47,7 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg, ksp, ndim
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
@@ -110,7 +110,7 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: dsidepMGIS(merge(nsig, 6, nsig*neps .eq. ndsde)* &
                                merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8) :: dtime, pnewdt, rdt
-    character(len=16) :: rela_comp, defo_comp, extern_addr
+    character(len=16) :: relaComp, defoComp, extern_addr
     aster_logical :: lGreenLagr, lCZM, lGradVari
     real(kind=8) :: sigp_loc(ndim), vi_loc(nvi)
     real(kind=8) :: dsidep_loc(ndim, ndim)
@@ -142,11 +142,11 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
     dbg = is_enabled(LOGLEVEL_MGIS, DEBUG)
 
 ! - Get main parameters
-    rela_comp = compor(RELA_NAME)
-    defo_comp = compor(DEFO)
+    relaComp = compor(RELA_NAME)
+    defoComp = compor(DEFO)
     lCZM = typmod(2) .eq. 'INTERFAC'
     lGradVari = typmod(2) .eq. 'GRADVARI'
-    lGreenLagr = defo_comp .eq. 'GREEN_LAGRANGE'
+    lGreenLagr = defoComp .eq. 'GREEN_LAGRANGE'
     ASSERT(lCZM)
 
 ! - Pointer to MGISBehaviour
@@ -160,11 +160,11 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Get and set the material properties
     call mgis_get_number_of_props(extern_addr, nprops)
     ASSERT(nprops <= MGIS_MAX_PROPS)
-    call mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
+    call mfront_get_mater_value(extern_addr, BEHinteg, relaComp, fami, kpg, &
                                 ksp, imate, props, nprops)
 
 ! - Prepare strains
-    call rcvalb(fami, kpg, ksp, '+', imate, ' ', rela_comp, 0, ' ', [0.d0], &
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', relaComp, 0, ' ', [0.d0], &
                 1, 'PENA_LAGR', val, cod, 2)
     call mfrontPrepareStrain(lGreenLagr, ndim, &
                              epsm(ndim+1:2*ndim)+val(1)*epsm(1:ndim), &

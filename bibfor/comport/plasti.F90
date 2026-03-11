@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
+! aslint: disable=W1504,C0110
 !
 subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
                   imate, compor, carcri, instam, instap, &
@@ -24,10 +24,11 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
                   nvi, codret, mult_compor_)
 !
     use Behaviour_type
-!
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/get_varc.h"
 #include "asterfort/lccnvx.h"
 #include "asterfort/lcdedi.h"
 #include "asterfort/lcdehy.h"
@@ -38,9 +39,7 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 #include "asterfort/lcplas.h"
 #include "asterfort/lcpopl.h"
 #include "asterfort/lcsmelas.h"
-#include "asterfort/get_varc.h"
 #include "blas/dcopy.h"
-#include "asterfort/Behaviour_type.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami

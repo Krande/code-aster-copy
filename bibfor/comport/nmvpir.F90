@@ -15,14 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+!
 subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
-                  imate, compor, crit, instam, instap, &
-                  deps, sigm, vim, option, angmas, &
-                  nvi, sigp, vip, dsidep, iret)
-! aslint: disable=
+                  imate, relaComp, carcri, instam, instap, &
+                  deps, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, dsidep, iret)
+!
     implicit none
+!
 #include "asterc/r8t0.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/ggplem.h"
 #include "asterfort/granac.h"
 #include "asterfort/iunifi.h"
@@ -36,10 +39,12 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/verift.h"
 #include "asterfort/vpalem.h"
 #include "asterfort/zerofr.h"
+!
     integer(kind=8) :: ndim, imate, kpg, ksp, iret, nvi
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), option
-    real(kind=8) :: crit(4), instam, instap, irram, irrap
+    character(len=16), intent(in) :: relaComp, option
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    real(kind=8) :: instam, instap, irram, irrap
     real(kind=8) :: deps(6), angmas(3)
     real(kind=8) :: sigm(6), vim(nvi), sigp(6), vip(nvi), dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -135,7 +140,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !
     call verift(fami, kpg, ksp, 'T', imate, &
                 iret_=iret3, epsth_=epsthe, temp_prev_=tm, temp_curr_=tp)
-    theta = crit(4)
+    theta = carcri(4)
 ! TEMPERATURE AU MILIEU DU PAS DE TEMPS
     if (iret3 .eq. 0) then
         tschem = tm*(1.d0-theta)+tp*theta
@@ -149,7 +154,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     if ((t1 .gt. prec) .and. (t2 .gt. prec)) then
         call utmess('F', 'ALGORITH6_55')
     end if
-    if (compor(1) (5:10) .eq. '_IRRA_') theta = 1.d0
+    if (relaComp(5:10) .eq. '_IRRA_') theta = 1.d0
 !
     if (typmod(1) .eq. 'C_PLAN') then
         iulmes = iunifi('MESSAGE')
@@ -229,7 +234,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !        - VISC_IRRA_LOG AVEC GRANDISSEMENT
 ! ----------------------------------------------------------------------
 !
-    if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA') then
+    if (relaComp(1:13) .eq. 'LEMAITRE_IRRA') then
 !       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 !
         call rcvalb(fami, 1, 1, '+', imate, &
@@ -272,7 +277,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
         unsurk = unsurk*xnumer
         unsurm = coelem(3)
 !
-    else if (compor(1) (1:10) .eq. 'VISC_IRRA_') then
+    else if (relaComp(1:10) .eq. 'VISC_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate, &
                     ' ', 'VISC_IRRA_LOG', 1, 'TEMP', [tschem], &
@@ -287,7 +292,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
             call utmess('F', 'ALGORITH8_88')
         end if
 !
-    else if (compor(1) (1:10) .eq. 'GRAN_IRRA_') then
+    else if (relaComp(1:10) .eq. 'GRAN_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate, &
                     ' ', 'GRAN_IRRA_LOG', 1, ' ', [0.d0], &
@@ -302,7 +307,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
         ctps = coevil(3)
         ener = coevil(4)
 !
-    else if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
+    else if (relaComp(1:10) .eq. 'LEMA_SEUIL') then
         call rcvalb(fami, 1, 1, '+', imate, &
                     ' ', 'LEMA_SEUIL', 1, 'TEMP', [tschem], &
                     2, nomint(1), coeint(1), codint, 1)
@@ -319,11 +324,11 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !       TRAITEMENT DES PARAMETRES DE LA LOI DE GRANDISSEMENT
 !
     call granac(fami, kpg, ksp, imate, '        ', &
-                compor(1), irrap, irram, tm, tp, &
+                relaComp, irrap, irram, tm, tp, &
                 depsgr)
 ! --- RECUPERATION DU REPERE POUR LE GRANDISSEMENT
 !
-    if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA' .or. compor(1) (1:13) .eq. 'GRAN_IRRA_LOG') then
+    if (relaComp(1:13) .eq. 'LEMAITRE_IRRA' .or. relaComp(1:13) .eq. 'GRAN_IRRA_LOG') then
         if (ndim .eq. 2) then
             if (angmas(2) .ne. 0.d0) then
                 call utmess('F', 'ALGORITH11_82', nr=2, valr=angmas(2))
@@ -388,7 +393,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     sigmo = sigmo/3.d0
 !
 !
-    if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
+    if (relaComp(1:10) .eq. 'LEMA_SEUIL') then
         sieqp = 0.d0
         do k = 1, ndimsi
             sigdv(k) = sigmp(k)-sigmo*kron(k)
@@ -409,13 +414,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !
 !----RESOLUTION DE L'EQUATION SCALAIRE----
 !
-    prec = crit(3)
-    niter = crit(1)
+    prec = carcri(3)
+    niter = carcri(1)
 !
     a0 = -sieleq
 !
 !
-    if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA') then
+    if (relaComp(1:13) .eq. 'LEMAITRE_IRRA') then
         xap = sieleq
         xap = xap-sieleq*1.d-12
         if (abs(a0) .le. prec) then
@@ -427,7 +432,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
         end if
         call ggplem(x, dpc+(sieleq-x)/(1.5d0*deumup), valden, unsurk, unsurm, &
                     theta, deumup, fg, fdgdst, fdgdev)
-    else if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
+    else if (relaComp(1:10) .eq. 'LEMA_SEUIL') then
         d = vim(2)+(deltat*(sieqm+sieqp)/(2*coeint(2)))
         xap = sieleq
         xap = xap-sieleq*1.d-12
@@ -454,7 +459,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !
     end if
 !
-    if (compor(1) (5:10) .eq. '_IRRA_') then
+    if (relaComp(5:10) .eq. '_IRRA_') then
         dp1 = exp(-ener/(tp+r8t0()))
         dp1 = dp1*(a*ctps/(1.d0+ctps*irrap)+b)*(irrap-irram)
         coef1 = 1.d0/(1.d0+1.5d0*deuxmu*dp1)
@@ -477,20 +482,20 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
             deltp2 = deltp2+deltev**2
         end do
 !
-        if (compor(1) (5:10) .eq. '_IRRA_') then
+        if (relaComp(5:10) .eq. '_IRRA_') then
             call lcdevi(sigp, dev)
             vip(1) = vim(1)+dp1*lcnrts(dev)
-            if (compor(1) (1:10) .eq. 'GRAN_IRRA_') then
+            if (relaComp(1:10) .eq. 'GRAN_IRRA_') then
                 vip(2) = irrap
                 vip(3) = vim(3)+depsgr
-            elseif (compor(1) (1:10) .eq. 'VISC_IRRA_') then
+            elseif (relaComp(1:10) .eq. 'VISC_IRRA_') then
                 vip(2) = irrap
             end if
         else
             vip(1) = vim(1)+sqrt(2.d0*deltp2/3.d0)
         end if
 !
-        if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
+        if (relaComp(1:10) .eq. 'LEMA_SEUIL') then
             if (d .le. 1.d0) then
                 vip(2) = vim(2)+((sieqp+sieqm)*deltat)/(2*coeint(2))
             else
@@ -500,7 +505,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
         end if
 !
 !        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
-        if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA') then
+        if (relaComp(1:13) .eq. 'LEMAITRE_IRRA') then
             vip(2) = irrap
             vip(3) = vim(3)+depsgr
         end if

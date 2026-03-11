@@ -18,30 +18,32 @@
 !
 subroutine lc0034(fami, kpg, ksp, imate, &
                   carcri, epsm, &
-                  deps, sigm, vim, option, angmas, &
+                  deps, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
                   dsidep, codret)
 !
     implicit none
 !
-#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/nmhuj.h"
-#include "asterfort/utlcal.h"
 #include "asterfort/tecael.h"
+#include "asterfort/utlcal.h"
+#include "jeveux.h"
 !
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
-    integer(kind=8), intent(in) :: imate
-    real(kind=8) :: carcri(*)
+    integer(kind=8), intent(in) :: imate, nvi
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: epsm(*)
     real(kind=8), intent(in) :: deps(*)
     real(kind=8), intent(in) :: sigm(6)
-    real(kind=8) :: vim(50)
+    real(kind=8) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(6)
-    real(kind=8) :: vip(50)
+    real(kind=8) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
     integer(kind=8), intent(in) :: icomp
     real(kind=8), intent(out) :: dsidep(6, 6)
@@ -72,6 +74,7 @@ subroutine lc0034(fami, kpg, ksp, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    ASSERT(nvi .eq. 50)
     call utlcal('VALE_NOM', algo_inte, carcri(6))
 !
     call nmhuj(fami, kpg, ksp, typmod, imate, &
