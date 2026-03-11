@@ -18,10 +18,16 @@
 
 !
 #ifdef ASTER_HAVE_MUMPS
+#if defined(ASTER_PLATFORM_MSVC64) && defined(ASTER_HAVE_INTEL_IFORT)
+!DEC$ OPTIONS /integer_size:32
+#endif
 interface
     subroutine smumps(cmpsk)
 #       include "smumps_struc.h"
         type (smumps_struc) :: cmpsk
     end subroutine smumps
 end interface
+#if defined(ASTER_PLATFORM_MSVC64) && defined(ASTER_HAVE_INTEL_IFORT)
+!DEC$ END OPTIONS
+#endif
 #endif
