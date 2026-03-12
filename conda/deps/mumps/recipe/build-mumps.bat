@@ -22,7 +22,7 @@ if not errorlevel 1 (
     set "FC_COMPILER_ARG=-DCMAKE_Fortran_COMPILER=ifx"
     :: Force lowercase+underscore naming to match -DAdd_ convention.
     :: CMake's compiler ID detection may not recognise conda-packaged ifx.
-    set "EXTRA_FC_FLAGS=/names:lowercase /assume:underscore"
+    set "EXTRA_FC_FLAGS=/names:lowercase /assume:underscore /nologo"
     set "MUMPS_USE_IFX=ON"
     if errorlevel 1 exit 1
 )
