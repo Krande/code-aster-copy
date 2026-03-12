@@ -21,6 +21,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                   vcine, prepos, lpreco, lmhpc)
 !
 !
+    use mumps_instance_mod
     use iso_c_binding, only: c_ptr, c_f_pointer
     implicit none
 !-----------------------------------------------------------------------
@@ -86,7 +87,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     complex(kind=8) :: csolu(*)
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
     type(smumps_struc), pointer :: smpsk => null()
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()

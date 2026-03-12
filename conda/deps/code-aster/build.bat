@@ -56,10 +56,10 @@ set CXXFLAGS=/std:c++20 /EHs /permissive- /MD
 
 echo "Using Intel Fortran LLVM IFX compiler"
 set FC_SEARCH=ifort
-:: Global /integer-size:64 /real-size:64 required: bibfor_ext calls bibfor functions
-:: that expect 8-byte INTEGER args. Without the global flag, plain INTEGER in
-:: bibfor_ext is 4-byte, causing ABI mismatches (ifx has no -fallow-argument-mismatch).
-set FCFLAGS=%FCFLAGS% /fpp /integer-size:64 /real-size:64 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /traceback /nologo
+:: Integer/real size promotion is handled by waf's FCFLAGS_INT64 (bibfor only).
+:: MUMPS struct types are imported via Fortran USE (mumps_instance_mod), so their
+:: layout is fixed at module compilation time and immune to caller's flags.
+set FCFLAGS=%FCFLAGS% /fpp /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /traceback /nologo
 :: Add lib paths
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 :: Set up paths for Intel Fortran compiler in conda environment

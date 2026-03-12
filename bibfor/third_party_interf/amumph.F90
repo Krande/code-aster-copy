@@ -20,6 +20,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
                   vcinez, nbsol, iret, prepos)
 !
 !
+    use mumps_instance_mod
     implicit none
 !--------------------------------------------------------------
 ! BUT : ROUTINE D'INTERFACE ENTRE CODE_ASTER ET LA BIBLIOTHEQUE
@@ -84,7 +85,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "mumps/dmumps.h"
+!
 #include "asterfort/isParallelMatrix.h"
 
     character(len=*) :: action, matasz, vcinez, solvez
@@ -94,7 +95,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     aster_logical :: prepos
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
 !
     integer(kind=8) :: iprem
     type(smumps_struc), pointer :: smpsk => null()

@@ -21,6 +21,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
                       lpreco, lbloc)
 !
 !
+    use mumps_instance_mod
     implicit none
 !--------------------------------------------------------------
 ! BUT : REMPLIR LES OBJETS F90 DE MUMPS REPRESENTANT LA MATRICE A PARTIR
@@ -75,7 +76,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     character(len=24) :: kmonit(12)
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
 !
 !
     type(smumps_struc), pointer :: smpsk => null()

@@ -20,6 +20,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                   lresol, nbfact)
 !
 !
+    use mumps_instance_mod
     implicit none
 !--------------------------------------------------------------
 ! BUT : UTILITAIRE POUR LES TRAITEMENTS CONNEXES LORS DU LANCEMENT
@@ -66,10 +67,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "mumps/cmumps.h"
-#include "mumps/dmumps.h"
-#include "mumps/smumps.h"
-#include "mumps/zmumps.h"
+!
     integer(kind=4) :: option
     integer(kind=8) :: kxmps, nprec, nbfact
     character(len=1) :: type
@@ -77,7 +75,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
     aster_logical :: lresol
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
     type(smumps_struc), pointer :: smpsk => null()
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()

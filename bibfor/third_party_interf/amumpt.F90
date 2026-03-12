@@ -21,6 +21,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
                   rctdeb, ldist)
 !
 !
+    use mumps_instance_mod
     implicit none
 !--------------------------------------------------------------
 ! BUT : ROUTINE DE MONITORING POUR AMUMPS/C/D/Z.
@@ -58,7 +59,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
     aster_logical :: lquali, ldist
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
     type(smumps_struc), pointer :: smpsk => null()
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()

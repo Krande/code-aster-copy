@@ -19,6 +19,7 @@
 subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !
 !
+    use mumps_instance_mod
     implicit none
 !--------------------------------------------------------------
 ! BUT : ROUTINE DE PARAMETRAGE MUMPS POUR AMUMPS/C/D/Z
@@ -52,7 +53,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     character(len=1) :: type
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
     mpi_int :: mpicou, mpimum
     integer(kind=8) :: nicntl, ncntl
     parameter(nicntl=60, ncntl=15)
