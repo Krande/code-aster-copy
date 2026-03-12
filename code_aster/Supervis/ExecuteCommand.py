@@ -1086,8 +1086,12 @@ class loop_on_dsdict:
             in_place = "reuse" in keywords
             if in_place:
                 output = keywords["reuse"]
+                assert output is input, "unexpected object in reuse"
             else:
-                output = type(input)()
+                self.create_result(keywords)
+                output = self._result
+                if output is not None and not isinstance(output, DataStructureDict):
+                    raise TypeError(f"Output should be a DataStructureDict or None, not {output}.")
 
             for key in input:
                 set_(keywords, path, input[key])
