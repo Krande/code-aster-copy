@@ -18856,3 +18856,33 @@ def projectionAlongDirection(
         float : first parametric coordinate of projection of point on element
         float : second parametric coordinate of projection of point on element
     """
+
+
+# class ResultManager in libaster
+
+
+class ResultManager:
+    pass
+
+    # Method resolution order:
+    #     ResultManager
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, /, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def releaseCurrentResult(self):
+        """Release result"""
+
+    def setCurrentResult(self, result):
+        """Set result which will be enrich during calculation
+
+        Argument:
+            result (Result): result to enrich
+        """
+
+    # ----------------------------------------------------------------------
+    # Static methods defined here:

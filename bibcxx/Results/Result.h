@@ -38,6 +38,8 @@
 
 #include <filesystem>
 
+class ResultManager;
+
 /**
  * @class Result
  * @brief Cette classe correspond a la sd_resultat de Code_Aster, elle stocke des champs
@@ -166,6 +168,16 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Prepare list of parameters
      */
     void _listOfParameters( void );
+
+    friend class ResultManager;
+    /**
+     * @brief Add field to Result from string names (useful from Fortran call)
+     * @param nomSymb symbolic name (eg: DEPL)
+     * @param name real Jeveux name
+     * @param storageIndex Index to store field
+     */
+    void addFieldFromString( const std::string &nomSymb, const std::string &name,
+                             ASTERINTEGER storageIndex );
 
   public:
     using ResultPtr = std::shared_ptr< Result >;

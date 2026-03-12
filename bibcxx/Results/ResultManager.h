@@ -1,0 +1,80 @@
+#ifndef RESULTMANAGER_H_
+#define RESULTMANAGER_H_
+
+/**
+ * @file ResultManager.h
+ * @brief Fichier entete de la classe ResultManager
+ * @section LICENCE
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
+ *
+ *   This file is part of Code_Aster.
+ *
+ *   Code_Aster is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Code_Aster is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "astercxx.h"
+
+#include "Results/Result.h"
+
+/**
+ * @class ResultManager
+ * @brief This class is usefull to manage Result from Fortran
+ */
+class ResultManager {
+  protected:
+    using ResultManagerPtr = std::shared_ptr< ResultManager >;
+
+    /** @brief Result to fill in */
+    ResultPtr _currentResult;
+
+    ResultManager() : _currentResult( nullptr ) {};
+
+  public:
+    ResultManager( ResultManager &other ) = delete;
+    /**
+     * Singletons should not be assignable.
+     */
+    void operator=( const ResultManager & ) = delete;
+
+    /**
+     * @brief Add field to currentResult from string names
+     * @param nomSymb symbolic name (eg: DEPL)
+     * @param name real Jeveux name
+     * @param storageIndex Index to store field
+     */
+    void addFieldToResult( const std::string &nomSymb, const std::string &name,
+                           ASTERINTEGER storageIndex );
+
+    /** @brief Get static ResultManager instance */
+    static ResultManagerPtr getInstance() {
+        static ResultManagerPtr instance( new ResultManager() );
+        return instance;
+    };
+
+    /** @brief Get current result to fill */
+    ResultPtr getCurrentResult() const { return _currentResult; };
+
+    /** @brief Release current result */
+    void releaseCurrentResult() { _currentResult = nullptr; };
+
+    /**
+     * @brief Set result to fill (from Fortran)
+     * @param result Result
+     */
+    void setCurrentResult( const ResultPtr &result ) { _currentResult = result; };
+};
+
+using ResultManagerPtr = std::shared_ptr< ResultManager >;
+
+#endif /* RESULTMANAGER_H_ */

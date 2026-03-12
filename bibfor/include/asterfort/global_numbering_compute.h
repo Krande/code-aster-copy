@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine crnggc(chamnz, l_print)
-        character(len=*), intent(in) :: chamnz
-        aster_logical, optional, intent(in) :: l_print
-    end subroutine crnggc
+    subroutine global_numbering_compute(nume_equa)
+        character(len=*) :: nume_equa
+    end subroutine global_numbering_compute
 end interface

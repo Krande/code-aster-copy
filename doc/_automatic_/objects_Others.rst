@@ -610,6 +610,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ResultManager` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ResultManager
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ResultNaming` object
 ********************************************************************************
 

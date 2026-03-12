@@ -15,9 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+!
 !
 interface
-    subroutine crnlgn(nume_equa)
-        character(len=19) :: nume_equa
-    end subroutine crnlgn
+    subroutine add_field_in_current_result(result, nocham, nomsym, iordr)
+        character(len=*) :: result
+        character(len=*) :: nocham
+        character(len=*) :: nomsym
+        integer(kind=8) :: iordr
+    end subroutine add_field_in_current_result
 end interface

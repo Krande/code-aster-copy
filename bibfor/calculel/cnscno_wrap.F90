@@ -21,14 +21,16 @@ subroutine cnscno_wrap(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret)
     implicit none
 !
 #include "asterfort/cnscno.h"
-#include "asterfort/crnggn.h"
-#include "asterfort/crnggc.h"
+#include "asterfort/global_numbering_compute.h"
+#include "asterfort/global_numbering_communicate.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
     !
     character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
     character(len=1) :: kstop
     integer(kind=8) :: iret
     aster_logical :: l_exi_nume
+    character(len=19) :: nume_equa
 !
     l_exi_nume = .false.
     if (nume_equaz .ne. ' ') then
@@ -39,9 +41,10 @@ subroutine cnscno_wrap(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret)
     end if
     call cnscno(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret, lprofconst=ASTER_FALSE)
     if (.not. l_exi_nume) then
+        call dismoi('NUME_EQUA', cnoz, 'CHAM_NO', repk=nume_equa)
         ! create numbering
-        call crnggn(cnoz)
+        call global_numbering_compute(nume_equa)
         ! communicate numbering
-        call crnggc(cnoz, l_print=ASTER_FALSE)
+        call global_numbering_communicate(nume_equa)
     end if
 end subroutine
