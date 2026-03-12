@@ -24,19 +24,10 @@
 !    et la matrice code_aster
 !    En plus: stockage des versions MUMPS autorisees
 !----------------------------------------------------------------
-! On Windows with Intel Fortran + global /integer-size:64, plain INTEGER
-! in MUMPS struct headers would be inflated to 8 bytes, mismatching the
-! LP64 MUMPS library (4-byte INTEGER). Temporarily reset to 32-bit.
-#if defined(ASTER_PLATFORM_MSVC64) && defined(ASTER_HAVE_INTEL_IFORT)
-!DEC$ OPTIONS /integer_size:32
-#endif
 #   include "smumps_struc.h"
 #   include "cmumps_struc.h"
 #   include "dmumps_struc.h"
 #   include "zmumps_struc.h"
-#if defined(ASTER_PLATFORM_MSVC64) && defined(ASTER_HAVE_INTEL_IFORT)
-!DEC$ END OPTIONS
-#endif
 
     integer(kind=8) :: nmxins
     parameter (nmxins=50)

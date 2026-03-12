@@ -44,6 +44,13 @@ if errorlevel 1 exit 1
 cmake --build . --config RelWithDebInfo --target install
 if errorlevel 1 exit 1
 
+:: Patch installed headers: make INTEGER/LOGICAL kinds explicit so that
+:: code_aster's global /integer-size:64 does not inflate MUMPS struct fields.
+:: MUMPS is LP64 (4-byte default integer); without this, the struct layout
+:: in code_aster would mismatch the MUMPS DLL.
+python %RECIPE_DIR%\make_integers_explicit.py %LIBRARY_PREFIX%\include
+if errorlevel 1 exit 1
+
 :: Verify simpletests
 %src%\build\c_example < %src%\examples\input_simpletest_real
 if errorlevel 1 exit 1

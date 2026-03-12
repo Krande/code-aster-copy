@@ -393,17 +393,122 @@ This confirms the ILP64 approach (ifx MUMPS + global `/integer-size:64`) as the 
 - waf probe: `sizeof(dmpsk%n)` = 8 → `ASTER_MUMPS_INT_SIZE=8`
 - MKL LP64 (`mkl_intel_lp64_dll`) for code_aster's own BLAS calls
 
-### Next step: LP64 approach (matching Linux)
+---
 
-Linux conda-forge uses LP64 MUMPS (`mumps_int_def32_h.in`, no `-fdefault-integer-8`).
-code_aster's Linux feedstock does NOT set global integer size flags — waf handles via
-`FCFLAGS_INT64` (applied only to bibfor, not bibfor_ext). `ASTER_MUMPS_INT_SIZE=4` on Linux.
+## Build 13 Regression: LP64 MUMPS Without Global Integer Flags (2026-03-11)
 
-The current branch is being updated to match this LP64 approach:
-- MUMPS: LP64, `mumps_int_def32_h.in`, no `/integer-size:64`
-- code_aster: no global `/integer-size:64`, waf-managed FCFLAGS_INT64
-- Keep: name-mangling fix, CRT lib fix, debug symbols (`RelWithDebInfo` + `/DEBUG:FULL`)
-- Keep: dual variant support (ifx+MKL / flang+netlib)
+### Summary
 
-If the LP64 approach achieves the same ~84% pass rate, it would be the preferred
-configuration as it aligns with Linux and avoids global integer size pollution.
+**Commit `9a37cb9ee2`** switched to LP64 MUMPS (matching Linux conda-forge) and removed
+global `/integer-size:64 /real-size:64` from code_aster's FCFLAGS, relying on waf's
+`FCFLAGS_INT64` (applied only to bibfor). **Pass rate dropped from 85% back to ~19%**
+(433 passed, 1843 failed out of 2276).
+
+### Configuration (CI run)
+
+**MUMPS (ifx, LP64):**
+- `mumps_int_def32_h.in` (MUMPS_INT = INTEGER(4))
+- `/names:lowercase /assume:underscore` via `-DCMAKE_Fortran_FLAGS`
+- `-DMUMPS_USE_IFX=ON` for CRT linkage
+- MKL via `mkl_rt` (auto-selects LP64)
+- Variant: `win_64_fortran_compilerifx...` confirmed in CI logs
+
+**code_aster:**
+- NO global `/integer-size:64 /real-size:64` in FCFLAGS
+- waf probe: `sizeof(dmpsk%n)` = 4 → `ASTER_MUMPS_INT_SIZE=4`
+- `SCOTCH_Num` = 8, `SCOTCH_Idx` = 8 (64-bit scotch, irrelevant to MUMPS)
+
+### ROOT CAUSE: Missing global `/integer-size:64` breaks bibfor↔bibfor_ext ABI
+
+**The 19% failure is NOT a MUMPS issue.** It's a pervasive integer size ABI mismatch
+between `bibfor.dll` and `bibfor_ext.dll`.
+
+#### How waf applies integer flags
+
+- `bibfor` → compiled with `use=["INT64"]` → gets `/integer-size:64 /real-size:64`
+  - All plain `INTEGER` = 8 bytes, all functions expect 8-byte integer arguments
+- `bibfor_ext` → compiled with `defines=["WITHOUT_INT64"]` → NO integer promotion
+  - Without global flag: plain `INTEGER` = 4 bytes
+
+#### The mismatch
+
+bibfor_ext code calls functions defined in bibfor. Those functions expect `aster_int`
+(8-byte) arguments. Well-written code uses `to_aster_int()` for explicit conversion
+(e.g., `assert.h` wraps `__LINE__` with `to_aster_int()`). But if **any** code path
+passes plain `INTEGER` without conversion:
+
+- **With global `/integer-size:64`**: plain `INTEGER` = 8 bytes → accidentally matches
+- **Without global flag**: plain `INTEGER` = 4 bytes → **ABI mismatch → crash/wrong results**
+
+With 81% of tests failing, this indicates a pervasive issue — many code paths in
+bibfor_ext pass plain integers to bibfor functions without explicit conversion.
+
+#### Why Linux works despite the same architecture
+
+Linux uses the identical waf setup (bibfor with `-fdefault-integer-8`, bibfor_ext without).
+But Linux gfortran adds **`-fallow-argument-mismatch`** to FCFLAGS (both in the MUMPS
+feedstock and code_aster feedstock). This flag:
+1. Suppresses compile-time errors for type/size mismatches at call sites
+2. gfortran's pass-by-reference ABI tolerates the mismatch at runtime (4-byte values
+   in 8-byte slots work for small values since upper bytes are zero)
+
+**Intel ifx has no equivalent flag.** The 4-byte → 8-byte mismatch causes hard failures.
+
+### Fix: Restore global flags + protect MUMPS struct headers from inflation
+
+Two changes needed:
+
+**1. Restore global `/integer-size:64 /real-size:64`** in `conda/deps/code-aster/build.bat`:
+```bat
+set FCFLAGS=%FCFLAGS% /fpp /integer-size:64 /real-size:64 /MD /names:lowercase ...
+```
+This makes bibfor_ext's plain `INTEGER` = 8 bytes, matching bibfor's expectations.
+
+**2. Protect MUMPS struct headers** from the global flag inflating their `INTEGER` fields
+from 4 to 8 bytes, which would mismatch the LP64 MUMPS DLL.
+
+#### Attempt 1: `!DEC$ OPTIONS /integer_size:32` (FAILED — Build 14)
+
+Tried wrapping MUMPS struct includes with Intel's `!DEC$ OPTIONS /integer_size:32`
+directive in `asterf_mumps.h` and `mumps/{s,c,d,z}mumps.h` to locally reset integer
+size around the MUMPS headers. Guarded by `ASTER_PLATFORM_MSVC64 && ASTER_HAVE_INTEL_IFORT`.
+
+**Result:** Compilation failed. ifx (Intel LLVM Fortran) does not support the legacy
+`!DEC$ OPTIONS /integer_size:32` directive. Error:
+```
+remark #5082: Directive ignored - Syntax error, found ':' when expecting one of: ...
+!DEC$ OPTIONS /integer_size:32
+```
+This is an ifort-only feature not carried forward to ifx.
+
+#### Attempt 2: Patch MUMPS headers in MUMPS build (Build 15)
+
+Patch the installed MUMPS headers during the MUMPS conda build to use explicit
+`INTEGER(4)` instead of bare `INTEGER`. This is done directly in `build-mumps.bat`
+after the install step, using PowerShell replacements on the `*_struc.h` and `*_root.h`
+files. The patching ensures:
+
+- `INTEGER ::` → `INTEGER(4) ::` (scalar declarations)
+- `INTEGER,` → `INTEGER(4),` (array/pointer declarations with attributes)
+- `LOGICAL ::` → `LOGICAL(4) ::`, `LOGICAL,` → `LOGICAL(4),`
+
+This prevents `/integer-size:64` from inflating the MUMPS struct layout while keeping
+MUMPS itself LP64. The patching is:
+- Done at MUMPS install time (not in code_aster)
+- Only affects the installed headers, not MUMPS source compilation
+- Transparent to Linux builds (they don't use this build script)
+
+#### Why not just fix the mismatched call sites?
+
+Fixing every plain `INTEGER` → `to_aster_int()` conversion in bibfor_ext would be the
+"proper" fix but is impractical:
+- 72 files in `third_party_interf/` with hundreds of call sites
+- Upstream code_aster doesn't need this (Linux tolerates mismatches via gfortran flags)
+- Would diverge significantly from upstream, making merges difficult
+
+#### Why not ILP64 MUMPS?
+
+ILP64 MUMPS (compile MUMPS itself with `/integer-size:64` + `mumps_int_def64_h.in`)
+is the proven working approach (Build 10, 84% pass rate). It remains a fallback if the
+LP64 + header patching approach fails. The preference for LP64 is to match Linux
+conda-forge and minimize divergence from upstream.
