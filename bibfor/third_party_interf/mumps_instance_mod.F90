@@ -28,6 +28,7 @@
 ! module's compilation (SEQUENCE types have fixed layout).
 !
 module mumps_instance_mod
+#include "asterf.h"
 #ifdef ASTER_HAVE_MUMPS
     implicit none
 !
