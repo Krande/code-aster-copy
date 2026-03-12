@@ -62,7 +62,10 @@ def build(self):
         use.append("OPENMP")
 
     src_i8 = get_srcs("**/*.F90", excl="third_party_interf/*.F90")
-    src_ext = get_srcs("third_party_interf/*.F90")
+    src_ext = get_srcs(
+        "third_party_interf/*.F90", excl="third_party_interf/mumps_instance_mod.F90"
+    )
+    src_mumps_mod = get_srcs("third_party_interf/mumps_instance_mod.F90")
 
     # Determine install paths - DLLs go to BINDIR on Windows, libs stay in LIBDIR
     if self.env.ASTER_PLATFORM_MSVC64:
@@ -81,11 +84,38 @@ def build(self):
         env=env.derive(),
         install_path=lib_install_path,
     )
+
+    # mumps_instance_mod: compiled with integer-size matching the MUMPS
+    # library ABI (ASTER_MUMPS_INT_SIZE detected by waftools/mumps.py).
+    # On Windows the global /integer-size:64 is overridden here (last
+    # flag wins in ifx).  On Linux, bibfor_ext already compiles without
+    # -fdefault-integer-8 so no override is needed.
+    mumps_mod_env = env.derive()
+    if self.env.ASTER_PLATFORM_MSVC64:
+        # Use detected MUMPS integer size (ASTER_MUMPS_INT_SIZE: 4 or 8)
+        # to set the matching /integer-size flag, overriding the global
+        # /integer-size:64.  For LP64 MUMPS (size=4) this gives 32;
+        # for ILP64 MUMPS (size=8) this gives 64 (no-op, already global).
+        mumps_int_bits = self.env.ASTER_MUMPS_INT_SIZE * 8
+        mumps_mod_env.append_value(
+            "FCFLAGS", ["/integer-size:%d" % mumps_int_bits, "/real-size:32"]
+        )
+    self(
+        features="fc",
+        name="mumps_instance_mod",
+        source=src_mumps_mod,
+        defines=["WITHOUT_INT64"],
+        use=use,
+        env=mumps_mod_env,
+    )
+
     # ... except for subroutines linked against external libraries
     # On MSVC/Windows, bibfor_ext must link against bibfor so that Jeveux
     # COMMON blocks (exported as DATA from bibfor.dll) are shared rather
     # than each DLL getting its own private copy.
-    use_ext = use + ["asterbibfor"] if self.env.ASTER_PLATFORM_MSVC64 else use
+    use_ext = use + ["asterbibfor", "mumps_instance_mod"]
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        use_ext = use + ["mumps_instance_mod"]
     self(
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor_ext",
