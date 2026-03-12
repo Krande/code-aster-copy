@@ -21,28 +21,25 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine pmsta1(sigm, sigp, deps, vim, vip,&
-                      nbvari, nbvita, iforta, nbpar, nompar,&
-                      vr, igrad, typpar, nomvi, sddisc,&
-                      liccvg, itemax, conver, actite)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: deps(9)
-        real(kind=8) :: vim(*)
-        real(kind=8) :: vip(*)
-        integer(kind=8) :: nbvari
-        integer(kind=8) :: nbvita
-        integer(kind=8) :: iforta
-        integer(kind=8) :: nbpar
-        character(len=16) :: nompar(*)
-        real(kind=8) :: vr(*)
-        integer(kind=8) :: igrad
-        character(len=8) :: typpar(*)
-        character(len=8) :: nomvi(*)
-        character(len=19) :: sddisc
-        integer(kind=8) :: liccvg(5)
-        aster_logical :: itemax
-        aster_logical :: conver
-        integer(kind=8) :: actite
+    subroutine pmsta1(sigmPrev, sigmCurr, epsiIncr, &
+                      nbVari, nbVariTabl, &
+                      vim, vip, &
+                      tablNbParaMaxi, tablNbPara, tablType, &
+                      tablParaName, tablParaType, tablVale, &
+                      lLoadGrad, variName, sddisc, &
+                      liccvg, lIterNewtMaxi, conver, newtLoopAction)
+        real(kind=8), intent(in) :: sigmPrev(6), sigmCurr(6), epsiIncr(9)
+        integer(kind=8), intent(in)  :: nbVari, nbVariTabl
+        real(kind=8), intent(in) :: vim(nbVari), vip(nbVari)
+        integer(kind=8), intent(in) :: tablNbParaMaxi
+        integer(kind=8), intent(in) :: tablNbPara, tablType
+        character(len=16), intent(in) :: tablParaName(tablNbParaMaxi), tablParaType(tablNbParaMaxi)
+        real(kind=8), intent(inout) :: tablVale(tablNbParaMaxi)
+        aster_logical, intent(in) :: lLoadGrad
+        character(len=8), intent(in) :: variName(nbVari)
+        character(len=19), intent(in) :: sddisc
+        integer(kind=8), intent(in) :: liccvg(5)
+        aster_logical, intent(in) :: lIterNewtMaxi, conver
+        integer(kind=8), intent(out) :: newtLoopAction
     end subroutine pmsta1
 end interface

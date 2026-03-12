@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterfort/Behaviour_type.h"
+#include "asterf_types.h"
 !
 interface
-    subroutine pmdocc(comporList, nbVari, multComp)
-        character(len=16), intent(out) :: comporList(COMPOR_SIZE)
-        integer(kind=8), intent(out) :: nbVari
-        character(len=16), intent(out) :: multComp
-    end subroutine pmdocc
+    subroutine pmevel(sddisc, tablType, tablIncr, &
+                      lerror, conver)
+        character(len=19), intent(in) :: sddisc
+        integer(kind=8), intent(in) :: tablType
+        character(len=24), intent(in) :: tablIncr
+        aster_logical, intent(in) :: lerror, conver
+    end subroutine pmevel
 end interface

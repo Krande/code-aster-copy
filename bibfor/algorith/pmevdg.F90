@@ -16,15 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmevdg(sddisc, hvalIncr, iEvent, i_echec_acti)
+subroutine pmevdg(sddisc, tablType, tablIncr, iEvent, iEventActi)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterf_types.h"
-#include "event_def.h"
 #include "asterfort/assert.h"
-#include "asterfort/extdch.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -32,9 +29,15 @@ subroutine nmevdg(sddisc, hvalIncr, iEvent, i_echec_acti)
 #include "asterfort/tbacce.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
+#include "event_def.h"
+#include "jeveux.h"
 !
-    integer(kind=8) :: iEvent, i_echec_acti
-    character(len=19) :: sddisc, hvalIncr(*)
+    character(len=19), intent(in) :: sddisc
+    integer(kind=8), intent(in) :: tablType
+    character(len=24), intent(in) :: tablIncr
+    integer(kind=8), intent(in) :: iEvent
+    integer(kind=8), intent(out) :: iEventActi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,61 +47,58 @@ subroutine nmevdg(sddisc, hvalIncr, iEvent, i_echec_acti)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sddisc           : datastructure for time discretization TEMPORELLE
-! IN  VALE   : INCREMENTS DES VARIABLES
-!               OP0070: VARIABLE CHAPEAU
-!               OP0033: TABLE
-! IN  iEvent : OCCURRENCE DE L'ECHEC
-! OUT i_echec_acti : VAUT iEvent SI EVENEMENT DECLENCHE
-!                   0 SINON
-!
-! --------------------------------------------------------------------------------------------------
-!
-    character(len=8), parameter :: typeExtr = 'MAX_ABS'
-    integer(kind=8) :: ifm, niv
-    integer(kind=8) :: deb, fin, etat_loca
+    integer(kind=8) :: ifm, niv, ier
+    integer(kind=8) :: etat_loca
     integer(kind=8), pointer:: loca(:) => null()
-    real(kind=8) :: valeRefe, vale
-    character(len=8) :: crit
-    character(len=16) :: fieldType, cmpName
+    real(kind=8) :: valeRefe, vale, r8bid
+    integer(kind=8) :: ibid
+    character(len=8) :: k8bid, crit
+    complex(kind=8) :: c16bid
+    character(len=16) :: cmpName
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm, *) '<MECANONLINE> ... DELTA_GRANDEUR'
+        write (ifm, *) '<SIMUPOINTMAT> ... DELTA_GRANDEUR'
     end if
 
 ! - INITIALISATIONS
-    i_echec_acti = 0
+    iEventActi = 0
+    r8bid = 0.d0
 
 ! - PARAMETRES
-    call utdidt('L', sddisc, 'ECHE', 'NOM_CHAM', index_=iEvent, valk_=fieldType)
     call utdidt('L', sddisc, 'ECHE', 'NOM_CMP', index_=iEvent, valk_=cmpName)
     call utdidt('L', sddisc, 'ECHE', 'VALE_REF', index_=iEvent, valr_=valeRefe)
     call utdidt('L', sddisc, 'ECHE', 'CRIT_COMP', index_=iEvent, valk_=crit)
-    ASSERT(crit .eq. 'GT')
-
-! - Extraction du filtre sur la liste des mailles
     call jeveuo(sddisc//'.ELOC', 'L', vi=loca)
     etat_loca = loca(SIZE_LELOCA*(iEvent-1)+1)
+    if (etat_loca .ne. LOCA_TOUT) then
+        call utmess('F', 'COMPOR2_9')
+    end if
 
-    if (etat_loca .eq. LOCA_VIDE) then
-        vale = 0
-    else if (etat_loca .eq. LOCA_PARTIEL) then
-        deb = loca(SIZE_LELOCA*(iEvent-1)+2)
-        fin = loca(SIZE_LELOCA*(iEvent-1)+3)
-        call extdch(typeExtr, hvalIncr, fieldType, cmpName, vale, lst_loca=loca(deb:fin))
-    else if (etat_loca .eq. LOCA_TOUT) then
-        call extdch(typeExtr, hvalIncr, fieldType, cmpName, vale)
+! - Get value
+    if (tablType .eq. 0) then
+        call tbacce(tablIncr, 1, cmpName, 'L', ibid, vale, c16bid, k8bid)
+
+    else if (tablType .eq. 1) then
+        call tbliva(tablIncr, 1, 'CMP', [ibid], [r8bid], &
+                    [c16bid], cmpName, 'EGAL', [0.d0], 'VALEUR', &
+                    k8bid, ibid, vale, c16bid, k8bid, &
+                    ier)
+        if (ier .ne. 0) then
+            vale = 0.d0
+        end if
+
     else
         ASSERT(ASTER_FALSE)
     end if
-
+!
+    ASSERT(crit .eq. 'GT')
 !
     if (vale .gt. valeRefe) then
-        i_echec_acti = iEvent
+        iEventActi = iEvent
     end if
 !
     call jedema()

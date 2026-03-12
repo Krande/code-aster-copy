@@ -16,66 +16,54 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmjalo(sddisc, timeCurr, prec, jalon, lOutOFTime)
+subroutine evenPrtIncrQuan(mesgOrigZ, sddisc, index, newdt_)
 !
     implicit none
 !
-#include "asterc/r8vide.h"
 #include "asterf_types.h"
-#include "asterfort/compr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "event_def.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
+    character(len=*), intent(in) :: mesgOrigZ
     character(len=19), intent(in) :: sddisc
-    real(kind=8), intent(in) :: timeCurr, prec
-    real(kind=8), intent(out) :: jalon
-    aster_logical, intent(out) :: lOutOFTime
+    integer(kind=8), intent(in) :: index
+    real(kind=8), optional, intent(in) :: newdt_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! Management of event
 !
-! PROCHAIN INSTANT DE PASSAGE DANS LA LISTE DES JALONS
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  INST   : INSTANT RECHERCHE
-! IN  PREC   : PRECISION
-! OUT JALON  : VALEUR DE L'INSTANT JALON TROUVE
-!              VAUT R8VIDE SI L'INSTANT EST AU DELA DE LA LSITE
+! Print and save informations about DELTA_GRANDEUR
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: tpsipo
-    integer(kind=8) :: jipo
-    integer(kind=8) :: ipo, nipo
+! In  sddisc           : datastructure for time discretization
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    character(len=4) :: mesgOrig
+    integer(kind=8) ::  iAdap, iEven
+    character(len=16) :: fieldType, cmpName
+!
+! --------------------------------------------------------------------------------------------------
+!
+    mesgOrig = mesgOrigZ
+    if (mesgOrig .eq. "ERRE") then
+        iEven = index
+        call utdidt('L', sddisc, 'ECHE', 'NOM_CHAM', index_=iEven, valk_=fieldType)
+        call utdidt('L', sddisc, 'ECHE', 'NOM_CMP', index_=iEven, valk_=cmpName)
+        call utmess('I', 'MECANONLINE10_24', nk=2, valk=[fieldType, cmpName])
 
-! - Initializations
-    lOutOFTime = ASTER_TRUE
-    jalon = r8vide()
-
-! - Get access
-    tpsipo = sddisc(1:19)//'.LIPO'
-    call jelira(tpsipo, 'LONMAX', ival=nipo)
-    call jeveuo(tpsipo, 'L', jipo)
-
-! - RECHERCHE PROCHAIN JALON
-    do ipo = 1, nipo
-        if (compr8(zr(jipo-1+ipo), 'GT', timeCurr, prec, 1)) then
-            jalon = zr(jipo-1+ipo)
-            lOutOFTime = ASTER_FALSE
-            goto 20
-        end if
-    end do
-20  continue
+    elseif (mesgOrig .eq. "ADAP") then
+        iAdap = index
+        call utdidt('L', sddisc, 'ADAP', 'NOM_CHAM', index_=iAdap, valk_=fieldType)
+        call utdidt('L', sddisc, 'ADAP', 'NOM_CMP', index_=iAdap, valk_=cmpName)
+        call utmess('I', 'ADAPTATION_20', nk=2, valk=[fieldType, cmpName], sr=newdt_)
+    else
+        ASSERT(ASTER_FALSE)
+    end if
 !
-    call jedema()
 end subroutine

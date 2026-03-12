@@ -15,19 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
-                      actite)
-        character(len=19) :: sddisc
-        character(len=19) :: tabinc(*)
-        integer(kind=8) :: liccvg(*)
-        aster_logical :: itemax
-        aster_logical :: conver
-        integer(kind=8) :: actite
+    subroutine pmevdr(sddisc, tablType, tablIncr, &
+                      liccvg, lIterNewtMaxi, conver, &
+                      newtLoopAction)
+        character(len=19), intent(in) :: sddisc
+        integer(kind=8), intent(in) :: tablType
+        character(len=24), intent(in) :: tablIncr
+        integer(kind=8), intent(in) :: liccvg(5)
+        aster_logical, intent(in) :: lIterNewtMaxi, conver
+        integer(kind=8), intent(out) :: newtLoopAction
     end subroutine pmevdr
 end interface

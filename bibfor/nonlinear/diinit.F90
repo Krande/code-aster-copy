@@ -16,35 +16,35 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
-                  list_func_acti, sddyna, ds_conv, ds_algopara, solver, &
+subroutine diinit(meshZ, modelZ, ds_inout, materField, materCode, caraElem, &
+                  listFuncActi, sddyna, ds_conv, ds_algopara, solver, &
                   ds_contact, sddisc)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/crsvsi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/ndxcfl.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcrar.h"
 #include "asterfort/nmcrli.h"
 #include "asterfort/nmcrsu.h"
-#include "asterfort/ndxcfl.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
-    character(len=*), intent(in) :: mesh_
-    character(len=*), intent(in) :: model_
-    character(len=19), intent(in) :: sddisc
-    character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: mate, mateco
+    character(len=*), intent(in) :: meshZ, modelZ
+    character(len=19), intent(in) :: sddisc, sddyna
+    character(len=24), intent(in) :: caraElem
+    character(len=24), intent(in) :: materField, materCode
     type(NL_DS_Conv), intent(in) :: ds_conv
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: solver
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer(kind=8), intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,12 +56,12 @@ subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
+! In  materField       : name of material characteristics (field)
+! In  caraElem         : name of elementary characteristics (field)
 ! In  sddyna           : name of dynamic parameters
 ! In  ds_conv          : datastructure for convergence management
 ! In  ds_algo          : datastructure for algorithm management
-! In  list_func_acti   : active functionnalities vector (see nmfonc)
+! In  listFuncActi     : active functionnalities vector (see nmfonc)
 ! In  ds_contact       : datastructure for contact management
 ! In  solver           : name of solver parameters
 ! In  sddisc           : datastructure for time discretization
@@ -69,36 +69,51 @@ subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_expl, l_implex
+    aster_logical :: l_expl, l_implex, lCutStep
     character(len=19) :: listInst
     character(len=8) :: model, mesh, result
+    character(len=16) :: answer
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=listInst)
-    model = model_
-    mesh = mesh_
+    model = modelZ
+    mesh = meshZ
 
 ! - Get parameters
     result = ds_inout%result
 
 ! - Active functionnalities
     l_expl = ndynlo(sddyna, 'EXPLICITE')
-    l_implex = isfonc(list_func_acti, 'IMPLEX')
+    l_implex = isfonc(listFuncActi, 'IMPLEX')
 
 ! - Create time discretization datastructure
     call nmcrli(listInst, sddisc)
 
 ! - Courant condition
     if (l_expl) then
-        call ndxcfl(mate, mateco, cara_elem, sddyna, sddisc)
+        call ndxcfl(materField, materCode, caraElem, sddyna, sddisc)
     end if
 
 ! - Create storing datastructure
-    call nmcrar(result, sddisc, list_func_acti)
+    call nmcrar(result, sddisc, listFuncActi)
 
 ! - Automatic management of time stepping
-    call nmcrsu(sddisc, listInst, ds_conv, ds_algopara, l_implex, &
-                solver, ds_contact)
+    call nmcrsu(sddisc, listInst, ds_conv, &
+                l_implex, ds_contact)
+
+! - Solver management for time step cut
+    call utdidt('L', sddisc, 'LIST', 'EXIS_DECOUPE', valk_=answer)
+    lCutStep = answer .eq. 'OUI'
+    if (lCutStep) then
+        call crsvsi(solver)
+    end if
+
+! - Restriction of cut step
+    if (lCutStep) then
+        if (ds_algopara%matrix_pred .eq. 'DEPL_CALCULE') then
+            call utmess('F', 'SUBDIVISE_99')
+        end if
+    end if
 !
 end subroutine

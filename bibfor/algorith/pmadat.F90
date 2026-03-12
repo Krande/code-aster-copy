@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
+subroutine pmadat(sddisc, numeInst, nbIter)
 !
     implicit none
 !
@@ -26,14 +26,12 @@ subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
 #include "asterfort/compr8.h"
 #include "asterfort/diadap.h"
 #include "asterfort/diinst.h"
-#include "asterfort/evenPrtIncrQuan.h"
 #include "asterfort/getAdapAction.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/nmcadt.h"
 #include "asterfort/nmdcei.h"
 #include "asterfort/nmjalo.h"
 #include "asterfort/utdidt.h"
@@ -44,7 +42,6 @@ subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
 !
     character(len=19), intent(in) :: sddisc
     integer(kind=8), intent(in) :: numeInst, nbIter
-    character(len=19), intent(in) :: hvalIncr(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +55,6 @@ subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
 ! In  sddisc           : datastructure for time discretization
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  NBITER : NOMBRE D'ITERATIONS DE NEWTON
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,8 +68,8 @@ subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
     real(kind=8) :: newdt, deltac
     real(kind=8) :: timeCurr, timeNew
     real(kind=8) :: insfin, insref
-    aster_logical :: ladap, uncrok, lOutOFTime
     integer(kind=8) :: nbInst, nbPasMaxi, actionType
+    aster_logical :: ladap, uncrok, lOutOFTime
     character(len=24) :: tpsIterJv
     integer(kind=8), pointer :: tpsIter(:) => null()
     character(len=24) :: tpsAextJv
@@ -111,15 +107,11 @@ subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
                 dtPlus(iAdap) = r8vide()
                 ladap = diadap(sddisc, iAdap)
                 if (ladap) then
-                    call nmcadt(sddisc, iAdap, numeInst, hvalIncr, dtPlus(iAdap))
+                    call utmess("F", "COMPOR2_27")
                 end if
                 newdt = dtPlus(iAdap)
                 if (newdt .ne. r8vide()) then
-                    if (actionType .eq. ADAP_ACT_INCR_QUANT) then
-                        call evenPrtIncrQuan("ADAP", sddisc, iAdap, newdt)
-                    else
-                        call utmess('I', 'ADAPTATION_2', sk=adapActionKeyword(actionType), sr=newdt)
-                    end if
+                    call utmess('I', 'ADAPTATION_2', sk=adapActionKeyword(actionType), sr=newdt)
                 else
                     call utmess('I', 'ADAPTATION_3', sk=adapActionKeyword(actionType))
                 end if
@@ -143,16 +135,8 @@ subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
             end if
 
             if (dt .gt. pasMaxi) then
-                if (actionType .ne. ADAP_ACT_IMPLEX) then
-                    call utmess('I', 'ADAPTATION_12', nr=2, valr=[dt, pasMaxi])
-                end if
+                call utmess('I', 'ADAPTATION_12', nr=2, valr=[dt, pasMaxi])
                 dt = pasMaxi
-            end if
-
-            if (actionType .eq. ADAP_ACT_IMPLEX) then
-                if (dt .lt. pasMini) then
-                    dt = pasMini
-                end if
             end if
 
             tpsAextJv = sddisc(1:19)//'.AEXT'
@@ -178,11 +162,8 @@ subroutine nmadat(sddisc, numeInst, nbIter, hvalIncr)
                 call utdidt('E', sddisc, 'LIST', 'DT-', valr_=dt)
             end if
             call utmess('I', 'ADAPTATION_6', sr=dt)
-
-            if (actionType .ne. ADAP_ACT_IMPLEX) then
-                if (dt .lt. pasMini) then
-                    call utmess('F', 'ADAPTATION_11', sr=dt)
-                end if
+            if (dt .lt. pasMini) then
+                call utmess('F', 'ADAPTATION_11', sr=dt)
             end if
 
             timeNew = timeCurr+dt

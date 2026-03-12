@@ -17,27 +17,29 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0413
 !
-subroutine pminit(imate, nbvari, ndim, typmod, table, &
-                  nbpar, iforta, nompar, typpar, angl_naut, &
-                  pgl, irota, epsm, sigm, vim, &
-                  vip, vr, defimp, coef, indimp, &
-                  fonimp, cimpo, kel, sddisc, ds_conv, &
-                  ds_algopara, pred, matrel, imptgt, option, &
-                  nomvi, nbvita, sderro)
+subroutine pminit(jvMaterCode, nbVari, &
+                  tablName, tablNbParaMaxi, tablNbPara, tablType, &
+                  tablParaName, tablParaType, tablVale, &
+                  anglNaut, pgl, lRota, &
+                  epsiPrev, sigmPrev, vim, vip, &
+                  loadEpsiType, loadType, loadFunc, coefImpo, &
+                  coefMatrAdim, typeMatrPred, lMatrElas, matrElas, lPrintMatr, option, &
+                  variName, nbVariTabl, &
+                  sddisc, ds_conv, ds_algopara, sderro)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8dgrd.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dmat3d.h"
 #include "asterfort/eulnau.h"
+#include "asterfort/fointe.h"
 #include "asterfort/fozero.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -48,23 +50,48 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 #include "asterfort/nmcrsu.h"
 #include "asterfort/nmdocn.h"
 #include "asterfort/nmdomt.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/tbajli.h"
+#include "asterfort/nonlinDSAlgoParaCreate.h"
+#include "asterfort/nonlinDSConvergenceCreate.h"
 #include "asterfort/nonlinDSConvergenceInit.h"
+#include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
-#include "asterfort/fointe.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+#include "jeveux.h"
 !
-    type(NL_DS_Conv), intent(inout) :: ds_conv
-    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    integer(kind=8), intent(in) :: jvMaterCode, nbVari
+    character(len=8), intent(out) :: tablName
+    integer(kind=8), intent(in) :: tablNbParaMaxi
+    integer(kind=8), intent(out) :: tablNbPara, tablType
+    character(len=16), intent(out) :: tablParaName(tablNbParaMaxi), tablParaType(tablNbParaMaxi)
+    real(kind=8), intent(out) :: tablVale(tablNbParaMaxi)
+    real(kind=8), intent(out) :: anglNaut(3), pgl(3, 3)
+    aster_logical, intent(out) :: lRota
+    real(kind=8), intent(out) :: epsiPrev(9), sigmPrev(6)
+    real(kind=8), intent(out) :: vim(nbVari), vip(nbVari)
+    integer(kind=8), intent(out) :: loadEpsiType, loadType(9)
+    character(len=8), intent(out) :: loadFunc(9)
+    real(kind=8), intent(out) :: coefImpo(6, 12), coefMatrAdim
+    integer(kind=8), intent(out) :: typeMatrPred
+    aster_logical, intent(out) :: lMatrElas
+    real(kind=8), intent(out) :: matrElas(6, 6)
+    aster_logical, intent(out) :: lPrintMatr
+    character(len=16), intent(out) :: option
+    character(len=8), intent(out) :: variName(nbVari)
+    integer(kind=8), intent(out) :: nbVariTabl
+    character(len=19), intent(out) :: sddisc
+    type(NL_DS_Conv), intent(out) :: ds_conv
+    type(NL_DS_AlgoPara), intent(out) :: ds_algopara
+    character(len=24), intent(out) :: sderro
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
+! SIMU_POINT_MAT
+!
+! Initializations
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,182 +124,188 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    complex(kind=8) :: cbid
-    character(len=24) :: k24bid
-    integer(kind=8) :: ndim, n1, nbvari, nbpar, i, j, k, imate, kpg, ksp, nbocc, n2
-    integer(kind=8) :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
-    integer(kind=8) :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
-    integer(kind=8) :: iligne, icolon, nbcol, numins, ier
-    character(len=4), parameter :: nomeps(6) = (/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/)
-    character(len=4), parameter :: nomsig(6) = (/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/)
-    character(len=4), parameter :: nomgrd(9) = (/'F11', 'F12', 'F13', &
-                                                 'F21', 'F22', 'F23', &
-                                                 'F31', 'F32', 'F33'/)
-    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/)
-    character(len=4) :: optgt
-    character(len=8) :: typmod(2), k8b, table, fonimp(9), fongrd(9), f0, vk8(2)
-    character(len=8) :: foneps(6), fonsig(6), typpar(*), valef, nomvi(*)
-    character(len=16) :: option, nompar(*), predic, matric, fortab
-    character(len=19) :: lisins, sddisc, solveu
-    character(len=24) :: sderro
-    real(kind=8) :: instam, angl_naut(3), sigm(6), epsm(9), vale, rac2
-    real(kind=8) :: vim(nbvari), vip(nbvari), vr(*)
-    real(kind=8) :: sigi, kel(6, 6), cimpo(6, 12)
-    real(kind=8) :: angd(3), ang1(1), pgl(3, 3), coef
-    real(kind=8) :: angeul(3), dsidep(36)
-    real(kind=8) :: sigini(6), epsini(6), valimp(9)
-    aster_logical :: limpex
+    integer(kind=8), parameter :: ndim = 3
+    real(kind=8), parameter  :: rac2 = sqrt(2.d0)
+    integer(kind=8), parameter :: kpg = 1, ksp = 1
+    complex(kind=8), parameter :: c16Dummy = (0.d0, 0.d0)
+    character(len=4), parameter :: epsiName(6) = (/'EPXX', 'EPYY', 'EPZZ', &
+                                                   'EPXY', 'EPXZ', 'EPYZ'/)
+    character(len=4), parameter :: sigmName(6) = (/'SIXX', 'SIYY', 'SIZZ', &
+                                                   'SIXY', 'SIXZ', 'SIYZ'/)
+    character(len=4), parameter :: gradName(9) = (/'F11', 'F12', 'F13', &
+                                                   'F21', 'F22', 'F23', &
+                                                   'F31', 'F32', 'F33'/)
+    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, &
+                                         0.d0, 1.d0, 0.d0, &
+                                         0.d0, 0.d0, 1.d0/)
+    character(len=8), parameter :: f0 = '&&CPM_F0'
+    integer(kind=8) :: n1, i, j, k, nbocc
+    integer(kind=8) :: nbEpsiLoad, nbSigmLoad, nbGradLoad, nbCmpEpsi, nbVariInit
+    integer(kind=8) :: iligne, icolon, nbcol, numeInst, ier
+    character(len=8) :: k8b, gradValue(9), vk8(2), answer
+    character(len=8) :: epsiVale(6), sigmVale(6), valef
+    character(len=16) :: tablFormat, cmdName, dsType
+    character(len=19) :: listInst
+    real(kind=8) :: timePrev, vale, timeInit
+    real(kind=8) :: sigmInitVale, epsiInitVale
+    real(kind=8) :: angd(3), ang1(1), anglEuler(3), dsidep(36)
+    real(kind=8) :: sigmInit(6), epsiInit(6), gradInitImpo(9)
+    aster_logical :: lSetLinearRela, lGrad
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cbid = (0.d0, 0.d0)
-    typmod(1) = '3D'
-    typmod(2) = ' '
-    solveu = '&&OP0033'
-    rac2 = sqrt(2.d0)
-    pgl = 0.d0
-    valimp = 0.d0
-!
+    tablName = " "
+    tablNbPara = 0
+    tablParaName = " "
+    tablParaType = " "
+    sddisc = '&&OP0033.SDDISC'
+    sderro = '&&OP0033.ERRE.'
+
+! - Create zero function
+    call fozero(f0)
+
+! - Create convergence management datastructure
+    call nonlinDSConvergenceCreate(ds_conv)
+
+! - Create algorithm parameters datastructure
+    call nonlinDSAlgoParaCreate(ds_algopara)
+
 ! - Read parameters for convergence
     call nmdocn(ds_conv)
-!
+
 ! - Read parameters for algorithm management
     call nmdomt(ds_algopara)
-!
+
 ! - Create datastructure for events in algorithm
     call nmcrga(sderro)
 !
 ! - Initializations for convergence management
     call nonlinDSConvergenceInit(ds_conv, sderro)
-!
-!     ----------------------------------------
-!     RECUPERATION DU NOM DE LA TABLE PRODUITE
-!     ----------------------------------------
-    call getres(table, k24bid, k24bid)
-    iforta = 0
-    call getvtx(' ', 'FORMAT_TABLE', scal=fortab, nbret=n1)
+
+! - Get output tablName and its parameters
+    call getres(tablName, dsType, cmdName)
+    ASSERT(dsType .eq. 'TABLE_SDASTER')
+    ASSERT(cmdName .eq. 'CALC_POINT_MAT')
+    tablType = 0
+    call getvtx(' ', 'FORMAT_TABLE', scal=tablFormat, nbret=n1)
     if (n1 .ne. 0) then
-        if (fortab .eq. 'CMP_LIGNE') then
-            iforta = 1
+        if (tablFormat .eq. 'CMP_LIGNE') then
+            tablType = 1
         end if
     end if
-    nbvita = nbvari
+
+! - Count number of variables in table
+    nbVariTabl = nbVari
     call getvis(' ', 'NB_VARI_TABLE', scal=k, nbret=n1)
-    if (n1 .gt. 0) nbvita = k
-    nbvita = min(nbvita, nbvari)
-!
-    imptgt = 0
-    call getvtx(' ', 'OPER_TANGENT', scal=optgt, nbret=n1)
+    if (n1 .gt. 0) then
+        nbVariTabl = k
+    end if
+    nbVariTabl = min(nbVariTabl, nbVari)
+
+! - Number of components for strain
+    nbCmpEpsi = 6
+    lGrad = ASTER_FALSE
+    call getvid(' ', gradName(1), scal=gradValue(1), nbret=n1)
     if (n1 .ne. 0) then
-        if (optgt .eq. 'OUI') then
-            imptgt = 1
+        nbCmpEpsi = 9
+        lGrad = ASTER_TRUE
+    end if
+
+! - Print tangent operator ?
+    lPrintMatr = ASTER_FALSE
+    call getvtx(' ', 'OPER_TANGENT', scal=answer, nbret=n1)
+    if (n1 .ne. 0) then
+        if (answer .eq. 'OUI') then
+            lPrintMatr = ASTER_TRUE
+            ASSERT(.not. lGrad)
         end if
     end if
-    ncmp = 6
-    igrad = 0
-    call getvid(' ', nomgrd(1), scal=fongrd(1), nbret=n1)
-    if (n1 .ne. 0) then
-        ncmp = 9
-        igrad = 1
+
+! - Size of table
+    nbcol = 1+nbCmpEpsi+6+2+nbVariTabl+1+36
+    if (nbcol .gt. tablNbParaMaxi .and. tablType .eq. 0) then
+        call utmess('F', 'COMPOR1_68', si=nbcol)
     end if
-!     SI LE NOMBRE DE VARIABLES INTERNES EST TROP GRAND
-!     ON CHANGE DE FORMAT DE TABLE
-!     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
-    nbcol = 1+ncmp+6+2+nbvita+1+36
-    if (nbcol .gt. 9999) then
-        iforta = 1
-    end if
-    nompar(1) = 'INST'
-    if (iforta .eq. 0) then
-!     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
-        nbpar = 1+ncmp+6+2+nbvita+1
-        if (imptgt .eq. 1) nbpar = nbpar+36
-        if (igrad .eq. 1) then
-            do i = 1, ncmp
-                nompar(1+i) = nomgrd(i)
+
+! - Number and names of parameters in table
+    tablParaName(1) = 'INST'
+    if (tablType .eq. 0) then
+        tablNbPara = 1+nbCmpEpsi+6+2+nbVariTabl+1
+        if (lPrintMatr) then
+            tablNbPara = tablNbPara+36
+        end if
+        if (lGrad) then
+            do i = 1, nbCmpEpsi
+                tablParaName(1+i) = gradName(i)
             end do
         else
-            do i = 1, ncmp
-                nompar(1+i) = nomeps(i)
+            do i = 1, nbCmpEpsi
+                tablParaName(1+i) = epsiName(i)
             end do
         end if
         do i = 1, 6
-            nompar(1+ncmp+i) = nomsig(i)
+            tablParaName(1+nbCmpEpsi+i) = sigmName(i)
         end do
-        nompar(1+ncmp+6+1) = 'TRACE'
-        nompar(1+ncmp+6+2) = 'VMIS'
-        do i = 1, nbvita
-            nompar(1+ncmp+6+2+i) (1:1) = 'V'
-            call codent(i, 'G', nompar(1+ncmp+6+2+i) (2:16))
+        tablParaName(1+nbCmpEpsi+6+1) = 'TRACE'
+        tablParaName(1+nbCmpEpsi+6+2) = 'VMIS'
+        do i = 1, nbVariTabl
+            tablParaName(1+nbCmpEpsi+6+2+i) (1:1) = 'V'
+            call codent(i, 'G', tablParaName(1+nbCmpEpsi+6+2+i) (2:16))
         end do
-        if (imptgt .eq. 1) then
+        if (lPrintMatr) then
             do i = 1, 6
                 do j = 1, 6
-                    k = 1+ncmp+6+2+nbvari+6*(i-1)+j
-                    write (nompar(k), '(A,I1,I1)') 'K', i, j
+                    k = 1+nbCmpEpsi+6+2+nbVari+6*(i-1)+j
+                    write (tablParaName(k), '(A,I1,I1)') 'K', i, j
                 end do
             end do
         end if
-        nompar(nbpar) = 'NB_ITER'
-        typpar(1:nbpar) = 'R'
+        tablParaName(tablNbPara) = 'NB_ITER'
+        tablParaType(1:tablNbPara) = 'R'
     else
-        nbpar = 4
-        nompar(2) = 'GRANDEUR'
-        nompar(3) = 'CMP'
-        nompar(4) = 'VALEUR'
-        typpar(1) = 'R'
-        typpar(2) = 'K8'
-        typpar(3) = 'K8'
-        typpar(4) = 'R'
+        tablNbPara = 4
+        tablParaName(2) = 'GRANDEUR'
+        tablParaName(3) = 'CMP'
+        tablParaName(4) = 'VALEUR'
+        tablParaType(1) = 'R'
+        tablParaType(2) = 'K8'
+        tablParaType(3) = 'K8'
+        tablParaType(4) = 'R'
     end if
-!
-    call tbcrsd(table, 'G')
-    call tbajpa(table, nbpar, nompar, typpar)
-!
-!     ----------------------------------------
-!     TRAITEMENT DES ANGLES
-!     ----------------------------------------
-    angl_naut(:) = 0.d0
-    call r8inir(3, 0.d0, angeul, 1)
-    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=angl_naut, &
-                nbret=n1)
-    call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=angeul, &
-                nbret=n2)
-!
+
+! - Create table and set list of parameters
+    call tbcrsd(tablName, 'G')
+    call tbajpa(tablName, tablNbPara, tablParaName, tablParaType)
+
+! - Get local coordinate system for material parameters
+    anglNaut = 0.d0
+    anglEuler = 0.d0
+    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=anglNaut, nbret=n1)
     if (n1 .gt. 0) then
-        angl_naut(1) = angl_naut(1)*r8dgrd()
+        anglNaut(1) = anglNaut(1)*r8dgrd()
         if (ndim .eq. 3) then
-            angl_naut(2) = angl_naut(2)*r8dgrd()
-            angl_naut(3) = angl_naut(3)*r8dgrd()
-        end if
-!
-!     ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
-    else if (n2 .gt. 0) then
-        call eulnau(angeul, angd)
-        angl_naut(1) = angd(1)*r8dgrd()
-        if (ndim .eq. 3) then
-            angl_naut(2) = angd(2)*r8dgrd()
-            angl_naut(3) = angd(3)*r8dgrd()
+            anglNaut(2) = anglNaut(2)*r8dgrd()
+            anglNaut(3) = anglNaut(3)*r8dgrd()
         end if
     end if
-    if (ncmp .eq. 6) then
-        call r8inir(9, 0.d0, epsm, 1)
-    else
-        b_n = to_blas_int(9)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, id, b_incx, epsm, b_incy)
+
+    call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=anglEuler, nbret=n1)
+    if (n1 .gt. 0) then
+        call eulnau(anglEuler, angd)
+        anglNaut(1) = angd(1)*r8dgrd()
+        if (ndim .eq. 3) then
+            anglNaut(2) = angd(2)*r8dgrd()
+            anglNaut(3) = angd(3)*r8dgrd()
+        end if
     end if
-    call r8inir(6, 0.d0, sigm, 1)
-    call r8inir(nbvari, 0.d0, vim, 1)
-    call r8inir(nbvari, 0.d0, vip, 1)
-    irota = 0
-!     ANGLE DE ROTATION
+
+! - ANGLE DE ROTATION
+    lRota = ASTER_FALSE
+    pgl = 0.d0
     call getvr8(' ', 'ANGLE', scal=ang1(1), nbret=n1)
     if ((n1 .ne. 0) .and. (ang1(1) .ne. 0.d0)) then
-!        VERIFS
-        irota = 1
+        lRota = ASTER_TRUE
         b_n = to_blas_int(1)
         b_incx = to_blas_int(1)
         call dscal(b_n, r8dgrd(), ang1(1), b_incx)
@@ -281,106 +314,119 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
         pgl(1, 2) = sin(ang1(1))
         pgl(2, 1) = -sin(ang1(1))
         pgl(3, 3) = 1.d0
-! VOIR GENERALISATION A 3 ANGLES AVEC CALL MATROT
     end if
-!     ----------------------------------------
-!     ETAT INITIAL
-!     ----------------------------------------
+
+! - Get initial state - Stresses
+    sigmPrev = 0.d0
     call getfac('SIGM_INIT', nbocc)
     if (nbocc .gt. 0) then
         do i = 1, 6
-            call getvr8('SIGM_INIT', nomsig(i), iocc=1, scal=sigi, nbret=n1)
+            call getvr8('SIGM_INIT', sigmName(i), iocc=1, scal=sigmInitVale, nbret=n1)
             if (n1 .ne. 0) then
-                sigm(i) = sigi
+                sigmPrev(i) = sigmInitVale
             end if
         end do
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
-        call dscal(b_n, rac2, sigm(4), b_incx)
+        call dscal(b_n, rac2, sigmPrev(4), b_incx)
     end if
-!
+
+! - Get initial state - Strains
+    epsiPrev = 0.d0
+    if (lGrad) then
+        ASSERT(nbCmpEpsi .eq. 9)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, id, b_incx, epsiPrev, b_incy)
+    else
+        ASSERT(nbCmpEpsi .eq. 6)
+        epsiPrev = 0.d0
+    end if
     call getfac('EPSI_INIT', nbocc)
     if (nbocc .gt. 0) then
         do i = 1, 6
-            call getvr8('EPSI_INIT', nomeps(i), iocc=1, scal=sigi, nbret=n1)
+            call getvr8('EPSI_INIT', epsiName(i), iocc=1, scal=epsiInitVale, nbret=n1)
             if (n1 .ne. 0) then
-                epsm(i) = sigi
+                epsiPrev(i) = epsiInitVale
             end if
         end do
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
-        call dscal(b_n, rac2, epsm(4), b_incx)
+        call dscal(b_n, rac2, epsiPrev(4), b_incx)
     end if
+
+! - Get initial state - Internal state variables
+    vim = 0.d0
+    vip = 0.d0
     call getfac('VARI_INIT', nbocc)
     if (nbocc .gt. 0) then
-        call getvr8('VARI_INIT', 'VALE', iocc=1, nbval=nbvari, vect=vim, &
-                    nbret=n1)
-        if (n1 .ne. nbvari) then
-            imes(1) = n1
-            imes(2) = nbvari
-            call utmess('F', 'COMPOR1_72', ni=2, vali=imes)
+        call getvr8('VARI_INIT', 'VALE', iocc=1, nbval=nbVari, vect=vim, nbret=nbVariInit)
+        if (nbVariInit .ne. nbVari) then
+            call utmess('F', 'COMPOR1_72', ni=2, vali=[nbVariInit, nbVari])
         end if
     end if
-    kpg = 1
-    ksp = 1
-    instam = 0.d0
-!     ----------------------------------------
-!     CHARGEMENT
-!     ----------------------------------------
-    call r8inir(6*12, 0.d0, cimpo, 1)
-    icont = 0
-    iepsi = 0
-    igrad = 0
-    f0 = '&&CPM_F0'
-    call fozero(f0)
-    indimp(1:9) = 0
-    fonimp(1:9) = f0
+
+! - Get loads (strain or stress ?)
+    coefImpo = 0.d0
+    loadType = 0
+    loadFunc = f0
+    nbEpsiLoad = 0
     do i = 1, 6
-        call getvid(' ', nomeps(i), scal=foneps(i), nbret=n1)
-        call getvid(' ', nomsig(i), scal=fonsig(i), nbret=n2)
+        call getvid(' ', epsiName(i), scal=epsiVale(i), nbret=n1)
         if (n1 .ne. 0) then
-            cimpo(i, 6+i) = 1.d0
-            fonimp(i) = foneps(i)
-            iepsi = iepsi+1
-            indimp(i) = 1
-        else if (n2 .ne. 0) then
-            cimpo(i, i) = 1.d0
-            fonimp(i) = fonsig(i)
-            icont = icont+1
-            indimp(i) = 0
+            coefImpo(i, 6+i) = 1.d0
+            loadFunc(i) = epsiVale(i)
+            nbEpsiLoad = nbEpsiLoad+1
+            loadType(i) = 1
         end if
     end do
+    nbSigmLoad = 0
+    do i = 1, 6
+        call getvid(' ', sigmName(i), scal=sigmVale(i), nbret=n1)
+        if (n1 .ne. 0) then
+            coefImpo(i, i) = 1.d0
+            loadFunc(i) = sigmVale(i)
+            nbSigmLoad = nbSigmLoad+1
+            loadType(i) = 0
+        end if
+    end do
+    nbGradLoad = 0
     do i = 1, 9
-        call getvid(' ', nomgrd(i), scal=fongrd(i), nbret=n1)
+        call getvid(' ', gradName(i), scal=gradValue(i), nbret=n1)
         if (n1 .ne. 0) then
-            fonimp(i) = fongrd(i)
-            igrad = igrad+1
-            indimp(i) = 2
+            loadFunc(i) = gradValue(i)
+            nbGradLoad = nbGradLoad+1
+            loadType(i) = 2
         end if
     end do
-    defimp = 0
-    if (iepsi .eq. 6) defimp = 1
-    if (igrad .eq. 9) defimp = 2
-    ic1c2 = 0
-!     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
+
+! - Set type of strain load
+    loadEpsiType = 0
+    if (nbEpsiLoad .eq. 6) loadEpsiType = 1
+    if (nbGradLoad .eq. 9) loadEpsiType = 2
+
+! - Linear relations
+    lSetLinearRela = ASTER_FALSE
     call getfac('MATR_C1', nbocc)
     if (nbocc .ne. 0) then
-        ic1c2 = 1
+        lSetLinearRela = ASTER_TRUE
         do i = 1, nbocc
             call getvis('MATR_C1', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
             call getvis('MATR_C1', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
             call getvr8('MATR_C1', 'VALE', iocc=i, scal=vale, nbret=n1)
-            cimpo(iligne, icolon) = vale
+            coefImpo(iligne, icolon) = vale
         end do
     end if
+
     call getfac('MATR_C2', nbocc)
     if (nbocc .ne. 0) then
-        ic1c2 = 1
+        lSetLinearRela = ASTER_TRUE
         do i = 1, nbocc
             call getvis('MATR_C2', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
             call getvis('MATR_C2', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
             call getvr8('MATR_C2', 'VALE', iocc=i, scal=vale, nbret=n1)
-            cimpo(iligne, icolon+6) = vale
+            coefImpo(iligne, icolon+6) = vale
         end do
     end if
     call getfac('VECT_IMPO', nbocc)
@@ -388,157 +434,141 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
         do i = 1, nbocc
             call getvis('VECT_IMPO', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
             call getvid('VECT_IMPO', 'VALE', iocc=i, scal=valef, nbret=n1)
-            fonimp(iligne) = valef
+            loadFunc(iligne) = valef
         end do
     end if
-    if (ic1c2 .eq. 1) then
+    if (lSetLinearRela) then
         do i = 1, 6
-! AFFECTATION DE SIGMA_I=0. SI RIEN N'EST IMPOSE SUR LA LIGNE I
             k = 0
             do j = 1, 12
-                if (cimpo(i, j) .ne. 0.d0) then
+                if (coefImpo(i, j) .ne. 0.d0) then
                     k = 1
                 end if
             end do
             if (k .eq. 0) then
-                cimpo(i, i) = 1.d0
+                coefImpo(i, i) = 1.d0
             end if
         end do
-        defimp = -1
+        loadEpsiType = -1
     end if
-!
+
 !  RECUPERER LES VALEURS INITIALES DE F "GRAD_IMPOSE"
-    if (igrad .eq. 9) then
+    gradInitImpo = 0.d0
+    timeInit = 0.d0
+    if (loadEpsiType == 2) then
+        ASSERT(nbGradLoad .eq. 9)
         do i = 1, 9
-            call fointe('F', fonimp(i), 1, ['INST'], [instam], &
-                        valimp(i), ier)
+            call fointe('F', loadFunc(i), 1, ['INST'], [timeInit], gradInitImpo(i), ier)
         end do
     end if
-!
-!     ----------------------------------------
-!     ECRITURE ETAT INITIAL DANS TABLE
-!     ----------------------------------------
-    if (iforta .eq. 0) then
-! CONSTRUCTION DES VECTEURS DE DEFORMATION ET CONTRAINTES
-! RETIRE LE TERME EN RAC2 SUR COMPOSANTES DE CISAILLEMENT
-! PUIS RECOPIE DANS LA TABLE DES VECTEURS SIGINI ET EPSINI
-!
-        if (igrad .eq. 9) then
-            b_n = to_blas_int(ncmp)
+
+! - Set initial state in table
+    if (tablType .eq. 0) then
+        if (loadEpsiType == 2) then
+            ASSERT(nbGradLoad .eq. 9)
+            b_n = to_blas_int(nbCmpEpsi)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dcopy(b_n, valimp, b_incx, vr(2), b_incy)
+            call dcopy(b_n, gradInitImpo, b_incx, tablVale(2), b_incy)
         else
-            epsini(1:6) = epsm(1:6)
+            epsiInit(1:6) = epsiPrev(1:6)
             b_n = to_blas_int(3)
             b_incx = to_blas_int(1)
-            call dscal(b_n, 1.d0/rac2, epsini(4), b_incx)
-            b_n = to_blas_int(ncmp)
+            call dscal(b_n, 1.d0/rac2, epsiInit(4), b_incx)
+            b_n = to_blas_int(nbCmpEpsi)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dcopy(b_n, epsini, b_incx, vr(2), b_incy)
+            call dcopy(b_n, epsiInit, b_incx, tablVale(2), b_incy)
         end if
-!
-        sigini(1:6) = sigm(1:6)
+        sigmInit(1:6) = sigmPrev(1:6)
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
-        call dscal(b_n, 1.d0/rac2, sigini(4), b_incx)
+        call dscal(b_n, 1.d0/rac2, sigmInit(4), b_incx)
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, sigini, b_incx, vr(ncmp+2), b_incy)
-        vr(1+ncmp+6+1) = 0.d0
-        vr(1+ncmp+6+2) = 0.d0
-        b_n = to_blas_int(nbvita)
+        call dcopy(b_n, sigmInit, b_incx, tablVale(nbCmpEpsi+2), b_incy)
+        tablVale(1+nbCmpEpsi+6+1) = 0.d0
+        tablVale(1+nbCmpEpsi+6+2) = 0.d0
+        b_n = to_blas_int(nbVariTabl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vim, b_incx, vr(1+ncmp+6+3), b_incy)
-        vr(1) = instam
-!        ajout KTGT
-        if (imptgt .eq. 1) then
-            call r8inir(36, 0.d0, dsidep, 1)
+        call dcopy(b_n, vim, b_incx, tablVale(1+nbCmpEpsi+6+3), b_incy)
+        tablVale(1) = timeInit
+        if (lPrintMatr) then
+            dsidep = 0.d0
             b_n = to_blas_int(36)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dcopy(b_n, dsidep, b_incx, vr(1+6+6+3+nbvari), b_incy)
+            call dcopy(b_n, dsidep, b_incx, tablVale(1+6+6+3+nbVari), b_incy)
         end if
-        vr(nbpar) = 0
-        call tbajli(table, nbpar, nompar, [0], vr, &
-                    [cbid], k8b, 0)
+        tablVale(tablNbPara) = 0
+        call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, [c16Dummy], k8b, 0)
     else
-        vr(1) = instam
+        tablVale(1) = timeInit
         vk8(1) = 'EPSI'
-        do i = 1, ncmp
-            vr(2) = epsm(i)
-            vk8(2) = nomeps(i)
-            call tbajli(table, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
+        do i = 1, nbCmpEpsi
+            tablVale(2) = epsiPrev(i)
+            vk8(2) = epsiName(i)
+            call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, [c16Dummy], vk8, 0)
         end do
         vk8(1) = 'SIGM'
-        do i = 1, ncmp
-            vr(2) = sigm(i)
-            vk8(2) = nomsig(i)
-            call tbajli(table, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
+        do i = 1, nbCmpEpsi
+            tablVale(2) = sigmPrev(i)
+            vk8(2) = sigmName(i)
+            call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, [c16Dummy], vk8, 0)
         end do
         vk8(1) = 'VARI'
-        do i = 1, nbvita
-            vr(2) = vim(i)
+        do i = 1, nbVariTabl
+            tablVale(2) = vim(i)
             vk8(2) (1:1) = 'V'
             call codent(i, 'G', vk8(2) (2:8))
-            nomvi(i) = vk8(2)
-            call tbajli(table, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
+            variName(i) = vk8(2)
+            call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, [c16Dummy], vk8, 0)
         end do
     end if
-!     ----------------------------------------
-!     CREATION SD DISCRETISATION
-!     ----------------------------------------
-    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
-    call nmcrli(lisins, sddisc)
-!
-!
-!
-!     ----------------------------------------
-!     LECTURE DE NEWTON
-!     ----------------------------------------
-    matrel = 0
+
+! - Create time discretization datastructure
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=listInst, nbret=n1)
+    call nmcrli(listInst, sddisc)
+
+! - First time step
+    numeInst = 0
+    timePrev = diinst(sddisc, numeInst)
+
+! - Get parameters for Newton algorithm
+    lMatrElas = ASTER_FALSE
     option = 'FULL_MECA'
-    matric = ds_algopara%matrix_corr
-    if (matric .eq. 'ELASTIQUE') then
-        matrel = 1
-        pred = 0
+    if (ds_algopara%matrix_corr .eq. 'ELASTIQUE') then
+        lMatrElas = ASTER_TRUE
+        typeMatrPred = 0
         option = 'RAPH_MECA'
     end if
-!
-    pred = 1
-    predic = ds_algopara%matrix_pred
-    if (predic .eq. 'ELASTIQUE') then
-        pred = 0
-    else if (predic .eq. 'EXTRAPOLE') then
-        pred = -1
+    typeMatrPred = 1
+    if (ds_algopara%matrix_pred .eq. 'ELASTIQUE') then
+        typeMatrPred = 0
+    else if (ds_algopara%matrix_pred .eq. 'EXTRAPOLE') then
+        typeMatrPred = -1
     end if
-!     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
-    limpex = .false.
-    call nmcrsu(sddisc, lisins, ds_conv, ds_algopara, limpex, &
-                solveu)
-!     INSTANT INITIAL
-    numins = 0
-    instam = diinst(sddisc, numins)
-!     CALCUL DES VARIABLES DE COMMANDE
-    call vrcinp(2, instam, instam)
-!     ----------------------------------------
-!     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
-!     ----------------------------------------
-    call dmat3d('PMAT', imate, instam, '+', kpg, &
-                ksp, angl_naut, kel)
+
+! - Automatic management of time stepping
+    call nmcrsu(sddisc, listInst, ds_conv)
+
+! - CALCUL DES VARIABLES DE COMMANDE
+    call vrcinp(2, timePrev, timePrev)
+
+! - Compute elastic matrix
+    matrElas = 0.d0
+    call dmat3d('PMAT', jvMaterCode, timePrev, '+', kpg, &
+                ksp, anglNaut, matrElas)
 !     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
-    coef = max(kel(1, 1), kel(2, 2), kel(3, 3))
+    coefMatrAdim = max(matrElas(1, 1), matrElas(2, 2), matrElas(3, 3))
     do j = 4, 6
-        kel(j, j) = kel(j, j)*2.d0
-        coef = max(coef, kel(j, j))
+        matrElas(j, j) = matrElas(j, j)*2.d0
+        coefMatrAdim = max(coefMatrAdim, matrElas(j, j))
     end do
-    if (ic1c2 .eq. 1) then
-        coef = 1.d0
+    if (lSetLinearRela) then
+        coefMatrAdim = 1.d0
     end if
+!
 end subroutine

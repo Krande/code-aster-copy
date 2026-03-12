@@ -109,7 +109,7 @@ cata_msg = {
     ),
     24: _(
         """
- <Évènement> Valeur atteinte (DELTA_GRANDEUR).
+ <Évènement> Valeur atteinte pour DELTA_GRANDEUR - %(k1)s / %(k2)s
  """
     ),
     25: _(

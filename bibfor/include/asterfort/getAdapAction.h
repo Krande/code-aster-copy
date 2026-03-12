@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine getAdapAction(sddisc, i_adap, action_type)
+    subroutine getAdapAction(sddisc, iAdap, actionType)
         character(len=19), intent(in) :: sddisc
-        integer(kind=8), intent(in) :: i_adap
-        integer(kind=8), intent(out) :: action_type
+        integer(kind=8), intent(in) :: iAdap
+        integer(kind=8), intent(out) :: actionType
     end subroutine getAdapAction
 end interface

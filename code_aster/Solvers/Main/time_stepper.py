@@ -542,9 +542,15 @@ class TimeStepper(Observer):
                 try:
                     dt_i = act.call(timeStepper=self, delta=delta)
                     delta_t = min(delta_t, dt_i * currIncr)
-                    logger.info(
-                        MessageLog.GetText("I", "ADAPTATION_2", valk=act.name, valr=delta_t)
-                    )
+
+                    if act.name == "DELTA_GRANDEUR":
+                        args = {"valk": [act._fieldName, act._cmp], "valr": delta_t}
+                        logger.info(MessageLog.GetText("I", "ADAPTATION_20", **args))
+                    else:
+                        logger.info(
+                            MessageLog.GetText("I", "ADAPTATION_2", valk=act.name, valr=delta_t)
+                        )
+
                 except ValueError:
                     logger.info(MessageLog.GetText("I", "ADAPTATION_3", valk=act.name))
                     raise
@@ -669,7 +675,9 @@ class TimeStepper(Observer):
             raised = maxIncr > self._value
             logger.debug("check delta of %s: %s >? %s: %s", self._cmp, maxIncr, self._value, raised)
             if raised:
-                logger.info(MessageLog.GetText("I", "MECANONLINE10_24"))
+                logger.info(
+                    MessageLog.GetText("I", "MECANONLINE10_24", valk=[self._fieldName, self._cmp])
+                )
             return raised
 
     class MaximumNbOfSteps(ErrorPosteriori):

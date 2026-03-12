@@ -37,6 +37,7 @@ cata_msg = {
         """La somme des fractions volumiques est très différente de 1.0, elle vaut <%(r1).15E>.
 Vérifiez FRAC_VOL pour toutes les occurrences du mot clé POLYCRISTAL."""
     ),
+    9: _("""Un évènement n'est pas traitable dans SIMU_POINT_MAT."""),
     10: _(
         """
 Le redécoupage local du pas de temps n'est pas compatible avec <%(k1)s>
@@ -129,6 +130,7 @@ Le maillage sur lequel s'appuie le modèle et le maillage du champ des variables
     26: _(
         """La variable de commande correspondant au gradient de vélocité ne peut pas être utilisée pour ce comportement."""
     ),
+    27: _("""L'adaptation du pas de temps n'est pas disponible dans SIMU_POINT_MAT."""),
     31: _(
         """
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d).

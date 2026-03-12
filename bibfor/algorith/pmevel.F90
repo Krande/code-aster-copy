@@ -16,64 +16,76 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmevdr(sddisc, tablType, tablIncr, &
-                  liccvg, lIterNewtMaxi, conver, &
-                  newtLoopAction)
+subroutine pmevel(sddisc, tablType, tablIncr, &
+                  lerror, conver)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/infniv.h"
-#include "asterfort/nmacto.h"
-#include "asterfort/pmevel.h"
+#include "asterfort/assert.h"
+#include "asterfort/eneven.h"
+#include "asterfort/getFailEvent.h"
+#include "asterfort/pmevdg.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
+#include "event_def.h"
 !
     character(len=19), intent(in) :: sddisc
     integer(kind=8), intent(in) :: tablType
     character(len=24), intent(in) :: tablIncr
-    integer(kind=8), intent(in) :: liccvg(5)
-    aster_logical, intent(in) :: lIterNewtMaxi, conver
-    integer(kind=8), intent(out) :: newtLoopAction
+    aster_logical, intent(in) :: lerror, conver
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! SIMU_POINT_MAT
 !
-! Detect event
+! Detect first event
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: ifm, niv
-    integer(kind=8) :: faccvg, ldccvg
-    aster_logical :: lerror
-    integer(kind=8) :: ievdac
+    integer(kind=8) :: nbEvent, iEvent, iEventActi
+    integer(kind=8) :: eventType
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm, *) '<SIMUPOINTMAT> EVALUATION DES EVENT-DRIVEN'
-    end if
+    iEventActi = 0
 
-! - INITIALISATIONS
-    ldccvg = liccvg(2)
-    faccvg = liccvg(5)
-    lerror = (ldccvg .eq. 1) .or. (faccvg .ne. 0) .or. lIterNewtMaxi
+! - Number of events
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nbEvent)
 
-! - NEWTON A CONVERGE ?
-    if (conver) then
-        newtLoopAction = 0
-    else
-        newtLoopAction = 2
-    end if
+    do iEvent = 1, nbEvent
+! ----- Get event type
+        call getFailEvent(sddisc, iEvent, eventType)
 
-! - Detect first event
-    call pmevel(sddisc, tablType, tablIncr, &
-                lerror, conver)
+! ----- Set event to inactive
+        call eneven(sddisc, iEvent, ASTER_FALSE)
 
-! - UN EVENEMENT SE DECLENCHE
-    call nmacto(sddisc, ievdac)
-    if (ievdac .ne. 0) then
-        newtLoopAction = 1
+! ----- Detect event
+        if (eventType .eq. FAIL_EVT_ERROR) then
+            if (lerror) then
+                iEventActi = iEvent
+                goto 99
+            end if
+
+        else if (eventType .eq. FAIL_EVT_INCR_QUANT) then
+            if (conver) then
+                call pmevdg(sddisc, tablType, tablIncr, iEvent, iEventActi)
+                if (iEventActi .ne. 0) then
+                    goto 99
+                end if
+            end if
+
+        else
+            call utmess('F', 'COMPOR2_9')
+
+        end if
+    end do
+!
+99  continue
+
+! - Set event to active
+    if (iEventActi .ne. 0) then
+        call eneven(sddisc, iEventActi, ASTER_TRUE)
     end if
 !
 end subroutine

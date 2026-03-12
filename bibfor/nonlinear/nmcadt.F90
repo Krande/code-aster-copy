@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
 subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 !
@@ -57,14 +58,12 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 !
 !
 !
-!
+    character(len=8) :: typeExtr
     integer(kind=8) :: deb, fin, etat_loca
     integer(kind=8), pointer:: loca(:) => null()
-
     integer(kind=8) :: nit, nbiter, action_type
     real(kind=8) :: dtm, pcent, valref, dval
-    character(len=8) :: typext
-    character(len=16) :: nocham, nocmp
+    character(len=16) :: fieldType, cmpName
     real(kind=8) :: eta, etad
     character(len=24) :: tpsite
     integer(kind=8) :: jiter
@@ -99,12 +98,12 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 !     ------------------------------------------------------------------
 !
         call utdidt('L', sddisc, 'ADAP', 'NOM_CHAM', index_=i_adap, &
-                    valk_=nocham)
+                    valk_=fieldType)
         call utdidt('L', sddisc, 'ADAP', 'NOM_CMP', index_=i_adap, &
-                    valk_=nocmp)
+                    valk_=cmpName)
         call utdidt('L', sddisc, 'ADAP', 'VALE_REF', index_=i_adap, &
                     valr_=valref)
-        typext = 'MAX_ABS'
+        typeExtr = 'MAX_ABS'
 !
 ! ----- CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
 ! -----             = VREF / MAX ( |DELTA(CHAMP+CMP)| )
@@ -119,9 +118,9 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
         else if (etat_loca .eq. LOCA_PARTIEL) then
             deb = loca(SIZE_LALOCA*(i_adap-1)+2)
             fin = loca(SIZE_LALOCA*(i_adap-1)+3)
-            call extdch(typext, hval_incr, nocham, nocmp, dval, lst_loca=loca(deb:fin))
+            call extdch(typeExtr, hval_incr, fieldType, cmpName, dval, lst_loca=loca(deb:fin))
         else if (etat_loca .eq. LOCA_TOUT) then
-            call extdch(typext, hval_incr, nocham, nocmp, dval)
+            call extdch(typeExtr, hval_incr, fieldType, cmpName, dval)
         else
             ASSERT(.false.)
         end if
@@ -154,15 +153,15 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 ! ----- FACTEUR DE DECELERATION ETAD
 !
         etad = 0.5d0
-        typext = 'MIN_VAR'
+        typeExtr = 'MIN_VAR'
 !
 ! ----- CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
 !                   = VREF / MAX ( |DELTA(CHAMP+CMP)| )
 ! ----- DVAL :MAX EN VALEUR ABSOLUE DU DELTA(CHAMP+CMP)
 !
-        nocham = 'VARI_ELGA'
-        nocmp = 'V1'
-        call extdch(typext, hval_incr, nocham, nocmp, dval)
+        fieldType = 'VARI_ELGA'
+        cmpName = 'V1'
+        call extdch(typeExtr, hval_incr, fieldType, cmpName, dval)
 !
 ! ----- LE CHAMP DE VARIATION EST IDENTIQUEMENT NUL : ON SORT
 !
