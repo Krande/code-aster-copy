@@ -15,33 +15,34 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=C1505
 #include "asterf_types.h"
 !
 interface
     subroutine lc0000(BEHinteg, &
-                      fami,        kpg,    ksp,      ndim,    typmod,    &
-                      l_epsi_varc, imate,  materi,   compor,  mult_comp, &
-                      carcri,      instam, instap,   neps,    epsm,      &
-                      deps,        nsig,   sigm_all, vim,     option,    &
-                      angmas,      numlc,    sigp,    vip,       &
-                      ndsde,       dsidep, icomp,    nvi_all, codret)
+                      fami, kpg, ksp, ndim, typmod, &
+                      l_epsi_varc, imate, materi, compor, multComp, &
+                      carcri, instam, instap, neps, epsm, &
+                      deps, nsig, sigm_all, vim, option, &
+                      angmas, numlc, sigp, vip, &
+                      ndsde, dsidep, nvi_all, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(inout) :: BEHinteg
         integer(kind=8) :: imate, ndim, nvi_all, kpg, ksp
         aster_logical, intent(in) :: l_epsi_varc
         integer(kind=8) :: neps, nsig, ndsde
-        real(kind=8) :: carcri(*), angmas(3)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE), angmas(3)
         real(kind=8) :: instam, instap
         real(kind=8) :: epsm(neps), deps(neps)
         real(kind=8) :: sigm_all(nsig), sigp(nsig)
         real(kind=8) :: vim(nvi_all), vip(nvi_all)
-        real(kind=8) :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde),merge(neps,6,nsig*neps.eq.ndsde))
-        character(len=16) :: compor(*), option
-        character(len=8),  intent(in) :: materi
-        character(len=16), intent(in) :: mult_comp
+        real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                               merge(neps, 6, nsig*neps .eq. ndsde))
+        character(len=16), intent(in) :: compor(COMPOR_SIZE), option
+        character(len=8), intent(in) :: materi
+        character(len=16), intent(in) :: multComp
         character(len=8) :: typmod(*)
         character(len=*) :: fami
-        integer(kind=8) :: icomp
         integer(kind=8) :: numlc
         integer(kind=8) :: codret
     end subroutine lc0000

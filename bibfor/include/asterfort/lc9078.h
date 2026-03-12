@@ -23,7 +23,7 @@ interface
                       fami, kpg, ksp, ndim, imate, &
                       carcri, instam, instap, neps, epsm, &
                       deps, nsig, sigm, nvi, vim, option, angmas, &
-                      sigp, vip, typmod, icomp, &
+                      sigp, vip, typmod, &
                       ndsde, dsidep, codret)
         use Behaviour_type
         type(Behaviour_Integ)        :: BEHinteg
@@ -48,7 +48,6 @@ interface
         real(kind=8) :: vip(nvi)
         character(len=8), intent(in) :: typmod(2)
         integer(kind=8), intent(in) :: ndsde
-        integer(kind=8), intent(in) :: icomp
         real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                                merge(neps, 6, nsig*neps .eq. ndsde))
         integer(kind=8), intent(out):: codret

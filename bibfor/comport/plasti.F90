@@ -17,11 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,C0110
 !
-subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
+subroutine plasti(BEHinteg, &
+                  fami, kpg, ksp, typmod, &
                   imate, compor, carcri, instam, instap, &
-                  epsdt, depst, sigm, vim, option, &
-                  angmas, sigp, vip, dsidep, icomp, &
-                  nvi, codret, mult_compor_)
+                  epsdt, depst, sigm, nvi, vim, option, &
+                  angmas, sigp, vip, dsidep, &
+                  codret, multComp_)
 !
     use Behaviour_type
     implicit none
@@ -48,16 +49,15 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam, instap
     real(kind=8), intent(in) :: epsdt(9), depst(9)
-    real(kind=8), intent(in) :: sigm(6), vim(*)
+    integer(kind=8), intent(in) :: nvi
+    real(kind=8), intent(in) :: sigm(6), vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(3)
-    real(kind=8), intent(out) :: sigp(6), vip(*)
+    real(kind=8), intent(out) :: sigp(6), vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: icomp
-    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(6, *)
     integer(kind=8), intent(out) :: codret
-    character(len=16), optional, intent(in) :: mult_compor_
+    character(len=16), optional, intent(in) :: multComp_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -151,10 +151,10 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
     character(len=3) :: matcst
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typma
-    character(len=16) :: rela_comp, defo_comp, mult_comp
+    character(len=16) :: relaComp, defoComp, multComp
     character(len=24) :: cpmono(5*nmat+1)
     aster_logical :: l_temp
-    integer(kind=8) :: ndt, ndi, nr, itmax, irtet
+    integer(kind=8) :: ndt, ndi, nr, itmax, irtet, cutLevel
     integer(kind=8) :: nbcomm(nmat, 3), numhsr(1), irr, decirr, nbsyst, decal, gdef
     real(kind=8) :: toler, epsi, materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: epsd(9), deps(9)
@@ -171,34 +171,35 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    cutLevel = BEHinteg%behavPara%cutLevel
     codret = 0
     itmax = int(carcri(1))
     toler = carcri(3)
     theta = carcri(4)
-    rela_comp = compor(RELA_NAME)
-    defo_comp = compor(DEFO)
-    mult_comp = ' '
-    if (present(mult_compor_)) then
-        mult_comp = mult_compor_
+    relaComp = compor(RELA_NAME)
+    defoComp = compor(DEFO)
+    multComp = ' '
+    if (present(multComp_)) then
+        multComp = multComp_
     end if
     mod = typmod(1)
     dt = instap-instam
     resi = option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA'
     rigi = option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA'
     gdef = 0
-    if (defo_comp .eq. 'SIMO_MIEHE') gdef = 1
+    if (defoComp .eq. 'SIMO_MIEHE') then
+        gdef = 1
+    end if
     numhsr(1) = 1
 !
     typma = 'VITESSE '
-!
+
 ! - Get temperatures
-!
     call get_varc(fami, kpg, ksp, 'T', tempd, &
                   tempf, tref, l_temp)
-!
+
 ! - Glute pour LKR
-!
-    if (.not. l_temp .and. rela_comp .eq. 'LKR') then
+    if (.not. l_temp .and. relaComp .eq. 'LKR') then
         tempd = 0.d0
         tempf = 0.d0
         tref = 0.d0
@@ -213,9 +214,8 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
                 pgl, itmax, toler, ndt, ndi, &
                 nr, carcri, nvi, vim, nfs, &
                 nsg, toutms, 1, numhsr, sigm, &
-                mult_comp)
-!
-!
+                multComp)
+
     if (gdef .eq. 1) then
 !        GDEF_MONO : PAS DE DEFORM. THERMIQUE
         b_n = to_blas_int(9)
@@ -244,7 +244,7 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
     end if
 !
 !
-    if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONOCRISTAL') then
+    if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. relaComp .eq. 'MONOCRISTAL') then
         call lcsmelas(epsd, deps, dsidep, nmat=nmat, materd_=materd)
         codret = 0
         goto 999
@@ -261,14 +261,14 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
             seuil = 1.d0
         else
 ! --        INTEGRATION ELASTIQUE SUR DT
-            call lcelas(rela_comp, mod, &
+            call lcelas(relaComp, mod, &
                         nmat, materd, materf, matcst, &
                         deps, sigm, vim, &
                         sigp, theta)
 !
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
             seuil = 1.d0
-            call lccnvx(fami, kpg, ksp, rela_comp, &
+            call lccnvx(fami, kpg, ksp, relaComp, &
                         imate, nmat, materf, sigm, sigp, &
                         deps, vim, vip, nbcomm, cpmono, &
                         pgl, nvi, vp, vecp, hsr, &
@@ -281,13 +281,14 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 ! --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
             etatf = 'PLASTIC'
 !
-            call lcplas(BEHinteg, fami, kpg, ksp, rela_comp, &
+            call lcplas(BEHinteg, &
+                        fami, kpg, ksp, relaComp, &
                         toler, itmax, mod, imate, nmat, &
                         materd, materf, nr, nvi, instam, &
                         instap, deps, epsd, sigm, vim, &
                         sigp, vip, compor, nbcomm, cpmono, &
                         pgl, nfs, nsg, toutms, hsr, &
-                        icomp, irtet, theta, vp, vecp, &
+                        irtet, theta, vp, vecp, &
                         seuil, devg, devgii, drdy, carcri)
 !
 !
@@ -301,12 +302,12 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
             etatf = 'ELASTIC'
 ! ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
 !           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-            call lcelpl(rela_comp, nmat, materf, deps, nvi, &
+            call lcelpl(relaComp, nmat, materf, deps, nvi, &
                         vim, vip)
         end if
 !
 !        POST-TRAITEMENTS PARTICULIERS
-        call lcpopl(rela_comp, nmat, materd, materf, &
+        call lcpopl(relaComp, nmat, materd, materf, &
                     mod, sigp, vim, &
                     vip)
 !
@@ -321,7 +322,7 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 !
     if (rigi) then
         call lcotan(option, etatd, etatf, fami, &
-                    kpg, ksp, rela_comp, mod, imate, &
+                    kpg, ksp, relaComp, mod, imate, &
                     nmat, materd, materf, epsd, deps, &
                     sigm, sigp, nvi, vim, vip, &
                     drdy, vp, vecp, theta, dt, &

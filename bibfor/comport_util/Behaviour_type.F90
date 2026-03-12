@@ -104,6 +104,8 @@ module Behaviour_type
         integer(kind=8) :: nvi = 0
 ! ----- Flag to check bounds
         aster_logical :: lChckBounds = ASTER_FALSE
+! ----- Cut level
+        integer(kind=8) :: cutLevel = 0
     end type Behaviour_Para
 ! ==================================================================================================
 ! Type: External state variables - geometric properties

@@ -22,7 +22,7 @@ subroutine lc1137(BEHinteg, &
                   compor, multComp, carcri, instam, instap, &
                   neps, epsm, deps, sigm, nvi, vim, option, &
                   angmas, sigp, vip, &
-                  typmod, icomp, &
+                  typmod, &
                   dsidep, codret)
 !
     use Behaviour_type
@@ -54,7 +54,6 @@ subroutine lc1137(BEHinteg, &
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8), intent(out) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: icomp
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 !
@@ -92,8 +91,8 @@ subroutine lc1137(BEHinteg, &
                         fami, kpg, ksp, typmod, imate, &
                         compor, carcri, instam, instap, &
                         epsm, deps, sigm, &
-                        vim, option, angmas, sigp, vip, &
-                        dsidep, icomp, nvi, codret, multComp)
+                        nvi, vim, option, angmas, sigp, vip, &
+                        dsidep, codret, multComp)
 
         else if (algoInte .eq. 'RUNGE_KUTTA') then
             meting = 'RUNGE_KUTTA'

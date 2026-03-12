@@ -22,7 +22,7 @@ subroutine lc0059(BEHinteg, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, &
-                  typmod, icomp, dsidep, codret)
+                  typmod, dsidep, codret)
 !
     use Behaviour_type
     implicit none
@@ -52,7 +52,6 @@ subroutine lc0059(BEHinteg, &
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: icomp
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 !
@@ -87,12 +86,12 @@ subroutine lc0059(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: algo_inte
+    character(len=16) :: algoInte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utlcal('VALE_NOM', algo_inte, carcri(6))
-    if ((algo_inte(1:10) .eq. 'SPECIFIQUE') .or. (option(1:14) .eq. 'RIGI_MECA_TANG')) then
+    call utlcal('VALE_NOM', algoInte, carcri(6))
+    if ((algoInte(1:10) .eq. 'SPECIFIQUE') .or. (option(1:14) .eq. 'RIGI_MECA_TANG')) then
         call srcomp(typmod, imate, instam, instap, deps, sigm, vim, &
                     option, sigp, vip, dsidep, codret, nvi)
     else
@@ -100,7 +99,7 @@ subroutine lc0059(BEHinteg, &
                     fami, kpg, ksp, typmod, imate, &
                     compor, carcri, instam, instap, &
                     epsm, deps, sigm, &
-                    vim, option, angmas, sigp, vip, &
-                    dsidep, icomp, nvi, codret)
+                    nvi, vim, option, angmas, sigp, vip, &
+                    dsidep, codret)
     end if
 end subroutine

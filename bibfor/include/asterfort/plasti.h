@@ -18,13 +18,12 @@
 #include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine plasti(BEHinteg    ,&
-                      fami        , kpg   , ksp   , typmod, imate,&
-                      compor      , carcri, instam, instap, &
-                      epsdt       , depst , sigm  ,&
-                      vim         , option, angmas, sigp  , vip,&
-                      dsidep      , icomp , nvi   , codret,&
-                      mult_compor_)
+    subroutine plasti(BEHinteg, &
+                      fami, kpg, ksp, typmod, &
+                      imate, compor, carcri, instam, instap, &
+                      epsdt, depst, sigm, nvi, vim, option, &
+                      angmas, sigp, vip, dsidep, &
+                      codret, multComp_)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in) :: fami
@@ -38,16 +37,15 @@ interface
         real(kind=8), intent(in) :: epsdt(9)
         real(kind=8), intent(in) :: depst(9)
         real(kind=8), intent(in) :: sigm(6)
-        real(kind=8), intent(in) :: vim(*)
+        integer(kind=8), intent(in) :: nvi
+        real(kind=8), intent(in) :: vim(nvi)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
-        real(kind=8), intent(out) :: vip(*)
+        real(kind=8), intent(out) :: vip(nvi)
         character(len=8), intent(in) :: typmod(*)
-        integer(kind=8), intent(in) :: icomp
-        integer(kind=8), intent(in) :: nvi
         real(kind=8), intent(out) :: dsidep(6, *)
         integer(kind=8), intent(out) :: codret
-        character(len=16), optional, intent(in) :: mult_compor_
+        character(len=16), optional, intent(in) :: multComp_
     end subroutine plasti
 end interface

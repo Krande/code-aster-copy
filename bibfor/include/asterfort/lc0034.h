@@ -18,11 +18,14 @@
 #include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine lc0034(fami, kpg, ksp, imate, &
+    subroutine lc0034(BEHinteg, &
+                      fami, kpg, ksp, imate, &
                       carcri, epsm, &
                       deps, sigm, nvi, vim, option, angmas, &
-                      sigp, vip, typmod, icomp, &
+                      sigp, vip, typmod, &
                       dsidep, codret)
+        use Behaviour_type
+        type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in) :: fami
         integer(kind=8), intent(in) :: kpg
         integer(kind=8), intent(in) :: ksp
@@ -37,7 +40,6 @@ interface
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8) :: vip(nvi)
         character(len=8), intent(in) :: typmod(*)
-        integer(kind=8), intent(in) :: icomp
         real(kind=8), intent(out) :: dsidep(6, 6)
         integer(kind=8), intent(out) :: codret
     end subroutine lc0034

@@ -23,7 +23,7 @@ interface
                       fami, kpg, ksp, ndim, imate, l_epsi_varc, &
                       carcri, instam, instap, epsm, &
                       deps, sigm, nvi, vim, option, &
-                      sigp, vip, typmod, icomp, &
+                      sigp, vip, typmod, &
                       dsidep, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg

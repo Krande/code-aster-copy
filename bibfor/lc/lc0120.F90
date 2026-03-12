@@ -21,7 +21,7 @@ subroutine lc0120(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, l_epsi_varc, &
                   carcri, instam, instap, epsm, &
                   deps, sigm, nvi, vim, option, &
-                  sigp, vip, typmod, icomp, &
+                  sigp, vip, typmod, &
                   dsidep, codret)
 !
     use Behaviour_type
@@ -31,7 +31,7 @@ subroutine lc0120(BEHinteg, &
 #include "asterfort/plasbe.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer(kind=8) :: imate, ndim, kpg, ksp, codret, icomp, nvi
+    integer(kind=8) :: imate, ndim, kpg, ksp, codret, nvi
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(6), deps(6)
@@ -45,8 +45,8 @@ subroutine lc0120(BEHinteg, &
 !
     call plasbe(BEHinteg, &
                 fami, kpg, ksp, typmod, imate, l_epsi_varc, &
-                carcri, epsm, deps, sigm, vim, &
+                carcri, epsm, deps, sigm, nvi, vim, &
                 option, sigp, vip, dsidep, &
-                icomp, nvi, codret)
+                codret)
 !
 end subroutine

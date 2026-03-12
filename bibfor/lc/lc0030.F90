@@ -22,8 +22,7 @@ subroutine lc0030(BEHinteg, &
                   compor, carcri, instam, instap, epsm, &
                   deps, sigm, nvi, vim, option, angmas, &
                   sigp, vip, &
-                  typmod, icomp, dsidep, &
-                  codret)
+                  typmod, dsidep, codret)
 !
     use Behaviour_type
     implicit none
@@ -51,7 +50,6 @@ subroutine lc0030(BEHinteg, &
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8), intent(out) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: icomp
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 !
@@ -71,7 +69,7 @@ subroutine lc0030(BEHinteg, &
                 fami, kpg, ksp, typmod, imate, &
                 compor, carcri, instam, instap, &
                 epsm, deps, sigm, &
-                vim, option, angmas, sigp, vip, &
-                dsidep, icomp, nvi, codret)
+                nvi, vim, option, angmas, sigp, vip, &
+                dsidep, codret)
 !
 end subroutine

@@ -22,7 +22,7 @@ interface
                       compor, multComp, carcri, instam, instap, &
                       neps, epsm, deps, sigm, nvi, vim, option, &
                       angmas, sigp, vip, &
-                      typmod, icomp, &
+                      typmod, &
                       dsidep, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -45,7 +45,6 @@ interface
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(nvi)
         character(len=8), intent(in) :: typmod(*)
-        integer(kind=8), intent(in) :: icomp
         real(kind=8), intent(out) :: dsidep(6, 6)
         integer(kind=8), intent(out) :: codret
     end subroutine lc1137

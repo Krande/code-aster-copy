@@ -16,12 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lc0034(fami, kpg, ksp, imate, &
+subroutine lc0034(BEHinteg, &
+                  fami, kpg, ksp, imate, &
                   carcri, epsm, &
                   deps, sigm, nvi, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, &
+                  sigp, vip, typmod, &
                   dsidep, codret)
 !
+    use Behaviour_type
     implicit none
 !
 #include "asterfort/assert.h"
@@ -31,6 +33,7 @@ subroutine lc0034(fami, kpg, ksp, imate, &
 #include "asterfort/utlcal.h"
 #include "jeveux.h"
 !
+    type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -45,19 +48,9 @@ subroutine lc0034(fami, kpg, ksp, imate, &
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: icomp
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
-    real(kind=8)     :: npal, crit
-    character(len=8) :: nomail
-    integer(kind=8)          :: iadzi, iazk24, ndt, ndi
-    aster_logical    :: debug, redec
-! ----------------------------------------------------------------
-    common/meshuj/debug
-    common/tdim/ndt, ndi
 
-! ----------------------------------------------------------------
-!
 ! --------------------------------------------------------------------------------------------------
 !
 ! Behaviour
@@ -66,20 +59,23 @@ subroutine lc0034(fami, kpg, ksp, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  BEHinteg         : parameters for integration of behaviour
-!
-! --------------------------------------------------------------------------------------------------
-!
-    character(len=16) :: algo_inte
+    character(len=16) :: algoInte
+    integer(kind=8) :: cutLevel
+    real(kind=8) :: npal, crit
+    character(len=8) :: nomail
+    integer(kind=8) :: iadzi, iazk24, ndt, ndi
+    aster_logical :: debug, redec
+    common/meshuj/debug
+    common/tdim/ndt, ndi
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(nvi .eq. 50)
-    call utlcal('VALE_NOM', algo_inte, carcri(6))
+    call utlcal('VALE_NOM', algoInte, carcri(6))
+    cutLevel = BEHinteg%behavPara%cutLevel
 !
     call nmhuj(fami, kpg, ksp, typmod, imate, &
-               carcri, &
-               angmas, epsm, &
+               carcri, angmas, epsm, &
                deps, sigm, vim, option, sigp, &
                vip, dsidep, codret)
 
@@ -113,7 +109,7 @@ subroutine lc0034(fami, kpg, ksp, imate, &
     crit = carcri(3)
     redec = (carcri(5) .lt. -1.) .or. (carcri(5) .gt. 1.)
 !
-    if (algo_inte(1:16) .eq. 'BASCULE_EXPLICIT' .and. (.not. redec)) then
+    if (algoInte(1:16) .eq. 'BASCULE_EXPLICIT' .and. (.not. redec)) then
 !
 ! On remet codret a zero si critere non depasse
 ! et on sauvegarde un indicateur d'erreur dans V34 (realise dans nmhuj)
@@ -143,7 +139,7 @@ subroutine lc0034(fami, kpg, ksp, imate, &
             end if
         end if
 !
-    elseif (algo_inte(1:16) .eq. 'BASCULE_EXPLICIT' .and. icomp .eq. 3) then
+    elseif (algoInte(1:16) .eq. 'BASCULE_EXPLICIT' .and. cutLevel .eq. 3) then
 !
 ! initialisation des variables internes utilisees dans le cas suivant
 ! -------------------------------------------------------------------
@@ -152,9 +148,9 @@ subroutine lc0034(fami, kpg, ksp, imate, &
         vip(34) = 0.d0
         vip(35) = 0.d0
 !
-    elseif (algo_inte(1:16) .eq. 'BASCULE_EXPLICIT' .and. icomp .gt. 3) then
+    elseif (algoInte(1:16) .eq. 'BASCULE_EXPLICIT' .and. cutLevel .gt. 3) then
 !
-! npal = nombre d'iteration maximal pour icomp=4
+! npal = nombre d'iteration maximal pour cutLevel=4
         npal = 4.*abs(carcri(5))
 !
 ! dans le cas codret=0, on incremente l'erreur sur le critere (V34)
@@ -186,7 +182,7 @@ subroutine lc0034(fami, kpg, ksp, imate, &
             end if
         end if
 !
-! evaluation de l'erreur en fin de redecoupage pour icomp=4
+! evaluation de l'erreur en fin de redecoupage pour cutLevel=4
 ! l'erreur est calculee dans nmhuj et stockee dans la variable V34
 ! stockage du numero d'increment si on n'est pas au dernier pas
 !
@@ -201,9 +197,9 @@ subroutine lc0034(fami, kpg, ksp, imate, &
 !
 ! -------------------------------------------------------------------------
 !
-    elseif (algo_inte(1:14) .eq. 'SEMI_EXPLICITE' .and. codret .eq. 1) then
+    elseif (algoInte(1:14) .eq. 'SEMI_EXPLICITE' .and. codret .eq. 1) then
 !
-        if (icomp .gt. 3) then
+        if (cutLevel .gt. 3) then
             codret = 2
         end if
 !

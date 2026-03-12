@@ -19,9 +19,9 @@
 !
 subroutine plasbe(BEHinteg, &
                   fami, kpg, ksp, typmod, imat, l_epsi_varc, &
-                  carcri, epsdt, depst, sigd, vind, &
+                  carcri, epsdt, depst, sigd, nvi, vind, &
                   opt, sigf, vinf, dsde, &
-                  icomp, nvi, irteti)
+                  irteti)
 !
     use Behaviour_type
     implicit none
@@ -172,7 +172,7 @@ subroutine plasbe(BEHinteg, &
     type(Behaviour_Integ), intent(in) :: BEHinteg
     aster_logical, intent(in) :: l_epsi_varc
     integer(kind=8) :: imat, ndt, ndi, nr, nvi
-    integer(kind=8) :: itmax, icomp
+    integer(kind=8) :: itmax
     integer(kind=8) :: nmat, irtet, irteti, nseui4
     integer(kind=8) :: nseuil, nseui1, nseui2, nseui3
     integer(kind=8) :: iadzi, iazk24
@@ -180,7 +180,7 @@ subroutine plasbe(BEHinteg, &
     real(kind=8) :: epsi
 !
 !-----------------------------------------------------------------------
-    integer(kind=8) :: iret, kpg, ksp
+    integer(kind=8) :: iret, kpg, ksp, cutLevel
     real(kind=8) :: tneg, tref
 !-----------------------------------------------------------------------
     parameter(epsi=1.d-15)
@@ -221,6 +221,7 @@ subroutine plasbe(BEHinteg, &
     nseui3 = 0
     nseui4 = 0
     nomail = ' '
+    cutLevel = BEHinteg%behavPara%cutLevel
 !
     resi = opt(1:9) .eq. 'FULL_MECA' .or. opt .eq. 'RAPH_MECA'
     rigi = opt(1:9) .eq. 'FULL_MECA' .or. opt(1:9) .eq. 'RIGI_MECA'
@@ -295,7 +296,7 @@ subroutine plasbe(BEHinteg, &
     end if
 !
 !  -->  REDECOUPAGE IMPOSE
-    if (icomp .eq. -1 .and. opt .ne. 'RIGI_MECA_TANG') then
+    if (cutLevel .eq. -1 .and. opt .ne. 'RIGI_MECA_TANG') then
         irteti = 0
         goto 999
     end if

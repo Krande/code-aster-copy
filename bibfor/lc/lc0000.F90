@@ -23,7 +23,7 @@ subroutine lc0000(BEHinteg, &
                   carcri, instam, instap, neps, epsm_tot, &
                   deps_tot, nsig, sigm_all, vim, option, &
                   angmas, numlc, sigp, vip, &
-                  ndsde, dsidep, icomp, nvi_all, codret)
+                  ndsde, dsidep, nvi_all, codret)
 !
     use Behaviour_type
     use Behaviour_module
@@ -127,19 +127,18 @@ subroutine lc0000(BEHinteg, &
     integer(kind=8) :: imate, ndim, nvi_all, kpg, ksp
     aster_logical, intent(in) :: l_epsi_varc
     integer(kind=8) :: neps, nsig, ndsde
-    real(kind=8) :: carcri(CARCRI_SIZE), angmas(3)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE), angmas(3)
     real(kind=8) :: instam, instap
     real(kind=8), intent(in) :: epsm_tot(neps), deps_tot(neps)
     real(kind=8) :: sigm_all(nsig), sigp(nsig)
     real(kind=8) :: vim(nvi_all), vip(nvi_all)
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
-    character(len=16) :: compor(COMPOR_SIZE), option
+    character(len=16), intent(in) :: compor(COMPOR_SIZE), option
     character(len=8), intent(in) :: materi
     character(len=16), intent(in) :: multComp
     character(len=8) :: typmod(2)
     character(len=*) :: fami
-    integer(kind=8) :: icomp
     integer(kind=8) :: numlc
     integer(kind=8) :: codret
 !
@@ -478,7 +477,7 @@ subroutine lc0000(BEHinteg, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, nvi, vim, option, angmas, &
                     sigp, vip, &
-                    typmod, icomp, dsidep, &
+                    typmod, dsidep, &
                     codret)
     case (31)
         ! call notAnisot(angmas)
@@ -489,13 +488,13 @@ subroutine lc0000(BEHinteg, &
                     dsidep, codret)
 
     case (32)
-        ! VISCOCHAB - ICOMP
+        ! VISCOCHAB
         ! call notAnisot(angmas)
         call lc0032(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, &
                     epsm, deps, sigm, nvi, vim, option, &
-                    angmas, sigp, vip, typmod, icomp, &
+                    angmas, sigp, vip, typmod, &
                     dsidep, codret)
 
     case (33)
@@ -506,15 +505,15 @@ subroutine lc0000(BEHinteg, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, nvi, vim, option, angmas, &
                     sigp, vip, &
-                    typmod, icomp, dsidep, &
-                    codret)
+                    typmod, dsidep, codret)
 
     case (34)
         ! HUJEUX - ICOMP
-        call lc0034(fami, kpg, ksp, imate, &
+        call lc0034(BEHinteg, &
+                    fami, kpg, ksp, imate, &
                     carcri, epsm, &
                     deps, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
+                    sigp, vip, typmod, &
                     dsidep, codret)
 
     case (35)
@@ -523,7 +522,7 @@ subroutine lc0000(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
+                    sigp, vip, typmod, &
                     dsidep, codret)
 
     case (36)
@@ -589,7 +588,7 @@ subroutine lc0000(BEHinteg, &
                     compor, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, angmas, &
                     sigp, vip, &
-                    typmod, icomp, dsidep, codret)
+                    typmod, dsidep, codret)
 
     case (60)
         call lc0060(BEHinteg, &
@@ -652,7 +651,7 @@ subroutine lc0000(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, l_epsi_varc, &
                     carcri, instam, instap, epsm, &
                     deps, sigm, nvi, vim, option, &
-                    sigp, vip, typmod, icomp, &
+                    sigp, vip, typmod, &
                     dsidep, codret)
 
     case (137)
@@ -662,7 +661,7 @@ subroutine lc0000(BEHinteg, &
                     compor, multComp, carcri, instam, instap, neps, &
                     epsm, deps, sigm, nvi, vim, option, &
                     angmas, sigp, vip, &
-                    typmod, icomp, &
+                    typmod, &
                     dsidep, codret)
 
     case (145)
@@ -757,7 +756,7 @@ subroutine lc0000(BEHinteg, &
                     compor, multComp, carcri, instam, instap, neps, &
                     epsm, deps, sigm, nvi, vim, option, &
                     angmas, sigp, vip, &
-                    typmod, icomp, &
+                    typmod, &
                     dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1060,7 +1059,7 @@ subroutine lc0000(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, &
                     carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
+                    sigp, vip, typmod, &
                     ndsde, dsidep, codret)
 
     case default

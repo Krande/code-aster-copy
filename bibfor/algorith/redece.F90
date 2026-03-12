@@ -19,41 +19,40 @@
 !
 subroutine redece(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
-                  l_epsi_varc, imate, materi, compor, mult_comp, &
+                  l_epsi_varc, imate, materi, compor, multComp, &
                   carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &
                   angmas, numlc, sigp, vip, &
                   ndsde, dsidep, codret)
-
+!
     use calcul_module, only: ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
     use Behaviour_type
     use Behaviour_module
-
     implicit none
-
+!
 #include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/lc0000.h"
 #include "asterfort/utmess.h"
-
+!
     type(Behaviour_Integ) :: BEHinteg
     character(len=*) :: fami
     integer(kind=8) :: imate, ndim, kpg, ksp, numlc
     integer(kind=8) :: neps, nsig, ndsde
     aster_logical, intent(in) :: l_epsi_varc
     integer(kind=8), intent(in):: nvi
-    real(kind=8) :: carcri(*), angmas(*)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(neps), deps(neps)
     real(kind=8) :: sigm(nsig), sigp(nsig)
     real(kind=8) :: vim(nvi), vip(nvi)
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
-    character(len=8)  :: typmod(*)
-    character(len=16) :: compor(*), option
+    character(len=8) :: typmod(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE), option
     character(len=8), intent(in) :: materi
-    character(len=16), intent(in) :: mult_comp
+    character(len=16), intent(in) :: multComp
     integer(kind=8), intent(out):: codret
 
 ! --------------------------------------------------------------------------------------------------
@@ -68,7 +67,7 @@ subroutine redece(BEHinteg, &
 !                               (2) = nb variables internes / pg
 !                               (3) = hypothese sur les deformations
 !                               (4) etc... (voir grandeur compor)
-!     mult_comp : multi-comportement (pour polycristal)
+!     multComp : multi-comportement (pour polycristal)
 !     carcri  : criteres de convergence locaux (voir grandeur carcri)
 !     instam  : instant du calcul precedent
 !     instap  : instant du calcul
@@ -135,15 +134,16 @@ subroutine redece(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 
     if (decoup .eq. SANS) then
-        niv_dec = 2
+        !niv_dec = 2
         codret = 0
+        BEHinteg%behavPara%cutLevel = 2
         call lc0000(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod, &
-                    l_epsi_varc, imate, materi, compor, mult_comp, &
+                    l_epsi_varc, imate, materi, compor, multComp, &
                     carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, vim, option, &
                     angmas, numlc, sigp, vip, &
-                    ndsde, dsidep, niv_dec, nvi, codret)
+                    ndsde, dsidep, nvi, codret)
         goto 999
     end if
 
@@ -184,14 +184,14 @@ subroutine redece(BEHinteg, &
             ca_tf1_ = tp
             codret_sub = 0
             vip = vim_sub
-
+            BEHinteg%behavPara%cutLevel = niv_dec
             call lc0000(BEHinteg, &
                         fami, kpg, ksp, ndim, typmod, &
-                        l_epsi_varc, imate, materi, compor, mult_comp, &
+                        l_epsi_varc, imate, materi, compor, multComp, &
                         carcri, tm, tp, neps, epsm_sub, &
                         deps_sub, nsig, sigm_sub, vim_sub, option, &
                         angmas, numlc, sigp, vip, &
-                        ndsde, dsidep_sub, niv_dec, nvi, codret_sub)
+                        ndsde, dsidep_sub, nvi, codret_sub)
 
             select case (codret_sub)
             case (0)
