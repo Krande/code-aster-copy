@@ -172,23 +172,25 @@ int main(void){
 
 @Configure.conf
 def check_sizeof_mumps_integer(self):
-    """Check Mumps integer size
-    include "dmumps_struc.h"
-    type(dmumps_struc) :: dmpsk
-    print *, sizeof(i)
-    end
+    """Check Mumps integer size using the C struct header.
+
+    Uses check_cc instead of check_fc so that Fortran integer promotion
+    flags (/integer-size:64, -fdefault-integer-8) do not inflate the
+    detected size.  The C header ``mumps_c_types.h`` (included via
+    ``dmumps_c.h``) defines ``MUMPS_INT`` based on the library's
+    ``mumps_int_def.h``, which reflects the actual MUMPS build.
     """
-    fragment = "\n".join(
-        [
-            'include "dmumps_struc.h"',
-            "type(dmumps_struc) :: dmpsk",
-            "print *, sizeof(dmpsk%n)",
-            "end",
-        ]
-    )
+    fragment = r"""
+#include <stdio.h>
+#include "mumps_c_types.h"
+
+int main(void){
+    printf("%d", (int)sizeof(MUMPS_INT));
+    return 0;
+}"""
     self.code_checker(
         "ASTER_MUMPS_INT_SIZE",
-        self.check_fc,
+        self.check_cc,
         fragment,
         "Checking size of Mumps integer",
         "unexpected value for sizeof(mumps_int): %(size)s",
