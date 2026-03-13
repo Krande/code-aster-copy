@@ -11,6 +11,12 @@ set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%INCLUDE%"
 
 set FCFLAGS=/fpp /nologo %FCFLAGS%
 
+:: Remove 'bidon' dummy parameters from PPRO_NT C wrappers.
+:: With default ifx calling convention (string lengths at end of arg list),
+:: these parameters shift all arguments by one and cause ACCESS_VIOLATION.
+python %RECIPE_DIR%\fix_iface.py ..
+if errorlevel 1 exit 1
+
 cmake -G "Ninja" ^
   %CMAKE_ARGS% ^
   -D HDF5_BUILD_FORTRAN:BOOL=ON ^
