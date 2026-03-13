@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF RD - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,8 @@ subroutine PCHPDDMDumpAuxiliaryMat(pc, is, aux)
     !----------------------------------------------------------------
     call asmpi_info(comm=PETSC_COMM_WORLD, rank=rank, size=size)
     dir = "/tmp"
-   call PetscOptionsGetString(PETSC_NULL_OPTIONS, PETSC_NULL_CHARACTER, "-dump_dir", dir, set, ierr)
+    call PetscOptionsGetString(PETSC_NULL_OPTIONS, PETSC_NULL_CHARACTER, &
+                               "-dump_dir", dir, set, ierr)
     ASSERT(ierr .eq. 0)
     write (name, "(A,A,I0.3,A,I0.3,A)") trim(dir), "/sizes_", rank, "_", size, ".dat"
     call PetscViewerBinaryOpen(PETSC_COMM_SELF, name, FILE_MODE_WRITE, viewer, ierr)
