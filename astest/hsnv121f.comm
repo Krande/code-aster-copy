@@ -186,4 +186,6 @@ TEST_RESU(
     )
 )
 
+test.printSummary()
+
 FIN()

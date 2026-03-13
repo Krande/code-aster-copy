@@ -31,8 +31,6 @@ from code_aster.Solvers import (
     TimeStepper,
 )
 
-# from code_aster.Utilities.logger import INFO, logger
-
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
 
