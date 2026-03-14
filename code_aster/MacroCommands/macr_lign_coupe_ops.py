@@ -773,7 +773,10 @@ def macr_lign_coupe_ops(
             _win_released = True
 
     with open(nomFichierSortie, "w") as fproc:
-        fproc.write(os.linesep.join(resu_mail))
+        # Use "\n".join, not os.linesep.join: Python text mode translates \n
+        # to \r\n on Windows automatically.  os.linesep.join inserts \r\n,
+        # which text mode then doubles to \r\r\n, corrupting the mesh file.
+        fproc.write("\n".join(resu_mail))
 
     if _win_released:
         # Re-open the file on a Fortran logical unit for LIRE_MAILLAGE.

@@ -151,7 +151,7 @@ def cherche_trajet(
     arcs.append((pt3, PtMax, nbPoints, 180.0, dnor))
 
     resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignes, groups, arcs)
-    __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
+    __MAI = crea_sd_mail(self, "\n".join(resu_mail0))
 
     motclefs2 = {}
     motclefs2["MAILLAGE_1"] = __mail
@@ -238,7 +238,7 @@ def cherche_trajet(
     lignes.append((Ppred.tolist(), PPlus.tolist(), nbPoints))
 
     resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignes, groups, arcs)
-    __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
+    __MAI = crea_sd_mail(self, "\n".join(resu_mail0))
 
     motclefs2 = {}
     motclefs2["MAILLAGE_1"] = __mail
@@ -359,7 +359,7 @@ def cherche_trajet(
         lignes.append((Ppred.tolist(), PPlus.tolist(), nbPoints))
 
         resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignes, groups, arcs)
-        __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
+        __MAI = crea_sd_mail(self, "\n".join(resu_mail0))
 
         motclefs2 = {}
         motclefs2["MAILLAGE_1"] = __mail
@@ -592,7 +592,7 @@ def calcul_ouverture(
         lignort.append((PtCrete, PDort, nbPoints))
 
         resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignort, groups0, arcs0)
-        __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
+        __MAI = crea_sd_mail(self, "\n".join(resu_mail0))
 
         CoorTotOrtho = __MAI.getCoordinates().getValues()
         XtotOrtho = NP.array(CoorTotOrtho[coorIni1 : len(CoorTotOrtho) : 3])

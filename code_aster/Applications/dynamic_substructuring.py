@@ -138,7 +138,7 @@ def import_array(np_array, reference_matrix=None):
 
     else:
         txt_mesh, _, _, _ = crea_mail_lig_coup(2, [((0.0, 0.0), (1.0, 0.0), neqg)], [], [])
-        _mesh = crea_sd_mail(None, os.linesep.join(txt_mesh))
+        _mesh = crea_sd_mail(None, "\n".join(txt_mesh))
         _model = AFFE_MODELE(
             MAILLAGE=_mesh, AFFE=(_F(TOUT="OUI", MODELISATION="2D_DIS_T", PHENOMENE="MECANIQUE"),)
         )

@@ -1513,7 +1513,7 @@ def calc_bt_ops(self, **args):
 
                 nomFichierSortie = LogicalUnitFile.filename_from_unit(UNITE_MAILLAGE)
                 with open(nomFichierSortie, "w") as fproc:
-                    fproc.write(os.linesep.join(ST_MESH))
+                    fproc.write("\n".join(ST_MESH))
 
             __Forces = run_truss_computation_(
                 i_,
@@ -1610,7 +1610,7 @@ def calc_bt_ops(self, **args):
 
                 nomFichierSortie = LogicalUnitFile.filename_from_unit(UNITE_MAILLAGE)
                 with open(nomFichierSortie, "w") as fproc:
-                    fproc.write(os.linesep.join(ST_MESH))
+                    fproc.write("\n".join(ST_MESH))
 
                 __Forces = run_truss_computation_(
                     i_,
@@ -1643,7 +1643,7 @@ def calc_bt_ops(self, **args):
 
         nomFichierSortie = LogicalUnitFile.filename_from_unit(UNITE_MAILLAGE)
         with open(nomFichierSortie, "w") as fproc:
-            fproc.write(os.linesep.join(ST_MESH))
+            fproc.write("\n".join(ST_MESH))
 
         __Forces, __resu, __truss, __strainE = run_truss_computation_1(
             i_,

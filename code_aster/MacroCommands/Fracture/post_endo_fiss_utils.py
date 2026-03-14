@@ -161,8 +161,11 @@ def crea_mail_lin(XcreteTot, YcreteTot, ZcreteTot, ConnTot, lstNomFiss, dime):
 #    A MESH IN THE ASTER FORMAT
 def crea_sd_mail(self, mailString):
     nomFichierSortie = os.path.join(os.getcwd(), "maillage.mail")
-    fproc = open(nomFichierSortie, "w")
-    fproc.write(mailString)
+    # Write in binary mode to avoid double CRLF on Windows: the caller
+    # already joined lines with os.linesep, so text-mode \n→\r\n translation
+    # would turn \r\n into \r\r\n, breaking the Fortran mesh parser.
+    fproc = open(nomFichierSortie, "wb")
+    fproc.write(mailString.encode())
     fproc.close()
     unitFile = LogicalUnitFile.open(nomFichierSortie, access=FileAccess.Old)
     uniteMail = unitFile.unit

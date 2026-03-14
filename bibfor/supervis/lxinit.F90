@@ -111,6 +111,11 @@ subroutine lxinit()
 !
 !     TABULATION
     class(9) = char(clbl)
+!     CARRIAGE RETURN — treat as blank for Windows CRLF text file compatibility.
+!     On Windows, Python's os.linesep.join() + text-mode write produces \r\r\n;
+!     Fortran's text-mode read strips the trailing \r\n, leaving a stray \r in
+!     the data that would otherwise be classified as ILLEGAL and break parsing.
+    class(13) = char(clbl)
 !
 !     INITIALISATION DE LA CLASSE 'DELIMITEUR'
     nbdeli = mxdeli
