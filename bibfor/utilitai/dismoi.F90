@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dismoi(questi, nomob, typeco, repi, repk, &
+recursive subroutine dismoi(questi, nomob, typeco, repi, repk, &
                   arret, ier)
     implicit none
 #include "jeveux.h"

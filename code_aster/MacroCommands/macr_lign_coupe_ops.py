@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import os
+import sys
 from math import asin, atan2, cos, pi, sin, sqrt
 
 from ..Cata.Syntax import _F
@@ -758,19 +759,26 @@ def macr_lign_coupe_ops(
     resu_mail, arcgma, angles, nbno = crea_mail_lig_coup(dime, lignes, groups, arcs)
 
     nomFichierSortie = LogicalUnitFile.filename_from_unit(UNITE_MAILLAGE)
-    # Release the Fortran file handle before writing the mesh from Python.
+
     # On Windows, the Fortran runtime's OPEN statement acquires an exclusive
     # file lock that prevents Python's open() from accessing the same file,
-    # resulting in PermissionError. On POSIX this is harmless since multiple
-    # file descriptors can coexist on the same file.
-    LogicalUnitFile.release_from_number(UNITE_MAILLAGE)
+    # causing PermissionError.  Release the Fortran handle only when the unit
+    # was auto-allocated (registered with LogicalUnitFile); user-specified
+    # units are not opened by Fortran at this point so no release is needed.
+    _win_released = False
+    if sys.platform == "win32":
+        _fileobj = LogicalUnitFile.from_number(UNITE_MAILLAGE)
+        if _fileobj is not None:
+            LogicalUnitFile.release_from_number(UNITE_MAILLAGE)
+            _win_released = True
 
     with open(nomFichierSortie, "w") as fproc:
         fproc.write(os.linesep.join(resu_mail))
 
-    # Re-open the file on a Fortran logical unit for LIRE_MAILLAGE to read.
-    logical_unit = LogicalUnitFile.open(nomFichierSortie, access=FileAccess.Old)
-    UNITE_MAILLAGE = logical_unit.unit
+    if _win_released:
+        # Re-open the file on a Fortran logical unit for LIRE_MAILLAGE.
+        logical_unit = LogicalUnitFile.open(nomFichierSortie, access=FileAccess.Old)
+        UNITE_MAILLAGE = logical_unit.unit
 
     # Lecture du maillage de seg2 contenant toutes les lignes de coupe
     __macou = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=UNITE_MAILLAGE)
