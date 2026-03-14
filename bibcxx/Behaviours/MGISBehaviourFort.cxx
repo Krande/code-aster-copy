@@ -30,7 +30,9 @@
 #ifdef ASTER_HAVE_MGIS
 inline MGISBehaviour *getPtr( const std::string &hexid ) {
     AS_ASSERT( strip( hexid ) != "" && strip( hexid ) != "VIDE" );
-    ASTERINTEGER addr = (ASTERINTEGER)std::stol( hexid, nullptr, 16 );
+    // Use stoll (long long) instead of stol: on Windows LLP64, long is 32 bits
+    // and cannot hold 64-bit pointer addresses, causing std::out_of_range.
+    ASTERINTEGER addr = (ASTERINTEGER)std::stoll( hexid, nullptr, 16 );
     return (MGISBehaviour *)( addr );
 }
 

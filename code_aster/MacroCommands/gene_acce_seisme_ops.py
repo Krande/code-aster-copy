@@ -29,6 +29,10 @@ from math import ceil, pi, sqrt
 
 import numpy as NP
 
+# numpy 2.0 removed trapz in favour of trapezoid
+if not hasattr(NP, "trapz"):
+    NP.trapz = NP.trapezoid
+
 from ..Cata.Syntax import _F
 from ..CodeCommands import CREA_TABLE, DEFI_FONCTION
 from ..Messages import UTMESS

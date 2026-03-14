@@ -18,6 +18,10 @@
 # --------------------------------------------------------------------
 import numpy as np
 import tempfile
+
+# numpy 2.0 removed trapz in favour of trapezoid
+if not hasattr(np, "trapz"):
+    np.trapz = np.trapezoid
 from typing import List, Dict, Callable
 from datetime import datetime
 from ..Messages import UTMESS

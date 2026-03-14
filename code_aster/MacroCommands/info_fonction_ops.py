@@ -21,6 +21,10 @@ import math
 
 import numpy as NP
 
+# numpy 2.0 removed trapz in favour of trapezoid
+if not hasattr(NP, "trapz"):
+    NP.trapz = NP.trapezoid
+
 from ..Objects.function_py import t_fonction, t_nappe
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_FONCTION, CREA_TABLE, IMPR_TABLE

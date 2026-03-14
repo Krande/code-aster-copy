@@ -29,6 +29,10 @@ import os
 
 import numpy as NP
 
+# numpy 2.0 removed trapz in favour of trapezoid
+if not hasattr(NP, "trapz"):
+    NP.trapz = NP.trapezoid
+
 from ...CodeCommands import LIRE_MAILLAGE
 from ...Helpers.LogicalUnit import FileAccess, LogicalUnitFile
 

@@ -37,6 +37,10 @@ from math import pi, sqrt
 
 import numpy as NP
 
+# numpy 2.0 removed trapz in favour of trapezoid
+if not hasattr(NP, "trapz"):
+    NP.trapz = NP.trapezoid
+
 from ...Utilities import disable_fpe
 from ...Messages import UTMESS
 

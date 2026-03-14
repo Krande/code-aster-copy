@@ -39,6 +39,10 @@ Acce2SRO               ---      calculate response spectrum of a seismic signal
 from math import cos, exp, log, pi, sqrt
 
 import numpy as NP
+
+# numpy 2.0 removed trapz in favour of trapezoid
+if not hasattr(NP, "trapz"):
+    NP.trapz = NP.trapezoid
 import aster_fonctions
 from ...Messages import UTMESS
 
