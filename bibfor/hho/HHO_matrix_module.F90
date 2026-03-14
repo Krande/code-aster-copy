@@ -257,7 +257,10 @@ contains
         ASSERT(this%nrows >= row_offset+mat%nrows)
         ASSERT(this%ncols >= col_offset+mat%ncols)
 !
-        this%m(row_offset+1:row_offset+1+mat%nrows, col_offset+1:col_offset+1+mat%ncols) = mat%m
+!       Fix off-by-one: Fortran slice a(i+1:i+1+n) has n+1 elements (inclusive range).
+!       The correct slice for n elements starting at i+1 is a(i+1:i+n).
+!       The extra element caused out-of-bounds writes, crashing on Windows/ifx.
+        this%m(row_offset+1:row_offset+mat%nrows, col_offset+1:col_offset+mat%ncols) = mat%m
 !
     end subroutine
 !
