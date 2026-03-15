@@ -41,7 +41,8 @@ struct npy_type {
 };
 template <>
 struct npy_type< JeveuxVectorLong > {
-    static const int value = NPY_LONG;
+    // NPY_LONG is 32-bit on Windows LLP64; use NPY_INT64 to match ASTERINTEGER (int64_t).
+    static const int value = NPY_INT64;
 };
 #ifndef ASTER_INT4  // Only define ASTERINTEGER4 specialization when using 64-bit integers.
 template <>
@@ -83,7 +84,8 @@ struct npy_type< JeveuxVectorChar80 > {
 };
 template <>
 struct npy_type< ASTERINTEGER > {
-    static const int value = NPY_LONG;
+    // NPY_LONG is 32-bit on Windows LLP64; use NPY_INT64 to match ASTERINTEGER (int64_t).
+    static const int value = NPY_INT64;
 };
 template <>
 struct npy_type< ASTERDOUBLE > {

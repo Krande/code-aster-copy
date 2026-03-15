@@ -554,7 +554,9 @@ class SimpleFieldOnCells : public DataField {
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );
         PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL, _allocated->getDataPtr() );
-        PyObject *size = PyArray_SimpleNewFromData( 1, dim1, NPY_LONG, _size->getDataPtr() );
+        // Use NPY_INT64 (not NPY_LONG) to match JeveuxVectorLong's ASTERINTEGER (int64_t).
+        // NPY_LONG is only 32-bit on Windows LLP64, causing data corruption.
+        PyObject *size = PyArray_SimpleNewFromData( 1, dim1, NPY_INT64, _size->getDataPtr() );
         AS_ASSERT( values != NULL );
         AS_ASSERT( mask != NULL );
         AS_ASSERT( size != NULL );

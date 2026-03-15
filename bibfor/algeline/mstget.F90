@@ -115,6 +115,10 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
         jind1 = lacb
         jind2 = llag
         nb_appui = 0
+!       Initialize nb_mode_appui here — it was only set inside the nb_appui > 0 block,
+!       leaving it uninitialized when no NOM_APPUI is present.  On Windows/ifx the
+!       uninitialized stack value could be nonzero, triggering juveca on a non-existent object.
+        nb_mode_appui = 0
         AS_ALLOCATE(vk8=nom_appuis, size=nbocc)
         do iocc = 1, nbocc
             call getvtx(keywordfact, 'NOM_APPUI', iocc=iocc, nbval=0, nbret=na)

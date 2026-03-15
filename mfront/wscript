@@ -266,7 +266,12 @@ def check_mfront_obsolete_source(self):
     src = self.path.get_src().abspath()
     # clean obsolete behaviours (from a previous build)
     bld, mfront = osp.split(self.path.get_bld().abspath())
-    excl = ["libAsterMFrOfficial.so", "libAsterMFrOfficialDebug.so", "include"]
+    excl = [
+        "libAsterMFrOfficial.so", "libAsterMFrOfficialDebug.so",
+        # Windows/MSVC: no "lib" prefix, .dll extension
+        "AsterMFrOfficial.dll", "AsterMFrOfficialDebug.dll",
+        "include",
+    ]
     for variant in ("debug", "release"):
         build = osp.join(bld, variant, mfront)
         if osp.exists(build):
