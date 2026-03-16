@@ -60,10 +60,8 @@ PROJ_CHAMP = OPER(
     nom="PROJ_CHAMP",
     op=166,
     sd_prod=proj_champ_prod,
-    reentrant="f:RESULTAT",
     fr=tr("Projeter des champs d'un maillage sur un autre"),
     compat_syntax=compat_syntax,
-    reuse=SIMP(statut="c", typ=CO),
     # faut-il projeter les champs ?
     PROJECTION=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     # pour projeter avec une sd_corresp_2_mailla deja calculée :
