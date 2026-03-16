@@ -78,7 +78,7 @@ PROJ_CHAMP = OPER(
             UN_PARMI("MODELE_1", "MAILLAGE_1"),
             UN_PARMI("MODELE_2", "MAILLAGE_2"),
         ),
-        RESULTAT=SIMP(statut="f", typ=resultat_sdaster),
+        RESULTAT=SIMP(statut="f", typ=(resultat_sdaster, ds_dict)),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
         METHODE=SIMP(
             statut="f",

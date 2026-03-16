@@ -27,8 +27,8 @@ from ..Objects import (
     ParallelMesh,
     SimpleFieldOnNodesReal,
 )
-from ..Supervis import ExecuteCommand
-from ..Utilities import force_list, MPI
+from ..Supervis import ExecuteCommand, loop_on_dsdict
+from ..Utilities import force_list
 
 
 def _addGroup(mcf, groups, keys):
@@ -58,6 +58,7 @@ def _getGroups(keywords):
     return sorted(list(nodeGroups)), sorted(list(cellGroups))
 
 
+@loop_on_dsdict("RESULTAT")
 class FieldProjector(ExecuteCommand):
     """Command that allows to project fields."""
 
@@ -185,7 +186,6 @@ class FieldProjector(ExecuteCommand):
                 self._result = resu.transferFromConnectionToParallelMesh(maillage_2)
 
             elif keywords["PROJECTION"] == "NON":
-
                 maillage_1 = keywords.pop("MAILLAGE_1")
                 maillage_2 = keywords.pop("MAILLAGE_2")
                 nodeGroups, cellGroups = _getGroups(keywords)
