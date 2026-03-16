@@ -39,7 +39,6 @@ See ``bin/run_sbatch --help`` for the available options.
 import argparse
 import os
 import os.path as osp
-import re
 import stat
 import sys
 import tempfile

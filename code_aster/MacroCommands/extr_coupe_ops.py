@@ -23,18 +23,11 @@ import numpy as np
 from scipy import interpolate
 from scipy.stats import norm
 
-from ..CodeCommands import LIRE_RESU, MODI_REPERE, POST_RELEVE_T, PROJ_CHAMP
-from ..Helpers import LogicalUnitFile
-from ..Objects import Mesh, ElasticResult, NonLinearResult, ThermalResult, TransientResult
-from ..Objects.datastructure_py import (
-    DataStructureDict,
-    ThermalResultDict,
-    NonLinearResultDict,
-    ElasticResultDict,
-)
+from ..CodeCommands import MODI_REPERE, POST_RELEVE_T, PROJ_CHAMP
+from ..Objects import ElasticResult, Mesh, NonLinearResult, ThermalResult, TransientResult
+from ..Objects import DataStructureDict, ElasticResultDict, NonLinearResultDict, ThermalResultDict
 from ..Utilities import medcoupling as mc
 from .crea_coupe_ops import TableCoupes
-
 
 DIM_MESH = 3
 DIM_SPACE = 1

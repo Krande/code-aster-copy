@@ -107,7 +107,7 @@ class AssertRaisesContext(case._AssertRaisesContext):
                     exc_name = exc_type.__name__
                 except AttributeError:
                     exc_name = str(exc_type)
-                raise AssertionError("unexpected exception raised: " "{0}".format(exc_name))
+                raise AssertionError("unexpected exception raised: {0}".format(exc_name))
         except AssertionError as exc:
             ret = False
             comment = str(exc)

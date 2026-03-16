@@ -18,9 +18,10 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from ..Supervis import ExecuteCommand
+from ..Supervis import ExecuteCommand, loop_on_dsdict
 
 
+@loop_on_dsdict("RESULTAT")
 class ComputeAdditionalField(ExecuteCommand):
     """Command that computes additional fields in a
     :class:`~code_aster.Objects.Result`.

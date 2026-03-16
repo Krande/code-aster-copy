@@ -25,7 +25,6 @@ This module provides convenient utilities for files manipulation,
 system command execution, templates...
 """
 
-
 import gzip
 import os
 import os.path as osp
