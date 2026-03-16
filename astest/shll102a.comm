@@ -31,10 +31,11 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
 def ellipse(modx, mody, thetx, thety):
-    # Convert numpy scalars to Python float for math.sin/cos compatibility
-    modx, mody = float(modx), float(mody)
-    thetx = float(thetx) * pi / 180.0
-    thety = float(thety) * pi / 180.0
+    # Convert numpy arrays/scalars to Python float for math.sin/cos compatibility.
+    # numpy >= 2.0 rejects float() on non-0-dim arrays; .item() handles all cases.
+    modx, mody = NP.float64(modx).item(), NP.float64(mody).item()
+    thetx = NP.float64(thetx).item() * pi / 180.0
+    thety = NP.float64(thety).item() * pi / 180.0
     num = modx**2 * sin(2 * thetx) + mody**2 * sin(2 * thety)
     denum = modx**2 * cos(2 * thetx) + mody**2 * cos(2 * thety)
     if abs(denum) < 1e-33:

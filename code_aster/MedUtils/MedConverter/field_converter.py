@@ -112,7 +112,9 @@ def toMCFieldAndProfileNode(asfield, medmesh, prefix=""):
     medc_node_field.setNature(medc.IntensiveMaximum)
 
     # Med profile
-    field_profile = medc.DataArrayInt(restricted_nodes)
+    # medcoupling DataArrayInt expects INT32 numpy arrays, but np.where() returns
+    # int64 on 64-bit platforms. Cast explicitly to int32 for compatibility.
+    field_profile = medc.DataArrayInt(restricted_nodes.astype(np.int32))
 
     # Med support mesh for field ( restricted to profile nodes ) without cells
     field_mesh = medc.MEDCouplingUMesh()
@@ -161,7 +163,8 @@ def toMCFieldAndProfileElem(asfield, medmesh, prefix=""):
     medc_cell_field.setArray(field_values)
     medc_cell_field.setNature(medc.IntensiveConservation)
 
-    field_profile = medc.DataArrayInt(restricted_cells)
+    # medcoupling DataArrayInt expects INT32 numpy arrays; cast from int64.
+    field_profile = medc.DataArrayInt(restricted_cells.astype(np.int32))
     field_profile.setName("".join((prefix, "ElemProfile")))
 
     if len(restricted_cells) == medmesh.getNumberOfCells():

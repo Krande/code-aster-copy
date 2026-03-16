@@ -223,14 +223,16 @@ def conv_smoothing_arc(lreg, Coorx, Coory, Fun0):
     AbsC = NP.concatenate((NP.array([0.0]), AbsC))
     FunReg = NP.array([])
     Gauss = NP.exp(-(AbsC**2) / (2.0 * lreg**2))
-    area = float(NP.convolve(Gauss, NP.ones(len(Gauss)), "valid"))
+    # convolve with "valid" mode returns a 1-element array when inputs have equal
+    # length; use .item() since float() on non-0-dim arrays fails in numpy >= 2.0.
+    area = NP.convolve(Gauss, NP.ones(len(Gauss)), "valid").item()
     for i in range(len(Fun0)):
         Fun_I = NP.concatenate((Fun0[i:], Fun0[0:i]), axis=0)
         Fun_I = NP.concatenate(
             (Fun_I[len(Fun_I) // 2 + 1 :], Fun_I[0 : len(Fun_I) // 2 + 1]), axis=0
         )
         zreg = NP.convolve(Fun_I, Gauss, "valid")
-        FunReg = NP.append(FunReg, float(zreg))
+        FunReg = NP.append(FunReg, zreg.item())
     FunReg = FunReg / area
     return FunReg
 

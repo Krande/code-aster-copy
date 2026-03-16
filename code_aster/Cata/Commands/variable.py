@@ -53,8 +53,15 @@ class VariableSupport:
         else:
             print("Settings variables values...")
             with open("inputs.pick", "rb") as pick:
-                params = pickle.load(pick, encoding="latin1")
-                values = pickle.load(pick, encoding="latin1")
+                raw = pick.read()
+            # On Windows, pickle files transferred as text may contain CRLF line
+            # endings which corrupt the pickle STRING opcode (expects LF only).
+            raw = raw.replace(b"\r\n", b"\n")
+            import io
+
+            buf = io.BytesIO(raw)
+            params = pickle.load(buf, encoding="latin1")
+            values = pickle.load(buf, encoding="latin1")
 
         self._cache = params, values
         assert len(params) == len(values), (params, values)

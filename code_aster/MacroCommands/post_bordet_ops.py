@@ -259,8 +259,9 @@ def post_bordet_ops(
             if type(PARAM["SEUIL_CALC"]) == fonction_sdaster:
                 sigy = PARAM["SEUIL_CALC"](tempe)
             elif type(PARAM["SEUIL_CALC"]) == nappe_sdaster:
-                # Convert numpy scalars to Python floats for CREA_TABLE compatibility
-                EQ_PT[ordre] = [float(x) for x in EQ_PT[ordre]]
+                # Convert numpy array to native Python list of floats for CREA_TABLE.
+                # .tolist() is more robust than list comprehension for this purpose.
+                EQ_PT[ordre] = NP.asarray(EQ_PT[ordre]).tolist()
                 __TAB = CREA_TABLE(LISTE=(_F(PARA="EPSI", LISTE_R=EQ_PT[ordre]),))
                 __TAB = CALC_TABLE(
                     TABLE=__TAB,
