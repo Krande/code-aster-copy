@@ -656,6 +656,8 @@ class TimeStepper(Observer):
             if not field:
                 return False
             array = numpy.array(field.getValuesWithDescription(self._cmp, self._group)[0])
+            if array.size == 0:
+                return False
             maxIncr = max(abs(array))
             maxIncr = MPI.ASTER_COMM_WORLD.allreduce(maxIncr, MPI.MAX)
             raised = maxIncr > self._value
