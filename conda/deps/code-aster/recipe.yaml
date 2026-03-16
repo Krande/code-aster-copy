@@ -84,6 +84,7 @@ tests:
         - cmake
         - ninja
         - pyyaml
+        - psutil
   - python:
       imports:
         - code_aster

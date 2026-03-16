@@ -17,6 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
+import shutil
+from pathlib import Path
+
+from waflib import Logs
+
 
 def options(self):
     pass
@@ -30,6 +36,30 @@ def configure(self):
         self.env.LIBPATH_ASTERGC = self.env.ASTERBINDIR
     else:
         self.env.LIBPATH_ASTERGC = self.env.ASTERLIBDIR
+
+
+def _post_install_astergc(ctx):
+    """On Windows MSVC, copy AsterGC.dll to site-packages as libAsterGC.pyd.
+
+    Python's ``import libAsterGC`` needs a ``.pyd`` file on sys.path.
+    The DLL is installed to ASTERBINDIR (Library/bin) by waf, but that
+    directory is not on sys.path.  Copy it to SPDIR (site-packages) so
+    that the import works.
+    """
+    if not ctx.cmd.startswith("install"):
+        return
+    if not ctx.env.ASTER_PLATFORM_MSVC64:
+        return
+
+    src = Path(ctx.env.ASTERBINDIR) / "AsterGC.dll"
+    sp_dir = ctx.env.SPDIR if ctx.env.SPDIR else ctx.env.ASTERLIBDIR
+    dst = Path(sp_dir) / "libAsterGC.pyd"
+
+    if src.exists():
+        shutil.copy2(str(src), str(dst))
+        Logs.info(f"Copied {src} -> {dst}")
+    else:
+        Logs.warn(f"AsterGC.dll not found at {src}, libAsterGC.pyd not created")
 
 
 def build(self):
@@ -51,3 +81,6 @@ def build(self):
         env=env.derive(),
         install_path=env.LIBPATH_ASTERGC,
     )
+
+    if self.env.ASTER_PLATFORM_MSVC64:
+        self.add_post_fun(_post_install_astergc)

@@ -85,7 +85,42 @@ class ExtendedFieldOnCellsReal:
             (cells, points, subpoints).
         """
 
-        return self.toSimpleFieldOnCells().getValuesWithDescription(force_list(components), groups)
+        import sys
+        sfield = self.toSimpleFieldOnCells()
+        cmps_arg = force_list(components)
+        result = sfield.getValuesWithDescription(cmps_arg, groups)
+        # Temporary diagnostic: log when getValuesWithDescription returns empty
+        # to help debug Windows-specific empty results (see win-support branch).
+        if len(result[0]) == 0 and sys.platform == "win32":
+            ncells = sfield.getNumberOfCells()
+            ncmps = sfield.getNumberOfComponents()
+            cmp_names = sfield.getComponents() if ncmps > 0 else []
+            maxpt = sfield.getMaxNumberOfPoints()
+            maxspt = sfield.getMaxNumberOfSubPoints()
+            # Check mesh cells resolution
+            mesh = sfield.getMesh()
+            grp_list = force_list(groups) if groups else []
+            resolved_cells = mesh.getCells(grp_list) if grp_list else mesh.getCells()
+            # Sample first few cells for point/subpoint/hasValue info
+            sample_info = []
+            for c in resolved_cells[:3]:
+                try:
+                    npt = sfield.getNumberOfPointsOfCell(c)
+                    nspt = sfield.getNumberOfSubPointsOfCell(c)
+                    hv = sfield.hasValue(c, 0, 0, 0) if npt > 0 and nspt > 0 and ncmps > 0 else None
+                    sample_info.append(f"cell{c}:npt={npt},nspt={nspt},hv={hv}")
+                except Exception as e:
+                    sample_info.append(f"cell{c}:err={e}")
+            print(
+                f"[DIAG] getValuesWithDescription returned empty: "
+                f"ncells={ncells}, ncmps={ncmps}, maxpt={maxpt}, maxspt={maxspt}, "
+                f"cmps_arg={cmps_arg}, groups={groups}, "
+                f"field_cmps={cmp_names[:8]}, "
+                f"resolved_cells_count={len(resolved_cells)}, "
+                f"samples=[{'; '.join(sample_info)}]",
+                flush=True,
+            )
+        return result
 
     def plot(self, command="gmsh", local=False, split=False):
         """Plot the field.

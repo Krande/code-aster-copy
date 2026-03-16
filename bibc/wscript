@@ -257,9 +257,14 @@ def build_libaster(self, env):
     extlib = ".so"
     mods = ["aster", "aster_core", "aster_fonctions"]
     libaster = "libaster.so"
-    if env.ASTER_PLATFORM_MINGW or env.ASTER_PLATFORM_MSVC64:
+    if env.ASTER_PLATFORM_MINGW:
         extlib = ".pyd"
         mods.extend(["libaster", "libAsterGC"])
+        libaster = "aster.dll"
+    elif env.ASTER_PLATFORM_MSVC64:
+        extlib = ".pyd"
+        # libAsterGC is a separate library, handled by libs/wscript
+        mods.extend(["libaster"])
         libaster = "aster.dll"
     for submodule in mods:
         src = osp.join(python_install_path, submodule + extlib)
