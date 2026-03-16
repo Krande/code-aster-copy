@@ -180,7 +180,7 @@ MACR_LIGN_COUPE = MACRO(
         ),
         b_local=BLOC(
             condition="""equal_to("REPERE", 'LOCAL') """,
-            VECT_Y=SIMP(statut="f", typ="R", min=2, max=3),
+            VECT_Y=SIMP(statut="f", typ="R", min=3, max=3),
         ),
         b_utili=BLOC(
             condition="""equal_to("REPERE", 'UTILISATEUR')""",
