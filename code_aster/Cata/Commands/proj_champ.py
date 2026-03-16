@@ -250,7 +250,7 @@ PROJ_CHAMP = OPER(
             GROUP_NO_2=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             NOEUD_2=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
             # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION'
-            # mais on ne peut pas le vérifier idans le catalogue.
+            # mais on ne peut pas le vérifier dans le catalogue.
             CAS_FIGURE=SIMP(statut="f", typ="TXM", into=("2D", "3D", "2.5D", "1.5D", "0D")),
             TRANSF_GEOM_1=SIMP(
                 statut="f",

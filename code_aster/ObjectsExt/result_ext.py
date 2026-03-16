@@ -21,6 +21,7 @@
 :py:class:`Result` --- Results container
 **************************************************
 """
+
 import os.path as osp
 import subprocess
 
@@ -266,7 +267,7 @@ class ExtendedResult:
 
         # Error handling for "keywords" input
         if len(detected_keywords) != 1:
-            raise KeyError(f"Exactly one of {admissible_keywords} is exepected")
+            raise KeyError(f"Exactly one of {admissible_keywords} is expected")
 
         # --- Handling of detected keyword ---
         processed_kw = detected_keywords.pop()

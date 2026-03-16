@@ -1061,7 +1061,7 @@ class loop_on_dsdict:
                     mcs = mcs.pop(0)
                     if store.get(mcs):
                         return mcf, mcs
-                return None, None
+                return None
 
             def extr_(kwds: dict, path: tuple[str]):
                 """Return the value of the relevant keyword"""
@@ -1078,7 +1078,7 @@ class loop_on_dsdict:
                 kwds[mcs] = value
 
             path = path_(kwargs)
-            if not isinstance(extr_(kwargs, path), DataStructureDict):
+            if not path or not isinstance(extr_(kwargs, path), DataStructureDict):
                 return command._orig_run_(self, **kwargs)
 
             keywords = mixedcopy(kwargs)
