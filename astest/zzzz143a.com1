@@ -22,14 +22,23 @@ from code_aster import CA
 
 POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
+import os
 import tempfile
 
 test_export = CA.TestCase()
 
 # export to medcoupling result
 medresu_temp = TEMP_STAT.createMedCouplingResult()
-with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
-    medresu_temp.write(f.name, 2)
+# On Windows, NamedTemporaryFile holds an exclusive lock while open, preventing
+# the MED library (HDF5) from writing to the same file.  Use delete=False and
+# close the handle before passing the path to medcoupling.
+f = tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=False)
+fname = f.name
+f.close()
+try:
+    medresu_temp.write(fname, 2)
+finally:
+    os.unlink(fname)
 
 test_export.assertSequenceEqual(medresu_temp.getFields().getFieldsNames(), ("GRAT_R", "TEMP_R"))
 test_export.assertEqual(len(medresu_temp.getMeshes()), 1)

@@ -68,8 +68,19 @@ contains
         aster_logical :: mpi
         mpi_int :: world
 !
+        integer :: funit_tmp
+        logical :: fopen_tmp
+!
         mode = acces
         vers = bkwd_vers
+!
+!       On Windows, the Fortran runtime holds exclusive file locks.
+!       If the file is already connected to a Fortran unit, close it
+!       before the MED library (HDF5) opens the same filename.
+        inquire(file=nom, number=funit_tmp, opened=fopen_tmp)
+        if (fopen_tmp .and. funit_tmp .gt. 0) then
+            close(unit=funit_tmp)
+        end if
 !
         mpi = .false.
         if (present(parallel)) mpi = parallel

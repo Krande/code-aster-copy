@@ -203,7 +203,9 @@ def conv_smoothing1D(lreg, Coorx, Coory, Fun0):
     Absc = curvilinearAbsissa(Coorx, Coory, len(Coorx) // 2)
     Gauss = NP.exp(-(Absc**2) / (2.0 * lreg**2))
     area = NP.convolve(Gauss, NP.ones(len(Gauss)), "valid")
-    area = float(area)
+    # convolve "valid" returns a 1-element array; use .item() since float()
+    # on non-0-dim arrays fails in numpy >= 2.0.
+    area = area.item()
     FunReg = NP.convolve(Fun0, Gauss, "same")
     FunReg = FunReg / area
     return FunReg
