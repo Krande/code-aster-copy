@@ -259,7 +259,8 @@ def post_bordet_ops(
             if type(PARAM["SEUIL_CALC"]) == fonction_sdaster:
                 sigy = PARAM["SEUIL_CALC"](tempe)
             elif type(PARAM["SEUIL_CALC"]) == nappe_sdaster:
-                EQ_PT[ordre] = list(EQ_PT[ordre])
+                # Convert numpy scalars to Python floats for CREA_TABLE compatibility
+                EQ_PT[ordre] = [float(x) for x in EQ_PT[ordre]]
                 __TAB = CREA_TABLE(LISTE=(_F(PARA="EPSI", LISTE_R=EQ_PT[ordre]),))
                 __TAB = CALC_TABLE(
                     TABLE=__TAB,
@@ -270,7 +271,7 @@ def post_bordet_ops(
                 sigy = NP.array(sigy)
 
             T1 = sigy / sig0 * (PR_BAR[ordre] ** m - sigth**m)
-            T1 = list(T1)
+            T1 = [float(x) for x in T1]
             __TABT1 = CREA_TABLE(LISTE=(_F(PARA="T1", LISTE_R=T1),))
             __TABT1 = CALC_TABLE(
                 TABLE=__TABT1,
@@ -288,18 +289,18 @@ def post_bordet_ops(
             T4 = vol / V0
             BORDTI = BORDTI + NP.cumsum(T1 * T2 * T3 * T4)[-1]
 
-        BORDTT[ordre] = (c_mult * BORDTI) ** (1 / m)
+        BORDTT[ordre] = float((c_mult * BORDTI) ** (1 / m))
 
         if sigref(tempe) != 0.0:
-            PROBA[ordre] = 1 - NP.exp(-((BORDTT[ordre] / sigref(tempe)) ** m))
+            PROBA[ordre] = float(1 - NP.exp(-((BORDTT[ordre] / sigref(tempe)) ** m)))
         elif sigref(tempe) == 0.0:
             UTMESS("F", "RUPTURE1_56", valr=list_inst[ordre])
 
     tabout = CREA_TABLE(
         LISTE=(
-            _F(PARA="INST", LISTE_R=list_inst[0 : nume_ordre + 1]),
-            _F(PARA="SIG_BORDET", LISTE_R=BORDTT),
-            _F(PARA="PROBA_BORDET", LISTE_R=PROBA),
+            _F(PARA="INST", LISTE_R=[float(x) for x in list_inst[0 : nume_ordre + 1]]),
+            _F(PARA="SIG_BORDET", LISTE_R=[float(x) for x in BORDTT]),
+            _F(PARA="PROBA_BORDET", LISTE_R=[float(x) for x in PROBA]),
         )
     )
     return tabout

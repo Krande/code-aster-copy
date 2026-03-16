@@ -19,6 +19,7 @@
 
 import os
 import os.path as osp
+import sys
 from subprocess import call
 
 from code_aster.Commands import *
@@ -65,7 +66,8 @@ print("=" * 80)
 print("Checking import of code_aster...")
 
 # run externally to not corrupt currently loaded catalog
-iret = call(["python3", "test_import.py"])
+# Use sys.executable: "python3" does not exist on Windows.
+iret = call([sys.executable, "test_import.py"])
 
 print("=" * 80)
 

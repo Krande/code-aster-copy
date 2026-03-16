@@ -259,7 +259,9 @@ def get_status(exitcode, output, test=False):
     try:
         with open(output, "rb") as fobj:
             text = fobj.read().decode(errors="replace")
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError):
+        # OSError: on Windows, filenames with invalid characters (< > etc.)
+        # raise OSError instead of FileNotFoundError.
         text = output
 
     state = 0

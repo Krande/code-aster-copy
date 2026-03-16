@@ -21,6 +21,7 @@
 
 import os.path
 import pprint
+import sys
 
 import aster
 from libaster import AsterError
@@ -357,6 +358,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
         UTMESS("S", "FONCT0_8", valk=FORMAT)
 
     # 2.4. On trace !
+    # On Windows, the Fortran runtime holds exclusive file locks on open units.
+    # Release the unit before Python file access to avoid PermissionError.
+    if sys.platform == "win32" and args["UNITE"] != 6:
+        LogicalUnitFile.release_from_number(args["UNITE"])
     with ReservedUnitUsed(args["UNITE"], args.get("UNITE_DIGR")):
         graph.Trace(**kargs)
 

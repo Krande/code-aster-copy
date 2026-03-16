@@ -1069,7 +1069,9 @@ class ExceptHookManager:
             options = FinalizeOptions.Set
             if haveMPI() and not opt & Options.HPCMode:
                 options |= FinalizeOptions.OnlyProc0
-            if opt & Options.SaveBase:
+            # Save the database when not on the last step (matching FIN's logic),
+            # so that POURSUITE in the next command file can restore from it.
+            if not opt & Options.LastStep or opt & Options.SaveBase:
                 options |= FinalizeOptions.SaveBase
             print("\nException: Trying to close the database after an uncaught exception...\n")
             print(
