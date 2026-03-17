@@ -223,7 +223,7 @@ contains
         call jenonu(jexnom('&CATA.GD.NOMGD', name_gd), nume_gd)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', vk8=p_cata_nomcmp)
 !
-! ----- Inverse connectivity and mesh paramters
+! ----- Inverse connectivity and mesh parameters
 !
         call cncinv(mesh, [ibid], 0, 'V', connex_inv)
         call jeveuo(mesh//'.TYPMAIL', 'L', vi=v_mesh_typmail)

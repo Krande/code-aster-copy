@@ -95,7 +95,7 @@ subroutine cgComporNodes(result, nume_ordre, nb_point, fondNoeudNume, compValues
     nb_zone = v_compor_desc(3)
     nb_cmp_max = nb_vale/v_compor_desc(2)
 !
-! ----- Inverse connectivity and mesh paramters
+! ----- Inverse connectivity and mesh parameters
 !
     call cncinv(mesh, [0], 0, 'V', connex_inv)
 !

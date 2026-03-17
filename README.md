@@ -91,7 +91,7 @@ $ $HOME/containers/salome_meca-lgpl-2022.1.0-1-20221225-scibian-9 --shell
 
 Singularity> ./waf configure install -j 8
 
-# or, with the embeeded makefile
+# or, with the embedded makefile
 Singularity> make bootstrap
 ```
 
