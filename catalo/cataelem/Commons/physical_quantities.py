@@ -815,6 +815,9 @@ list_cmp_depl = (
     "EPXY",
     "EPXZ",
     "EPYZ",
+    "DRLX",
+    "DRLY",
+    "DRLZ",
     "D1",
     "D2",
     "D3",
@@ -885,6 +888,7 @@ comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
+       DRLX, DRLY, DRLZ : saut de deplacement pour la modelisation INTSOLPIEU
        D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
        D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
@@ -3011,6 +3015,9 @@ SIEF_C = PhysicalQuantity(
         "MX",
         "MY",
         "MZ",
+        "FLX",
+        "FLY",
+        "FLZ",
         "SIGN",
         "SITX",
         "SITY",
@@ -3176,6 +3183,9 @@ SIEF_C = PhysicalQuantity(
        MX : efforts pour les discrets, poutres, barres, cales, poulies
        MY : efforts pour les discrets, poutres, barres, cales, poulies
        MZ : efforts pour les discrets, poutres, barres, cales, poulies
+       FLX : elements interface sol-pieu : effort linéique sur le pieu
+       FLY : elements interface sol-pieu : effort linéique sur le pieu
+       FLZ : elements interface sol-pieu : effort linéique sur le pieu
        SIGN : elements de contact : contrainte normale
        SITX : elements de contact : contrainte tangentielle
        SITY : elements de contact : contrainte tangentielle
@@ -3355,6 +3365,9 @@ SIEF_R = PhysicalQuantity(
         "MX",
         "MY",
         "MZ",
+        "FLX",
+        "FLY",
+        "FLZ",
         "SIGN",
         "SITX",
         "SITY",
@@ -3520,6 +3533,9 @@ SIEF_R = PhysicalQuantity(
        MX : efforts pour les discrets, poutres, barres, cales, poulies
        MY : efforts pour les discrets, poutres, barres, cales, poulies
        MZ : efforts pour les discrets, poutres, barres, cales, poulies
+       FLX : elements interface sol-pieu : effort linéique sur le pieu
+       FLY : elements interface sol-pieu : effort linéique sur le pieu
+       FLZ : elements interface sol-pieu : effort linéique sur le pieu
        SIGN : elements de contact : contrainte normale
        SITX : elements de contact : contrainte tangentielle
        SITY : elements de contact : contrainte tangentielle

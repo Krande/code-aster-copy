@@ -108,6 +108,11 @@ cata_msg = {
  section circulaire uniquement
 """
     ),
+    56: _(
+        """
+ section rectangulaire ou circulaire uniquement
+"""
+    ),
     57: _(
         """
        La modélisation T3G ne permet pas de bien prendre en compte l'excentrement à cause de son interpolation de la flèche.

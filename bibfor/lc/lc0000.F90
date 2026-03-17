@@ -125,6 +125,8 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lcvisc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lc9078.h"
+#include "asterfort/lc9501.h"
+#include "asterfort/lc9502.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     integer(kind=8), intent(in) :: ndim
@@ -1018,6 +1020,23 @@ subroutine lc0000(BEHInteg, &
                     carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, &
                     sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - With INSOLPI
+! --------------------------------------------------------------------------------------------------
+!
+    case (9501)
+        call lc9501(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, materi, &
+                    ndsde, dsidep, codret)
+    case (9502)
+        call lc9502(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, materi, &
                     ndsde, dsidep, codret)
 
     case default

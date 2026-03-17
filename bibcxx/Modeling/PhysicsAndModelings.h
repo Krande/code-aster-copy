@@ -86,6 +86,7 @@ enum Modelings {
     INCO_UPO_3D,
     INTERFACE_3D,
     INTERFACE_S_3D,
+    INTSOLPIEU_3D,
     JOINT_3D,
     JOINT_HYME_3D,
     SECH_3D,
@@ -244,14 +245,14 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 200;
+const int nbModelings = 201;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 188;
+const int nbModelingsMechanics = 189;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;

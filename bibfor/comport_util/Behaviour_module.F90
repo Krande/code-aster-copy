@@ -441,6 +441,9 @@ contains
         if (typmod(2) .eq. 'INTERFAC') then
             lawOffset = lawOffset+9000
         end if
+        if (typmod(2) .eq. 'INTSOLPI') then
+            lawOffset = lawOffset+9500
+        end if
         BEHInteg%behavPara%lawIndexOffset = lawOffset
 !
 !   ------------------------------------------------------------------------------------------------

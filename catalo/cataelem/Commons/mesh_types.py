@@ -463,6 +463,12 @@ H27.addLocation("FPG343", 343)
 H27.addLocation("FPG512", 512)
 HEXA27.addElrefe(H27)
 
+H10 = Elrefe()
+H10.addLocation("FIS3", 3)
+H10.addLocation("FIS4", 4)
+H10.addLocation("FIS2", 2)
+HEXA27.addElrefe(H10)
+
 # ------------------------------------------------------------
 TETRA15 = MeshType(nbno=15, dim=3, code="T15")
 

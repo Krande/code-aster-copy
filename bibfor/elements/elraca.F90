@@ -99,6 +99,13 @@ subroutine elraca(elrefz, &
         fapg(5) = 'LOB7'
         fapg(6) = 'FPG8'
 
+    case ('H10')
+        nbfpg = 3
+        nbpg(1:nbfpg) = [3, 4, 2]
+        fapg(1) = 'FIS3'
+        fapg(2) = 'FIS4'
+        fapg(3) = 'FIS2'
+
     case ('H20')
         nbfpg = 7
         nbpg(1:nbfpg) = [nno, nnos, 1, 8, 27, 16, 64]
