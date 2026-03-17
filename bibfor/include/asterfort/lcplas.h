@@ -24,7 +24,7 @@ interface
                       deps, epsd, sigd, vind, sigf, &
                       vinf, comp, nbcomm, cpmono, pgl, &
                       nfs, nsg, toutms, hsr, &
-                      codret, theta, vp, vecp, seuil, &
+                      codret, theta, vp, seuil, &
                       devg, devgii, drdy, crit)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -60,7 +60,6 @@ interface
         integer(kind=8) :: codret
         real(kind=8) :: theta
         real(kind=8) :: vp(3)
-        real(kind=8) :: vecp(3, 3)
         real(kind=8) :: seuil
         real(kind=8) :: devg(*)
         real(kind=8) :: devgii

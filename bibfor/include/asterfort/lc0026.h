@@ -21,7 +21,7 @@ interface
     subroutine lc0026(fami, kpg, ksp, ndim, imate, &
                       compor, instam, instap, epsm, &
                       deps, sigm, nvi, vim, option, &
-                      sigp, vip, typmod, materi, &
+                      sigp, vip, typmod, &
                       dsidep, codret)
         character(len=*) :: fami
         integer(kind=8) :: kpg
@@ -38,7 +38,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(nvi)
         character(len=8) :: typmod(*)
-        character(len=8) :: materi
         real(kind=8) :: dsidep(6, 6)
         integer(kind=8) :: codret
     end subroutine lc0026

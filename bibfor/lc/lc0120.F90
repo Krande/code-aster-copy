@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc0120(BEHinteg, &
+subroutine lc0120(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, l_epsi_varc, &
                   carcri, instam, instap, epsm, &
                   deps, sigm, nvi, vim, option, &
@@ -30,7 +30,7 @@ subroutine lc0120(BEHinteg, &
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/plasbe.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     integer(kind=8) :: imate, ndim, kpg, ksp, codret, nvi
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: instam, instap
@@ -43,7 +43,7 @@ subroutine lc0120(BEHinteg, &
     character(len=*) :: fami
     aster_logical, intent(in) :: l_epsi_varc
 !
-    call plasbe(BEHinteg, &
+    call plasbe(BEHInteg, &
                 fami, kpg, ksp, typmod, imate, l_epsi_varc, &
                 carcri, epsm, deps, sigm, nvi, vim, &
                 option, sigp, vip, dsidep, &

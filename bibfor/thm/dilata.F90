@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
+subroutine dilata(ds_thm, phi, tbiot, alphfi)
 !
+    use MaterialPara_type
     use THM_type
-!
     implicit none
 !
 #include "asterfort/assert.h"
@@ -27,7 +27,6 @@ subroutine dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
 #include "asterfort/utbtab.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: phi
     real(kind=8), intent(in) :: tbiot(6)
     real(kind=8), intent(out) :: alphfi
@@ -44,7 +43,7 @@ subroutine dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
 ! In  angl_naut        : nautical angles
 !                        (1) Alpha - clockwise around Z0
 !                        (2) Beta  - counterclockwise around Y1
-!                        (1) Gamma - clockwise around X
+!                        (1) Gangl_nautamma - clockwise around X
 ! In  phi              : current porosity
 ! In  tbiot            : Biot tensor
 ! Out alphfi           : differential thermal expansion ratio
@@ -56,10 +55,11 @@ subroutine dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8) :: talpha(3, 3), talphal(3, 3)
     real(kind=8) :: passag(3, 3), work(3, 3)
-
+    type(Material_Para) :: materPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    materPara = ds_thm%ds_behaviour%BEHInteg%materPara
     alphfi = 0.d0
     talpha(:, :) = 0.d0
     talphal(:, :) = 0.d0
@@ -81,16 +81,14 @@ subroutine dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
         talpha(2, 2) = ds_thm%ds_material%ther%alpha_t
         talpha(3, 3) = ds_thm%ds_material%ther%alpha_n
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
-!
+
 ! - Change reference frame
-!
-    call matrot(angl_naut, passag)
+    call matrot(materPara%lcsPara%lcsAngle, passag)
     call utbtab('ZERO', 3, 3, talpha, passag, work, talphal)
-!
+
 ! - Compute differential thermal expansion ratio
-!
     alpha(1) = talphal(1, 1)
     alpha(2) = talphal(2, 2)
     alpha(3) = talphal(3, 3)

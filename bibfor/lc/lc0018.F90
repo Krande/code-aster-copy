@@ -39,7 +39,6 @@ subroutine lc0018(fami, kpg, ksp, ndim, imate, &
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 
-    ! call notAnisot(angmas)
     call nmtahe(fami, kpg, ksp, ndim, imate, &
                 carcri, instam, instap, epsm, &
                 deps, sigm, nvi, vim, option, sigp, &

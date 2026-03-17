@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1ve, npg)
+! aslint: disable=W0413
+!
+subroutine dxmath(famiZ, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1ve, npg)
+!
     implicit none
-#include "jeveux.h"
+!
 #include "asterc/r8dgrd.h"
 #include "asterfort/codent.h"
 #include "asterfort/coqrep.h"
@@ -29,10 +31,15 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
 #include "asterfort/rcvalb.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
+!
+    character(len=*), intent(in) :: famiZ
     integer(kind=8) :: multic, indith, npg, npgh
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
-    character(len=4) :: fami
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCUL DES MATRICES DE COEFFCIENTS THERMOELASTIQUES DE FLEXION,
 !     MEMBRANE, COUPLAGE MEMBRANE-FLEXION POUR UN MATERIAU ISOTROPE OU
 !     MULTICOUCHE
@@ -44,8 +51,10 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
 !     DANS LE CAS OU LE COEFFICIENT DE DILATATION ALPHA N'A
 !     PAS ETE DONNE, INDITH VAUT -1 ET ON  NE CALCULE PAS LES
 !     CONTRAINTES THERMIQUES
-!     ------------------------------------------------------------------
-    integer(kind=8) :: jcoqu, jmate, iret
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: jvCacoqu, jvMaterc, iret
     integer(kind=8) :: nbv, i, j, nbpar, elasco, indalf
     real(kind=8) :: cdf, cdm, valres(56)
     real(kind=8) :: young, nu, epais, valpar, excent
@@ -54,15 +63,16 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
     real(kind=8) :: alphat
     real(kind=8) :: alpha, beta
     real(kind=8) :: em, ef, num, nuf
-    real(kind=8) :: deux
+    real(kind=8), parameter :: deux = 2.d0
     integer(kind=8) :: icodre(56)
     character(len=3) :: nume
     character(len=16) :: nomres(56)
-    character(len=8) :: nompar
-    character(len=32) :: phenom
-!     ------------------------------------------------------------------
+    character(len=8) :: nompar, fami
+    character(len=32) :: elasKeyword
 !
-    deux = 2.0d0
+! --------------------------------------------------------------------------------------------------
+!
+    fami = famiZ
     call r8inir(9, 0.d0, dm, 1)
     call r8inir(9, 0.d0, df, 1)
     call r8inir(9, 0.d0, dh, 1)
@@ -70,19 +80,16 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
     call r8inir(6, 0.d0, dmc, 1)
     call r8inir(6, 0.d0, dfc, 1)
 !
-    call jevech('PCACOQU', 'L', jcoqu)
-    epais = zr(jcoqu)
-    alpha = zr(jcoqu+1)*r8dgrd()
-    beta = zr(jcoqu+2)*r8dgrd()
-    excent = zr(jcoqu+4)
+    call jevech('PCACOQU', 'L', jvCacoqu)
+    epais = zr(jvCacoqu)
+    alpha = zr(jvCacoqu+1)*r8dgrd()
+    beta = zr(jvCacoqu+2)*r8dgrd()
+    excent = zr(jvCacoqu+4)
 !
-!
-!     ------------------------------------------------
     indith = 0
-    call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
-    if (phenom .eq. 'ELAS_COQMU') then
-!
+    call jevech('PMATERC', 'L', jvMaterc)
+    call rccoma(zi(jvMaterc), 'ELAS', 1, elasKeyword, icodre(1))
+    if (elasKeyword .eq. 'ELAS_COQMU') then
         call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
@@ -101,22 +108,22 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
             call codent(i, 'G', nume)
             nomres(i) = 'HOM_'//nume
         end do
-!
-    else if (phenom .eq. 'ELAS') then
+
+    else if (elasKeyword .eq. 'ELAS') then
         nbv = 3
         nomres(1) = 'E'
         nomres(2) = 'NU'
         nomres(3) = 'ALPHA'
-    else if (phenom .eq. 'ELAS_GLRC') then
+
+    else if (elasKeyword .eq. 'ELAS_GLRC') then
         nbv = 5
         nomres(1) = 'E_M'
         nomres(2) = 'NU_M'
         nomres(3) = 'E_F'
         nomres(4) = 'NU_F'
         nomres(5) = 'ALPHA'
-    else if (phenom .eq. 'ELAS_COQUE') then
-!        call utmess('A', 'ELEMENTS_93', sk=phenom)
-!
+
+    else if (elasKeyword .eq. 'ELAS_COQUE') then
         call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
@@ -133,10 +140,10 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
         t1ve(9) = t1ve(1)-t1ve(4)
 !
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, 0, ' ', [0.0d0], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, 0, ' ', [0.0d0], &
                     1, 'MEMB_L  ', valres(1), icodre, 0)
         if (icodre(1) .eq. 1) then
-            call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, 0, ' ', [0.0d0], &
+            call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, 0, ' ', [0.0d0], &
                         1, 'M_LLLL  ', valres(1), icodre, 0)
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'ELEMENTS_41')
@@ -197,12 +204,12 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
             nomres(33) = 'C_TZTZ  '
             nomres(34) = 'ALPHA   '
         end if
-    else if (phenom .eq. 'ELAS_ORTH') then
-        call utmess('F', 'ELEMENTS_91', sk=phenom)
-    else if (phenom .eq. 'ELAS_ISTR') then
-        call utmess('F', 'ELEMENTS_92', sk=phenom)
+    else if (elasKeyword .eq. 'ELAS_ORTH') then
+        call utmess('F', 'ELEMENTS_91', sk=elasKeyword)
+    else if (elasKeyword .eq. 'ELAS_ISTR') then
+        call utmess('F', 'ELEMENTS_92', sk=elasKeyword)
     else
-        call utmess('F', 'ELEMENTS_42', sk=phenom)
+        call utmess('F', 'ELEMENTS_42', sk=elasKeyword)
     end if
 !
 !===============================================================
@@ -214,15 +221,16 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
     nompar = 'TEMP'
 !===============================================================
 !
-    if (phenom .eq. 'ELAS') then
+    if (elasKeyword .eq. 'ELAS') then
 !        ------ MATERIAU ISOTROPE ------------------------------------
 !
         multic = 0
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, nbpar, nompar, [valpar], &
                     2, nomres, valres, icodre, 1)
-        call rcvalb(fami, 1, 1, '+', zi(jmate), &
-                    ' ', phenom, nbpar, nompar, [valpar], 1, nomres(3), valres(3), icodre(3), 0)
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), &
+                    ' ', elasKeyword, &
+                    nbpar, nompar, [valpar], 1, nomres(3), valres(3), icodre(3), 0)
         if ((icodre(3) .ne. 0) .or. (valres(3) .eq. 0.d0)) then
             indith = -1
             goto 90
@@ -253,18 +261,18 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
                 df(i, j) = df(i, j)+excent*excent*dm(i, j)
             end do
         end do
-    else if (phenom .eq. 'ELAS_GLRC') then
+    else if (elasKeyword .eq. 'ELAS_GLRC') then
 !        ------ MATERIAU ISOTROPE ------------------------------------
 !
         multic = 0
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, nbpar, nompar, [valpar], &
                     2, nomres, valres, icodre, 1)
 !
         em = valres(1)
         num = valres(2)
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, nbpar, nompar, [valpar], &
                     3, nomres(3), valres(3), icodre(3), 0)
         if ((icodre(5) .ne. 0) .or. (valres(5) .eq. 0.d0)) then
             indith = -1
@@ -308,16 +316,17 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
                 df(i, j) = df(i, j)+excent*excent*dm(i, j)
             end do
         end do
-    else if (phenom .eq. 'ELAS_COQUE') then
+
+    else if (elasKeyword .eq. 'ELAS_COQUE') then
         multic = 0
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, nbpar, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
         if (elasco .eq. 1) then
             indalf = 11
         else if (elasco .eq. 2) then
             indalf = 34
         end if
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, nbpar, nompar, [valpar], &
                     1, nomres(indalf), valres(indalf), icodre(indalf), 0)
         if ((icodre(indalf) .ne. 0) .or. (valres(indalf) .eq. 0.d0)) then
             indith = -1
@@ -386,12 +395,12 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
         call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
         call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
 !
-    else if (phenom .eq. 'ELAS_COQMU') then
+    else if (elasKeyword .eq. 'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, nbpar, nompar, [valpar], &
                     1, nomres(19), valres(19), icodre(19), 0)
         epais = valres(19)
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
+        call rcvalb(fami, 1, 1, '+', zi(jvMaterc), ' ', elasKeyword, nbpar, nompar, [valpar], &
                     27, nomres(30), valres(30), icodre(30), 0)
         dm(1, 1) = valres(30)
         dm(1, 2) = valres(31)

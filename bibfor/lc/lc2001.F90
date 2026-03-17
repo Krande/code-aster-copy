@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lc2001(BEHinteg, &
+subroutine lc2001(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   neps, deps, nsig, sigm, option, &
                   sigp, nvi, vip, typmod, ndsde, &
@@ -29,7 +29,7 @@ subroutine lc2001(BEHinteg, &
 #include "asterfort/nmelas_incr.h"
 #include "asterfort/rccoma.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -69,7 +69,7 @@ subroutine lc2001(BEHinteg, &
     call rccoma(imate, 'ELAS', 1, elasKeyword, icodre)
     ASSERT(icodre .eq. 0)
     if (elasKeyword .eq. 'ELAS') then
-        call nmelas_incr(BEHinteg, &
+        call nmelas_incr(BEHInteg, &
                          fami, kpg, ksp, typmod, &
                          imate, deps(1:2*ndim), sigm(1:2*ndim), option, &
                          sigp(1:2*ndim), vip, dsidep(1:2*ndim, 1:2*ndim))

@@ -20,7 +20,7 @@
 !
 interface
     subroutine lc0002(fami, kpg, ksp, ndim, imate, l_epsi_varc, &
-                      carcri, instam, instap, neps, &
+                      compor, carcri, instam, instap, neps, &
                       epsm, deps, nsig, sigm, nvi, vim, &
                       option, sigp, vip, typmod, ndsde, &
                       dsidep, codret)
@@ -30,7 +30,7 @@ interface
         integer(kind=8), intent(in) :: ksp
         integer(kind=8), intent(in) :: ndim
         integer(kind=8), intent(in) :: imate
-        character(len=16), intent(in) ::  option
+        character(len=16), intent(in) :: compor(COMPOR_SIZE), option
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap

@@ -108,7 +108,6 @@ subroutine lc0003(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
     relaComp = compor(RELA_NAME)
     if (relaComp(1:14) .eq. 'VMIS_CINE_LINE') then
         iscplane = typmod(1) (1:6) .eq. 'C_PLAN'

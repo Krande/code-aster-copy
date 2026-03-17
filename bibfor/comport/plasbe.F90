@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0413
 !
-subroutine plasbe(BEHinteg, &
+subroutine plasbe(BEHInteg, &
                   fami, kpg, ksp, typmod, imat, l_epsi_varc, &
                   carcri, epsdt, depst, sigd, nvi, vind, &
                   opt, sigf, vinf, dsde, &
@@ -169,7 +169,7 @@ subroutine plasbe(BEHinteg, &
 !       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !       ----------------------------------------------------------------
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     aster_logical, intent(in) :: l_epsi_varc
     integer(kind=8) :: imat, ndt, ndi, nr, nvi
     integer(kind=8) :: itmax
@@ -221,7 +221,7 @@ subroutine plasbe(BEHinteg, &
     nseui3 = 0
     nseui4 = 0
     nomail = ' '
-    cutLevel = BEHinteg%behavPara%cutLevel
+    cutLevel = BEHInteg%behavPara%cutLevel
 !
     resi = opt(1:9) .eq. 'FULL_MECA' .or. opt .eq. 'RAPH_MECA'
     rigi = opt(1:9) .eq. 'FULL_MECA' .or. opt(1:9) .eq. 'RIGI_MECA'
@@ -325,7 +325,7 @@ subroutine plasbe(BEHinteg, &
 !
 ! --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 !
-        call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
+        call betcvx(BEHInteg, nmat, materf, sigf, vind, vinf, &
                     nvi, nseuil)
 !
         if (nseuil .ge. 0) then
@@ -335,12 +335,12 @@ subroutine plasbe(BEHinteg, &
             etatf = 'PLASTIC'
 !
             nseui1 = nseuil
-            call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+            call lcplbe(BEHInteg, toler, itmax, nmat, materf, nvi, &
                         vind, sigf, vinf, nseuil, &
                         irtet)
 !           GOTO (1), IRTET
 !
-            call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
+            call betcvx(BEHInteg, nmat, materf, sigf, vind, vinf, &
                         nvi, nseuil)
             nseui2 = nseuil
 !
@@ -363,12 +363,12 @@ subroutine plasbe(BEHinteg, &
                     nseuil = nseui2
                 end if
                 sigf(1:ndt) = sige(1:ndt)
-                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+                call lcplbe(BEHInteg, toler, itmax, nmat, materf, nvi, &
                             vind, sigf, vinf, nseuil, &
                             irtet)
 !              GOTO (1), IRTET
 !
-                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
+                call betcvx(BEHInteg, nmat, materf, sigf, vind, vinf, &
                             nvi, nseuil)
                 nseui3 = nseuil
             end if
@@ -388,12 +388,12 @@ subroutine plasbe(BEHinteg, &
                     nseuil = nseui3
                 end if
                 sigf(1:ndt) = sige(1:ndt)
-                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+                call lcplbe(BEHInteg, toler, itmax, nmat, materf, nvi, &
                             vind, sigf, vinf, nseuil, &
                             irtet)
 !              GOTO (1), IRTET
 !
-                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
+                call betcvx(BEHInteg, nmat, materf, sigf, vind, vinf, &
                             nvi, nseuil)
                 nseui4 = nseuil
             end if
@@ -411,12 +411,12 @@ subroutine plasbe(BEHinteg, &
                 nseuil = 22
                 nseui4 = nseuil
                 sigf(1:ndt) = sige(1:ndt)
-                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+                call lcplbe(BEHInteg, toler, itmax, nmat, materf, nvi, &
                             vind, sigf, vinf, nseuil, &
                             irtet)
 !             GOTO (1), IRTET
 !
-                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
+                call betcvx(BEHInteg, nmat, materf, sigf, vind, vinf, &
                             nvi, nseuil)
             end if
 !
@@ -453,7 +453,7 @@ subroutine plasbe(BEHinteg, &
                 if (typma .eq. 'COHERENT') then
 ! PAS UTILISE ICI  CALL LCJELA ( LOI  , MOD ,  NMAT, MATERD,VIND, DSDE)
                 else if (typma .eq. 'VITESSE ') then
-                    call betjpl(BEHinteg, mod, nmat, materd, sigd, vind, &
+                    call betjpl(BEHInteg, mod, nmat, materd, sigd, vind, &
                                 dsde)
                 end if
             end if
@@ -467,7 +467,7 @@ subroutine plasbe(BEHinteg, &
                 if (typma .eq. 'COHERENT') then
 ! PAS UTILISE ICI  CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
                 else if (typma .eq. 'VITESSE ') then
-                    call betjpl(BEHinteg, mod, nmat, materd, sigf, vinf, &
+                    call betjpl(BEHInteg, mod, nmat, materd, sigf, vinf, &
                                 dsde)
                 end if
             end if
@@ -480,7 +480,7 @@ subroutine plasbe(BEHinteg, &
     goto 999
 1   continue
     irteti = 1
-    call betimp(BEHinteg, nmat, materf, sigf, vind, vinf, &
+    call betimp(BEHInteg, nmat, materf, sigf, vind, vinf, &
                 nseui1, nseui2, nseui3, nseui4, &
                 sige, sigd)
 !

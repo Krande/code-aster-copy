@@ -69,6 +69,20 @@ Pour prendre en compte correctement les grands déplacements et surtout les gran
 L'axe de référence pour le calcul du repère local est ici normal à l'élément.
 Il faut donc modifier l'axe de référence en utilisant ANGL_REP ou VECTEUR dans AFFE_CARA_ELEM."""
     ),
+    51: _(
+        """
+ Le nombre de couches défini dans DEFI_COMPOSITE et dans AFFE_CARA_ELEM dans n'est pas cohérent.
+ Nombre de couches dans DEFI_COMPOSITE: %(i1)d
+ Nombre de couches dans AFFE_CARA_ELEM: %(i2)d
+"""
+    ),
+    52: _(
+        """
+ L'épaisseur totale des couches définie dans DEFI_COMPOSITE et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
+ Épaisseur totale des couches dans DEFI_COMPOSITE: %(r1)f
+ Épaisseur dans AFFE_CARA_ELEM: %(r2)f
+"""
+    ),
     75: _("""Les matériaux de coque homogénéisées (ELAS_COQUE) sont interdits en non-linéaire."""),
     80: _(
         """L'élément de plaque QUAD4 défini sur la maille %(k1)s n'est pas plan. Distance au plan : %(r1)f  (soit %(r2)f %% de la longueur d'arête)."""

@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,C1505,W1306
 
-subroutine lc0077(BEHinteg, &
+subroutine lc0077(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &
-                  sigp, vip, typmod, icomp, ndsde, &
-                  dsidep, codret)
+                  sigp, vip, typmod, &
+                  ndsde, dsidep, codret)
 
     use Behaviour_type
     use kichenin_nl_module, only: CONSTITUTIVE_LAW, Init, Integrate
@@ -32,7 +32,7 @@ subroutine lc0077(BEHinteg, &
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 ! --------------------------------------------------------------------------------------------------
-    type(Behaviour_Integ)        :: BEHinteg
+    type(Behaviour_Integ)        :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -52,7 +52,6 @@ subroutine lc0077(BEHinteg, &
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: icomp
     integer(kind=8), intent(in) :: ndsde
     real(kind=8):: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                           merge(neps, 6, nsig*neps .eq. ndsde))

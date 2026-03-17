@@ -16,11 +16,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1006
 !
 subroutine te0435(option, nomte)
 !
     use Behaviour_module, only: behaviourOption
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -74,7 +74,7 @@ subroutine te0435(option, nomte)
     integer(kind=8) :: ier
     real(kind=8) :: x, y, z, xf, yf, zf
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: nddl, nno, nnos, npg, ndim, ncomp, nvari
     integer(kind=8) :: n, kpg, iret, cod(9)
     integer(kind=8) :: ipoids, ivf, idfde, jgano, jtab(7)

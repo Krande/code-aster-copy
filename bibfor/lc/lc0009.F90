@@ -75,7 +75,7 @@ subroutine lc0009(fami, kpg, ksp, ndim, imate, &
 !               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 !               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 ! ======================================================================
-    ! call notAnisot(angmas)
+
     call lclbr1(fami, kpg, ksp, ndim, typmod, &
                 imate, epsm, deps, &
                 option, sigp, dsidep)

@@ -32,7 +32,7 @@ subroutine q4gsie(option, fami, xyzl, pgl, depl, &
 #include "asterfort/jquad4.h"
 #include "asterfort/q4gbc.h"
 #include "asterfort/q4glxy.h"
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=16) :: option
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)
     integer(kind=8) :: nbcou

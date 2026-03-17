@@ -37,7 +37,6 @@ subroutine lc0017(fami, kpg, ksp, ndim, imate, &
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 
-    ! call notAnisot(angmas)
     call nmhoff(ndim, imate, instap, epsm, deps, &
                 option, sigp, dsidep)
 end subroutine

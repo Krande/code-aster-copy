@@ -16,28 +16,29 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine epstmc(fami, poum, kpg, ksp, ndim, &
-                  time, anglNaut, jvMaterCode, &
+subroutine epstmc(materPara, poum, time, ndim, &
                   indxVarcStrain, allVarcStrain, &
                   epsiVarc_)
 !
     use BehaviourStrain_module
     use BehaviourStrain_type
+    use MaterialPara_type
+    use MaterialPara_module
     implicit none
 !
 #include "asterc/r8vide.h"
 #include "asterfort/ElasticityMaterial_type.h"
-#include "asterfort/get_elas_id.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "jeveux.h"
 !
-    character(len=*), intent(in) :: fami, poum
-    integer(kind=8), intent(in) :: kpg, ksp, ndim
-    real(kind=8), intent(in) :: time, anglNaut(3)
-    integer(kind=8), intent(in) :: jvMaterCode, indxVarcStrain
+    type(Material_Para), intent(inout) :: materPara
+    character(len=*), intent(in) :: poum
+    real(kind=8), intent(in) :: time
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: indxVarcStrain
     type(All_Varc_Strain), intent(inout) :: allVarcStrain
     real(kind=8), optional, intent(out) :: epsiVarc_(6)
 !
@@ -49,22 +50,17 @@ subroutine epstmc(fami, poum, kpg, ksp, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami             : Gauss family for integration point rule
+! IO  materPara        : parameters of material
 ! In  poum             : '-'  '+' or 'T' (previous, current and both)
-! In  kpg              : current point gauss
-! In  ksp              : current "sous-point" gauss
 ! In  time             : given time
-! In  jvMaterCode      : coded material address
+! In  ndim             : dimension of space
 ! In  indxVarcStrain   : index of external state variable
 ! IO  allVarcStrain    : all external state variables for anelastic strains
 ! Out epsiVarc         : anelastic strains from all external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical, parameter :: lMetaLemaAni = ASTER_FALSE
     aster_logical :: lTHM
-    integer(kind=8) :: elasID
-    character(len=16) :: elasKeyword
     real(kind=8) :: epsiVarcLoca(6), epsiVarcLocaIn(6), epsiVarcLocaOut(6)
     real(kind=8) :: pgl(3, 3)
 !
@@ -80,18 +76,12 @@ subroutine epstmc(fami, poum, kpg, ksp, ndim, &
         allVarcStrain%hasTime = ASTER_TRUE
     end if
 
-! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
-    call get_elas_id(jvMaterCode, elasID, elasKeyword)
-
 ! - Detect external state variable
-    call strainDetectVarc(poum, lTHM, fami, kpg, ksp, &
+    call strainDetectVarc(poum, lTHM, materPara, &
                           allVarcStrain, indxVarcStrain)
 
 ! - Compute non-mechanical strains
-    call compVarcStrain(fami, poum, kpg, ksp, &
-                        jvMaterCode, lMetaLemaAni, &
-                        elasID, elasKeyword, &
-                        allVarcStrain)
+    call compVarcStrain(poum, materPara, allVarcStrain)
 
 ! - Return values if required
     if (present(epsiVarc_)) then
@@ -99,10 +89,10 @@ subroutine epstmc(fami, poum, kpg, ksp, ndim, &
         call getVarcStrain(poum, indxVarcStrain, allVarcStrain, 6, epsiVarcLoca)
 
 ! ----- Non-isotropic elasticity: rotate strains
-        if (elasID .eq. ELAS_ISOT) then
+        if (materPara%elasID .eq. ELAS_ISOT) then
             epsiVarc_ = epsiVarcLoca
         else
-            call matrot(anglNaut, pgl)
+            call matrot(materPara%lcsPara%lcsAngle, pgl)
             epsiVarcLocaIn(1) = epsiVarcLoca(1)
             epsiVarcLocaIn(2) = epsiVarcLoca(4)
             epsiVarcLocaIn(3) = epsiVarcLoca(2)

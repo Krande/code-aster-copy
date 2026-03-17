@@ -30,7 +30,7 @@ subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, jvSief, &
 #include "asterfort/subacv.h"
 !
     character(len=16) :: option
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: nddl, nno, ncomp
     integer(kind=8) :: kpg
     integer(kind=8) :: ipoids, igeom, jvSief, imate, ipesa

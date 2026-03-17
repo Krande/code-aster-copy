@@ -57,7 +57,7 @@ subroutine lc0007(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
+
     ASSERT(nvi .eq. 7)
     call lceobl(ndim, imate, carcri, epsm, &
                 deps, vim, option, sigp, vip, &

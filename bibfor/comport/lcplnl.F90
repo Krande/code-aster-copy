@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine lcplnl(BEHinteg, &
+subroutine lcplnl(BEHInteg, &
                   fami, kpg, ksp, relaComp, toler, &
                   itmax, mod, imat, nmat, materd, &
                   materf, nr, nvi, timed, timef, &
@@ -29,7 +29,7 @@ subroutine lcplnl(BEHinteg, &
     use Behaviour_type
     implicit none
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
 !
 !     INTEGRATION ELASTO-PLASTIQUE ET VISCO-PLASTICITE
 !           SUR DT DE Y = ( SIG , VIN )
@@ -67,7 +67,6 @@ subroutine lcplnl(BEHinteg, &
 !         PGL    :  MATRICE DE PASSAGE
 !         TOUTMS :  TENSEURS D'ORIENTATION monocristal
 !         HSR    :  MATRICE D'INTERACTION monocristal
-!         ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
 !     VAR DEPS   :  INCREMENT DE DEFORMATION
 !     OUT SIGF   :  CONTRAINTE A T+DT
 !         VINF   :  VARIABLES INTERNES A T+DT
@@ -136,7 +135,7 @@ subroutine lcplnl(BEHinteg, &
 !
 !     ACTIVATION OU PAS DE LA RECHERCHE LINEAIRE
     lreli = .false.
-    cutLevel = BEHinteg%behavPara%cutLevel
+    cutLevel = BEHInteg%behavPara%cutLevel
     call utlcal('VALE_NOM', algo, carcri(6))
     if (algo .eq. 'NEWTON_RELI') lreli = .true.
 !
@@ -315,7 +314,7 @@ subroutine lcplnl(BEHinteg, &
     sigf(1:ndt) = yf(1:ndt)
 !
 !     POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-    call lcplnf(BEHinteg, &
+    call lcplnf(BEHInteg, &
                 relaComp, vind, nbcomm, nmat, cpmono, &
                 materf, iter, nvi, itmax, &
                 toler, pgl, nfs, nsg, toutms, &

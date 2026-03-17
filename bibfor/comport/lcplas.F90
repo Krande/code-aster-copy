@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lcplas(BEHinteg, &
+subroutine lcplas(BEHInteg, &
                   fami, kpg, ksp, relaComp, toler, &
                   itmax, mod, imat, nmat, materd, &
                   materf, nr, nvi, timed, timef, &
                   deps, epsd, sigd, vind, sigf, &
                   vinf, comp, nbcomm, cpmono, pgl, &
                   nfs, nsg, toutms, hsr, &
-                  codret, theta, vp, vecp, seuil, &
+                  codret, theta, vp, seuil, &
                   devg, devgii, drdy, carcri)
 !
     use Behaviour_type
     implicit none
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
 !     INTEGRATION IMPLICITE DES COMPORTEMENTS. CALCUL DE SIGF,VINF,DSDE
 !     ----------------------------------------------------------------
 !     ARGUMENTS
@@ -59,7 +59,6 @@ subroutine lcplas(BEHinteg, &
 !        PGL    :  MATRICE DE PASSAGE
 !        TOUTMS :  TENSEURS D'ORIENTATION monocristal
 !        HSR    :  MATRICE D'INTERACTION monocristal
-!        ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
 !        THETA  :  PARAMETRE DE LA THETA-METHODE
 !        VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
 !        VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
@@ -86,7 +85,7 @@ subroutine lcplas(BEHinteg, &
     real(kind=8) :: vind(*), vinf(*)
     real(kind=8) :: materf(nmat, 2), materd(nmat, 2)
     real(kind=8) :: seuil, devg(*), devgii
-    real(kind=8) :: vp(3), vecp(3, 3), drdy(nr, nr)
+    real(kind=8) :: vp(3), drdy(nr, nr)
 !
     character(len=8) :: mod
     character(len=16) :: relaComp
@@ -101,7 +100,7 @@ subroutine lcplas(BEHinteg, &
 !
     codret = 0
     deltat = timef-timed
-    cutLevel = BEHinteg%behavPara%cutLevel
+    cutLevel = BEHInteg%behavPara%cutLevel
 !
 !       ----------------------------------------------------------------
 !       CAS PARTICULIERS
@@ -115,9 +114,9 @@ subroutine lcplas(BEHinteg, &
         if (irtet .gt. 0) goto 1
 !
     elseif ((relaComp(1:10) .eq. 'HOEK_BROWN') .or. (relaComp(1:14) .eq. 'HOEK_BROWN_EFF')) then
-        call lchobr(toler, itmax, mod, nmat, materf, &
-                    nr, nvi, deps, sigd, vind, &
-                    seuil, vp, vecp, cutLevel, sigf, &
+        call lchobr(toler, itmax, nmat, materf, &
+                    vind, &
+                    vp, cutLevel, sigf, &
                     vinf, irtet)
         if (irtet .gt. 0) goto 1
 !
@@ -132,7 +131,7 @@ subroutine lcplas(BEHinteg, &
 !       CAS GENERAL : RESOLUTION PAR NEWTON
 !       ----------------------------------------------------------------
     else
-        call lcplnl(BEHinteg, &
+        call lcplnl(BEHInteg, &
                     fami, kpg, ksp, relaComp, toler, &
                     itmax, mod, imat, nmat, materd, &
                     materf, nr, nvi, timed, timef, &

@@ -38,7 +38,7 @@ subroutine te0004(option, nomte)
     integer(kind=8) :: iret, nbcmp, itabin(7), itabou(7)
     integer(kind=8) :: iinpg, ioutno
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
 !
 ! ----------------------------------------------------------------------
 !

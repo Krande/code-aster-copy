@@ -278,3 +278,15 @@
 #define LDC_ERROR_QUAL 2
 #define LDC_ERROR_CPLA 3
 #define LDC_ERROR_DVAL 4
+
+! --------------------------------------------------------------------------------------------------
+! Local time step division
+!
+! 0 => No time step division
+! 1 => Forced time step division
+! 2 => Automatic time step division
+!
+! --------------------------------------------------------------------------------------------------
+#define LDC_TIMEDIV_NONE 0
+#define LDC_TIMEDIV_FORC 1
+#define LDC_TIMEDIV_AUTO 2

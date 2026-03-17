@@ -39,9 +39,6 @@ subroutine lc0029(fami, kpg, ksp, ndim, imate, &
     character(len=16) :: option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-
-    ! call notAnisot(angmas)
-    ASSERT(nvi .eq. 1)
     call nmvple(fami, kpg, ksp, ndim, imate, &
                 carcri, typmod, instam, instap, &
                 deps, sigm, vim, option, sigp, &

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcelnl(BEHinteg, &
+subroutine lcelnl(BEHInteg, &
                   fami, kpg, ksp, ndim, &
                   typmod, imate, relaComp, carcri, &
                   option, eps, sig, vi, dsidep, codret)
@@ -41,7 +41,7 @@ subroutine lcelnl(BEHinteg, &
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16), intent(in) :: relaComp, option
@@ -151,7 +151,7 @@ subroutine lcelnl(BEHinteg, &
     if (iret .ne. 0) secref = 0.d0
     call get_elas_para(fami, imate, poum, kpg, ksp, &
                        elas_id, elas_keyword, &
-                       e_=e, nu_=nu, BEHinteg=BEHinteg)
+                       e_=e, nu_=nu, BEHInteg=BEHInteg)
     if (line .or. puis) then
         call rcvalb(fami, kpg, ksp, poum, imate, &
                     ' ', 'ELAS', 0, ' ', [0.d0], &

@@ -71,7 +71,7 @@ subroutine te0028(option, nomte)
 !
 ! --------------------------------------------------------------
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: ndim, nno, igeom, imate, i, j
     integer(kind=8), parameter :: size_fenicsx = 42*42, size_aster = 30*30
 

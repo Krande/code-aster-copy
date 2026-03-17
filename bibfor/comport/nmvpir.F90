@@ -17,11 +17,14 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0413
 !
-subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
-                  imate, relaComp, carcri, instam, instap, &
-                  deps, sigm, nvi, vim, option, angmas, &
+subroutine nmvpir(BEHInteg, &
+                  fami, kpg, ksp, ndim, typmod, &
+                  jvMaterCode, relaComp, carcri, instam, instap, &
+                  deps, sigm, nvi, vim, option, &
                   sigp, vip, dsidep, iret)
 !
+    use Behaviour_type
+    use MaterialPara_type
     implicit none
 !
 #include "asterc/r8t0.h"
@@ -40,14 +43,18 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/vpalem.h"
 #include "asterfort/zerofr.h"
 !
-    integer(kind=8) :: ndim, imate, kpg, ksp, iret, nvi
-    character(len=8) :: typmod(*)
+    type(Behaviour_Integ), intent(in) :: BEHInteg
+    integer(kind=8) :: ndim, jvMaterCode, kpg, ksp, iret, nvi
+    character(len=8) :: typmod(2)
+    character(len=*) :: fami
     character(len=16), intent(in) :: relaComp, option
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-    real(kind=8) :: instam, instap, irram, irrap
-    real(kind=8) :: deps(6), angmas(3)
+    real(kind=8) :: instam, instap
+    real(kind=8) :: deps(6)
     real(kind=8) :: sigm(6), vim(nvi), sigp(6), vip(nvi), dsidep(6, 6)
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     REALISE LES LOIS DE VISCOPLASTICITE SOUS IRRADIATION
 !     POUR LES ELEMENTS
 !     ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -108,9 +115,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     character(len=16) :: nomlem(nbclem), nomvil(nbcvil)
     character(len=16) :: nomint(nbcint)
     integer(kind=8) :: codvil(nbcvil), codlem(nbclem), codint(nbcint)
-    character(len=*) :: fami
-!
-    real(kind=8) :: t1, t2, defam(6), defap(6), fluphi
+    real(kind=8) :: t1, t2, defam(6), defap(6), fluphi, irram, irrap
     integer(kind=8) :: iulmes, iret2, iret3, ibid
     real(kind=8) :: rac2, tabs
     integer(kind=8) :: k, l
@@ -136,9 +141,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     data nomint/'A', 'S'/
     data epsa/'EPSAXX', 'EPSAYY', 'EPSAZZ', 'EPSAXY', 'EPSAXZ',&
      &              'EPSAYZ'/
-! DEB ------------------------------------------------------------------
+    type(Material_Para) :: materPara
 !
-    call verift(fami, kpg, ksp, 'T', imate, &
+! --------------------------------------------------------------------------------------------------
+!
+    materPara = BEHInteg%materPara
+
+    call verift(fami, kpg, ksp, 'T', jvMaterCode, &
                 iret_=iret3, epsth_=epsthe, temp_prev_=tm, temp_curr_=tp)
     theta = carcri(4)
 ! TEMPERATURE AU MILIEU DU PAS DE TEMPS
@@ -216,12 +225,12 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !
 ! CARACTERISTIQUES ELASTIQUES VARIABLES
 !
-    call nmasse(fami, kpg, ksp, '-', imate, &
+    call nmasse(fami, kpg, ksp, '-', jvMaterCode, &
                 ' ', instam, em, num, deumum, &
                 troikm)
 !
 !
-    call nmasse(fami, kpg, ksp, '+', imate, &
+    call nmasse(fami, kpg, ksp, '+', jvMaterCode, &
                 ' ', instap, ep, nup, deumup, &
                 troikp)
 !
@@ -237,7 +246,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     if (relaComp(1:13) .eq. 'LEMAITRE_IRRA') then
 !       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 !
-        call rcvalb(fami, 1, 1, '+', imate, &
+        call rcvalb(fami, 1, 1, '+', jvMaterCode, &
                     ' ', 'LEMAITRE_IRRA', 0, ' ', [0.d0], &
                     7, nomlem, coelem, codlem, 1)
 !
@@ -279,7 +288,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !
     else if (relaComp(1:10) .eq. 'VISC_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
-        call rcvalb(fami, 1, 1, '+', imate, &
+        call rcvalb(fami, 1, 1, '+', jvMaterCode, &
                     ' ', 'VISC_IRRA_LOG', 1, 'TEMP', [tschem], &
                     nbcvil, nomvil(1), coevil(1), codvil, 1)
         a = coevil(1)
@@ -294,7 +303,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !
     else if (relaComp(1:10) .eq. 'GRAN_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
-        call rcvalb(fami, 1, 1, '+', imate, &
+        call rcvalb(fami, 1, 1, '+', jvMaterCode, &
                     ' ', 'GRAN_IRRA_LOG', 1, ' ', [0.d0], &
                     nbcvil, nomvil(1), coevil(1), codvil, 1)
         irrap = irrap-irram+vim(2)
@@ -308,7 +317,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
         ener = coevil(4)
 !
     else if (relaComp(1:10) .eq. 'LEMA_SEUIL') then
-        call rcvalb(fami, 1, 1, '+', imate, &
+        call rcvalb(fami, 1, 1, '+', jvMaterCode, &
                     ' ', 'LEMA_SEUIL', 1, 'TEMP', [tschem], &
                     2, nomint(1), coeint(1), codint, 1)
         unsurm = 0.d0
@@ -323,25 +332,25 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 !
 !       TRAITEMENT DES PARAMETRES DE LA LOI DE GRANDISSEMENT
 !
-    call granac(fami, kpg, ksp, imate, '        ', &
+    call granac(fami, kpg, ksp, jvMaterCode, '        ', &
                 relaComp, irrap, irram, tm, tp, &
                 depsgr)
 ! --- RECUPERATION DU REPERE POUR LE GRANDISSEMENT
 !
     if (relaComp(1:13) .eq. 'LEMAITRE_IRRA' .or. relaComp(1:13) .eq. 'GRAN_IRRA_LOG') then
         if (ndim .eq. 2) then
-            if (angmas(2) .ne. 0.d0) then
-                call utmess('F', 'ALGORITH11_82', nr=2, valr=angmas(2))
+            if (materPara%lcsPara%lcsAngle(2) .ne. 0.d0) then
+                call utmess('F', 'ALGORITH11_82', nr=2, valr=materPara%lcsPara%lcsAngle(2))
             end if
         end if
-        alpha = angmas(1)
-        beta = angmas(2)
+        alpha = materPara%lcsPara%lcsAngle(1)
+        beta = materPara%lcsPara%lcsAngle(2)
         caa = cos(alpha)
         saa = sin(alpha)
         cba = cos(beta)
         sba = sin(beta)
-!
 ! --- DEFORMATIONS DE GRANDISSEMENT DANS LE REPERE
+
         degran(1) = depsgr*caa*caa*cba*cba
         degran(2) = depsgr*saa*saa*sba*sba
         degran(3) = depsgr*sba*sba

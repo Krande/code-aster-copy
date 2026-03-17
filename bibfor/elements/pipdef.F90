@@ -16,37 +16,38 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
-                  idfde, geom, typmod, compor, deplm, &
+subroutine pipdef(typmod, compor, &
+                  ndim, nno, kpg, ipoids, ivf, &
+                  idfde, geom, deplm, &
                   ddepl, depl0, depl1, dfdi, fm, &
                   epsm, epsp, epsd)
-!
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/nmgeom.h"
 #include "blas/daxpy.h"
+#include "jeveux.h"
+!
+    character(len=8), intent(in) :: typmod(2)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
     integer(kind=8) :: ndim, nno, kpg
     integer(kind=8) :: ipoids, ivf, idfde
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*)
     real(kind=8) :: geom(ndim, *), deplm(*)
     real(kind=8) :: ddepl(*), depl0(*), depl1(*)
     real(kind=8) :: dfdi(*)
     real(kind=8) :: epsm(6), epsp(6), epsd(6)
     real(kind=8) :: fm(3, 3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS/DEFORMATION)
 !
 ! CALCUL DES DEFORMATIONS
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  NDIM   : DIMENSION DE L'ESPACE
 ! IN  NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
@@ -67,7 +68,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
 ! OUT EPSP   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES FIXES
 ! OUT EPSD   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES PILOTEES
 !
-!
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: axi, grand
     integer(kind=8) :: ndimsi
@@ -76,39 +77,33 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
     real(kind=8) :: poids
     blas_int :: b_incx, b_incy, b_n
 !
-! ----------------------------------------------------------------------
-!
-!
-!
-! --- INITIALISATIONS
+! --------------------------------------------------------------------------------------------------
 !
     axi = typmod(1) .eq. 'AXIS'
-    grand = compor(3) .ne. 'PETIT'
+    grand = compor(DEFO) .ne. 'PETIT'
     ndimsi = 2*ndim
 !
     if (typmod(2) .eq. 'DEPLA') then
-!
 ! ----- CALCUL DE EPSM (LINEAIRE) OU EM (GREEN)  = EPS(UM)
         call nmgeom(ndim, nno, axi, grand, geom, &
                     kpg, ipoids, ivf, idfde, deplm, &
                     .true._1, poids, dfdi, fm, epsm, &
                     r)
-!
+
 ! ----- REACTUALISATION DE LA GEOMETRIE SI GRANDES DEFS
         if (grand) then
             b_n = to_blas_int(ndim*nno)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, deplm, b_incx, geom, &
-                       b_incy)
+            call daxpy(b_n, 1.d0, deplm, b_incx, geom, b_incy)
         end if
-!
+
 ! ----- CALCUL DE DEPS = EPS(DU)
         call nmgeom(ndim, nno, axi, .false._1, geom, &
                     kpg, ipoids, ivf, idfde, ddepl, &
                     .true._1, poids, dfdi, t9bid, deps, &
                     r)
-!
+
 ! ----- CALCUL DE EPSP (= DEPS + EPS(DU0) )
         call nmgeom(ndim, nno, axi, .false._1, geom, &
                     kpg, ipoids, ivf, idfde, depl0, &
@@ -117,20 +112,16 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, deps, b_incx, epsp, &
-                   b_incy)
-!
+        call daxpy(b_n, 1.d0, deps, b_incx, epsp, b_incy)
+
 ! ----- CALCUL DE EPSD (DEPS = EPSP + ETA EPSD)
         call nmgeom(ndim, nno, axi, .false._1, geom, &
                     kpg, ipoids, ivf, idfde, depl1, &
                     .true._1, poids, dfdi, t9bid, epsd, &
                     r)
-!
+
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
-!
-!
-!
 !
 end subroutine

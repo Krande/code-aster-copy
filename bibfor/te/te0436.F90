@@ -48,7 +48,7 @@ subroutine te0436(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4), parameter :: fami = 'RIGI'
+    character(len=8), parameter :: fami = 'RIGI'
     integer(kind=8) :: nddl, nno, npg, ncomp
     integer(kind=8) :: i, j, n, c, cc, kpg, j1, j2, k
     integer(kind=8) :: ipoids, ivf, idfde, iret

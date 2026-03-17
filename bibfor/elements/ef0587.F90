@@ -42,7 +42,7 @@ subroutine ef0587(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4), parameter :: fami = "RIGI"
+    character(len=8), parameter :: fami = "RIGI"
     aster_logical, parameter :: lLine = ASTER_FALSE
     integer(kind=8) :: nbFourier, nbDof, nbNode
 !

@@ -19,7 +19,8 @@
 #include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine lc0077(BEHinteg, fami, kpg, ksp, ndim, imate, &
+    subroutine lc0077(BEHinteg, &
+                      fami, kpg, ksp, ndim, imate, &
                       carcri, instam, instap, neps, epsm, &
                       deps, nsig, sigm, nvi, vim, option, &
                       sigp, vip, typmod, &

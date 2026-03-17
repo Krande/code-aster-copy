@@ -20,7 +20,7 @@
 subroutine lc0026(fami, kpg, ksp, ndim, imate, &
                   compor, instam, instap, epsm, &
                   deps, sigm, nvi, vim, option, &
-                  sigp, vip, typmod, materi, &
+                  sigp, vip, typmod, &
                   dsidep, codret)
 !
     implicit none
@@ -37,7 +37,7 @@ subroutine lc0026(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: vim(nvi), vip(nvi), tm, tp, tref
     real(kind=8) :: dsidep(6, 6)
     character(len=16), intent(in) :: compor(COMPOR_SIZE), option
-    character(len=8) :: typmod(*), materi
+    character(len=8) :: typmod(*)
     character(len=*) :: fami
 !
 !     GRANGER*
@@ -46,7 +46,7 @@ subroutine lc0026(fami, kpg, ksp, ndim, imate, &
 ! TEMPERATURE LES VALEURS MIN ET MAX... IL FAUT DONC LAISSER
 ! L ARGUMENT
     character(len=16) :: relaComp
-    ! call notAnisot(angmas)
+
     call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tm, iret)
     call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tp, iret)
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg, ksp, tref, iret)
@@ -56,5 +56,5 @@ subroutine lc0026(fami, kpg, ksp, ndim, imate, &
     call nmgran(fami, kpg, ksp, typmod, imate, &
                 relaComp, instam, instap, tm, tp, &
                 deps, sigm, vim, option, sigp, &
-                vip, dsidep, materi)
+                vip, dsidep)
 end subroutine

@@ -15,22 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0413,W0104
+! aslint: disable=W0413
 ! comparaison aver r8gaem et -r8gaem uniquement
 ! passage de sigm comme argunement si des lois devaient un jour en avoir besoin (COMP_INCR)
-
-subroutine pil000(typilo, compor, neps, dtau, mat, &
-                  vim, sigm, epsm, epsd_cste, epsd_pilo, &
+!
+subroutine pil000(typilo, relaComp, neps, dtau, jvMaterCode, &
+                  vim, epsm, epsd_cste, epsd_pilo, &
                   typmod, etamin, etamax, copilo)
 !
-!
     implicit none
+!
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcmfbo.h"
 #include "asterfort/lcmfga.h"
 #include "asterfort/lcmfma.h"
 #include "asterfort/lcqubo.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/lcquga.h"
 #include "asterfort/lcquma.h"
 #include "asterfort/pidegv.h"
@@ -41,20 +42,23 @@ subroutine pil000(typilo, compor, neps, dtau, mat, &
 #include "asterfort/pipeou.h"
 #include "asterfort/pipetc.h"
 #include "asterfort/utmess.h"
-    character(len=8), intent(in) :: typmod(*)
-    character(len=16), intent(in) :: compor(*), typilo
-    integer(kind=8), intent(in) :: neps, mat
+!
+    character(len=8), intent(in) :: typmod(2)
+    character(len=16), intent(in) :: relaComp, typilo
+    integer(kind=8), intent(in) :: neps, jvMaterCode
     real(kind=8), intent(in) :: dtau, epsm(neps), epsd_pilo(neps), epsd_cste(neps), etamin, etamax
-    real(kind=8), intent(in) :: vim(:), sigm(neps)
+    real(kind=8), intent(in) :: vim(:)
     real(kind=8), intent(out) :: copilo(5)
 !
-!---------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 !     PILOTAGE PRED_ELAS : BRANCHEMENT SELON COMPORTEMENT
-!---------------------------------------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  TYPILO  TYPE DE PILOTAGE : 'PRED_ELAS' OU 'DEFORMATION'
 ! IN  NEPS    DIMENSION DES DEFORMATIONS
 ! IN  TAU     INCREMENT DE PILOTAGE
-! IN  MAT     NATURE DU MATERIAU                             (PRED_ELAS)
 ! IN  VIM     VARIABLES INTERNES EN T-                       (PRED_ELAS)
 ! IN  SIGM    CONTRAINTES EN T- (SI NECESSAIRE)              (PRED_ELAS)
 ! IN  EPSM    CHAMP DE DEFORMATION EN T-
@@ -63,49 +67,44 @@ subroutine pil000(typilo, compor, neps, dtau, mat, &
 ! IN  ETAMIN  BORNE INF DU PILOTAGE (SI UTILE)               (PRED_ELAS)
 ! IN  ETAMAX  BORNE SUP DU PILOTAGE (SI UTILE)               (PRED_ELAS)
 ! OUT COPILO  COEFFICIENT DE PILOTAGE : F := A0+A1*ETA = TAU
-!---------------------------------------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer(kind=8) :: ndim, nsol, sgn(2)
     real(kind=8):: mu_cste(3), su_cste(3), mu_pilo(3), su_pilo(3)
     real(kind=8):: sol(2)
-!---------------------------------------------------------------------------------------------------
-
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! EN ATTENTE D'UNE HARMONISATION DU TRAITEMENT (S'INSPIRER DE CZM_LAB_MIX ET DE LC0000)
 
-!---------------------------------------------------------------------------------------------------
-! MODELISATION A GRADIENT DE VARIABLES INTERNES
-!---------------------------------------------------------------------------------------------------
-
     if (typmod(2) .eq. 'GRADVARI') then
-
-        ! PILOTAGE 'DEFORMATION'
         if (typilo .eq. 'DEFORMATION') then
             call pidegv(neps, dtau, epsm, epsd_cste, epsd_pilo, copilo)
 
-            ! PILOTAGE 'PRED_ELAS'
         else
             if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) &
-                call utmess('F', 'MECANONLINE_60', sk=compor(1))
+                call utmess('F', 'MECANONLINE_60', sk=relaComp)
 
-            if (compor(1) .eq. 'ENDO_SCALAIRE') then
-                call piesgv(neps, dtau, mat, lcquma, vim, epsm, epsd_cste, epsd_pilo, typmod, &
+            if (relaComp .eq. 'ENDO_SCALAIRE') then
+                call piesgv(neps, dtau, jvMaterCode, lcquma, vim, epsm, &
+                            epsd_cste, epsd_pilo, typmod, &
                             lcquga, etamin, etamax, lcqubo, copilo)
 
-            else if (compor(1) .eq. 'ENDO_FISS_EXP') then
-                call piesgv(neps, dtau, mat, lcmfma, vim, epsm, epsd_cste, epsd_pilo, typmod, &
+            else if (relaComp .eq. 'ENDO_FISS_EXP') then
+                call piesgv(neps, dtau, jvMaterCode, lcmfma, vim, epsm, &
+                            epsd_cste, epsd_pilo, typmod, &
                             lcmfga, etamin, etamax, lcmfbo, copilo)
 
-            else if (compor(1) .eq. 'ENDO_ISOT_BETON') then
-                call pieigv(neps, dtau, mat, vim, epsm, epsd_cste, epsd_pilo, typmod, &
+            else if (relaComp .eq. 'ENDO_ISOT_BETON') then
+                call pieigv(neps, dtau, jvMaterCode, vim, epsm, &
+                            epsd_cste, epsd_pilo, typmod, &
                             etamin, etamax, copilo)
 
             else
                 call utmess('F', 'MECANONLINE_59')
             end if
         end if
-
-!---------------------------------------------------------------------------------------------------
-! MODELISATION CZM INTERFACE
-!---------------------------------------------------------------------------------------------------
 
     else if (typmod(2) .eq. 'INTERFAC') then
 
@@ -120,17 +119,19 @@ subroutine pil000(typilo, compor, neps, dtau, mat, &
         mu_cste(1:ndim) = epsm(ndim+1:2*ndim)+epsd_cste(ndim+1:2*ndim)
         mu_pilo(1:ndim) = epsd_pilo(ndim+1:2*ndim)
 
-        if (compor(1) .eq. 'CZM_TAC_MIX') then
-            call pipetc(mat, su_cste, su_pilo, mu_cste, mu_pilo, &
+        if (relaComp .eq. 'CZM_TAC_MIX') then
+            call pipetc(jvMaterCode, su_cste, su_pilo, mu_cste, mu_pilo, &
                         vim, dtau, copilo)
-        else if (compor(1) .eq. 'CZM_OUV_MIX') then
-            call pipeou(mat, su_cste, su_pilo, mu_cste, mu_pilo, &
+        else if (relaComp .eq. 'CZM_OUV_MIX') then
+            call pipeou(jvMaterCode, su_cste, su_pilo, mu_cste, mu_pilo, &
                         vim, dtau, copilo)
-        else if (compor(1) .eq. 'CZM_EXP_MIX') then
-            call pipeex(mat, su_cste, su_pilo, mu_cste, mu_pilo, &
+        else if (relaComp .eq. 'CZM_EXP_MIX') then
+            call pipeex(jvMaterCode, &
+                        su_cste, su_pilo, mu_cste, mu_pilo, &
                         vim, dtau, copilo)
-        else if (compor(1) .eq. 'CZM_LAB_MIX') then
-            call pipeab(mat, dtau, vim(:), su_cste, su_pilo, mu_cste, mu_pilo, nsol, sol, sgn)
+        else if (relaComp .eq. 'CZM_LAB_MIX') then
+            call pipeab(jvMaterCode, dtau, vim(:), &
+                        su_cste, su_pilo, mu_cste, mu_pilo, nsol, sol, sgn)
 
             if (nsol .eq. 0) then
                 copilo(5) = 0.d0

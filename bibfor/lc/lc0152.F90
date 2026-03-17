@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,C1505,W1306
 !
-subroutine lc0152(BEHinteg, &
+subroutine lc0152(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &
@@ -32,7 +32,7 @@ subroutine lc0152(BEHinteg, &
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/lccgad.h"
 !
-    type(Behaviour_Integ) :: BEHinteg
+    type(Behaviour_Integ) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -75,7 +75,7 @@ subroutine lc0152(BEHinteg, &
     mu = eps(1)
     su = eps(2)
 
-    call lccgad(BEHinteg, &
+    call lccgad(BEHInteg, &
                 fami, kpg, ksp, imate, option, &
                 mu, su, de, dsde, vim, vi)
 

@@ -36,7 +36,7 @@ subroutine ef0436(nomte)
 !                       NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: nddl, nno, nnos, npg, ndim, ncomp
     integer(kind=8) :: i, n, c, cc, kpg
     integer(kind=8) :: ipoids, ivf, idfde, jgano, jefno

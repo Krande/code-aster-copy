@@ -112,7 +112,7 @@ subroutine get_elasth_para(fami, j_mater, poum, ipg, ispg, &
 !
 ! - Get parameters
 !
-    if (elas_type .eq. 1) then
+    if (elas_type .eq. 1 .or. elas_type .eq. 7) then
         if (elas_keyword .eq. 'ELAS_HYPER') then
             call utmess('F', 'COMPOR5_6')
         elseif (elas_keyword .eq. 'ELAS_META') then
@@ -169,6 +169,7 @@ subroutine get_elasth_para(fami, j_mater, poum, ipg, ispg, &
         alpha_l = valres(1)
         alpha_n = valres(2)
     else
+        WRITE (6, *) "ELAS: ", elas_type, elas_keyword
         ASSERT(.false.)
     end if
 !

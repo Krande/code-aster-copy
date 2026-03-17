@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0104
 !
-subroutine lc7046(BEHinteg, &
+subroutine lc7046(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   instam, instap, epsm, &
                   deps, sigm, nvi, vim, option, &
@@ -28,7 +29,7 @@ subroutine lc7046(BEHinteg, &
 !
 #include "asterfort/lcejtu.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -55,9 +56,9 @@ subroutine lc7046(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    call lcejtu(BEHinteg, &
-                fami, kpg, ksp, ndim, imate, &
-                option, epsm, deps, sigm, sigp, &
+    call lcejtu(BEHInteg, &
+                ndim, option, &
+                epsm, deps, sigm, sigp, &
                 dsidep, vim, vip, typmod, &
                 instam, instap)
 end subroutine

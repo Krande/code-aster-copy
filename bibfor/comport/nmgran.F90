@@ -15,22 +15,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmgran(fami, kpg, ksp, typmod, imate, &
                   relaComp, instam, instap, tpmxm, tpmxp, &
                   depst, sigm, vim, option, sigp, &
-                  vip, dsidep, materi)
+                  vip, dsidep)
 !
     implicit none
-#include "asterf_types.h"
+!
 #include "asterc/r8t0.h"
+#include "asterf_types.h"
 #include "asterfort/granvi.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
+!
     integer(kind=8) :: imate, kpg, ksp
-    character(len=8) :: typmod(*), materi
+    character(len=8) :: typmod(2)
     character(len=16) :: relaComp, option, phenbid
     character(len=*) :: fami
     real(kind=8) :: instam, instap
@@ -67,6 +69,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate, &
 !
 ! ----------------------------------------------------------------------
 !
+    character(len=8), parameter :: materi = " "
     real(kind=8) :: valres(16), tm, tp, tref
     real(kind=8) :: e, nu, troisk, deuxmu
     real(kind=8) :: delta, dteqt, agem, agep, dage, tceq
@@ -81,6 +84,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate, &
     integer(kind=8) :: icodre(16), ndt, ndi
     character(len=16) :: nomres(16)
     character(len=8) :: nompar, mod
+
     real(kind=8) :: valpam, valpap
     real(kind=8) :: bendom, bendop, kdessm, kdessp
     real(kind=8) :: j(8), taux(8), hygrm, hygrp, vieil

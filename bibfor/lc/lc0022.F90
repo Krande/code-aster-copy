@@ -57,7 +57,7 @@ subroutine lc0022(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
+
     ASSERT(nvi .eq. 7)
     call nmccam(fami, kpg, ksp, ndim, typmod, imate, carcri, &
                 deps, sigm, vim, option, sigp, &

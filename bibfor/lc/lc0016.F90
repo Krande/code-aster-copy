@@ -54,7 +54,7 @@ subroutine lc0016(fami, kpg, ksp, ndim, jvMaterCode, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
+
     call lcdrpr(fami, typmod, option, jvMaterCode, sigm, &
                 deps, vim, &
                 vip, sigp, dsidep, codret)

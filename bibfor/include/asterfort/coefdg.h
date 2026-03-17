@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine coefdg(compor, mat, dpida2)
-        character(len=16) :: compor
-        integer(kind=8) :: mat
-        real(kind=8) :: dpida2
+    subroutine coefdg(relaComp, materPara, dpida2)
+        use MaterialPara_type
+        character(len=16), intent(in) :: relaComp
+        type(Material_Para), intent(inout) :: materPara
+        real(kind=8), intent(out) :: dpida2
     end subroutine coefdg
 end interface

@@ -69,7 +69,7 @@ subroutine lc0008(fami, kpg, ksp, ndim, imate, &
     relaComp = compor(RELA_NAME)
     ismazarsmu = relaComp(1:11) .eq. 'MAZARS_UNIL'
     iscplane = typmod(1) (1:6) .eq. 'C_PLAN'
-    ! call notAnisot(angmas)
+
 !
     if (ismazarsmu) then
         iscouplage = (option(6:9) .eq. 'COUP')

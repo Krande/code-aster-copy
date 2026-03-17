@@ -21,7 +21,7 @@ interface
                       fami, kpg, ksp, ndim, imate, &
                       compor, multComp, carcri, instam, instap, &
                       neps, epsm, deps, sigm, nvi, vim, option, &
-                      angmas, sigp, vip, &
+                      sigp, vip, &
                       typmod, &
                       dsidep, codret)
         use Behaviour_type
@@ -41,10 +41,9 @@ interface
         real(kind=8), intent(in) :: sigm(6)
         real(kind=8), intent(in) :: vim(nvi)
         character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(nvi)
-        character(len=8), intent(in) :: typmod(*)
+        character(len=8), intent(in) :: typmod(2)
         real(kind=8), intent(out) :: dsidep(6, 6)
         integer(kind=8), intent(out) :: codret
     end subroutine lc1137

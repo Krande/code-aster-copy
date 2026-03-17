@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lc7045(BEHinteg, &
+subroutine lc7045(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   instam, instap, epsm, &
                   deps, nvi, vim, option, &
@@ -28,7 +28,7 @@ subroutine lc7045(BEHinteg, &
 !
 #include "asterfort/lcejmr.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -54,7 +54,7 @@ subroutine lc7045(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    call lcejmr(BEHinteg, &
+    call lcejmr(BEHInteg, &
                 fami, kpg, ksp, ndim, imate, &
                 option, epsm, deps, sigp, &
                 dsidep, vim, vip, typmod, &

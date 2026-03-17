@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc0035(BEHinteg, &
-                  fami, kpg, ksp, ndim, imate, &
+subroutine lc0035(BEHInteg, &
+                  fami, kpg, ksp, ndim, jvMaterCode, &
                   compor, carcri, instam, instap, epsm, &
-                  deps, sigm, nvi, vim, option, angmas, &
+                  deps, sigm, nvi, vim, option, &
                   sigp, vip, typmod, &
                   dsidep, codret)
 !
@@ -32,12 +32,12 @@ subroutine lc0035(BEHinteg, &
 #include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
     integer(kind=8), intent(in) :: ndim
-    integer(kind=8), intent(in) :: imate, nvi
+    integer(kind=8), intent(in) :: jvMaterCode, nvi
     character(len=16), intent(in) :: compor(COMPOR_SIZE), option
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
@@ -46,10 +46,9 @@ subroutine lc0035(BEHinteg, &
     real(kind=8), intent(in) :: deps(*)
     real(kind=8), intent(in) :: sigm(6)
     real(kind=8), intent(in) :: vim(nvi)
-    real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8), intent(out) :: vip(nvi)
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 !
@@ -61,7 +60,7 @@ subroutine lc0035(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  BEHinteg         : parameters for integration of behaviour
+! In  BEHInteg         : parameters for integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,22 +71,25 @@ subroutine lc0035(BEHinteg, &
     call utlcal('VALE_NOM', algoInte, carcri(6))
 !
     if ((algoInte(1:10) .eq. 'SPECIFIQUE') .or. (option(1:14) .eq. 'RIGI_MECA_TANG')) then
-        call lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
+        call lkcomp(fami, kpg, ksp, typmod, jvMaterCode, instam, instap, &
                     deps, sigm, vim, &
                     option, sigp, vip, dsidep, codret, &
                     nvi)
     else
-        call plasti(BEHinteg, &
-                    fami, kpg, ksp, typmod, imate, &
+        call plasti(BEHInteg, &
+                    option, typmod, &
+                    fami, kpg, ksp, jvMaterCode, &
                     compor, carcri, instam, instap, &
-                    epsm, deps, sigm, &
-                    nvi, vim, option, angmas, sigp, vip, &
+                    epsm, deps, &
+                    sigm, &
+                    nvi, vim, &
+                    sigp, vip, &
                     dsidep, codret)
     end if
 !
 ! --- AJOUT DE CRITERES D'INTERPRETATION POUR AIDER AUX POST-TRAITEMENTS
     if (option(1:5) .ne. 'RIGI_') then
-        call lkpost(imate, sigp, nvi, vip)
+        call lkpost(jvMaterCode, sigp, nvi, vip)
     end if
 !
 end subroutine

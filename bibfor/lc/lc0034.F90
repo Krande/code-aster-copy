@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lc0034(BEHinteg, &
-                  fami, kpg, ksp, imate, &
+subroutine lc0034(BEHInteg, &
+                  fami, kpg, ksp, jvMaterCode, &
                   carcri, epsm, &
-                  deps, sigm, nvi, vim, option, angmas, &
+                  deps, sigm, nvi, vim, option, &
                   sigp, vip, typmod, &
                   dsidep, codret)
 !
@@ -33,21 +33,20 @@ subroutine lc0034(BEHinteg, &
 #include "asterfort/utlcal.h"
 #include "jeveux.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
-    integer(kind=8), intent(in) :: imate, nvi
+    integer(kind=8), intent(in) :: jvMaterCode, nvi
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: epsm(*)
     real(kind=8), intent(in) :: deps(*)
     real(kind=8), intent(in) :: sigm(6)
     real(kind=8) :: vim(nvi)
     character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8) :: vip(nvi)
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 
@@ -72,10 +71,11 @@ subroutine lc0034(BEHinteg, &
 !
     ASSERT(nvi .eq. 50)
     call utlcal('VALE_NOM', algoInte, carcri(6))
-    cutLevel = BEHinteg%behavPara%cutLevel
+    cutLevel = BEHInteg%behavPara%cutLevel
 !
-    call nmhuj(fami, kpg, ksp, typmod, imate, &
-               carcri, angmas, epsm, &
+    call nmhuj(BEHInteg, &
+               fami, kpg, ksp, typmod, jvMaterCode, &
+               carcri, epsm, &
                deps, sigm, vim, option, sigp, &
                vip, dsidep, codret)
 

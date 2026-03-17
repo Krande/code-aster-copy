@@ -38,7 +38,7 @@ subroutine mbgnlr(lVect, lMatr, &
 #include "asterfort/subacv.h"
 !
     aster_logical, intent(in) :: lVect, lMatr
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: nno, ncomp, kpg
     integer(kind=8) :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
     integer(kind=8) :: imatuu

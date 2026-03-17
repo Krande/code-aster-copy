@@ -15,42 +15,44 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine coefdg(compor, mat, dpida2)
 !
+subroutine coefdg(relaComp, materPara, dpida2)
 !
-!
+    use MaterialPara_type
     implicit none
+!
 #include "asterfort/rcvalb.h"
-    character(len=16) :: compor
-    integer(kind=8) :: mat
-    real(kind=8) :: dpida2
 !
-! ---------------------------------------------------------------------
+    character(len=16), intent(in) :: relaComp
+    type(Material_Para), intent(inout) :: materPara
+    real(kind=8), intent(out) :: dpida2
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     LOIS A GRADIENTS : COEFFICIENT DIAGONAL MATRICE GVNO
-! ---------------------------------------------------------------------
 !
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: val(1)
-    character(len=8) :: nom(2), fami, poum
-    integer(kind=8) :: k2(5), kpg, spt
-! ---------------------------------------------------------------------
-    fami = 'FPG1'
-    kpg = 1
-    spt = 1
-    poum = '+'
+    character(len=8), parameter :: poum = "+"
+    integer(kind=8), parameter :: nbProp = 2
+    character(len=8), parameter :: propName(nbProp) = (/"E ", "NU"/)
+    real(kind=8) :: propVale(nbProp)
+    integer(kind=8) :: propCode(nbProp)
 !
-    if (compor .eq. 'ENDO_CARRE') then
+! --------------------------------------------------------------------------------------------------
 !
-        nom(1) = 'E'
-        nom(2) = 'NU'
-        call rcvalb(fami, kpg, spt, poum, mat, &
-                    ' ', 'ELAS', 0, ' ', [0.d0], &
-                    1, nom(1), val(1), k2, 2)
+    dpida2 = 0.d0
 !
-        dpida2 = val(1)
-!
+    if (relaComp .eq. 'ENDO_CARRE') then
+        call rcvalb(materPara%schemePara%fami, &
+                    materPara%schemePara%kpg, &
+                    materPara%schemePara%ksp, &
+                    poum, &
+                    materPara%jvMaterCode, &
+                    ' ', 'ELAS', &
+                    0, ' ', [0.d0], &
+                    nbProp, propName, propVale, propCode, 2)
+        dpida2 = propVale(1)
     end if
 !
 end subroutine

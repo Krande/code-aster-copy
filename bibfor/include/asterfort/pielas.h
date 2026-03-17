@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine pielas(BEHinteg,&
-                      ndim, npg, kpg, compor, typmod,&
-                      mate, lgpg, vim, epsm,&
-                      epsp, epsd, sigma, etamin, etamax,&
+    subroutine pielas(BEHinteg, &
+                      typmod, relaComp, &
+                      ndim, npg, kpg, &
+                      lgpg, vim, epsm, &
+                      epsp, epsd, sigma, etamin, etamax, &
                       tau, copilo)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
+        character(len=8), intent(in) :: typmod(2)
+        character(len=16), intent(in):: relaComp
         integer(kind=8) :: lgpg
         integer(kind=8) :: npg
         integer(kind=8) :: ndim
         integer(kind=8) :: kpg
-        character(len=16) :: compor(*)
-        character(len=8) :: typmod(*)
-        integer(kind=8) :: mate
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: epsm(6)
         real(kind=8) :: epsp(6)

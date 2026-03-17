@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,W1306,C1505
 !
-subroutine lc0078(BEHinteg, &
+subroutine lc0078(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &
@@ -32,7 +32,7 @@ subroutine lc0078(BEHinteg, &
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/lcelnl.h"
 !
-    type(Behaviour_Integ)  :: BEHinteg
+    type(Behaviour_Integ)  :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp, imate
@@ -80,7 +80,7 @@ subroutine lc0078(BEHinteg, &
 
     eps = epsm(1:ndimsi)+deps(1:ndimsi)
     relaComp = compor(RELA_NAME)
-    call lcelnl(BEHinteg, &
+    call lcelnl(BEHInteg, &
                 fami, kpg, ksp, &
                 ndim, typmod, imate, relaComp, carcri, &
                 option, eps, sig, vi, dsde, codret)

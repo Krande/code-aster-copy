@@ -64,7 +64,7 @@ subroutine nmmaba(icodma, rela_comp, e, dsde, sigy, &
     integer(kind=8) :: codres(nbval)
     character(len=8) :: nompar, nomela(1)
     character(len=16) :: nomecl(2), nompim(12)
-    character(len=4) :: fami
+    character(len=8) :: fami
 !
 ! *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 !

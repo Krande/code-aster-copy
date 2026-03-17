@@ -20,7 +20,8 @@ subroutine te0543(option, nomte)
 !
     use Behaviour_type
     use Behaviour_module
-!
+    use MaterialPara_module
+    use MaterialPara_type
     implicit none
 !
 #include "asterc/r8vide.h"
@@ -32,34 +33,34 @@ subroutine te0543(option, nomte)
 #include "asterfort/pipepe.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES COEFFICIENTS A0 ET A1
-!                          POUR LE PILOTAGE PAR CRITERE ELASTIQUE
-!                          OU PAR INCREMENT DE DEFORMATION POUR LES
-!                          ELEMENTS A VARIABLES LOCALES
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
 !
+! --------------------------------------------------------------------------------------------------
+!
+!  CALCUL DES COEFFICIENTS A0 ET A1 POUR LE PILOTAGE PAR CRITERE ELASTIQUE
+!  OU PAR INCREMENT DE DEFORMATION POUR LES ELEMENTS A VARIABLES LOCALES
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8), parameter :: fami = 'RIGI'
     character(len=8) :: typmod(2)
     character(len=16), pointer :: compor(:) => null()
-    character(len=16) :: rela_comp, pilo
-    character(len=4), parameter :: fami = 'RIGI'
-    integer(kind=8) :: jgano, ndim, nno, nnos, npg, lgpg, jtab(7), itype
-    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate, icarcr
+    character(len=16) :: relaComp, pilo
+    integer(kind=8) :: ndim, nno, npg, lgpg, jtab(7), itype
+    integer(kind=8) :: ipoids, ivf, idfde, jvGeom, jvMaterc, jvCarcri
     integer(kind=8) :: icontm, ivarim, icopil, iborne, ictau
     integer(kind=8) :: ideplm, iddepl, idepl0, idepl1, iret
     real(kind=8) :: instam, instap
-    type(Behaviour_Integ) :: BEHinteg
+    type(Material_Para) :: materPara
+    type(Behaviour_Integ) :: BEHInteg
+!
+! --------------------------------------------------------------------------------------------------
+!
 
-! - Initialisation of behaviour datastructure
-    call behaviourInit(BEHinteg)
-!
 ! - TYPE DE MODELISATION
-!
+    typmod = " "
     if (lteatt('DIM_TOPO_MODELI', '3')) then
         typmod(1) = '3D'
     else if (lteatt('AXIS', 'OUI')) then
@@ -69,68 +70,80 @@ subroutine te0543(option, nomte)
     else if (lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
     end if
-!
     typmod(2) = 'DEPLA'
-!
+
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-    ASSERT(nno .le. 27)
+    call elrefe_info(fami=fami, &
+                     ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    ASSERT(nno .le. MT_NNOMAX)
     ASSERT(npg .le. 27)
 
 ! - PARAMETRES EN ENTREE
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', vk16=compor)
+    call jevech('PGEOMER', 'L', jvGeom)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PDDEPLR', 'L', iddepl)
     call jevech('PDEPL0R', 'L', idepl0)
     call jevech('PDEPL1R', 'L', idepl1)
-    call jevech('PTYPEPI', 'L', itype)
-    call jevech('PCARCRI', 'L', icarcr)
-!
-    pilo = zk16(itype)
-    rela_comp = compor(RELA_NAME)
-    if (pilo .eq. 'PRED_ELAS') then
-        call jevech('PCDTAU', 'L', ictau)
-        call jevech('PBORNPI', 'L', iborne)
-    end if
-!
-! -- NOMBRE DE VARIABLES INTERNES
-!
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6), 1)*jtab(7)
 
 ! - Continuation method: no time !
     instam = r8vide()
     instap = r8vide()
 
-! - Set main parameters for behaviour (on cell)
-    call behaviourSetParaCell(ndim, typmod, option, &
-                              compor, zr(icarcr), &
-                              instam, instap, &
-                              fami, zi(imate), &
-                              BEHinteg)
+! - Get material parameters
+    call jevech('PMATERC', 'L', jvMaterc)
 
-! ----- Prepare external state variables (geometry)
-    if (rela_comp .eq. 'BETON_DOUBLE_DP') then
+! - Initializations of material parameters on current cell
+    call initParaCell(fami, zi(jvMaterc), materPara)
+
+! - No definition of local coordinate system
+    call initLCSNone(materPara)
+
+! - Get fields for non-linear behaviour
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    call jevech('PCARCRI', 'L', jvCarcri)
+
+! - Properties of behaviour
+    relaComp = compor(RELA_NAME)
+
+! - Continuation method: no time !
+    instam = r8vide()
+    instap = r8vide()
+
+! - Type of continuation
+    call jevech('PTYPEPI', 'L', itype)
+    pilo = zk16(itype)
+    if (pilo .eq. 'PRED_ELAS') then
+        call jevech('PCDTAU', 'L', ictau)
+        call jevech('PBORNPI', 'L', iborne)
+    end if
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    lgpg = max(jtab(6), 1)*jtab(7)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(typmod, option, &
+                              compor, zr(jvCarcri), &
+                              instam, instap, &
+                              materPara, BEHInteg)
+
+! - Prepare external state variables (geometry)
+    if (relaComp .eq. 'BETON_DOUBLE_DP') then
         call behaviourPrepESVAGeom(nno, npg, ndim, &
                                    ipoids, ivf, idfde, &
-                                   zr(igeom), BEHinteg)
-
+                                   zr(jvGeom), BEHInteg)
     end if
-!
-! PARAMETRES EN SORTIE
-!
+
+! - Output field
     call jevech('PCOPILO', 'E', icopil)
-!
-    call pipepe(BEHinteg, &
-                pilo, ndim, nno, npg, ipoids, &
-                ivf, idfde, zr(igeom), typmod, zi(imate), &
-                compor, lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
+
+! - Main subroutine to compute coefficients
+    call pipepe(BEHInteg, &
+                typmod, compor, &
+                pilo, ndim, nno, npg, &
+                ipoids, ivf, idfde, zr(jvGeom), &
+                lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
                 zr(iddepl), zr(idepl0), zr(idepl1), zr(icopil), &
                 iborne, ictau)
 !

@@ -50,7 +50,7 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: vf(3), vm(3), vt(2), qsi, eta, caraq4(25), jacob(5)
     real(kind=8) :: vfm(3), vmf(3), t2iu(4), t2ui(4), t1ve(9)
     aster_logical :: coupmf
-    character(len=4) :: fami
+    character(len=8) :: fami
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then

@@ -20,9 +20,9 @@
 !
 interface
     subroutine lc9078(BEHinteg, &
-                      fami, kpg, ksp, ndim, imate, &
+                      fami, kpg, ksp, ndim, jvMaterCode, &
                       carcri, instam, instap, neps, epsm, &
-                      deps, nsig, sigm, nvi, vim, option, angmas, &
+                      deps, nsig, sigm, nvi, vim, option, &
                       sigp, vip, typmod, &
                       ndsde, dsidep, codret)
         use Behaviour_type
@@ -31,7 +31,7 @@ interface
         integer(kind=8), intent(in) :: kpg
         integer(kind=8), intent(in) :: ksp
         integer(kind=8), intent(in) :: ndim
-        integer(kind=8), intent(in) :: imate
+        integer(kind=8), intent(in) :: jvMaterCode
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
@@ -43,7 +43,6 @@ interface
         integer(kind=8), intent(in) :: nvi
         real(kind=8), intent(in) :: vim(nvi)
         character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: angmas(*)
         real(kind=8) :: sigp(nsig)
         real(kind=8) :: vip(nvi)
         character(len=8), intent(in) :: typmod(2)

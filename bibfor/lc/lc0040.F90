@@ -48,7 +48,7 @@ subroutine lc0040(fami, kpg, ksp, ndim, imate, &
 
     call lcdp_wrap(fami, kpg, ksp, ndim, imate, &
                    carcri, neps, epsm, &
-                   deps, vim, option, sigm, vip, &
+                   deps, vim, option, sigp, vip, &
                    dsidep, codret)
 
 end subroutine

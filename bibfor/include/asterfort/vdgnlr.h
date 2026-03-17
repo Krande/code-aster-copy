@@ -17,8 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
+    subroutine vdgnlr(materPara, &
+                      lMatr, lVect, lSigm, lVari, relaComp, nomte)
+        use MaterialPara_type
+        type(Material_Para), intent(inout) :: materPara
         aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-        character(len=16),  intent(in) :: nomte, rela_comp
+        character(len=16), intent(in) :: nomte, relaComp
     end subroutine vdgnlr
 end interface

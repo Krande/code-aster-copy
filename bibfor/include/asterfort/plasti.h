@@ -19,17 +19,21 @@
 !
 interface
     subroutine plasti(BEHinteg, &
-                      fami, kpg, ksp, typmod, &
-                      imate, compor, carcri, instam, instap, &
-                      epsdt, depst, sigm, nvi, vim, option, &
-                      angmas, sigp, vip, dsidep, &
+                      option, typmod, &
+                      fami, kpg, ksp, jvMaterCode, &
+                      compor, carcri, instam, instap, &
+                      epsdt, depst, &
+                      sigm, &
+                      nvi, vim, &
+                      sigp, vip, &
+                      dsidep, &
                       codret, multComp_)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in) :: fami
         integer(kind=8), intent(in) :: kpg
         integer(kind=8), intent(in) :: ksp
-        integer(kind=8), intent(in) :: imate
+        integer(kind=8), intent(in) :: jvMaterCode
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam
@@ -40,10 +44,9 @@ interface
         integer(kind=8), intent(in) :: nvi
         real(kind=8), intent(in) :: vim(nvi)
         character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(nvi)
-        character(len=8), intent(in) :: typmod(*)
+        character(len=8), intent(in) :: typmod(2)
         real(kind=8), intent(out) :: dsidep(6, *)
         integer(kind=8), intent(out) :: codret
         character(len=16), optional, intent(in) :: multComp_

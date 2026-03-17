@@ -59,7 +59,7 @@ subroutine lc0021(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
+
     if (compor(CREEP_NAME) .eq. 'BETON_UMLV') then
         relaPlas = compor(PLAS_NAME)
     else

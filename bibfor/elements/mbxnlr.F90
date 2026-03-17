@@ -30,7 +30,7 @@ subroutine mbxnlr(option, fami, nddl, nno, ncomp, kpg, ipoids, igeom, &
 #include "asterfort/verift.h"
 !
     character(len=16) :: option
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: nddl, nno, ncomp
     integer(kind=8) :: kpg
     integer(kind=8) :: ipoids, igeom, imate, ideplm, ideplp
@@ -84,8 +84,8 @@ subroutine mbxnlr(option, fami, nddl, nno, ncomp, kpg, ipoids, igeom, &
 !
 ! - RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
-    elseif ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) &
-                                       .eq. 'FULL_MECA') .or. (option(1:10) .eq. 'RIGI_MECA_')) then
+    elseif ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA') .or. &
+            (option(1:10) .eq. 'RIGI_MECA_')) then
 !
 ! ---   CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
         call r8inir(3, 0.d0, epsm, 1)
@@ -129,9 +129,8 @@ subroutine mbxnlr(option, fami, nddl, nno, ncomp, kpg, ipoids, igeom, &
         do n = 1, nno
             do i = 1, nddl
                 do c = 1, ncomp
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)* &
-                                                   nddl+i-1)+b(c, i, n)*sigp(c)*zr(ipoids+kpg-1)* &
-                                                jac
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+ &
+                                                b(c, i, n)*sigp(c)*zr(ipoids+kpg-1)*jac
                 end do
             end do
         end do
@@ -153,8 +152,8 @@ subroutine mbxnlr(option, fami, nddl, nno, ncomp, kpg, ipoids, igeom, &
                         tmp = 0.d0
                         do c = 1, ncomp
                             do cc = 1, ncomp
-                                tmp = tmp+b(cc, i, n)*rig(cc, c)*b(c, j, m)*zr(ipoids+kpg-1)*j&
-                                      &ac
+                                tmp = tmp+ &
+                                      b(cc, i, n)*rig(cc, c)*b(c, j, m)*zr(ipoids+kpg-1)*jac
                             end do
                         end do
 !

@@ -32,7 +32,7 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
 #include "asterfort/verift.h"
 !
     character(len=16) :: option
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: nddl, nno, ncomp, npg
     integer(kind=8) :: kpg
     integer(kind=8) :: ipoids, igeom, imate, ipesa, iepsin, itemps

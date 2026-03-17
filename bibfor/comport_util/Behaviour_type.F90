@@ -25,6 +25,7 @@
 module Behaviour_type
 ! ==================================================================================================
     use BehaviourStrain_type
+    use MaterialPara_type
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
@@ -40,18 +41,6 @@ module Behaviour_type
 ! Type: parameters of behaviour
 ! ==================================================================================================
     type Behaviour_Para
-! ----- Dimension of physic for behaviour
-        integer(kind=8) :: ldcDime = 0
-! ----- Name of quadrature scheme
-        character(len=4) :: fami = " "
-! ----- Adress for material parameters
-        integer(kind=8) :: jvMaterCode = 0
-! ----- Type for elasticity
-        integer(kind=8) :: elasID = ELAS_UNDEF
-        character(len=16) :: elasKeyword = " "
-! ----- Flag for metallurgical case
-        aster_logical :: lElasIsMeta = ASTER_FALSE
-        aster_logical :: lMetaLemaAni = ASTER_FALSE
 ! ----- Times
         real(kind=8) :: timePrev = 0.d0
         real(kind=8) :: timeCurr = 0.d0
@@ -94,10 +83,6 @@ module Behaviour_type
         aster_logical :: lExteSolver = ASTER_FALSE
         aster_logical :: lMGIS = ASTER_FALSE
         aster_logical :: lUMAT = ASTER_FALSE
-! ----- Index of quadrature point
-        integer(kind=8) :: kpg = 0
-! ----- Index of "sub"-point (plates, pipes, beams, etc.)
-        integer(kind=8) :: ksp = 0
 ! ----- Index of law
         integer(kind=8) :: numlc = 0
 ! ----- Number of internal state variable
@@ -184,7 +169,10 @@ module Behaviour_type
 ! Type: Parameters for integration (main object)
 ! ==================================================================================================
     type Behaviour_Integ
-! ----- Parameters
+! ----- Material parameters
+        type(Material_Para) :: materPara
+
+! ----- Behaviour parameters
         type(Behaviour_Para) :: behavPara
 
 ! ----- Parameters for external state variables

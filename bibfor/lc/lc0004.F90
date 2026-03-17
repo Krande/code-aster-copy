@@ -85,7 +85,7 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate, &
 !
     character(len=16) :: relaComp
 !
-    ! call notAnisot(angmas)
+
     relaComp = compor(RELA_NAME)
     call nmchab(fami, kpg, ksp, ndim, &
                 imate, relaComp, carcri, instam, instap, &

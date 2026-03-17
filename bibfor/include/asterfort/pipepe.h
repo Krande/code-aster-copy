@@ -15,16 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine pipepe(BEHinteg,&
-                      pilo, ndim, nno, npg, ipoids,&
-                      ivf, idfde, geom, typmod, mate,&
-                      compor, lgpg, deplm, sigm, vim,&
-                      ddepl, depl0, depl1, copilo,&
+    subroutine pipepe(BEHinteg, &
+                      typmod, compor, &
+                      pilo, ndim, nno, npg, ipoids, &
+                      ivf, idfde, geom, &
+                      lgpg, deplm, sigm, vim, &
+                      ddepl, depl0, depl1, copilo, &
                       iborne, ictau)
         use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+        character(len=8), intent(in) :: typmod(2)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         integer(kind=8) :: lgpg
         integer(kind=8) :: npg
         integer(kind=8) :: ndim
@@ -34,9 +38,6 @@ interface
         integer(kind=8) :: ivf
         integer(kind=8) :: idfde
         real(kind=8) :: geom(ndim, *)
-        character(len=8) :: typmod(*)
-        integer(kind=8) :: mate
-        character(len=16) :: compor(*)
         real(kind=8) :: deplm(*)
         real(kind=8) :: sigm(2*ndim, npg)
         real(kind=8) :: vim(lgpg, npg)

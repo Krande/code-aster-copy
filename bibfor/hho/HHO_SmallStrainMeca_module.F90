@@ -103,13 +103,12 @@ contains
 !
         integer(kind=8), parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
-        type(Behaviour_Integ) :: BEHinteg
         real(kind=8) :: E_prev_coeff(MSIZE_CELL_MAT), E_incr_coeff(MSIZE_CELL_MAT)
         real(kind=8) :: dsidep(6, 6), E_prev(6), E_incr(6), Cauchy_curr(6), Cauchy_prev(6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
         type(HHO_matrix) :: AT, lhs_axis, AT_ax1, AT_ax2
-        integer(kind=8) :: cbs, fbs, faces_dofs, total_dofs, gbs, ipg, gbs_cmp, gbs_sym, cbs_cmp
+        integer(kind=8) :: cbs, fbs, faces_dofs, total_dofs, gbs, kpg, gbs_cmp, gbs_sym, cbs_cmp
         integer(kind=8) :: cod(MAX_QP_CELL)
         aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
@@ -139,33 +138,23 @@ contains
             end if
         end if
 
-! ----- Initialisation of behaviour datastructure
-        call behaviourInit(BEHinteg)
-
-! ----- Set main parameters for behaviour (on cell)
-        call behaviourSetParaCell(hhoCell%ndim, hhoCS%typmod, hhoCS%option, &
-                                  hhoCS%compor, hhoCS%carcri, &
-                                  time_prev, time_curr, &
-                                  hhoCS%fami, hhoCS%imater, &
-                                  BEHinteg)
-!
 ! ----- Prepare external state variables (geometry)
-        call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, BEHinteg)
-!
+        call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, hhoCS%BEHInteg)
+
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
-!
+
 ! ----- compute E_prev = gradrec_sym * depl_prev
         call gradrec%dot(depl_prev, E_prev_coeff)
-!
+
 ! ----- compute E_incr = gradrec_sym * depl_incr
         call gradrec%dot(depl_incr, E_incr_coeff)
 !
 ! ----- Loop on quadrature point
 !
-        do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-            coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-            weight = hhoQuadCellRigi%weights(ipg)
+        do kpg = 1, hhoQuadCellRigi%nbQuadPoints
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3, kpg)
+            weight = hhoQuadCellRigi%weights(kpg)
 ! --------- Eval basis function at the quadrature point
             call hhoBasisCell%BSEval(coorpg(1:3), 0, &
                                      max(hhoData%grad_degree(), hhoData%cell_degree()), &
@@ -182,26 +171,29 @@ contains
                 call hhoAddAxisGradSym(hhoCell, BSCEval, depl_incr(faces_dofs+1:), &
                                        coorpg, cbs_cmp, E_incr)
             end if
-!
-! -------- tranform sigm in symmetric form
-!
+
+! --------- tranform sigm in symmetric form
             call tranfoMatToSym(hhoCell%ndim, &
-                                hhoCS%sig_prev((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm), &
+                                hhoCS%sig_prev((kpg-1)*hhoCS%nbsigm+1:kpg*hhoCS%nbsigm), &
                                 Cauchy_prev)
+
 ! --------- Set main parameters for behaviour (on point)
-            call behaviourSetParaPoin(ipg, ksp, BEHinteg)
+            call behaviourSetParaPoin(kpg, ksp, hhoCS%BEHInteg)
 
 ! --------- Integrate
-            call nmcomp(BEHinteg, &
-                        hhoCS%fami, ipg, 1, hhoCell%ndim, hhoCS%typmod, &
-                        hhoCS%imater, hhoCS%compor, hhoCS%carcri, time_prev, time_curr, &
-                        6, E_prev, E_incr, 6, Cauchy_prev, &
-                        hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                        hhoCS%option, hhoCS%angl_naut, Cauchy_curr, &
-                        hhoCS%vari_curr((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                        36, dsidep, cod(ipg), hhoCS%mult_comp)
+            call nmcomp(hhoCS%BEHInteg, &
+                        hhoCell%ndim, hhoCS%option, hhoCS%typmod, &
+                        time_prev, time_curr, &
+                        hhoCS%compor, hhoCS%carcri, hhoCS%multComp, &
+                        6, E_prev, E_incr, &
+                        6, Cauchy_prev, &
+                        hhoCS%vari_prev((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                        Cauchy_curr, &
+                        hhoCS%vari_curr((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                        36, dsidep, &
+                        cod(kpg))
 !
-            if (cod(ipg) .eq. 1) then
+            if (cod(kpg) .eq. 1) then
                 goto 999
             end if
 !
@@ -213,7 +205,7 @@ contains
             if (L_SIGM(hhoCS%option)) then
 ! -------- tranform Cauchy_curr in symmetric form
                 call tranfoSymToMat(hhoCell%ndim, Cauchy_curr, &
-                                    hhoCS%sig_curr((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm))
+                                    hhoCS%sig_curr((kpg-1)*hhoCS%nbsigm+1:kpg*hhoCS%nbsigm))
             end if
 !
             if (l_rhs) then
@@ -287,17 +279,18 @@ contains
 !   Out lhs         : local contribution (lhs)
 ! --------------------------------------------------------------------------------------------------
 !
+        integer(kind=8), parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
         real(kind=8) :: dsidep(6, 6), dsidep3D(6, 6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         type(HHO_matrix) :: AT, lhs_axis, AT_ax1, AT_ax2
-        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, kpg, gbs_cmp, gbs_sym, nb_sig
         integer(kind=8) :: cbs_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! ------ number of dofs
+! ----- number of dofs
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                            gbs, gbs_sym)
         faces_dofs = total_dofs-cbs
@@ -320,20 +313,22 @@ contains
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
-!
-! ----- Loop on quadrature point
-!
-        do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-            coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-            weight = hhoQuadCellRigi%weights(ipg)
+
+! ----- Loop on quadrature points
+        do kpg = 1, hhoQuadCellRigi%nbQuadPoints
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3, kpg)
+            weight = hhoQuadCellRigi%weights(kpg)
+
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(kpg, ksp, hhoCS%BEHInteg)
+
 ! --------- Eval basis function at the quadrature point
             call hhoBasisCell%BSEval(coorpg(1:3), 0, &
                                      max(hhoData%grad_degree(), hhoData%cell_degree()), BSCEval)
-!
+
 ! --------- Compute behaviour
-!
-            call dmatmc(hhoCS%fami, hhoCS%imater, time_curr, '+', ipg, &
-                        1, hhoCS%angl_naut, nb_sig, dsidep)
+            call dmatmc(hhoCS%BEHInteg%materPara, '+', time_curr, &
+                        nb_sig, dsidep)
             call tranfoTensToSym(nb_sig, dsidep, dsidep3D)
 !
             call hhoComputeLhsSmall(hhoCell, dsidep3D, ASTER_TRUE, weight, BSCEval, gbs_sym, &

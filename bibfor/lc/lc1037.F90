@@ -54,7 +54,7 @@ subroutine lc1037(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
+
     call lcrolo(fami, kpg, ksp, imate, option, &
                 carcri, epsm, deps, vim, vip, &
                 sigp, dsidep, codret)

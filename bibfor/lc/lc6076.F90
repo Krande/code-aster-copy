@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,C1505,W1306,W0104
 !
-subroutine lc6076(BEHinteg, &
+subroutine lc6076(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &
@@ -34,7 +34,7 @@ subroutine lc6076(BEHinteg, &
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/lcgrad.h"
 ! --------------------------------------------------------------------------------------------------
-    type(Behaviour_Integ)        :: BEHinteg
+    type(Behaviour_Integ)        :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp

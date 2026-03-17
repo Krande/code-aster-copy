@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lc8146(BEHinteg, &
+subroutine lc8146(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, &
                   epsm, deps, nsig, sigm, nvi, vim, &
@@ -32,7 +32,7 @@ subroutine lc8146(BEHinteg, &
 #include "asterfort/kitPrepBehaviour.h"
 #include "asterfort/nmcpla.h"
 !
-    type(Behaviour_Integ), intent(inout) :: BEHinteg
+    type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -70,7 +70,7 @@ subroutine lc8146(BEHinteg, &
     call kitPrepBehaviour(compor, nvi, compor_creep, compor_plas)
 
 ! - Compute behaviour
-    call nmcpla(BEHinteg, &
+    call nmcpla(BEHInteg, &
                 fami, kpg, ksp, ndim, typmod, &
                 imate, compor_plas, compor_creep, carcri, instam, instap, &
                 neps, epsm, deps, nsig, sigm, &

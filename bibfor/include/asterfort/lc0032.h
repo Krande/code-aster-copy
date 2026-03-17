@@ -19,10 +19,10 @@
 !
 interface
     subroutine lc0032(BEHinteg, &
-                      fami, kpg, ksp, ndim, imate, &
+                      fami, kpg, ksp, ndim, jvMaterCode, &
                       compor, carcri, instam, instap, neps, &
                       epsm, deps, sigm, nvi, vim, option, &
-                      angmas, sigp, vip, &
+                      sigp, vip, &
                       typmod, dsidep, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -30,7 +30,7 @@ interface
         integer(kind=8), intent(in) :: kpg
         integer(kind=8), intent(in) :: ksp
         integer(kind=8), intent(in) :: ndim
-        integer(kind=8), intent(in) :: imate
+        integer(kind=8), intent(in) :: jvMaterCode
         character(len=16), intent(in) :: compor(COMPOR_SIZE), option
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam
@@ -40,10 +40,9 @@ interface
         real(kind=8), intent(in) :: deps(neps)
         real(kind=8), intent(in) :: sigm(6)
         real(kind=8), intent(in) :: vim(nvi)
-        real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(nvi)
-        character(len=8), intent(in) :: typmod(*)
+        character(len=8), intent(in) :: typmod(2)
         real(kind=8), intent(out) :: dsidep(6, 6)
         integer(kind=8), intent(out) :: codret
     end subroutine lc0032

@@ -59,7 +59,7 @@ subroutine lc1015(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
+
     if (compor(META_PHAS) .eq. 'ACIER_MECA') then
         call lcgdpm(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &

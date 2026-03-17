@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504,W1306
 !
 subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
                   ise, nfh, ddlc, ddlm, nfe, &
@@ -104,7 +105,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
     aster_logical :: cp, axi, l_temp_noeu
     integer(kind=8) :: irese, ddli, nnoi, indeni, nnops, ifiss
     integer(kind=8) :: iret1, iret2, iret3
-    type(Behaviour_Integ) :: BEHinteg
+    type(Behaviour_Integ) :: BEHInteg
 !
     real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6), epsp(6)
     real(kind=8) :: mu, nu(1), e(1)
@@ -121,7 +122,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
 !
 ! - Initialisation of behaviour datastructure
 !
-    call behaviourInit(BEHinteg)
+    call behaviourInit(BEHInteg)
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
@@ -482,7 +483,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
             end if
 
         else
-            call nmelnl(BEHinteg, &
+            call nmelnl(BEHInteg, &
                         'XFEM', kpg+idecpg, 1, ndim, &
                         typmod, matcod, compor, &
                         eps, 0.d0, 0.d0, sigl, energi)

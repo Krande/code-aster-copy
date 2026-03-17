@@ -16,12 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
+subroutine vdgnlr(materPara, &
+                  lMatr, lVect, lSigm, lVari, relaComp, &
                   nomte)
 !
+    use MaterialPara_module
+    use MaterialPara_type
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/antisy.h"
 #include "asterfort/btdbma.h"
 #include "asterfort/btsig.h"
@@ -51,15 +53,20 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 #include "asterfort/vectrn.h"
 #include "asterfort/verifg.h"
 #include "blas/ddot.h"
+#include "jeveux.h"
 !
+    type(Material_Para), intent(inout) :: materPara
     aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-    character(len=16), intent(in) :: nomte, rela_comp
-! ......................................................................
+    character(len=16), intent(in) :: nomte, relaComp
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     FONCTION  :  CALCUL DES OBJETS ELEMENTS FINIS EN NON LINEAIRE
 !                  GEOMETRIQUE AVEC GRANDES ROTATIONS
 !                  COQUE_3D
 !
-!     ARGUMENTS :
+! --------------------------------------------------------------------------------------------------
+!
 !     DONNEES   :      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
@@ -75,22 +82,13 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !                  FULL_MECA      : RAPH_MECA + RIGI_MECA_TANG
 !                                   ITERATION TYPIQUE DE NEWTON
 !
-! ......................................................................
-!
-!
-!---- DECLARATIONS BIDONS
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: bid33(3, 3)
-!
-!---- DECLARATIONS LOCALES
-!
     integer(kind=8) :: i, j
     integer(kind=8) :: in
     integer(kind=8) :: jd
     integer(kind=8) :: ii, jj
-!
-!---- DECLARATIONS RIGIDITE GEOMETRIQUE
-!
     real(kind=8) :: etild(5), stild(5)
     real(kind=8) :: stlis(5, 4)
     real(kind=8) :: bars(9, 9)
@@ -98,17 +96,10 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
     real(kind=8) :: veczn(27)
     real(kind=8) :: antzi(3, 3)
     real(kind=8) :: rignc(3, 3)
-!
-!---- DECLARATIONS STANDARDS
-!
-    integer(kind=8) :: igeom, icontp, imatun, ivectu, ivarip
+    integer(kind=8) :: jvGeom, icontp, imatun, ivectu, ivarip
     integer(kind=8) :: lzi, lzr, jcara
     integer(kind=8) :: nb1, nb2
-    integer(kind=8) :: iinstm, iinstp, jmate
-    real(kind=8) :: valpar, epsthe
-!
-!---- DECLARATIONS PROPRES COQUE_3D NON LINEAIRE
-!
+    real(kind=8) :: tempMoy, epsthe
     real(kind=8) :: matc(5, 5)
     integer(kind=8) :: inte, intsr, intsn, jnbspi
     integer(kind=8) :: kntsr
@@ -128,14 +119,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
     real(kind=8) :: j1dn3(9, 27)
     real(kind=8) :: btild3(5, 27)
     real(kind=8) :: ksi3s2
-!
-!---- DECLARATIONS COUCHES
-!
     integer(kind=8) :: nbcou, icou, k1
     real(kind=8) :: zic, zmin, epais, coef
-!
-!---- DECLARATIONS COQUE NON LINEAIRE
-!
     real(kind=8) :: vrignc(2601), vrigni(2601)
     real(kind=8) :: vrigrc(2601), vrigri(2601)
     real(kind=8) :: knn
@@ -151,20 +136,15 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
     real(kind=8) :: dudxrc(9), dudxnc(9)
     real(kind=8) :: vecu(8, 3), vecthe(9, 3)
     real(kind=8) :: vecpe(51)
-!
-!---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
-!
-!
     real(kind=8) :: blam(9, 3, 3)
-!
     real(kind=8) :: theta(3), thetan
     real(kind=8) :: tmoin1(3, 3), tm1t(3, 3)
     real(kind=8) :: term(3)
     blas_int :: b_incx, b_incy, b_n
 !
-! DEB
+! --------------------------------------------------------------------------------------------------
 !
-!
+
 !______________________________________________________________________
 !
 !---- CALCUL COMMUNS A TOUTES LES OPTIONS
@@ -187,7 +167,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
 !....... GEOMETRIE INITIALE ( COORDONNEES INITIALE DES NOEUDS )
 !
-    call jevech('PGEOMER', 'L', igeom)
+    call jevech('PGEOMER', 'L', jvGeom)
 !
 !---- RECUPERATION DES OBJETS INITIALISES
 !
@@ -208,15 +188,6 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !....... LES REELS ( FONCTIONS DE FORMES, DERIVEES ET POIDS )
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
-!
-!______________________________________________________________________
-!
-!---- POUR LE CALCUL DES DEFORMATIONS THERMIQUES
-!______________________________________________________________________
-!
-    call jevech('PMATERC', 'L', jmate)
-    call jevech('PINSTMR', 'L', iinstm)
-    call jevech('PINSTPR', 'L', iinstp)
 !
 !______________________________________________________________________
 !
@@ -306,7 +277,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
 !---- REPERE LOCAUX AUX NOEUDS SUR LA CONFIGURATION INITIALE
 !
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
+    call vectan(nb1, nb2, zr(jvGeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 !---- DEPLACEMENT TOTAL AUX NOEUDS DE SERENDIP
@@ -323,7 +294,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
     call r8inir(9*3, 0.d0, vecthe, 1)
 !
-    if (rela_comp(1:4) .eq. 'ELAS') then
+    if (relaComp(1:4) .eq. 'ELAS') then
 !
 !------- EN ACCORD AVEC LA MISE A JOUR DES GRANDES ROTATIONS AUFAURE
 !
@@ -427,7 +398,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
             do intsr = 1, npgsr
 !
-                call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
+                call vectgt(0, nb1, zr(jvGeom), ksi3s2, intsr, &
                             zr(lzr), epais, vectn, vectg, vectt)
 !
                 call jacbm1(epais, vectg, vectt, bid33, jm1, &
@@ -485,7 +456,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
             do intsn = 1, npgsn
 !
 !
-                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn, &
+                call vectgt(1, nb1, zr(jvGeom), ksi3s2, intsn, &
                             zr(lzr), epais, vectn, vectg, vectt)
 !
                 call jacbm1(epais, vectg, vectt, bid33, jm1, &
@@ -546,16 +517,17 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
 !------------- EVALUATION DES DEFORMATIONS THERMIQUES
 !
-                call verifg('RIGI', intsn, 3, '+', zi(jmate), &
+                call verifg('RIGI', intsn, &
+                            3, '+', materPara%jvMaterCode, &
                             epsthe)
+
                 etild(1) = etild(1)-epsthe
                 etild(2) = etild(2)-epsthe
 !
 !------------- LA  MATRICE DE COMPORTEMENT  MATC ( 5 , 5 )
 !
-                call moytpg('RIGI', intsn, 3, '+', valpar, &
-                            iret)
-                call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
+                call moytpg('RIGI', intsn, 3, '+', tempMoy, iret)
+                call matrc2(1, 'TEMP    ', [tempMoy], kappa, matc, &
                             vectt)
 !
 !------------- LA  CONTRAINTE TOTALE  PK2 STILD ( 5 )
@@ -598,8 +570,9 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
                     do kntsr = 1, npgsr
                         do i = 1, 5
-                            stlis(i, kntsr) = stlis(i, kntsr)+zr(lzr-1+702+4*(intsn-1)+kntsr)*s&
-                                              &tild(i)*zr(lzr-1+127+intsn-1)
+                            stlis(i, kntsr) = stlis(i, kntsr)+ &
+                                              zr(lzr-1+702+4*(intsn-1)+kntsr)* &
+                                              stild(i)*zr(lzr-1+127+intsn-1)
                         end do
                     end do
 !
@@ -679,7 +652,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
                 do intsr = 1, npgsr
 !
-                    call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
+                    call vectgt(0, nb1, zr(jvGeom), ksi3s2, intsr, &
                                 zr(lzr), epais, vectn, vectg, vectt)
 !
                     call jacbm1(epais, vectg, vectt, bid33, jm1, &
@@ -829,10 +802,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
                     j = 6*(in-1)+jj+3
                     do ii = 1, 3
                         i = 6*(in-1)+ii+3
-                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr( &
-                                                         imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii&
-                                                         &)*term(jj &
-                                                         )
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = &
+                            zr(imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii)*term(jj)
                     end do
                 end do
             else
@@ -842,10 +813,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
                     j = 6*nb1+jj
                     do ii = 1, 3
                         i = 6*nb1+ii
-                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr( &
-                                                         imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii&
-                                                         &)*term(jj &
-                                                         )
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = &
+                            zr(imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii)*term(jj)
                     end do
                 end do
             end if

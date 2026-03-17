@@ -27,12 +27,12 @@ subroutine te0504(option, nomte)
     use HHO_size_module
     use HHO_SmallStrainMeca_module
     use HHO_type
-!
+    use MaterialPara_module
+    use MaterialPara_type
     implicit none
 !
-#include "jeveux.h"
-#include "asterf_types.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
@@ -40,10 +40,10 @@ subroutine te0504(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
 #include "asterfort/readVector.h"
 #include "asterfort/sigtmc.h"
 #include "asterfort/writeVector.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -57,95 +57,96 @@ subroutine te0504(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=8), parameter :: fami = 'RIGI'
+    integer(kind=8), parameter :: ksp = 1
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Cell) :: hhoCell
     type(HHO_Data) :: hhoData
     type(HHO_matrix) :: gradsym
     type(HHO_Quadrature) :: hhoQuadCellRigi
-!
-    integer(kind=8) :: cbs, fbs, total_dofs, npg, ipg, gbs, gbs_sym, cbs_cmp
-    integer(kind=8) :: nbsig, jvMater, faces_dofs, gbs_cmp, i, j
-    character(len=4), parameter :: fami = 'RIGI'
-    real(kind=8) :: time, sigma(6), weight, coorpg(3), anglNaut(3)
+    integer(kind=8) :: cbs, fbs, total_dofs, npg, kpg, gbs, gbs_sym, cbs_cmp
+    integer(kind=8) :: nbsig, jvMaterc, faces_dofs, gbs_cmp, i, j
+    real(kind=8) :: time, sigma(6), weight, coorpg(3)
     real(kind=8) :: E_coeff(MSIZE_CELL_MAT), Eps(6)
     real(kind=8) :: dmat(6, 6), BSCEval(MSIZE_CELL_SCAL)
     real(kind=8) :: sigmVarc(6*MAX_QP_CELL), sief(6*MAX_QP_CELL)
     real(kind=8) :: depl(MSIZE_TDOFS_VEC)
     aster_logical :: l_axis
+    type(Material_Para) :: materPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! --- Get HHO informations
-!
+
+! - Get HHO informations
     call elrefe_info(fami=fami, npg=npg)
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
-!
-! --- Number of dofs
+
+! - Number of dofs
     call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
     faces_dofs = total_dofs-cbs
     gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     cbs_cmp = cbs/hhoCell%ndim
     nbsig = nbsigm()
-!
-! --- Type of finite element
-!
+
+! - Type of finite element
     call hhoBasisCell%initialize(hhoCell)
     l_axis = lteatt('AXIS', 'OUI')
-!
-! --- Compute Operators
-!
+
+! - Compute Operators
     if (hhoData%precompute()) then
         call hhoReloadPreCalcMeca(hhoCell, hhoData, ASTER_FALSE, gradsym)
     else
         call hhoCalcOpMeca(hhoCell, hhoData, ASTER_FALSE, gradsym)
     end if
-!
+
+! - Get displacements
     call readVector("PDEPLAR", total_dofs, depl)
-!
-! - Current time
+
+! - Get current time
     time = r8vide()
-!
-! ----- Material parameters
-    call jevech('PMATERC', 'L', jvMater)
-!
-    call rcangm(hhoCell%ndim, hhoCell%barycenter, anglNaut)
-!
-    sigmVarc = 0.d0
-!
+
+! - Get material parameters
+    call jevech('PMATERC', 'L', jvMaterc)
+
+! - Initializations of material parameters on current cell
+    call initParaCell(fami, zi(jvMaterc), materPara)
+
+! - Set local coordinate system from user
+    call getUserLCSWithBaryCenter(hhoCell%ndim, hhoCell%barycenter, materPara%lcsPara)
+
 ! - Compute stresses from external state variables
-    call sigtmc(fami, nbsig, npg, hhoCell%ndim, &
-                time, zi(jvMater), anglNaut, &
+    call sigtmc(materPara, time, &
+                nbsig, npg, hhoCell%ndim, &
                 VARC_STRAIN_ALL, sigmVarc)
-!
-    sief = 0.d0
-!
-! ----- compute E = gradrec_sym * depl
+
+! - Compute E = gradrec_sym * depl
     call gradsym%dot(depl, E_coeff)
-!
-! ------ Compute total stress
-!
-    do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-        coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-        weight = hhoQuadCellRigi%weights(ipg)
-!
-! --------- Eval basis function at the quadrature point
-!
+
+! - Compute total stress
+    sief = 0.d0
+    do kpg = 1, hhoQuadCellRigi%nbQuadPoints
+        coorpg(1:3) = hhoQuadCellRigi%points(1:3, kpg)
+        weight = hhoQuadCellRigi%weights(kpg)
+
+! ----- Initializations of material parameters on current integration point
+        call initParaPoin(kpg, ksp, materPara)
+
+! ----- Eval basis function at the quadrature point
         call hhoBasisCell%BSEval(coorpg(1:3), 0, &
                                  max(hhoData%grad_degree(), hhoData%cell_degree()), &
                                  BSCEval)
-!
-! ------ Eval deformations
+
+! ----- Eval deformations
         Eps = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_coeff)
-!
         if (l_axis) then
             call hhoAddAxisGradSym(hhoCell, BSCEval, depl(faces_dofs+1:), &
                                    coorpg, cbs_cmp, Eps)
         end if
-!
+
 ! ----- Compute elasticity matrix
-        call dmatmc(fami, zi(jvMater), time, '+', &
-                    ipg, 1, anglNaut, nbsig, dmat(1:nbsig, 1:nbsig))
-!
+        call dmatmc(materPara, '+', time, &
+                    nbsig, dmat(1:nbsig, 1:nbsig))
+
 ! ----- Compute SIGM_ELGA
         sigma = 0.d0
         do i = 1, nbsig
@@ -153,13 +154,12 @@ subroutine te0504(option, nomte)
                 sigma(i) = sigma(i)+Eps(j)*dmat(i, j)
             end do
         end do
-!
+
 ! ----- Compute SIEF_ELGA
-!
-        sief((ipg-1)*nbsig+1:ipg*nbsig) = sigma(1:nbsig)+sigmVarc((ipg-1)*nbsig+1:ipg*nbsig)
+        sief((kpg-1)*nbsig+1:kpg*nbsig) = sigma(1:nbsig)+sigmVarc((kpg-1)*nbsig+1:kpg*nbsig)
     end do
-!
-! ----- Set output vector
+
+! - Set output vector
     call writeVector("PCONTRR", npg*nbsig, sief)
 !
     call gradsym%free()

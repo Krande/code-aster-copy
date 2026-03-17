@@ -61,7 +61,7 @@ subroutine te0448(nomopt, nomte)
     integer(kind=8) :: npg
     integer(kind=8) :: ipg, idefo, nsig
     aster_logical :: l_largestrains
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=8) :: typmod(2)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell

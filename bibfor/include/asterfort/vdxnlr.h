@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vdxnlr(option, nomte, xi, rig, nb1,&
+    subroutine vdxnlr(BEHInteg, &
+                      option, nomte, xi, rig, nb1, &
                       codret)
-        character(len=16) :: option
-        character(len=16) :: nomte
+        use Behaviour_type
+        type(Behaviour_Integ), intent(inout) :: BEHInteg
+        character(len=16), intent(in) :: option, nomte
         real(kind=8) :: xi(3, 9)
         real(kind=8) :: rig(51, 51)
         integer(kind=8) :: nb1
-        integer(kind=8) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine vdxnlr
 end interface

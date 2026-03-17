@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dxsit3(nomte, mater, pgl, sigma)
+subroutine dxsit3(nomte, jvMaterCode, pgl, sigma)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,7 +26,7 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer(kind=8) :: mater
+    integer(kind=8) :: jvMaterCode
     real(kind=8) :: pgl(3, *), sigma(*)
     character(len=16) :: nomte
 !
@@ -36,7 +36,7 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
 !
 ! ----------------------------------------------------------------------
 !
-    integer(kind=8) :: ndim, nnoel, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: ndim, nnoel, npg
     integer(kind=8) :: i, j, icou, icpg, igauh, ipg, ipgh, nbcmp, nbcou
     integer(kind=8) :: npgh
     integer(kind=8) :: jnbspi, multic, jcaco
@@ -47,16 +47,13 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
     real(kind=8) :: h(3, 3), d(4, 4)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), epais
 !
-    character(len=4) :: fami
+    character(len=4), parameter :: fami = 'RIGI'
 !
     aster_logical :: dkg, coupmf
 !
 ! ----------------------------------------------------------------------
 !
-    fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nnoel, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
-                     jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nnoel, npg=npg)
 !
     zero = 0.0d0
 !
@@ -119,7 +116,7 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
 !         -- INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
 !         ----------------------------------------------------
                 ipgh = npgh*(icou-1)+igauh
-                call verift('RIGI', ipg, ipgh, '+', mater, &
+                call verift('RIGI', ipg, ipgh, '+', jvMaterCode, &
                             epsth_=epsth(1))
 !
                 epsth(2) = epsth(1)

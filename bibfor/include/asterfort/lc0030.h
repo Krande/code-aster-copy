@@ -21,7 +21,7 @@ interface
     subroutine lc0030(BEHinteg, &
                       fami, kpg, ksp, ndim, imate, &
                       compor, carcri, instam, instap, epsm, &
-                      deps, sigm, nvi, vim, option, angmas, &
+                      deps, sigm, nvi, vim, option, &
                       sigp, vip, &
                       typmod, dsidep, &
                       codret)
@@ -41,7 +41,6 @@ interface
         real(kind=8), intent(in) :: sigm(6)
         real(kind=8), intent(in) :: vim(nvi)
         character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(nvi)
         character(len=8), intent(in) :: typmod(*)

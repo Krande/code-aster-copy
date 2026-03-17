@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0104
 !
-subroutine lc7048(BEHinteg, &
+subroutine lc7048(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   instam, instap, epsm, &
                   deps, sigm, nvi, vim, option, &
@@ -29,7 +29,7 @@ subroutine lc7048(BEHinteg, &
 !
 #include "asterfort/lcejfr.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -56,7 +56,7 @@ subroutine lc7048(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    call lcejfr(BEHinteg, &
+    call lcejfr(BEHInteg, &
                 fami, kpg, ksp, ndim, imate, &
                 option, epsm, deps, sigp, dsidep, &
                 vim, vip, typmod, instam, instap)

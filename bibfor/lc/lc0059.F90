@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lc0059(BEHinteg, &
-                  fami, kpg, ksp, imate, &
+subroutine lc0059(BEHInteg, &
+                  fami, kpg, ksp, jvMaterCode, &
                   compor, carcri, instam, instap, neps, epsm, &
-                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  deps, nsig, sigm, nvi, vim, option, &
                   sigp, vip, &
                   typmod, dsidep, codret)
 !
@@ -32,11 +32,11 @@ subroutine lc0059(BEHinteg, &
 #include "asterfort/srcomp.h"
 #include "asterfort/utlcal.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
-    integer(kind=8), intent(in) :: imate
+    integer(kind=8), intent(in) :: jvMaterCode
     character(len=16), intent(in) :: compor(COMPOR_SIZE), option
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
@@ -48,10 +48,9 @@ subroutine lc0059(BEHinteg, &
     real(kind=8), intent(in) :: sigm(nsig)
     integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
-    real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer(kind=8), intent(out) :: codret
 !
@@ -63,7 +62,7 @@ subroutine lc0059(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  BEHinteg       : parameters for integration of behaviour
+! In  BEHInteg       : parameters for integration of behaviour
 !
 ! VARIABLES INTERNES DU MODELE :
 !         1.  RXIP      : VARIABLE D ECROUISSAGE MECA. PLASTIQUE
@@ -92,14 +91,17 @@ subroutine lc0059(BEHinteg, &
 !
     call utlcal('VALE_NOM', algoInte, carcri(6))
     if ((algoInte(1:10) .eq. 'SPECIFIQUE') .or. (option(1:14) .eq. 'RIGI_MECA_TANG')) then
-        call srcomp(typmod, imate, instam, instap, deps, sigm, vim, &
+        call srcomp(typmod, jvMaterCode, instam, instap, deps, sigm, vim, &
                     option, sigp, vip, dsidep, codret, nvi)
     else
-        call plasti(BEHinteg, &
-                    fami, kpg, ksp, typmod, imate, &
+        call plasti(BEHInteg, &
+                    option, typmod, &
+                    fami, kpg, ksp, jvMaterCode, &
                     compor, carcri, instam, instap, &
-                    epsm, deps, sigm, &
-                    nvi, vim, option, angmas, sigp, vip, &
+                    epsm, deps, &
+                    sigm, &
+                    nvi, vim, &
+                    sigp, vip, &
                     dsidep, codret)
     end if
 end subroutine

@@ -16,14 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
-                  coeft, angmas, nfs, nsg, toutms)
+subroutine calcms(materPara, &
+                  nbphas, nbcomm, cpmono, nmat, pgl2, &
+                  coeft, nfs, nsg, toutms)
+!
+    use MaterialPara_type
     implicit none
+!
 #include "asterc/r8dgrd.h"
 #include "asterfort/lcmmsg.h"
 #include "asterfort/matrot.h"
 #include "asterfort/promat.h"
 #include "asterfort/utmess.h"
+!
+    type(Material_Para), intent(in) :: materPara
     integer(kind=8) :: nmat, nbcomm(nmat, 3), nfs, nbphas, nsg
     real(kind=8) :: pgl(3, 3), toutms(nbphas, nfs, nsg, 7), coeft(nmat)
     real(kind=8) :: q(3, 3)
@@ -42,7 +48,7 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
 !     ----------------------------------------------------------------
     character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
-    real(kind=8) :: ang(3), angmas(3), pgl1(3, 3), pgl2(3, 3)
+    real(kind=8) :: ang(3), pgl1(3, 3), pgl2(3, 3)
     real(kind=8) :: ms(6), ng(3), lg(3)
     integer(kind=8) :: nbfsys, i, ifa, nbsys, is, indori, indcp, ir
     integer(kind=8) :: indpha, iphas
@@ -58,7 +64,7 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
         ang(2) = coeft(indori+1)*r8dgrd()
         ang(3) = coeft(indori+2)*r8dgrd()
         call matrot(ang, pgl1)
-        call matrot(angmas, pgl2)
+        call matrot(materPara%lcsPara%lcsAngle, pgl2)
         call promat(pgl1, 3, 3, 3, pgl2, &
                     3, 3, 3, pgl)
         nbfsys = nbcomm(indpha, 1)
@@ -68,7 +74,7 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
         end if
 !        Nombre de variables internes de la phase (=monocristal)
         do ifa = 1, nbfsys
-            nomfam = cpmono(indcp+5*(ifa-1)+1)
+            nomfam = cpmono(indcp+5*(ifa-1)+1) (1:16)
             call lcmmsg(nomfam, nbsys, 0, pgl, ms, &
                         ng, lg, ir, q)
             if (nbsys .eq. 0) then

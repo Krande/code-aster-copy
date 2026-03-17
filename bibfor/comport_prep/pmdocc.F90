@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmdocc(comporList, nbVari, multComp)
+subroutine pmdocc(comporList, nbVari, relaComp, defoComp, multComp)
 !
     use BehaviourPrepare_type
     implicit none
@@ -35,7 +35,7 @@ subroutine pmdocc(comporList, nbVari, multComp)
 !
     character(len=16), intent(out) :: comporList(COMPOR_SIZE)
     integer(kind=8), intent(out) :: nbVari
-    character(len=16), intent(out) :: multComp
+    character(len=16), intent(out) :: relaComp, defoComp, multComp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,16 +53,16 @@ subroutine pmdocc(comporList, nbVari, multComp)
 !
     character(len=19), parameter :: comporInfo = '&&PMDORC.LIST_VARI'
     integer(kind=8) :: nbocc1, nbocc2, nbocc3
-    character(len=16) :: relaComp
     aster_logical :: lInitialState, l_kit_thm
     type(BehaviourPrep_MapCompor) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nbVari = 0
-    relaComp = ' '
+    relaComp = " "
+    defoComp = " "
     multComp = ' '
-    comporList = 'VIDE'
+    comporList(1:COMPOR_SIZE) = 'VIDE'
 
 ! - Initial state
     call getfac('SIGM_INIT', nbocc1)
@@ -86,6 +86,7 @@ subroutine pmdocc(comporList, nbVari, multComp)
     nbVari = prepMapCompor%prepPara(1)%nbVari
     relaComp = prepMapCompor%prepPara(1)%rela_comp
     multComp = prepMapCompor%prepPara(1)%mult_comp
+    defoComp = prepMapCompor%prepPara(1)%defo_comp
 
 ! - Detection of specific cases
     call comp_meca_l(relaComp, 'KIT_THM', l_kit_thm)

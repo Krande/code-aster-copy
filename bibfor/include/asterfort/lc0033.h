@@ -21,7 +21,7 @@ interface
     subroutine lc0033(BEHinteg, &
                       fami, kpg, ksp, ndim, imate, &
                       compor, carcri, instam, instap, epsm, &
-                      deps, sigm, nvi, vim, option, angmas, &
+                      deps, sigm, nvi, vim, option, &
                       sigp, vip, &
                       typmod, dsidep, codret)
         use Behaviour_type
@@ -38,10 +38,9 @@ interface
         real(kind=8), intent(in) :: deps(*)
         real(kind=8), intent(in) :: sigm(6)
         real(kind=8), intent(in) :: vim(nvi)
-        real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(nvi)
-        character(len=8), intent(in) :: typmod(*)
+        character(len=8), intent(in) :: typmod(2)
         integer(kind=8), intent(in) :: nvi
         real(kind=8), intent(out) :: dsidep(6, 6)
         integer(kind=8), intent(out) :: codret

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,W1306
 !
-subroutine lc3053(BEHinteg, &
+subroutine lc3053(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &
@@ -32,7 +32,7 @@ subroutine lc3053(BEHinteg, &
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/lckimp.h"
 !
-    type(Behaviour_Integ) :: BEHinteg
+    type(Behaviour_Integ) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp

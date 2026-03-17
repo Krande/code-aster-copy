@@ -43,7 +43,7 @@ subroutine dxefg2(pgl, sigt)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3)
     real(kind=8) :: tmoypg, tsuppg, tinfpg
     integer(kind=8) :: icodre
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=10) :: phenom
 !     ------------------------------------------------------------------
 !

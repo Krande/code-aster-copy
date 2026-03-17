@@ -54,7 +54,7 @@ subroutine lc0023(fami, kpg, ksp, ndim, imate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ! call notAnisot(angmas)
+
     call nmcjs(typmod, imate, carcri, &
                epsm, &
                deps, sigm, vim, option, sigp, &

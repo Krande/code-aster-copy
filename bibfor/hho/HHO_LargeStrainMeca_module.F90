@@ -106,14 +106,13 @@ contains
 !
         integer(kind=8), parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
-        type(Behaviour_Integ) :: BEHinteg
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_prev_coeff, G_curr_coeff
         real(kind=8) :: module_tang(3, 3, 3, 3), G_prev(3, 3), G_curr(3, 3)
         real(kind=8) :: F_prev(3, 3), F_curr(3, 3), Pk1_curr(3, 3)
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         type(HHO_matrix) :: AT, lhs_axis, AT_ax1, AT_ax2
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
-        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, kpg, gbs_cmp, gbs_sym
         integer(kind=8) :: cod(MAX_QP_CELL), nbsig, cbs_cmp
         aster_logical :: l_gdeflog, l_green_lagr, l_lhs, l_rhs
 !
@@ -139,19 +138,9 @@ contains
 ! ----- Type of behavior
         call select_behavior(hhoCS%compor, l_gdeflog, l_green_lagr)
 
-! ----- Initialisation of behaviour datastructure
-        call behaviourInit(BEHinteg)
-
-! ----- Set main parameters for behaviour (on cell)
-        call behaviourSetParaCell(hhoCell%ndim, hhoCS%typmod, hhoCS%option, &
-                                  hhoCS%compor, hhoCS%carcri, &
-                                  time_prev, time_curr, &
-                                  hhoCS%fami, hhoCS%imater, &
-                                  BEHinteg)
-!
 ! ----- Prepare external state variables (geometry)
-        call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, BEHinteg)
-!
+        call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, hhoCS%BEHInteg)
+
 ! ----- Vector and/or matrix
         l_lhs = L_MATR(hhoCS%option)
         l_rhs = L_VECT(hhoCS%option)
@@ -168,80 +157,69 @@ contains
                 call AT_ax2%initialize(cbs_cmp, gbs, 0.d0)
             end if
         end if
-!
+
 ! ----- init basis
-!
         call hhoBasisCell%initialize(hhoCell)
-!
+
 ! ----- compute G_prev = gradrec * depl_prev
-!
         call gradrec%dot(depl_prev, G_prev_coeff)
-!
+
 ! ----- compute G_curr = gradrec * depl_curr
-!
         call gradrec%dot(depl_curr, G_curr_coeff)
-!
-!
-! ----- Loop on quadrature point
-!
-        do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-            coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-            weight = hhoQuadCellRigi%weights(ipg)
-!
+
+! ----- Loop on quadrature points
+        do kpg = 1, hhoQuadCellRigi%nbQuadPoints
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3, kpg)
+            weight = hhoQuadCellRigi%weights(kpg)
+
 ! --------- Eval basis function at the quadrature point
-!
             call hhoBasisCell%BSEval(coorpg(1:3), 0, &
                                      max(hhoData%grad_degree(), hhoData%cell_degree()), &
                                      BSCEval)
-!
+
 ! --------- Eval gradient at T- and T+
-!
             G_prev = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_prev_coeff)
-!
             G_curr = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
-!
             if (hhoCS%axis) then
                 call hhoAddAxisGrad(hhoCell%ndim, BSCEval, depl_prev(faces_dofs+1:), &
                                     coorpg, cbs_cmp, G_prev)
                 call hhoAddAxisGrad(hhoCell%ndim, BSCEval, depl_curr(faces_dofs+1:), &
                                     coorpg, cbs_cmp, G_curr)
             end if
-!
+
 ! --------- Eval gradient of the deformation at T- and T+
-!
             call hhoCalculF(G_prev, F_prev)
             call hhoCalculF(G_curr, F_curr)
-!
-! -------- Check the jacobian jac >= r8prem
-! -------- be carrefull with c_plan, I don't know the result
-!
+
+! --------- Check the jacobian jac >= r8prem
+! --------- be carrefull with c_plan, I don't know the result
             call lcdetf(hhoCell%ndim, F_prev, jac_prev)
-            cod(ipg) = merge(1, 0, jac_prev .le. r8prem())
-            if (cod(ipg) .ne. 0) goto 999
+            cod(kpg) = merge(1, 0, jac_prev .le. r8prem())
+            if (cod(kpg) .ne. 0) goto 999
 !
             call lcdetf(hhoCell%ndim, F_curr, jac_curr)
-            cod(ipg) = merge(1, 0, jac_curr .le. r8prem())
-            if (cod(ipg) .ne. 0) goto 999
+            cod(kpg) = merge(1, 0, jac_curr .le. r8prem())
+            if (cod(kpg) .ne. 0) goto 999
 
 ! --------- Set main parameters for behaviour (on point)
-            call behaviourSetParaPoin(ipg, ksp, BEHinteg)
+            call behaviourSetParaPoin(kpg, ksp, hhoCS%BEHInteg)
 
 ! --------- Integrate
             if (l_gdeflog) then
-                call gdeflog(BEHinteg, hhoCS, hhoCell%ndim, ipg, &
+                call gdeflog(hhoCS, hhoCell%ndim, kpg, &
                              time_prev, time_curr, &
-                             F_prev, F_curr, Pk1_curr, module_tang, cod(ipg))
+                             F_prev, F_curr, Pk1_curr, module_tang, cod(kpg))
             else if (l_green_lagr) then
-                call greenlagr(BEHinteg, hhoCS, hhoCell%ndim, ipg, &
+                call greenlagr(hhoCS, hhoCell%ndim, kpg, &
                                time_prev, time_curr, F_prev, F_curr, &
-                               Pk1_curr, module_tang, cod(ipg))
+                               Pk1_curr, module_tang, cod(kpg))
             else
                 ASSERT(ASTER_FALSE)
             end if
 !
 ! -------- Test the code of the LDC
 !
-            if (cod(ipg) .eq. 1) goto 999
+            if (cod(kpg) .eq. 1) goto 999
 !
 ! ------- Compute rhs
 !
@@ -264,10 +242,10 @@ contains
                 end if
             end if
 !
-!     print*,"vi_prev", vi_prev(1:lgpg, ipg)
-!     print*,"vi_curr", vi_curr(1:lgpg, ipg)
-! print*,"sig_prev", sig_prev(1:nbsig, ipg)
-! print*,"sig_curr", sig_curr(1:nbsig, ipg)
+!     print*,"vi_prev", vi_prev(1:lgpg, kpg)
+!     print*,"vi_curr", vi_curr(1:lgpg, kpg)
+! print*,"sig_prev", sig_prev(1:nbsig, kpg)
+! print*,"sig_curr", sig_curr(1:nbsig, kpg)
 ! print*,"Fp"
 ! call hhoPrintMat(F_curr)
 ! print*,"dPK1dF"
@@ -781,17 +759,16 @@ contains
 !
 !===================================================================================================
 !
-    subroutine gdeflog(BEHinteg, hhoCS, ndim, ipg, &
+    subroutine gdeflog(hhoCS, ndim, kpg, &
                        time_prev, time_curr, &
                        F_prev, F_curr, &
                        PK1_curr, module_tang, cod)
 !
         implicit none
 !
-        type(Behaviour_Integ), intent(inout) :: BEHinteg
         type(HHO_Compor_State), intent(inout) :: hhoCS
         integer(kind=8), intent(in) :: ndim
-        integer(kind=8), intent(in) :: ipg
+        integer(kind=8), intent(in) :: kpg
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: F_prev(3, 3)
@@ -804,9 +781,9 @@ contains
 !   HHO - mechanics
 !
 !   Compute the behavior laws for GDEF_LOF
-!   IO BEHinteg     : integration informations
+!   IO BEHInteg     : integration informations
 !   In ndim         : dimension of the problem
-!   In ipg          : i-th quadrature point
+!   In kpg          : i-th quadrature point
 !   In time_prev    : previous time T-
 !   In time_curr    : current time T+
 !   In F_prev       : previous deformation gradient at T-
@@ -829,7 +806,7 @@ contains
 !
 ! ----- Compute pre-processing Elog
 !
-        call prelog(ndim, hhoCS%lgpg, hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
+        call prelog(ndim, hhoCS%lgpg, hhoCS%vari_prev((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
                     gn, lamb, &
                     logl, F_prev, F_curr, epslPrev, epslIncr, &
                     tlogPrev, lCorr, cod)
@@ -840,30 +817,32 @@ contains
 ! ----- Compute Stress and module_tangent
         dtde = 0.d0
         tlogCurr = 0.d0
-        call nmcomp(BEHinteg, hhoCS%fami, ipg, 1, ndim, &
-                    hhoCS%typmod, hhoCS%imater, hhoCS%compor, hhoCS%carcri, &
-                    time_prev, time_curr, 6, epslPrev, epslIncr, 6, &
-                    tlogPrev, hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                    hhoCS%option, hhoCS%angl_naut, tlogCurr, &
-                    hhoCS%vari_curr((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                    36, dtde, cod, hhoCS%mult_comp)
-!
+        call nmcomp(hhoCS%BEHInteg, &
+                    ndim, hhoCS%option, hhoCS%typmod, &
+                    time_prev, time_curr, &
+                    hhoCS%compor, hhoCS%carcri, hhoCS%multComp, &
+                    6, epslPrev, epslIncr, &
+                    6, tlogPrev, &
+                    hhoCS%vari_prev((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                    tlogCurr, &
+                    hhoCS%vari_curr((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                    36, dtde, cod)
+
 ! ----- Test the code of the LDC
-!
         if (cod .eq. 1) goto 999
-!
+
 ! ----- Compute post-processing Elog
-!
-        call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
-                    tlogCurr, F_prev, hhoCS%lgpg, &
-                    hhoCS%vari_curr((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), ndim, &
-                    F_curr, ipg, dtde, hhoCS%sig_prev((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm), &
-                    hhoCS%c_plan, hhoCS%fami, hhoCS%imater, time_curr, hhoCS%angl_naut, gn, &
+        call poslog(hhoCS%BEHInteg, &
+                    lCorr, lMatr, lSigm, lVari, &
+                    tlogPrev, tlogCurr, F_prev, &
+                    hhoCS%lgpg, &
+                    hhoCS%vari_curr((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), ndim, &
+                    F_curr, dtde, hhoCS%sig_prev((kpg-1)*hhoCS%nbsigm+1:kpg*hhoCS%nbsigm), &
+                    hhoCS%c_plan, time_curr, gn, &
                     lamb, logl, sig, dpk2dc, PK2_prev, &
                     PK2_curr, cod)
-!
+
 ! ----- Test the code of the LDC
-!
         if (cod .ne. 0) goto 999
 !
         if (.not. lCorr) then
@@ -871,22 +850,19 @@ contains
         end if
 !
         if (lSigm) then
-            hhoCS%sig_curr((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm) = sig(1:hhoCS%nbsigm)
+            hhoCS%sig_curr((kpg-1)*hhoCS%nbsigm+1:kpg*hhoCS%nbsigm) = sig(1:hhoCS%nbsigm)
         end if
-!
+
 ! ----- Compute PK1
-!
         call pk2topk1(ndim, PK2_curr, F_curr, Pk1_curr)
 !
         module_tang = 0.d0
         if (lMatr) then
-!
-! ----- Unpack lagrangian tangent modulus
-!
+
+! --------- Unpack lagrangian tangent modulus
             call desymt46(dpk2dc, me)
-!
-! ----- Compute nominal tangent modulus
-!
+
+! --------- Compute nominal tangent modulus
             call lagmodtonommod(me, PK2_curr, F_curr, module_tang)
         end if
 !
@@ -898,16 +874,15 @@ contains
 !
 !===================================================================================================
 !
-    subroutine greenlagr(BEHinteg, hhoCS, ndim, ipg, &
+    subroutine greenlagr(hhoCS, ndim, kpg, &
                          time_prev, time_curr, F_prev, F_curr, &
                          PK1_curr, module_tang, cod)
 !
         implicit none
 !
-        type(Behaviour_Integ), intent(inout) :: BEHinteg
         type(HHO_Compor_State), intent(inout) :: hhoCS
         integer(kind=8), intent(in) :: ndim
-        integer(kind=8), intent(in) :: ipg
+        integer(kind=8), intent(in) :: kpg
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: F_prev(3, 3)
@@ -920,9 +895,8 @@ contains
 !   HHO - mechanics
 !
 !   Compute the behavior laws for GREEN_LAGRANGE
-!   IO BEHinteg     : integration informations
 !   In ndim         : dimension of the problem
-!   In ipg          : i-th quadrature point
+!   In kpg          : i-th quadrature point
 !   In time_prev    : previous time T-
 !   In time_curr    : current time T+
 !   In F_prev       : previous deformation gradient at T-
@@ -945,7 +919,7 @@ contains
 !
         PK2_prev = 0.d0
         sig = 0.d0
-        sig(1:hhoCS%nbsigm) = hhoCS%sig_prev((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm)
+        sig(1:hhoCS%nbsigm) = hhoCS%sig_prev((kpg-1)*hhoCS%nbsigm+1:kpg*hhoCS%nbsigm)
         call lcdetf(ndim, F_prev, detF_prev)
         call pk2sig(ndim, F_prev, detF_prev, PK2_prev, sig, -1)
         PK2_prev(4:6) = PK2_prev(4:6)*rac2
@@ -964,13 +938,16 @@ contains
 !
 ! --------- Compute behaviour
 !
-            call nmcomp(BEHinteg, hhoCS%fami, ipg, 1, ndim, &
-                        hhoCS%typmod, hhoCS%imater, hhoCS%compor, hhoCS%carcri, &
-                        time_prev, time_curr, 9, F_prev, F_incr, 6, &
-                        PK2_prev, hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                        hhoCS%option, hhoCS%angl_naut, PK2_curr, &
-                        hhoCS%vari_curr((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                        36, dpk2dc, cod, hhoCS%mult_comp)
+            call nmcomp(hhoCS%BEHInteg, &
+                        ndim, hhoCS%option, hhoCS%typmod, &
+                        time_prev, time_curr, &
+                        hhoCS%compor, hhoCS%carcri, hhoCS%multComp, &
+                        9, F_prev, F_incr, &
+                        6, PK2_prev, &
+                        hhoCS%vari_prev((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                        PK2_curr, &
+                        hhoCS%vari_curr((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                        36, dpk2dc, cod)
         else
 !
 ! --------- Compute pre-processing E (Green-Lagrange)
@@ -981,13 +958,16 @@ contains
 !
 ! --------- Compute behaviour
 !
-            call nmcomp(BEHinteg, hhoCS%fami, ipg, 1, ndim, &
-                        hhoCS%typmod, hhoCS%imater, hhoCS%compor, hhoCS%carcri, &
-                        time_prev, time_curr, 6, GL_prev, GL_incr, 6, &
-                        PK2_prev, hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                        hhoCS%option, hhoCS%angl_naut, PK2_curr, &
-                        hhoCS%vari_curr((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                        36, dpk2dc, cod, hhoCS%mult_comp)
+            call nmcomp(hhoCS%BEHInteg, &
+                        ndim, hhoCS%option, hhoCS%typmod, &
+                        time_prev, time_curr, &
+                        hhoCS%compor, hhoCS%carcri, hhoCS%multComp, &
+                        6, GL_prev, GL_incr, &
+                        6, PK2_prev, &
+                        hhoCS%vari_prev((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                        PK2_curr, &
+                        hhoCS%vari_curr((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                        36, dpk2dc, cod)
         end if
 !
 ! ----- Test the code of the LDC
@@ -1003,7 +983,7 @@ contains
         if (L_SIGM(hhoCS%option)) then
             call lcdetf(ndim, F_curr, detF_curr)
             call pk2sig(ndim, F_curr, detF_curr, PK2_curr, &
-                        hhoCS%sig_curr((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm), 1)
+                        hhoCS%sig_curr((kpg-1)*hhoCS%nbsigm+1:kpg*hhoCS%nbsigm), 1)
         end if
 !
 ! ----- Compute PK1

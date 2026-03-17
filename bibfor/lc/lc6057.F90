@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,W1306,C1505
 !
-subroutine lc6057(BEHinteg, &
+subroutine lc6057(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &
@@ -34,7 +34,7 @@ subroutine lc6057(BEHinteg, &
 #include "asterfort/lcmfga.h"
 #include "asterfort/lcmfma.h"
 ! --------------------------------------------------------------------------------------------------
-    type(Behaviour_Integ) :: BEHinteg
+    type(Behaviour_Integ) :: BEHInteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
