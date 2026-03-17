@@ -38,6 +38,81 @@ from ..Utilities import injector, deprecated, force_list
 from ..Utilities import MPI, ExecutionParameter, SharedTmpdir
 
 
+def _getValuesWithDescription_numpy(sfield, cmps_arg, groups):
+    """Pure-Python fallback for getValuesWithDescription using toNumpy().
+
+    When the C++ loop returns empty despite valid data (Windows bug),
+    this function extracts the same information from the raw Jeveux
+    arrays exposed by toNumpy().
+
+    Returns the same format as getValuesWithDescription:
+        (values, (cells, cmps, points, subpoints))
+    """
+    ncmps = sfield.getNumberOfComponents()
+    if ncmps == 0:
+        return ([], ([], [], [], []))
+
+    all_cmp_names = sfield.getComponents()
+    cmp_name2idx = {name: i for i, name in enumerate(all_cmp_names)}
+
+    # Determine which components to extract
+    if cmps_arg:
+        cmp_indices = []
+        cmp_names_out = []
+        for c in cmps_arg:
+            if c in cmp_name2idx:
+                cmp_indices.append(cmp_name2idx[c])
+                cmp_names_out.append(c)
+    else:
+        cmp_indices = list(range(ncmps))
+        cmp_names_out = list(all_cmp_names)
+
+    if not cmp_indices:
+        return ([], ([], [], [], []))
+
+    # Determine which cells to iterate
+    mesh = sfield.getMesh()
+    grp_list = force_list(groups) if groups else []
+    cells = list(mesh.getCells(grp_list) if grp_list else mesh.getCells())
+
+    # Get raw numpy arrays: values(n_rows, ncmps), mask(n_rows, ncmps), size_arr(1D)
+    vals_arr, mask_arr, size_arr = sfield.toNumpy()
+
+    values = []
+    v_cells = []
+    v_cmps = []
+    points = []
+    subpoints = []
+
+    for cell in cells:
+        npt = int(size_arr[4 + 4 * cell + 1])
+        nspt = int(size_arr[4 + 4 * cell + 2])
+        cell_ncmp = int(size_arr[4 + 4 * cell + 3])
+        decal = int(size_arr[4 + 4 * cell + 4])
+
+        if npt == 0 or nspt == 0 or cell_ncmp == 0:
+            continue
+
+        # decal is always a multiple of ncmps (cell_ncmp == ncmps for allocated cells)
+        base_row = decal // ncmps
+
+        for icmp, cmp_name in zip(cmp_indices, cmp_names_out):
+            if icmp >= cell_ncmp:
+                continue
+            for ipt in range(npt):
+                for ispt in range(nspt):
+                    row = base_row + ipt * nspt + ispt
+                    col = icmp
+                    if row < mask_arr.shape[0] and mask_arr[row, col]:
+                        values.append(float(vals_arr[row, col]))
+                        v_cells.append(cell)
+                        v_cmps.append(cmp_name)
+                        points.append(ipt)
+                        subpoints.append(ispt)
+
+    return (values, (v_cells, v_cmps, points, subpoints))
+
+
 class FieldOnCellsStateBuilder(InternalStateBuilder):
     """Class that returns the internal state of a *FieldOnCells*."""
 
@@ -89,37 +164,11 @@ class ExtendedFieldOnCellsReal:
         sfield = self.toSimpleFieldOnCells()
         cmps_arg = force_list(components)
         result = sfield.getValuesWithDescription(cmps_arg, groups)
-        # Temporary diagnostic: log when getValuesWithDescription returns empty
-        # to help debug Windows-specific empty results (see win-support branch).
+        # Workaround: on Windows, the C++ getValuesWithDescription loop can
+        # return empty despite valid data.  Fall back to a pure-Python
+        # extraction using the raw numpy arrays from toNumpy().
         if len(result[0]) == 0 and sys.platform == "win32":
-            ncells = sfield.getNumberOfCells()
-            ncmps = sfield.getNumberOfComponents()
-            cmp_names = sfield.getComponents() if ncmps > 0 else []
-            maxpt = sfield.getMaxNumberOfPoints()
-            maxspt = sfield.getMaxNumberOfSubPoints()
-            # Check mesh cells resolution
-            mesh = sfield.getMesh()
-            grp_list = force_list(groups) if groups else []
-            resolved_cells = mesh.getCells(grp_list) if grp_list else mesh.getCells()
-            # Sample first few cells for point/subpoint/hasValue info
-            sample_info = []
-            for c in resolved_cells[:3]:
-                try:
-                    npt = sfield.getNumberOfPointsOfCell(c)
-                    nspt = sfield.getNumberOfSubPointsOfCell(c)
-                    hv = sfield.hasValue(c, 0, 0, 0) if npt > 0 and nspt > 0 and ncmps > 0 else None
-                    sample_info.append(f"cell{c}:npt={npt},nspt={nspt},hv={hv}")
-                except Exception as e:
-                    sample_info.append(f"cell{c}:err={e}")
-            print(
-                f"[DIAG] getValuesWithDescription returned empty: "
-                f"ncells={ncells}, ncmps={ncmps}, maxpt={maxpt}, maxspt={maxspt}, "
-                f"cmps_arg={cmps_arg}, groups={groups}, "
-                f"field_cmps={cmp_names[:8]}, "
-                f"resolved_cells_count={len(resolved_cells)}, "
-                f"samples=[{'; '.join(sample_info)}]",
-                flush=True,
-            )
+            result = _getValuesWithDescription_numpy(sfield, cmps_arg, groups)
         return result
 
     def plot(self, command="gmsh", local=False, split=False):

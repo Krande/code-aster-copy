@@ -27,23 +27,26 @@
 
 namespace py = pybind11;
 
+// Fortran uses integer(c_int64_t) = 8-byte integers via bind(C).
+// On Windows LLP64, C/C++ 'long' is only 4 bytes, causing stack corruption.
+// Use int64_t to match the Fortran ABI on all platforms.
 extern "C" {
 void dintels( double *cequi, double *ht, double *bw, double *enrobi, double *enrobs, double *scmaxi,
-              double *scmaxs, double *ssmax, long *uc, long *ntot, double *dnsinf = nullptr,
+              double *scmaxs, double *ssmax, int64_t *uc, int64_t *ntot, double *dnsinf = nullptr,
               double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr,
-              long *ndemi = nullptr );
+              int64_t *ndemi = nullptr );
 
-void dintelu( long *typco, double *alphacc, double *ht, double *bw, double *enrobi, double *enrobs,
-              double *facier, double *fbeton, double *gammas, double *gammac, long *clacier,
-              double *eys, long *typdiag, long *uc, long *ntot, double *dnsinf = nullptr,
-              double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr,
-              long *ndemi = nullptr );
+void dintelu( int64_t *typco, double *alphacc, double *ht, double *bw, double *enrobi,
+              double *enrobs, double *facier, double *fbeton, double *gammas, double *gammac,
+              int64_t *clacier, double *eys, int64_t *typdiag, int64_t *uc, int64_t *ntot,
+              double *dnsinf = nullptr, double *dnssup = nullptr, double *nrd = nullptr,
+              double *mrd = nullptr, int64_t *ndemi = nullptr );
 }
 
 const std::tuple< VectorReal, VectorReal >
 dintels_wrapper( double cequi, double ht, double bw, double enrobi, double enrobs, double scmaxi,
-                 double scmaxs, double ssmax, long uc, double dnsinf, double dnssup ) {
-    long ntot = -1;
+                 double scmaxs, double ssmax, int64_t uc, double dnsinf, double dnssup ) {
+    int64_t ntot = -1;
     // get size of output vectors
     dintels( &cequi, &ht, &bw, &enrobi, &enrobs, &scmaxi, &scmaxs, &ssmax, &uc, &ntot );
 
@@ -57,10 +60,10 @@ dintels_wrapper( double cequi, double ht, double bw, double enrobi, double enrob
 }
 
 const std::tuple< VectorReal, VectorReal >
-dintelu_wrapper( long typco, double alphacc, double ht, double bw, double enrobi, double enrobs,
-                 double facier, double fbeton, double gammas, double gammac, long clacier,
-                 double eys, long typdiag, long uc, double dnsinf, double dnssup ) {
-    long ntot = -1;
+dintelu_wrapper( int64_t typco, double alphacc, double ht, double bw, double enrobi, double enrobs,
+                 double facier, double fbeton, double gammas, double gammac, int64_t clacier,
+                 double eys, int64_t typdiag, int64_t uc, double dnsinf, double dnssup ) {
+    int64_t ntot = -1;
     // get size of output vectors
     dintelu( &typco, &alphacc, &ht, &bw, &enrobi, &enrobs, &facier, &fbeton, &gammas, &gammac,
              &clacier, &eys, &typdiag, &uc, &ntot );
