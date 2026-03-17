@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+#include "MeshTypes_type.h"
 !
 !
 interface
@@ -23,6 +23,6 @@ interface
                       idfde, nno, nharm, jacob, b)
        integer(kind=8), intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
        real(kind=8), intent(in) :: nharm, xyz(1)
-       real(kind=8), intent(out) :: jacob, b(nbsig, 81)
+       real(kind=8), intent(out) :: jacob, b(nbsig, 3*MT_NNOMAX3D)
     end subroutine bmatmc
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 #include "asterfort/SetResi.h"
 #include "asterfort/nmcore_swap.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdcrit
     character(len=24), intent(in) :: sderro
@@ -136,14 +135,13 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 !
     call nmerge(sderro, 'RESI_MAXR', l_swap_rela_maxi)
     if (l_swap_rela_maxi) then
-        call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.true._1)
         call SetResi(ds_conv, type_='RESI_GLOB_MAXI', l_resi_test_=.false._1)
     end if
     call nmerge(sderro, 'RESI_MAXN', l_swap_comp_rela)
     if (l_swap_comp_rela) then
-        call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.false._1)
         call SetResi(ds_conv, type_='RESI_COMP_RELA', l_resi_test_=.true._1)
     end if
+    call SetResi(ds_conv, type_='RESI_GLOB_RELA', reset_resi_test_=.true._1)
 !
 ! - New minimum exterior load
 !

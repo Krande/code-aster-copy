@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,19 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
+from code_aster.Commands import *
+from code_aster import CA
+
+from ssnp179k_forc import compute_loadVSdisplacement
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
 mesh0 = LIRE_MAILLAGE(FORMAT="MED")
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
+
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=(_F(GROUP_MA=("Encast")),))
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Encast", "load")))
 
@@ -75,7 +82,7 @@ FY = FORMULE(NOM_PARA=("X", "Y", "INST"), VALE="0.3125")
 
 
 AY = [6.960664462630903]
-AX = [-6.2059596788488784]
+AX = [-6.2072392918881363]
 AT = [-0.14603549652811937]
 CY = [1.4345591643728326]
 CX = [-0.18507080318512215]
@@ -115,8 +122,16 @@ resnonl = STAT_NON_LINE(
 )
 
 resnonl = CALC_CHAMP(
-    reuse=resnonl, CHAM_MATER=fieldmat, CRITERES=("SIEQ_NOEU",), MODELE=model, RESULTAT=resnonl
+    reuse=resnonl, FORCE=("FORC_NODA", "REAC_NODA"), CRITERES=("SIEQ_NOEU",), RESULTAT=resnonl
 )
+
+TAB = compute_loadVSdisplacement(resnonl, ["Encast"], NOM_CMP="DY")
+
+# comparaison with ssnp179a
+TEST_TABLE(
+    NOM_PARA="FDY", TABLE=TAB, VALE_CALC=-0.15151515151515, FILTRE=_F(NOM_PARA="INST", VALE=1.0)
+)
+
 
 TEST_RESU(
     RESU=_F(
@@ -196,5 +211,16 @@ TEST_RESU(
     )
 )
 
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=resnonl,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="HHO_FX1",
+        VALE_CALC=10.514338703593653,
+        TYPE_TEST="SOMM_ABS",
+        CRITERE="RELATIF",
+    )
+)
 
 FIN()

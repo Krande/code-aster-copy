@@ -20,6 +20,7 @@ usage()
     echo
     echo "arguments:"
     echo "  -h/--help       show this help message"
+    echo "  --help-options  show all waf options"
     echo "  --prefix        installation prefix"
     echo "  and other options accepted by 'waf configure'."
     echo
@@ -30,6 +31,9 @@ configure_main()
 {
     if [ $# != 0 ] && ([ "$1" = "-h" ] || [ "${1}" = "--help" ]); then
         usage
+    fi
+    if [ $# != 0 ] && [ "${1}" = "--help-options" ]; then
+        ./waf --help && exit 0
     fi
 
     cd ${prefix}

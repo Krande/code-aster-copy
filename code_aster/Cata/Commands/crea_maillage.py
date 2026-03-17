@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jacques.pellet at edf.fr
 
 from ..Commons import *
 from ..Language.DataStructure import *
@@ -50,6 +49,7 @@ CREA_MAILLAGE = OPER(
             "ECLA_PG",
             "HEXA20_27",
             "LINE_QUAD",
+            "LINE_CUBI",
             "MODI_MAILLE",
             "QUAD_LINE",
             "REPERE",
@@ -143,6 +143,13 @@ CREA_MAILLAGE = OPER(
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
+    LINE_CUBI=FACT(
+        statut="f",
+        fr=tr("Passage linéaire -> cubique"),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+    ),
     HEXA20_27=FACT(
         statut="f",
         fr=tr("Passage HEXA20 -> HEXA27"),
@@ -160,7 +167,9 @@ CREA_MAILLAGE = OPER(
     MODI_HHO=FACT(
         statut="f",
         fr=tr("Création maillage pour HHO"),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     COQUE_SOLIDE=FACT(
         statut="f",

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine ermes3(noe, ifa, tymvol, nnof, typmav, &
                   iref1, ivois, isig, nbcmp, dsg11, &
                   dsg22, dsg33, dsg12, dsg13, dsg23)
-! person_in_charge: josselin.delmas at edf.fr
 ! =====================================================================
 !  ERREUR EN MECANIQUE - TERME DE SAUT - DIMENSION 3
 !  **        **                   *                *

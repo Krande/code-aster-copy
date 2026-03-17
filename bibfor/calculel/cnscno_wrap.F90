@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,30 @@ subroutine cnscno_wrap(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret)
     implicit none
 !
 #include "asterfort/cnscno.h"
-#include "asterfort/crnggn.h"
-#include "asterfort/crnggc.h"
+#include "asterfort/global_numbering_compute.h"
+#include "asterfort/global_numbering_communicate.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
     !
     character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
     character(len=1) :: kstop
     integer(kind=8) :: iret
+    aster_logical :: l_exi_nume
+    character(len=19) :: nume_equa
 !
+    l_exi_nume = .false.
+    if (nume_equaz .ne. ' ') then
+        call exisd("NUME_EQUA", nume_equaz, iret)
+        if (iret .eq. 1) then
+            l_exi_nume = .true.
+        end if
+    end if
     call cnscno(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret, lprofconst=ASTER_FALSE)
-    ! create numbering
-    call crnggn(cnoz)
-    ! communicate numbering
-    call crnggc(cnoz, l_print=ASTER_FALSE)
+    if (.not. l_exi_nume) then
+        call dismoi('NUME_EQUA', cnoz, 'CHAM_NO', repk=nume_equa)
+        ! create numbering
+        call global_numbering_compute(nume_equa)
+        ! communicate numbering
+        call global_numbering_communicate(nume_equa)
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine op0044()
 ! LOC MXFREQ : IS : NB MAXIMUM DE FREQUENCES A CALCULER
 ! LOC NFREQB : IS : NB DE FREQUENCES EFFECTIVES DANS LA BANDE DONNEE
 !-----------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 ! VARIABLES LOCALES

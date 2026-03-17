@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
                         nume_harm, time_comp, &
@@ -28,6 +27,8 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
                         nbin, nbout, &
                         lpain, lchin, &
                         lpaout, lchout)
+!
+    use HHO_precalc_module, only: hhoAddInputField
 !
     implicit none
 !
@@ -230,6 +231,10 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
     if (l_xfem .and. l_temp) then
         call xajcin(model, 'CHAR_MECA_TEMP_R', mxchin, lchin, lpain, nbin)
     end if
+!
+! - HHO fields
+!
+    call hhoAddInputField(model, mxchin, lchin, lpain, nbin)
 !
 ! - Output fields
 !

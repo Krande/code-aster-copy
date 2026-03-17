@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,13 +50,15 @@ subroutine projInsideCell(pair_tole, elem_dime, elem_code, &
 ! --------------------------------------------------------------------------------------------------
 !
     iret = 1
-    if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3') then
+    if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3' &
+        .or. elem_code .eq. 'SE4') then
         xpt = poin_coor(1)
         if (xpt .ge. (-1.d0-pair_tole) .and. &
             xpt .le. (1.d0+pair_tole)) then
             iret = 0
         end if
-    elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6') then
+    elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6' &
+            .or. elem_code .eq. 'TR7' .or. elem_code .eq. 'TR1') then
         xpt = poin_coor(1)
         ypt = poin_coor(2)
         if (xpt .ge. -pair_tole .and. &
@@ -64,7 +66,8 @@ subroutine projInsideCell(pair_tole, elem_dime, elem_code, &
             (ypt+xpt) .le. (1.d0+pair_tole)) then
             iret = 0
         end if
-    elseif (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' .or. elem_code .eq. 'QU9') then
+    elseif (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' &
+            .or. elem_code .eq. 'QU9' .or. elem_code .eq. 'Q12') then
         xpt = poin_coor(1)
         ypt = poin_coor(2)
         if (xpt .ge. (-1.d0-pair_tole) .and. &

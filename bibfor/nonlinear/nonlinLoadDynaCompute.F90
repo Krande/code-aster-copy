@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nonlinLoadDynaCompute(mode, sddyna, &
                                  model, nume_dof, &
@@ -102,7 +101,7 @@ subroutine nonlinLoadDynaCompute(mode, sddyna, &
             call nmchex(hval_veasse, 'VEASSE', 'CNONDP', vect_asse)
             call veondp(model, ds_material%mater, ds_material%mateco, &
                         sddyna, time_curr, vect_elem)
-            call asasve(vect_elem, nume_dof, 'R', vect_alem)
+            call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
             call ascova('D', vect_alem, ' ', 'INST', time_curr, &
                         'R', vect_asse)
             if (niv .ge. 2) then

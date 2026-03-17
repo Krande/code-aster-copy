@@ -3,7 +3,7 @@
  * @brief Implementation de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,14 +21,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "astercxx.h"
 
 #include "Meshes/Mesh.h"
 
 #include "aster_fort_mesh.h"
 
+#include "IOManager/AsterToMedWriter.h"
 #include "Utilities/Tools.h"
 
 bool Mesh::readAsterFile( const std::filesystem::path &fileName ) {
@@ -268,6 +267,14 @@ MeshPtr Mesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     return mesh_out;
 };
 
+MeshPtr Mesh::convertToCubic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER quatre = 4, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &quatre, &inf );
+    mesh_out->build();
+    return mesh_out;
+};
+
 void Mesh::addNodeLabels( const VectorString &labels ) {
     const auto &size = labels.size();
     if ( getNumberOfNodes() != size ) {
@@ -295,3 +302,13 @@ void Mesh::addCellLabels( const VectorString &labels ) {
         _nameOfCells->add( i + 1, labels[i] );
     }
 }
+
+bool Mesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                         std::array< int, 3 > version ) const {
+#ifdef ASTER_HAVE_MED
+    auto aTMWriter = AsterToMedWriter();
+    return aTMWriter.printMesh( *this, fileName, local );
+#else
+    return false;
+#endif
+};

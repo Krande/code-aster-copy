@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MECA_XH1_FACE3(Element):
-
     """Please document this element"""
 
     meshType = MT.TRIA3
@@ -252,7 +251,6 @@ class MECA_XH1_FACE3(Element):
 
 # ------------------------------------------------------------
 class MECA_XH2_FACE3(MECA_XH1_FACE3):
-
     """Please document this element"""
 
     meshType = MT.TRIA3
@@ -262,7 +260,6 @@ class MECA_XH2_FACE3(MECA_XH1_FACE3):
 
 # ------------------------------------------------------------
 class MECA_XH3_FACE3(MECA_XH1_FACE3):
-
     """Please document this element"""
 
     meshType = MT.TRIA3
@@ -272,7 +269,6 @@ class MECA_XH3_FACE3(MECA_XH1_FACE3):
 
 # ------------------------------------------------------------
 class MECA_XH4_FACE3(MECA_XH1_FACE3):
-
     """Please document this element"""
 
     meshType = MT.TRIA3
@@ -282,7 +278,6 @@ class MECA_XH4_FACE3(MECA_XH1_FACE3):
 
 # ------------------------------------------------------------
 class MECA_XH1_FACE4(MECA_XH1_FACE3):
-
     """Please document this element"""
 
     meshType = MT.QUAD4
@@ -292,7 +287,6 @@ class MECA_XH1_FACE4(MECA_XH1_FACE3):
 
 # ------------------------------------------------------------
 class MECA_XH2_FACE4(MECA_XH1_FACE3):
-
     """Please document this element"""
 
     meshType = MT.QUAD4
@@ -302,7 +296,6 @@ class MECA_XH2_FACE4(MECA_XH1_FACE3):
 
 # ------------------------------------------------------------
 class MECA_XH3_FACE4(MECA_XH1_FACE3):
-
     """Please document this element"""
 
     meshType = MT.QUAD4
@@ -312,7 +305,6 @@ class MECA_XH3_FACE4(MECA_XH1_FACE3):
 
 # ------------------------------------------------------------
 class MECA_XH4_FACE4(MECA_XH1_FACE3):
-
     """Please document this element"""
 
     meshType = MT.QUAD4

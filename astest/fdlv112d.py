@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -2028,7 +2028,7 @@ def F_ACC_X():
             0.99900e01,
             0.15000e-01,
             0.10000e02,
-            0.0
+            0.0,
             #   , 0.10000E+02   , 0.14000E-01
         ),
     )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,10 @@ DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 meshHE8 = LIRE_MAILLAGE(FORMAT="MED")
 
 mesh = CREA_MAILLAGE(MAILLAGE=meshHE8, INFO=1, MODI_HHO=_F(TOUT="OUI"))
+
+geomFieldNode = CREA_CHAMP(
+    MAILLAGE=mesh, OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE"
+)
 
 # Material parameters
 alpha = 6.5e-6
@@ -93,7 +97,10 @@ kineCondition = AFFE_CHAR_CINE(
 fieldMateMeca = AFFE_MATERIAU(
     MAILLAGE=mesh,
     AFFE=_F(GROUP_MA="Plaque", MATER=mecaMate),
-    AFFE_VARC=(_F(NOM_VARC="TEMP", EVOL=resthe, VALE_REF=tempRefe),),
+    AFFE_VARC=(
+        _F(NOM_VARC="TEMP", EVOL=resthe, VALE_REF=tempRefe),
+        _F(NOM_VARC="GEOM", CHAM_GD=geomFieldNode),
+    ),
 )
 
 ramp = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
@@ -130,7 +137,7 @@ TEST_RESU(
             NOM_CHAM="HHO_DEPL",
             NOM_CMP="DZ",
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=0.10091044871518653,
+            VALE_CALC=0.10091197433287388,
             VALE_REFE=deplRefe,
             PRECISION=deplTole,
         ),

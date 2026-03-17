@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -168,6 +168,11 @@ CRESEFM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT", 
 
 # Field for RESI_REFE_RELA/THM
 CRESTHM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "FHYDR[2]", "FTHERM"))
+
+# Field for RESI_REFE_RELA/THM_DIL
+CRESTHD = LocatedComponents(
+    phys=PHY.PREC_R, type="ELEM", components=("SIGM", "EPSI", "FHYDR[2]", "FTHERM", "LAG_GV")
+)
 
 # Field for RESI_REFE_RELA/STRESS
 CRESSIG = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM"))
@@ -577,6 +582,8 @@ COMEG2R = LocatedComponents(phys=PHY.OME2_R, type="ELEM", components=("OMEG2",))
 CONDPLA = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 CONDPLR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[10]",))
+
+CPAIRR = LocatedComponents(phys=PHY.N120_R, type="ELEM", components=("X[27]",))
 
 CPESANR = LocatedComponents(phys=PHY.PESA_R, type="ELEM", components=("G", "AG", "BG", "CG"))
 
@@ -1436,7 +1443,13 @@ EGMINMAX = LocatedComponents(
 EGMATE_R = LocatedComponents(
     phys=PHY.MATE_R,
     type="ELGA",
-    location="RIGI",
+    location="MTGA",
+    components=("X", "Y", "Z", "E", "NU", "RHO", "ALPHA", "LAMBDA", "RHO_CP"),
+)
+
+ENMATE_R = LocatedComponents(
+    phys=PHY.MATE_R,
+    type="ELNO",
     components=("X", "Y", "Z", "E", "NU", "RHO", "ALPHA", "LAMBDA", "RHO_CP"),
 )
 
@@ -1486,7 +1499,7 @@ EPRESGA = LocatedComponents(phys=PHY.PRES_R, type="ELGA", location="RIGI", compo
 
 ETEMPMA = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="MATER", components=("TEMP",))
 
-ETEMPNO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
+ETEMPNO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP", "SECH"))
 
 ETEMPPG = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="RIGI", components=("TEMP",))
 

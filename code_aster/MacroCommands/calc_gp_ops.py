@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,7 +232,7 @@ def calc_gp_ops(self, **args):
 
     # Verification que les instants demandes sont bien dans le resultat
     # Construction des instants de calcul par la meme occasion
-    list_inst = __RESU.LIST_VARI_ACCES()["INST"]
+    list_inst = __RESU.getAccessParameters()["INST"]
     l_inst_final = []
 
     for inst in args["LIST_INST"].getValues():

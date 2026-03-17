@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
                   cvpn2, cuon, cvon, rayon)
-! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"

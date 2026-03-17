@@ -3,7 +3,7 @@
  * @brief Fichier entete de la classe MeshCoordinatesField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -104,6 +104,11 @@ class Node {
      */
     ASTERINTEGER size( void ) const { return 3; }
 };
+
+inline std::ostream &operator<<( std::ostream &os, const Node &n ) {
+    os << "Node(" << n.getId() << ") = [" << n.x() << ", " << n.y() << ", " << n.z() << "]";
+    return os;
+}
 
 /**
  * @typedef MeshCoordinatesFieldPtr

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,7 +163,7 @@ def macr_ecrevisse_ops(self, **args):
         # jusqu'a l'instant recherche, puis de la nouvelle a partir de cet instant
         # ainsi le nume_ordre de la nouvelle liste correspond au nume_ordre de
         # l'ancienne
-        __dico1 = _THINIT.LIST_VARI_ACCES()
+        __dico1 = _THINIT.getAccessParameters()
         _list_precedente = __dico1["INST"]
         _list_numordre_prec = __dico1["NUME_ORDRE"]
         try:
@@ -270,7 +270,7 @@ def macr_ecrevisse_ops(self, **args):
                         ),
                         INFO=InfoAster,
                         TYPE_CALCUL="TRAN",
-                        **motclefs
+                        **motclefs,
                     )
 
                     _RTHMPJ = PROJ_CHAMP(
@@ -292,7 +292,7 @@ def macr_ecrevisse_ops(self, **args):
                         ),
                         INFO=InfoAster,
                         TYPE_CALCUL="TRAN",
-                        **motclefs
+                        **motclefs,
                     )
 
                     # Projection du champ thermique, a tous les instants
@@ -384,7 +384,7 @@ def macr_ecrevisse_ops(self, **args):
                     NEWTON=_F(**dNEWTON),
                     CONVERGENCE=_F(**dCONVERGENCE),
                     INFO=InfoAster,
-                    **motclefs
+                    **motclefs,
                 )
             else:
                 #      CAS OU LA MACRO EST REENTRANTE : ON RELANCE ECREVISSE POUR CONNAITRE
@@ -439,7 +439,7 @@ def macr_ecrevisse_ops(self, **args):
                     ECOULEMENT=_F(**dECOULEMENT_ecrevisse),
                     MODELE_ECRE=_F(**dMODELE_ECRE),
                     CONVERGENCE=_F(**dCONVERGENCE_ECREVISSE),
-                    **motclefsCALC_ECREVISSE
+                    **motclefsCALC_ECREVISSE,
                 )
             else:
                 CALC_ECREVISSE(
@@ -465,7 +465,7 @@ def macr_ecrevisse_ops(self, **args):
                     ECOULEMENT=_F(**dECOULEMENT_ecrevisse),
                     MODELE_ECRE=_F(**dMODELE_ECRE),
                     CONVERGENCE=_F(**dCONVERGENCE_ECREVISSE),
-                    **motclefsCALC_ECREVISSE
+                    **motclefsCALC_ECREVISSE,
                 )
 
             if debug:

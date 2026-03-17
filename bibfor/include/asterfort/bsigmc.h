@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       ivf, idfde, xyz, nharm, sigma,&
                       bsigma)
         integer(kind=8), intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
-        real(kind=8), intent(in) :: xyz(1), nharm, sigma(1)
-        real(kind=8), intent(out) :: bsigma(1)
+        real(kind=8), intent(in) :: xyz(*), nharm, sigma(npg*nbsig)
+        real(kind=8), intent(out) :: bsigma(*)
     end subroutine bsigmc
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nonlinLoadCompute(mode, list_load, &
                              model, cara_elem, nume_dof, list_func_acti, &
@@ -172,7 +171,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
         call nmchex(hval_veelem, 'VEELEM', 'CNDIDO', vect_elem)
         call nmchex(hval_veasse, 'VEASSE', 'CNDIDO', vect_asse)
         call vedime(model, lload_name, lload_info, time_curr, 'R', vect_elem)
-        call asasve(vect_elem, nume_dof, 'R', vect_alem)
+        call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then
@@ -202,7 +201,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
                     lload_name, lload_info, &
                     time_list, &
                     vect_elem, varcCurrZ_=vrcplu)
-        call asasve(vect_elem, nume_dof, 'R', vect_alem)
+        call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then
@@ -239,7 +238,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
                         disp_prev, disp_cumu_inst, &
                         vrcplu, &
                         vect_elem)
-            call asasve(vect_elem, nume_dof, 'R', vect_alem)
+            call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
             call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                         'R', vect_asse)
             if (niv .ge. 2) then
@@ -261,7 +260,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
                     disp_prev, disp_cumu_inst, &
                     vite_curr, acce_curr, strx_prev, &
                     vect_elem)
-        call asasve(vect_elem, nume_dof, 'R', vect_alem)
+        call asasve(vect_elem, nume_dof, 'R', 'D', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then

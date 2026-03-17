@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -435,9 +435,13 @@ contains
                         postComp%postCompFields%sigm, iret)
             if (iret .ne. 0) then
 ! ------------- Compute and save
-                call computeField(postComp%postCompResu, "SIEF_ELGA", option)
-                call rsexch(' ', postComp%postCompResu%resultOut, 'SIEF_ELGA', numeStore, &
-                            postComp%postCompFields%sigm, iret)
+                if (postComp%postCompResu%resultType .eq. "EVOL_NOLI") then
+                    call utmess("F", "CALCCHAMP1_4")
+                else
+                    call computeField(postComp%postCompResu, "SIEF_ELGA", option)
+                    call rsexch(' ', postComp%postCompResu%resultOut, 'SIEF_ELGA', numeStore, &
+                                postComp%postCompFields%sigm, iret)
+                end if
             end if
         end if
 
@@ -717,20 +721,21 @@ contains
 ! Compute FORC_NODA
 !
 ! In  postComp          : general type for post-processing
-! In  numeDof           : numbering
+! In  numeDofIn         : numbering
 ! In  fieldOut          : JEVEUX name of output field
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compForcNoda(postComp, numeDof, fieldOutZ)
+    subroutine compForcNoda(postComp, numeDofIn, fieldOutZ)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(POST_COMP), intent(in) :: postComp
-        character(len=14), intent(in) :: numeDof
+        character(len=14), intent(in) :: numeDofIn
         character(len=*), intent(in) :: fieldOutZ
 ! ----- Local
         character(len=16), parameter :: option = "FORC_NODA"
-        integer(kind=8) :: iEqua, jfi, jfr, jfo
-        character(len=24) :: fieldOut
+        character(len=14) :: numeDof
+        integer(kind=8) :: iEqua, jfi, jfr, jfo, numeNbEqua
+        character(len=24) :: fieldOut, numeEqua
         character(len=24) :: veFnod(2)
         character(len=24) :: vaFnodCR, vaFnodCI, vaFnodR
         real(kind=8), pointer :: vafnodCRVale(:) => null(), vafnodCIVale(:) => null()
@@ -765,17 +770,31 @@ contains
                          postComp%postCompFields%strx, postComp%postCompFields%disp, &
                          veFnod)
 
+! ----- Get numbering
+        call dismoi('NB_EQUA', numeDofIn, 'NUME_DDL', repi=numeNbEqua)
+        numeDof = numeDofIn
+        if (numeNbEqua .ne. postComp%postCompFields%nbEqua) then
+            call dismoi('NUME_EQUA', postComp%postCompFields%disp, 'CHAM_NO', repk=numeEqua)
+            numeDof = numeEqua(1:14)
+        end if
+
+        call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=numeNbEqua)
+        if (numeNbEqua .ne. postComp%postCompFields%nbEqua) then
+            call utmess("F", "CALCCHAMP1_5", &
+                        ni=2, vali=[numeNbEqua, postComp%postCompFields%nbEqua])
+        end if
+
 ! ----- Pre-assemblying
         vaFnodCR = " "
         vaFnodCI = " "
         vaFnodR = " "
         if (postComp%lCplx) then
             call vtcreb(veFnod(1), 'V', 'R', nume_ddlz=numeDof)
-            call asasve(veFnod(1), numeDof, 'R', vaFnodCR)
+            call asasve(veFnod(1), numeDof, 'R', 'D', vaFnodCR)
             call vtcreb(veFnod(2), 'V', 'R', nume_ddlz=numeDof)
-            call asasve(veFnod(2), numeDof, 'R', vaFnodCI)
+            call asasve(veFnod(2), numeDof, 'R', 'D', vaFnodCI)
         else
-            call asasve(veFnod(1), numeDof, 'R', vaFnodR)
+            call asasve(veFnod(1), numeDof, 'R', 'D', vaFnodR)
         end if
 
 ! ----- Assemblying
@@ -923,7 +942,7 @@ contains
                         vechmp, varcCurrZ_=postComp%postCompPara%chvarc, &
                         ligrelCalcZ_=postComp%postCompPara%calcLigrel, &
                         nharm_=postComp%postCompPara%nh)
-            call asasve(vechmp, numeDof, 'R', vachmp)
+            call asasve(vechmp, numeDof, 'R', 'D', vachmp)
             call ascova('D', vachmp, loadFuncJv, 'INST', postComp%postCompPara%time, &
                         'R', cnchmpR)
 
@@ -939,7 +958,7 @@ contains
                         postComp%postCompFields%strx, &
                         vecgmp, &
                         ligrelCalcZ_=postComp%postCompPara%calcLigrel)
-            call asasve(vecgmp, numeDof, 'R', vacgmp)
+            call asasve(vecgmp, numeDof, 'R', 'D', vacgmp)
             call ascova('D', vacgmp, loadFuncJv, 'INST', postComp%postCompPara%time, &
                         'R', cncgmp)
 
@@ -953,7 +972,7 @@ contains
                             postComp%postCompFields%disp, postComp%postCompFields%vectZero, &
                             postComp%postCompFields%vectZero, &
                             vefpip, postComp%postCompPara%calcLigrel)
-                call asasve(vefpip, numeDof, 'R', vafpip)
+                call asasve(vefpip, numeDof, 'R', 'D', vafpip)
                 call ascova('D', vafpip, loadFuncJv, 'INST', postComp%postCompPara%time, &
                             'R', cnfpip)
             end if
@@ -1176,7 +1195,7 @@ contains
                             postComp%postCompPara%compor, postComp%postCompPara%time, &
                             postComp%postCompFields%acce, vemgam, 'V', &
                             postComp%postCompPara%calcLigrel)
-                call asasve(vemgam, numeDof, 'R', vamgam)
+                call asasve(vemgam, numeDof, 'R', 'D', vamgam)
                 call jeveuo(vamgam, 'L', jref)
                 call jeveuo(zk24(jref) (1:19)//'.VALE', 'L', vr=cnmgamVale)
                 call daxpy(b_n, coefMGamR, cnmgamVale, b_incx, fieldRVale, b_incy)
@@ -1561,7 +1580,9 @@ contains
             lPipe = answer .eq. "OUI"
             call dismoi('EXI_COQUE', ligrelZ, 'LIGREL', repk=answer)
             lShell = answer .eq. "OUI"
-            call utmess('I', 'ELEMENTS3_13')
+            if (lPipe .or. lShell) then
+                call utmess('I', 'ELEMENTS3_13')
+            end if
         end if
         if (optionZ .eq. 'SIEQ_ELGA') then
             if (resultType .eq. 'FOURIER_ELAS') then

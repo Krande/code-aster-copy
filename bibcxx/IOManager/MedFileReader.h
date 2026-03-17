@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,8 +23,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 // aslint: disable=C3012
 
@@ -78,6 +76,13 @@ class MedFileReader {
 
     ~MedFileReader();
 
+    /** @brief create field */
+    MedFieldPtr createField( const std::string &name, const MedMeshPtr &mesh,
+                             const VectorString &cmps );
+
+    /** @brief create mesh */
+    MedMeshPtr createMesh( const std::string &name, const int &dim, const std::string &desc );
+
     /** @brief close file */
     int close();
 
@@ -85,7 +90,10 @@ class MedFileReader {
     MedFieldPtr getField( const std::string &name ) const;
 
     /** @brief get field from index */
-    MedFieldPtr getField( int index ) const { return _fields[index]; };
+    MedFieldPtr getField( int index ) const;
+
+    /** @brief get file pointer */
+    MedFilePointer getFilePointer() const { return _filePtr; };
 
     /** @brief get all field names */
     std::vector< std::string > getFieldNames() const;
@@ -106,6 +114,16 @@ class MedFileReader {
         return _meshes[index];
     };
 
+    /** @brief get mesh from name */
+    MedMeshPtr getMesh( const std::string &name ) const {
+        for ( const auto &mesh : _meshes ) {
+            if ( name == mesh->getName() ) {
+                return mesh;
+            }
+        }
+        return MedMeshPtr( nullptr );
+    };
+
     /** @brief get number of profile */
     int getProfileNumber() const;
 
@@ -113,7 +131,8 @@ class MedFileReader {
     int openParallel( const std::filesystem::path &filename, const MedFileAccessType &openType );
 
     /** @brief med open of file */
-    int open( const std::filesystem::path &filename, const MedFileAccessType &openType );
+    int open( const std::filesystem::path &filename, const MedFileAccessType &openType,
+              std::array< int, 3 > version = { 0, 0, 0 } );
 };
 
 /**

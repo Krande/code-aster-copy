@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine inttrbdf2_oper(nbequ, par, mgen, kgen, cgen, &
                           ktilda, ftild1, ftild2)
     implicit none
 !
-! person_in_charge: nicolas.tardieu at edf.fr
 !
 ! inttrbdf2_oper : Calculate (or update) the operators for TR-BDF2 integration
 !

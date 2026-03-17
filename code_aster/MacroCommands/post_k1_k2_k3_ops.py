@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -316,7 +316,7 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
             for grpno in GROUP_NO:
                 if grpno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=grpno)
-                for node in MAILLAGE.getNodes(grpno):
+                for node in MAILLAGE.getNodes(grpno, localNumbering=True):
                     NO_AVEC.append(str(node + 1))
             NO_AVEC = list(map(lambda x: x.rstrip(), NO_AVEC))
         else:
@@ -331,7 +331,7 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
             for grpno in SANS_GROUP_NO:
                 if grpno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=grpno)
-                for node in MAILLAGE.getNodes(grpno):
+                for node in MAILLAGE.getNodes(grpno, localNumbering=True):
                     NO_SANS.append(str(node + 1))
             NO_SANS = list(map(lambda x: x.rstrip(), NO_SANS))
 
@@ -403,7 +403,7 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # suppresion des coordonnées du projeté du noeud, non utilisées ici
     basloc = NP.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, ndim:]
     #   recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
-    index_by_nodename = {str(i + 1): i for i in MAILLAGE.getNodes()}
+    index_by_nodename = {str(i + 1): i for i in MAILLAGE.getNodes(localNumbering=True)}
     Basefo = basloc[[index_by_nodename[nodename] for nodename in Lnoff], :].flatten()
 
     VNOR = [None] * Nnoff
@@ -532,7 +532,7 @@ def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, is_symmetric, dic
 
     Ltot = list(set(Ltot))
 
-    dico = RESULTAT.LIST_VARI_ACCES()
+    dico = RESULTAT.getAccessParameters()
 
     if ndim == 2:
         nomcmp = ("DX", "DY")
@@ -2147,7 +2147,7 @@ def post_k1_k2_k3_ops(
     else:
         type_para = "INST"
 
-    dico_list_var = RESULTAT.LIST_VARI_ACCES()
+    dico_list_var = RESULTAT.getAccessParameters()
 
     for ino in range(0, Nbnofo):
         if INFO == 2:

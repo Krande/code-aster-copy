@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2026 - EDF - www.code-aster.org             */
 /* Copyright 1994-2011, Regents of the University of Minnesota          */
 /* This file is part of code_aster.                                     */
 /*                                                                      */

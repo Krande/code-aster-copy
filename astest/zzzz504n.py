@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
+from code_aster.MedUtils import printMeshToMedFile, printResultToMedFile
 
 test = CA.TestCase()
 
@@ -30,6 +31,8 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = CA.Mesh()
 pMesh2.readMedFile("zzzz504a.med")
+
+printMeshToMedFile(pMesh2, "mesh.med")
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh2,
@@ -66,8 +69,10 @@ resu = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=LI),
     MODELE=model,
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    SOLVEUR=_F(METHODE="PETSC", RESI_RELA=1.0e-8, PRE_COND="LDLT_SP"),
+    SOLVEUR=_F(METHODE="MUMPS"),
 )
+
+printResultToMedFile(resu, "mesh.med")
 
 MyFieldOnNodes = resu.getField("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()

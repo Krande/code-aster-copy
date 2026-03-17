@@ -3,7 +3,7 @@
  * @brief Implementation de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "DataFields/FieldBuilder.h"
 
@@ -45,6 +43,19 @@ EquationNumberingPtr FieldBuilder::newEquationNumbering( const std::string &name
 
     curDesc->setMesh( mesh );
     addEquationNumbering( curDesc );
+
+    return curDesc;
+};
+
+FiniteElementDescriptorPtr FieldBuilder::newFiniteElementDescriptor( const std::string &name,
+                                                                     const BaseMeshPtr mesh ) {
+    if ( _setLigrel.count( strip( name ) ) > 0 ) {
+        raiseAsterError( "LIGREL already exists: " + name );
+    }
+
+    auto curDesc = std::make_shared< FiniteElementDescriptor >( name, mesh );
+
+    addFiniteElementDescriptor( curDesc );
 
     return curDesc;
 };

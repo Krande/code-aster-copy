@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -860,18 +860,19 @@ class ListOfLoads : public DataStructure {
         return nullptr;
     }
 
-    VectorString getListOfMechaTyp();
-    VectorString getListOfMechaFuncTyp();
-    VectorString getListOfDiriTyp();
+    VectorString getListOfMechaTyp() const;
+    VectorString getListOfMechaFuncTyp() const;
+    VectorString getListOfDiriTyp() const;
 
     void setDifferentialDisplacement( const FieldOnNodesRealPtr );
 
-    const FieldOnNodesRealPtr getDifferentialDisplacement();
+    const FieldOnNodesRealPtr getDifferentialDisplacement() const;
 
-    bool hasDifferential();
-    bool hasDifferentialLoads();
-    bool hasDifferentialDirichletBC();
-    bool hasDifferentialDisplacement();
+    bool hasDifferential() const;
+    bool hasDifferentialLoads() const;
+    bool hasDifferentialDirichletBC() const;
+    bool hasDifferentialDisplacement() const;
+    bool hasPairingField() const;
 };
 
 /**

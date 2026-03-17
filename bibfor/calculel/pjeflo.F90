@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
 !
@@ -149,7 +148,8 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES TRIA :
-    elseif (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
+    elseif (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7' &
+            .or. elrefa .eq. 'TR1') then
         ASSERT(ndim .eq. 2)
         if (x .lt. 0.d0) goto 50
         if (y .lt. 0.d0) goto 50
@@ -170,7 +170,8 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES QUAD :
-    elseif (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') then
+    elseif (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9' &
+            .or. elrefa .eq. 'Q12') then
         ASSERT(ndim .eq. 2)
         if (x .lt. -1.d0) goto 60
         if (y .lt. -1.d0) goto 60

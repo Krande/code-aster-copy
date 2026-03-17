@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ Note:
 import os
 import os.path as osp
 import sys
+import sysconfig
 
 from waflib import Build, Configure, Logs, Utils
 from waflib.Tools.c_config import DEFKEYS
@@ -154,26 +155,33 @@ def options(self):
     )
     # MSVC Options
     group.add_option(
-        "--spdir",
+        "--site-packages",
         dest="spdir",
-        default=None,
-        help="Python site-packages directory for conda/rattler builds "
-             "[default: auto-detect from Python]",
+        default="auto",
+        help="Python site-packages directory (absolute path or relative to PREFIX), "
+        "special values: 'auto' default Python site-packages, 'no' direcly in lib.",
     )
     group.add_option(
         "--bindir",
         dest="bindir",
         default=None,
-        help="Binary directory for DLL files on Windows conda/rattler builds "
-             "[default: PREFIX/bin]",
+        help="Binary directory for DLL files on Windows conda/rattler builds [default: PREFIX/bin]",
+    )
+    group.add_option(
+        "--enable-aster-subdir",
+        dest="use_aster_subdir",
+        action="store_true",
+        help="Enable the '/aster' subdirectory in installation paths "
+        "(may be useful for some packaging)",
     )
     group.add_option(
         "--disable-aster-subdir",
-        dest="disable_aster_subdir",
-        action="store_true",
+        dest="use_aster_subdir",
+        action="store_false",
         default=False,
-        help="Disable the /aster subdirectory in installation paths "
-             "(useful for conda/rattler builds where files should go directly to lib)",
+        help="Disable the '/aster' subdirectory in installation paths "
+        "(this is the default, useful for conda/rattler builds where files "
+        "should go directly to lib)",
     )
     group.add_option(
         "--msvc-entry",
@@ -333,9 +341,9 @@ def configure(self):
     self.env["CODEASTERPATH"] = self.path.find_dir("code_aster").abspath()
     self.env["CATALOPATH"] = self.path.find_dir("catalo").abspath()
 
-    self.set_installdirs()
     self.load("parallel", tooldir="waftools")
     self.check_platform()
+    self.set_installdirs()
     self.load("python_cfg", tooldir="waftools")
     # keep compatibility for as_run
     if self.get_define("ASTER_HAVE_MPI"):
@@ -346,6 +354,7 @@ def configure(self):
     self.recurse("bibfor")
     self.recurse("bibcxx")
     self.recurse("bibc")
+    self.check_asan()
 
     if is_msvc_platform:
         self.recurse("msvc")
@@ -388,26 +397,22 @@ def build(self):
             'Call "waf build_debug" or "waf build_release", and read '
             "the comments in the wscript file!"
         )
+    if self.variant == "release" and env["CFLAGS_ASAN"]:
+        self.fatal(
+            "The project was configured with '--enable-asan' option (AddressSanitizer). "
+            "Only the 'debug' variant is relevant."
+        )
     if self.cmd.startswith("install"):
         # because we can't know which files are obsolete `rm *.py{,c,o}`
-        # When using SPDIR (conda builds), only clean our specific subdirectories
-        # not the entire site-packages directory
-        if env.SPDIR:
-            # Only clean code_aster and run_aster subdirectories
-            code_aster_dir = self.root.find_node(osp.join(env.SPDIR, "code_aster"))
-            run_aster_dir = self.root.find_node(osp.join(env.SPDIR, "run_aster"))
-            if code_aster_dir:
-                remove_previous(code_aster_dir, ["**/*.py", "**/*.pyc", "**/*.pyo"])
-            if run_aster_dir:
-                remove_previous(run_aster_dir, ["**/*.py", "**/*.pyc", "**/*.pyo"])
-        else:
-            # Traditional installation - clean entire ASTERLIBDIR
-            remove_previous(
-                self.root.find_node(self.env.ASTERLIBDIR), ["**/*.py", "**/*.pyc", "**/*.pyo"]
-            )
+        # Only clean code_aster and run_aster subdirectories
+        code_aster_dir = self.root.find_node(osp.join(env.SITEPACKAGESDIR, "code_aster"))
+        run_aster_dir = self.root.find_node(osp.join(env.SITEPACKAGESDIR, "run_aster"))
+        if code_aster_dir:
+            remove_previous(code_aster_dir, ["**/*.py", "**/*.pyc", "**/*.pyo"])
+        if run_aster_dir:
+            remove_previous(run_aster_dir, ["**/*.py", "**/*.pyc", "**/*.pyo"])
         remove_previous(
-            self.root.find_node(self.env.ASTERDATADIR),
-            ["datg/**/*", "materiau/**/*", "tests_data/**/*"],
+            self.root.find_node(env.ASTERDATADIR), ["datg/**/*", "materiau/**/*", "tests_data/**/*"]
         )
 
     self.load("ext_aster", tooldir="waftools")
@@ -426,12 +431,8 @@ def build(self):
     self.recurse("catalo")
     self.recurse("data")
     self.recurse("astest")
-    if env.SPDIR:
-        sp_dir = self.env.SPDIR
-    else:
-        sp_dir = self.env.ASTERLIBDIR
     self.install_as(
-        osp.join(sp_dir, "code_aster", "Utilities", "aster_config.py"),
+        osp.join(env.SITEPACKAGESDIR, "code_aster", "Utilities", "aster_config.py"),
         ["aster_config.py"],
     )
 
@@ -532,10 +533,6 @@ def set_installdirs(self):
         # User explicitly set libdir, use it
         self.env.LIBDIR = self.options.libdir
 
-    # Check if --spdir was explicitly provided for conda/rattler builds
-    if self.options.spdir:
-        self.env.SPDIR = self.options.spdir
-
     # Check if --bindir was explicitly provided for Windows DLL installation
     if self.options.bindir:
         self.env.BINDIR = self.options.bindir
@@ -545,16 +542,15 @@ def set_installdirs(self):
 
     # For conda/rattler builds, we don't want the /aster subdirectory for libraries
     # but we DO want it for data files (tests, profile.sh, etc.)
-    if self.options.disable_aster_subdir:
-        norm_lib = lambda path: osp.normpath(path)
-        norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
-    else:
+    if self.options.use_aster_subdir:
         norm_lib = lambda path: osp.normpath(osp.join(path, "aster"))
-        norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
+    else:
+        norm_lib = lambda path: osp.normpath(path)
+    norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
 
     self.env["ASTERLIBDIR"] = norm_lib(self.env.LIBDIR)
     self.env["ASTERBINDIR"] = self.env.BINDIR
-    self.env["ASTERINCLUDEDIR"] = norm_data(self.env.INCLUDEDIR)
+    self.env["ASTERINCLUDEDIR"] = norm_lib(self.env.INCLUDEDIR)
     self.env["ASTERDATADIR"] = norm_data(self.env.DATADIR)
     if not self.env.LOCALEDIR:
         self.env.LOCALEDIR = osp.join(self.env.PREFIX, "share", "locale")
@@ -562,6 +558,26 @@ def set_installdirs(self):
     # set relative paths for profile.sh
     for var in ("LIBDIR", "DATADIR", "LOCALEDIR"):
         self.env["RELATIVE_" + var] = osp.relpath(self.env["ASTER" + var], self.env["PREFIX"])
+    # use --site-packages by default
+    if self.options.spdir == "auto":
+        scheme = "posix_user" if self.env.ASTER_PLATFORM_POSIX else "nt_user"
+        self.env.SITEPACKAGESDIR = sysconfig.get_path(
+            "platlib", scheme=scheme, vars={"userbase": self.env.PREFIX}
+        )
+    elif self.options.spdir == "no":
+        self.env.SITEPACKAGESDIR = self.env.ASTERLIBDIR
+    else:
+        self.env.SITEPACKAGESDIR = osp.join(self.env.PREFIX, self.options.spdir)
+    self.env["RELATIVE_SITEPACKAGESDIR"] = osp.relpath(self.env.SITEPACKAGESDIR, self.env["PREFIX"])
+    # for aster_config.py
+    self.define("ASTER_BINDIR", self.env["ASTERBINDIR"])
+    self.define("ASTER_LIBDIR", self.env["ASTERLIBDIR"])
+    self.define("ASTER_DATADIR", self.env["ASTERDATADIR"])
+    self.define("ASTER_SITEPACKAGESDIR", self.env.SITEPACKAGESDIR)
+    self.msg("Setting bindir to", self.env["ASTERBINDIR"])
+    self.msg("Setting libdir to", self.env["ASTERLIBDIR"])
+    self.msg("Setting resource dir to", self.env["ASTERDATADIR"])
+    self.msg("Setting python dir to", self.env["SITEPACKAGESDIR"])
 
 
 @Configure.conf

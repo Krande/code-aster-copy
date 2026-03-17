@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -288,7 +288,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HH2M_HEXA20S_DIL(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -453,7 +452,7 @@ class HH2M_HEXA20S_DIL(Element):
         ),
         OP.REFE_FORC_NODA(
             te=600,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, LC.CRESTHD)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_ELAS(
@@ -561,7 +560,6 @@ class HH2M_HEXA20S_DIL(Element):
 
 # ------------------------------------------------------------
 class HH2M_PENTA15S_DI(HH2M_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -583,7 +581,6 @@ class HH2M_PENTA15S_DI(HH2M_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HH2M_TETRA10S_DI(HH2M_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

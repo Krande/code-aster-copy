@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`Material` --- Assignment of material properties on mesh
 ************************************************************************
@@ -33,7 +32,7 @@ from ..Cata.Syntax import _F
 from ..Cata.SyntaxUtils import old_complex
 from ..Messages import UTMESS
 from ..Supervis.visitors import EnumVisitor
-from ..Utilities import deprecated, injector, logger
+from ..Utilities import injector, logger
 
 
 @injector(Material)
@@ -163,10 +162,6 @@ class ExtendedMaterial:
             name = re.sub("_FO$", "", name.strip())
             logger.debug('NOMRC.append("%s")', name)
             mater._addProperties(name, len(seen), valR, valC, valK, ordr, kord)
-
-    @deprecated(case=1, help="Use 'size()' instead.")
-    def getNumberOfMaterialProperties(self):
-        return self.size()
 
     def addProperties(self, name, context=None, **kwargs):
         """Define properties for a behaviour.

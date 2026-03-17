@@ -1,0 +1,102 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+from code_aster.Commands import *
+from code_aster import CA
+
+CA.init("--test")
+
+test = CA.TestCase()
+
+# read mesh
+mesh0 = CA.ParallelMesh.buildCube(refine=2)
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
+
+# define model, load, material
+
+model = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", PHENOMENE="MECANIQUE")
+)
+
+MATER = DEFI_MATERIAU(ELAS=_F(E=2.213e5, NU=0.3))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+CHME = AFFE_CHAR_MECA(MODELE=model, PRES_REP=_F(PRES=100.0, GROUP_MA="TOP"))
+
+CHD = AFFE_CHAR_CINE(
+    MODELE=model, MECA_IMPO=(_F(GROUP_MA=("LEFT", "RIGHT"), DX=0.0, DZ=0.0, DY=0.0))
+)
+
+# define physical problem
+phys_pb = CA.PhysicalProblem(model, CHMAT)
+phys_pb.addLoad(CHME)
+phys_pb.addDirichletBC(CHD)
+
+# compute DOF numbering
+phys_pb.computeDOFNumbering()
+
+numeDDL = phys_pb.getDOFNumbering()
+
+# create discrete computation
+disc_comp = CA.DiscreteComputation(phys_pb)
+
+# compute rigidity matrix: (lambda * GkT(huT), GkT(hvT))_T + lambda * stab(huT, hvT)
+rigidity_elem = disc_comp.getLinearStiffnessMatrix(assembly=False)
+
+rigidity = CA.AssemblyMatrixDisplacementReal()
+rigidity.setDOFNumbering(numeDDL)
+rigidity.assemble(rigidity_elem, phys_pb.getListOfLoads())
+
+# compute external load: (p, vF)_F
+rhs_elem = disc_comp.getMechanicalNeumannForces(assembly=False)
+rhs = rhs_elem.assembleWithLoadFunctions(numeDDL, phys_pb.getListOfLoads())
+
+# compute Dirichlet BC to apply
+diriBCs = disc_comp.getDirichletBC()
+
+# factorize and solve without static condensation
+mySolver = CA.MumpsSolver()
+mySolver.factorize(rigidity)
+u_hho = mySolver.solve(rhs, diriBCs)
+
+# create hho handler
+hho = CA.HHO(phys_pb)
+
+# static condensation
+[MC, lC], [MD, lD] = hho.static_condensation(rigidity_elem, rhs_elem)
+
+# factorize and solve with static condensation
+mySolver2 = CA.MumpsSolver()
+mySolver2.factorize(MC)
+u_hhoc = mySolver2.solve(lC, diriBCs)
+
+# static decondensation
+
+u_hho2 = hho.static_decondensation(MD, lD, u_hhoc)
+
+# compute difference
+u_diff = u_hho - u_hho2
+
+test.assertAlmostEqual(u_diff.norm("NORM_INFINITY") / u_hho.norm("NORM_INFINITY"), 0.0, delta=1e-10)
+
+
+FIN()

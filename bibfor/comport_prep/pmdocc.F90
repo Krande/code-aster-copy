@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
+subroutine pmdocc(comporList, nbVari, multComp)
 !
     use BehaviourPrepare_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -35,9 +34,9 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 #include "asterfort/setBehaviourTypeValue.h"
 #include "asterfort/Behaviour_type.h"
 !
-    character(len=16), intent(out) :: compor(COMPOR_SIZE)
+    character(len=16), intent(out) :: comporList(COMPOR_SIZE)
     integer(kind=8), intent(out) :: nbVari
-    character(len=16), intent(out) :: type_comp, mult_comp
+    character(len=16), intent(out) :: multComp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +48,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 !
 ! Out compor           : list of parameters for constitutive law
 ! Out nbVari           : number of internal variables
-! Out type_comp        : type of comportment (INCR/ELAS)
-! Out mult_comp        : multi-comportment (DEFI_COMPOR for PMF)
+! Out multComp         : multi-comportment (DEFI_COMPOR for PMF)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,9 +61,9 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 ! --------------------------------------------------------------------------------------------------
 !
     nbVari = 0
-    type_comp = ' '
-    mult_comp = ' '
-    compor(1:COMPOR_SIZE) = 'VIDE'
+
+    multComp = ' '
+    comporList(1:COMPOR_SIZE) = 'VIDE'
 
 ! - Initial state
     call getfac('SIGM_INIT', nbocc1)
@@ -87,9 +85,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 
 ! - Some properties
     nbVari = prepMapCompor%prepPara(1)%nbVari
-    rela_comp = prepMapCompor%prepPara(1)%rela_comp
-    type_comp = prepMapCompor%prepPara(1)%type_comp
-    mult_comp = prepMapCompor%prepPara(1)%mult_comp
+    multComp = prepMapCompor%prepPara(1)%mult_comp
 
 ! - Detection of specific cases
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
@@ -98,10 +94,10 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
     end if
 
 ! - Save informations in the field <COMPOR>
-    call setBehaviourTypeValue(prepMapCompor, comporList_=compor(1:COMPOR_SIZE))
+    call setBehaviourTypeValue(prepMapCompor, comporList_=comporList(1:COMPOR_SIZE))
 
 ! - Prepare informations about internal variables
-    call comp_meca_pvar(comporList_=compor, comporInfo=comporInfo)
+    call comp_meca_pvar(comporList_=comporList, comporInfo=comporInfo)
 
 ! - Print informations about internal variables
     call imvari(comporInfo)

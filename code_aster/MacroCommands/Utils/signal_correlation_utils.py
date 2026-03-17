@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: irmela.zentner at edf.fr
 
 # Routines for correlated signals ground motion spatial variability
 """spatial_variability.py
@@ -139,7 +138,7 @@ def CALC_COHE(puls, **kwargs):
 def get_group_nom_coord(group_inter, nom_mail):
     print("in signal_correlation_utils")
     # no des noeuds
-    liste_no_interf = nom_mail.getNodes(group_inter)
+    liste_no_interf = nom_mail.getNodes(group_inter, localNumbering=True)
     # nom des noeuds
     liste_nom_no_int = [str(node + 1) for node in liste_no_interf]
     COORD_3D = nom_mail.getCoordinates().getValues()

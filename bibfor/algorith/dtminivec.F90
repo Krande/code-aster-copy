@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine dtminivec(sd_dtm_, ip, lonvec, iocc, vi, &
 ! Examples : call dtminivec('&&OP0074', IND_ARCH, 5, vi=indarch)
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"

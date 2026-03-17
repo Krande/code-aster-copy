@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt, &
                   ksi1, ksi2, tau1, tau2, iproj, &
                   niverr)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"

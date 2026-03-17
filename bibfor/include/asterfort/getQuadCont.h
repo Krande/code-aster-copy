@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,14 @@
 #include "asterfort/mesh_pairing_type.h"
 !
 interface
-    subroutine getQuadCont(elem_dime, &
+    subroutine getQuadCont(parameters, elem_dime, &
                            elem_slav_code, elem_mast_code, &
                            nbPoinInte, poinInteSlav, &
                            nb_qp, coor_qp, &
                            l_axis_, nb_node_slav_, elem_slav_coor_, &
                            weight_qp_)
+        use contact_type
+        type(ContactParameters), intent(in) :: parameters                  
         integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_slav_code, elem_mast_code
         integer(kind=8), intent(in) :: nbPoinInte

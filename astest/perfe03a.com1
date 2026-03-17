@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,7 @@ SIGMOY2 = LIRE_FONCTION(
 
 listcar = []
 
+
 # sigma(Griffith)
 def SIG_GRIFFITH(X):
     # n cardibes suit une loi normale tronquée de moyenne 0.603 et d'écart type 4
@@ -101,7 +102,7 @@ CHBID = CREA_CHAMP(
     PROL_ZERO="OUI",
     AFFE=_F(TOUT="OUI", NOM_CMP=("X",), VALE=1.0),
 )
-dico = RESUV2.LIST_VARI_ACCES()
+dico = RESUV2.getAccessParameters()
 NBNUM = dico["NUME_ORDRE"][-1]
 instants = dico["INST"]
 print(instants)

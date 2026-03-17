@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine extra1(nin, lchin, lpain)
 !
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -60,7 +59,12 @@ subroutine extra1(nin, lchin, lpain)
         nompar = nopara(ca_nuop_, ca_nute_, 'IN ', ipar)
         iparg = indik8(zk8(ca_iaoppa_), nompar, 1, ca_npario_)
         iparin = indik8(lpain, nompar, 1, nin)
-        exich = ((iparin .gt. 0) .and. zl(ca_iachix_-1+iparin))
+        exich = ASTER_FALSE
+        if (iparin .gt. 0) then
+            if (zl(ca_iachix_-1+iparin)) then
+                exich = ASTER_TRUE
+            end if
+        end if
         if (.not. exich) then
             zi(ca_iawloc_-1+3*(iparg-1)+1) = -1
             zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2) = 0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine SetResi(ds_conv, type_, &
                    col_name_, col_name_locus_, vale_calc_, locus_calc_, user_para_, &
-                   l_conv_, event_type_, l_resi_test_)
+                   l_conv_, event_type_, l_resi_test_, reset_resi_test_)
 !
     use NonLin_Datastructure_type
 !
@@ -38,6 +37,7 @@ subroutine SetResi(ds_conv, type_, &
     aster_logical, optional, intent(in) :: l_conv_
     character(len=16), optional, intent(in)  :: event_type_
     aster_logical, optional, intent(in) :: l_resi_test_
+    aster_logical, optional, intent(in) :: reset_resi_test_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,6 +58,7 @@ subroutine SetResi(ds_conv, type_, &
 ! In  l_conv           : .true. if residual has converged
 ! In  eventType       : type of event
 ! In  l_resi_test      : .true. to test this residual to evaluate convergence
+! In  reset_resi_test : .true. to reset initial value of test (.false. do nothing)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,6 +97,11 @@ subroutine SetResi(ds_conv, type_, &
             if (present(l_resi_test_)) then
                 ds_conv%l_resi_test(i_resi) = l_resi_test_
             end if
+            if (present(reset_resi_test_)) then
+                if (reset_resi_test_) then
+                    ds_conv%l_resi_test(i_resi) = ds_conv%l_resi_test_save(i_resi)
+                end if
+            end if
         end do
     end if
 !
@@ -129,6 +135,11 @@ subroutine SetResi(ds_conv, type_, &
         end if
         if (present(l_resi_test_)) then
             ds_conv%l_resi_test(i_type) = l_resi_test_
+        end if
+        if (present(reset_resi_test_)) then
+            if (reset_resi_test_) then
+                ds_conv%l_resi_test(i_type) = ds_conv%l_resi_test_save(i_type)
+            end if
         end if
     end if
 !

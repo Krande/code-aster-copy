@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/ParallelMeshInterface.h"
 
@@ -159,7 +157,7 @@ Arguments:
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = false,
               py::arg( "same_rank" ) = PythonBool::None )
         .def( "getInnerNodes", &ParallelMesh::getInnerNodes, R"(
 Return the list of the indexes of the inner nodes in the mesh
@@ -244,7 +242,7 @@ Arguments:
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ), py::arg( "localNumbering" ) = false,
               py::arg( "same_rank" ) = PythonBool::None )
         .def(
             "getGlobalToLocalNodeIds",
@@ -340,11 +338,34 @@ Returns:
     ParallelMesh: the quadratic mesh.
         )",
               py::arg( "info" ) = 1 )
+        .def( "convertToCubic", &ParallelMesh::convertToCubic, R"(
+Convert the mesh to a cubic one.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    Mesh: the cubic mesh.
+        )",
+              py::arg( "info" ) = 1 )
         .def( "getAllMedCellsTypes", &ParallelMesh::getAllMedCellsTypes, R"(
 Return all Med types available in mesh (for all processors).
 
 Returns:
-    list[int]: List of Med types.)" );
+    list[int]: List of Med types.)" )
+        .def( "printMedFile", &ParallelMesh::printMedFile, R"(
+Print the mesh in the MED format
+
+Arguments:
+    filename (Path|str): Name of the file
+    local (bool=True) : print local values only (relevant for a ParallelMesh only)
+    version (list): list of size 3 ([major, minor, release])
+
+Returns:
+    Bool: True if of
+            )",
+              py::arg( "fileName" ), py::arg( "local" ) = true,
+              py::arg( "version" ) = std::array< int, 3 >( { 0, 0, 0 } ) );
 };
 
 #endif /* ASTER_HAVE_MPI */

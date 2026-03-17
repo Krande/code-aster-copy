@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`FieldOnCellsReal` --- Fields defined on nodes of elements
 ********************************************************************
@@ -28,13 +27,12 @@ strings (:py:class:`FieldOnCellsChar8`) and
 complex numbers (:py:class:`FieldOnCellsComplex`).
 """
 
-import numpy
 import os.path as osp
 import subprocess
 
 from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector, deprecated, force_list
+from ..Utilities import injector, force_list
 from ..Utilities import MPI, ExecutionParameter, SharedTmpdir
 
 
@@ -239,36 +237,6 @@ class ExtendedFieldOnCellsReal:
         if fed:
             ligrel = fed
         return fcs.toFieldOnCells(ligrel)
-
-    # <16.4.0
-    @deprecated(case=1, help="Use 'asLocalization()' instead, it returns a new field.")
-    def changeLocalization(self, loc):
-        return self.asLocalization(loc)
-
-    # <16.4.0
-    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
-    def EXTR_COMP(self, comp, lgma=[], topo=0):
-        """Deprecated: Use 'getValuesWithDescription()' instead.
-
-        Examples:
-
-        .. code-block:: python
-
-            # previously:
-            extrcmp = chamele.EXTR_COMP(cmp, groups, 1)
-            values = extrcmp.valeurs
-            cells = extrcmp.maille
-            points = extrcmp.point
-            subpoints = extrcmp.sous_point
-            # replaced by:
-            values, (cells, points, subpoints) = chamele.getValuesWithDescription(cmp, groups)
-
-            # previously:
-            extrcmp = chamele.EXTR_COMP(cmp, groups, 0)
-            values = extrcmp.valeurs
-            # replaced by:
-            values, _  = chamele.getValuesWithDescription(cmp, groups)
-        """
 
 
 @injector(FieldOnCellsLong)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """Construction d'un fichier de commandes Miss"""
 
@@ -33,7 +32,6 @@ from .miss_utils import dict_format
 
 
 class MissCmdeGenerator:
-
     """Construit un fichier de commandes Miss"""
 
     _dbg = False
@@ -600,7 +598,6 @@ class MissCmdeGenerator:
 
 
 class MissCmdeGeneratorInci(MissCmdeGenerator):
-
     """Construit un fichier de commandes Miss
     Calcul du champ incident pour la methode Laplace-temps"""
 
@@ -628,7 +625,6 @@ class MissCmdeGeneratorInci(MissCmdeGenerator):
 
 
 class MissCmdeGeneratorISSF(MissCmdeGenerator):
-
     """Construit un fichier de commandes Miss dans le cas ISSF"""
 
     def bloc_domain(self):

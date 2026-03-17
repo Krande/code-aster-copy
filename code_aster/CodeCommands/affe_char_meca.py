@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2026  EDF www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -17,11 +17,21 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
-from ..Objects import MechanicalLoadReal, ParallelMechanicalLoadReal, ConnectionMesh, Model
-from ..Objects import SyntaxSaver
+from ..Objects import (
+    ConnectionMesh,
+    CouplingMethod,
+    CouplingPairing,
+    CouplingZonePairing,
+    MechanicalLoadReal,
+    Model,
+    PairingAlgo,
+    PairingMethod,
+    PairingParameter,
+    ParallelMechanicalLoadReal,
+    SyntaxSaver,
+)
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
 
@@ -131,6 +141,48 @@ class MechanicalLoadDefinition(ExecuteCommand):
         """Override default _exec in case of parallel load"""
         if isinstance(self._result, MechanicalLoadReal):
             super(MechanicalLoadDefinition, self).exec_(keywords)
+
+            if "LIAISON_MASSIF" in keywords.keys():
+                assert len(keywords["LIAISON_MASSIF"]) == 1
+                _cpl_method = {
+                    "LAGRANGIEN": CouplingMethod.Lagrangian,
+                    "PENALISATION": CouplingMethod.Penalization,
+                    "NITSCHE": CouplingMethod.Nitsche,
+                }
+                _pair_method = {
+                    "RAPIDE": PairingMethod.Fast,
+                    "FORCEBRUTE": PairingMethod.BrutForce,
+                    "PANG": PairingMethod.Legacy,
+                }
+
+                _algo_pair = {"MORTAR": PairingAlgo.Mortar}
+
+                cpl = CouplingPairing(keywords["MODELE"], keywords["INFO"])
+                for item in keywords["LIAISON_MASSIF"]:
+                    zone = CouplingZonePairing(keywords["MODELE"].getMesh(), keywords["INFO"])
+                    zone.setCoefficient(item["COEF_PENA"])
+                    zone.setMethod(_cpl_method[item["METHODE"]])
+                    zone.setSlaveGroupsOfCells(item["GROUP_MA_ESCL"])
+                    zone.setMasterGroupsOfCells(item["GROUP_MA_MAIT"])
+
+                    # pairing parameters
+                    pairParam = PairingParameter()
+                    pairParam.setAlgorithm(_algo_pair[item["APPARIEMENT"]])
+
+                    if item["APPARIEMENT"] == "MORTAR":
+                        pairParam.setPairingTolerance(item["APPA_TOLE"])
+                        pairParam.setAreaIntersectionTolerance(item["AIRE_TOLE"])
+                        pairParam.setPairingMethod(_pair_method[item["TYPE_APPA"]])
+
+                    zone.setPairingParameters(pairParam)
+                    zone.build()
+
+                    if keywords["VERI_NORM"] == "OUI":
+                        zone.check(keywords["MODELE"])
+
+                    cpl.addZone(zone)
+                cpl.compute()
+                self._result.setPairingField(cpl.getPairingField())
         else:
             model = keywords.pop("MODELE")
             if "LIAISON_PROJ" in list(keywords.keys()):

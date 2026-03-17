@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mathieu.courtois@edf.fr
 module as_med_module
     implicit none
     private
@@ -110,7 +109,7 @@ contains
                 end if
 #endif
 
-                if (vers(1) .eq. 4 .and. (vers(2) .eq. 0 .or. vers(2) .eq. 1)) then
+                if (vers(1) .eq. 4 .and. (0 .le. vers(2) .and. vers(2) .le. 2)) then
 !               pass
                 elseif (vers(1) .eq. 3 .and. vers(2) .eq. 3) then
 #if (ASTER_MED_VERSION_MAJOR == 4 && ASTER_MED_VERSION_MINOR == 0)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -333,7 +333,9 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
             end if
             call jeveuo(fieldNameAst//'.REFE', 'E', vk24=refe)
             refe(2) = nomprn(1:19)
-            call detrsd('NUME_EQUA', pchn1)
+            if (numeDdlName .eq. ' ') then
+                call detrsd('NUME_EQUA', pchn1)
+            end if
         end if
         if (numeStore .eq. ednono) then
             numeStore = numeStep

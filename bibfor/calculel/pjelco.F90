@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine pjelco(moa1, moa2, cham1, corres, base)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 !     COMMANDE:  PROJ_CHAMP /  METHODE='ECLA_PG'
 ! BUT : CALCULER LA STRUCTURE DE DONNEE CORRESP_2_MAILLA
 !       DANS LE CAS OU IL Y A UN CHAM_ELGA A TRAITER (CHAM1)

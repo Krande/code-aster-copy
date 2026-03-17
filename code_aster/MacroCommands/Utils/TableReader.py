@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 import os
 import re
@@ -56,7 +55,6 @@ def convert(valk):
 
 
 class TableReader:
-
     """Standard reader of a Table."""
 
     id_vide = ""
@@ -99,7 +97,6 @@ class TableReader:
 
 
 class TableReaderFree(TableReader):
-
     """Table reader in a free format."""
 
     def split_tab(self, nblock):
@@ -174,7 +171,6 @@ class TableReaderFree(TableReader):
 
 
 class TableReaderTableau(TableReaderFree):
-
     """Table reader in TABLEAU format."""
 
     id_vide = "-"
@@ -186,7 +182,6 @@ class TableReaderTableau(TableReaderFree):
 
 
 class TableReaderAster(TableReader):
-
     """Table reader in ASTER format."""
 
     idt_deb = "#DEBUT_TABLE\n"

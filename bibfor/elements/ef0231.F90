@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine ef0231(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     character(len=8) :: elrefe
     character(len=16) :: nomres(3)
     integer(kind=8) :: icodre(3)

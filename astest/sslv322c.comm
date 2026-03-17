@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -307,6 +307,7 @@ FCGla15 = RECU_FONCTION(TABLE=CGla15, PARA_X="ABSC_CURV", PARA_Y="G")
 
 FK1leg = RECU_FONCTION(TABLE=CGKleg, PARA_X="ABSC_CURV", PARA_Y="K1_MPA")
 FK1leg2 = RECU_FONCTION(TABLE=CGKleg2, PARA_X="ABSC_CURV", PARA_Y="K1_MPA")
+
 
 # interpollation polynomiale (MS Excel) de la reference Murakami : G(s)
 def G_Murakami(x):

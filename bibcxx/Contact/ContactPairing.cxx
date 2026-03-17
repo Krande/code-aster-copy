@@ -2,7 +2,7 @@
  * @file ContactPairing.cxx
  * @brief Implementation de Contact
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -72,12 +72,17 @@ ASTERBOOL ContactPairing::compute( ASTERINTEGER &indexZone ) {
     // Get distance ratio
     auto dist_pairing = zone->getPairingParameter()->getDistanceRatio();
 
-    // Tolerance for pairing
-    ASTERDOUBLE pair_tole = 1e-8;
+    // Tolerance for pairing (zero value for geometrical operations)
+    // ASTERDOUBLE pair_tole = 1e-8;
+    auto pair_tole = zone->getPairingParameter()->getPairingTolerance();
+
+    // Tolerance for removing intersection cells
+    // ASTERDOUBLE area_tole = 1e-2;
+    auto area_tole = zone->getPairingParameter()->getAreaIntersectionTolerance();
 
     // Pairing
     zone->setVerbosity( getVerbosity() );
-    returnValue = zone->pairing( dist_pairing, pair_tole );
+    returnValue = zone->pairing( dist_pairing, pair_tole, area_tole );
 
     return returnValue;
 }
@@ -172,13 +177,10 @@ ContactPairing::getIntersectionPoints( ASTERINTEGER &indexZone,
         raiseAsterError( "No contact pairs: was the pairing performed correctly? " );
     }
     returnValue.reserve( nbPairs );
+    const auto meshPair = _contDefi->getContactZone( indexZone )->getMeshPairing();
     for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
-        VectorOfVectorsReal interOnZone = _contDefi->getContactZone( indexZone )
-                                              ->getMeshPairing()
-                                              ->getIntersectionPoints( iPair, coorSpace );
-        ASTERINTEGER nbInter = _contDefi->getContactZone( indexZone )
-                                   ->getMeshPairing()
-                                   ->getNumberOfIntersectionPoints( iPair );
+        VectorOfVectorsReal interOnZone = meshPair->getIntersectionPoints( iPair, coorSpace );
+        ASTERINTEGER nbInter = meshPair->getNumberOfIntersectionPoints( iPair );
         if ( nbInter != 0 ) {
             VectorReal vectVale;
             for ( auto iInter = 0; iInter < nbInter; iInter++ ) {
@@ -186,7 +188,6 @@ ContactPairing::getIntersectionPoints( ASTERINTEGER &indexZone,
                                  interOnZone[iInter].end() );
             };
             returnValue.push_back( vectVale );
-            vectVale.clear();
         }
     }
     return returnValue;
@@ -312,9 +313,17 @@ void ContactPairing::createVirtualElemForContact(
         auto lFric = zone->getFrictionParameter()->hasFriction();
 
         // Get pairing for this zone
-        auto surf2Volu = zone->getSlaveCellsSurfToVolu();
         auto listOfPairsZone = this->getListOfPairs( iZone );
         auto nbPairsZone = this->getNumberOfPairs( iZone );
+
+        // Link between surface and volume
+        MapLong surf2Volu;
+        if ( contAlgo == ContactAlgo::Nitsche ) {
+            if ( mesh->isParallel() ) {
+                UTMESS( "F", "CONTACT1_5" );
+            }
+            surf2Volu = zone->getSlaveCellsSurfToVolu();
+        }
 
         // Create vector of (virtual) contact cells for this zone
         VectorPairLong listContTypeZone;
@@ -549,9 +558,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     // Objects
     SetLong slaveNodePaired, slaveCellPaired;
-
-    // Index of current contact pair
-    // ASTERINTEGER iContPair = 0;
 
     // Object for number of cells for each type of contact cell
     MapLong contactElemType;

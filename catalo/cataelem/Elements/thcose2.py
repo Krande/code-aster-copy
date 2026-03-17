@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,6 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 # ------------------------------------------------------------
 class THCOSE2(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2
@@ -146,7 +145,6 @@ class THCOSE2(Element):
 
 # ------------------------------------------------------------
 class THCOSE3(THCOSE2):
-
     """Please document this element"""
 
     meshType = MT.SEG3

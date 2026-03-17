@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,167 +15,223 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
-                  vim, vip, iforta, instam, instap, &
-                  iter, nbpar, nompar, table, vr, &
-                  igrad, valimp, imptgt, dsidep, nomvi, &
-                  nbvita)
-!
 ! aslint: disable=W1504
+!
+subroutine pmstab(sigmPrev, sigmCurr, epsiPrev, epsiIncr, &
+                  nbVari, vim, vip, &
+                  timePrev, timeCurr, iterNewt, &
+                  tablName, tablType, tablNbParaMaxi, tablNbPara, &
+                  tablParaName, tablVale, &
+                  lLoadGrad, valeImpo, lPrintMatr, dsidep, variName, &
+                  nbVariTabl)
+!
     implicit none
-!-----------------------------------------------------------------------
-!           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT
-!-----------------------------------------------------------------------
+!
 #include "asterfort/fgequi.h"
 #include "asterfort/tbajli.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer(kind=8) :: nbvari, nbpar, i, iter, iforta, igrad, ncmp, imptgt, nbvita
-    character(len=4) :: nomeps(6), nomsig(6), nomgrd(9)
-    character(len=8) :: k8b, table, vk8(2), nomvi(*)
-    character(len=16) :: nompar(*)
-    real(kind=8) :: deps(9), sigm(6), sigp(6), epsp(9), epsm(9), epst(9)
-    real(kind=8) :: vim(*), vip(*), vr(*), equi(17), valimp(9), sigt(6)
-    real(kind=8) :: rac2, instam, instap, dsidep(*)
-    complex(kind=8) :: cbid
+!
+    real(kind=8), intent(in) :: sigmCurr(6), epsiIncr(9)
+    real(kind=8), intent(out) :: sigmPrev(6), epsiPrev(9)
+    integer(kind=8), intent(in) :: nbVari
+    real(kind=8), intent(out) :: vim(nbVari)
+    real(kind=8), intent(in) :: vip(nbVari)
+    real(kind=8), intent(out) :: timePrev
+    real(kind=8), intent(in) :: timeCurr
+    integer(kind=8), intent(in) :: iterNewt
+    character(len=8), intent(in) :: tablName
+    integer(kind=8), intent(in) :: tablType
+    integer(kind=8), intent(in) :: tablNbParaMaxi, tablNbPara
+    character(len=16), intent(in) :: tablParaName(tablNbParaMaxi)
+    real(kind=8), intent(inout) :: tablVale(tablNbParaMaxi)
+    aster_logical, intent(in) :: lLoadGrad
+    real(kind=8), intent(in) :: valeImpo(9)
+    aster_logical, intent(in) :: lPrintMatr
+    real(kind=8), intent(in) :: dsidep(*)
+    character(len=8), intent(in) :: variName(nbVari)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! SIMU_POINT_MAT
+!
+! Save values in table
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8), parameter  :: rac2 = sqrt(2.d0)
+    complex(kind=8), parameter :: c16Dummy = (0.d0, 0.d0)
+    character(len=4), parameter :: epsiName(6) = (/'EPXX', 'EPYY', 'EPZZ', &
+                                                   'EPXY', 'EPXZ', 'EPYZ'/)
+    character(len=4), parameter :: sigmName(6) = (/'SIXX', 'SIYY', 'SIZZ', &
+                                                   'SIXY', 'SIXZ', 'SIYZ'/)
+    character(len=4), parameter :: gradName(9) = (/'F11', 'F12', 'F13', &
+                                                   'F21', 'F22', 'F23', &
+                                                   'F31', 'F32', 'F33'/)
+    integer(kind=8) :: i, nbCmpEpsi, nbVariTabl
+    character(len=8) :: k8b, vk8(2)
+    real(kind=8) ::  epsiCurr(9), epsiTabl(9)
+    real(kind=8) :: sigmEqui(17), sigmTabl(6)
     blas_int :: b_incx, b_incy, b_n
-    data nomeps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
-    data nomsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
-    data nomgrd/'F11', 'F12', 'F13', 'F21', 'F22', 'F23', 'F31', 'F32', 'F33'/
 !
-    cbid = (0.d0, 0.d0)
-    rac2 = sqrt(2.d0)
-    if (igrad .ne. 0) then
-        ncmp = 9
+! --------------------------------------------------------------------------------------------------
+!
+    if (lLoadGrad) then
+        nbCmpEpsi = 9
     else
-        ncmp = 6
+        nbCmpEpsi = 6
     end if
-!
-!     STOCKAGE DE LA SOLUTION DANS LA TABLE
-    if (ncmp .eq. 6) then
-        b_n = to_blas_int(ncmp)
+
+! - Update time
+    timePrev = timeCurr
+
+! - Update strains
+    if (nbCmpEpsi .eq. 6) then
+        b_n = to_blas_int(nbCmpEpsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, epsm, b_incx, epsp, b_incy)
-        b_n = to_blas_int(ncmp)
+        call dcopy(b_n, epsiPrev, b_incx, epsiCurr, b_incy)
+        b_n = to_blas_int(nbCmpEpsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, deps, b_incx, epsp, &
-                   b_incy)
-        b_n = to_blas_int(ncmp)
+        call daxpy(b_n, 1.d0, epsiIncr, b_incx, epsiCurr, b_incy)
+        b_n = to_blas_int(nbCmpEpsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, epsp, b_incx, epsm, b_incy)
-        b_n = to_blas_int(ncmp)
+        call dcopy(b_n, epsiCurr, b_incx, epsiPrev, b_incy)
+    else
+        b_n = to_blas_int(nbCmpEpsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, epsp, b_incx, epst, b_incy)
+        call dcopy(b_n, valeImpo, b_incx, epsiPrev, b_incy)
+    end if
+
+! - Create strains for table
+    if (nbCmpEpsi .eq. 6) then
+        b_n = to_blas_int(nbCmpEpsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsiCurr, b_incx, epsiTabl, b_incy)
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
-        call dscal(b_n, 1.d0/rac2, epst(4), b_incx)
+        call dscal(b_n, 1.d0/rac2, epsiTabl(4), b_incx)
     else
-        b_n = to_blas_int(ncmp)
+        b_n = to_blas_int(nbCmpEpsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, valimp, b_incx, epst, b_incy)
-        b_n = to_blas_int(ncmp)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, valimp, b_incx, epsm, b_incy)
+        call dcopy(b_n, valeImpo, b_incx, epsiTabl, b_incy)
     end if
-    b_n = to_blas_int(nbvari)
+
+! - Update internal state variables
+    b_n = to_blas_int(nbVari)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, vip, b_incx, vim, b_incy)
-    instam = instap
+
+! - Update stress
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, sigp, b_incx, sigm, b_incy)
+    call dcopy(b_n, sigmCurr, b_incx, sigmPrev, b_incy)
+
+! - Create stresses for table
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, sigp, b_incx, sigt, b_incy)
+    call dcopy(b_n, sigmCurr, b_incx, sigmTabl, b_incy)
+
+! - Compute invariants of increment of stress
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
-    call dscal(b_n, 1.d0/rac2, sigt(4), b_incx)
-    call fgequi(sigt, 'SIGM_DIR', 3, equi)
-!
-    if (iforta .eq. 0) then
-!
-        b_n = to_blas_int(ncmp)
+    call dscal(b_n, 1.d0/rac2, sigmTabl(4), b_incx)
+    call fgequi(sigmTabl, 'SIGM_DIR', 3, sigmEqui)
+
+    if (tablType .eq. 0) then
+
+! ----- Save strains in table
+        b_n = to_blas_int(nbCmpEpsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, epst, b_incx, vr(2), b_incy)
+        call dcopy(b_n, epsiTabl, b_incx, tablVale(2), b_incy)
+
+! ----- Save stresses in table
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, sigt, b_incx, vr(ncmp+2), b_incy)
-        vr(ncmp+8) = equi(16)
-        vr(ncmp+9) = equi(1)
-        b_n = to_blas_int(nbvita)
+        call dcopy(b_n, sigmTabl, b_incx, tablVale(nbCmpEpsi+2), b_incy)
+
+! ----- Save invariants of stress in table
+        tablVale(nbCmpEpsi+8) = sigmEqui(16)
+        tablVale(nbCmpEpsi+9) = sigmEqui(1)
+
+! ----- Save internal state variables
+        b_n = to_blas_int(nbVariTabl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vip, b_incx, vr(1+ncmp+6+2+1), b_incy)
-        vr(1) = instap
-        vr(nbpar) = iter
-!        ajout KTGT
-        if (imptgt .eq. 1) then
+        call dcopy(b_n, vip, b_incx, tablVale(1+nbCmpEpsi+6+2+1), b_incy)
+
+! ----- Save time
+        tablVale(1) = timeCurr
+
+! ----- Save iteration of Newton
+        tablVale(tablNbPara) = iterNewt
+
+! ----- Save tangent matrix
+        if (lPrintMatr) then
             b_n = to_blas_int(36)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dcopy(b_n, dsidep, b_incx, vr(1+6+6+3+nbvari), b_incy)
+            call dcopy(b_n, dsidep, b_incx, tablVale(1+6+6+3+nbVari), b_incy)
         end if
-        call tbajli(table, nbpar, nompar, [0], vr, &
-                    [cbid], k8b, 0)
-!
+        call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, &
+                    [c16Dummy], k8b, 0)
     else
-!
-        vr(1) = instap
+! ----- Save time
+        tablVale(1) = timeCurr
+
+! ----- Save strains
         vk8(1) = 'EPSI'
-        do i = 1, ncmp
-            vr(2) = epst(i)
-            if (igrad .eq. 0) then
-                vk8(2) = nomeps(i)
+        do i = 1, nbCmpEpsi
+            tablVale(2) = epsiTabl(i)
+            if (lLoadGrad) then
+                vk8(2) = gradName(i)
             else
-                vk8(2) = nomgrd(i)
+                vk8(2) = epsiName(i)
             end if
-            call tbajli(table, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
-!
+            call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, &
+                        [c16Dummy], vk8, 0)
         end do
+
+! ----- Save stresses
         vk8(1) = 'SIGM'
         do i = 1, 6
-            vr(2) = sigt(i)
-            vk8(2) = nomsig(i)
-            call tbajli(table, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
-!
+            tablVale(2) = sigmTabl(i)
+            vk8(2) = sigmName(i)
+            call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, &
+                        [c16Dummy], vk8, 0)
         end do
+
+! ----- Save invariants of stress in table
         vk8(1) = 'SIEQ'
-        vr(2) = equi(1)
+        tablVale(2) = sigmEqui(1)
         vk8(2) = 'VMIS'
-        call tbajli(table, nbpar, nompar, [0], vr, &
-                    [cbid], vk8, 0)
-!
-        vr(2) = equi(16)
+        call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, &
+                    [c16Dummy], vk8, 0)
+        vk8(2) = 'VMIS'
+        tablVale(2) = sigmEqui(16)
         vk8(2) = 'TRACE'
-        call tbajli(table, nbpar, nompar, [0], vr, &
-                    [cbid], vk8, 0)
-!
+        call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, &
+                    [c16Dummy], vk8, 0)
+
+! ----- Save internal state variables
         vk8(1) = 'VARI'
-        do i = 1, nbvita
-            vr(2) = vip(i)
-            vk8(2) = nomvi(i)
-!            VK8(2)(1:1)='V'
-!            call codent(I,'G',VK8(2)(2:8))
-            call tbajli(table, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
+        do i = 1, nbVariTabl
+            tablVale(2) = vip(i)
+            vk8(2) = variName(i)
+            call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, &
+                        [c16Dummy], vk8, 0)
         end do
-!
     end if
-!
 !
 end subroutine

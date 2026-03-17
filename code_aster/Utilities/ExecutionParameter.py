@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """
 :py:mod:`ExecutionParameter` --- Management of the execution parameters
@@ -54,7 +53,7 @@ import libaster
 from run_aster.export import Export
 
 from .as_timer import Timer
-from .base_utils import Singleton, no_new_attributes
+from .base_utils import Singleton, no_new_attributes, config
 from .compatibility import deprecate
 from .logger import DEBUG, INFO, logger
 from .options import Options
@@ -75,9 +74,7 @@ except ImportError:
 
 DEFAULT_MEMORY_LIMIT = 2047 if "32" in platform.architecture()[0] else 4096
 DEFAULT_TIME_LIMIT = 86400
-RCDIR = osp.abspath(
-    osp.join(osp.dirname(__file__), os.pardir, os.pardir, os.pardir, os.pardir, "share", "aster")
-)
+RCDIR = config["ASTER_DATADIR"]
 
 
 class ExecutionParameter(metaclass=Singleton):
@@ -311,8 +308,7 @@ class ExecutionParameter(metaclass=Singleton):
             action="store_const",
             const=1,
             default=0,
-            help="abort execution in case of error (testcase mode, by default "
-                 "raise an exception)",
+            help="abort execution in case of error (testcase mode, by default raise an exception)",
         )
         parser.add_argument(
             "--test",
@@ -371,8 +367,9 @@ class ExecutionParameter(metaclass=Singleton):
             action=MemoryAction,
             type=float,
             default=DEFAULT_MEMORY_LIMIT,
-            help="memory limit in MB used for code_aster objects "
-                 "(default: {0} MB)".format(DEFAULT_MEMORY_LIMIT),
+            help="memory limit in MB used for code_aster objects (default: {0} MB)".format(
+                DEFAULT_MEMORY_LIMIT
+            ),
         )
         parser.add_argument(
             "--memjeveux", dest="memory", action=MemoryAction, type=float, help=SUPPRESS
@@ -383,15 +380,16 @@ class ExecutionParameter(metaclass=Singleton):
             action="store",
             type=float,
             default=DEFAULT_TIME_LIMIT,
-            help="time limit of the execution in seconds "
-                 "(default: {0} s)".format(DEFAULT_TIME_LIMIT),
+            help="time limit of the execution in seconds (default: {0} s)".format(
+                DEFAULT_TIME_LIMIT
+            ),
         )
         parser.add_argument(
             "--maxbase",
             action="store",
             type=float,
             default=None,
-            help="size limit in MB for code_aster out-of-core files (glob.*, " "default: 2 TB)",
+            help="size limit in MB for code_aster out-of-core files (glob.*, default: 2 TB)",
         )
         parser.add_argument(
             "--max_base", dest="maxbase", action="store", type=float, default=None, help=SUPPRESS
@@ -462,7 +460,7 @@ class ExecutionParameter(metaclass=Singleton):
             dest="UseLegacyMode",
             action="store",
             default=1,
-            help="use (=1) or not (=0) the legacy mode for macro-commands " "results. (default: 1)",
+            help="use (=1) or not (=0) the legacy mode for macro-commands results. (default: 1)",
         )
 
         parser.add_argument(
@@ -486,14 +484,14 @@ class ExecutionParameter(metaclass=Singleton):
             action="store",
             type=int,
             default=500,
-            help="maximum number of occurrences to be checked, " "next are ignored",
+            help="maximum number of occurrences to be checked, next are ignored",
         )
         parser.add_argument(
             "--max_print",
             action="store",
             type=int,
             default=500,
-            help="maximum number of keywords or values printed in " "commands echo",
+            help="maximum number of keywords or values printed in commands echo",
         )
 
         parser.add_argument(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine jni092(elrefe, nmaxob, liobj, nbobj)
 #include "asterfort/pgyty.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: elrefe
-! person_in_charge: jacques.pellet at edf.fr
 !
     integer(kind=8) :: nno, npg
     integer(kind=8) :: iyty, nmaxob, nbobj, lyty, iret

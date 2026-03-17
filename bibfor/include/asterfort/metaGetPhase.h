@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine metaGetPhase(fami    , poum  , ipg   , ispg , meta_type  ,&
-                            nb_phase, phase_, zcold_, zhot_, tole_bound_)
+    subroutine metaGetPhase(fami, poum, kpg, ksp, metaType, &
+                            nbPhases, phase_, zcold_, zhot_, tole_bound_)
         character(len=*), intent(in) :: fami
         character(len=1), intent(in) :: poum
-        integer(kind=8), intent(in) :: ipg
-        integer(kind=8), intent(in) :: ispg
-        integer(kind=8), intent(in) :: meta_type
-        integer(kind=8), intent(in) :: nb_phase
+        integer(kind=8), intent(in) :: kpg, ksp
+        integer(kind=8), intent(in) :: metaType
+        integer(kind=8), intent(in) :: nbPhases
         real(kind=8), optional, intent(out) :: phase_(*)
         real(kind=8), optional, intent(out) :: zcold_
         real(kind=8), optional, intent(out) :: zhot_

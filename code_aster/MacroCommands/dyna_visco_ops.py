@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ def dyna_visco_ops(
     RESI_RELA=None,
     INFO=None,
     TYPE_RESU=None,
-    **args
+    **args,
 ):
     """
     Macro-command DYNA_VISCO, main file
@@ -214,7 +214,7 @@ def dyna_visco_ops(
         e0,
         eta0,
         ltrv,
-        **args
+        **args,
     )
 
     # FREQUENCY RESPONSE COMPUTATION
@@ -235,7 +235,7 @@ def dyna_visco_ops(
             e0,
             eta0,
             __num,
-            **args
+            **args,
         )
 
         return dyna_harm

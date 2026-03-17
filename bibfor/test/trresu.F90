@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -283,6 +283,14 @@ subroutine trresu(ific, nocc)
                         iret)
 !
             call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
+            call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
+            if (typch(1:4) == "NOEU") then
+                call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, nbret=ng)
+                if (ng > 0) then
+                    call utmess('F', 'MODELISA7_90')
+                end if
+            end if
+
             l_parallel_mesh = isParallelMesh(mesh)
 !
             nl1 = lxlgut(lign1)
@@ -433,7 +441,6 @@ subroutine trresu(ific, nocc)
                     end if
                     nonoeu(10:33) = nogrno
                 end if
-                call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
                 call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
                 call utcmp1(nomgd, 'RESU', iocc, noddl, ivari, variName)
 
@@ -503,9 +510,11 @@ subroutine trresu(ific, nocc)
                             call jeveuo(jexnom(mesh//'.GROUPEMA', nogrma), 'L', jnuma)
                             cellName = int_to_char8(zi(jnuma))
                         else
-                            ASSERT(l_parallel_mesh)
                             call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, scal=nogrma, &
                                         nbret=ng)
+                            if (ng == 0 .and. .not. l_parallel_mesh) then
+                                call utmess('F', 'MODELISA7_89')
+                            end if
                         end if
                     end if
 

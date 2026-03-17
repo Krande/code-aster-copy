@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,7 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
 #include <set>
@@ -158,10 +157,10 @@ class ParallelMesh : public BaseMesh {
      * @return list of Nodes
      */
 
-    VectorLong getNodes( const VectorString &names, const bool localNumbering = true,
+    VectorLong getNodes( const VectorString &names, const bool localNumbering = false,
                          const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = true,
+    VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = false,
                          const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
@@ -215,13 +214,13 @@ class ParallelMesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const std::string name, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorString &names, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorString &names, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /** @brief Returns the number of joints */
@@ -257,6 +256,8 @@ class ParallelMesh : public BaseMesh {
 
     ParallelMeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
 
+    ParallelMeshPtr convertToCubic( const ASTERINTEGER info = 1 );
+
     ParallelMeshPtr fix( const bool remove_orphan, const bool positive_measure,
                          const bool outward_normal, const bool double_nodes,
                          const bool double_cells, const ASTERDOUBLE tole,
@@ -272,6 +273,14 @@ class ParallelMesh : public BaseMesh {
     VectorOfVectorsLong getNodesRanks() const;
 
     VectorOfVectorsLong getCellsRanks() const;
+
+    /**
+     * @brief Impression du maillage au format MED
+     * @param fileName Nom du fichier MED à imprimer
+     * @return true
+     */
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::array< int, 3 > version = { 0, 0, 0 } ) const;
 };
 
 /**

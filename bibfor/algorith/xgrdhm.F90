@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2, &
     integer(kind=8) :: enrmec(3), enrhyd(3), dimenr
     integer(kind=8) :: nenr
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !   TABLEAU MECANI :
 !   MECANI(1) = 1 : IL Y A UNE EQUATION MECANIQUE

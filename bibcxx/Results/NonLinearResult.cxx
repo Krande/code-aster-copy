@@ -2,7 +2,7 @@
  * @file NonLinearResult.cxx
  * @brief Implementation de NonLinearResult
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -59,7 +59,8 @@ VectorReal NonLinearResult::getTangentMatrix( const std::string &suffix ) {
 };
 
 void NonLinearResult::printMedFile( const std::filesystem::path &fileName, std::string medName,
-                                    bool local, bool internalVar ) const {
+                                    bool local, bool internalVar, const VectorString &fields,
+                                    std::string version ) const {
     const auto indexes = getIndexes();
     bool mFront = false;
     if ( _dictOfMapOfConstantFieldOnCellsChar16.find( "COMPORTEMENT" ) !=
@@ -82,6 +83,6 @@ void NonLinearResult::printMedFile( const std::filesystem::path &fileName, std::
             break;
         }
     }
-    Result::printMedFile( fileName, medName, local, !mFront );
+    Result::printMedFile( fileName, medName, local, !mFront, fields, version );
     return;
 }

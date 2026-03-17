@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
@@ -41,7 +40,7 @@ def dyna_visco_modes(
     e0,
     eta0,
     ltrv,
-    **args
+    **args,
 ):
     """
     Macro-command DYNA_VISCO,
@@ -75,7 +74,7 @@ def dyna_visco_modes(
         trKg,
         ltrv,
         TYPE_RESU,
-        **args
+        **args,
     )
 
     # search for following eigenfrequencies
@@ -102,7 +101,7 @@ def dyna_visco_modes(
             TYPE_RESU,
             reuse="oui",
             co_reuse=_modes,
-            **args
+            **args,
         )
 
     if TYPE_MODE in ["REEL", "BETA_REEL"]:
@@ -112,12 +111,12 @@ def dyna_visco_modes(
     #########################################################
     # PRINTING OF THE EIGENMODES
     UTMESS("I", "DYNAVISCO_3")
-    eigenfreq = aster.GetResu(_modes.getName(), "VARI_ACCES")["FREQ"]
+    eigenfreq = _modes.getAccessParameters()["FREQ"]
 
     if TYPE_MODE in ["REEL", "BETA_REEL"]:
         UTMESS("I", "DYNAVISCO_4")
     if TYPE_MODE == "COMPLEXE":
-        eigendamping = aster.GetResu(_modes.getName(), "PARAMETRES")["AMOR_REDUIT"]
+        eigendamping = _modes.getParameters()["AMOR_REDUIT"]
         UTMESS("I", "DYNAVISCO_6")
     for k in range(0, len(eigenfreq)):
         if TYPE_MODE in ["REEL", "BETA_REEL"]:

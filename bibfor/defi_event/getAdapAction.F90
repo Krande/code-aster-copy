@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getAdapAction(sddisc, i_adap, action_type)
+subroutine getAdapAction(sddisc, iAdap, actionType)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "event_def.h"
 #include "asterfort/jeveuo.h"
+#include "event_def.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer(kind=8), intent(in) :: i_adap
-    integer(kind=8), intent(out) :: action_type
+    integer(kind=8), intent(in) :: iAdap
+    integer(kind=8), intent(out) :: actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,21 +37,18 @@ subroutine getAdapAction(sddisc, i_adap, action_type)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sddisc           : name of datastructure for time discretization
-! In  i_adap           : current index for ADAPTATION keyword
-! Out action_type      : type of action
+! In  iAdap            : current index for ADAPTATION keyword
+! Out actionType       : type of action
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sddisc_atpr
-    real(kind=8), pointer :: v_sddisc_atpr(:) => null()
+    character(len=24) :: addiscAptrJv
+    real(kind=8), pointer :: sddiscAptr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sddisc_atpr = sddisc(1:19)//'.ATPR'
-    call jeveuo(sddisc_atpr, 'L', vr=v_sddisc_atpr)
-!
-! - Type of event
-!
-    action_type = nint(v_sddisc_atpr(SIZE_LATPR*(i_adap-1)+1))
+    addiscAptrJv = sddisc(1:19)//'.ATPR'
+    call jeveuo(addiscAptrJv, 'L', vr=sddiscAptr)
+    actionType = nint(sddiscAptr(SIZE_LATPR*(iAdap-1)+1))
 !
 end subroutine

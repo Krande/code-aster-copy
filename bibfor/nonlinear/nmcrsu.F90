@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
-                  solveu, ds_contact_)
+subroutine nmcrsu(sddisc, listInst, ds_conv, &
+                  l_implex_, ds_contact_)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
-#include "asterf_types.h"
-#include "event_def.h"
-#include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterc/r8vide.h"
-#include "asterfort/crsvsi.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/getAdapAction.h"
+#include "asterfort/getAdapEvent.h"
+#include "asterfort/GetResi.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infdbg.h"
@@ -42,14 +41,12 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/GetResi.h"
-#include "asterfort/getAdapEvent.h"
-#include "asterfort/getAdapAction.h"
+#include "event_def.h"
+#include "jeveux.h"
 !
-    character(len=19) :: sddisc, lisins, solveu
+    character(len=19), intent(in) :: sddisc, listInst
     type(NL_DS_Conv), intent(in) :: ds_conv
-    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    aster_logical :: l_implex
+    aster_logical, optional, intent(in) :: l_implex_
     type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -65,7 +62,6 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 ! IN  LISINS : SD_LIST_INST OU SD_LISTR8
 ! In  sddisc           : datastructure for time discretization
 ! IN  LIMPEX : .TRUE. SI IMPLEX
-! IN  SOLVEU : SD SOLVEUR
 ! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,9 +72,9 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     integer(kind=8) :: nbAdap, iAdap
     integer(kind=8) :: iter_glob_maxi, iter_glob_elas
     integer(kind=8) :: ifm, niv, itmx, vali
-    aster_logical :: ldeco
+    aster_logical :: l_implex
     real(kind=8) :: resi_glob_maxi, resi_glob_rela, inikry
-    character(len=16) :: typeco, nopara, decoup
+    character(len=16) :: dsType, nopara
     character(len=24) :: lisevr, lisevk, liseloca, lisesu
     character(len=24) :: lisavr, lisaloca, listpr, listpk
     character(len=24) :: tpsevr, tpsevk, tpseloca, tpsesu
@@ -87,7 +83,6 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     integer(kind=8) :: jtpsex, eventType, action_type
     character(len=8), pointer:: v_modele_dli(:) => null()
     character(len=8):: modele_dli, modele_snl
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,16 +91,18 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_16')
     end if
-!
+
 ! - Get parameters for convergence
-!
     call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela)
     call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=resi_glob_maxi)
     iter_glob_maxi = ds_conv%iter_glob_maxi
     iter_glob_elas = ds_conv%iter_glob_elas
-!
+
 ! - Initializations
-!
+    l_implex = ASTER_FALSE
+    if (present(l_implex_)) then
+        l_implex = l_implex_
+    end if
     inikry = 0.9d0
     pas_mini_elas = 0.d0
     call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_=nbAdap)
@@ -113,14 +110,14 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 !
 ! --- NOM SDS DE LA LISINS
 !
-    lisevr = lisins(1:8)//'.ECHE.EVENR'
-    lisevk = lisins(1:8)//'.ECHE.EVENK'
-    liseloca = lisins(1:8)//'.ECHE.LOCA'
-    lisesu = lisins(1:8)//'.ECHE.SUBDR'
-    lisavr = lisins(1:8)//'.ADAP.EVENR'
-    lisaloca = lisins(1:8)//'.ADAP.LOCA'
-    listpr = lisins(1:8)//'.ADAP.TPLUR'
-    listpk = lisins(1:8)//'.ADAP.TPLUK'
+    lisevr = listInst(1:8)//'.ECHE.EVENR'
+    lisevk = listInst(1:8)//'.ECHE.EVENK'
+    liseloca = listInst(1:8)//'.ECHE.LOCA'
+    lisesu = listInst(1:8)//'.ECHE.SUBDR'
+    lisavr = listInst(1:8)//'.ADAP.EVENR'
+    lisaloca = listInst(1:8)//'.ADAP.LOCA'
+    listpr = listInst(1:8)//'.ADAP.TPLUR'
+    listpk = listInst(1:8)//'.ADAP.TPLUK'
 !
 ! --- NOM SDS DE LA SDDISC
 !
@@ -135,14 +132,14 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 !
 ! --- LECTURE DE LA LISTE D'INSTANTS
 !
-    call gettco(lisins, typeco)
+    call gettco(listInst, dsType)
 !
-    if (typeco .eq. 'LISTR8_SDASTER') then
+    if (dsType .eq. 'LISTR8_SDASTER') then
 !
 ! ----- CREATION EVENEMENTS ERREURS: ARRET
 !
         call nmcrld(sddisc)
-    else if (typeco .eq. 'LIST_INST') then
+    else if (dsType .eq. 'LIST_INST') then
 !
 ! ----- COPIE LOCALE DES OBJETS DE LA LISINS
 !
@@ -158,35 +155,17 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
         end if
 
         ! Verification de la coherence du modele si renseigne dans DEFI_LIST_INST
-        call jeveuo(lisins(1:8)//'.MODELE', 'L', vk8=v_modele_dli)
+        call jeveuo(listInst(1:8)//'.MODELE', 'L', vk8=v_modele_dli)
         modele_dli = v_modele_dli(1)
         if (modele_dli .ne. ' ') then
             call getvid(' ', 'MODELE', scal=modele_snl)
             if (modele_dli .ne. modele_snl) call utmess('F', 'MECANONLINE_7')
 
         end if
+    else
+        ASSERT(ASTER_FALSE)
     end if
-!
-! --- DECOUPAGE ACTIVE
-!
-    call utdidt('L', sddisc, 'LIST', 'EXIS_DECOUPE', valk_=decoup)
-    ldeco = decoup .eq. 'OUI'
-!
-! - SI NEWTON/PREDICTION ='DEPL_CALCULE', ALORS ON INTERDIT LA SUBDIVISION
-!
-    if (ds_algopara%matrix_pred .eq. 'DEPL_CALCULE') then
-        if (ldeco) then
-            call utmess('F', 'SUBDIVISE_99')
-        end if
-    end if
-!
-! - SI ON DOIT DECOUPER - CAPTURE MATRICE SINGULIERE DANS SOLVEUR ET ECHEC DU SOLVEUR ITERATIF
-!
-    if (ldeco) then
-        if (solveu(1:8) .ne. '&&OP0033') then
-            call crsvsi(solveu)
-        end if
-    end if
+
 !
 ! --- EN GESTION AUTO, AVEC UN CRITERE D'ADAPTATION EN SEUIL SUR
 !     NB_ITER_NEWT, ON MET VALE = ITER_GLOB_MAXI/2 SI VALE N'A PAS
@@ -214,9 +193,8 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
             end if
         end do
     end if
-!
-! --- VERIF COHERENCE AVEC IMPLEX
-!
+
+! - VERIF COHERENCE AVEC IMPLEX
     if (metlis .eq. 'AUTO') then
         do iAdap = 1, nbAdap
             call getAdapAction(sddisc, iAdap, action_type)
@@ -227,9 +205,8 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
             end if
         end do
     end if
-!
-! --- CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL
-!
+
+! - CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL
     if (present(ds_contact_)) then
         call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi, &
                     resi_glob_rela, inikry, ds_contact_)

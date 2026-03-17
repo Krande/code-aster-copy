@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine couplagf3d(a, b, ngf, kveve66, kmm66, &
                       kmve66, kvem66, bve6, bm6)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !      construction de la mattrice de couplage
 !      entre le fluage de kelvin et le fluage de maxwell

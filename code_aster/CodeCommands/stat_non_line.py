@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2026  EDF www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -20,6 +20,7 @@
 from ..Helpers import adapt_for_mgis_behaviour, adapt_increment_init
 from ..Messages import UTMESS
 from ..Objects import FieldOnCellsComplex, FieldOnCellsReal, NonLinearResult
+from ..Objects import ResultManager
 from ..Supervis import ExecuteCommand
 
 
@@ -66,6 +67,29 @@ class NonLinearStaticAnalysis(ExecuteCommand):
             self._result.clear(index + 1)
         else:
             self._result = NonLinearResult()
+        self._result.setMesh(keywords["MODELE"].getMesh())
+        self._result.addFiniteElementDescriptor(keywords["MODELE"].getFiniteElementDescriptor())
+        if "ETAT_INIT" in keywords:
+            etat = keywords["ETAT_INIT"]
+            fields = ["DEPL", "VITE", "ACCE"]
+            for field in fields:
+                if field in etat:
+                    if etat[field].getDescription() is not None:
+                        self._result.addEquationNumbering(etat[field].getDescription())
+
+            fields = ["COHE", "SIGM", "VARI", "STRX"]
+            for field in fields:
+                if field in etat:
+                    if isinstance(etat[field], (FieldOnCellsReal, FieldOnCellsComplex)):
+                        if etat[field].getDescription() is not None:
+                            self._result.addFiniteElementDescriptor(etat[field].getDescription())
+
+            if "EVOL_NOLI" in etat:
+                for fed in etat["EVOL_NOLI"].getFiniteElementDescriptors():
+                    self._result.addFiniteElementDescriptor(fed)
+                for fnd in etat["EVOL_NOLI"].getEquationNumberings():
+                    self._result.addEquationNumbering(fnd)
+        ResultManager.getInstance().setCurrentResult(self._result)
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -86,28 +110,8 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         if self.exception and self.exception.id_message in ("MECANONLINE5_82",):
             return
 
-        feds = []
-        fnds = []
-        if "ETAT_INIT" in keywords:
-            etat = keywords["ETAT_INIT"]
-            fields = ["DEPL", "VITE", "ACCE"]
-            for field in fields:
-                if field in etat:
-                    if etat[field].getDescription() is not None:
-                        fnds.append(etat[field].getDescription())
-
-            fields = ["COHE", "SIGM", "VARI", "STRX"]
-            for field in fields:
-                if field in etat:
-                    if isinstance(etat[field], (FieldOnCellsReal, FieldOnCellsComplex)):
-                        if etat[field].getDescription() is not None:
-                            feds.append(etat[field].getDescription())
-
-            if "EVOL_NOLI" in etat:
-                feds += etat["EVOL_NOLI"].getFiniteElementDescriptors()
-                fnds += etat["EVOL_NOLI"].getEquationNumberings()
-
-        result.build(feds, fnds, keywords.get("EXCIT"))
+        result.build([], [], keywords.get("EXCIT"))
+        ResultManager.getInstance().releaseCurrentResult()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine bwpw3d(mfr, biotw, poro, vw, xnsat, &
                   mw, pw, bw, srw)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   calcul de la pression hydrique en saturé et non saturé
     implicit none

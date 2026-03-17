@@ -3,7 +3,7 @@
  * @brief Interface python de MechanicalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,6 +37,20 @@ void exportMechanicalLoadToPython( py::module_ &mod ) {
         .def( "getMechanicalLoadDescription", &MechanicalLoadReal::getMechanicalLoadDescription )
         .def( "getModel", &MechanicalLoadReal::getModel )
         .def( "getMesh", &MechanicalLoadReal::getMesh )
+        .def( "setPairingField", &MechanicalLoadReal::setPairingField, R"(
+Set pairing intersection.
+
+Arguments:
+    pairs (FieldOnCellsReal): pairing intersection.
+
+        )",
+              py::arg( "pairs" ) )
+        .def( "getPairingField", &MechanicalLoadReal::getPairingField, R"(
+Return pairing intersection.
+
+Returns:
+    FieldOnCellsReal: pairing intersection.
+        )" )
         .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 

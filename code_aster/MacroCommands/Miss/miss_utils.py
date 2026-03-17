@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """Module d'utilitaires pour la gestion des calculs Miss3D.
 
@@ -43,7 +42,6 @@ dict_format = {"R": "15.6E", "sR": "%15.6E", "I": "6d", "sI": "%6d", "F": "6.6f"
 
 
 class MISS_PARAMETER:
-
     """Stocke les paramètres nécessaires au calcul à partir des mots-clés."""
 
     def __init__(self, initial_dir, **kwargs):

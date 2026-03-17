@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,11 @@ Soit il manque les mailles volumiques sous les mailles de peau, soit le groupe d
     4: _(
         """
 Il y a un problème de dimension lié au modèle.
+"""
+    ),
+    5: _(
+        """
+La méthode de contact est incompatible avec un maillage parallèle.
 """
     ),
 }

@@ -3,7 +3,7 @@
  * @brief Implementation de MeshBalancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Meshes/MeshBalancer.h"
 
@@ -280,6 +278,19 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
         VectorLong globCellNumVect;
         _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
         sortCells( globCellNumVect, globCellNumVect2 );
+    }
+
+    if ( _mesh->isIncomplete() ) {
+        nodeGlobNum = VectorLong();
+        const auto &numGlob = _mesh->getLocalToGlobalNodeIds();
+        numGlob->updateValuePointer();
+        const auto size = numGlob->size();
+        nodeGlobNum.reserve( size );
+        for ( int i = 0; i < size; ++i ) {
+            nodeGlobNum.push_back( ( *numGlob )[i] );
+        }
+        globNodeNumVect2 = VectorLong();
+        _nodesBalancer->balanceObjectOverProcesses( nodeGlobNum, globNodeNumVect2 );
     }
 
     // Build "dummy" name vectors (for cells and nodes)
@@ -695,8 +706,8 @@ MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesLis
         VectorBool checkedElem( _mesh->getNumberOfCells(), false );
         VectorBool checkedNodes( _mesh->getNumberOfNodes(), false );
         const auto endPtr = reverseConnex.end();
-        const auto endGlob = g2LMap->end();
         if ( parallelMesh ) {
+            const auto endGlob = g2LMap->end();
             for ( const auto &nodeIdGlob : nodesListIn ) {
                 const auto locIter = g2LMap->find( nodeIdGlob );
                 if ( locIter == endGlob )
@@ -942,7 +953,7 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
         for ( const auto &name : toSendNode ) {
             mapNodesGrpNum[cmptNodes] = name;
             const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
-            for ( const auto &id : _mesh->getNodes( name ) ) {
+            for ( const auto &id : _mesh->getNodes( name, true ) ) {
                 if ( ( *meshNodeOwner )[id] == rank ) {
                     ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;
                 }
@@ -953,7 +964,7 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
         for ( const auto &name : toSendNode ) {
             mapNodesGrpNum[cmptNodes] = name;
             const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
-            for ( const auto &id : _mesh->getNodes( name ) ) {
+            for ( const auto &id : _mesh->getNodes( name, true ) ) {
                 const auto id2 = id - _range[0];
                 if ( id2 >= 0 && id2 < _range[1] ) {
                     ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;

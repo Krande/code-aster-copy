@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,8 @@ subroutine op0167()
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/as_allocate.h"
@@ -37,30 +36,35 @@ subroutine op0167()
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/chckma.h"
 #include "asterfort/chcoma.h"
 #include "asterfort/chcomb.h"
-#include "asterfort/cm_dclac.h"
 #include "asterfort/cm1518.h"
 #include "asterfort/cm2027.h"
-#include "asterfort/cmhho.h"
+#include "asterfort/cm_dclac.h"
 #include "asterfort/cmcovo.h"
 #include "asterfort/cmcrea.h"
-#include "asterfort/cmraff.h"
+#include "asterfort/cmhho.h"
+#include "asterfort/cmlclc.h"
 #include "asterfort/cmlqlq.h"
 #include "asterfort/cmmoma.h"
 #include "asterfort/cmqlql.h"
 #include "asterfort/cmqutr.h"
+#include "asterfort/cmraff.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/eclpgm.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getelem.h"
+#include "asterfort/getnode.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infoma.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -78,13 +82,10 @@ subroutine op0167()
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/rdtmai.h"
-#include "asterfort/getelem.h"
-#include "asterfort/getnode.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,7 +123,7 @@ subroutine op0167()
     integer(kind=8) :: nbGrNodeIn, nbGrNodeOut
     integer(kind=8) :: nbCellInGrOut, nbCellInGrIn, nbNodeInGrOut, nbNodeInGrIn
     integer(kind=8) :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
-    integer(kind=8) :: nbField, oldInsideCells, newInsideCells
+    integer(kind=8) :: nbField, oldInsideCells, newInsideCells, nbOccLineCubi
     integer(kind=8) :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     integer(kind=8) :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
     integer(kind=8) :: iOccQuadTria, iad, nbOccRaff, rank, nbproc, pCellShift, iProc
@@ -188,6 +189,7 @@ subroutine op0167()
     call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nbGeomFibre)
     call getfac('CREA_FISS', nbOccCreaFiss)
     call getfac('LINE_QUAD', nbOccLineQuad)
+    call getfac('LINE_CUBI', nbOccLineCubi)
     call getfac('QUAD_LINE', nbOccQuadLine)
     call getfac('MODI_MAILLE', nbOccModiMaille)
     call getfac('RAFFINEMENT', nbOccRaff)
@@ -307,6 +309,32 @@ subroutine op0167()
 !
 ! --------------------------------------------------------------------------------------------------
 !
+!   For "LINE_Cubi"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (nbOccLineCubi .gt. 0) then
+        ASSERT(nbOccLineCubi .eq. 1)
+        call jeexin(meshIn//'.NOMACR', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_7')
+        end if
+        call jeexin(meshIn//'.ABSC_CURV', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_8')
+        end if
+        keywfact = 'LINE_CUBI'
+        call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+        if (nbCell .ne. nbCellIn) then
+            call utmess('A', 'MESH1_4', sk=keywfact)
+        end if
+        call jeveuo(jvCellNume, 'L', vi=listCellNume)
+        call cmlclc(meshIn, meshOut, nbCell, listCellNume)
+        goto 350
+    end if
+!
+! --------------------------------------------------------------------------------------------------
+!
 !   For "PENTA15_18","HEXA20_27"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -387,7 +415,7 @@ subroutine op0167()
             call jeveuo(jvCellNume, 'L', vi=listCellNume)
 
 ! --------- Convert cells
-            call meshSolidShell%convert_cells(nbCell, listCellNume)
+            call meshSolidShell%convert_cells(nbCell, listCellNume, ASTER_FALSE)
             call jedetr(jvCellNume)
 
         end do
@@ -444,9 +472,6 @@ subroutine op0167()
         end if
         keywfact = 'MODI_HHO'
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
-        if (nbCell .ne. nbCellIn) then
-            call utmess('A', 'MESH1_4', sk=keywfact)
-        end if
         call jeveuo(jvCellNume, 'L', vi=listCellNume)
         call cmhho(meshIn, meshOut, nbCell, listCellNume)
         goto 350

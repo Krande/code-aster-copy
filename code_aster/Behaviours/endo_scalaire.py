@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ loi = LoiComportement(
     ),
     mc_mater=("ELAS", "ENDO_SCALAIRE", "NON_LOCAL"),
     modelisation=("3D", "AXIS", "D_PLAN", "GRADVARI"),
-    deformation=("PETIT",),
+    deformation=("PETIT", "GDEF_LOG"),
     algo_inte=("NEWTON",),
     type_matr_tang=("PERTURBATION", "VERIFICATION"),
     proprietes=None,

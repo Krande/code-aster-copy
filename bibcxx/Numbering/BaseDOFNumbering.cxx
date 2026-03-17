@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -137,15 +137,18 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescrip
     JeveuxVectorChar24 list_ligrel( "&&LIST_LIGREL" );
     list_ligrel->reserve( Feds.size() );
 
+    BaseMeshPtr mesh( nullptr );
     for ( auto &fed : Feds ) {
         this->addFiniteElementDescriptor( fed );
         list_ligrel->push_back( JeveuxChar24( fed->getName() ) );
+        mesh = fed->getMesh();
     }
 
     CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode,
                              (ASTERLOGICAL *)&verbose );
 
     this->build();
+    this->setMesh( mesh );
 
     return true;
 };

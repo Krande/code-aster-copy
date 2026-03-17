@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine nmext0(field_disc, nb_elem, nb_node, nb_poin, nb_spoi, &
 #include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=4), intent(in) :: field_disc
     integer(kind=8), intent(in) :: nb_node

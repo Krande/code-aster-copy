@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -365,6 +365,11 @@ Cet état initial ne sera pas pris en compte.
     67: _(
         """
 Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS
+"""
+    ),
+    68: _(
+        """
+Il y a trop de colonnes (%(i1)d) pour la table en sortie, il faut modifier le type de la table dans la commande.
 """
     ),
     72: _(

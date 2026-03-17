@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -65,6 +65,12 @@ void exportElementaryTermToPython( py::module_ &mod ) {
 
             Returns:
                 str: name of the physical quantity
+            )" )
+        .def( "exists", &ElementaryTermReal::exists, R"(
+            Return True if it exists
+
+            Returns:
+                bool: True if exist
             )" );
 
     py::class_< ElementaryTermComplex, ElementaryTermComplexPtr, DataField >(
@@ -100,5 +106,11 @@ void exportElementaryTermToPython( py::module_ &mod ) {
 
             Returns:
                 str: name of the physical quantity
+            )" )
+        .def( "exists", &ElementaryTermComplex::exists, R"(
+            Return True if it exists
+
+            Returns:
+                bool: True if exist
             )" );
 };

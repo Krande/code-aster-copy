@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine eccook(acook, bcook, ccook, npuis, mpuis, &
                   epsp0, troom, tmelt, tp, dinst, &
                   pm, dp, rp, rprim)
-! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 !
 !     ARGUMENTS:

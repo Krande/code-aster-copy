@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keyw_fact
     integer(kind=8), intent(in) :: i_keyw_fact

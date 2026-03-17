@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 from hashlib import sha1
 
 
 class Parmi:
-
     """Classe qui exprime une contrainte multiple pour un attribut"""
 
     def __init__(self, *args):
@@ -46,7 +44,6 @@ class Parmi:
 
 
 class CheckLog:
-
     """Un validateur qui enregistre toutes les erreurs trouvées.
     checkedXXX répond True si la "marq" courante est inférieure ou égale
     à la celle de la dernière vérification.
@@ -138,7 +135,6 @@ class CheckLog:
 
 
 class CheckFail(CheckLog):
-
     """Un validateur qui lève une exception
     dès la première erreur"""
 

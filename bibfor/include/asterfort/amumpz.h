@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
+    subroutine amumpz(actionz, kxmps, csolu, vcine, nbsol,&
                       iret, impr, ifmump, prepos, pcentp)
-        character(len=*) :: action
+        character(len=*) :: actionz
         integer(kind=8) :: kxmps
         complex(kind=8) :: csolu(*)
         character(len=19) :: vcine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class H_HEXA20S(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -236,7 +235,6 @@ class H_HEXA20S(Element):
 
 # ------------------------------------------------------------
 class H_PENTA15S(H_HEXA20S):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -258,7 +256,6 @@ class H_PENTA15S(H_HEXA20S):
 
 # ------------------------------------------------------------
 class H_TETRA10S(H_HEXA20S):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

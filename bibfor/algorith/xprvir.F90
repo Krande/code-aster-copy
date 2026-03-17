@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir, &
     real(kind=8) :: radimp, radtor, damax
     aster_logical :: locdom
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !
 !      XPRVIR   : X-FEM PROPAGATION :CREATION DU FOND DE FISSURE VIRTUEL

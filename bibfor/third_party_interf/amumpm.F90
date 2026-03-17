@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 ! IN  LBLOC  :  LOG   : LOGIQUE PRECISANT SI ON EFFECTUE L ANALYSE PAR BLOCS
 !---------------------------------------------------------------
 ! aslint: disable=W1501
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
 #include "asterf_types.h"
@@ -105,6 +104,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     aster_logical ::  lvbloc
     integer(kind=8), pointer :: smdi(:) => null()
     integer(kind=8), pointer :: nequ(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -127,6 +127,11 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     nosolv = nosols(kxmps)
     nonu = nonus(kxmps)
     etam = etams(kxmps)
+    call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
+    if (refn(4) .eq. "SIMPLE_LAGRANGE" .and. klag2 .ne. "NON") then
+        call utmess('I', 'ALGELINE_10')
+        klag2 = "NON"
+    end if
 
 ! --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 ! --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC

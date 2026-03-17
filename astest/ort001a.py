@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -174,6 +174,7 @@ measures = matrix(
         [1200.0, 80.2157, 80.6726, 80.7988, 81.3069, 81.8061, 82.0594, 82.3171, 83.1645, 83.3825],
     ]
 )
+
 
 # utilities from engine.utils
 def matrix2vect(matr):

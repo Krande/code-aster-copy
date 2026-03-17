@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,8 @@ CA.init(
 )
 
 
-mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+medfile = CA.basedir / "zzzz509t.mmed"
+mesh0 = CA.ParallelMesh().readMedFile(medfile)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
@@ -61,8 +62,8 @@ diri_grma = ["BAS_CG", "BAS_HHO"]
 pres_grma = ["HAUT_CG", "HAUT_HHO"]
 
 nom_cham = ["DEPL", "HHO_DEPL"]
-AX = [61.5226348714969, 63.2865195425148]
-AY = [306.41750409645596, 307.47429485113275]
+AX = [61.5226348714969, 62.3633133093458]
+AY = [306.41750409645596, 306.99207850022560]
 
 # compute cG and HHO separately
 
@@ -228,7 +229,6 @@ for res in (resnonl, resnonl2):
                 RESULTAT=resnonl,
                 NOM_CHAM=nom_cham[0],
                 NOM_CMP="DX",
-                GROUP_MA="CG",
                 TYPE_TEST="SOMM_ABS",
                 VALE_CALC=AX[0],
                 CRITERE="RELATIF",
@@ -238,7 +238,6 @@ for res in (resnonl, resnonl2):
                 RESULTAT=resnonl,
                 NOM_CHAM=nom_cham[0],
                 NOM_CMP="DY",
-                GROUP_MA="CG",
                 TYPE_TEST="SOMM_ABS",
                 VALE_CALC=AY[0],
                 CRITERE="RELATIF",
@@ -249,9 +248,8 @@ for res in (resnonl, resnonl2):
                 RESULTAT=resnonl,
                 NOM_CHAM=nom_cham[1],
                 NOM_CMP="DX",
-                GROUP_MA="HHO",
                 TYPE_TEST="SOMM_ABS",
-                VALE_CALC=AX[1],
+                VALE_CALC=AX[0] + AX[1],
                 CRITERE="RELATIF",
             ),
             _F(
@@ -259,9 +257,8 @@ for res in (resnonl, resnonl2):
                 RESULTAT=resnonl,
                 NOM_CHAM=nom_cham[1],
                 NOM_CMP="DY",
-                GROUP_MA="HHO",
                 TYPE_TEST="SOMM_ABS",
-                VALE_CALC=AY[1],
+                VALE_CALC=AY[0] + AY[1],
                 CRITERE="RELATIF",
             ),
         )

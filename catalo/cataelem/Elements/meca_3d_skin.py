@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,8 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
+
 # ---------------------------------------------------------------------------------------------------
 class MECA_FACE3(Element):
     """Skin element for 3D isoparametric elements - On TR3"""
@@ -458,6 +460,15 @@ class MECA_FACE6(MECA_FACE3):
     meshType = MT.TRIA6
     attrs = ((AT.BORD_ISO, "OUI"),)
     elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6",), mater=("RIGI",)),)
+
+
+# ---------------------------------------------------------------------------------------------------
+class MECA_FACE10(MECA_FACE3):
+    """Skin element for 3D isoparametric elements - On TR10"""
+
+    meshType = MT.TRIA10
+    attrs = ((AT.BORD_ISO, "OUI"),)
+    elrefe = (ElrefeLoc(MT.TR1, gauss=("RIGI=FPG12",), mater=("RIGI",)),)
 
 
 # ---------------------------------------------------------------------------------------------------

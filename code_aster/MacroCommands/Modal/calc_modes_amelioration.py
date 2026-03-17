@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.brie at edf.fr
 
 from ...Cata.Syntax import _F
 from ...Messages import UTMESS
@@ -78,7 +77,7 @@ def calc_modes_amelioration(self, modes, TYPE_RESU, INFO, **args):
         return modes
 
     # 1.2 detect too closed eigen values (gap < CALC_* / SEUIL_*)
-    list_vp = modes.LIST_PARA()[type_vp]  # list of the eigen values
+    list_vp = modes.getParameters()[type_vp]  # list of the eigen values
     seuil_vp = args["CALC_" + type_vp]["SEUIL_" + type_vp]
     # One reproduces here the detection performed in the routine vpgsmm.F90
     seuilr = 100.0 * seuil_vp

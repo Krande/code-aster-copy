@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,6 +155,7 @@ for form in formu:
         INCREMENT=_F(LIST_INST=LREEL),
         EXCIT=(_F(CHARGE=bc), _F(CHARGE=load)),
     )
+    resu.printMedFile("out" + form + ".med")
 
     u_sol = resu.getField("DEPL", para="INST", value=1.0)
 

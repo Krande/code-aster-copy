@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,7 @@ with SharedTmpdir("petsc04f_") as tmpdir:
     medfile = osp.join(tmpdir.path, "petsc04f.med")
 
     DEFI_FICHIER(UNITE=87, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=87, RESU=_F(RESULTAT=MESTAT), VERSION_MED="4.1.0"
-    )
+    IMPR_RESU(FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=87, RESU=_F(RESULTAT=MESTAT))
     DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
 
 

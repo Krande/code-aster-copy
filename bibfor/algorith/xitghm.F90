@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine xitghm(modint, mecani, press1, ndim, nno, &
     data elrese/'SE3', 'TR6', 'T10'/
     data fami/'BID', 'XINT', 'XINT'/
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------

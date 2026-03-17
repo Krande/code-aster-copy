@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,11 @@
 !
 !
 interface
-    subroutine asasve(vechar, numedd, typres, vachar)
+    subroutine asasve(vechar, numedd, typres, detr, vachar)
         character(len=*) :: vechar
         character(len=*) :: numedd
         character(len=*) :: typres
         character(len=24) :: vachar
+        character(len=1) :: detr
     end subroutine asasve
 end interface

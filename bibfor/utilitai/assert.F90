@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine assert(cond, str_cond, fname, line)
     character(len=*) :: fname
     integer(kind=8) :: line
 !
-! person_in_charge: mathieu.courtois@edf.fr
 !
     character(len=256) :: valk(2)
     integer(kind=8) :: vali(1)

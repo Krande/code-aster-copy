@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
 !
@@ -30,6 +29,7 @@ subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/NonLinear_type.h"
+#include "asterfort/SaveResi.h"
 #include "asterfort/SetResi.h"
 #include "asterfort/utmess.h"
 !
@@ -77,6 +77,7 @@ subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
         call SetResi(ds_conv, type_='RESI_GLOB_RELA', &
                      user_para_=1.d-6, l_resi_test_=ASTER_TRUE)
     end if
+    call SaveResi(ds_conv)
 
 ! - RESI_REFE_RELA with shell and beam
     if (l_refe .and. present(model_)) then

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2026  EDF www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -31,10 +31,12 @@ from ..Objects import (
     FrictionType,
     InitialState,
     JacobianType,
+    IntegrationType,
     PairingAlgo,
     PairingParameter,
     ParallelContactNew,
     ParallelFrictionNew,
+    PairingMethod,
 )
 from ..Utilities import MPI
 
@@ -95,13 +97,18 @@ def defi_cont_ops(self, **keywords):
         "ADHERENT": FrictionType.Stick,
     }
     _algo_pair = {"MORTAR": PairingAlgo.Mortar}
+    _pair_method = {
+        "RAPIDE": PairingMethod.Fast,
+        "FORCEBRUTE": PairingMethod.BrutForce,
+        "PANG": PairingMethod.Legacy,
+    }
     _init_cont = {
         "INTERPENETRE": InitialState.Interpenetrated,
         "NON": InitialState.No,
         "OUI": InitialState.Yes,
     }
     _jac_type = {"ANALYTIQUE": JacobianType.Analytical, "PERTURBATION": JacobianType.Perturbation}
-
+    _inte_type = {"ELEM_BASE": IntegrationType.Elembased, "SEG_BASE": IntegrationType.Segbased}
     # add global informations
     result.setVerbosity(verbosity)
 
@@ -145,6 +152,7 @@ def defi_cont_ops(self, **keywords):
 
         contParam.setType(_type_cont[zone["TYPE_CONT"]])
         contParam.setCoefficient(zone["COEF_CONT"])
+        contParam.setIntegrationType(_inte_type[zone["TYPE_INTE"]])
         contZone.setContactParameter(contParam)
 
         # friction parameters
@@ -169,6 +177,11 @@ def defi_cont_ops(self, **keywords):
         pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
         pairParam.setDistanceRatio(zone["COEF_MULT_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
+
+        if zone["APPARIEMENT"] == "MORTAR":
+            pairParam.setPairingTolerance(zone["APPA_TOLE"])
+            pairParam.setAreaIntersectionTolerance(zone["AIRE_TOLE"])
+            pairParam.setPairingMethod(_pair_method[zone["TYPE_APPA"]])
 
         if zone.get("CARA_ELEM") is not None:
             pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])

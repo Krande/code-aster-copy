@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,6 @@ subroutine alrslt(nout, lchout, lpaout, base)
     use calcul_module, only: ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_, &
                              ca_ligrel_, ca_option_, ca_ldist_, ca_nuop_
     implicit none
-
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "asterf_types.h"
 #include "jeveux.h"

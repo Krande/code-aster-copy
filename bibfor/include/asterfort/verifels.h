@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
      subroutine verifels(cequi, ht, bw, enrobi, enrobs,&
                          scmaxi, scmaxs, ssmax, uc,&
-                         dnsinf, dnssup, effm, effn, verif)
+                         dnsinf, dnssup, effm, effn, verif, n_tot)
         real(kind=8) :: cequi
         real(kind=8) :: ht
         real(kind=8) :: bw
@@ -36,5 +36,6 @@ interface
         real(kind=8) :: effm
         real(kind=8) :: effn
         integer(kind=8) :: verif
+        integer(kind=8) :: n_tot
     end subroutine verifels
 end interface

@@ -6,7 +6,7 @@
  * @brief Fichier definissant les physiques et les modelisations disponibles
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,8 +23,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 /**
  * @enum Physics
@@ -92,6 +90,7 @@ enum Modelings {
     JOINT_HYME_3D,
     SECH_3D,
     SECH_3D_DIAG,
+    MIX_STA_3D,
     SI_3D,
     THH2D_3D,
     THH2MD_3D,
@@ -115,6 +114,7 @@ enum Modelings {
     AXIS_FLUI_STRU,
     AXIS_FOURIER,
     AXIS_GRAD_INCO,
+    AXIS_GRAD_HHO,
     AXIS_GRAD_VARI,
     AXIS_GVNO,
     AXIS_HH2D,
@@ -201,6 +201,7 @@ enum Modelings {
     D_PLAN_INCO_UP,
     D_PLAN_INCO_UPG,
     D_PLAN_INCO_UPO,
+    D_PLAN_MIX_STA,
     D_PLAN_SI,
     D_PLAN_THH2D,
     D_PLAN_THH2MD,
@@ -216,6 +217,7 @@ enum Modelings {
     D_PLAN_THMS_DIL,
     D_PLAN_THVD,
     D_PLAN_THVS,
+    PLAQ_MITC,
     FLUI_STRU,
     GRILLE_EXCENTRE,
     GRILLE_MEMBRANE,
@@ -242,14 +244,14 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 196;
+const int nbModelings = 200;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 183;
+const int nbModelingsMechanics = 188;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;
@@ -262,8 +264,8 @@ extern const Modelings AcousticModelings[nbModelingsAcoustic];
  * @enum Formulation
  * @author Nicolas Sellenet
  */
-enum Formulation { NoFormulation, Linear, Quadratic, UPPhi, UP, UPsi, Dil, DilInco };
-const int nbFormulation = 8;
+enum Formulation { NoFormulation, Linear, Quadratic, UPPhi, UP, UPsi, Dil, DilInco, Sta, StaInco };
+const int nbFormulation = 10;
 /**
  * @var FormulationNames
  * @brief Nom Aster des differentes physiques disponibles

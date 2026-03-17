@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 from cataelem.Tools.base_objects import Attribute, objects_from_context
 
@@ -312,6 +311,8 @@ FORMULATION = Attribute(
         "U_PSI",
         "DIL",
         "DIL_INCO",
+        "STA",
+        "STA_INCO",
     ),
     comment="""
   FORMULATION =  'HHO_CSTE'  : formulation constante for HHO (0/0/0)
@@ -324,6 +325,8 @@ FORMULATION = Attribute(
   FORMULATION =  'U_PSI'  : formulation displacement/speed potential
   FORMULATION =  'DIL'       : formulation 'old' for DIL
   FORMULATION =  'DIL_INCO'  : formulation incompressible for DIL
+  FORMULATION =  'STA'       : formulation standard for MIXTE_STAB
+  FORMULATION =  'STA_INCO'  : formulation incompressible for MIXTE_STAB
 """,
 )
 
@@ -463,6 +466,13 @@ POUX = Attribute(
     value=("OUI", "NON"),
     comment="""
   POUX  =  'OUI' :  l'élément est de type poutre 'à la POUX' (RDM)
+""",
+)
+
+RACCORD = Attribute(
+    value=("OUI",),
+    comment="""
+  RACCORD = 'OUI' : l'element est utilise (en sous-terrain) pour la mise en oeuvre de raccord.
 """,
 )
 

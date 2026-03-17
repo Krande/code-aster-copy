@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -298,29 +298,13 @@ def safe_remove(self, var, value):
 
 
 @Configure.conf
-def remove_flags(self, var, flags):
-    """Remove `flags` from `env[var]`."""
-    if not isinstance(self.env[var], list):
-        return
-    regexps = [re.compile(re.escape(flag) + ".*") for flag in flags]
-    # TODO itertools.chain?
-    flatten = lambda l: [item for sublist in l for item in sublist]
-    fl = []
-    for regexp in regexps:
-        fl.extend(flatten(filter(None, map(regexp.findall, self.env[var]))))
-    self.env[var] = list(set([i for i in self.env[var] if i not in fl]))
-
-
-@Configure.conf
-def remove_optflags(self, type_flags):
-    """Remove optimisation flags from the `type_flags`/* variables,
-    remove duplicates"""
-    for var in self.env:
-        if var.startswith(type_flags):
-            if not isinstance(self.env[var], (list, tuple)):
-                self.env[var] = [self.env[var]]
-            self.env[var] = self.remove_duplicates(self.env[var])
-            self.env[var] = [i for i in self.env[var] if not i.startswith("-O")]
+def remove_flags(self, var, expr):
+    """Remove optimisation flags from a variable."""
+    regexp = re.compile(expr)
+    self.env[var] = Utils.to_list(self.env[var])
+    self.env[var] = self.remove_duplicates(self.env[var])
+    removed = [i for i in self.env[var] if regexp.search(i)]
+    self.env[var] = [i for i in self.env[var] if i not in removed]
 
 
 @Configure.conf
@@ -330,6 +314,14 @@ def remove_duplicates(self, list_in):
     dset = set()
     # relies on the fact that dset.add() always returns None.
     return [path for path in list_in if path not in dset and not dset.add(path)]
+
+
+@Configure.conf
+def get_lto_options(self):
+    """Return the LTO options to be used."""
+    if self.options.lto:
+        return ["-flto=auto", "-ffat-lto-objects"]
+    return ["-fno-lto"]
 
 
 ###############################################################################
@@ -350,3 +342,48 @@ def build(self):
     _enable_wine_wrapping(self)
     if Logs.verbose < 1:
         Logs.info = CustomInfo(self.env.PREFIX)
+
+
+###############################################################################
+# from playground/libtest/wscript
+class ldd_run(Task):
+    color = "PINK"
+    run_str = "${LDD} ${SRC} > ${TGT}"
+
+    def post_run(self):
+        ret = Task.post_run(self)
+        libname = self.generator.lib
+        re_libpath = re.compile("lib%s.*\s+=>\s+(\S+%s\S+)\s+" % (libname, libname), re.M)
+        m = re_libpath.search(self.outputs[0].read())
+        if m:
+            self.generator.tmp.append(m.group(1))
+        else:
+            return ret or 1
+        return ret
+
+
+@TaskGen.feature("ldd_check")
+@TaskGen.after_method("apply_link")
+def do_ldd_check(self):
+    self.create_task("ldd_run", self.link_task.outputs[0], self.path.find_or_declare("ldd.out"))
+
+
+@Configure.conf
+def where_is_shlib(self, lib):
+    tmp = []
+
+    def check_msg(self):
+        return tmp[0]
+
+    self.check(
+        fragment="int main() { return 0; }\n",
+        features="c cprogram ldd_check",
+        lib=lib,
+        linkflags="-Wl,--no-as-needed",
+        msg="Checking shared library %r" % lib,
+        define="LIBFROM",
+        tmp=tmp,
+        okmsg=check_msg,
+    )
+
+    return tmp[0]

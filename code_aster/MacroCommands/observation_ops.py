@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: harinaivo.andriambololona at edf.fr
 
 import copy
 
@@ -143,11 +142,11 @@ def observation_ops(
             num_ordr = RESULTAT.getIndexes()
 
             if RESULTAT.getType() == "EVOL_ELAS":
-                list_inst = RESULTAT.LIST_VARI_ACCES()["INST"]
+                list_inst = RESULTAT.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_TRANS":
-                list_inst = RESULTAT.LIST_VARI_ACCES()["INST"]
+                list_inst = RESULTAT.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_HARMO":
-                list_freq = RESULTAT.LIST_VARI_ACCES()["FREQ"]
+                list_freq = RESULTAT.getAccessParameters()["FREQ"]
 
             liste = []
 
@@ -589,11 +588,11 @@ def observation_ops(
 
             __chamf = [None] * len(indice)
             if RESULTAT.getType() == "EVOL_ELAS":
-                list_inst = __proj.LIST_VARI_ACCES()["INST"]
+                list_inst = __proj.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_TRANS":
-                list_inst = __proj.LIST_VARI_ACCES()["INST"]
+                list_inst = __proj.getAccessParameters()["INST"]
             if RESULTAT.getType() == "DYNA_HARMO":
-                list_freq = __proj.LIST_VARI_ACCES()["FREQ"]
+                list_freq = __proj.getAccessParameters()["FREQ"]
 
             liste = []
 
@@ -937,7 +936,7 @@ def find_no(maya, mcsimp):
         list_no = list(mcsimp["NOEUD"])
     elif "GROUP_NO" in mcsimp:
         for group in mcsimp["GROUP_NO"]:
-            list_ind_no = maya.getNodes(group)
+            list_ind_no = maya.getNodes(group, localNumbering=True)
             for ind_no in list_ind_no:
                 nomnoe = str(ind_no + 1)
                 if nomnoe not in list_no:

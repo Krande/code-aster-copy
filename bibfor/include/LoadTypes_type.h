@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,7 @@
 #define LOAD_NEUM_VITE_FACE 101
 #define LOAD_NEUM_GROUND 102
 #define LOAD_NEUM_WAVE 103
+#define LOAD_CPL 104
 
 ! Maximum number of input fields to compute Neumann loads (thermic)
 #define LOAD_NEUT_NBMAXIN 16

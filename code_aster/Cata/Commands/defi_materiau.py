@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -312,6 +312,7 @@ DEFI_MATERIAU = MACRO(
             "CZM_ELAS",
             "JOINT_MECA_RUPT",
             "JOINT_MECA_FROT",
+            "CZM_FROT_MIX",
             "JOINT_MECA_ENDO",
             "RCCM",
             "RCCM_FO",
@@ -4980,13 +4981,14 @@ DEFI_MATERIAU = MACRO(
     ),
     NON_LOCAL=FACT(
         statut="f",
-        regles=(AU_MOINS_UN("LONG_CARA", "C_GONF", "C_GRAD_VARI", "PENA_LAGR"),),
+        regles=(AU_MOINS_UN("LONG_CARA", "C_GONF", "C_GRAD_VARI", "PENA_LAGR", "TAU_EPSI"),),
         LONG_CARA=SIMP(statut="f", typ="R"),
         C_GRAD_VARI=SIMP(statut="f", typ="R"),
         PENA_LAGR=SIMP(statut="f", typ="R"),  # defaut= 1.0E3 dans fortran
         PENA_LAGR_INCO=SIMP(statut="f", typ="R", defaut=0.0),
         C_GONF=SIMP(statut="f", typ="R"),
         COEF_RIGI_MINI=SIMP(statut="f", typ="R"),
+        TAU_EPSI=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
     ),
     ECRO_NL=FACT(
         statut="f",
@@ -5175,6 +5177,15 @@ DEFI_MATERIAU = MACRO(
         RHO_FLUIDE=SIMP(statut="f", typ="R", val_min=0.0),
         VISC_FLUIDE=SIMP(statut="f", typ="R", val_min=1.0e-20),
         OUV_MIN=SIMP(statut="f", typ="R", val_min=1.0e-15),
+    ),
+    CZM_FROT_MIX=FACT(
+        statut="f",
+        RIGI_NOR=SIMP(statut="f", typ="R", val_min=0.0),
+        RIGI_TAN=SIMP(statut="f", typ="R", val_min=0.0),
+        ADHE=SIMP(statut="o", typ="TXM", into=("ELAS", "PARFAITE"), enum=(0, 1)),
+        COHESION=SIMP(statut="o", typ="R", val_min=0.0),
+        COEF_FROT=SIMP(statut="o", typ="R", val_min=0.0),
+        PENA_LAGR_ABSO=SIMP(statut="o", typ="R", val_min=0.0),
     ),
     JOINT_MECA_ENDO=FACT(
         statut="f",

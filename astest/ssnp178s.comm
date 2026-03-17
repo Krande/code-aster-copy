@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ times = DEFI_LIST_INST(
 
 FY = FORMULE(NOM_PARA=("X", "Y", "INST"), VALE="0.1125")
 
-AY = [2.1286530601631948]
-AX = [-1.6120760444660152]
+AY = [2.1287265124405219]
+AX = [-1.6121633047727497]
 AT = [-0.1383907794878691]
 CY = [0.34992743821178707]
 CX = [-0.028773228388324294]

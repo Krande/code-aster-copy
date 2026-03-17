@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,18 +95,19 @@ class ExtendedSimpleFieldOnCellsReal:
             mvalues, ComponentOnCells.Description(self, self._cache["idx"], self._cache["nbpt"])
         )
 
-    def toMedCouplingField(self, medmesh, prefix=""):
+    def toMedCouplingField(self, medmesh, symbname, prefix=""):
         """Export the field to a new MEDCoupling field
 
         Arguments:
             medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
+            symbname (str): Symbolic name of field.
             prefix,  optional (str): Prefix for field names.
 
         Returns:
             field ( MEDCouplingFieldDouble ) : The field medcoupling format.
         """
 
-        return toMedCouplingField(self, medmesh, prefix)
+        return toMedCouplingField(self, medmesh, symbname, prefix)
 
     def setComponentValues(self, component, cfvalue):
         """Assign the values of a component.

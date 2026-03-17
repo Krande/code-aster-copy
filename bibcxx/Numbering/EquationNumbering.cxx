@@ -3,7 +3,7 @@
  * @brief Implementation de EquationNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -355,7 +355,7 @@ VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &
     const JeveuxVectorLong nodesRank = _mesh->getNodesOwner();
     nodesRank->updateValuePointer();
 
-    SetLong set_nodes = toSet( getMesh()->getNodes( list_grpno ) );
+    SetLong set_nodes = toSet( getMesh()->getNodes( list_grpno, true ) );
     SetLong set_cmp;
     auto name2num = this->getComponentsNameToId();
     for ( auto &cmp : list_cmp ) {
@@ -522,9 +522,9 @@ EquationNumbering::getDOFsWithDescription( const VectorString &cmps, const Vecto
 
     VectorLong nodes;
     if ( groupNames.size() == 0 ) {
-        nodes = _mesh->getNodes();
+        nodes = _mesh->getNodes( "", true );
     } else {
-        nodes = _mesh->getNodes( groupNames );
+        nodes = _mesh->getNodes( groupNames, true );
     }
 
     return this->getDOFsWithDescription( cmps, nodes, local, same_rank );

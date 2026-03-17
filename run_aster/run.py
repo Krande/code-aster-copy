@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -530,7 +530,7 @@ def get_procid():
     """Return the identifier of the current process.
 
     Returns:
-        int: Process ID, -1 if a parallel version is not run under *mpiexec*.
+        int: Process ID, -1 if a parallel version is not run under *mpiexec/srun*.
     """
     proc = run(CFG.get("mpi_get_rank"), shell=True, stdout=PIPE, universal_newlines=True)
     try:
@@ -637,7 +637,10 @@ def copy_resultfiles(files, copybase, test=False):
                     filename = compress(filename)
                 if obj.isdir and not osp.exists(obj.path):
                     os.makedirs(obj.path)
-                copy(filename, obj.path, verbose=True)
+                dst = obj.path
+                if osp.isdir(filename) and obj.filetype != "nom":
+                    dst = osp.join(obj.path, osp.basename(filename))
+                copy(filename, dst, verbose=True)
 
 
 def _ls(*paths):

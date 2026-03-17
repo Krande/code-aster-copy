@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-# person_in_charge: mickael.abbas at edf.fr
 #
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
@@ -180,7 +179,7 @@ def C_COMPORTEMENT(command):
             )
         if command == "MECA_NON_LINE":
             opts["b_anneal"] = BLOC(
-                condition="""is_in("RELATION", ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_CIN1_CHAB','VMIS_CIN2_CHAB'))""",
+                condition="""is_in("RELATION", ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_ISOT_NL','VMIS_CIN1_CHAB','VMIS_CIN2_CHAB'))""",
                 fr=tr("Restauration d'écrouissage"),
                 POST_INCR=SIMP(statut="f", typ="TXM", into=("REST_ECRO", "SANS")),
             )
@@ -495,7 +494,7 @@ def C_COMPORTEMENT(command):
                     RESI_RADI_RELA=SIMP(statut="f", typ="R"),
                 ),
             ),
-            **opts
+            **opts,
         )
 
     return mcfact

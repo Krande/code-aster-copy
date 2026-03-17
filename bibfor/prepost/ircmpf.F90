@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
                   typent, typmai)
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !  ECRITURE D'UN CHAMP - FORMAT MED - PROFIL
 !     -  -       -              -     -  -
@@ -195,9 +194,9 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
         if (nivinf .gt. 1) then
             write (ifm, 4101) iaux, noprof, lgprof
         end if
-4101    format(5x, 'LECTURE DU PROFIL NUMERO', i8,&
-               &     /, 5x, '...NOM       : ', a,&
-               &     /, 5x, '... LONGUEUR : ', i8)
+4101    format(5x, 'LECTURE DU PROFIL NUMERO', i8, &
+               /, 5x, '...NOM       : ', a, &
+               /, 5x, '... LONGUEUR : ', i8)
 !
         zk80(adnopf+iaux-1) = noprof
 !
@@ -315,10 +314,10 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
 !
         if (nivinf .gt. 1) then
             write (ifm, 6301) noprof, nvalty2, profil(1), profil(nvalty2)
-6301        format(4x, 'PROFIL A CREER :',&
-                   &         /, 4x, '. NOM                      = ', a,&
-                   &         /, 4x, '. LONGUEUR                 = ', i8,&
-                   &         /, 4x, '. 1ERE ET DERNIERE VALEURS = ', 2i8)
+6301        format(4x, 'PROFIL A CREER :', &
+                   /, 4x, '. NOM                      = ', a, &
+                   /, 4x, '. LONGUEUR                 = ', i8, &
+                   /, 4x, '. 1ERE ET DERNIERE VALEURS = ', 2i8)
         end if
         if (nosdfu .eq. ' ') then
             call as_mpfprw(idfimd, profil, nvalty2, noprof, codret)

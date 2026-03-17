@@ -2,7 +2,7 @@
  * @file ContactZone.cxx
  * @brief Implementation de Contact
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -61,8 +61,10 @@ void ContactZone::setVerbosity( const ASTERINTEGER &level ) {
     _meshPairing->setVerbosity( getVerbosity() );
 }
 
-bool ContactZone::pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole ) {
-    return _meshPairing->compute( dist_pairing, pair_tole );
+bool ContactZone::pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole,
+                           ASTERDOUBLE &area_tole ) {
+    _meshPairing->setMethod( getPairingParameter()->getPairingMethod() );
+    return _meshPairing->compute( dist_pairing, pair_tole, area_tole );
 }
 
 bool ContactZone::build( const ModelPtr model ) {

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine SetResi(ds_conv   , type_ ,&
                        col_name_ , col_name_locus_, vale_calc_  , locus_calc_, user_para_,&
-                       l_conv_   , event_type_    , l_resi_test_)
+                       l_conv_   , event_type_    , l_resi_test_, reset_resi_test_)
         use NonLin_Datastructure_type
         type(NL_DS_Conv), intent(inout) :: ds_conv
         character(len=*), optional, intent(in) :: type_
@@ -33,5 +33,6 @@ interface
         aster_logical, optional, intent(in) :: l_conv_
         character(len=16), optional, intent(in)  :: event_type_
         aster_logical, optional, intent(in) :: l_resi_test_
+        aster_logical, optional, intent(in) :: reset_resi_test_
     end subroutine SetResi
 end interface

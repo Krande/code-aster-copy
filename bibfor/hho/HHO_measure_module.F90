@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,9 @@
 !
 module HHO_measure_module
 !
+    use, intrinsic :: iso_fortran_env, only: real128
     use HHO_type
+    use compensated_ops_module, only: sum, dot_product, matmul, norm2
 !
     implicit none
 !
@@ -58,8 +60,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3), intent(in) :: v0, v1
-        real(kind=8), dimension(3) :: v2
+        real(kind=real128), dimension(3), intent(in) :: v0, v1
+        real(kind=real128), dimension(3) :: v2
 !
 ! --------------------------------------------------------------------------------------------------
 !  In v0        :: vector 0
@@ -93,7 +95,7 @@ contains
 !
         integer(kind=8), dimension(4, 5) :: tets
         integer(kind=8) :: i, j
-        real(kind=8) :: nodestet(3, 4)
+        real(kind=8) :: nodestet(3, 4), vol_tetra(5)
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- split the hexa in 5 tets - see hhoSplitSimplex
@@ -108,8 +110,9 @@ contains
             do j = 1, 4
                 nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol+hho_vol_tetra(nodestet)
+            vol_tetra(i) = hho_vol_tetra(nodestet)
         end do
+        vol = sum(vol_tetra)
 !
     end function
 !
@@ -122,7 +125,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 6), intent(in) :: nodes
-        real(kind=8) :: vol
+        real(kind=8) :: vol, vol_tetra(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
@@ -144,8 +147,9 @@ contains
             do j = 1, 4
                 nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol+hho_vol_tetra(nodestet)
+            vol_tetra(i) = hho_vol_tetra(nodestet)
         end do
+        vol = sum(vol_tetra)
 !
     end function
 !
@@ -167,7 +171,7 @@ contains
 !
         integer(kind=8), dimension(4, 2) :: tets
         integer(kind=8) :: i, j
-        real(kind=8) :: nodestet(3, 4)
+        real(kind=8) :: nodestet(3, 4), vol_tetra(2)
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- split the pyramid in 2 tets - see hhoSplitSimplex
@@ -179,8 +183,9 @@ contains
             do j = 1, 4
                 nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol+hho_vol_tetra(nodestet)
+            vol_tetra(i) = hho_vol_tetra(nodestet)
         end do
+        vol = sum(vol_tetra)
 !
     end function
 !
@@ -200,16 +205,16 @@ contains
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: v0, v1, v2, cross
+        real(kind=real128), dimension(3) :: v0, v1, v2, cross
 ! --------------------------------------------------------------------------------------------------
 !
         vol = 0.d0
-        v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
-        v1(1:3) = nodes(1:3, 3)-nodes(1:3, 1)
-        v2(1:3) = nodes(1:3, 4)-nodes(1:3, 1)
+        v0(1:3) = real(nodes(1:3, 2), kind=real128)-real(nodes(1:3, 1), kind=real128)
+        v1(1:3) = real(nodes(1:3, 3), kind=real128)-real(nodes(1:3, 1), kind=real128)
+        v2(1:3) = real(nodes(1:3, 4), kind=real128)-real(nodes(1:3, 1), kind=real128)
 !
         cross(1:3) = prod_vec(v1, v2)
-        vol = abs(dot_product(v0, cross)/6.d0)
+        vol = abs(real(dot_product(v0, cross)/real(6., kind=real128), kind=8))
 !
     end function
 !
@@ -229,17 +234,17 @@ contains
 !  Out vol         :: surface
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: e1, e2, e3, e4, d1, d2
-        real(kind=8) :: l1, l2, l3, l4, ld1, ld2
+        real(kind=real128), dimension(3) :: e1, e2, e3, e4, d1, d2
+        real(kind=real128) :: l1, l2, l3, l4, ld1, ld2
 !
 ! ---- edge
-        e1(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
-        e2(1:3) = nodes(1:3, 3)-nodes(1:3, 2)
-        e3(1:3) = nodes(1:3, 4)-nodes(1:3, 3)
-        e4(1:3) = nodes(1:3, 1)-nodes(1:3, 4)
+        e1(1:3) = real(nodes(1:3, 2), kind=real128)-real(nodes(1:3, 1), kind=real128)
+        e2(1:3) = real(nodes(1:3, 3), kind=real128)-real(nodes(1:3, 2), kind=real128)
+        e3(1:3) = real(nodes(1:3, 4), kind=real128)-real(nodes(1:3, 3), kind=real128)
+        e4(1:3) = real(nodes(1:3, 1), kind=real128)-real(nodes(1:3, 4), kind=real128)
 ! ---- diagonals
-        d1(1:3) = nodes(1:3, 3)-nodes(1:3, 1)
-        d2(1:3) = nodes(1:3, 4)-nodes(1:3, 2)
+        d1(1:3) = real(nodes(1:3, 3), kind=real128)-real(nodes(1:3, 1), kind=real128)
+        d2(1:3) = real(nodes(1:3, 4), kind=real128)-real(nodes(1:3, 2), kind=real128)
 !
 ! ---- lengths
         l1 = dot_product(e1, e1)
@@ -249,7 +254,8 @@ contains
         ld1 = dot_product(d1, d1)
         ld2 = dot_product(d2, d2)
 !
-        surface = sqrt(4.d0*ld1*ld2-(l1-l2+l3-l4)**2)/4.d0
+        surface = real(sqrt(real(4., kind=real128)*ld1*ld2-(l1-l2+l3-l4)**2)/ &
+                       real(4., kind=real128), kind=8)
 !
     end function
 !
@@ -269,14 +275,38 @@ contains
 !  Out vol         :: surface
 !---------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: v0, v1, v2
+        real(kind=real128) :: a, b, c
+        real(kind=real128) :: x, y, z, t, s
 !
-        surface = 0.d0
-        v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
-        v1(1:3) = nodes(1:3, 3)-nodes(1:3, 1)
-        v2 = prod_vec(v0, v1)
+        a = norm2(real(nodes(1:3, 2), kind=real128)-real(nodes(1:3, 1), kind=real128))
+        b = norm2(real(nodes(1:3, 3), kind=real128)-real(nodes(1:3, 1), kind=real128))
+        c = norm2(real(nodes(1:3, 3), kind=real128)-real(nodes(1:3, 2), kind=real128))
 !
-        surface = norm2(v2)/2.d0
+
+        if (a < b) then
+            t = a
+            a = b
+            b = t
+        end if
+        if (b < c) then
+            t = b
+            b = c
+            c = t
+        end if
+        if (a < b) then
+            t = a
+            a = b
+            b = t
+        end if
+
+!
+        x = a+(b+c)
+        y = c-(a-b)
+        z = c+(a-b)
+        t = a+(b-c)
+        s = x*y*z*t
+!
+        surface = real(sqrt(s)/real(4., kind=real128), kind=8)
 !
     end function
 !
@@ -296,12 +326,12 @@ contains
 !  Out vol         :: length
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: v0
+        real(kind=real128), dimension(3) :: v0
 ! --------------------------------------------------------------------------------------------------
 !
-        v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
+        v0(1:3) = real(nodes(1:3, 2), kind=real128)-real(nodes(1:3, 1), kind=real128)
 !
-        length = norm2(v0)
+        length = real(norm2(v0), kind=8)
 !
     end function
 !

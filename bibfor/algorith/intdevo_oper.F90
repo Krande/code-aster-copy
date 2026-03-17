@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
                         dt, invm_c, op_h1, op_h2, invm_k)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! intnewm_oper : Calculate (or update) the operators for a Devogelaere integration
 !

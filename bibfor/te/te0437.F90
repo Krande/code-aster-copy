@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,8 +94,8 @@ subroutine te0437(nomopt, nomte)
         call readVector('PTEMPEI', cbs, temp_T, faces_dofs)
 !
         do ipg = 1, hhoQuad%nbQuadPoints
-            temp_eval = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                        hhoQuad%points(1:3, ipg), temp_T)
+            temp_eval = hhoEvalScalCell2(hhoBasisCell, hhoData%cell_degree(), &
+                                         hhoQuad%points(1:3, ipg), temp_T)
 
             call foderi(zk8(isour), temp_eval, sour, dsdt)
 

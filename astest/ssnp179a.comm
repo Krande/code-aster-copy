@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,31 @@ resnonl = STAT_NON_LINE(
 
 
 resnonl = CALC_CHAMP(
-    reuse=resnonl, CHAM_MATER=fieldmat, CRITERES=("SIEQ_NOEU",), MODELE=model, RESULTAT=resnonl
+    reuse=resnonl,
+    CHAM_MATER=fieldmat,
+    CRITERES=("SIEQ_NOEU",),
+    FORCE=("FORC_NODA", "REAC_NODA"),
+    MODELE=model,
+    RESULTAT=resnonl,
+)
+
+# compute nodale reaction
+TAB = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="reac_noda",
+        GROUP_MA="Encast",
+        RESULTAT=resnonl,
+        NOM_CHAM="FORC_NODA",
+        NOM_CMP="DY",
+        OPERATION="MOYENNE_ARITH",
+    )
+)
+
+
+# IMPR_TABLE(UNITE=6, TABLE=TAB)
+
+TEST_TABLE(
+    NOM_PARA="MOYENNE", TABLE=TAB, VALE_CALC=-0.15151515151515, FILTRE=_F(NOM_PARA="INST", VALE=1.0)
 )
 
 
@@ -161,6 +185,19 @@ TEST_RESU(
         CRITERE="RELATIF",
     )
 )
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=resnonl,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DY",
+        VALE_CALC=9.766988752649517,
+        TYPE_TEST="SOMM_ABS",
+        CRITERE="RELATIF",
+    )
+)
+
 
 # IMPR_RESU(FORMAT='MED', RESU=_F( RESULTAT=resnonl), UNITE=80)
 

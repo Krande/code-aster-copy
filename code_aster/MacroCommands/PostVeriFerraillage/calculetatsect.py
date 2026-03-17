@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -359,7 +359,7 @@ class sectionELU:
             second value is the slope of the strain diagram.
         """
 
-        x = fsolve(self.compute_residual_ELU, X0)
+        x = fsolve(self.compute_residual_ELU, X0, epsfcn=1e-15)
         return x
 
     def compute_etat_section_ELU(self, X0):

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
 !
 ! intnewm : Integrate from t_i to t_i+1 the differential equations of motion
 !           using an integral method.

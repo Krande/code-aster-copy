@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine op0069()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-! person_in_charge: natacha.bereux at edf.fr
 !     OPERATEUR ELIM_LAGR
 ! ======================================================================
     character(len=19) :: matass, matred, krigi, krigred, solv1, solv2

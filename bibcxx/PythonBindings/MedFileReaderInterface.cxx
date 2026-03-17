@@ -3,7 +3,7 @@
  * @brief Interface python de MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/MedFileReaderInterface.h"
 
@@ -79,7 +77,7 @@ Get field number in field
 Returns:
     int: field number
             )" )
-        .def( "getMesh", &MedFileReader::getMesh, R"(
+        .def( "getMesh", py::overload_cast< int >( &MedFileReader::getMesh, py::const_ ), R"(
 Get mesh from iterator
 
 Arguments:
@@ -108,11 +106,13 @@ Open med file
 Arguments:
     path (Path|str): path to med file
     accessType (MedFileAccessType): med access type
+    version (list): list of size 3 ([major, minor, release])
 
 Returns:
     int: return code (0 if open is ok)
             )",
-              py::arg( "path" ), py::arg( "accessType" ) )
+              py::arg( "path" ), py::arg( "accessType" ),
+              py::arg( "version" ) = std::array< int, 3 >( { 0, 0, 0 } ) )
         .def( "openParallel", &MedFileReader::openParallel,
               R"(
 Open med file in parallel
@@ -124,7 +124,20 @@ Arguments:
 Returns:
     int: return code (0 if open is ok)
             )",
-              py::arg( "path" ), py::arg( "accessType" ) );
+              py::arg( "path" ), py::arg( "accessType" ) )
+        .def( "createMesh", &MedFileReader::createMesh,
+              R"(
+Create new mesh in file
+
+Arguments:
+    name (str): mesh name (length: 64)
+    dim (int): mesh dimension
+    desc (str): mesh description (length: 200)
+
+Returns:
+    MedMesh: return new med mesh object
+            )",
+              py::arg( "name" ), py::arg( "dim" ), py::arg( "desc" ) );
 };
 
 #endif

@@ -3,7 +3,7 @@
  * @brief Interface python de PhysicalProblem
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -188,14 +188,14 @@ Arguments:
     // -----------------------------------------------------------------------------------------
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
-    c1.def( "setVirtualSlavCell", &PhysicalProblem::setVirtualSlavCell, R"(
+    c1.def( "setContactSlaveFED", &PhysicalProblem::setContactSlaveFED, R"(
         Set virtual cells from contact definition
 
         Arguments:
             virtualCell (FiniteElementDescriptor)): a pointer to the FED
                 )",
             py::arg( "contact" ) );
-    c1.def( "setVirtualCell", &PhysicalProblem::setVirtualCell, R"(
+    c1.def( "setContactFED", &PhysicalProblem::setContactFED, R"(
         Set virtual cells from contact pairing
 
         Arguments:

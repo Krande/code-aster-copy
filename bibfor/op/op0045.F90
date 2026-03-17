@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine op0045()
 !          LES VALEURS PROPRES ET DES VECTEURS PROPRES SONT REELS OU
 !          COMPLEXES CONJUGUEES OU NON
 !-----------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 ! --- INCLUDES DE MODE_ITER_SIMULT
@@ -83,6 +82,7 @@ subroutine op0045()
     call infmaj()
     mod45 = 'OP45'
     mod45b = mod45
+    lcomod = .false.
 !
 ! --  ETAPE 0.0: INITIALISATIONS PROPRES A CET OPERATEUR
     call vpini0(compex, modes, typcon, solveu, eigsol, &

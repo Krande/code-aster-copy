@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -411,7 +411,8 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
                 call exisd('CHAMP', celgauss, iexist)
                 if (iexist .eq. 0) then
                     call megeom(model, chgeom)
-                    call calc_coor_elga(model, ligrel1, chgeom, celgauss)
+                    call mecara(carele, chcara)
+                    call calc_coor_elga(model, ligrel1, chgeom, celgauss, chcara(7))
                 end if
 !               On transforme ce champ en champ simple
                 cesgauss = '&&CHRPEL.CES_GAUSS'

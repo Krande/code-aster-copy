@@ -2,7 +2,7 @@
  * @file ContactParameterInterface.cxx
  * @brief Interface python de ContactParameter
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -68,6 +68,19 @@ Set how the Jacobian is computed. It is a value of an enum
 
 Arguments:
     JacobianType: Jacobian type.
+        )",
+              py::arg( "type" ) )
+        .def( "getIntegrationType", &ContactParameter::getIntegrationType, R"(
+Return how the integration is made. It is a value of an enum
+
+Returns:
+    IntegrationType: Integration type.
+        )" )
+        .def( "setIntegrationType", &ContactParameter::setIntegrationType, R"(
+Set how the integration is made. It is a value of an enum
+
+Arguments:
+    IntegrationType: Integration type.
         )",
               py::arg( "type" ) )
         .def( "getVariant", &ContactParameter::getVariant, R"(
@@ -187,6 +200,19 @@ Arguments:
     PairingAlgo: Pairing algorithm.
         )",
               py::arg( "algo" ) )
+        .def( "getPairingMethod", &PairingParameter::getPairingMethod, R"(
+Return the pairing method used. It is a value of an enum
+
+Returns:
+    PairingMethod: pairing method.
+        )" )
+        .def( "setPairingMethod", &PairingParameter::setPairingMethod, R"(
+Set the cpairing method used. It is a value of an enum
+
+Arguments:
+    PairingMethod: pairing method.
+        )",
+              py::arg( "pair_method" ) )
         .def( "getDistanceRatio", &PairingParameter::getDistanceRatio, R"(
 Return the pairing distance ratio used. It is a value of a float
 
@@ -200,6 +226,32 @@ Arguments:
     float: pairing distance ratio.
         )",
               py::arg( "dist_ratio" ) )
+        .def( "getPairingTolerance", &PairingParameter::getPairingTolerance, R"(
+Return the pairing tolerance used. It is a value of a float
+
+Returns:
+    float: pairing tolerance.
+        )" )
+        .def( "setPairingTolerance", &PairingParameter::setPairingTolerance, R"(
+Set the pairing tolerance used. It is a value of a float
+
+Arguments:
+    float: pairing tolerance.
+        )",
+              py::arg( "pair_tole" ) )
+        .def( "getAreaIntersectionTolerance", &PairingParameter::getAreaIntersectionTolerance, R"(
+Return the tolerance used for the intersection area criterium. It is a value of a float
+
+Returns:
+    float: area intersection tolerance.
+        )" )
+        .def( "setAreaIntersectionTolerance", &PairingParameter::setAreaIntersectionTolerance, R"(
+Return the tolerance used for the intersection area criterium. It is a value of a float
+
+Arguments:
+    float: area intersection tolerance.
+        )",
+              py::arg( "area_tole" ) )
         .def( "getInitialState", &PairingParameter::getInitialState, R"(
 Return the initial contact state. It is a value of an enum
 

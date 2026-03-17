@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc, &
 #include "asterfort/nmlecv.h"
 #include "asterfort/nmltev.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Conv), intent(in) :: ds_conv
@@ -133,7 +132,7 @@ subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc, &
 !
     if (l_error) then
         call nmimpx(ds_print)
-        call nmerim(sderro)
+        call nmerim(sderro, sddisc)
     end if
 !
 ! - Print event messages

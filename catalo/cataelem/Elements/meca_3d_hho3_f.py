@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,8 +114,11 @@ ECONTNO = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")
 )
 
+DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
@@ -168,7 +171,26 @@ class MECA3DQU9_HHO3_F(Element):
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.COOR_ELGA(
-            te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+            te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+        ),
+        OP.HHO_COND_MECA(
+            te=574,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMAELS1, MMATUUR), (SP.PVEELE1, MVECTUR)),
+            para_out=(
+                (SP.PMATUUR, MMATUUR),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PMATUND, MMATUNS),
+                (SP.PVECTUD, MVECTUR),
+            ),
+        ),
+        OP.HHO_DEPL_MECA(
+            te=427,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PDEPLPR, DDL_MECA),
+                (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndynkk(sddyna, chaine, nomsd)
+subroutine ndynkk(sddyna, chainez, nomsd)
 !
     implicit none
 !
@@ -30,7 +29,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
 #include "asterfort/ndynlo.h"
 !
     character(len=19) :: sddyna
-    character(len=*) :: chaine
+    character(len=*) :: chainez
     character(len=19) :: nomsd
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,6 +51,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
     character(len=24) :: veol, vaol
     integer(kind=8) :: jveol, jvaol
     aster_logical :: ldyna
+    character(len=19) :: chaine
     character(len=24) :: cham24
     character(len=15) :: sdmuap, sdprmo, sdexso
 !
@@ -63,6 +63,9 @@ subroutine ndynkk(sddyna, chaine, nomsd)
 !
     ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     nomsd = ' '
+    chaine = " "
+    ASSERT(len(chainez) <= 19)
+    chaine(1:len(chainez)) = chainez
 !
 ! --- ACCES AUX OBJETS DE LA SD SDDYNA
 !

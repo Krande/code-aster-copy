@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -213,8 +213,8 @@ test.assertAlmostEqual(
 ### medcoupling conversion
 
 medmesh = resu.getMesh().createMedCouplingMesh()
-medfield = resu2.toMedFileField1TS(medmesh)
-medcfield = resu2.toMedCouplingField(medmesh.getMeshAtLevel(0))
+medfield = resu2.toMedFileField1TS(medmesh, "DEPL")
+medcfield = resu2.toMedCouplingField(medmesh.getMeshAtLevel(0), "DEPL")
 
 resu3 = CA.SimpleFieldOnNodesReal.fromMedCouplingField(medcfield, monMaillage)
 
@@ -222,7 +222,7 @@ with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delet
     medmesh.write(f.name, 2)
     medfield.write(f.name, 0)
 
-test.assertEqual(medfield.getName(), "DEPL_R")
+test.assertEqual(medfield.getName(), "DEPL")
 test.assertEqual(medfield.getNumberOfComponents(), 3)
 
 # To be sure that vcine is Permanent #30689

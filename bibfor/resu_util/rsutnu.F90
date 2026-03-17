@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr, &
     integer(kind=8) :: iocc, nbordr, ier
     real(kind=8) :: prec
     character(len=*) :: resu, motcle, knum, crit
-! person_in_charge: nicolas.sellenet at edf.fr
 !        RECUPERATION DES NUMEROS D'ORDRE DANS UNE STRUCTURE DE DONNEES
 !     DE TYPE "RESULTAT" A PARTIR DES VARIABLES D'ACCES UTILISATEUR
 !     LES ACCES : NUME_ORDRE

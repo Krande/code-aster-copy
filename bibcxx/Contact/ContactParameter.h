@@ -5,7 +5,7 @@
  * @file ContactZone.h
  * @brief Fichier entete de la class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,6 +30,7 @@
 #include "Contact/ContactEnum.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/ListOfLoads.h"
+#include "Meshes/MeshEnum.h"
 
 class ContactParameter {
   private:
@@ -43,6 +44,8 @@ class ContactParameter {
     ASTERDOUBLE _coeff;
     /** @brief Jacobian computation = TYPE_MATR_TANG */
     JacobianType _jacType;
+    /** @brief Contact algorithm = TYPE_INTE */
+    IntegrationType _inteType;
 
   public:
     /**
@@ -59,7 +62,8 @@ class ContactParameter {
           _type( ContactType::Unilateral ),
           _vari( ContactVariant::Empty ),
           _coeff( 100. ),
-          _jacType( JacobianType::Analytical ) {};
+          _jacType( JacobianType ::Analytical ),
+          _inteType( IntegrationType::Segbased ) {};
 
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
     ContactParameter( const py::tuple &tup );
@@ -75,6 +79,8 @@ class ContactParameter {
 
     JacobianType getJacobianType() const { return _jacType; };
 
+    IntegrationType getIntegrationType() const { return _inteType; };
+
     void setAlgorithm( const ContactAlgo &algo ) { _algo = algo; };
 
     void setType( const ContactType &type ) { _type = type; };
@@ -84,6 +90,8 @@ class ContactParameter {
     void setCoefficient( const ASTERDOUBLE &coeff ) { _coeff = coeff; };
 
     void setJacobianType( const JacobianType &type ) { _jacType = type; };
+
+    void setIntegrationType( const IntegrationType &type ) { _inteType = type; };
 };
 
 /**
@@ -163,10 +171,16 @@ typedef std::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
 class PairingParameter {
   private:
+    /** @brief Method of pairing */
+    PairingMethod _pair_method;
     /** @brief Pairing algorithm = APPARIEMENT */
     PairingAlgo _algo;
     /** @brief Additional pairing distance = COEF_MULT_APPA */
     ASTERDOUBLE _dist_ratio;
+    /** @brief Additional pairing tolerance = APPA_TOLE */
+    ASTERDOUBLE _pair_tole;
+    /** @brief Additional pairing tolerance = AIRE_TOLE */
+    ASTERDOUBLE _area_tole;
     /** @brief initial contact state = CONTACT_INIT */
     InitialState _cont_init;
 
@@ -192,8 +206,11 @@ class PairingParameter {
      */
     PairingParameter()
         : _algo( PairingAlgo::Mortar ),
+          _pair_method( PairingMethod::Fast ),
           _cont_init( InitialState::Interpenetrated ),
           _dist_ratio( -1.0 ),
+          _pair_tole( 1e-8 ),
+          _area_tole( 1e-8 ),
 
           _beam( false ),
           _dist_supp( nullptr ),
@@ -206,7 +223,13 @@ class PairingParameter {
 
     PairingAlgo getAlgorithm() const { return _algo; };
 
+    PairingMethod getPairingMethod() const { return _pair_method; };
+
     ASTERDOUBLE getDistanceRatio() const { return _dist_ratio; };
+
+    ASTERDOUBLE getPairingTolerance() const { return _pair_tole; };
+
+    ASTERDOUBLE getAreaIntersectionTolerance() const { return _area_tole; };
 
     InitialState getInitialState() const { return _cont_init; };
 
@@ -216,7 +239,13 @@ class PairingParameter {
 
     void setAlgorithm( const PairingAlgo &algo ) { _algo = algo; };
 
+    void setPairingMethod( const PairingMethod &pair_method ) { _pair_method = pair_method; };
+
     void setDistanceRatio( const ASTERDOUBLE &dist_ratio ) { _dist_ratio = dist_ratio; };
+
+    void setPairingTolerance( const ASTERDOUBLE &pair_tole ) { _pair_tole = pair_tole; };
+
+    void setAreaIntersectionTolerance( const ASTERDOUBLE &area_tole ) { _area_tole = area_tole; };
 
     void setInitialState( const InitialState &cont_init ) { _cont_init = cont_init; };
 

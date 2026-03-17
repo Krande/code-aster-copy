@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ subroutine cmlqlq(main, maout, nbma, lima)
     use crea_maillage_module
 !
     implicit none
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
 #include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 !
     integer(kind=8) :: nbma, lima(nbma)
     character(len=8) :: main, maout
@@ -99,7 +99,11 @@ subroutine cmlqlq(main, maout, nbma, lima)
 !
 ! - Convert cells
 !
-    call mesh_conv%convert_cells(nbma, lima)
+    call mesh_conv%convert_cells(nbma, lima, ASTER_TRUE)
+!
+! - Check conformity
+!
+    call mesh_conv%check_conformity("A")
 !
 ! - Copy mesh
 !

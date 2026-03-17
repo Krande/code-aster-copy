@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
             call corich('E', lchout(1), ichin_=-1)
             call jedetr(veonde(1:19)//'.RELR')
             call reajre(veonde, lchout(1), 'V')
-            call asasve(veonde, numedd, 'R', vaonde)
+            call asasve(veonde, numedd, 'R', 'D', vaonde)
 !
             call jeveuo(vaonde, 'L', jvaond)
             call jeveuo(zk24(jvaond) (1:19)//'.VALE', 'L', vr=vale)

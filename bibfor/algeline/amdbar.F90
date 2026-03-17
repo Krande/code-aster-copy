@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! AUTHORS, AND Copyright (C) 1995 BY:
-! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 subroutine amdbar(n, pe, iw, len, iwlen, &
                   pfree, nv, next, last, head, &
                   elen, degree, ncmpa, w, iovflo)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 !---------------------------------------------------------------

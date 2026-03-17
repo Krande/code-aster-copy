@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine metaGetParaVisc(poum     , fami     , kpg, ksp, j_mater,&
-                               meta_type, nb_phasis, eta, n  , unsurn ,&
-                               c        , m)
+    subroutine metaGetParaVisc(poum, fami, kpg, ksp, jvMaterCode, &
+                               metaType, nbPhase, &
+                               eta, n, unsurn, &
+                               c, m)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        integer(kind=8), intent(in) :: j_mater
-        integer(kind=8), intent(in) :: meta_type
-        integer(kind=8), intent(in) :: nb_phasis
-        real(kind=8), optional, intent(out) :: eta(*)
-        real(kind=8), optional, intent(out) :: n(*)
-        real(kind=8), optional, intent(out) :: unsurn(*)
-        real(kind=8), optional, intent(out) :: c(*)
-        real(kind=8), optional, intent(out) :: m(*)
+        integer(kind=8), intent(in) :: kpg, ksp, jvMaterCode
+        integer(kind=8), intent(in) :: metaType
+        integer(kind=8), intent(in) :: nbPhase
+        real(kind=8), optional, intent(out) :: eta(nbPhase), n(nbPhase), unsurn(nbPhase)
+        real(kind=8), optional, intent(out) :: c(nbPhase), m(nbPhase)
     end subroutine metaGetParaVisc
 end interface

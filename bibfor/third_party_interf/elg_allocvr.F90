@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine elg_allocvr(vect1, n1)
 !
     use aster_petsc_module
     implicit none
-! person_in_charge: natacha.bereux@edf.fr
 !
 ! BUT : allouer un vecteur PETSc réel de longueur n1
 !---------------------------------------------------------------

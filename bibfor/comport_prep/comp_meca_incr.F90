@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 #include "asterc/lctest.h"
 #include "asterc/lcdiscard.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: defo_comp

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,12 @@ cl = AFFE_CHAR_CINE(
 )
 
 resu = MECA_STATIQUE(MODELE=model, CHAM_MATER=mater, EXCIT=_F(CHARGE=cl), INST=0.0)
+
+LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
+
+resu2 = STAT_NON_LINE(
+    MODELE=model, CHAM_MATER=mater, INCREMENT=_F(LIST_INST=LREEL), EXCIT=_F(CHARGE=cl)
+)
 
 test.assertTrue(True)
 

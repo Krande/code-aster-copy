@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine mmfield_prep(field_in, field_out, &
 #include "asterfort/cnsred.h"
 #include "asterfort/detrsd.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: field_in
     character(len=*), intent(in) :: field_out

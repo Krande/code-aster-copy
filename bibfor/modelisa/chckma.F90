@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -298,9 +298,10 @@ subroutine chckma(nomu, dtol)
 !
         select case (cell_type)
         case (MT_SEG3, MT_SEG4, &
-              MT_TRIA6, MT_TRIA7, MT_QUAD8, MT_QUAD9, &
+              MT_TRIA6, MT_TRIA7, MT_TRIA10, &
+              MT_QUAD8, MT_QUAD9, MT_QUAD12, &
               MT_HEXA20, MT_HEXA27, MT_PENTA15, MT_PENTA18, MT_PENTA21, &
-              MT_PYRAM13, MT_PYRAM19, MT_TETRA10, MT_TETRA15)
+              MT_PYRAM13, MT_PYRAM19, MT_TETRA10, MT_TETRA15, MT_TETRA20)
             hasQuadraticCell = ASTER_TRUE
             exit
         end select
@@ -308,6 +309,8 @@ subroutine chckma(nomu, dtol)
 
     if (hasQuadraticCell) then
         call mesh_conv%init(nomu, convert_max=ASTER_FALSE)
+        call mesh_conv%check_conformity("A")
+!
         if (mesh_conv%nb_edges_dege > 0) then
             do ima = 1, mesh_conv%nb_edges_dege
                 ma1 = mesh_conv%edges_dege(2*(ima-1)+1)
@@ -334,6 +337,7 @@ subroutine chckma(nomu, dtol)
             call mesh_conv%clean()
             call utmess('F', "MODELISA4_10")
         end if
+        call mesh_conv%clean()
     end if
 !
 !     -----------------------------------------------------------

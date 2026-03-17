@@ -3,7 +3,7 @@
  * @file PostProcessing.h
  * @brief Header of class PostProcessing
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -75,10 +75,31 @@ class PostProcessing {
                       const FieldOnCellsRealPtr &externVarPrev = nullptr,
                       const FieldOnCellsRealPtr &externVarCurr = nullptr ) const;
 
+    /**
+     * @brief Compute stress
+     * @return Stress (SIEF_ELGA)
+     */
+    FieldOnCellsRealPtr computeStress( const FieldOnNodesRealPtr displ,
+                                       const ASTERDOUBLE time = 0.0,
+                                       const FieldOnCellsRealPtr &externVar = nullptr,
+                                       const FieldOnCellsRealPtr &strx_elga = nullptr ) const;
+
+    /**
+     * @brief Compute structural stress
+     * @return Stress (STRX_ELGA)
+     */
+    FieldOnCellsRealPtr
+    computeStructuralStress( const FieldOnNodesRealPtr displ, const ASTERDOUBLE time = 0.0,
+                             const FieldOnCellsRealPtr &externVar = nullptr ) const;
+
     /** @brief Compute max value of EFGE_ELNO or EGRU_ELNO based on the maximum of the
      *         equivalent moment for piping studies*/
     FieldOnCellsRealPtr computeMaxResultantForPipe( const ResultPtr &resu,
                                                     const std::string &field_name ) const;
+
+    /** @brief Compute MATE_ELGA/MATE_ELEM/MATE_ELNO */
+    FieldOnCellsRealPtr computeMaterial( const std::string &loc,
+                                         const FieldOnCellsRealPtr &externVar = nullptr ) const;
 };
 
 using PostProcessingPtr = std::shared_ptr< PostProcessing >;

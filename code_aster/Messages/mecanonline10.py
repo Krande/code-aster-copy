@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ cata_msg = {
     ),
     24: _(
         """
- <Évènement> Valeur atteinte (DELTA_GRANDEUR).
+ <Évènement> Valeur atteinte pour DELTA_GRANDEUR - %(k1)s / %(k2)s
  """
     ),
     25: _(

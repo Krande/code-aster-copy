@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -530,7 +530,9 @@ DICT_NOM_VARI = {
     "INDIENDT": _("indicateur d'endommagement tangentiel =0 sain, =1 endommagé, =2 cassé"),
     "INDIFLAM": _("indicateur de flambement"),
     # "INDIHYDR": _("indicateur d'irréversibilité hydrique"),
-    "INDIOUV": _("JOINT_MECA_FROT : indicateur d'ouverture complète =0 fermé, =1 ouvert"),
+    "INDIOUV": _(
+        "JOINT_MECA_FROT/CZM_FROT_MIX : indicateur d'ouverture complète =0 fermé, =1 ouvert"
+    ),
     "INDIPLAC": _(
         "indicateur de plasticité en compression  (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"
     ),
@@ -616,6 +618,8 @@ DICT_NOM_VARI = {
     "SATLIQ": _("Saturation"),
     "SAUT_MAX": _("saut equivalent total max atteint"),
     "SAUT_N": _("saut normal"),
+    "SAUT_PLAS_T1": _("saut plastique tangentiel 1"),
+    "SAUT_PLAS_T2": _("saut plastique tangentiel 2"),
     "SAUT_T1": _("saut tangentiel 1"),
     "SAUT_T2": _("saut tangentiel 2"),
     "SAUTEQUI": _("saut equivalent total"),
@@ -649,6 +653,7 @@ DICT_NOM_VARI = {
     "SIGP": _("cam_clay : contrainte de confinement"),
     "SIGRN": _(" Pinto-Menegotto, contrainte cycle N"),
     "SIGT": _("norme de la contrainte tangente"),
+    "SIGY": _("Elasticity yield for isotropic hardening"),
     "SIVXX": _("variable interne pour regularisation visqueuse"),
     "SIVYY": _("variable interne pour regularisation visqueuse"),
     "SIVZZ": _("variable interne pour regularisation visqueuse"),

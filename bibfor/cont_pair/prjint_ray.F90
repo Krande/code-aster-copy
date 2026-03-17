@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,13 +102,15 @@ subroutine prjint_ray(proj_tole, dist_ratio, elem_dime, &
         write (*, *) ". START Projection/intersection with raytracing"
     end if
 !
-    if (elem_mast_code .eq. "TR6") then
+    if (elem_mast_code .eq. "TR6" .or. elem_mast_code .eq. "TR7" &
+        .or. elem_mast_code .eq. "TR1") then
         elin_mast_code = "TR3"
         elin_mast_nbnode = 3
-    elseif (elem_mast_code .eq. "QU8" .or. elem_mast_code .eq. "QU9") then
+    elseif (elem_mast_code .eq. "QU8" .or. elem_mast_code .eq. "QU9" &
+            .or. elem_mast_code .eq. "Q12") then
         elin_mast_code = "QU4"
         elin_mast_nbnode = 4
-    elseif (elem_mast_code .eq. "SE3") then
+    elseif (elem_mast_code .eq. "SE3" .or. elem_mast_code .eq. "SE4") then
         elin_mast_code = "SE2"
         elin_mast_nbnode = 2
     else

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -105,8 +105,8 @@ class NonLinearOperator(ContextMixin):
                     fed_defi = definition.getParallelFiniteElementDescriptor()
                 else:
                     fed_defi = definition.getFiniteElementDescriptor()
-                problem.setVirtualSlavCell(fed_defi)
-                problem.setVirtualCell(None)
+                problem.setContactSlaveFED(fed_defi)
+                problem.setContactFED(None)
 
         else:
             raise TypeError(f"unsupported physics: {phys}")

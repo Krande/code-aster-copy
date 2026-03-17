@@ -2,7 +2,7 @@
  * @file MeshPairing.cxx
  * @brief Implementation of MeshPairing class
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -187,7 +187,8 @@ ASTERBOOL MeshPairing::surfacesHasBeenDefined() {
     return returnValue;
 }
 
-ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole ) {
+ASTERBOOL MeshPairing::compute( const ASTERDOUBLE &dist_pairing, const ASTERDOUBLE &pair_tole,
+                                const ASTERDOUBLE &area_tole ) {
 
     build();
     CALL_JEMARQ();
@@ -229,7 +230,7 @@ ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tol
 
     // Main routine for pairing
     CALLO_PAIRWRAP( &method, _mesh->getName(), _currentCoordinates->getName(), mastConnexInveName,
-                    mastNeighName, slavNeighName, &pair_tole, &dist_pairing, &verbosity,
+                    mastNeighName, slavNeighName, &pair_tole, &area_tole, &dist_pairing, &verbosity,
                     &nbCellMaster, masterCells.data(), &nbCellSlave, slaveCells.data(),
                     &nbNodeMaster, masterNodes.data(), &nb_pairs, getBasename() );
 
@@ -269,18 +270,12 @@ VectorPairLong MeshPairing::getListOfPairs() const {
     VectorPairLong returnValue;
     ASTERINTEGER nbPairs = getNumberOfPairs();
 
-    if ( nbPairs == 0 ) {
-        throw std::runtime_error( "No pairs !" );
-    }
+    if ( nbPairs != 0 ) {
+        returnValue.reserve( nbPairs );
 
-    if ( _pairs.size() == 0 ) {
-        throw std::runtime_error( "No pairs from Fortran!" );
-    }
-
-    returnValue.reserve( nbPairs );
-
-    for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
-        returnValue.push_back( std::make_pair( _pairs[2 * iPair], _pairs[2 * iPair + 1] ) );
+        for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
+            returnValue.push_back( std::make_pair( _pairs[2 * iPair], _pairs[2 * iPair + 1] ) );
+        }
     }
 
     return returnValue;
@@ -597,7 +592,7 @@ ASTERBOOL MeshPairing::build() {
 
         _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
         AS_ASSERT( _slaveCells.size() > 0 );
-        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells, true );
     }
 
     if ( _excludedSlaveNodes.size() != 0 ) {
@@ -609,7 +604,7 @@ ASTERBOOL MeshPairing::build() {
                 throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
             }
 
-            VectorLong sans_gr_i = _mesh->getNodes( groupName );
+            VectorLong sans_gr_i = _mesh->getNodes( groupName, true );
             for ( auto &node : sans_gr_i ) {
                 auto cellsToExclude = this->getSlaveCellsFromNode( node );
                 auto it = _slaveCellsExcluded.end();
@@ -619,7 +614,7 @@ ASTERBOOL MeshPairing::build() {
 
         _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
         AS_ASSERT( _slaveCells.size() > 0 );
-        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells, true );
     }
 
     _zoneHaveBeenDefined = true;

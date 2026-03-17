@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelContactFEDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,11 +42,7 @@
 class ParallelContactFEDescriptor : public FiniteElementDescriptor {
   protected:
     /** @brief Matching numbering between keeped delayed elements and base elements */
-    VectorLong _virtualCellToKeep;
-    /** @brief Join to send */
-    std::vector< JeveuxVectorLong > _joinToSend;
-    /** @brief Join to receive */
-    std::vector< JeveuxVectorLong > _joinToReceive;
+    VectorLong _contactFEDToKeep;
     /** @brief All joints */
     JointsPtr _joints;
     /** @brief Delayed nodes owner */
@@ -57,8 +53,6 @@ class ParallelContactFEDescriptor : public FiniteElementDescriptor {
     JeveuxVectorLong _outerMultiplicity;
     /** @brief Global numbering for delayed nodes */
     JeveuxVectorLong _globalNumberingVirtualNodes;
-    /** @brief slave delayed node number */
-    JeveuxVectorLong _slaveDNNumber;
     FiniteElementDescriptorPtr _FEDesc;
     /** @brief Element matching in element group list */
     VectorOfVectorsLong _lielMatching;
@@ -92,7 +86,7 @@ class ParallelContactFEDescriptor : public FiniteElementDescriptor {
      * @brief Get vector of delayed elements keeped from the base FiniteElementDescriptor
      * @return reference on VectorLong
      */
-    const VectorLong &getVirtualCellsToKeep() const { return _virtualCellToKeep; };
+    const VectorLong &getVirtualCellsToKeep() const { return _contactFEDToKeep; };
 
     /**
      * @brief Get vector of joints between subdomains

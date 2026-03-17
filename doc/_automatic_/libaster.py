@@ -719,12 +719,13 @@ class BaseMesh(DataStructure):
             bool: *False* for a centralized mesh, *True* for a parallel mesh.
         """
 
-    def printMedFile(self, fileName, local=True):
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
         """Print the mesh in the MED format
 
         Arguments:
             filename (Path|str): Name of the file
             local (bool=True) : print local values only (relevant for a ParallelMesh only)
+            version (list): list of size 3 ([major, minor, release])
 
         Returns:
             Bool: True if of
@@ -791,6 +792,16 @@ class Mesh(BaseMesh):
 
         Returns:
             Mesh: the bi-quadratic mesh.
+        """
+
+    def convertToCubic(self, info=1):
+        """Convert the mesh to a cubic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the cubic mesh.
         """
 
     def convertToLinear(self, info=1):
@@ -930,6 +941,18 @@ class Mesh(BaseMesh):
 
         Returns:
             bool: *True* if the mesh contains quadratic cells, *False* otherwise.
+        """
+
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
+        """Print the mesh in the MED format
+
+        Arguments:
+            filename (Path|str): Name of the file
+            local (bool=True) : print local values only (relevant for a ParallelMesh only)
+            version (list): list of size 3 ([major, minor, release])
+
+        Returns:
+            Bool: True if of
         """
 
     def readAsterFile(self, filename):
@@ -1418,6 +1441,32 @@ class DiscreteComputation:
             ElementaryMatrix: elementary linear acoustic matrices
         """
 
+    def getMechanicalCouplingForces(self, displ_prev, displ_step, time_prev, time_step):
+        """Compute coupling for LIAISON_MASSIF.
+
+        Arguments:
+            displ_prev (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+
+        Returns:
+            FieldOnNodesReal: coupling forces
+        """
+
+    def getMechanicalCouplingMatrix(self, displ_prev, displ_step, time_prev, time_step):
+        """Compute coupling for LIAISON_MASSIF.
+
+        Arguments:
+            displ_prev (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+
+        Returns:
+            ElementaryMatrixDisplacementReal: coupling elementary matrix.
+        """
+
     def getMechanicalDampingMatrix(
         self,
         getMechanicalMassMatrix=None,
@@ -1478,6 +1527,16 @@ class DiscreteComputation:
 
         Returns:
               ElementaryVectorDisplacementReal: imposed dual vector
+        """
+
+    def getMechanicalLinearCouplingMatrix(self, varc_curr=None):
+        """Compute coupling for LIAISON_MASSIF.
+
+        Arguments:
+              varc_curr (FieldOnCellsReal): external state variables for Nitsche method.
+
+        Returns:
+              ElementaryMatrixDisplacementReal: coupling elementary matrix.
         """
 
     def getMechanicalMassMatrix(self, diagonal, varc_curr=None, groupOfCells=[]):
@@ -2664,6 +2723,13 @@ class FieldOnCellsReal(DataField):
             float: dot product
         """
 
+    def exists(self):
+        """The field exists or not ?
+
+        Returns:
+            Bool
+        """
+
     def getComponents(self):
         """Get list of components
 
@@ -2731,13 +2797,14 @@ class FieldOnCellsReal(DataField):
             float: euclidean norm
         """
 
-    def printMedFile(self, filename, local=True):
+    def printMedFile(self, filename, local=True, version=""):
         """Print the field in MED format.
 
         Arguments:
             filename (Path|str): Path to the file to be printed.
             local (bool): Print local values only (relevant for ParallelMesh only,
                 default: *True*)
+            version (str): Version of MED file.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -2895,11 +2962,14 @@ class FieldOnCellsComplex(DataField):
             list[complex]: List of values.
         """
 
-    def printMedFile(self, filename, local=True):
+    def printMedFile(self, filename, local=True, version=""):
         """Print the field in MED format.
 
         Arguments:
             filename (Path|str): Path to the file to be printed.
+            local (bool): Print local values only (relevant for ParallelMesh only,
+                default: *True*)
+            version (str): Version of MED file.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -3029,11 +3099,14 @@ class FieldOnCellsLong(DataField):
             list[int]: List of values.
         """
 
-    def printMedFile(self, filename, local=True):
+    def printMedFile(self, filename, local=True, version=""):
         """Print the field in MED format.
 
         Arguments:
             filename (Path|str): Path to the file to be printed.
+            local (bool): Print local values only (relevant for ParallelMesh only,
+                default: *True*)
+            version (str): Version of MED file.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -3346,7 +3419,7 @@ class FieldOnNodesReal(DataField):
             float: euclidean norm
         """
 
-    def printMedFile(self, fileName, local=True):
+    def printMedFile(self, fileName, local=True, version=""):
         pass
 
     def scale(self, vect):
@@ -3600,7 +3673,7 @@ class FieldOnNodesComplex(DataField):
             float: euclidean norm
         """
 
-    def printMedFile(self, arg0, arg1):
+    def printMedFile(self, fileName, local=True, version=""):
         pass
 
     def scale(self, vect):
@@ -4133,13 +4206,14 @@ class SimpleFieldOnCellsReal(DataField):
                         values (list[float]): list of values to set.
         """
 
-    def toFieldOnCells(self, fed, option="", nompar=""):
+    def toFieldOnCells(self, fed, option="", nompar="", zeroExtension=True):
         """Converts to FieldOnCells
 
         Arguments:
             fed [FiniteElementDescriptor]: finite element descriptor
-            option [str] : name of option like TOUT_INI_ELGA (default: " ")
-            nompar [str] : name of parameter like DEPL_R (default: " ")
+            option [str]: name of option like TOUT_INI_ELGA (default: " ")
+            nompar [str]: name of parameter like DEPL_R (default: " ")
+            zeroExtension [bool]: true if field could be extended to zero (default: True)
 
         Returns:
             FieldOnCellsReal: field converted.
@@ -4363,8 +4437,26 @@ class SimpleFieldOnNodesReal(DataField):
                         value [float]: value to set everywhere.
         """
 
-    def toFieldOnNodes(self):
-        """Convert to FieldOnNodes
+    def toFieldOnNodes(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. toFieldOnNodes(self: libaster.SimpleFieldOnNodesReal) -> libaster.FieldOnNodesReal
+
+
+        Convert to FieldOnNodes
+
+        Returns:
+            FieldOnNodesReal: field converted
+
+
+        2. toFieldOnNodes(self: libaster.SimpleFieldOnNodesReal, dofNum: libaster.BaseDOFNumbering, zeroExtension: bool = <PythonBool.FALSE: 0>) -> libaster.FieldOnNodesReal
+
+
+        Convert to FieldOnNodes
+
+        Arguments:
+            dofNum (BaseDOFNumbering): DOF numbering used to build FieldOnNodes
+            zeroExtension (bool): true if field can be extended to zero (when missing values)
 
         Returns:
             FieldOnNodesReal: field converted
@@ -6084,6 +6176,72 @@ class JacobianType:
     Perturbation = 1
 
 
+# class IntegrationType in libaster
+
+
+class IntegrationType:
+    """Enumeration for integration type."""
+
+    # Method resolution order:
+    #     IntegrationType
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Readonly properties defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: object) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Elembased = 0
+
+    Segbased = 1
+
+
 # class ContactParameter in libaster
 
 
@@ -6120,6 +6278,13 @@ class ContactParameter:
             float: contact coefficient.
         """
 
+    def getIntegrationType(self):
+        """Return how the integration is made. It is a value of an enum
+
+        Returns:
+            IntegrationType: Integration type.
+        """
+
     def getJacobianType(self):
         """Return how the Jacobian is computed. It is a value of an enum
 
@@ -6153,6 +6318,13 @@ class ContactParameter:
 
         Arguments:
             float: contact coefficient.
+        """
+
+    def setIntegrationType(self, type):
+        """Set how the integration is made. It is a value of an enum
+
+        Arguments:
+            IntegrationType: Integration type.
         """
 
     def setJacobianType(self, type):
@@ -6306,6 +6478,13 @@ class PairingParameter:
             PairingAlgo: Pairing algorithm.
         """
 
+    def getAreaIntersectionTolerance(self):
+        """Return the tolerance used for the intersection area criterium. It is a value of a float
+
+        Returns:
+            float: area intersection tolerance.
+        """
+
     def getDistanceFunction(self):
         """Return the fictive distance function. It is a value of a pointer
 
@@ -6334,11 +6513,32 @@ class PairingParameter:
             InitialState: Initial contact state.
         """
 
+    def getPairingMethod(self):
+        """Return the pairing method used. It is a value of an enum
+
+        Returns:
+            PairingMethod: pairing method.
+        """
+
+    def getPairingTolerance(self):
+        """Return the pairing tolerance used. It is a value of a float
+
+        Returns:
+            float: pairing tolerance.
+        """
+
     def setAlgorithm(self, algo):
         """Set the Pairing algorithm used. It is a value of an enum
 
         Arguments:
             PairingAlgo: Pairing algorithm.
+        """
+
+    def setAreaIntersectionTolerance(self, area_tole):
+        """Return the tolerance used for the intersection area criterium. It is a value of a float
+
+        Arguments:
+            float: area intersection tolerance.
         """
 
     def setDistanceFunction(self, dist_supp):
@@ -6367,6 +6567,20 @@ class PairingParameter:
 
         Arguments:
             InitialState: Initial contact state.
+        """
+
+    def setPairingMethod(self, pair_method):
+        """Set the cpairing method used. It is a value of an enum
+
+        Arguments:
+            PairingMethod: pairing method.
+        """
+
+    def setPairingTolerance(self, pair_tole):
+        """Set the pairing tolerance used. It is a value of a float
+
+        Arguments:
+            float: pairing tolerance.
         """
 
     # ----------------------------------------------------------------------
@@ -6763,12 +6977,13 @@ class MeshPairing(DSWithCppPickling):
             nothing
         """
 
-    def compute(self, dist_pairing=-1.0, pair_tole=1e-08):
+    def compute(self, dist_pairing=-1.0, pair_tole=1e-08, area_tole=1e-08):
         """Compute pairing
 
         Arguments:
             dist_pairing (real): tolerance from DIST_RATIO (projection outside cell)
             pair_tole (real): tolerance for pairing
+            area_tole (real): tolerance for removing intersection cells
         """
 
     def getIntersectionArea(self, *args, **kwargs):
@@ -7350,6 +7565,208 @@ class ContactComputation:
 
         Arguments:
             level (int) : level of verbosity
+        """
+
+
+# class CouplingMethod in libaster
+
+
+class CouplingMethod:
+    """Enumeration for coupling method."""
+
+    # Method resolution order:
+    #     CouplingMethod
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Readonly properties defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: object) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Lagrangian = 3
+
+    Nitsche = 1
+
+    Penalization = 2
+
+    Undefined = 0
+
+
+# class CouplingZonePairing in libaster
+
+
+class CouplingZonePairing(DataStructure):
+    """Object to create contact pairing."""
+
+    # Method resolution order:
+    #     CouplingZonePairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.CouplingZonePairing, arg0: libaster.BaseMesh, arg1: int) -> None
+
+        2. __init__(self: libaster.CouplingZonePairing, arg0: libaster.BaseMesh) -> None
+        """
+
+    def check(self, model):
+        """Check common nodes and normals.
+
+        Arguments:
+            model [Model]: model.
+        """
+
+    def setCoefficient(self, coef_pena):
+        """Set penalization's coefficient.
+
+        Arguments:
+            coef_pena [float]: penalization's coefficient.
+        """
+
+    def setMasterGroupsOfCells(self, groups_name):
+        """Set master's side.
+
+        Arguments:
+            groups_name [list[str]]: list of groups.
+        """
+
+    def setMethod(self, method):
+        """Set method.
+
+        Returns:
+            method [CouplingMethod]: method.
+        """
+
+    def setPairingParameters(self, parameters):
+        """Set pairing parameters.
+
+        Arguments:
+            parameters [PairingParameter]: PairingParameterPtr.
+        """
+
+    def setSlaveGroupsOfCells(self, groups_name):
+        """Set slave's side.
+
+        Arguments:
+            groups_name [list[str]]: list of groups.
+        """
+
+    def setVerbosity(self, verbosity):
+        """Set verbosity.
+
+        Arguments:
+            verbosity [float]: verbosity level.
+        """
+
+
+# class CouplingPairing in libaster
+
+
+class CouplingPairing(DataStructure):
+    """Object to create contact pairing."""
+
+    # Method resolution order:
+    #     CouplingPairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0, arg1):
+        pass
+
+    def addZone(self, zone):
+        """Add a new zone of coupling;
+
+        Argument:
+            zone [CouplingZonePairing]: zone.
+        """
+
+    def compute(self):
+        """Compute the pairing quantitie
+
+        Returns:
+            bool: True if the pairing quantities are updated appropriately
+        """
+
+    def getFiniteElementDescriptor(self):
+        """Return Finite Element Descriptor for virtual cells from pairing.
+
+        Returns:
+            FiniteElementDescriptor: finite element for virtual cells
+        """
+
+    def getMesh(self):
+        """Mesh
+
+        Returns:
+            BaseMesh: the mesh
+        """
+
+    def getNumberOfPairs(self):
+        """Return number of pairs
+
+        Returns:
+            int: number of pairs
+        """
+
+    def getPairingField(self):
+        """Get intersection points
+
+        Returns:
+            FieldOnCellsReal: intersection points.
         """
 
 
@@ -8334,6 +8751,13 @@ class ElementaryTermReal(DataField):
         2. __init__(self: libaster.ElementaryTermReal, arg0: str) -> None
         """
 
+    def exists(self):
+        """Return True if it exists
+
+        Returns:
+            bool: True if exist
+        """
+
     def getFiniteElementDescriptor(self):
         """Return the finite element descriptor
 
@@ -8398,6 +8822,13 @@ class ElementaryTermComplex(DataField):
         1. __init__(self: libaster.ElementaryTermComplex) -> None
 
         2. __init__(self: libaster.ElementaryTermComplex, arg0: str) -> None
+        """
+
+    def exists(self):
+        """Return True if it exists
+
+        Returns:
+            bool: True if exist
         """
 
     def getFiniteElementDescriptor(self):
@@ -8508,6 +8939,9 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
     def getFiniteElementDescriptors(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def hasElementaryTerms(self):
         pass
 
@@ -8552,6 +8986,9 @@ class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
         pass
 
     def getFiniteElementDescriptors(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def hasElementaryTerms(self):
@@ -8603,6 +9040,9 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
     def getFiniteElementDescriptors(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def hasElementaryTerms(self):
         pass
 
@@ -8647,6 +9087,9 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
         pass
 
     def getFiniteElementDescriptors(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def hasElementaryTerms(self):
@@ -8743,6 +9186,9 @@ class ElementaryVectorReal(BaseElementaryVector):
     def getFiniteElementDescriptor(self):
         pass
 
+    def getNumberOfElementaryTerms(self):
+        pass
+
     def getVeass(self):
         pass
 
@@ -8799,6 +9245,9 @@ class ElementaryVectorComplex(BaseElementaryVector):
         pass
 
     def getElementaryTerms(self):
+        pass
+
+    def getNumberOfElementaryTerms(self):
         pass
 
     def getVeass(self):
@@ -9832,6 +10281,13 @@ class MechanicalLoadReal(DataStructure):
     def getModel(self):
         pass
 
+    def getPairingField(self):
+        """Return pairing intersection.
+
+        Returns:
+            FieldOnCellsReal: pairing intersection.
+        """
+
     def getTable(self, identifier):
         """Extract a Table from the datastructure.
 
@@ -9844,6 +10300,13 @@ class MechanicalLoadReal(DataStructure):
 
     def hasLoadField(self, arg0):
         pass
+
+    def setPairingField(self, pairs):
+        """Set pairing intersection.
+
+        Arguments:
+            pairs (FieldOnCellsReal): pairing intersection.
+        """
 
     def updateValuePointers(self):
         pass
@@ -12147,215 +12610,217 @@ class Modelings:
     # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
-    AXIS_FLUIDE = 65
+    AXIS_FLUIDE = 66
 
-    AXIS_FLUI_ABSO = 66
+    AXIS_FLUI_ABSO = 67
 
-    AXIS_FLUI_STRU = 67
+    AXIS_FLUI_STRU = 68
 
-    AXIS_FOURIER = 68
+    AXIS_FOURIER = 69
 
-    AXIS_GRAD_INCO = 69
+    AXIS_GRAD_INCO = 70
 
-    AXIS_GRAD_VARI = 70
+    AXIS_GRAD_VARI = 72
 
-    AXIS_GVNO = 71
+    AXIS_GVNO = 73
 
-    AXIS_HH2D = 72
+    AXIS_HH2D = 74
 
-    AXIS_HH2MD = 73
+    AXIS_HH2MD = 75
 
-    AXIS_HH2MS = 74
+    AXIS_HH2MS = 76
 
-    AXIS_HH2S = 75
+    AXIS_HH2S = 77
 
-    AXIS_HHD = 76
+    AXIS_HHD = 78
 
-    AXIS_HHM = 77
+    AXIS_HHM = 79
 
-    AXIS_HHMD = 78
+    AXIS_HHMD = 80
 
-    AXIS_HHMS = 79
+    AXIS_HHMS = 81
 
-    AXIS_HHS = 81
+    AXIS_HHS = 83
 
-    AXIS_HM = 82
+    AXIS_HM = 84
 
-    AXIS_HMD = 83
+    AXIS_HMD = 85
 
-    AXIS_HMS = 84
+    AXIS_HMS = 86
 
-    AXIS_INCO_UP = 85
+    AXIS_INCO_UP = 87
 
-    AXIS_INCO_UPG = 86
+    AXIS_INCO_UPG = 88
 
-    AXIS_INCO_UPO = 87
+    AXIS_INCO_UPO = 89
 
-    AXIS_INTERFACE = 88
+    AXIS_INTERFACE = 90
 
-    AXIS_INTERFACE_S = 89
+    AXIS_INTERFACE_S = 91
 
-    AXIS_JHMS = 90
+    AXIS_JHMS = 92
 
-    AXIS_JOINT = 91
+    AXIS_JOINT = 93
 
-    AXIS_SECH = 92
+    AXIS_SECH = 94
 
-    AXIS_SECH_DIAG = 93
+    AXIS_SECH_DIAG = 95
 
-    AXIS_SI = 94
+    AXIS_SI = 96
 
-    AXIS_THH2D = 95
+    AXIS_THH2D = 97
 
-    AXIS_THH2MD = 96
+    AXIS_THH2MD = 98
 
-    AXIS_THH2MS = 97
+    AXIS_THH2MS = 99
 
-    AXIS_THH2S = 98
+    AXIS_THH2S = 100
 
-    AXIS_THHD = 99
+    AXIS_THHD = 101
 
-    AXIS_THHMD = 100
+    AXIS_THHMD = 102
 
-    AXIS_THHMS = 101
+    AXIS_THHMS = 103
 
-    AXIS_THHS = 102
+    AXIS_THHS = 104
 
-    AXIS_THM = 103
+    AXIS_THM = 105
 
-    AXIS_THMD = 104
+    AXIS_THMD = 106
 
-    AXIS_THMS = 105
+    AXIS_THMS = 107
 
-    AXIS_THVD = 106
+    AXIS_THVD = 108
 
-    AXIS_THVS = 107
+    AXIS_THVS = 109
 
-    Axisymmetrical = 63
+    Axisymmetrical = 64
 
-    BARRE = 108
+    BARRE = 110
 
-    CABLE = 109
+    CABLE = 111
 
-    CABLE_GAINE = 110
+    CABLE_GAINE = 112
 
-    CABLE_POULIE = 111
+    CABLE_POULIE = 113
 
-    COQUE_3D = 113
+    COQUE_3D = 115
 
-    COQUE_AXIS = 114
+    COQUE_AXIS = 116
 
-    COQUE_SOLIDE = 116
+    COQUE_SOLIDE = 118
 
-    C_PLAN_SI = 118
+    C_PLAN_SI = 120
 
     DIL_3D = 10
 
-    DIS_T = 119
+    DIS_T = 121
 
-    DIS_TR = 120
+    DIS_TR = 122
 
     DIS_TR_2D = 2
 
     DIS_T_2D = 1
 
-    DKT = 121
+    DKT = 123
 
-    DKTG = 122
+    DKTG = 124
 
-    DST = 123
+    DST = 125
 
-    D_PLAN_2DG = 125
+    D_PLAN_2DG = 127
 
-    D_PLAN_ABSO = 126
+    D_PLAN_ABSO = 128
 
-    D_PLAN_DIL = 127
+    D_PLAN_DIL = 129
 
-    D_PLAN_GRAD_HHO = 128
+    D_PLAN_GRAD_HHO = 130
 
-    D_PLAN_GRAD_INCO = 129
+    D_PLAN_GRAD_INCO = 131
 
-    D_PLAN_GRAD_SIGM = 130
+    D_PLAN_GRAD_SIGM = 132
 
-    D_PLAN_GRAD_VARI = 131
+    D_PLAN_GRAD_VARI = 133
 
-    D_PLAN_GVNO = 132
+    D_PLAN_GVNO = 134
 
-    D_PLAN_HH2D = 133
+    D_PLAN_HH2D = 135
 
-    D_PLAN_HH2MD = 134
+    D_PLAN_HH2MD = 136
 
-    D_PLAN_HH2MS = 135
+    D_PLAN_HH2MS = 137
 
-    D_PLAN_HH2MS_DIL = 136
+    D_PLAN_HH2MS_DIL = 138
 
-    D_PLAN_HH2M_SI = 137
+    D_PLAN_HH2M_SI = 139
 
-    D_PLAN_HH2S = 138
+    D_PLAN_HH2S = 140
 
-    D_PLAN_HH2SUDA = 139
+    D_PLAN_HH2SUDA = 141
 
-    D_PLAN_HHD = 140
+    D_PLAN_HHD = 142
 
-    D_PLAN_HHM = 141
+    D_PLAN_HHM = 143
 
-    D_PLAN_HHMD = 142
+    D_PLAN_HHMD = 144
 
-    D_PLAN_HHMS = 143
+    D_PLAN_HHMS = 145
 
-    D_PLAN_HHO = 144
+    D_PLAN_HHO = 146
 
-    D_PLAN_HHS = 145
+    D_PLAN_HHS = 147
 
-    D_PLAN_HM = 146
+    D_PLAN_HM = 148
 
-    D_PLAN_HMD = 147
+    D_PLAN_HMD = 149
 
-    D_PLAN_HMS = 148
+    D_PLAN_HMS = 150
 
-    D_PLAN_HMS_DIL = 149
+    D_PLAN_HMS_DIL = 151
 
-    D_PLAN_HM_SI = 150
+    D_PLAN_HM_SI = 152
 
-    D_PLAN_HM_SI_DIL = 151
+    D_PLAN_HM_SI_DIL = 153
 
-    D_PLAN_HS = 152
+    D_PLAN_HS = 154
 
-    D_PLAN_INCO_UP = 153
+    D_PLAN_INCO_UP = 155
 
-    D_PLAN_INCO_UPG = 154
+    D_PLAN_INCO_UPG = 156
 
-    D_PLAN_INCO_UPO = 155
+    D_PLAN_INCO_UPO = 157
 
-    D_PLAN_SI = 156
+    D_PLAN_MIX_STA = 158
 
-    D_PLAN_THH2D = 157
+    D_PLAN_SI = 159
 
-    D_PLAN_THH2MD = 158
+    D_PLAN_THH2D = 160
 
-    D_PLAN_THH2MS = 159
+    D_PLAN_THH2MD = 161
 
-    D_PLAN_THH2S = 160
+    D_PLAN_THH2MS = 162
 
-    D_PLAN_THHD = 161
+    D_PLAN_THH2S = 163
 
-    D_PLAN_THHMD = 162
+    D_PLAN_THHD = 164
 
-    D_PLAN_THHMS = 163
+    D_PLAN_THHMD = 165
 
-    D_PLAN_THHS = 164
+    D_PLAN_THHMS = 166
 
-    D_PLAN_THM = 165
+    D_PLAN_THHS = 167
 
-    D_PLAN_THMD = 166
+    D_PLAN_THM = 168
 
-    D_PLAN_THMS = 167
+    D_PLAN_THMD = 169
 
-    D_PLAN_THMS_DIL = 168
+    D_PLAN_THMS = 170
 
-    D_PLAN_THVD = 169
+    D_PLAN_THMS_DIL = 171
 
-    D_PLAN_THVS = 170
+    D_PLAN_THVD = 172
+
+    D_PLAN_THVS = 173
 
     FAISCEAU_3D = 11
 
@@ -12369,7 +12834,7 @@ class Modelings:
 
     FLUI_PESA_2D = 5
 
-    FLUI_STRU = 171
+    FLUI_STRU = 175
 
     FLUI_STRU_2D = 6
 
@@ -12379,9 +12844,9 @@ class Modelings:
 
     GRAD_VARI_3D = 16
 
-    GRILLE_EXCENTRE = 172
+    GRILLE_EXCENTRE = 176
 
-    GRILLE_MEMBRANE = 173
+    GRILLE_MEMBRANE = 177
 
     GVNO_3D = 17
 
@@ -12439,85 +12904,89 @@ class Modelings:
 
     JOINT_HYME_3D = 44
 
-    MEMBRANE = 174
+    MEMBRANE = 178
 
-    PLAN_INTERFACE = 179
+    MIX_STA_3D = 47
 
-    PLAN_INTERFACE_S = 180
+    PLAN_INTERFACE = 183
 
-    PLAN_JHMS = 181
+    PLAN_INTERFACE_S = 184
 
-    PLAN_JOINT = 182
+    PLAN_JHMS = 185
 
-    PLAN_JOINT_HYME = 183
+    PLAN_JOINT = 186
 
-    POU_D_E = 184
+    PLAN_JOINT_HYME = 187
 
-    POU_D_EM = 185
+    PLAQ_MITC = 174
 
-    POU_D_SQUE = 186
+    POU_D_E = 188
 
-    POU_D_T = 187
+    POU_D_EM = 189
 
-    POU_D_TG = 188
+    POU_D_SQUE = 190
 
-    POU_D_TGM = 189
+    POU_D_T = 191
 
-    POU_D_T_GD = 190
+    POU_D_TG = 192
 
-    POU_FLUI_STRU = 191
+    POU_D_TGM = 193
 
-    Planar = 175
+    POU_D_T_GD = 194
+
+    POU_FLUI_STRU = 195
+
+    Planar = 179
 
     PlanarBar = 0
 
-    PlaneStrain = 124
+    PlaneStrain = 126
 
-    PlaneStress = 117
+    PlaneStress = 119
 
-    Q4G = 192
+    Q4G = 196
 
-    Q4GG = 193
+    Q4GG = 197
 
     SECH_3D = 45
 
     SECH_3D_DIAG = 46
 
-    SI_3D = 47
+    SI_3D = 48
 
-    THH2D_3D = 48
+    THH2D_3D = 49
 
-    THH2MD_3D = 49
+    THH2MD_3D = 50
 
-    THH2MS_3D = 50
+    THH2MS_3D = 51
 
-    THH2S_3D = 51
+    THH2S_3D = 52
 
-    THHD_3D = 52
+    THHD_3D = 53
 
-    THHMD_3D = 54
+    THHMD_3D = 55
 
-    THHMS_3D = 55
+    THHMS_3D = 56
 
-    THHM_3D = 53
+    THHM_3D = 54
 
-    THHS_3D = 56
+    THHS_3D = 57
 
-    THMD_3D = 58
+    THMD_3D = 59
 
-    THMS_3D = 59
+    THMS_3D = 60
 
-    THMS_DIL_3D = 60
+    THMS_DIL_3D = 61
 
-    THM_3D = 57
+    THM_3D = 58
 
-    THVD_3D = 61
+    THVD_3D = 62
 
-    THVS_3D = 62
+    THVS_3D = 63
 
-    TUYAU_3M = 194
+    TUYAU_3M = 198
 
-    TUYAU_6M = 195
+    TUYAU_6M = 199
 
     Tridimensional = 7
 
@@ -12594,6 +13063,10 @@ class Formulation:
     NoFormulation = 0
 
     Quadratic = 2
+
+    Sta = 8
+
+    StaInco = 9
 
     UP = 4
 
@@ -13205,7 +13678,7 @@ class Result(DataStructure):
             bool: True if the result exists else False
         """
 
-    def getAccessParameters(self):
+    def getAccessParameters(self, only_access=True):
         """Return the access parameters of the result as Python dict.
 
         Returns:
@@ -13445,6 +13918,13 @@ class Result(DataStructure):
             int: number of index stored.
         """
 
+    def getParameters(self, only_access=False):
+        """Return the parameters of the result as Python dict.
+
+        Returns:
+            dict{str : list[int,float,str]}: Dict of values for each parameter variable.
+        """
+
     def getTable(self, identifier):
         """Extract a Table from the datastructure.
 
@@ -13527,13 +14007,17 @@ class Result(DataStructure):
     def printListOfFields(self):
         """Print the names of all fields (real, complex, ...) stored in the result."""
 
-    def printMedFile(self, filename, medname="", local=True, internalVar=True):
+    def printMedFile(
+        self, filename, medname="", local=True, internalVar=True, fields=[], version=""
+    ):
         """Print the result in a MED file.
 
         Args:
             filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
+            fields (list[str]): Name of fields to save. (default: all)
+            version (str): Version of MED file.
         """
 
     def resize(self, nbIndexes):
@@ -13884,13 +14368,18 @@ class NonLinearResult(TransientResult):
     def getTangentMatrix(self):
         pass
 
-    def printMedFile(self, filename, medname="", local=False, internalVar=True):
+    def printMedFile(
+        self, filename, medname="", local=False, internalVar=True, fields=[], version=""
+    ):
         """Print the result in a MED file.
 
         Args:
             filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
+            internalVarl (bool); Save VARI_ELGA_NOMME or not. (default: True)
+            fields (list[str]): Name of fields to save. (default: all)
+            version (str): Version of MED file.
         """
 
     def setContact(self, *args, **kwargs):
@@ -14172,6 +14661,20 @@ class PhysicalProblem:
             bool: True - if the model is thermal
         """
 
+    def setContactFED(self, virtualCell):
+        """Set virtual cells from contact pairing
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+        """
+
+    def setContactSlaveFED(self, contact):
+        """Set virtual cells from contact definition
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+        """
+
     def setDOFNumbering(self, dofNum):
         """Set the DOF numbering
 
@@ -14184,20 +14687,6 @@ class PhysicalProblem:
 
         Arguments:
             loads (ListOfLoads): a pointer to the list of loads
-        """
-
-    def setVirtualCell(self, virtualCell):
-        """Set virtual cells from contact pairing
-
-        Arguments:
-            virtualCell (FiniteElementDescriptor)): a pointer to the FED
-        """
-
-    def setVirtualSlavCell(self, contact):
-        """Set virtual cells from contact definition
-
-        Arguments:
-            virtualCell (FiniteElementDescriptor)): a pointer to the FED
         """
 
     def zeroDirichletBCDOFs(self, arg0):
@@ -15117,6 +15606,16 @@ class ParallelMesh(BaseMesh):
             ParallelMesh: the bi-quadratic mesh.
         """
 
+    def convertToCubic(self, info=1):
+        """Convert the mesh to a cubic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the cubic mesh.
+        """
+
     def convertToLinear(self, info=1):
         """Convert the mesh to a linear one.
 
@@ -15335,6 +15834,18 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             bool: *True* if the mesh contains quadratic cells, *False* otherwise.
+        """
+
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
+        """Print the mesh in the MED format
+
+        Arguments:
+            filename (Path|str): Name of the file
+            local (bool=True) : print local values only (relevant for a ParallelMesh only)
+            version (list): list of size 3 ([major, minor, release])
+
+        Returns:
+            Bool: True if of
         """
 
     def setGroupOfCells(self, group_name, cell_ids):
@@ -16888,6 +17399,31 @@ class PostProcessing:
          FieldOnCellReals: The maximal value of the field
         """
 
+    def computeStress(self, displ, time=0.0, externVar=None, strx_elga=None):
+        """Compute stress SIEF_ELGA
+
+        Arguments:
+            displ (FieldOnNodesReal): displacement
+            time (float): time
+            externVar (FieldOnCellsReal): external state variables
+            strx_elga (FieldOnCellsReal): STRX_ELGA field
+
+        Returns:
+            FieldOnCellReals: stress SIEF_ELGA field
+        """
+
+    def computeStructuralStress(self, displ, time=0.0, externVar=None):
+        """Compute stress STRX_ELGA
+
+        Arguments:
+            displ (FieldOnNodesReal): displacement
+            time (float): time
+            externVar (FieldOnCellsReal): external state variables
+
+        Returns:
+            FieldOnCellReals: stress STRX_ELGA field
+        """
+
 
 # class HHO in libaster
 
@@ -16905,8 +17441,13 @@ class HHO:
     def __getstate__(self):
         pass
 
-    def __init__(self, arg0):
-        pass
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.HHO, arg0: libaster.PhysicalProblem) -> None
+
+        2. __init__(self: libaster.HHO, arg0: libaster.Model) -> None
+        """
 
     def __setstate__(self, arg0):
         pass
@@ -17068,14 +17609,43 @@ class HHO:
                     FieldOnNodesReal: HHO field
         """
 
-    def projectOnLagrangeSpace(self, hho_field):
+    def projectOnLagrangeSpace(self, hho_field, groupOfCells=[], average=True):
         """Project field from HHO-space to Lagrange-space
 
         Arguments:
               hho_field (FieldOnNodesReal): hho field like displacement or thermic
+              groupOfCells (list[str]): groups where to compute
+              average (bool): average or not the field at nodes.
 
         Returns:
               FieldOnNodesReal: HHO field project on Lagrange space
+        """
+
+    def static_condensation(self, matr_elem, vect_elem):
+        """Performs static condensation.
+
+        Arguments:
+              matr_elem (ElementaryMatrixDisplacementReal): elementary (symetric) matrix.
+              vect_elem (ElementaryVectorDisplacementReal): elementary vector.
+
+        Returns:
+              [
+              [AssemblyMatrixDisplacementReal, FieldOnNodesReal],
+              [AssemblyMatrixDisplacementReal, FieldOnNodesReal]
+              ]: return two pairs of a matrix and a rhs. First pair is the condensated system
+              to solve. Second pair is used for static decondensation.
+        """
+
+    def static_decondensation(self, mD, lD, uF):
+        """Performs static decondensation. Update cell DoFs.
+
+        Arguments:
+              mD (AssemblyMatrixDisplacementReal): matrix of decondensation.
+              lD (FieldOnNodesReal): rhs of decondensation.
+              uF (FieldOnNodesReal): solution computed after condensation.
+
+        Returns:
+              FieldOnNodesReal: solution after decondensation.
         """
 
 
@@ -17584,6 +18154,18 @@ class MedFileReader:
     def close(self):
         """Close med file"""
 
+    def createMesh(self, name, dim, desc):
+        """Create new mesh in file
+
+        Arguments:
+            name (str): mesh name (length: 64)
+            dim (int): mesh dimension
+            desc (str): mesh description (length: 200)
+
+        Returns:
+            MedMesh: return new med mesh object
+        """
+
     def getField(self, *args, **kwargs):
         """Overloaded function.
 
@@ -17649,12 +18231,13 @@ class MedFileReader:
             int: profile number
         """
 
-    def open(self, path, accessType):
+    def open(self, path, accessType, version=[0, 0, 0]):
         """Open med file
 
         Arguments:
             path (Path|str): path to med file
             accessType (MedFileAccessType): med access type
+            version (list): list of size 3 ([major, minor, release])
 
         Returns:
             int: return code (0 if open is ok)
@@ -17787,6 +18370,15 @@ class MedMesh:
 
     def __pickling_disabled__(self):
         pass
+
+    def addFamily(self, name, num, grps):
+        """Add family to mesh
+
+        Arguments:
+            name (str): family name
+            num (int): family id
+            grps (list): group list
+        """
 
     def getCellFamilyAtSequence(self, numdt, numit, type_iterator):
         """Get cell family in calculation sequence for given profile
@@ -18062,14 +18654,14 @@ class MedVector:
         """Get vector size, ie: number of elements (cells or nodes)"""
 
 
-# class MeshReader in libaster
+# class MedToAsterReader in libaster
 
 
-class MeshReader:
+class MedToAsterReader:
     pass
 
     # Method resolution order:
-    #     MeshReader
+    #     MedToAsterReader
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -18109,6 +18701,74 @@ class MeshReader:
             path (Path|str): path to med file
             mesh_name (str): mesh name (optional)
             verbosity (int): verbosity (optional)
+        """
+
+
+# class AsterToMedWriter in libaster
+
+
+class AsterToMedWriter:
+    pass
+
+    # Method resolution order:
+    #     AsterToMedWriter
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
+        pass
+
+    def printMesh(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.Mesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+
+
+        Print mesh to med file
+
+        Arguments:
+            Mesh: mesh to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mesh_name (str): mesh name (optional)
+
+
+        2. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ParallelMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+
+
+        Print mesh to med file
+
+        Arguments:
+            Mesh: mesh to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mesh_name (str): mesh name (optional)
+
+
+        3. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ConnectionMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+
+
+        Print mesh to med file
+
+        Arguments:
+            Mesh: mesh to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mesh_name (str): mesh name (optional)
+        """
+
+    def printResult(self, result, path, parallelPrint=False):
+        """Print result to med file
+
+        Arguments:
+            result: result to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
         """
 
 
@@ -18196,3 +18856,33 @@ def projectionAlongDirection(
         float : first parametric coordinate of projection of point on element
         float : second parametric coordinate of projection of point on element
     """
+
+
+# class ResultManager in libaster
+
+
+class ResultManager:
+    pass
+
+    # Method resolution order:
+    #     ResultManager
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, /, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def releaseCurrentResult(self):
+        """Release result"""
+
+    def setCurrentResult(self, result):
+        """Set result which will be enrich during calculation
+
+        Argument:
+            result (Result): result to enrich
+        """
+
+    # ----------------------------------------------------------------------
+    # Static methods defined here:

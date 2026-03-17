@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine nmtimr(ds_measure, device_type_, phasis, time)
 #include "asterfort/assert.h"
 #include "asterfort/GetDevice.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Measure), intent(in) :: ds_measure
     character(len=*), intent(in) :: device_type_

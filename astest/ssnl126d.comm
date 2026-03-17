@@ -1,0 +1,199 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
+
+mail = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+mail_sect = LIRE_MAILLAGE(FORMAT="MED", UNITE=21)
+
+modele = AFFE_MODELE(
+    AFFE=_F(MODELISATION="POU_D_TGM", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mail
+)
+
+GF = DEFI_GEOM_FIBRE(
+    SECTION=_F(
+        COOR_AXE_POUTRE=(0.0, 0.0),
+        GROUP_FIBRE="DISK",
+        GROUP_MA_SECT=("Disk",),
+        MAILLAGE_SECT=mail_sect,
+    )
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+# ---------------------------------------------------------------------
+CAREL = AFFE_CARA_ELEM(
+    GEOM_FIBRE=GF,
+    MODELE=modele,
+    MULTIFIBRE=_F(GROUP_FIBRE=("DISK",), GROUP_MA=("VOL",), PREC_AIRE=0.02),
+    POUTRE=_F(CARA=("R",), GROUP_MA=("VOL",), SECTION="CERCLE", VALE=(0.01,)),
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+# ---------------------------------------------------------------------
+acier_plas = DEFI_MATERIAU(
+    ECRO_LINE=_F(D_SIGM_EPSI=70000000000.0, SY=4000000.0),
+    ELAS=_F(E=210000000000.0, RHO=7800.0, NU=0.3),
+)
+
+# ---------------------------------------------------------------------
+#                     INSTANTS
+# ---------------------------------------------------------------------
+fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 10.0, 10.0))
+
+listinst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=100))
+
+CC = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(DRX=0.0, DRY=0.0, DRZ=0.0, DX=0.0, DY=0.0, DZ=0.0, GROUP_NO="ENCAST"), MODELE=modele
+)
+
+# puisqu'en 3D on applique unr force face, en POU_D_TGM il faut appliquer force*surface pour la foce nodale
+CS = AFFE_CHAR_MECA(FORCE_NODALE=_F(FX=-3141.593, GROUP_NO="EFFORT"), MODELE=modele)
+
+CS2 = AFFE_CHAR_MECA(FORCE_NODALE=_F(FX=-6283.185, GROUP_NO="EFFORT"), MODELE=modele)
+
+# ---------------------------------------------------------------------
+#                     COMPORTEMENTS MATERIAUX
+# ---------------------------------------------------------------------
+COMPF_elas_plas = DEFI_COMPOR(
+    GEOM_FIBRE=GF,
+    MATER_SECT=acier_plas,
+    MULTIFIBRE=_F(GROUP_FIBRE=("DISK",), MATER=acier_plas, RELATION="ELAS"),
+)
+
+COMPF_plas = DEFI_COMPOR(
+    GEOM_FIBRE=GF,
+    MATER_SECT=acier_plas,
+    MULTIFIBRE=_F(GROUP_FIBRE=("DISK",), MATER=acier_plas, RELATION="VMIS_ISOT_LINE"),
+)
+
+ch_mat_elas_plas = AFFE_MATERIAU(
+    AFFE=_F(MATER=acier_plas, TOUT="OUI"),
+    AFFE_COMPOR=_F(COMPOR=COMPF_elas_plas, TOUT="OUI"),
+    MAILLAGE=mail,
+)
+
+ch_mat_plas = AFFE_MATERIAU(
+    AFFE=_F(MATER=acier_plas, TOUT="OUI"),
+    AFFE_COMPOR=_F(COMPOR=COMPF_plas, TOUT="OUI"),
+    MAILLAGE=mail,
+)
+
+# ---------------------------------------------------------------------
+#                     CALCUL STAT_NON_LINE ELASTIQUE
+# ---------------------------------------------------------------------
+resu = STAT_NON_LINE(
+    CARA_ELEM=CAREL,
+    CHAM_MATER=ch_mat_elas_plas,
+    COMPORTEMENT=_F(DEFORMATION="GROT_GDEP", RELATION="MULTIFIBRE", TOUT="OUI"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=300),
+    CRIT_STAB=_F(),
+    EXCIT=(
+        _F(CHARGE=CS2, FONC_MULT=fonc, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=CC, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=listinst),
+    MODELE=modele,
+    NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=1),
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MDA"),
+)
+
+
+TABSPEC1 = RECU_TABLE(CO=resu, NOM_TABLE="ANALYSE_MODALE")
+
+IMPR_TABLE(FORMAT_R="1PE22.15", TABLE=TABSPEC1, UNITE=2)
+"""
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=resu,
+                  TOUT_ORDRE='OUI'),
+          UNITE=5)
+"""
+# ---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+# ---------------------------------------------------------------------
+TEST_TABLE(
+    VALE_CALC=-0.7045174059842898,
+    NOM_PARA="CHAR_CRIT",
+    TABLE=TABSPEC1,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="MODE_FLAMB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=3),
+        _F(NOM_PARA="NUME_INST", VALE_I=100),
+    ),
+)
+
+
+# ---------------------------------------------------------------------
+#                     CALCUL STAT_NON_LINE ELASTO-PLASTIQUE
+# ---------------------------------------------------------------------
+RESU = STAT_NON_LINE(
+    CARA_ELEM=CAREL,
+    CHAM_MATER=ch_mat_plas,
+    COMPORTEMENT=_F(DEFORMATION="GROT_GDEP", RELATION="MULTIFIBRE", TOUT="OUI"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=300),
+    CRIT_STAB=_F(),
+    EXCIT=(
+        _F(CHARGE=CS, FONC_MULT=fonc, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=CC, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=listinst),
+    MODELE=modele,
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=1, REAC_ITER=1),
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MDA"),
+)
+
+TABSPEC2 = RECU_TABLE(CO=RESU, NOM_TABLE="ANALYSE_MODALE")
+
+IMPR_TABLE(FORMAT_R="1PE22.15", TABLE=TABSPEC2, UNITE=7)
+"""
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=RESU,
+                  TOUT_ORDRE='OUI'),
+          UNITE=10)
+"""
+# ---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+# ---------------------------------------------------------------------
+TEST_TABLE(
+    VALE_CALC=-0.06665262713279910,
+    NOM_PARA="CHAR_CRIT",
+    TABLE=TABSPEC2,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="MODE_FLAMB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=3),
+        _F(NOM_PARA="INST", VALE=0.42),
+    ),
+)
+
+TEST_TABLE(
+    VALE_CALC=0.06524932586533275,
+    NOM_PARA="CHAR_CRIT",
+    TABLE=TABSPEC2,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="MODE_FLAMB"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=3),
+        _F(NOM_PARA="INST", VALE=0.43),
+    ),
+)
+
+FIN()

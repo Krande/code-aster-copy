@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -590,9 +590,9 @@ class CALCULS_ASTER:
         if self.unity_follow and info == 2:
             run.options["debug_stderr"] = True
         else:
-            run.options[
-                "debug_stderr"
-            ] = False  # pas d'output d'executions des esclaves dans l'output maitre
+            run.options["debug_stderr"] = (
+                False  # pas d'output d'executions des esclaves dans l'output maitre
+            )
 
         # Master profile
         prof = AsterProfil(run=run, filename=export)

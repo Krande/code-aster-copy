@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,6 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta, &
 ! IN IMPR/IFAPM: IN/K3 : PRINT PARAMETERS FOR DEBBUGING
 ! IN IND   : IN : NUMEROUS OF THE CHECK POINT (FOR PRINT/DEBUGGING ONLY)
 !     ------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
     integer(kind=8) :: j, nkm1, nbcmb, ibid, iret, jmatc, lmatsh
     real(kind=8) :: rauxx, rauxy, rauxm, prec, prec1, pi, coef(6), valr(2), rmin

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,9 +140,23 @@ class DataStructureDict(PyDataStructure):
     def __len__(self):
         return len(self._store)
 
+    def __iter__(self):
+        return iter(self._store)
+
+    def __contains__(self, key):
+        return key in self._store
+
     def keys(self):
         """Return a view on the access keys."""
         return self._store.keys()
+
+    def values(self):
+        """Return a view on the values."""
+        return self._store.values()
+
+    def items(self):
+        """Return items."""
+        return self._store.items()
 
     def __setitem__(self, key, obj):
         """Store an object with the given access key."""
@@ -167,12 +181,6 @@ class DataStructureDict(PyDataStructure):
             *object_type*: Object stored with that key.
         """
         return self._store.get(key, default)
-
-
-class DryingResultDict(DataStructureDict):
-    """Set of drying results."""
-
-    object_type = "EVOL_SECH"
 
 
 class ThermalResultDict(DataStructureDict):

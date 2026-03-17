@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -237,7 +237,7 @@ class PostBeremin:
 
             self._dictfondfiss = {}
             for group_no, nom_group_no in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
-                nodes = self._result.getMesh().getNodes(group_no)
+                nodes = self._result.getMesh().getNodes(group_no, localNumbering=True)
                 both = set(frontnodes).intersection(nodes)
                 both = list(both)
                 indexfrontnode = frontnodes.index(both[0])
@@ -634,7 +634,7 @@ class PostBeremin:
         sixx += sig1
         sigma_sfield.setComponentValues("SIXX", sixx)
         sigma_f_mc, prof = field_converter.toMCFieldAndProfileElem(
-            sigma_sfield, self._mesh_3D_cells_mc
+            sigma_sfield, self._mesh_3D_cells_mc, "SIEF_ELGA"
         )
         sigma_a_mc = sigma_f_mc.getArray()[:, 0]
 

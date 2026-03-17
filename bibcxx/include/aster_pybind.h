@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -47,7 +47,7 @@ static auto define_pickling() {
                        []( const py::tuple &tup ) { return std::make_shared< DSType >( tup ); } );
 };
 
-/** @brief Explicit mark that pickling is not supported by an object */
+/** @brief Explicitly marks that pickling is not supported by an object */
 template < typename DSType >
 static auto disable_pickling() {
     return []( const DSType &obj ) { return 1; };

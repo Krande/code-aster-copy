@@ -5,7 +5,7 @@
  * @file Utils.h
  * @brief Fichier entete des utilitaires liés au maillage
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,8 +22,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: yannis.el-gharbi at framatome.com */
 
 #include "astercxx.h"
 

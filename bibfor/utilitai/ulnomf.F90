@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ function ulnomf(nomfic, kacc, typef)
 !              -1 SI AUCUN DE DISPONIBLE
 !     RENVOIE LE TYPE D'ACCES AU FICHIER ASSOCIE DANS L'ARGUMENT KACC
 !     RENVOIE LE TYPE DE FICHIER ASSOCIE DANS L'ARGUMENT TYPEF
-! person_in_charge: j-pierre.lefebvre at edf.fr
     integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)

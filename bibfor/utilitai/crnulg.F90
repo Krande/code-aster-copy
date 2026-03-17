@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ subroutine crnulg(numddl)
 #include "asterf.h"
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/crnlgc.h"
-#include "asterfort/crnlgn.h"
+#include "asterfort/global_numbering_compute.h"
+#include "asterfort/global_numbering_communicate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jemarq.h"
@@ -42,10 +42,10 @@ subroutine crnulg(numddl)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !   Création de la numérotation
-    call crnlgn(numddl//'.NUME')
+    call global_numbering_compute(numddl//'.NUME')
 
 !   Communication de la numérotation
-    call crnlgc(numddl//'.NUME')
+    call global_numbering_communicate(numddl//'.NUME')
 
 !   Suppression des objets temporaires
     call jedetc('V', '&&CRNULG', 1)

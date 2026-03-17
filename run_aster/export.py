@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ The syntax of a ``.export`` file is very simple:
     memory_limit: float         - memory limit in MB
     mpi_nbcpu: int              - number of MPI processes
     ncpus: int                  - number of threads (per MPI process)
-    no-mpi: bool                - start without mpiexec (for some testcases)
+    no-mpi: bool                - start without mpiexec/srun (for some testcases)
     time_limit: float           - time limit is seconds
 
 ``A`` is a special parameter that stores command line arguments passed to the

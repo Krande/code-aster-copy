@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-! aslint: disable=W1504
-
 module HHO_SmallStrainMeca_module
 !
+    use Behaviour_module
+    use Behaviour_type
+    use FE_algebra_module
+    use HHO_algebra_module
     use HHO_basis_module
+    use HHO_compor_module
+    use HHO_eval_module
+    use HHO_matrix_module
     use HHO_quadrature_module
     use HHO_size_module
     use HHO_type
     use HHO_utils_module
-    use HHO_eval_module
-    use HHO_matrix_module
-    use HHO_algebra_module
-    use Behaviour_type
-    use Behaviour_module
-    use FE_algebra_module
 !
     implicit none
 !
@@ -45,6 +44,7 @@ module HHO_SmallStrainMeca_module
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmcomp.h"
 #include "blas/daxpy.h"
+#include "blas/dsyr.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,8 @@ module HHO_SmallStrainMeca_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: hhoSmallStrainLCMeca, tranfoMatToSym, hhoMatrElasMeca
-    public :: hhoComputeRhsSmall, hhoComputeLhsSmall
+    public :: hhoComputeRhsSmall, hhoComputeLhsSmall, hhoAssembleLhsSmall
+    public :: hhoAddAxisGradSym, hhoComputeRhsSmallAxis, hhoComputeLhsSmallAxis
     public :: hhoComputeCgphi, tranfoSymToMat
     private :: tranfoTensToSym
 !
@@ -65,39 +66,23 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
-                                    typmod, imate, compor, option, carcri, &
-                                    lgpg, ncomp, time_prev, time_curr, depl_prev, &
-                                    depl_incr, sigm, vim, angmas, mult_comp, &
-                                    lhs, rhs, sigp, vip, codret)
+    subroutine hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoCS, gradrec, &
+                                    time_prev, time_curr, depl_prev, depl_incr, &
+                                    lhs, rhs)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
+        type(HHO_Compor_State), intent(inout) :: hhoCS
         type(HHO_matrix), intent(in) :: gradrec
-        character(len=*), intent(in) :: fami
-        character(len=8), intent(in) :: typmod(*)
-        integer(kind=8), intent(in) :: imate
-        character(len=16), intent(in) :: compor(*)
-        character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: carcri(*)
-        integer(kind=8), intent(in) :: lgpg
-        integer(kind=8), intent(in) :: ncomp
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: depl_prev(MSIZE_TDOFS_VEC)
         real(kind=8), intent(in) :: depl_incr(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(in) :: sigm(ncomp, *)
-        real(kind=8), intent(in) :: vim(lgpg, *)
-        real(kind=8), intent(in) :: angmas(*)
-        character(len=16), intent(in) :: mult_comp
         type(HHO_matrix), intent(inout) :: lhs
         real(kind=8), intent(inout) :: rhs(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(inout) :: sigp(ncomp, *)
-        real(kind=8), intent(inout) :: vip(lgpg, *)
-        integer(kind=8), intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -106,28 +91,14 @@ contains
 !   In hhoCell      : the current HHO Cell
 !   In hhoData      : information on HHO methods
 !   In hhoQuadCellRigi : quadrature rules from the rigidity family
+!   InOut hhoCS        : hho compor state
 !   In gradrec      : local gradient reconstruction
-!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
-!   In typmod       : type of modelization
-!   In imate        : materiau code
-!   In compor       : type of behavior
-!   In option       : option of computations
-!   In carcri       : local criterion of convergence
-!   In lgpg         : size of internal variables for 1 pg
-!   In ncomp        : number of composant of sigm et sigp
 !   In time_prev    : previous time T-
 !   In time_curr    : current time T+
 !   In depl_prev    : displacement at T-
 !   In depl_incr    : increment of displacement between T- and T+
-!   In sigm         : stress at T-  (XX, YY, ZZ, XY, XZ, YZ)
-!   In vim          : internal variables at T-
-!   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
-!   In multcomp     : ?
 !   Out lhs         : local contribution (lhs)
 !   Out rhs         : local contribution (rhs)
-!   Out sig         : stress at T+  (XX, YY, ZZ, XY, XZ, YZ)
-!   Out vip         : internal variables at T+
-!   Out codret      : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8), parameter :: ksp = 1
@@ -137,8 +108,8 @@ contains
         real(kind=8) :: dsidep(6, 6), E_prev(6), E_incr(6), Cauchy_curr(6), Cauchy_prev(6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
-        type(HHO_matrix) :: AT, TMP
-        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        type(HHO_matrix) :: AT, lhs_axis, AT_ax1, AT_ax2
+        integer(kind=8) :: cbs, fbs, faces_dofs, total_dofs, gbs, ipg, gbs_cmp, gbs_sym, cbs_cmp
         integer(kind=8) :: cod(MAX_QP_CELL)
         aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
@@ -149,88 +120,119 @@ contains
                            gbs, gbs_sym)
         faces_dofs = total_dofs-cbs
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        cbs_cmp = cbs/hhoCell%ndim
 !
         bT = 0.d0
         dsidep = 0.d0
         E_prev_coeff = 0.d0
         E_incr_coeff = 0.d0
         Cauchy_curr = 0.d0
-        l_lhs = L_MATR(option)
-        l_rhs = L_VECT(option)
-        nb_sig = nbsigm()
+        l_lhs = L_MATR(hhoCS%option)
+        l_rhs = L_VECT(hhoCS%option)
 
         if (l_lhs) then
             call AT%initialize(gbs_sym, gbs_sym, 0.d0)
+            if (hhoCS%axis) then
+                call lhs_axis%initialize(cbs_cmp, cbs_cmp, 0.d0)
+                call AT_ax1%initialize(gbs_sym, cbs_cmp, 0.d0)
+                call AT_ax2%initialize(cbs_cmp, gbs_sym, 0.d0)
+            end if
         end if
 
 ! ----- Initialisation of behaviour datastructure
         call behaviourInit(BEHinteg)
 
 ! ----- Set main parameters for behaviour (on cell)
-        call behaviourSetParaCell(hhoCell%ndim, typmod, option, &
-                                  compor, carcri, &
+        call behaviourSetParaCell(hhoCell%ndim, hhoCS%typmod, hhoCS%option, &
+                                  hhoCS%compor, hhoCS%carcri, &
                                   time_prev, time_curr, &
-                                  fami, imate, &
+                                  hhoCS%fami, hhoCS%imater, &
                                   BEHinteg)
+!
+! ----- Prepare external state variables (geometry)
+        call behaviourPrepESVAGeomHHO(hhoCell, hhoQuadCellRigi, BEHinteg)
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
 !
 ! ----- compute E_prev = gradrec_sym * depl_prev
-        call hho_dgemv_N(1.d0, gradrec, depl_prev, 0.0, E_prev_coeff)
+        call gradrec%dot(depl_prev, E_prev_coeff)
 !
 ! ----- compute E_incr = gradrec_sym * depl_incr
-        call hho_dgemv_N(1.d0, gradrec, depl_incr, 0.0, E_incr_coeff)
+        call gradrec%dot(depl_incr, E_incr_coeff)
 !
 ! ----- Loop on quadrature point
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-            BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1:3) = coorpg(1:3)
             weight = hhoQuadCellRigi%weights(ipg)
 ! --------- Eval basis function at the quadrature point
-            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, &
+                                     max(hhoData%grad_degree(), hhoData%cell_degree()), &
+                                     BSCEval)
 !
 ! --------- Eval deformations
-            E_prev = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_prev_coeff)
+            E_prev = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_prev_coeff)
 !
-            E_incr = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_incr_coeff)
+            E_incr = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_incr_coeff)
+!
+            if (hhoCS%axis) then
+                call hhoAddAxisGradSym(hhoCell, BSCEval, depl_prev(faces_dofs+1:), &
+                                       coorpg, cbs_cmp, E_prev)
+                call hhoAddAxisGradSym(hhoCell, BSCEval, depl_incr(faces_dofs+1:), &
+                                       coorpg, cbs_cmp, E_incr)
+            end if
 !
 ! -------- tranform sigm in symmetric form
 !
-            call tranfoMatToSym(hhoCell%ndim, sigm(1:ncomp, ipg), Cauchy_prev)
+            call tranfoMatToSym(hhoCell%ndim, &
+                                hhoCS%sig_prev((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm), &
+                                Cauchy_prev)
 ! --------- Set main parameters for behaviour (on point)
             call behaviourSetParaPoin(ipg, ksp, BEHinteg)
 
 ! --------- Integrate
             call nmcomp(BEHinteg, &
-                        fami, ipg, 1, hhoCell%ndim, typmod, &
-                        imate, compor, carcri, time_prev, time_curr, &
+                        hhoCS%fami, ipg, 1, hhoCell%ndim, hhoCS%typmod, &
+                        hhoCS%imater, hhoCS%compor, hhoCS%carcri, time_prev, time_curr, &
                         6, E_prev, E_incr, 6, Cauchy_prev, &
-                        vim(1, ipg), option, angmas, &
-                        Cauchy_curr, vip(1, ipg), 36, dsidep, cod(ipg), mult_comp)
+                        hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
+                        hhoCS%option, hhoCS%angl_naut, Cauchy_curr, &
+                        hhoCS%vari_curr((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
+                        36, dsidep, cod(ipg), hhoCS%mult_comp)
 !
             if (cod(ipg) .eq. 1) then
                 goto 999
             end if
 !
 ! --------- For new prediction and nmisot.F90
-            if (L_PRED(option)) then
+            if (L_PRED(hhoCS%option)) then
                 Cauchy_curr = 0.d0
             end if
 !
-            if (L_SIGM(option)) then
+            if (L_SIGM(hhoCS%option)) then
 ! -------- tranform Cauchy_curr in symmetric form
-                call tranfoSymToMat(hhoCell%ndim, Cauchy_curr, sigp(1:ncomp, ipg))
+                call tranfoSymToMat(hhoCell%ndim, Cauchy_curr, &
+                                    hhoCS%sig_curr((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm))
             end if
 !
-            if (l_rhs) call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
-                                               bT)
+            if (l_rhs) then
+                call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
+                if (hhoCS%axis) then
+                    call hhoComputeRhsSmallAxis(hhoCell, Cauchy_curr, weight, coorpg(1), &
+                                                BSCEval, cbs_cmp, rhs(faces_dofs+1:))
+                end if
+            end if
 !
-            if (l_lhs) call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, &
-                                               gbs_cmp, AT)
+            if (l_lhs) then
+                call hhoComputeLhsSmall(hhoCell, dsidep, hhoCS%matsym, weight, BSCEval, &
+                                        gbs_sym, gbs_cmp, AT)
+                if (hhoCS%axis) then
+                    call hhoComputeLhsSmallAxis(hhoCell, dsidep, weight, coorpg(1), &
+                                                BSCEval, gbs_cmp, cbs_cmp, &
+                                                lhs_axis, AT_ax1, AT_ax2)
+                end if
+            end if
         end do
 !
 ! ----- compute rhs += Gradrec**T * bT
@@ -238,20 +240,8 @@ contains
             call hho_dgemv_T(1.d0, gradrec, bT, 1.d0, rhs)
         end if
 !
-! ----- compute lhs += gradrec**T * AT * gradrec
         if (l_lhs) then
-!
-! ----- Copy symetric part of AT
-            call AT%copySymU()
-            call TMP%initialize(gbs_sym, total_dofs, 0.d0)
-! ----- step1: TMP = AT * gradrec
-            call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
-!
-! ----- step2: lhs += gradrec**T * TMP
-            call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
-!
-            call TMP%free()
-            call AT%free()
+            call hhoAssembleLhsSmall(hhoCell, hhoCS, gradrec, AT, lhs_axis, AT_ax1, AT_ax2, lhs)
         end if
 !
 ! print*, "AT", hhoNorm2Mat(AT(1:gbs_sym,1:gbs_sym))
@@ -263,7 +253,7 @@ contains
 !
 ! ---- Return code summary
 !
-        call codere(cod, hhoQuadCellRigi%nbQuadPoints, codret)
+        call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoCS%codret)
 !
     end subroutine
 !
@@ -271,20 +261,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
-                               imate, option, time_curr, angmas, lhs)
+    subroutine hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoCS, gradrec, &
+                               time_curr, lhs)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
+        type(HHO_Compor_State), intent(inout) :: hhoCS
         type(HHO_matrix), intent(in) :: gradrec
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: imate
-        character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: time_curr
-        real(kind=8), intent(in) :: angmas(*)
         type(HHO_matrix), intent(inout) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
@@ -294,13 +281,9 @@ contains
 !   In hhoCell      : the current HHO Cell
 !   In hhoData      : information on HHO methods
 !   In hhoQuadCellRigi : quadrature rules from the rigidity family
+!   In hhoCS        : hho compor state
 !   In gradrec      : local gradient reconstruction
-!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
-!   In typmod       : type of modelization
-!   In imate        : materiau code
-!   In option       : option of computations
 !   In time_curr    : current time T+
-!   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
 !   Out lhs         : local contribution (lhs)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -308,8 +291,9 @@ contains
         real(kind=8) :: dsidep(6, 6), dsidep3D(6, 6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        type(HHO_matrix) :: AT, TMP
+        type(HHO_matrix) :: AT, lhs_axis, AT_ax1, AT_ax2
         integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        integer(kind=8) :: cbs_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -318,16 +302,21 @@ contains
                            gbs, gbs_sym)
         faces_dofs = total_dofs-cbs
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        cbs_cmp = cbs/hhoCell%ndim
 !
         dsidep = 0.d0
         nb_sig = nbsigm()
 !
-        if (option /= "RIGI_MECA") then
+        if (hhoCS%option /= "RIGI_MECA") then
             ASSERT(ASTER_FALSE)
         end if
 
         call AT%initialize(gbs_sym, gbs_sym, 0.d0)
-        call TMP%initialize(gbs_sym, total_dofs, 0.d0)
+        if (hhoCS%axis) then
+            call lhs_axis%initialize(cbs_cmp, cbs_cmp, 0.d0)
+            call AT_ax1%initialize(gbs_sym, cbs_cmp, 0.d0)
+            call AT_ax2%initialize(cbs_cmp, gbs_sym, 0.d0)
+        end if
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -338,30 +327,28 @@ contains
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
             weight = hhoQuadCellRigi%weights(ipg)
 ! --------- Eval basis function at the quadrature point
-            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, &
+                                     max(hhoData%grad_degree(), hhoData%cell_degree()), BSCEval)
 !
 ! --------- Compute behaviour
 !
-            call dmatmc(fami, imate, time_curr, '+', ipg, &
-                        1, angmas, nb_sig, dsidep)
+            call dmatmc(hhoCS%fami, hhoCS%imater, time_curr, '+', ipg, &
+                        1, hhoCS%angl_naut, nb_sig, dsidep)
             call tranfoTensToSym(nb_sig, dsidep, dsidep3D)
 !
-            call hhoComputeLhsSmall(hhoCell, dsidep3D, weight, BSCEval, gbs_sym, &
+            call hhoComputeLhsSmall(hhoCell, dsidep3D, ASTER_TRUE, weight, BSCEval, gbs_sym, &
                                     gbs_cmp, AT)
+
+            if (hhoCS%axis) then
+                call hhoComputeLhsSmallAxis(hhoCell, dsidep3D, weight, coorpg(1), &
+                                            BSCEval, gbs_cmp, cbs_cmp, &
+                                            lhs_axis, AT_ax1, AT_ax2)
+            end if
         end do
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
 !
-! ----- Copy symetric part of AT
-        call AT%copySymU()
-! ----- step1: TMP = AT * gradrec
-        call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
-!
-! ----- step2: lhs += gradrec**T * TMP
-        call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
-
-        call AT%free()
-        call TMP%free()
+        call hhoAssembleLhsSmall(hhoCell, hhoCS, gradrec, AT, lhs_axis, AT_ax1, AT_ax2, lhs)
 !
     end subroutine
 !
@@ -369,8 +356,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeRhsSmall(hhoCell, stress, weight, BSCEval, gbs_cmp, &
-                                  bT)
+    subroutine hhoComputeRhsSmall(hhoCell, stress, weight, BSCEval, gbs_cmp, bT)
 !
         implicit none
 !
@@ -422,17 +408,55 @@ contains
 !
     end subroutine
 !
-!===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsSmall(hhoCell, module_tang, weight, BSCEval, gbs_sym, &
+!===================================================================================================
+!
+    subroutine hhoComputeRhsSmallAxis(hhoCell, stress, weight, r, BSCEval, cbs_cmp, rhs_axis)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: stress(6)
+        real(kind=8), intent(in) :: weight, r
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: cbs_cmp
+        real(kind=8), intent(inout) :: rhs_axis(MSIZE_CELL_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics - AXIS
+!
+!   Compute the scalar product bT += (stress, cphi/r)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In stress       : stress tensor (XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ)
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In cbs_cmp      : size of BSCEval
+!   Out rhs_axis    : contribution of rhs_axis
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_s3_r
+! --------------------------------------------------------------------------------------------------
+!
+        ASSERT(hhoCell%ndim == 2)
+        qp_s3_r = weight*stress(3)/r
+        call daxpy_1(cbs_cmp, qp_s3_r, BSCEval, rhs_axis)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsSmall(hhoCell, module_tang, matsym, weight, BSCEval, gbs_sym, &
                                   gbs_cmp, AT)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         real(kind=8), intent(in) :: module_tang(6, 6)
+        aster_logical, intent(in) :: matsym
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gbs_sym
@@ -442,7 +466,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
 !
-!   Compute the scalar product AT += (module_tang:gphi, gphi)_T at a quadrature point
+!   Compute the scalar product AT += (gphi, module_tang:gphi)_T at a quadrature point
 !   In hhoCell      : the current HHO Cell
 !   In module_tang  : elasto-plastic tangent moduli
 !   In weight       : quadrature weight
@@ -460,7 +484,7 @@ contains
         call hhoComputeCgphi(hhoCell, module_tang, BSCEval, gbs_cmp, weight, &
                              qp_Cgphi)
 !
-! -------- Compute scalar_product of (C_sgphi(j), sgphi(j))_T
+! -------- Compute scalar_product of (sgphi(i), C_sgphi(j))_T
         do j = 1, gbs_sym
             row = 1
 ! ---------- diagonal term
@@ -468,7 +492,7 @@ contains
                 do k = 1, gbs_cmp
                     AT%m(row, j) = AT%m(row, j)+qp_Cgphi(i, j)*BSCEval(k)
                     row = row+1
-                    if (row > j) then
+                    if (matsym .and. row > j) then
                         go to 100
                     end if
                 end do
@@ -481,7 +505,7 @@ contains
                     do k = 1, gbs_cmp
                         AT%m(row, j) = AT%m(row, j)+qp_Cgphi(3+i, j)*BSCEval(k)
                         row = row+1
-                        if (row > j) then
+                        if (matsym .and. row > j) then
                             go to 100
                         end if
                     end do
@@ -490,7 +514,7 @@ contains
                 do k = 1, gbs_cmp
                     AT%m(row, j) = AT%m(row, j)+qp_Cgphi(4, j)*BSCEval(k)
                     row = row+1
-                    if (row > j) then
+                    if (matsym .and. row > j) then
                         go to 100
                     end if
                 end do
@@ -500,6 +524,150 @@ contains
 !
 100         continue
         end do
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsSmallAxis(hhoCell, module_tang, weight, r, BSCEval, &
+                                      gbs_cmp, cbs_cmp, lhs_axis, AT_ax1, AT_ax2)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: module_tang(6, 6)
+        real(kind=8), intent(in) :: weight, r
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: cbs_cmp, gbs_cmp
+        type(HHO_matrix), intent(inout) :: lhs_axis, AT_ax1, AT_ax2
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (cphi/r, module_tang:cphi/r)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In module_tang  : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out AT          : contribution of At
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: ur_r(MSIZE_CELL_SCAL), qp_C_ur_r, qp_C_gphi
+        integer(kind=8) :: i, j, k, deca
+        blas_int :: b_incx, b_lda, b_n
+! --------------------------------------------------------------------------------------------------
+!
+        ASSERT(hhoCell%ndim == 2)
+! --------- Eval cphi/r
+        ur_r(1:cbs_cmp) = BSCEval(1:cbs_cmp)/r
+!
+! -------- Compute scalar_product of (cphi/r, module_tang:cphi/r)_T
+        b_n = to_blas_int(cbs_cmp)
+        b_incx = to_blas_int(1)
+        b_lda = to_blas_int(lhs_axis%max_nrows)
+        call dsyr('U', b_n, weight*module_tang(3, 3), ur_r, b_incx, &
+                  lhs_axis%m, b_lda)
+        deca = 1
+! ---------- diagonal term
+        do i = 1, 2
+            do j = 1, gbs_cmp
+                do k = 1, cbs_cmp
+! -------- Compute scalar_product of (sgphi, module_tang:cphi/r)_T
+                    qp_C_ur_r = weight*module_tang(i, 3)*ur_r(k)
+                    AT_ax1%m(deca, k) = AT_ax1%m(deca, k)+ &
+                                        qp_C_ur_r*BSCEval(j)
+! -------- Compute scalar_product of (ur/r, module_tang:sgphi)_T
+                    qp_C_gphi = weight*module_tang(3, i)*BSCEval(j)
+                    AT_ax2%m(k, deca) = AT_ax2%m(k, deca)+ &
+                                        qp_C_gphi*ur_r(k)
+                end do
+                deca = deca+1
+            end do
+        end do
+        do j = 1, gbs_cmp
+            do k = 1, cbs_cmp
+! -------- Compute scalar_product of (sgphi, module_tang:cphi/r)_T
+                qp_C_ur_r = weight*module_tang(4, 3)*ur_r(k)
+                AT_ax1%m(deca, k) = AT_ax1%m(deca, k)+ &
+                                    qp_C_ur_r*BSCEval(j)
+! -------- Compute scalar_product of (ur/r, module_tang:sgphi)_T
+                qp_C_gphi = weight*module_tang(3, 4)*BSCEval(j)
+                AT_ax2%m(k, deca) = AT_ax2%m(k, deca)+ &
+                                    qp_C_gphi*ur_r(k)
+            end do
+            deca = deca+1
+        end do
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoAssembleLhsSmall(hhoCell, hhoCS, gradrec, AT, lhs_axis, AT_ax1, AT_ax2, lhs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Compor_State), intent(in) :: hhoCS
+        type(HHO_matrix), intent(in) :: gradrec
+        type(HHO_matrix), intent(inout) :: lhs_axis, AT_ax1, AT_ax2, AT
+        type(HHO_matrix), intent(inout) :: lhs
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics - assemble LHS
+!
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_matrix) :: TMP
+        integer(kind=8) :: gbs_sym, total_dofs, cbs_cmp, faces_dofs
+! --------------------------------------------------------------------------------------------------
+!
+!
+        gbs_sym = gradrec%nrows
+        total_dofs = gradrec%ncols
+!
+! ----- compute lhs += gradrec**T * AT * gradrec
+!
+! ----- Copy symetric part of AT
+        if (hhoCS%matsym) then
+            call AT%copySymU()
+        end if
+        call TMP%initialize(gbs_sym, total_dofs, 0.d0)
+! ----- step1: TMP = AT * gradrec
+        call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
+!
+! ----- step2: lhs += gradrec**T * TMP
+        call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
+!
+        call TMP%free()
+        call AT%free()
+!
+        if (hhoCS%axis) then
+            cbs_cmp = lhs_axis%nrows
+            faces_dofs = total_dofs-hhoCell%ndim*cbs_cmp
+            call lhs_axis%copySymU()
+            call lhs%addBlock(lhs_axis, faces_dofs, faces_dofs)
+            call lhs_axis%free()
+!
+            call TMP%initialize(total_dofs, cbs_cmp, 0.d0)
+            call hho_dgemm_TN(1.d0, gradrec, AT_ax1, 0.d0, TMP)
+            call lhs%addBlock(TMP, 0, faces_dofs)
+            call TMP%free()
+            call AT_ax1%free()
+!
+            call TMP%initialize(cbs_cmp, total_dofs, 0.d0)
+            call hho_dgemm_NN(1.d0, AT_ax2, gradrec, 0.d0, TMP)
+            call lhs%addBlock(TMP, faces_dofs, 0)
+            call TMP%free()
+            call AT_ax2%free()
+        end if
 !
     end subroutine
 !
@@ -628,16 +796,16 @@ contains
 !   Out matrix     : symmetrix matrix to transform (XX, YY, ZZ, XY, XZ, YZ)
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
 ! --------------------------------------------------------------------------------------------------
 !
         select case (ndim)
         case (3)
             mat(1:3) = mat_sym(1:3)
-            mat(4:6) = mat_sym(4:6)/rac2
+            mat(4:6) = mat_sym(4:6)*un_rac2
         case (2)
             mat(1:3) = mat_sym(1:3)
-            mat(4) = mat_sym(4)/rac2
+            mat(4) = mat_sym(4)*un_rac2
         case default
             ASSERT(ASTER_FALSE)
         end select
@@ -690,6 +858,38 @@ contains
         case default
             ASSERT(ASTER_FALSE)
         end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoAddAxisGradSym(hhoCell, basisCell, uT, x_pg, cbs_cmp, eps)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        integer(kind=8), intent(in) :: cbs_cmp
+        real(kind=8), intent(in) :: basisCell(MSIZE_CELL_SCAL)
+        real(kind=8), dimension(MSIZE_CELL_VEC) :: uT
+        real(kind=8), intent(in) :: x_pg(3)
+        real(kind=8), intent(inout) :: eps(6)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Add axis contribution to symetric gradient
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: ur
+!
+        ASSERT(hhoCell%ndim == 2)
+!
+!  --- ur = ux
+        ur = ddot_1(cbs_cmp, basisCell, uT)
+!
+        eps(3) = ur/x_pg(1)
 !
     end subroutine
 !

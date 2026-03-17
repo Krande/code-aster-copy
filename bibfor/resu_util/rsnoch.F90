@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,10 +33,10 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 #include "asterfort/rsutrg.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
+#include "asterc/add_field_in_current_result.h"
 !
     integer(kind=8) :: iordr
     character(len=*) :: nomsd, nomsy
-! person_in_charge: jacques.pellet at edf.fr
 !
 !  BUT : "NOTER" UN CHAMP DANS UNE SD_RESULTAT
 !        ON VERIFIE QUE :
@@ -120,6 +120,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     call jeveuo(jexnum(nomd2//'.TACH', ibid), 'E', jtach)
 !
     zk24(jtach+irang-1) (1:19) = chnote
+    call add_field_in_current_result(nomd2, noms2, chnote, iordr)
 !
 !
 !     -- SI LE CHAMP EST UN CHAM_ELEM MPI_INCOMPLET, ON LE COMPLETE:

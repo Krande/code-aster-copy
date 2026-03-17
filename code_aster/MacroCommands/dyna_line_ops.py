@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-# person_in_charge: yannick.tampango at edf.fr
 #
 from functools import reduce
 
@@ -1158,7 +1157,7 @@ class DynaLineBasis:
         ichamp = 0
         affe_crea_resu = []
         for mode_intf in l_mode_intf:
-            dico = mode_intf.LIST_PARA()
+            dico = mode_intf.getParameters()
             for nume_ordre in dico["NUME_ORDRE"]:
                 ichamp += 1
                 __champ = CREA_CHAMP(

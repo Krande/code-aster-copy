@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine romEvalCoefFunc(ds_evalcoef, ds_multicoef, i_coef_list)
 #include "asterfort/fointe.h"
 #include "asterfort/fointc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_EvalCoef), intent(in) :: ds_evalcoef
     type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef

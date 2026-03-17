@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 # TODO solve dependency TablePy/Graph
 # aslint: disable=C4008
@@ -53,7 +52,6 @@ Kdef = "K24"
 
 
 class TableBase:
-
     """Classe pour partager les méthodes d'impression entre Table et Colonne
     (c'est surtout utile pour vérifier que l'extraction et les filtres sur les
     colonnes sont corrects).
@@ -319,7 +317,6 @@ class TableBase:
 
 
 class Table(TableBase):
-
     """Une table est construite comme une liste de lignes, chaque ligne est
     un dictionnaire.
     On crée puis on ajoute les lignes avec la méthode append :
@@ -738,7 +735,6 @@ class Table(TableBase):
 
 
 class Colonne(TableBase):
-
     """Classe intermédiaire pour mémoriser un couple (table, nom de colonne)
     et exprimer les critères d'extraction sous une forme naturelle en python
     en surchargeant les operateurs <, >, != et =.

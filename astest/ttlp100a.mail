@@ -1,5 +1,5 @@
  TITRE
-        Deux plaques rectangulaires separees par un jeu                         
+        Deux plaques rectangulaires separees par un jeu
  FINSF
  %
  COOR_2D
@@ -31,86 +31,96 @@
  N106      1.00000000000000E+00  1.00000000000000E+00
  FINSF
  %
- QUAD8   
- M1       N1       N3       N4       N2       N13      N34      N24     
-          N12     
- M2       N3       N5       N6       N4       N35      N56      N46     
-          N34     
- M101     N101     N103     N104     N102     N113     N134     N124    
-          N112    
- M102     N103     N105     N106     N104     N135     N156     N146    
-          N134    
+ QUAD8
+ M1       N1       N3       N4       N2       N13      N34      N24
+          N12
+ M2       N3       N5       N6       N4       N35      N56      N46
+          N34
+ M101     N101     N103     N104     N102     N113     N134     N124
+          N112
+ M102     N103     N105     N106     N104     N135     N156     N146
+          N134
  FINSF
  %
- SEG3    
- BO1G     N2       N1       N12     
- BO1D     N105     N106     N156    
- IN1G     N5       N6       N56     
- IN1D     N102     N101     N112    
- FINSF
- %
- GROUP_NO
- BINF                    
- N1       N13      N3       N35      N5       N101     N113    
- N103     N135     N105    
+ SEG3
+ BO1G     N2       N1       N12
+ BO1D     N105     N106     N156
+ IN1G     N5       N6       N56
+ IN1D     N102     N101     N112
  FINSF
  %
  GROUP_NO
- BSUP                    
- N2       N24      N4       N46      N6       N102     N124    
- N104     N146     N106    
+ BINF
+ N1       N13      N3       N35      N5       N101     N113
+ N103     N135     N105
  FINSF
  %
  GROUP_NO
- RECTG                   
- N1       N12      N2       N13      N24      N3       N34     
- N4       N35      N46      N5       N56      N6      
+ BSUP
+ N2       N24      N4       N46      N6       N102     N124
+ N104     N146     N106
  FINSF
  %
  GROUP_NO
- RECTD                   
- N101     N112     N102     N113     N124     N103     N134    
- N104     N135     N146     N105     N156     N106    
+ RECTG
+ N1       N12      N2       N13      N24      N3       N34
+ N4       N35      N46      N5       N56      N6
  FINSF
  %
  GROUP_NO
- N103                    
- N103    
+ RECTD
+ N101     N112     N102     N113     N124     N103     N134
+ N104     N135     N146     N105     N156     N106
  FINSF
  %
  GROUP_NO
- N3                      
- N3      
+ N103
+ N103
  FINSF
  %
  GROUP_NO
- N101                    
- N101    
+ N3
+ N3
  FINSF
  %
  GROUP_NO
- N5                      
- N5      
+ N101
+ N101
+ FINSF
+ %
+ GROUP_NO
+ N5
+ N5
  FINSF
  %
  GROUP_MA
- BORDG                   
- BO1G    
+ BORDG
+ BO1G
  FINSF
  %
  GROUP_MA
- INTERG                  
- IN1G    
+ INTERG
+ IN1G
  FINSF
  %
  GROUP_MA
- BORDD                   
- BO1D    
+ BORDD
+ BO1D
  FINSF
  %
  GROUP_MA
- INTERD                  
- IN1D    
+ INTERD
+ IN1D
+ FINSF
+  %
+ GROUP_MA
+ RECTG
+ M1       M2
+ FINSF
+ %
+ GROUP_MA
+ RECTD
+ M101     M102
  FINSF
  %
  FIN

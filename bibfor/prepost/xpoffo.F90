@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
     real(kind=8) :: co(ndim), ff(nnop)
     character(len=8) :: elrefp
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 !     FF : FONCTIONS DE FORMES AU NOEUD SOMMET OU D'INTERSECTION
 !

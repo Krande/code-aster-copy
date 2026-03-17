@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine b3d_valp33(x33, x3, v33)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   A.Sellier jeu. 02 sept. 2010 18:13:24 CEST
 !   diagonalisagion 33 a partir de jacobi + quelques controles

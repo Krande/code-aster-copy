@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,11 @@ PDEPL_R = OutputParameter(
     phys=PHY.DEPL_R, type="ELNO", comment=""" HHO - degres de liberte de la cellule"""
 )
 
-
 HHO_DEPL_MECA = Option(
     para_in=(SP.PGEOMER, SP.PDEPLPR, PCHHOBS),
     para_out=(PDEPL_R,),
-    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
+    condition=(
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.HHO, "OUI"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+    ),
 )

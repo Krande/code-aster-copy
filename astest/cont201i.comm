@@ -1,0 +1,80 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+from libaster import ContactPairing, ContactComputation, PairingMethod
+import math
+import numpy as np
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("MODELE1_63", "MODELE1_64"), INFO=1)
+
+test = CA.TestCase()
+
+## -------------------------------------------------------
+#           Parameters of the test-case
+## -------------------------------------------------------
+refValues = {
+    "intersectionPts": [
+        (0.028, -0.04902626828051208, 0.21540145926246274),
+        (0.028000000000000004, -0.04961775634032236, 0.21395257052299074),
+        (0.028000000000000004, -0.04878739000181456, 0.21395257052298938),
+        (0.028000000000000004, -0.0483991614341713, 0.21540145926246224),
+    ]
+}
+
+## -------------------------------------------------------
+#           Parameters of the test-case
+## -------------------------------------------------------
+# - Names of the contact interface groups
+grma_slv = "solid1"
+grma_mas = "solid2_1"
+
+## -------------------------------------------------------
+#           Definition of the mesh and the model
+## -------------------------------------------------------
+ma = LIRE_MAILLAGE(FORMAT="MED", INFO=2)
+
+ma = MODI_MAILLAGE(
+    reuse=ma, MAILLAGE=ma, ORIE_PEAU_3D=(_F(GROUP_MA=grma_slv), _F(GROUP_MA=grma_mas))
+)
+
+modele = AFFE_MODELE(MAILLAGE=ma, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=("3D",)))
+# -------------------------------------
+#       - Compute intersection points using robust pairing
+# -------------------------------------
+# - Set MeshPairing and compute pairing
+meshPair = CA.MeshPairing()
+meshPair.setMesh(ma)
+meshPair.setPair(grma_slv, grma_mas)
+meshPair.setMethod(PairingMethod.BrutForce)
+meshPair.compute()
+# - Get the first intersection
+IntePoints = meshPair.getIntersectionPoints(0)
+intePts_current = [tuple(intePt) for intePt in IntePoints]
+# - Test intersection points
+test.assertArrayEqual(
+    np.array(meshPair.getIntersectionPoints(0)),
+    np.array(refValues["intersectionPts"]),
+    rtol=1.0e-06,
+    atol=1.0e-05,
+)
+
+FIN()

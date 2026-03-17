@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -92,6 +92,8 @@ class FiniteElementDescriptor : public DataStructure {
      */
     FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh );
 
+    FiniteElementDescriptor( const std::string &name, const FiniteElementDescriptor &fed );
+
     FiniteElementDescriptor( const BaseMeshPtr mesh );
 
     FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
@@ -101,6 +103,10 @@ class FiniteElementDescriptor : public DataStructure {
      * @brief Destructor
      */
     ~FiniteElementDescriptor() {};
+
+    FiniteElementDescriptor &operator=( const FiniteElementDescriptor &toCopy );
+
+    void addVirtualCells( const FiniteElementDescriptor &other );
 
     const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const;
 
@@ -146,9 +152,13 @@ class FiniteElementDescriptor : public DataStructure {
     FiniteElementDescriptorPtr restrict( const VectorLong &cells ) const;
 
     /** @brief Get index of elem type */
-    ASTERINTEGER getElemTypeNume( const std::string elemTypeName ) const;
+    ASTERINTEGER getElemTypeNume( const std::string &elemTypeName ) const;
+
+    std::string getElemTypeName( const ASTERINTEGER &elemTypeNume ) const;
 
     JeveuxVectorLong getFiniteElementType() const;
+
+    SetString getFiniteElementNames() const;
 
     /**
      * @brief Number of super-elements in model

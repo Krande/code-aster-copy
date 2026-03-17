@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -765,7 +765,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="ABSOLU",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVAR24,
             VALE_CALC=0.0e00,
@@ -838,7 +838,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="RELATIF",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVAR26,
             VALE_CALC=1.0,
@@ -912,7 +912,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="RELATIF",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVAR40,
             VALE_CALC=1.0,
@@ -986,7 +986,7 @@ TEST_RESU(
         _F(
             GROUP_NO="N13",
             CRITERE="RELATIF",
-            NOM_CMP="V8",
+            NOM_CMP="V7",
             GROUP_MA="M1",
             CHAM_GD=CHVAR90,
             VALE_CALC=1.0,

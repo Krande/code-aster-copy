@@ -3,7 +3,7 @@
  * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -259,6 +259,8 @@ class GenericElementaryVector : public BaseElementaryVector {
      * @brief Add elementary term
      */
     auto getElementaryTerms() const { return _elemTerm; }
+
+    ASTERINTEGER getNumberOfElementaryTerms() const { return _elemTerm.size(); }
 
     /**
      * @brief Assembly with dofNume

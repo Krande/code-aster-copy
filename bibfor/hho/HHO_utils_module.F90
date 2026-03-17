@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -239,12 +239,16 @@ contains
             long = "TRIA6"
         case ("TR7")
             long = "TRIA7"
+        case ("TR1")
+            long = "TRIA10"
         case ("QU4")
             long = "QUAD4"
         case ("QU8")
             long = "QUAD8"
         case ("QU9")
             long = "QUAD9"
+        case ("Q12")
+            long = "QUAD12"
         case ("HE8")
             long = "HEXA8"
         case ("H20")
@@ -257,6 +261,8 @@ contains
             long = "TETRA10"
         case ("T15")
             long = "TETRA15"
+        case ("T20")
+            long = "TETRA20"
         case ("PE6")
             long = "PENTA6"
         case ("P15")
@@ -417,17 +423,17 @@ contains
 !   Out resu        : result of the product
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
 !
         resu = 0.d0
 !
         if (ndim == 2) then
-            resu(1) = SymMat(1)*vect(1)+SymMat(4)/rac2*vect(2)
-            resu(2) = SymMat(2)*vect(2)+SymMat(4)/rac2*vect(1)
+            resu(1) = SymMat(1)*vect(1)+SymMat(4)*un_rac2*vect(2)
+            resu(2) = SymMat(2)*vect(2)+SymMat(4)*un_rac2*vect(1)
         else if (ndim == 3) then
-            resu(1) = SymMat(1)*vect(1)+(SymMat(4)*vect(2)+SymMat(5)*vect(3))/rac2
-            resu(2) = SymMat(2)*vect(2)+(SymMat(4)*vect(1)+SymMat(6)*vect(3))/rac2
-            resu(3) = SymMat(3)*vect(3)+(SymMat(5)*vect(1)+SymMat(6)*vect(2))/rac2
+            resu(1) = SymMat(1)*vect(1)+(SymMat(4)*vect(2)+SymMat(5)*vect(3))*un_rac2
+            resu(2) = SymMat(2)*vect(2)+(SymMat(4)*vect(1)+SymMat(6)*vect(3))*un_rac2
+            resu(3) = SymMat(3)*vect(3)+(SymMat(5)*vect(1)+SymMat(6)*vect(2))*un_rac2
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -584,7 +590,7 @@ contains
                 exit
             end if
             do i = 1, j-1
-                if (abs(mat(i, j)) .ge. 1.d-11) then
+                if (abs(mat(i, j)) .ge. 1.d-10) then
                     id = ASTER_FALSE
                     exit
                 end if

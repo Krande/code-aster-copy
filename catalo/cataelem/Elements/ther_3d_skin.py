@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ MVECTAR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NACCELR)
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
+
 
 # --------------------------------------------------------------------------------------------------
 class THER_FACE3(Element):
@@ -245,6 +246,7 @@ class THER_FACE3(Element):
                 (SP.PFLUXNL, LC.CFLUXNF),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
@@ -322,6 +324,14 @@ class THER_FACE6(THER_FACE3):
 
     meshType = MT.TRIA6
     elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# --------------------------------------------------------------------------------------------------
+class THER_FACE10(THER_FACE3):
+    """Thermics - Skin element 3D - TRIA10"""
+
+    meshType = MT.TRIA10
+    elrefe = (ElrefeLoc(MT.TR1, gauss=("RIGI=FPG12", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
 
 
 # --------------------------------------------------------------------------------------------------

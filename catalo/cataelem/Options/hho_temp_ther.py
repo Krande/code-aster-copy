@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ import cataelem.Commons.attributes as AT
 
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
-
 PTEMP_R = OutputParameter(
     phys=PHY.TEMP_R, type="ELNO", comment=""" HHO - degres de liberte de la cellule"""
 )
@@ -35,5 +34,5 @@ PTEMP_R = OutputParameter(
 HHO_TEMP_THER = Option(
     para_in=(SP.PGEOMER, SP.PTMPCHF, PCHHOBS),
     para_out=(PTEMP_R,),
-    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.HHO, "OUI"))),),
 )

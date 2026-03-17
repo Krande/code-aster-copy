@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: sylvie.granet at edf.fr
 
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
@@ -228,7 +226,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_AXIS_QU8(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -540,7 +537,6 @@ class HM_AXIS_QU8(Element):
 
 # ------------------------------------------------------------
 class HM_AXIS_TR6(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -554,7 +550,6 @@ class HM_AXIS_TR6(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_QU8D(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -570,7 +565,6 @@ class HM_AXIS_QU8D(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_TR6D(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -586,7 +580,6 @@ class HM_AXIS_TR6D(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_QU8S(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -604,7 +597,6 @@ class HM_AXIS_QU8S(HM_AXIS_QU8):
 
 # ------------------------------------------------------------
 class HM_AXIS_TR6S(HM_AXIS_QU8):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

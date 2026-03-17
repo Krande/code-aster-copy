@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine matcc3d(cc3, vcc33, vcc33t, v33, v33t, cc6)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !     matrice de consolidation dans une base quelconque v33 presentation
 !     en coeff cc6 dans la base v33

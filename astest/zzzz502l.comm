@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,8 @@
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+medfile = CA.basedir / "zzzz502k.mmed"
+pMesh = CA.ParallelMesh().readMedFile(medfile)
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
@@ -49,29 +50,29 @@ loads.append(
     )
 )
 
-loads.append(
-    AFFE_CHAR_MECA(
-        MODELE=model,
-        DDL_IMPO=(
-            _F(GROUP_NO="BAS", DY=-1.0),
-            _F(GROUP_NO="HAUT", DY=1.0),
-            _F(GROUP_NO="GAUCHE", DX=-1.0),
-            _F(GROUP_NO="DROITE", DX=1.0),
-        ),
-    )
-)
+# loads.append(
+#     AFFE_CHAR_MECA(
+#         MODELE=model,
+#         DDL_IMPO=(
+#             _F(GROUP_NO="BAS", DY=-1.0),
+#             _F(GROUP_NO="HAUT", DY=1.0),
+#             _F(GROUP_NO="GAUCHE", DX=-1.0),
+#             _F(GROUP_NO="DROITE", DX=1.0),
+#         ),
+#     )
+# )
 
-loads.append(
-    AFFE_CHAR_MECA(
-        MODELE=model,
-        DDL_IMPO=(
-            _F(GROUP_MA="BAS", DY=-1.0),
-            _F(GROUP_NO="HAUT", DY=1.0),
-            _F(GROUP_MA="GAUCHE", DX=-1.0),
-            _F(GROUP_NO="DROITE", DX=1.0),
-        ),
-    )
-)
+# loads.append(
+#     AFFE_CHAR_MECA(
+#         MODELE=model,
+#         DDL_IMPO=(
+#             _F(GROUP_MA="BAS", DY=-1.0),
+#             _F(GROUP_NO="HAUT", DY=1.0),
+#             _F(GROUP_MA="GAUCHE", DX=-1.0),
+#             _F(GROUP_NO="DROITE", DX=1.0),
+#         ),
+#     )
+# )
 
 
 loads.append(
@@ -98,28 +99,28 @@ loads.append(
 )
 
 
-loads.append(
-    AFFE_CHAR_MECA(
-        MODELE=model,
-        DDL_IMPO=(
-            _F(GROUP_MA="GAUCHE", DX=-1.0),
-            _F(GROUP_MA="HAUT", DY=1.0),
-            _F(GROUP_NO="GN0", DY=-1.0),
-        ),
-        LIAISON_GROUP=(
-            _F(
-                GROUP_NO_1="GAUCHE",
-                DDL_1="DX",
-                GROUP_NO_2="DROITE",
-                DDL_2="DX",
-                COEF_MULT_1=1.0,
-                COEF_MULT_2=1.0,
-                COEF_IMPO=0.0,
-            ),
-        ),
-        LIAISON_UNIF=(_F(GROUP_NO="BAS", DDL="DY"),),
-    )
-)
+# loads.append(
+#     AFFE_CHAR_MECA(
+#         MODELE=model,
+#         DDL_IMPO=(
+#             _F(GROUP_MA="GAUCHE", DX=-1.0),
+#             _F(GROUP_MA="HAUT", DY=1.0),
+#             _F(GROUP_NO="GN0", DY=-1.0),
+#         ),
+#         LIAISON_GROUP=(
+#             _F(
+#                 GROUP_NO_1="GAUCHE",
+#                 DDL_1="DX",
+#                 GROUP_NO_2="DROITE",
+#                 DDL_2="DX",
+#                 COEF_MULT_1=1.0,
+#                 COEF_MULT_2=1.0,
+#                 COEF_IMPO=0.0,
+#             ),
+#         ),
+#         LIAISON_UNIF=(_F(GROUP_NO="BAS", DDL="DY"),),
+#     )
+# )
 
 loads.append(
     AFFE_CHAR_MECA(
@@ -145,29 +146,29 @@ loads.append(
     )
 )
 
-loads.append(
-    AFFE_CHAR_CINE(
-        MODELE=model,
-        MECA_IMPO=(
-            _F(GROUP_NO="BAS", DY=-1.0),
-            _F(GROUP_NO="HAUT", DY=1.0),
-            _F(GROUP_NO="GAUCHE", DX=-1.0),
-            _F(GROUP_NO="DROITE", DX=1.0),
-        ),
-    )
-)
+# loads.append(
+#     AFFE_CHAR_CINE(
+#         MODELE=model,
+#         MECA_IMPO=(
+#             _F(GROUP_NO="BAS", DY=-1.0),
+#             _F(GROUP_NO="HAUT", DY=1.0),
+#             _F(GROUP_NO="GAUCHE", DX=-1.0),
+#             _F(GROUP_NO="DROITE", DX=1.0),
+#         ),
+#     )
+# )
 
-loads.append(
-    AFFE_CHAR_CINE(
-        MODELE=model,
-        MECA_IMPO=(
-            _F(GROUP_MA="BAS", DY=-1.0),
-            _F(GROUP_NO="HAUT", DY=1.0),
-            _F(GROUP_MA="GAUCHE", DX=-1.0),
-            _F(GROUP_NO="DROITE", DX=1.0),
-        ),
-    )
-)
+# loads.append(
+#     AFFE_CHAR_CINE(
+#         MODELE=model,
+#         MECA_IMPO=(
+#             _F(GROUP_MA="BAS", DY=-1.0),
+#             _F(GROUP_NO="HAUT", DY=1.0),
+#             _F(GROUP_MA="GAUCHE", DX=-1.0),
+#             _F(GROUP_NO="DROITE", DX=1.0),
+#         ),
+#     )
+# )
 
 solvers = ["MUMPS", "PETSC"]
 for load in loads:

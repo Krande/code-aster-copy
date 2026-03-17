@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine utptme(nomarg, valarg, iret)
     character(len=8), intent(in) :: nomarg
     real(kind=8), intent(in) :: valarg
     integer(kind=8), intent(out) :: iret
-! person_in_charge: mathieu.courtois at edf.fr
 ! ----------------------------------------------------------------------
 !     Affecte la valeur associée au nom nomarg du paramètre mémoire en Mo
 ! in  nomarg  : nom du paramètre

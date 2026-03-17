@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 import os
 
@@ -54,7 +53,7 @@ def recu_coor_z(mesh, group, typ_group, tole_r):
         if not mesh.hasGroupOfNodes(group):
             UTMESS("F", "MISS0_26", valk=group)
         else:
-            nodes = mesh.getNodes(group)
+            nodes = mesh.getNodes(group, localNumbering=True)
             for n in nodes:
                 uz = round(coord.getNode(n).z(), tole_r)
                 if uz not in coor_z:
@@ -291,7 +290,7 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE=None, COUCHE_AUTO=None, TITRE=None,
                         # Cas plus de deux materiaux dans la sous-couche
                         ep_mat_h = []
                         ep_mat_b = []
-                        ep_mat = [(l_z_ep[ind_mat_sup + 1] - enfonc_ss_c_haut)]
+                        ep_mat = [l_z_ep[ind_mat_sup + 1] - enfonc_ss_c_haut]
                         for ind_mat in range((ind_mat_sup + 1), (ind_mat_inf - 1)):
                             zz1 = l_z_ep[ind_mat] - enfonc_ss_c_haut
                             zz2 = enfonc_ss_c_bas - l_z_ep[ind_mat]

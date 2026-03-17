@@ -3,7 +3,7 @@
  * @brief Python interface for FieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/FieldOnCellsInterface.h"
 
@@ -65,6 +63,12 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
 
             Returns:
                 FieldOnCellsReal
+            )" )
+        .def( "exists", &FieldOnCellsReal::exists, R"(
+            The field exists or not ?
+
+            Returns:
+                Bool
             )" )
         .def(
             "toSimpleFieldOnCells",
@@ -202,11 +206,12 @@ Returns:
                 filename (Path|str): Path to the file to be printed.
                 local (bool): Print local values only (relevant for ParallelMesh only,
                     default: *True*)
+                version (str): Version of MED file.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
-              py::arg( "filename" ), py::arg( "local" ) = true )
+              py::arg( "filename" ), py::arg( "local" ) = true, py::arg( "version" ) = "" )
         .def( "norm", &FieldOnCellsReal::norm, R"(
             Return the euclidean norm of the field
 
@@ -346,11 +351,14 @@ Returns:
 
             Arguments:
                 filename (Path|str): Path to the file to be printed.
+                local (bool): Print local values only (relevant for ParallelMesh only,
+                    default: *True*)
+                version (str): Version of MED file.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
-              py::arg( "filename" ), py::arg( "local" ) = true );
+              py::arg( "filename" ), py::arg( "local" ) = true, py::arg( "version" ) = "" );
 
     py::class_< FieldOnCellsLong, FieldOnCellsLongPtr, DataField >( mod, "FieldOnCellsLong" )
         .def( py::init( &initFactoryPtr< FieldOnCellsLong > ) )
@@ -414,11 +422,14 @@ Returns:
 
             Arguments:
                 filename (Path|str): Path to the file to be printed.
+                local (bool): Print local values only (relevant for ParallelMesh only,
+                    default: *True*)
+                version (str): Version of MED file.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
-              py::arg( "filename" ), py::arg( "local" ) = true );
+              py::arg( "filename" ), py::arg( "local" ) = true, py::arg( "version" ) = "" );
     /**
      * Object FieldOnCellsChar8
      */

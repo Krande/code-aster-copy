@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine nmimre_dof(nume_dof, ds_conv, vale_rela, vale_maxi, vale_refe, &
 #include "asterfort/impcmp.h"
 #include "asterfort/impcom.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_Conv), intent(inout) :: ds_conv

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 # --------------------------------------------------------------------
 
 """
-   Messages à l'attention des développeurs, type "ASSERT"
-   Lorsque l'utilisateur tombe sur un tel message, tout ce qu'il a à faire,
-   c'est de rapporter le bug, le texte du message devant aider le
-   développeur à faire le diagnostic.
+Messages à l'attention des développeurs, type "ASSERT"
+Lorsque l'utilisateur tombe sur un tel message, tout ce qu'il a à faire,
+c'est de rapporter le bug, le texte du message devant aider le
+développeur à faire le diagnostic.
 
-   "UTPRIN" ajoute automatiquement ces deux lignes :
-      Il y a probablement une erreur dans la programmation.
-      Veuillez contacter votre assistance technique.
+"UTPRIN" ajoute automatiquement ces deux lignes :
+   Il y a probablement une erreur dans la programmation.
+   Veuillez contacter votre assistance technique.
 """
 
 from ..Utilities import _

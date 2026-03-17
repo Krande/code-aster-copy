@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_sear_coef, line_sear
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(inout) :: ds_print
     integer(kind=8), intent(in) :: list_func_acti(*)

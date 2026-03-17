@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """
 Module fournissant quelques fonctions utilitaires.
@@ -232,7 +231,7 @@ class SharedTmpdir(contextlib.AbstractContextManager):
             tmpdir = get_shared_tmpdir(self._prefix, self._dir)
         # wait for #0 to create the temporary directory
         tmpdir = MPI.ASTER_COMM_WORLD.bcast(tmpdir)
-        assert osp.isdir(tmpdir), f"Can not create directory on #{rank}: {tmpdir}"
+        assert osp.isdir(tmpdir), f"Can not access to the directory on #{rank}: {tmpdir}"
         self._path = tmpdir
         logger.debug("created %s", self._path)
         MPI.ASTER_COMM_WORLD.Barrier()

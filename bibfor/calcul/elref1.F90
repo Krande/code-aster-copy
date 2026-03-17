@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine elref1(elrefe)
     use calcul_module, only: calcul_status, ca_jnbelr_, ca_jnoelr_, ca_nute_
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
     character(len=8) :: elrefe

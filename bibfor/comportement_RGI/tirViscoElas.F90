@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine tirViscoElas(fl3d, var0, xmat, inputR, inputVR6, ngf, &
                         deltam, avean, A, B, X, ipzero, &
                         epsk16, epsm16, epse16, &
                         sig16, sigke16, raideur66, we1)
-! person_in_charge: etienne.grimal@edf.fr
 !-----------------------------------------------------------------------
 !   tir visco-élastique
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vector_ghosts_comm(vector, mesh)
-        character(len=*) :: vector
-        character(len=8) :: mesh
+    subroutine vector_ghosts_comm(mesh, vect_size, v_vect)
+        character(len=8), intent(in) :: mesh
+        integer(kind=8), intent(inout) :: vect_size
+        integer(kind=8), intent(inout) :: v_vect(*)
     end subroutine vector_ghosts_comm
 end interface

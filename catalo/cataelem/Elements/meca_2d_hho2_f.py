@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,9 +64,6 @@ CFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELEM", components=("FX", "FY"
 NFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY"))
 
 
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
-
-
 EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
 )
@@ -109,8 +106,11 @@ ECONTNO = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY")
 )
 
+DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
@@ -128,7 +128,7 @@ class MECA_2D_HHO2_F(Element):
             te=459,
             para_in=(
                 (SP.PFR1D2D, NFORCER),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.CHAR_MECA_FR1D2D.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
@@ -137,7 +137,7 @@ class MECA_2D_HHO2_F(Element):
             te=459,
             para_in=(
                 (SP.PFF1D2D, CFORCEF),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTR, CTEMPSR),
                 (OP.CHAR_MECA_FF1D2D.PCHHOBS, CHHOBS),
             ),
@@ -146,7 +146,7 @@ class MECA_2D_HHO2_F(Element):
         OP.CHAR_MECA_PRES_F(
             te=459,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PPRESSF, CPRESSF),
                 (SP.PINSTR, CTEMPSR),
                 (OP.CHAR_MECA_PRES_F.PCHHOBS, CHHOBS),
@@ -156,14 +156,35 @@ class MECA_2D_HHO2_F(Element):
         OP.CHAR_MECA_PRES_R(
             te=459,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PPRESSR, EPRESNO),
                 (OP.CHAR_MECA_PRES_R.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.COOR_ELGA(
-            te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+            te=479,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),),
+        ),
+        OP.HHO_COND_MECA(
+            te=574,
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMAELS1, MMATUUR), (SP.PVEELE1, MVECTUR)),
+            para_out=(
+                (SP.PMATUUR, MMATUUR),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PMATUND, MMATUNS),
+                (SP.PVECTUD, MVECTUR),
+            ),
+        ),
+        OP.HHO_DEPL_MECA(
+            te=427,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PDEPLPR, DDL_MECA),
+                (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
@@ -189,7 +210,7 @@ class MECA_2D_HHO2_F(Element):
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
+                (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM2D),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
                 (OP.TOU_INI_ELNO.PPRES_R, EPRESNO),
@@ -197,3 +218,22 @@ class MECA_2D_HHO2_F(Element):
             ),
         ),
     )
+
+
+# ------------------------------------------------------------
+class MECA_2DGV_HHO2_F(MECA_2D_HHO2_F):
+    """Please document this element"""
+
+    calculs = (OP.HHO_COND_MECA(te=-1),)
+
+
+# ------------------------------------------------------------
+class MECA_2DAX_HHO2_F(MECA_2D_HHO2_F):
+    """Please document this element"""
+
+
+# ------------------------------------------------------------
+class MECA_AXGV_HHO2_F(MECA_2D_HHO2_F):
+    """Please document this element"""
+
+    calculs = (OP.HHO_COND_MECA(te=-1),)

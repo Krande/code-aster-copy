@@ -3,7 +3,7 @@
  * @brief Interface python de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/BaseMeshInterface.h"
 
@@ -149,11 +147,13 @@ Print the mesh in the MED format
 Arguments:
     filename (Path|str): Name of the file
     local (bool=True) : print local values only (relevant for a ParallelMesh only)
+    version (list): list of size 3 ([major, minor, release])
 
 Returns:
     Bool: True if of
             )",
-              py::arg( "fileName" ), py::arg( "local" ) = true )
+              py::arg( "fileName" ), py::arg( "local" ) = true,
+              py::arg( "version" ) = std::array< int, 3 >( { 0, 0, 0 } ) )
 
         /* Mesh builder functions */
         .def( "_initDefinition", &BaseMesh::initDefinition, R"(

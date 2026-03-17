@@ -3,7 +3,7 @@
  * @brief Interface python de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -314,13 +314,20 @@ Get the last time value stored in the result
 Returns:
     float: last time value.
         )" )
-        .def( "getAccessParameters", &Result::getAccessParameters, R"(
+        .def( "getParameters", &Result::getParameters, R"(
+Return the parameters of the result as Python dict.
+
+Returns:
+    dict{str : list[int,float,str]}: Dict of values for each parameter variable.
+        )",
+              py::arg( "only_access" ) = false )
+        .def( "getAccessParameters", &Result::getParameters, R"(
 Return the access parameters of the result as Python dict.
 
 Returns:
     dict{str : list[int,float,str]}: Dict of values for each access variable.
-        )" )
-
+        )",
+              py::arg( "only_access" ) = true )
         .def( "createIndexFromParameter",
               py::overload_cast< const std::string &, const std::string & >(
                   &Result::createIndexFromParameter ),
@@ -544,9 +551,12 @@ Args:
     filename (Path|str): Path to the output file.
     medname (str): Name of the result in the MED file. (default: "")
     local (bool): Print only the local domain if *True*. (default: True)
+    fields (list[str]): Name of fields to save. (default: all)
+    version (str): Version of MED file.
               )",
               py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = true,
-              py::arg( "internalVar" ) = true )
+              py::arg( "internalVar" ) = true, py::arg( "fields" ) = VectorString(),
+              py::arg( "version" ) = "" )
         .def( "setMesh", &Result::setMesh, R"(
 Set the mesh used by the result.
 

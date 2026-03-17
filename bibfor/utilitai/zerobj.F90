@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ function zerobj(obj)
 #include "asterfort/jexnum.h"
     aster_logical :: zerobj
     character(len=*) :: obj
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : DETERMINER SI UN OBJET JEVEUX EST NUL (OU PAS)
 !       OBJ     : NOM DE L'OBJET JEVEUX à TESTER

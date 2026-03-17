@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,28 +17,31 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#
-# person_in_charge: mathieu.courtois at edf.fr
-
 """
 This module provides unittests for the cataelem package
 """
 
 import unittest
 
-from cataelem.Tools.base_objects import Element
+from cataelem.Commons.attributes import MODTHM
+from cataelem.Commons.mesh_types import SEG2
+from cataelem.Commons.physical_quantities import DEPL_R, SIEF_R
+from cataelem.Options.options import OP
+from cataelem.Tools.base_objects import (
+    AbstractEntityStore,
+    Element,
+    InputParameter,
+    LocatedComponents,
+    Option,
+    OutputParameter,
+)
 
 
 class TestCataElem(unittest.TestCase):
-
     """Checked classes: LocatedComponents, Element"""
 
     def setUp(self):
         """Setup objects as CataElem does"""
-        from cataelem.Commons.attributes import MODTHM
-        from cataelem.Commons.mesh_types import SEG2
-        from cataelem.Commons.physical_quantities import DEPL_R, SIEF_R
-
         MODTHM.setName("MODTHM")
         elr = ("SE2", "CABPOU", "THCOSE2")
         for name, elrefe in zip(elr, SEG2.getElrefe()):
@@ -50,10 +53,6 @@ class TestCataElem(unittest.TestCase):
 
     def _options(self):
         """Import only few options for testcases, replace Options/options.py"""
-        # from cataelem.Options.options import OP
-        # self.OP = OP
-        from cataelem.Tools.base_objects import AbstractEntityStore, Option
-        from cataelem.Tools.base_objects import InputParameter, OutputParameter
 
         class OptionStore(AbstractEntityStore):
             """Helper class to give access to all options to elements"""
@@ -67,7 +66,6 @@ class TestCataElem(unittest.TestCase):
 
     def test01_attribute(self):
         """check Attribute object"""
-        from cataelem.Commons.attributes import MODTHM
 
         MODTHM.comment = "comment string"
         self.assertGreater(MODTHM.idx, 0)
@@ -96,7 +94,6 @@ class TestCataElem(unittest.TestCase):
 
     def test02_mesh(self):
         """check MeshType object"""
-        from cataelem.Commons.mesh_types import SEG2
 
         self.assertEqual(SEG2.name, "SEG2")
         self.assertEqual(SEG2.nbNodes, 2)
@@ -105,7 +102,6 @@ class TestCataElem(unittest.TestCase):
 
     def test03_physical_quantity(self):
         """check PhysicalQuantity object"""
-        from cataelem.Commons.physical_quantities import DEPL_R
 
         self.assertEqual(DEPL_R.name, "DEPL_R")
         self.assertIn("DX", DEPL_R.components)
@@ -124,12 +120,6 @@ class TestCataElem(unittest.TestCase):
 
     def test07_element(self):
         """check Element object"""
-        from cataelem.Tools.base_objects import LocatedComponents
-        from cataelem.Tools.base_objects import Element
-        from cataelem.Commons.mesh_types import SEG2
-        from cataelem.Commons.physical_quantities import DEPL_R, SIEF_R
-        from cataelem.Options.options import OP
-
         # build of OP should have named their own parameters (not shared)
         self.assertEqual(OP.SIEQ_ELGA.PCONTEQ.name, "PCONTEQ")
         self.assertEqual(OP.EXISTE_DDL.PDEPL_R.name, "PDEPL_R")

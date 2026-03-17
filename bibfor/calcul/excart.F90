@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,10 @@ subroutine excart(imodat, iparg)
 
     use calcul_module, only: ca_iachii_, ca_iachlo_, ca_iamloc_, ca_iawlo2_, &
                              ca_iel_, ca_igr_, ca_iichin_, ca_ilchlo_, &
-                     ca_ilmloc_, ca_nbelgr_, ca_nbgr_, ca_typegd_, ca_paral_, ca_lparal_, ca_iachid_
+                             ca_ilmloc_, ca_nbelgr_, ca_nbgr_, &
+                             ca_typegd_, ca_paral_, ca_lparal_, ca_iachid_
 
     implicit none
-
-! person_in_charge: jacques.pellet at edf.fr
 
 #include "asterf_types.h"
 #include "jeveux.h"

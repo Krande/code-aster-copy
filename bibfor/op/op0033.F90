@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine op0033()
 ! aslint: disable=C0110
+!
+subroutine op0033()
 !
     use NonLin_Datastructure_type
     use Behaviour_type
     use Behaviour_module
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -40,13 +39,11 @@ subroutine op0033()
 #include "asterfort/lcdetf.h"
 #include "asterfort/matinv.h"
 #include "asterfort/mgauss.h"
-#include "asterfort/nmadat.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmfinp.h"
-#include "asterfort/nonlinDSAlgoParaCreate.h"
-#include "asterfort/nonlinDSConvergenceCreate.h"
 #include "asterfort/pmactn.h"
+#include "asterfort/pmadat.h"
 #include "asterfort/pmconv.h"
 #include "asterfort/pmdocc.h"
 #include "asterfort/pmdocr.h"
@@ -73,43 +70,44 @@ subroutine op0033()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: iret, nbmat, nbvari, nbpar, i, ier
-    integer(kind=8) :: imate, iter, pred, ncmp, imptgt
-    integer(kind=8) :: matrel, irota, defimp, liccvg(5)
-    integer(kind=8) :: indimp(9), numeInst, actite, action, itgt, iforta
-!     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
-    integer(kind=8), parameter :: ntamax = 9999
-    integer(kind=8) :: igrad, nbvita
+    character(len=8), parameter :: typmod(2) = (/"3D", "  "/)
+    integer(kind=8), parameter :: ndim = 3, ksp = 1, kpg = 1
+    character(len=4), parameter :: fami = "PMAT"
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    integer(kind=8), parameter :: tablNbParaMaxi = 9999
+    character(len=8) :: tablParaType(tablNbParaMaxi)
+    character(len=16) :: tablParaName(tablNbParaMaxi)
+    real(kind=8) :: tablVale(tablNbParaMaxi)
+    integer(kind=8) :: tablNbPara, tablType
+    integer(kind=8) :: iret, nbmat, nbVari, i, ier
+    integer(kind=8) :: jvMaterCode, iterNewt, ncmp
+    integer(kind=8) :: loadEpsiType, liccvg(5)
+    integer(kind=8) :: loadType(9), numeInst, newtLoopAction, action, itgt
+    integer(kind=8) :: nbVariTabl, typeMatrPred
     character(len=4) :: cargau
-    character(len=8) :: typmod(2), mater(30), table, fonimp(9), typpar(ntamax)
-    character(len=16) :: option, compor(COMPOR_SIZE), nompar(ntamax), opt2
-    character(len=16) :: mult_comp, type_comp
-    character(len=19) :: codi, k19b
-    real(kind=8) :: instam, instap, angl_naut(3), r8b, carcri(CARCRI_SIZE), fem(9)
-    real(kind=8) :: deps(9), sigm(6), sigp(6), epsm(9), vr(ntamax)
-    real(kind=8) :: valimp(9), r(12), rini(12), dy(12), ddy(12), y(12)
-    real(kind=8) :: dsidep(6, 9), drdy(12, 12), kel(6, 6), cimpo(6, 12), ym(12)
+    character(len=8) :: mater(30), tablName, loadFunc(9)
+    character(len=16) :: option, comporList(COMPOR_SIZE), opt2, multComp
+    character(len=19) :: codi
+    real(kind=8) :: timePrev, timeCurr, anglNaut(3), r8b, carcriList(CARCRI_SIZE), fem(9)
+    real(kind=8) :: epsiIncr(9), sigmPrev(6), sigmCurr(6), epsiPrev(9)
+    real(kind=8) :: valeImpo(9), r(12), rini(12), dy(12), ddy(12), y(12)
+    real(kind=8) :: dsidep(6, 9), drdy(12, 12), matrElas(6, 6), coefImpo(6, 12), ym(12)
     real(kind=8) :: work(10), sdeps(6), ssigp(6), smatr(36), r1(12)
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
-    real(kind=8) :: vimp2(3, 3), coef, jm, jp, jd, coefextra
-    aster_logical :: lastTimeStep, itemax, conver
-    integer(kind=8) :: lvim, lvip, lvim2, lsvip, lnomvi
+    real(kind=8) :: vimp2(3, 3), coefMatrAdim, jm, jp, jd, coefextra
+    aster_logical :: lastTimeStep, lIterNewtMaxi, conver, lPrintMatr, lMatrElas, lRota, lLoadGrad
+    integer(kind=8) :: jvVim, jvVip, lvim2, lsvip, jvVariName
     type(NL_DS_Conv) :: ds_conv
     type(NL_DS_AlgoPara) :: ds_algopara
     type(Behaviour_Integ) :: BEHinteg
     blas_int :: b_incx, b_incy, b_n
-    character(len=19), parameter :: sddisc = '&&OP0033.SDDISC'
+    character(len=19) :: sddisc
     character(len=19), parameter :: sdcrit = '&&OP0033.SDCRIT'
-    character(len=24), parameter :: sderro = '&&OP0033.ERRE.'
-    character(len=19), parameter :: nomvi = '&&OP0033.NOMVI'
-    character(len=19), parameter :: vim = '&&OP0033.VIM'
-    character(len=19), parameter :: vip = '&&OP0033.VIP'
+    character(len=24) :: sderro
+    character(len=19), parameter :: variNameJv = '&&OP0033.NOMVI'
+    character(len=19), parameter :: vimJvName = '&&OP0033.VIM', vipJvName = '&&OP0033.VIP'
     character(len=19), parameter :: svip = '&&OP0033.SVIP'
     character(len=19), parameter :: vim2 = '&&OP0033.VIM2'
-    integer(kind=8), parameter :: ndim = 3
-    character(len=4), parameter :: fami = "PMAT"
-    real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer(kind=8), parameter :: ksp = 1, kpg = 1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,11 +117,10 @@ subroutine op0033()
 ! - Initializations
     work = 0.d0
     dsidep = 0.d0
-    k19b = ' '
-    iter = 0
+    iterNewt = 0
     action = 1
     lastTimeStep = ASTER_FALSE
-    itemax = ASTER_FALSE
+    lIterNewtMaxi = ASTER_FALSE
     liccvg = 0
 
 ! - Prepare CALCUL parameters for external state variables
@@ -132,44 +129,40 @@ subroutine op0033()
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
 
-! - Create convergence management datastructure
-    call nonlinDSConvergenceCreate(ds_conv)
-
-! - Create algorithm parameters datastructure
-    call nonlinDSAlgoParaCreate(ds_algopara)
-
 ! - Get material parameters
     call getvid(' ', 'MATER', nbval=6, vect=mater, nbret=nbmat)
 !
 ! - Get list of parameters for constitutive law
-    call pmdocc(compor, nbVari, type_comp, mult_comp)
+    call pmdocc(comporList, nbVari, multComp)
 !
 ! - Get list of parameters for integration of constitutive law
-    call pmdocr(carcri)
+    call pmdocr(carcriList)
 !
 ! - Create working vectors
-    call wkvect(vim, 'V V R', nbvari, lvim)
-    call wkvect(vip, 'V V R', nbvari, lvip)
-    call wkvect(svip, 'V V R', nbvari, lsvip)
-    call wkvect(vim2, 'V V R', nbvari, lvim2)
-    call wkvect(nomvi, 'V V K8', nbvari, lnomvi)
+    call wkvect(vimJvName, 'V V R', nbVari, jvVim)
+    call wkvect(vipJvName, 'V V R', nbVari, jvVip)
+    call wkvect(svip, 'V V R', nbVari, lsvip)
+    call wkvect(vim2, 'V V R', nbVari, lvim2)
+    call wkvect(variNameJv, 'V V K8', nbVari, jvVariName)
 
 ! - Coding material parameters
     call pmmaco(mater, nbmat, codi)
-    call jeveut(codi//'.CODI', 'L', imate)
+    call jeveut(codi//'.CODI', 'L', jvMaterCode)
 
-!     INITIALISATIONS SD
-    call pminit(imate, nbvari, ndim, typmod, table, &
-                nbpar, iforta, nompar, typpar, angl_naut, &
-                pgl, irota, epsm, sigm, zr(lvim), &
-                zr(lvip), vr, defimp, coef, indimp, &
-                fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
-                pred, matrel, imptgt, option, zk8(lnomvi), &
-                nbvita, sderro)
+! - Initializations
+    call pminit(jvMaterCode, nbVari, &
+                tablName, tablNbParaMaxi, tablNbPara, tablType, &
+                tablParaName, tablParaType, tablVale, &
+                anglNaut, pgl, lRota, &
+                epsiPrev, sigmPrev, zr(jvVim), zr(jvVip), &
+                loadEpsiType, loadType, loadFunc, coefImpo, &
+                coefMatrAdim, typeMatrPred, lMatrElas, matrElas, lPrintMatr, option, &
+                zk8(jvVariName), nbVariTabl, &
+                sddisc, ds_conv, ds_algopara, sderro)
 
 ! - Message if PETIT_REAC
-    if (defimp .gt. 0) then
-        if (compor(DEFO) .eq. 'PETIT_REAC') then
+    if (loadEpsiType .gt. 0) then
+        if (comporList(DEFO) .eq. 'PETIT_REAC') then
             call utmess('I', 'COMPOR2_93')
         end if
     end if
@@ -184,96 +177,91 @@ subroutine op0033()
 !
 200 continue
 !
-    liccvg(1:5) = 0
+    liccvg = 0
 
 ! - Get times
-    instam = diinst(sddisc, numeInst-1)
-    instap = diinst(sddisc, numeInst)
+    timePrev = diinst(sddisc, numeInst-1)
+    timeCurr = diinst(sddisc, numeInst)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, option, &
-                              compor, carcri, &
-                              instam, instap, &
-                              fami, imate, &
+                              comporList, carcriList, &
+                              timePrev, timeCurr, &
+                              fami, jvMaterCode, &
                               BEHinteg)
 
 ! - Set main parameters for behaviour (on point)
     call behaviourSetParaPoin(kpg, ksp, BEHinteg)
 
 ! - Compute external state variables
-    call vrcinp(2, instam, instap)
+    call vrcinp(2, timePrev, timeCurr)
 
 ! - Prepare stress/strain to impose
-    if (defimp .lt. 2) then
-        igrad = 0
+    if (loadEpsiType .lt. 2) then
+        lLoadGrad = ASTER_FALSE
         do i = 1, 6
-            call fointe('F', fonimp(i), 1, ['INST'], [instap], &
-                        valimp(i), ier)
-!               NORMALISATION DES TERMES EN CONTRAINTES
-            if (indimp(i) .eq. 0) then
-                valimp(i) = valimp(i)/coef
+            call fointe('F', loadFunc(i), 1, ['INST'], [timeCurr], valeImpo(i), ier)
+            if (loadType(i) .eq. 0) then
+                valeImpo(i) = valeImpo(i)/coefMatrAdim
             end if
         end do
-        ASSERT(compor(DEFO) .eq. 'PETIT')
-    else if (defimp .eq. 2) then
-        igrad = 1
-!           VALEURS IMPOSEES DE GRADIENTS F
+        ASSERT(comporList(DEFO) .eq. 'PETIT')
+    else if (loadEpsiType .eq. 2) then
+        lLoadGrad = ASTER_TRUE
         do i = 1, 9
-            call fointe('F', fonimp(i), 1, ['INST'], [instap], &
-                        valimp(i), ier)
+            call fointe('F', loadFunc(i), 1, ['INST'], [timeCurr], valeImpo(i), ier)
         end do
     end if
 !
-    if (irota .eq. 1) then
-        call tnsvec(6, ndim, vimp33, valimp, 1.0d0)
-        call utbtab('ZERO', 3, 3, vimp33, pgl, &
-                    work, vimp2)
-        call tnsvec(3, ndim, vimp2, valimp, 1.0d0)
+    if (lRota) then
+        call tnsvec(6, ndim, vimp33, valeImpo, 1.d0)
+        call utbtab('ZERO', 3, 3, vimp33, pgl, work, vimp2)
+        call tnsvec(3, ndim, vimp2, valeImpo, 1.d0)
     end if
-!        CISAILLEMENTS*SQRT(2) POUR NMCOMP
-    if (defimp .lt. 2) then
+    if (loadEpsiType .lt. 2) then
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
-        call dscal(b_n, rac2, valimp(4), b_incx)
+        call dscal(b_n, rac2, valeImpo(4), b_incx)
     end if
 
 ! - Initialisation of behaviour datastructure - Special for SIMU_POINT_MAT
-    call behaviourInitPoint(compor(RELA_NAME), BEHinteg)
+    call behaviourInitPoint(comporList(RELA_NAME), BEHinteg)
 
-!
 !        6 CMP DE EPSI OU 9 CMP DE GRAD DONNEES : PAS BESOIN DE NEWTON
-    if ((defimp .ge. 1) .and. (abs(carcri(2)) .lt. 0.1d0)) then
+    if ((loadEpsiType .ge. 1) .and. (abs(carcriList(2)) .lt. 0.1d0)) then
         opt2 = 'RAPH_MECA'
-        if (imptgt .eq. 1) opt2 = 'FULL_MECA'
-        if (defimp .eq. 1) then
+        if (lPrintMatr) then
+            opt2 = 'FULL_MECA'
+        end if
+        if (loadEpsiType .eq. 1) then
             ncmp = 6
             do i = 1, ncmp
-                deps(i) = valimp(i)-epsm(i)
+                epsiIncr(i) = valeImpo(i)-epsiPrev(i)
             end do
-        else if (defimp .eq. 2) then
+        else if (loadEpsiType .eq. 2) then
             ncmp = 9
-            call matinv('S', 3, epsm, fem, jm)
-            deps = reshape(matmul(reshape(valimp, (/3, 3/)), reshape(fem, (/3, 3/))), (/9/))
-            call lcdetf(3, deps, jd)
+            call matinv('S', 3, epsiPrev, fem, jm)
+            epsiIncr = reshape(matmul(reshape(valeImpo, (/3, 3/)), reshape(fem, (/3, 3/))), (/9/))
+            call lcdetf(3, epsiIncr, jd)
             jp = jm*jd
         end if
-        b_n = to_blas_int(nbvari)
+        b_n = to_blas_int(nbVari)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, zr(lvim), b_incx, zr(lvim2), b_incy)
-        sigp = 0.d0
+        call dcopy(b_n, zr(jvVim), b_incx, zr(lvim2), b_incy)
+        sigmCurr = 0.d0
         call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
-                    typmod, imate, compor, carcri, instam, &
-                    instap, ncmp, epsm, deps, 6, &
-                    sigm, zr(lvim2), opt2, angl_naut, sigp, &
-                    zr(lvip), 6*ncmp, dsidep, iret, mult_comp)
-        if (compor(DEFO) .eq. 'SIMO_MIEHE') then
+                    typmod, jvMaterCode, comporList, carcriList, timePrev, &
+                    timeCurr, ncmp, epsiPrev, epsiIncr, 6, &
+                    sigmPrev, zr(lvim2), opt2, anglNaut, sigmCurr, &
+                    zr(jvVip), 6*ncmp, dsidep, iret, multComp)
+        if (comporList(DEFO) .eq. 'SIMO_MIEHE') then
             b_n = to_blas_int(2*ndim)
             b_incx = to_blas_int(1)
-            call dscal(b_n, 1.d0/jp, sigp, b_incx)
+            call dscal(b_n, 1.d0/jp, sigmCurr, b_incx)
         end if
-        call pmimpr(0, instap, indimp, valimp, 0, &
-                    epsm, sigm, zr(lvim), nbvari, r, &
+        call pmimpr(0, timeCurr, loadType, valeImpo, 0, &
+                    epsiPrev, sigmPrev, zr(jvVim), nbVari, r, &
                     r8b, r8b)
         if (iret .ne. 0) then
             liccvg(2) = 1
@@ -287,51 +275,51 @@ subroutine op0033()
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, sigm, b_incx, ym, b_incy)
+    call dcopy(b_n, sigmPrev, b_incx, ym, b_incy)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
-    call dscal(b_n, 1.d0/coef, ym, b_incx)
+    call dscal(b_n, 1.d0/coefMatrAdim, ym, b_incx)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, epsm, b_incx, ym(7), b_incy)
+    call dcopy(b_n, epsiPrev, b_incx, ym(7), b_incy)
 !
-    if (pred .eq. 1) then
+    if (typeMatrPred .eq. 1) then
         dy(:) = 0.d0
-        deps(:) = 0.d0
+        epsiIncr(:) = 0.d0
         opt2 = 'RIGI_MECA_TANG'
-        b_n = to_blas_int(nbvari)
+        b_n = to_blas_int(nbVari)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, zr(lvim), b_incx, zr(lsvip), b_incy)
+        call dcopy(b_n, zr(jvVim), b_incx, zr(lsvip), b_incy)
         ssigp = 0.d0
         call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
-                    typmod, imate, compor, carcri, instam, &
-                    instap, 6, epsm, deps, 6, &
-                    sigm, zr(lsvip), opt2, angl_naut, ssigp, &
-                    zr(lsvip), 36, dsidep, iret, mult_comp)
+                    typmod, jvMaterCode, comporList, carcriList, timePrev, &
+                    timeCurr, 6, epsiPrev, epsiIncr, 6, &
+                    sigmPrev, zr(lsvip), opt2, anglNaut, ssigp, &
+                    zr(lsvip), 36, dsidep, iret, multComp)
         if (iret .ne. 0) then
-            pred = 0
+            typeMatrPred = 0
         else
-            call pmdrdy(dsidep, coef, cimpo, valimp, ym, &
-                        sigm, r, drdy)
+            call pmdrdy(dsidep, coefMatrAdim, coefImpo, valeImpo, ym, &
+                        sigmPrev, r, drdy)
         end if
-    else if ((pred .eq. 0) .or. ((pred .eq. -1) .and. (numeInst .eq. 1))) then
+    else if ((typeMatrPred .eq. 0) .or. ((typeMatrPred .eq. -1) .and. (numeInst .eq. 1))) then
         dy(:) = 0.d0
-        deps(:) = 0.d0
-        call pmdrdy(kel, coef, cimpo, valimp, ym, &
-                    sigm, r, drdy)
+        epsiIncr(:) = 0.d0
+        call pmdrdy(matrElas, coefMatrAdim, coefImpo, valeImpo, ym, &
+                    sigmPrev, r, drdy)
     end if
 !        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
     b_n = to_blas_int(12)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, r, b_incx, rini, b_incy)
-    call pmimpr(0, instap, indimp, valimp, 0, &
-                epsm, sigm, zr(lvim), nbvari, r, &
+    call pmimpr(0, timeCurr, loadType, valeImpo, 0, &
+                epsiPrev, sigmPrev, zr(jvVim), nbVari, r, &
                 r8b, r8b)
 !
-    iter = 0
+    iterNewt = 0
 !
 !:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 !           ITERATIONS DE NEWTON
@@ -339,11 +327,11 @@ subroutine op0033()
 !
 300 continue
 !
-    iter = iter+1
+    iterNewt = iterNewt+1
 !
-    if ((iter .eq. 1) .and. (pred .eq. -1) .and. (numeInst .gt. 1)) then
+    if ((iterNewt .eq. 1) .and. (typeMatrPred .eq. -1) .and. (numeInst .gt. 1)) then
 !   prediction='extrapole'
-        coefextra = (instap-instam)/(instam-diinst(sddisc, numeInst-2))
+        coefextra = (timeCurr-timePrev)/(timePrev-diinst(sddisc, numeInst-2))
 !       dy = dy * (ti - ti-1)/(ti-1 - ti-2)
         b_n = to_blas_int(12)
         b_incx = to_blas_int(1)
@@ -377,26 +365,26 @@ subroutine op0033()
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, dy(7), b_incx, deps, b_incy)
+    call dcopy(b_n, dy(7), b_incx, epsiIncr, b_incy)
 !
 !           POUR LE CALCUL DE LA MATRICE TANGENTE PAR PERTURBATION
 400 continue
 !
 !           CALCUL DU RESIDU
     liccvg(2) = 0
-    b_n = to_blas_int(nbvari)
+    b_n = to_blas_int(nbVari)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, zr(lvim), b_incx, zr(lvim2), b_incy)
-    sigp = 0.d0
+    call dcopy(b_n, zr(jvVim), b_incx, zr(lvim2), b_incy)
+    sigmCurr = 0.d0
     call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
-                typmod, imate, compor, carcri, instam, &
-                instap, 6, epsm, deps, 6, &
-                sigm, zr(lvim2), option, angl_naut, sigp, &
-                zr(lvip), 36, dsidep, iret, mult_comp)
+                typmod, jvMaterCode, comporList, carcriList, timePrev, &
+                timeCurr, 6, epsiPrev, epsiIncr, 6, &
+                sigmPrev, zr(lvim2), option, anglNaut, sigmCurr, &
+                zr(jvVip), 36, dsidep, iret, multComp)
 !
-    call pmimpr(1, instap, indimp, valimp, iter, &
-                deps, sigp, zr(lvip), nbvari, r, &
+    call pmimpr(1, timeCurr, loadType, valeImpo, iterNewt, &
+                epsiIncr, sigmCurr, zr(jvVip), nbVari, r, &
                 r8b, r8b)
     if (iret .ne. 0) then
         conver = ASTER_FALSE
@@ -405,8 +393,8 @@ subroutine op0033()
     end if
 !
 !           CALCUL EVENTUEL DE LA MATRICE TGTE PAR PERTURBATION
-    call pmvtgt(option, carcri, deps, sigp, zr(lvip), &
-                nbvari, epsilo, varia, matper, dsidep, &
+    call pmvtgt(option, carcriList, epsiIncr, sigmCurr, zr(jvVip), &
+                nbVari, epsilo, varia, matper, dsidep, &
                 smatr, sdeps, ssigp, zr(lsvip), itgt)
     if (itgt .ne. 0) then
         goto 400
@@ -421,31 +409,34 @@ subroutine op0033()
     b_incy = to_blas_int(1)
     call daxpy(b_n, 1.d0, dy, b_incx, y, &
                b_incy)
-    if (matrel .eq. 1) then
-        call pmdrdy(kel, coef, cimpo, valimp, y, &
-                    sigp, r, drdy)
+    if (lMatrElas) then
+        call pmdrdy(matrElas, coefMatrAdim, coefImpo, valeImpo, y, &
+                    sigmCurr, r, drdy)
     else
-        call pmdrdy(dsidep, coef, cimpo, valimp, y, &
-                    sigp, r, drdy)
+        call pmdrdy(dsidep, coefMatrAdim, coefImpo, valeImpo, y, &
+                    sigmCurr, r, drdy)
     end if
 !
 !           VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-    call pmconv(r, rini, r1, instap, sigp, &
-                coef, iter, indimp, ds_conv, conver, &
-                itemax)
+    call pmconv(r, rini, r1, timeCurr, sigmCurr, &
+                coefMatrAdim, iterNewt, loadType, ds_conv, conver, &
+                lIterNewtMaxi)
 !
 !           ENREGISTRE LES RESIDUS A CETTE ITERATION
-    call dierre(sddisc, sdcrit, iter)
+    call dierre(sddisc, sdcrit, iterNewt)
 !
 !           VERIFICATION DES EVENT-DRIVEN
 500 continue
-    call pmsta1(sigm, sigp, deps, zr(lvim), zr(lvip), &
-                nbvari, nbvita, iforta, nbpar, nompar, &
-                vr, igrad, typpar, zk8(lnomvi), sddisc, &
-                liccvg, itemax, conver, actite)
+    call pmsta1(sigmPrev, sigmCurr, epsiIncr, &
+                nbVari, nbVariTabl, &
+                zr(jvVim), zr(jvVip), &
+                tablNbParaMaxi, tablNbPara, tablType, &
+                tablParaName, tablParaType, tablVale, &
+                lLoadGrad, zk8(jvVariName), sddisc, &
+                liccvg, lIterNewtMaxi, conver, newtLoopAction)
 !
 !           ON CONTINUE NEWTON
-    if (actite .eq. 2) goto 300
+    if (newtLoopAction .eq. 2) goto 300
 !
 ! ======================================================================
 !     FIN DES ITERATIONS DE NEWTON
@@ -454,8 +445,8 @@ subroutine op0033()
 !        GESTION DE LA DECOUPE DU PAS DE TEMPS
 !        EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 !        DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
-    call pmactn(sddisc, ds_conv, iter, numeInst, itemax, &
-                sderro, liccvg, actite, action)
+    call pmactn(sddisc, ds_conv, iterNewt, numeInst, lIterNewtMaxi, &
+                sderro, liccvg, newtLoopAction, action)
 !
 ! ---    ACTION
 !          0 ARRET DU CALCUL
@@ -475,23 +466,24 @@ subroutine op0033()
 !
 550 continue
 !
-!        ---------------------------------------------------------------
-!        CONVERGENCE => MISE A JOUR DE SIGM,ZR(LVIM), TABLE
-!        ---------------------------------------------------------------
-!
-!        ADAPTATION DU NOUVEAU PAS DE TEMPS
-!        PAS DE GESTION DE DELTA_GRANDEUR ACTUELLEMENT
+! - Adaptation of next time step
     call nmfinp(sddisc, numeInst, lastTimeStep)
-    if (.not. lastTimeStep) call nmadat(sddisc, numeInst, iter, k19b)
+    if (.not. lastTimeStep) then
+        call pmadat(sddisc, numeInst, iterNewt)
+    end if
     numeInst = numeInst+1
-!        STOCKAGE EFFECTIF DU RESULTAT DANS LA TABLE
-    call pmstab(sigm, sigp, epsm, deps, nbvari, &
-                zr(lvim), zr(lvip), iforta, instam, instap, &
-                iter, nbpar, nompar, table, vr, &
-                igrad, valimp, imptgt, dsidep, zk8(lnomvi), &
-                nbvita)
-    call pmimpr(2, instap, indimp, valimp, iter, &
-                deps, sigp, zr(lvip), nbvari, r, &
+
+! - Save values in table
+    call pmstab(sigmPrev, sigmCurr, epsiPrev, epsiIncr, &
+                nbVari, zr(jvVim), zr(jvVip), &
+                timePrev, timeCurr, iterNewt, &
+                tablName, tablType, tablNbParaMaxi, tablNbPara, &
+                tablParaName, tablVale, &
+                lLoadGrad, valeImpo, lPrintMatr, dsidep, zk8(jvVariName), &
+                nbVariTabl)
+
+    call pmimpr(2, timeCurr, loadType, valeImpo, iterNewt, &
+                epsiIncr, sigmCurr, zr(jvVip), nbVari, r, &
                 r8b, r8b)
 !
 600 continue
@@ -509,10 +501,8 @@ subroutine op0033()
 900 continue
 !
 !     GESTION DES VARIABLES DE COMMANDE
-    call vrcinp(0, instam, instap)
-!
-!
-!     DESTRUCTION DE lA FONCTION F0 NULLE
+    call vrcinp(0, timePrev, timeCurr)
+
     call detrsd('FONCTION', '&&CPM_F0')
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
                   dirgrm, maxfem, ngfon, comps1, comps2, &
                   pre1, mo)
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1504
     implicit none

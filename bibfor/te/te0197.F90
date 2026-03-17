@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine te0197(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: option
     character(len=16), intent(in) :: nomte

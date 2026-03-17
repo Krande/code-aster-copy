@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
     call getInterCont(nbPoinInte, poinInteSlav)
 
 ! - Get quadrature (slave side)
-    call getQuadCont(geom%elem_dime, &
+    call getQuadCont(parameters, geom%elem_dime, &
                      geom%elem_slav_code, geom%elem_mast_code, &
                      nbPoinInte, poinInteSlav, &
                      nb_qp, coor_qp, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine aplcpgn(mesh, newgeo, &
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/ap_infast_n.h"
 #include "asterfort/apcoor.h"
@@ -35,18 +36,18 @@ subroutine aplcpgn(mesh, newgeo, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/mesh_pairing_type.h"
 #include "asterfort/prjint_ray.h"
 #include "asterfort/testvois.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
 #include "Contact_type.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
@@ -93,11 +94,11 @@ subroutine aplcpgn(mesh, newgeo, &
     character(len=8) :: elem_mast_code, elem_slav_code
     character(len=8) :: elem_slav_type, elem_mast_type
     real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
-    integer(kind=8) :: nb_pair, nb_poin_inte
+    integer(kind=8) :: nb_pair, nb_poin_inte, i_dim, i_pt
     integer(kind=8) :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
     integer(kind=8) :: i_slav_neigh
     real(kind=8) :: inte_weight
-    real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL)
+    real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL), poin_inte_sl2(2, MAX_NB_INTE)
     real(kind=8) :: poin_inte_ma(SIZE_MAX_INTE_SL)
     character(len=8) :: elem_slav_name, elem_name
     integer(kind=8) :: nb_slav_start, nb_find_mast, nb_mast_start
@@ -131,7 +132,7 @@ subroutine aplcpgn(mesh, newgeo, &
 !
 ! - some initializations
 !
-    debug = ASTER_FALSE
+    debug = meshPairing%debug
     pair_exist = ASTER_TRUE
     inte_neigh(1:4) = 0
     list_slav_master(1:4) = 0
@@ -374,8 +375,20 @@ subroutine aplcpgn(mesh, newgeo, &
                     !print*,"LIPTMA_APLC", li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
                     !            (nb_pair-1)*SIZE_MAX_INTE_SL+2)
 
+                    poin_inte_sl2 = 0.d0
+                    if (elem_slav_dime == 2) then
+                        do i_pt = 1, nb_poin_inte
+                            poin_inte_sl2(1, i_pt) = poin_inte_sl(i_pt)
+                        end do
+                    else
+                        do i_pt = 1, nb_poin_inte
+                            do i_dim = 1, 2
+                                poin_inte_sl2(i_dim, i_pt) = poin_inte_sl(2*i_pt+i_dim)
+                            end do
+                        end do
+                    end if
                     call pairAdd(elem_slav_nume, elem_mast_nume, &
-                                 nb_poin_inte, li_pt_inte_sl, &
+                                 nb_poin_inte, poin_inte_sl2, &
                                  meshPairing)
                 end if
 
@@ -390,14 +403,16 @@ subroutine aplcpgn(mesh, newgeo, &
 !
 ! ------------- Number of neighbours
 !
-                    if (elem_mast_code == 'SE2' .or. elem_mast_code == 'SE3') then
+                    if (elem_mast_code == 'SE2' .or. elem_mast_code == 'SE3' &
+                        .or. elem_mast_code == 'SE4') then
                         nb_mast_neigh = 2
                         tole_weight = 0.5
-                    elseif (elem_mast_code == 'TR3' .or. elem_mast_code == 'TR6') then
+                    elseif (elem_mast_code == 'TR3' .or. elem_mast_code == 'TR6' &
+                            .or. elem_mast_code == 'TR7' .or. elem_mast_code == 'TR1') then
                         nb_mast_neigh = 3
                         tole_weight = 0.05
                     elseif (elem_mast_code == 'QU4' .or. elem_mast_code == 'QU8' .or. &
-                            elem_mast_code == 'QU9') then
+                            elem_mast_code == 'QU9' .or. elem_mast_code == 'Q12') then
                         nb_mast_neigh = 4
                         tole_weight = 0.4
                     else
@@ -410,15 +425,16 @@ subroutine aplcpgn(mesh, newgeo, &
                     do i_mast_neigh = 1, nb_mast_neigh
                         elem_mast_neigh = v_sdappa_mane((elem_mast_indx-1)*4+i_mast_neigh)
                         elem_neigh_indx = elem_mast_neigh+1-mast_indx_mini
-                        if (elem_mast_neigh .ne. 0 .and. &
-                            mast_find_flag(elem_neigh_indx) == 0) then
-                            list_find_mast(nb_find_mast+1) = elem_mast_neigh
-                            nb_find_mast = nb_find_mast+1
-                            if (debug) then
-                                WRITE (6, *) " => added: ", nb_find_mast, &
-                                    list_find_mast(nb_find_mast)
+                        if (elem_mast_neigh .ne. 0) then
+                            if (mast_find_flag(elem_neigh_indx) == 0) then
+                                list_find_mast(nb_find_mast+1) = elem_mast_neigh
+                                nb_find_mast = nb_find_mast+1
+                                if (debug) then
+                                    WRITE (6, *) " => added: ", nb_find_mast, &
+                                        list_find_mast(nb_find_mast)
+                                end if
+                                mast_find_flag(elem_neigh_indx) = 1
                             end if
-                            mast_find_flag(elem_neigh_indx) = 1
                         end if
                     end do
 
@@ -438,24 +454,24 @@ subroutine aplcpgn(mesh, newgeo, &
                             WRITE (6, *) " < cellSlavFlag: ", elem_slav_flag(elem_neigh_indx)
                             WRITE (6, *) " < inteNeigh: ", inte_neigh(i_slav_neigh)
                         end if
-                        if (elem_slav_neigh .ne. 0 .and. &
-                            inte_neigh(i_slav_neigh) == 1 &
-                            .and. elem_slav_flag(elem_neigh_indx) .ne. 1 &
-                            .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
-                            weight_test = 0.d0
-                            ! IS IT NECESSARY WITH RAY_TRACING ?
-                            !call testvois(jv_geom       , elem_slav_type,&
-                            !                elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                            !                pair_tole     , weight_test,    v_mesh_connex ,&
-                            !                v_connex_lcum)
-                            !if (weight_test > list_slav_weight(i_slav_neigh).and.&
-                            !    weight_test > pair_tole) then
-                            list_slav_master(i_slav_neigh) = elem_mast_nume
-                            if (debug) then
-                                WRITE (6, *) " => added: ", elem_mast_nume
+                        if (elem_slav_neigh .ne. 0) then
+                            if (inte_neigh(i_slav_neigh) == 1 &
+                                .and. elem_slav_flag(elem_neigh_indx) .ne. 1 &
+                                .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
+                                weight_test = 0.d0
+                                ! IS IT NECESSARY WITH RAY_TRACING ?
+                                !call testvois(jv_geom       , elem_slav_type,&
+                                !                elem_mast_coor, elem_mast_code, elem_slav_nume,&
+                                !                pair_tole     , weight_test,    v_mesh_connex ,&
+                                !                v_connex_lcum)
+                                !if (weight_test > list_slav_weight(i_slav_neigh).and.&
+                                !    weight_test > pair_tole) then
+                                list_slav_master(i_slav_neigh) = elem_mast_nume
+                                if (debug) then
+                                    WRITE (6, *) " => added: ", elem_mast_nume
+                                end if
+                                !   list_slav_weight(i_slav_neigh) = weight_test
                             end if
-                            !   list_slav_weight(i_slav_neigh) = weight_test
-                            !end if
                         end if
                     end do
                     l_recup = ASTER_FALSE
@@ -475,14 +491,15 @@ subroutine aplcpgn(mesh, newgeo, &
                     write (*, *) 'Next elements - Current: ', i_slav_neigh, elem_slav_neigh, &
                         list_slav_master(i_slav_neigh), elem_slav_flag(elem_neigh_indx)
                 end if
-                if (elem_slav_neigh .ne. 0 .and. &
-                    list_slav_master(i_slav_neigh) .ne. 0 .and. &
-                    elem_slav_flag(elem_neigh_indx) .ne. 1) then
-                    elem_slav_start(nb_slav_start+1) = elem_slav_neigh
-                    nb_slav_start = nb_slav_start+1
-                    elem_slav_flag(elem_neigh_indx) = 1
-                    elem_mast_start(nb_mast_start+1) = list_slav_master(i_slav_neigh)
-                    nb_mast_start = nb_mast_start+1
+                if (elem_slav_neigh .ne. 0) then
+                    if (list_slav_master(i_slav_neigh) .ne. 0 .and. &
+                        elem_slav_flag(elem_neigh_indx) .ne. 1) then
+                        elem_slav_start(nb_slav_start+1) = elem_slav_neigh
+                        nb_slav_start = nb_slav_start+1
+                        elem_slav_flag(elem_neigh_indx) = 1
+                        elem_mast_start(nb_mast_start+1) = list_slav_master(i_slav_neigh)
+                        nb_mast_start = nb_mast_start+1
+                    end if
                 end if
             end do
             mast_find_flag(1:mast_indx_maxi+1-mast_indx_mini) = 0

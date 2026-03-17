@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY"]
+    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY", "ASAN"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
@@ -136,7 +136,7 @@ def check_fortran_compiler_flags(self):
     # -fPIC is only needed on Linux/Unix platforms
     if not self.env.ASTER_PLATFORM_MSVC64:
         self.check_fortran_compiler_options("-fPIC")
-    # self.check_fortran_compiler_options("-fno-lto")
+        self.check_fortran_compiler_options(self.get_lto_options())
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
@@ -163,7 +163,8 @@ def check_fortran_compiler_flags(self):
                 self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
         # Only add architecture-specific flags on Linux
         if not self.env.ASTER_PLATFORM_MSVC64:
-            self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
+            self.check_fortran_compiler_options(["-nogen-interfaces"])
+            # TODO: "-xCORE-AVX2" with execute=True
         if self.env.ASTER_PLATFORM_MSVC64:
             self.check_fortran_compiler_options(["/nologo"])
         # all Intel specific features must use:
@@ -518,17 +519,14 @@ def check_optimization_fcflags(self):
     """Check for optimization FCFLAGS."""
     if self.env.ASTER_PLATFORM_MSVC64:
         return
+    self.remove_flags("FCFLAGS", "^-O[0-9]")
     self.setenv("debug")
     self.start_msg("Setting fortran debug flags")
     self.define("ASTER_DEBUG_FC", 1)
-    self.remove_optflags("FCFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:
         flags.append("--coverage")
         self.env.append_unique("LINKFLAGS", "--coverage")
-    if self.options.enable_asan:
-        flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
-        self.env.append_unique("LINKFLAGS", ["-fsanitize=address", "-fno-omit-frame-pointer"])
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)
 

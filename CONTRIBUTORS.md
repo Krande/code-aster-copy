@@ -253,6 +253,7 @@ Please keep this list sorted.
 ## And here is a list of EXTERNAL CONTRIBUTORS
 
 - Arnaud Alzina <arnaud.alzina .at. unilim.fr>
+- Kristoffer Andersen <@krande> on gitlab.com
 - Thouraya Baranger <thouraya.baranger .at. univ-lyon1.fr>
 - Cyril Borely <cyril.borely .at. setec.com>
 - Nicolas Chauvat <nicolas.chauvat .at. logilab.fr>

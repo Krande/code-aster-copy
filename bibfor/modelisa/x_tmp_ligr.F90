@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
     character(len=19), optional, intent(in) :: list_cells
     integer(kind=8), optional, intent(in) :: n_list_cells
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! DEFI_FISS_XFEM / PROPA_FISS :

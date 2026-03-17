@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,20 +40,24 @@ def configure(self):
 @Configure.conf
 def check_python(self):
     self.load("python")
-    self.check_python_version((3, 5, 0))
+    self.check_python_version((3, 6, 0))
     if self.env.ASTER_PLATFORM_MSVC64:
         path = self.env["PATH"]
         include_dir = pathlib.Path(self.env.PREFIX) / "include"
         self.env["PATH"] = f"{path};{include_dir.as_posix()}"
     else:
         self.check_python_headers()
-
     if self.env.CC_IS_INTEL:
-        self.env["LIB_PYEXT"] = list(set(self.env["LIB_PYEXT"]))
+        self.env["LIB_PYEMBED"] = list(set(self.env["LIB_PYEMBED"]))
         # Best is to clear PYEMBED and PYEXT {c/cxx}flags
         for lang in ("CFLAGS", "CXXFLAGS"):
             for feat in ("PYEMBED", "PYEXT"):
                 self.env[lang + "_" + feat] = []
+    for lang in ("CFLAGS", "CXXFLAGS", "LINKFLAGS"):
+        for feat in ("PYEMBED", "PYEXT"):
+            self.remove_flags(lang + "_" + feat, "^-O[0-9]")
+            self.remove_flags(lang + "_" + feat, "^-flto")
+            self.remove_flags(lang + "_" + feat, "^-ffat\-lto")
     cfgext = self.env["CONFIG_PARAMETERS"].get("cfgext", "yaml")
     if cfgext in ("", "yaml"):
         try:
@@ -113,7 +117,7 @@ def check_numpy_headers(self):
         feature="c",
         header_name="Python.h numpy/arrayobject.h",
         includes=include_list,
-        use=["PYEXT"],
+        use="PYEMBED",
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",
         **extra_flags

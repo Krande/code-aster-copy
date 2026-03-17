@@ -1,7 +1,7 @@
 /**
  * @file ContactParameter.cxx
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,9 +28,10 @@ ContactParameter::ContactParameter( const py::tuple &tup ) : ContactParameter() 
     _vari = tup[++i].cast< ContactVariant >();
     _coeff = tup[++i].cast< ASTERDOUBLE >();
     _jacType = tup[++i].cast< JacobianType >();
+    _inteType = tup[++i].cast< IntegrationType >();
 };
 py::tuple ContactParameter::_getState() const {
-    return py::make_tuple( _algo, _type, _vari, _coeff, _jacType );
+    return py::make_tuple( _algo, _type, _vari, _coeff, _jacType, _inteType );
 };
 
 FrictionParameter::FrictionParameter( const py::tuple &tup ) : FrictionParameter() {
@@ -55,8 +56,11 @@ PairingParameter::PairingParameter( const py::tuple &tup ) : PairingParameter() 
     _shell = tup[++i].cast< bool >();
     _dist_supp = tup[++i].cast< GenericFunctionPtr >();
     _cara = tup[++i].cast< ElementaryCharacteristicsPtr >();
+    _pair_method = tup[++i].cast< PairingMethod >();
+    _pair_tole = tup[++i].cast< ASTERDOUBLE >();
+    _area_tole = tup[++i].cast< ASTERDOUBLE >();
 };
 py::tuple PairingParameter::_getState() const {
     return py::make_tuple( _algo, _cont_init, _dist_ratio, (int)_beam, (int)_shell, _dist_supp,
-                           _cara );
+                           _cara, _pair_method, _pair_tole, _area_tole );
 };

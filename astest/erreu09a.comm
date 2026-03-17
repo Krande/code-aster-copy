@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -347,7 +347,7 @@ except CA.ConvergenceError as err:
     print("""\nNon convergence, on augmente le nombre d'iterations...\n""")
     # on recupere le dernier instant proprement calcule dans le try precedent
     # dans la variable last_iter pour repartir de cet ETAT_INIT
-    last_iter = STATNL.LIST_VARI_ACCES()["NUME_ORDRE"][-1]
+    last_iter = STATNL.getAccessParameters()["NUME_ORDRE"][-1]
 
     STATNL = STAT_NON_LINE(
         reuse=STATNL,

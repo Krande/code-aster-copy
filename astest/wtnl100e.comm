@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -133,13 +133,6 @@ for k in range(1, nbadap + 1):
         CONVERGENCE=_F(ITER_GLOB_MAXI=10),
         SOLVEUR=_F(METHODE="LDLT"),
     )
-
-    ####dico = RESU_00.LIST_PARA()
-
-    ####print dico['ERRE_TPS_LOC']
-
-    ####print dico['ERRE_TPS_GLOB']
-    ####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
 
     RESU[k] = CALC_ERREUR(
         reuse=RESU[k], RESULTAT=RESU[k], LIST_INST=LI1, OPTION=("ERME_ELEM", "ERME_ELNO")

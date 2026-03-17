@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     character(len=*), intent(out) :: repmat
     character(len=*), intent(out) :: repmod
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! in:

@@ -6,7 +6,7 @@
  * @brief Definition of elementary matrices
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -146,7 +146,7 @@ class ElementaryMatrix : public BaseElementaryMatrix {
      * @brief Get all FiniteElementDescriptors
      * @return vector of all FiniteElementDescriptors
      */
-    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() {
+    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const {
         std::vector< FiniteElementDescriptorPtr > FEDs;
         FEDs.reserve( _elemTerm.size() );
 
@@ -160,7 +160,9 @@ class ElementaryMatrix : public BaseElementaryMatrix {
         return FEDs;
     };
 
-    bool hasElementaryTerms() { return ( _elemTerm.size() != 0 ); };
+    bool hasElementaryTerms() const { return ( _elemTerm.size() != 0 ); };
+
+    ASTERINTEGER getNumberOfElementaryTerms() const { return _elemTerm.size(); }
 
     /**
      * @brief TimesEqual overloading

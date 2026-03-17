@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
+subroutine amumpd(actionz, kxmps, rsolu, vcine, nbsol, &
                   iret, impr, ifmump, prepos, pcentp)
 !
 !
@@ -51,7 +51,6 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 ! IN  : PCENTP  VECTEUR D'ENTIER GERE PAR AMUMPH POUR PARAMETRER LES
 !                STRATEGIES D'ADAPTATION EN CAS DE PB PCENT_PIVOT
 !---------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterc/matfpe.h"
 #include "asterf_types.h"
@@ -74,7 +73,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 !
 #include "asterfort/isParallelMatrix.h"
 
-    character(len=*) :: action
+    character(len=*) :: actionz
     character(len=14) :: impr
     character(len=19) :: vcine, nosolv
     integer(kind=8) :: iret, nbsol, kxmps, ifmump, pcentp(2)
@@ -89,7 +88,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
     character(len=1) :: rouc, type, prec
     character(len=3) :: matd
     character(len=5) :: etam, klag2
-    character(len=8) :: ktypr
+    character(len=8) :: ktypr, action
     character(len=12) :: usersm, k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat
@@ -128,6 +127,9 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
     ASSERT((rouc .eq. 'R') .and. (prec .eq. 'D'))
     dmpsk => dmps(kxmps)
     iret = 0
+    action = " "
+    ASSERT(len(actionz) <= 8)
+    action(1:len(actionz)) = actionz
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
     call jeveuo(nomat//'.REFA', 'L', vk24=refa)

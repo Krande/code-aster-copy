@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,8 +72,8 @@ class ContactManager:
             fed_pair = self.pair.getParallelFiniteElementDescriptor()
         else:
             fed_pair = self.pair.getFiniteElementDescriptor()
-        phys_pb.setVirtualSlavCell(fed_defi)
-        phys_pb.setVirtualCell(fed_pair)
+        phys_pb.setContactSlaveFED(fed_defi)
+        phys_pb.setContactFED(fed_pair)
         model = phys_pb.getModel()
         loads = phys_pb.getListOfLoads()
         phys_pb.getDOFNumbering().computeRenumbering(model, loads, fed_defi, fed_pair)

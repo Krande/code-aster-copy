@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,7 +167,6 @@ def coupled_mechanics(cpl):
                 GROUP_NO="N134",
                 NOM_CMP="DX",
                 VALE_CALC=-9.323277465885031,
-                GROUP_MA="M81",
             ),
             _F(
                 INST=1.0,
@@ -176,7 +175,6 @@ def coupled_mechanics(cpl):
                 GROUP_NO="N134",
                 NOM_CMP="DY",
                 VALE_CALC=-2.3117208947423626,
-                GROUP_MA="M81",
             ),
             _F(
                 INST=1.0,
@@ -185,7 +183,6 @@ def coupled_mechanics(cpl):
                 GROUP_NO="N134",
                 NOM_CMP="DZ",
                 VALE_CALC=-6.949019476525089,
-                GROUP_MA="M81",
             ),
         )
     )

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine trvocz(ndim, nbvmas, livmas, jrepmo, &
 #include "asterfort/fgequi.h"
 #include "asterfort/r8inir.h"
 !
-! person_in_charge: sam.cuvilliez at edf.fr
 !
 ! operateur POST_VOIS_CZM : calcul (en 2D et 3D) de la moyenne du taux
 ! de triaxialite des contraintes dans les elements massifs voisins (1

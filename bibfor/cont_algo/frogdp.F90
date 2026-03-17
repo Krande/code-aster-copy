@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ subroutine frogdp(ds_measure, resoco, numedd, matass, resigr)
 #include "asterfort/mtdscr.h"
 #include "asterfort/nmrvai.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8) :: resigr
     type(NL_DS_Measure), intent(inout) :: ds_measure

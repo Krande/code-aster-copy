@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine ecroup3d(rp1, drp1_depl, rpic0, s11, epic0, epl0, epp1, &
                     r0, eps0, rmin, hpla, ekdc, beta, rpiceff, epeqpc)
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !     sous programme de traitement de l ecrouissage parbolique pre pic
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,12 @@ module Behaviour_type
         integer(kind=8) :: kpg = 0
 ! ----- Index of "sub"-point (plates, pipes, beams, etc.)
         integer(kind=8) :: ksp = 0
+! ----- Index of law
+        integer(kind=8) :: numlc = 0
+! ----- Number of internal state variable
+        integer(kind=8) :: nvi = 0
+! ----- Flag to check bounds
+        aster_logical :: lChckBounds = ASTER_FALSE
     end type Behaviour_Para
 ! ==================================================================================================
 ! Type: External state variables - geometric properties

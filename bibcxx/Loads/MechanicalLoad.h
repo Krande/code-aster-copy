@@ -5,7 +5,7 @@
  * @file MechanicalLoad.h
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -182,6 +182,12 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         CALL_EXECOP( &op );
         return true;
     };
+
+    void setPairingField( const FieldOnCellsRealPtr pair ) {
+        _mecaLoadDesc->setPairingField( pair );
+    };
+
+    FieldOnCellsRealPtr getPairingField() const { return _mecaLoadDesc->getPairingField(); };
 };
 
 /**********************************************************

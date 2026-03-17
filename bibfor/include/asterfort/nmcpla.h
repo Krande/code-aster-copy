@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmcpla(BEHinteg,&
+    subroutine nmcpla(BEHinteg, &
                       fami, kpg, ksp, ndim, typmod, imat, &
                       compor_plas, compor_creep, carcri, &
                       timed, timef, neps, epsdt, depst, &
                       nsig, sigd, vind, option, &
                       sigf, vinf, ndsde, dsde, iret)
         use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
         integer(kind=8) :: ndsde
         character(len=*) :: fami
         integer(kind=8) :: kpg

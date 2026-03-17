@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine pmfd00()
 !     LES INFORMATIONS DE "DECOUPAGE" DES ELEMENTS DE STRUCTURE :
 !     NBRE DE COUCHES (COQUE), DE SECTEURS (TUYAU), "FIBRES" (PMF),..
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none

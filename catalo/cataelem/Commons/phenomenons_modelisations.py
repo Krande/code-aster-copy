@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 from cataelem.Tools.base_objects import Phenomenon, Modelisation, objects_from_context
 import cataelem.Commons.mesh_types as MT
@@ -32,6 +31,23 @@ PhenMod = {}
 ############################################################
 MECANIQUE = Phenomenon(code="ME")
 phen = MECANIQUE
+
+phen.add(
+    "PLAQ_MITC",
+    Modelisation(
+        dim=(2, 3),
+        code="DKT",
+        attrs=(
+            (AT.NBSIGM, "6"),
+            (AT.TYPMOD, "C_PLAN"),
+            (AT.COQUE, "OUI"),
+            (AT.PLAQUE, "OUI"),
+            (AT.EFGE, "OUI"),
+            (AT.SOUS_POINT, "OUI"),
+        ),
+        elements=((MT.QUAD9, EL.PLAQ_MITC),),
+    ),
+)
 
 phen.add(
     "2D_BARRE",
@@ -285,10 +301,13 @@ phen.add(
             (MT.PENTA15, EL.MECA_PENTA15),
             (MT.PENTA18, EL.MECA_PENTA18),
             (MT.TETRA10, EL.MECA_TETRA10),
+            (MT.TETRA20, EL.MECA_TETRA20),
             (MT.QUAD9, EL.MECA_FACE9),
             (MT.QUAD8, EL.MECA_FACE8),
             (MT.TRIA6, EL.MECA_FACE6),
+            (MT.TRIA10, EL.MECA_FACE10),
             (MT.SEG3, EL.MECA_ARETE3),
+            (MT.SEG4, EL.MECA_ARETE4),
             (MT.PYRAM5, EL.MECA_PYRAM5),
             (MT.PYRAM13, EL.MECA_PYRAM13),
         ),
@@ -1424,6 +1443,34 @@ phen.add(
         code="3FH",
         attrs=((AT.TYPMOD, "3D"), (AT.TYPMOD2, "EJ_HYME"), (AT.INTERFACE, "OUI")),
         elements=((MT.HEXA20, EL.EJHYME_HEXA20), (MT.PENTA15, EL.EJHYME_PENTA15)),
+    ),
+)
+
+phen.add(
+    "3D_MIX_STA#1",
+    Modelisation(
+        dim=(3, 3),
+        code="3MV",
+        attrs=((AT.NBSIGM, "6"), (AT.TYPMOD, "3D"), (AT.FORMULATION, "STA")),
+        elements=(
+            (MT.HEXA8, EL.MEMS_HEXA8),
+            (MT.PENTA6, EL.MEMS_PENTA6),
+            (MT.TETRA4, EL.MEMS_TETRA4),
+            (MT.PYRAM5, EL.MEMS_PYRAM5),
+            (MT.QUAD4, EL.MECA_FACE4),
+            (MT.TRIA3, EL.MECA_FACE3),
+            (MT.SEG2, EL.MECA_ARETE2),
+        ),
+    ),
+)
+
+phen.add(
+    "3D_MIX_STA#2",
+    Modelisation(
+        dim=(3, 3),
+        code="3SI",
+        attrs=((AT.NBSIGM, "6"), (AT.TYPMOD, "3D"), (AT.FORMULATION, "STA_INCO")),
+        elements=((MT.HEXA8, EL.MEMI_HEXA8), (MT.QUAD4, EL.MECA_FACE4), (MT.SEG2, EL.MECA_ARETE2)),
     ),
 )
 
@@ -3654,6 +3701,254 @@ phen.add(
     ),
 )
 
+# -- Define COUPLING FEM/HHO elements for PENALISATION method
+
+phen.add(
+    "CPL_PEN_H1_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HP2",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.SEG23, EL.CP_S2S3_HHO1),
+            (MT.SEG33, EL.CP_S3S3_HHO1),
+            (MT.SEG43, EL.CP_S4S3_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H2_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HP2",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.SEG23, EL.CP_S2S3_HHO2),
+            (MT.SEG33, EL.CP_S3S3_HHO2),
+            (MT.SEG43, EL.CP_S4S3_HHO2),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H1_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="H31",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.QU4QU9, EL.CP_Q4Q9_HHO1),
+            (MT.QU8QU9, EL.CP_Q8Q9_HHO1),
+            (MT.QUAD99, EL.CP_Q9Q9_HHO1),
+            (MT.TR3QU9, EL.CP_T3Q9_HHO1),
+            (MT.TR6QU9, EL.CP_T6Q9_HHO1),
+            (MT.QU4TR7, EL.CP_Q4T7_HHO1),
+            (MT.QU8TR7, EL.CP_Q8T7_HHO1),
+            (MT.QU9TR7, EL.CP_Q9T7_HHO1),
+            (MT.TR3TR7, EL.CP_T3T7_HHO1),
+            (MT.TR6TR7, EL.CP_T6T9_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_H2_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="H32",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.QU4QU9, EL.CP_Q4Q9_HHO2),
+            (MT.QU8QU9, EL.CP_Q8Q9_HHO2),
+            (MT.QUAD99, EL.CP_Q9Q9_HHO2),
+            (MT.TR3QU9, EL.CP_T3Q9_HHO2),
+            (MT.TR6QU9, EL.CP_T6Q9_HHO2),
+            (MT.QU4TR7, EL.CP_Q4T7_HHO2),
+            (MT.QU8TR7, EL.CP_Q8T7_HHO2),
+            (MT.QU9TR7, EL.CP_Q9T7_HHO2),
+            (MT.TR3TR7, EL.CP_T3T7_HHO2),
+            (MT.TR6TR7, EL.CP_T6T9_HHO2),
+        ),
+    ),
+)
+
+# -- Define COUPLING FEM/FEM elements for PENALISATION method
+
+phen.add(
+    "CPL_PEN_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="CP2",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.SEG22, EL.CP_S2S2),
+            (MT.SEG23, EL.CP_S2S3),
+            (MT.SEG32, EL.CP_S3S2),
+            (MT.SEG33, EL.CP_S3S3),
+            (MT.SEG44, EL.CP_S4S4),
+            (MT.SEG43, EL.CP_S4S3),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_PEN_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="CP3",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.QU4QU8, EL.CP_Q4Q8),
+            (MT.QU4QU9, EL.CP_Q4Q9),
+            (MT.QU4TR3, EL.CP_Q4T3),
+            (MT.QU4TR6, EL.CP_Q4T6),
+            (MT.QU8QU4, EL.CP_Q8Q4),
+            (MT.QU8QU9, EL.CP_Q8Q9),
+            (MT.QU8TR3, EL.CP_Q8T3),
+            (MT.QU8TR6, EL.CP_Q8T6),
+            (MT.QU9QU4, EL.CP_Q9Q4),
+            (MT.QU9QU8, EL.CP_Q9Q8),
+            (MT.QU9TR3, EL.CP_Q9T3),
+            (MT.QU9TR6, EL.CP_Q9T6),
+            (MT.QUAD44, EL.CP_Q4Q4),
+            (MT.QUAD88, EL.CP_Q8Q8),
+            (MT.QUAD99, EL.CP_Q9Q9),
+            (MT.TR3QU4, EL.CP_T3Q4),
+            (MT.TR3QU8, EL.CP_T3Q8),
+            (MT.TR3QU9, EL.CP_T3Q9),
+            (MT.TR3TR6, EL.CP_T3T6),
+            (MT.TR6QU4, EL.CP_T6Q4),
+            (MT.TR6QU8, EL.CP_T6Q8),
+            (MT.TR6QU9, EL.CP_T6Q9),
+            (MT.TR6TR3, EL.CP_T6T3),
+            (MT.TRIA33, EL.CP_T3T3),
+            (MT.TRIA66, EL.CP_T6T6),
+        ),
+    ),
+)
+
+# -- Define COUPLING FEM/FEM elements for LAGRANGIAN method
+
+phen.add(
+    "CPL_LAG_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="CL2",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.SEG22, EL.CL_S2S2),
+            (MT.SEG23, EL.CL_S2S3),
+            (MT.SEG32, EL.CL_S3S2),
+            (MT.SEG33, EL.CL_S3S3),
+            (MT.SEG44, EL.CL_S4S4),
+            (MT.SEG43, EL.CL_S4S3),
+            (MT.POI1, EL.CL_POI2D),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_LAG_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="CL3",
+        attrs=((AT.RACCORD, "OUI"),),
+        elements=(
+            (MT.QU4QU8, EL.CL_Q4Q8),
+            (MT.QU4QU9, EL.CL_Q4Q9),
+            (MT.QU4TR3, EL.CL_Q4T3),
+            (MT.QU4TR6, EL.CL_Q4T6),
+            (MT.QU8QU4, EL.CL_Q8Q4),
+            (MT.QU8QU9, EL.CL_Q8Q9),
+            (MT.QU8TR3, EL.CL_Q8T3),
+            (MT.QU8TR6, EL.CL_Q8T6),
+            (MT.QU9QU4, EL.CL_Q9Q4),
+            (MT.QU9QU8, EL.CL_Q9Q8),
+            (MT.QU9TR3, EL.CL_Q9T3),
+            (MT.QU9TR6, EL.CL_Q9T6),
+            (MT.QUAD44, EL.CL_Q4Q4),
+            (MT.QUAD88, EL.CL_Q8Q8),
+            (MT.QUAD99, EL.CL_Q9Q9),
+            (MT.TR3QU4, EL.CL_T3Q4),
+            (MT.TR3QU8, EL.CL_T3Q8),
+            (MT.TR3QU9, EL.CL_T3Q9),
+            (MT.TR3TR6, EL.CL_T3T6),
+            (MT.TR6QU4, EL.CL_T6Q4),
+            (MT.TR6QU8, EL.CL_T6Q8),
+            (MT.TR6QU9, EL.CL_T6Q9),
+            (MT.TR6TR3, EL.CL_T6T3),
+            (MT.TRIA33, EL.CL_T3T3),
+            (MT.TRIA66, EL.CL_T6T6),
+            (MT.POI1, EL.CL_POI3D),
+        ),
+    ),
+)
+
+# -- Define COUPLING FEM/HHO elements for NITSCHE method
+
+phen.add(
+    "CPL_NIT_H1_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HN1",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.TR3SE3, EL.CN_T3S3_HHO1),
+            (MT.TR6SE3, EL.CN_T6S3_HHO1),
+            (MT.QU4SE3, EL.CN_Q4S3_HHO1),
+            (MT.QU8SE3, EL.CN_Q8S3_HHO1),
+            (MT.QU9SE3, EL.CN_Q9S3_HHO1),
+        ),
+    ),
+)
+
+phen.add(
+    "CPL_NIT_H2_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="HN2",
+        attrs=(
+            (AT.HHO, "OUI"),
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.RACCORD, "OUI"),
+        ),
+        elements=(
+            (MT.TR3SE3, EL.CN_T3S3_HHO2),
+            (MT.TR6SE3, EL.CN_T6S3_HHO2),
+            (MT.QU4SE3, EL.CN_Q4S3_HHO2),
+            (MT.QU8SE3, EL.CN_Q8S3_HHO2),
+            (MT.QU9SE3, EL.CN_Q9S3_HHO2),
+        ),
+    ),
+)
+
 # ------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour :
 #  * Forces nodales
@@ -3982,12 +4277,15 @@ phen.add(
         attrs=((AT.NBSIGM, "4"), (AT.D_PLAN, "OUI"), (AT.TYPMOD, "D_PLAN")),
         elements=(
             (MT.TRIA3, EL.MEDPTR3),
-            (MT.QUAD4, EL.MEDPQU4),
             (MT.TRIA6, EL.MEDPTR6),
+            (MT.TRIA10, EL.MEDPTR10),
+            (MT.QUAD4, EL.MEDPQU4),
             (MT.QUAD8, EL.MEDPQU8),
             (MT.QUAD9, EL.MEDPQU9),
+            (MT.QUAD12, EL.MEDPQU12),
             (MT.SEG2, EL.MEPLSE2),
             (MT.SEG3, EL.MEPLSE3),
+            (MT.SEG4, EL.MEPLSE4),
         ),
     ),
 )
@@ -5698,6 +5996,35 @@ phen.add(
     ),
 )
 
+phen.add(
+    "D_PLAN_MIX_STA#1",
+    Modelisation(
+        dim=(2, 2),
+        code="2MV",
+        attrs=(
+            (AT.NBSIGM, "4"),
+            (AT.D_PLAN, "OUI"),
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.FORMULATION, "STA"),
+        ),
+        elements=((MT.QUAD4, EL.MEMS_QU4), (MT.TRIA3, EL.MEMS_TR3), (MT.SEG2, EL.MEPLSE2)),
+    ),
+)
+
+phen.add(
+    "D_PLAN_MIX_STA#2",
+    Modelisation(
+        dim=(2, 2),
+        code="2SI",
+        attrs=(
+            (AT.NBSIGM, "4"),
+            (AT.D_PLAN, "OUI"),
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.FORMULATION, "STA_INCO"),
+        ),
+        elements=((MT.QUAD4, EL.MEMI_QU4), (MT.SEG2, EL.MEPLSE2)),
+    ),
+)
 
 phen.add(
     "D_PLAN_GRAD_HH#1",
@@ -5715,7 +6042,7 @@ phen.add(
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO111),
             (MT.TRIA7, EL.MECA_DGVT_HHO111),
-            (MT.SEG3, EL.MECA_2D_HHO1_F),
+            (MT.SEG3, EL.MECA_2DGV_HHO1_F),
         ),
     ),
 )
@@ -5736,7 +6063,92 @@ phen.add(
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO222),
             (MT.TRIA7, EL.MECA_DGVT_HHO222),
-            (MT.SEG3, EL.MECA_2D_HHO2_F),
+            (MT.SEG3, EL.MECA_2DGV_HHO2_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#1",
+    Modelisation(
+        dim=(2, 2),
+        code="HA1",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO111),
+            (MT.TRIA7, EL.MECA_AXT7_HHO111),
+            (MT.SEG3, EL.MECA_2DAX_HHO1_F),
+        ),
+    ),
+)
+
+
+phen.add(
+    "AXIS_HHO#2",
+    Modelisation(
+        dim=(2, 2),
+        code="HA2",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO222),
+            (MT.TRIA7, EL.MECA_AXT7_HHO222),
+            (MT.SEG3, EL.MECA_2DAX_HHO2_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#3",
+    Modelisation(
+        dim=(2, 2),
+        code="HA3",
+        attrs=(
+            (AT.FORMULATION, "HHO_CUBI"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO333),
+            (MT.TRIA7, EL.MECA_AXT7_HHO333),
+            (MT.SEG3, EL.MECA_2DAX_HHO3_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#4",
+    Modelisation(
+        dim=(2, 2),
+        code="HA3",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAR"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO444),
+            (MT.TRIA7, EL.MECA_AXT7_HHO444),
+            (MT.SEG3, EL.MECA_2DAX_HHO4_F),
         ),
     ),
 )
@@ -5756,8 +6168,10 @@ phen.add(
         elements=(
             (MT.HEXA27, EL.MECA3DGVH_HHO111),
             (MT.TETRA15, EL.MECA3DGVT_HHO111),
-            (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
-            (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
+            (MT.PENTA21, EL.MECA3GVPE_HHO111),
+            (MT.PYRAM19, EL.MECA3GVPY_HHO111),
+            (MT.QUAD9, EL.MECA3DGVQ_HHO1_F),
+            (MT.TRIA7, EL.MECA3DGVT_HHO1_F),
         ),
     ),
 )
@@ -5777,8 +6191,53 @@ phen.add(
         elements=(
             (MT.HEXA27, EL.MECA3DGVH_HHO222),
             (MT.TETRA15, EL.MECA3DGVT_HHO222),
-            (MT.QUAD9, EL.MECA3DQU9_HHO2_F),
-            (MT.TRIA7, EL.MECA3DTR7_HHO2_F),
+            (MT.PENTA21, EL.MECA3GVPE_HHO222),
+            (MT.PYRAM19, EL.MECA3GVPY_HHO222),
+            (MT.QUAD9, EL.MECA3DGVQ_HHO2_F),
+            (MT.TRIA7, EL.MECA3DGVT_HHO2_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_GRAD_HHO#1",
+    Modelisation(
+        dim=(2, 2),
+        code="HA1",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AGVQ_HHO111),
+            (MT.TRIA7, EL.MECA_AGVT_HHO111),
+            (MT.SEG3, EL.MECA_AXGV_HHO1_F),
+        ),
+    ),
+)
+
+
+phen.add(
+    "AXIS_GRAD_HHO#2",
+    Modelisation(
+        dim=(2, 2),
+        code="HA2",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AGVQ_HHO222),
+            (MT.TRIA7, EL.MECA_AGVT_HHO222),
+            (MT.SEG3, EL.MECA_AXGV_HHO2_F),
         ),
     ),
 )
@@ -5806,10 +6265,12 @@ phen.add(
             (MT.HEXA20, EL.THER_HEXA20),
             (MT.PENTA15, EL.THER_PENTA15),
             (MT.TETRA10, EL.THER_TETRA10),
+            (MT.TETRA20, EL.THER_TETRA20),
             (MT.PYRAM13, EL.THER_PYRAM13),
-            (MT.QUAD9, EL.THER_FACE9),
             (MT.QUAD8, EL.THER_FACE8),
+            (MT.QUAD9, EL.THER_FACE9),
             (MT.TRIA6, EL.THER_FACE6),
+            (MT.TRIA10, EL.THER_FACE10),
         ),
     ),
 )
@@ -6106,10 +6567,13 @@ phen.add(
             (MT.TRIA3, EL.THPLTR3),
             (MT.QUAD4, EL.THPLQU4),
             (MT.TRIA6, EL.THPLTR6),
+            (MT.TRIA10, EL.THPLTR10),
             (MT.QUAD8, EL.THPLQU8),
             (MT.QUAD9, EL.THPLQU9),
+            (MT.QUAD12, EL.THPLQU12),
             (MT.SEG2, EL.THPLSE2),
             (MT.SEG3, EL.THPLSE3),
+            (MT.SEG4, EL.THPLSE4),
         ),
     ),
 )

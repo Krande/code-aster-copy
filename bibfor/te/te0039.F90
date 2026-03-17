@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,12 +66,12 @@ subroutine te0039(option, nomte)
     type(te0047_dscr) :: for_discret
 !
 !   Les variables internes
-    integer(kind=8), parameter :: nbvari = 9
+    integer(kind=8), parameter :: nbvari = 10
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
     integer(kind=8) :: lorien, lmater, ii, jj, i, j, k
     integer(kind=8) :: ivectu, jvSief
-    integer(kind=8) :: iplouf, infodi, itype, ibid
+    integer(kind=8) :: iplouf, infodi, ibid
     integer(kind=8) :: igeom, jdc, irep, ifono, ilogic, jvDisp
 !
     real(kind=8) :: pgl(3, 3), force(3)

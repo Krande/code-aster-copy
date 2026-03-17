@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ If the version has been configured with ``--use-srun``, you *must* use:
 
 .. code-block:: sh
 
-    bin/run_aster --srun path/to/file.export
+    bin/run_aster path/to/file.export
 
 or:
 
@@ -485,7 +485,12 @@ def main(argv=None):
                         ncpus=export.get("ncpus", 1),
                         program=cmd,
                     )
+                    memnode = os.environ.get("SLURM_MEM_PER_NODE")
+                    if memnode and export.get("memory_limit"):
+                        memcpu = float(memnode) / float(os.environ.get("SLURM_CPUS_ON_NODE", 1))
+                        args_cmd["mem-per-cpu"] = int(memcpu)
                     cmd = CFG.get("mpiexec").format(**args_cmd)
+                    logger.debug("Args: %s", args_cmd)
                 logger.info("Running: %s", cmd)
                 proc = run(cmd, shell=True, check=False)
                 status = Status.load(statfile)
@@ -496,7 +501,7 @@ def main(argv=None):
                         exitcode = 0
                         continue
                     break
-            shutil.rmtree(expdir)
+            shutil.rmtree(expdir, ignore_errors=True)
             return exitcode
 
         if args.only_proc0 and procid != args.proc0id:
@@ -533,7 +538,7 @@ def main(argv=None):
     finally:
         if not args.wrkdir:
             os.chdir(osp.dirname(wrkdir))
-            shutil.rmtree(wrkdir)
+            shutil.rmtree(wrkdir, ignore_errors=True)
     return exitcode
 
 

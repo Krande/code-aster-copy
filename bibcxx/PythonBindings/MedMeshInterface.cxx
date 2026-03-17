@@ -3,7 +3,7 @@
  * @brief Interface python de MedMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/MedMeshInterface.h"
 
@@ -208,7 +206,16 @@ Arguments:
 Returns:
     list: coordinates list
             )",
-              py::arg( "numdt" ), py::arg( "numit" ) );
+              py::arg( "numdt" ), py::arg( "numit" ) )
+        .def( "addFamily", &MedMesh::addFamily, R"(
+Add family to mesh
+
+Arguments:
+    name (str): family name
+    num (int): family id
+    grps (list): group list
+    )",
+              py::arg( "name" ), py::arg( "num" ), py::arg( "grps" ) );
 };
 
 #endif

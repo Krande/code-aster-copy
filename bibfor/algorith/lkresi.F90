@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine lkresi(typmod, nmat, materf, timed, timef, &
                   nvi, vind, vinf, yd, yf, &
                   deps, nr, r)
-! person_in_charge: alexandre.foucault at edf.fr
     implicit none
 !       ----------------------------------------------------------------
 !       CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = -R(DY) POUR LETK
@@ -59,7 +58,7 @@ subroutine lkresi(typmod, nmat, materf, timed, timef, &
     character(len=8) :: typmod
 !
     integer(kind=8) :: i, retcom, val, varv
-    real(kind=8) :: zero, vint(7), devsig(6), i1, ucrip, seuilp
+    real(kind=8) :: zero, vint(nvi), devsig(6), i1, ucrip, seuilp
     real(kind=8) :: dt, seuilv, depsv(6), dgamv
     real(kind=8) :: dxiv, xivmax, xippic, seuivm, ucriv
     real(kind=8) :: dsdenl(6, 6), kk, mu, dhds(6), ds2hds(6)

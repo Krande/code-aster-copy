@@ -69,6 +69,10 @@
      - 
    * - :py:class:`~code_aster.Objects.ContactZone`
      - ``char_cont_zone``
+   * - :py:class:`~code_aster.Objects.CouplingPairing`
+     - 
+   * - :py:class:`~code_aster.Objects.CouplingZonePairing`
+     - 
    * - :py:class:`~code_aster.Objects.Crack`
      - ``fond_fissure``
    * - :py:class:`~code_aster.Objects.CyclicSymmetryMode`

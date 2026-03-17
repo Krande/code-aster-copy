@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,6 @@ subroutine te0448(nomopt, nomte)
         typmod(1) = '3D'
     case (2)
         if (lteatt('AXIS', 'OUI')) then
-            ASSERT(ASTER_FALSE)
             typmod(1) = 'AXIS'
         else if (lteatt('C_PLAN', 'OUI')) then
             ASSERT(ASTER_FALSE)
@@ -145,7 +144,7 @@ subroutine te0448(nomopt, nomte)
 !
 ! --- Compute local contribution
 !
-    call hho_dgemv_N(1.d0, gradrec, depl_curr, 0.d0, G_curr_coeff)
+    call gradrec%dot(depl_curr, G_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -157,11 +156,9 @@ subroutine te0448(nomopt, nomte)
         call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
+            G_curr = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
         else
-            E_curr = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
+            E_curr = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, G_curr_coeff)
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine rsutc2(typres, nomch, nomgd, typsd)
 #include "asterfort/utmess.h"
     character(len=*) :: typres, nomch, nomgd, typsd
 !
-! person_in_charge: jacques.pellet at edf.fr
 !
 !     RECHERCHE :
 !       - DE LA GRANDEUR ASSOCIEE AU NOM_CHAM

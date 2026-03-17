@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,7 +202,7 @@ LINST = DEFI_LIST_REEL(
         _F(JUSQU_A=1000000.0, NOMBRE=10),
         _F(JUSQU_A=1600000.0, NOMBRE=10),
         _F(JUSQU_A=1700000.0, NOMBRE=10),
-    )
+    ),
     #                           ( JUSQU_A: 1625000.  NOMBRE :  5    )
     #                           ( JUSQU_A: 1635000.  NOMBRE :  5    )
     #                           ( JUSQU_A: 1640000.  NOMBRE :  5    )

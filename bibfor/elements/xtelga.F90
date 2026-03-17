@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno, &
                   lonch, cnset, jpintt, lsn, lst, &
                   heavn, basloc, heavt, nfh, nfe, &
                   temppg)
-! person_in_charge: sam.cuvilliez at edf.fr
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"

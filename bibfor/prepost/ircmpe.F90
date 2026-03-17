@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -175,8 +175,6 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         lficUniq = .true._1
     end if
-    !
-    ! SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT UNE COMPOSANTE VALIDE
     if (lficUniq) then
         nbmaect = nbmaec
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=1, sci=nbmaect)
@@ -184,6 +182,8 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
     else
         lnbmaec = nbmaec .eq. 0
     end if
+    !
+    ! SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT UNE COMPOSANTE VALIDE
     if (lnbmaec) then
         do i_fpg = 1, nbvato
             if (exicmp(i_fpg)) then
@@ -283,6 +283,24 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
             if (nbpg .eq. 15) then
                 if (typmai(ima) .eq. MT_TETRA10) then
                     nbpg = 10
+                end if
+            end if
+            ! For TETRA20
+            if (nbpg .eq. 20) then
+                if (typmai(ima) .eq. MT_TETRA4) then
+                    nbpg = 4
+                end if
+            end if
+            ! For QUAD12
+            if (nbpg .eq. 12) then
+                if (typmai(ima) .eq. MT_QUAD4) then
+                    nbpg = 4
+                end if
+            end if
+            ! For TRIA10
+            if (nbpg .eq. 10) then
+                if (typmai(ima) .eq. MT_TRIA3) then
+                    nbpg = 3
                 end if
             end if
         end if

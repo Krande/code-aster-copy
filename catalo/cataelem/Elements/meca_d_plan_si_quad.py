@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1301,6 +1301,7 @@ class MEDPQS8(Element):
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
                 (OP.TOU_INI_ELNO.PSIEF_R, LC.ESIG2DR),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
+                (OP.TOU_INI_ELNO.PMATE_R, LC.ENMATE_R),
             ),
         ),
         OP.VARC_ELGA(

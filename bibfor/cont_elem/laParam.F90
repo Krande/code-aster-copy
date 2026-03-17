@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine laParam(parameters)
     parameters%type_cont = nint(zr(jcont+24))
     parameters%vari_cont = nint(zr(jcont+25))
     parameters%jac_type = nint(zr(jcont+26))
+    parameters%inte_type = nint(zr(jcont+27))
 !
     select case (parameters%vari_cont)
     case (CONT_VARI_NONE)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte at edf.fr
 
 # --------------------------------------------------------------------
 # MODELISATION POU_D_SQUE AVEC PMFS ET ASSEMBLAGE_FIBRE
@@ -62,7 +61,7 @@ pos_pout = [
 dX = []
 dY = []
 dZ = []
-for (y, z) in pos_pout:
+for y, z in pos_pout:
     dX.append(DOFm[0] - y * DOFm[8] + z * DOFm[7])
     dY.append(DOFm[1] - z * DOFm[6])
     dZ.append(DOFm[2] + y * DOFm[6])

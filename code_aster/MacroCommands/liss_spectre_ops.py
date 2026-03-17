@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -259,7 +259,7 @@ def liss_spectre_ops(
                     NAPPE=dico["liste_nappes"],
                     OPTION=OPTION,
                     ELARG=dico["elargissement"],
-                    **motscles
+                    **motscles,
                 )
             )
 
@@ -285,7 +285,7 @@ def liss_spectre_ops(
                 TITRE=dico["batiment"],
                 SOUS_TITRE=sous_titre,
                 UNITE=unite,
-                **args
+                **args,
             )
             DEFI_FICHIER(ACTION="LIBERER", UNITE=unite)
 
@@ -314,7 +314,7 @@ def liss_spectre_ops(
                     NAPPE=dico["liste_nappes"],
                     OPTION=OPTION,
                     ELARG=dico["elargissement"],
-                    **motscles
+                    **motscles,
                 )
             )
 
@@ -342,6 +342,6 @@ def liss_spectre_ops(
                 TITRE=dico["batiment"],
                 SOUS_TITRE=sous_titre,
                 UNITE=unite,
-                **args
+                **args,
             )
             DEFI_FICHIER(ACTION="LIBERER", UNITE=unite)

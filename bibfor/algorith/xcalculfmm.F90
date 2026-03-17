@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine xcalculfmm(nbno, jcalculs, jcopiels, jnodto, ndim, nodvois, &
     character(len=2)  :: levset
     character(len=3)  :: signls
     real(kind=8)      :: vale(:)
-! person_in_charge: patrick.massin at edf.fr
 !
 !       XCALCULFMM  : CALCUL EXPLICITE DES LEVEL SETS PAR FMM
 

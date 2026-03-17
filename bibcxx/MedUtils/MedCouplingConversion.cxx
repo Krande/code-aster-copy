@@ -3,7 +3,7 @@
  * @brief Implementation de MedCouplingConversion
  * @author Francesco Bettonte
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: francesco.bettonte at edf.fr */
 
 #include "aster_pybind.h"
 
@@ -110,7 +108,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
 
     // Tri des groupes de noeuds avec shift sur l'indexe des noeuds
     for ( const auto &group_name : mesh->getGroupsOfNodes() ) {
-        for ( const auto &aster_node : mesh->getNodes( group_name ) ) {
+        for ( const auto &aster_node : mesh->getNodes( group_name, true ) ) {
             groups_n[group_name].push_back( aster_node );
         }
     }

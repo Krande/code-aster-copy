@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelContactFEDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,7 +70,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
       _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
       _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
       _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) ),
-      _slaveDNNumber( JeveuxVectorLong( getName() + ".NBES" ) ),
       _FEDesc( FEDesc ),
       _localDelayedIdToGlobalNodeId( JeveuxVectorLong( getName() + ".LOGL" ) ),
       _globalNodeIdToLocalDelayed( JeveuxVectorLong( getName() + ".GLLO" ) ),
@@ -93,7 +92,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
 
     VectorInt virtualCellToKeep;
     VectorInt meshNodesToKeep( owner.size(), -1 );
-    _virtualCellToKeep = VectorLong( explorer.size(), 1 );
+    _contactFEDToKeep = VectorLong( explorer.size(), 1 );
     // Dans cette map, on stocke en face du numero physique :
     //  - le numero global du faux Lagrange
     //  - le numéro des processeurs qui possedent ce Lagrange
@@ -121,9 +120,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
     VectorOfVectorsLong vCellToAdd;
     std::set< int > cellAldreadyAdd;
     const bool addSlaveNodes = ( explorer.size() == 0 ? true : false );
-
-    _slaveDNNumber->allocate( 1 );
-    ( *_slaveDNNumber )[0] = localVNodeNumber;
 
     // On commence par regarder les noeuds et elements qui doivent etre
     // gardes dans le nouveau ligrel
@@ -159,7 +155,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
         if ( allElemNodesToKeep ) {
             if ( keepElem ) {
                 virtualCellToKeep.push_back( numElem );
-                _virtualCellToKeep[numElem] = nbElemToKeep - 1;
+                _contactFEDToKeep[numElem] = nbElemToKeep - 1;
                 --nbElemToKeep;
                 for ( const auto &num2 : tmpVec ) {
                     ++totalSizeToKeep;
@@ -299,9 +295,9 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
         auto &curLM = _lielMatching[lielPos];
         for ( const auto &val : colObj ) {
             if ( val < 0 ) {
-                if ( _virtualCellToKeep[-val - 1] != 1 ) {
+                if ( _contactFEDToKeep[-val - 1] != 1 ) {
                     curLM.push_back( curPos );
-                    toLiel[nbCollObj - 1].push_back( _virtualCellToKeep[-val - 1] );
+                    toLiel[nbCollObj - 1].push_back( _contactFEDToKeep[-val - 1] );
                     addedElem = true;
                     ++totalCollSize;
                 }
@@ -401,7 +397,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
       _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
       _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
       _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) ),
-      _slaveDNNumber( JeveuxVectorLong( getName() + ".NBES" ) ),
       _FEDesc( FEDesc ),
       _localDelayedIdToGlobalNodeId( JeveuxVectorLong( getName() + ".LOGL" ) ),
       _globalNodeIdToLocalDelayed( JeveuxVectorLong( getName() + ".GLLO" ) ),
@@ -433,7 +428,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
 
     VectorInt virtualCellToKeep;
     VectorInt meshNodesToKeep( owner.size(), -1 );
-    _virtualCellToKeep = VectorLong( explorer.size(), 1 );
+    _contactFEDToKeep = VectorLong( explorer.size(), 1 );
     // Dans cette map, on stocke en face du numero physique :
     //  - le numero global du faux Lagrange
     //  - le numéro des processeurs qui possedent ce Lagrange
@@ -516,8 +511,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
             toLiel[nbCollObj - 1].push_back( type );
         nbCollObj++;
     }
-    _slaveDNNumber->allocate( 1 );
-    ( *_slaveDNNumber )[0] = localVNodeNumber;
 
     // On commence par regarder les noeuds et elements qui doivent etre
     // gardes dans le nouveau ligrel
@@ -679,9 +672,9 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
         auto &curLM = _lielMatching[lielPos];
         for ( const auto &val : colObj ) {
             if ( val < 0 ) {
-                if ( _virtualCellToKeep[-val - 1] != 1 ) {
+                if ( _contactFEDToKeep[-val - 1] != 1 ) {
                     curLM.push_back( curPos );
-                    toLiel[nbCollObj - 1].push_back( _virtualCellToKeep[-val - 1] );
+                    toLiel[nbCollObj - 1].push_back( _contactFEDToKeep[-val - 1] );
                     addedElem = true;
                     ++totalCollSize;
                 }

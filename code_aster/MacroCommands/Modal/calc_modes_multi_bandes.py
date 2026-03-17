@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -316,7 +316,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 "OUI",
             ):  # in the case of CALC_MODES on several bands, OUI is reset to GLOBAL
                 dicomode = {}
-                dicomode = __nomre0.LIST_VARI_ACCES()
+                dicomode = __nomre0.getAccessParameters()
                 if len(dicomode["FREQ"]) != 0:
                     raux_ini = dicomode["FREQ"][0]
                     raux_fin = dicomode["FREQ"][-1]

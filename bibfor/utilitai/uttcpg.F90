@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine uttcpg(action, typimp)
 #include "asterfort/uttcpl.h"
 #include "asterfort/uttcpu.h"
     character(len=*) :: action, typimp
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : GERER LES MESURES DE TEMPS "GENERALES" : CELLES DONT LA LISTE
 !        EST DONNEE DANS UTTCPL ET QUI SONT PILOTEES GRACE AU MOT CLE

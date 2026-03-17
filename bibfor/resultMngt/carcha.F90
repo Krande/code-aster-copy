@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,9 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     if (fieldType .eq. 'TEMP') then
         fieldQuantity = 'TEMP_R  '
         fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'HHO_TEMP') then
+        fieldQuantity = 'TEMP_R '
+        fieldSupport = 'NOEU'
     elseif (fieldType .eq. 'SECH') then
         fieldQuantity = 'TEMP_R  '
         fieldSupport = 'NOEU'
@@ -65,6 +68,9 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     else if (fieldType .eq. 'DEPL') then
         fieldQuantity = 'DEPL_R  '
         fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'HHO_DEPL') then
+        fieldQuantity = 'DEPL_R '
+        fieldSupport = 'NOEU'
     else if (fieldType .eq. 'CONT_NOEU') then
         fieldQuantity = 'INFC_R '
         fieldSupport = 'NOEU'
@@ -74,8 +80,14 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     else if (fieldType .eq. 'VITE') then
         fieldQuantity = 'DEPL_R  '
         fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'HHO_VITE') then
+        fieldQuantity = 'DEPL_R '
+        fieldSupport = 'NOEU'
     else if (fieldType .eq. 'ACCE') then
         fieldQuantity = 'DEPL_R  '
+        fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'HHO_ACCE') then
+        fieldQuantity = 'DEPL_R '
         fieldSupport = 'NOEU'
     else if (fieldType .eq. 'FORC_NODA') then
         fieldQuantity = 'DEPL_R  '

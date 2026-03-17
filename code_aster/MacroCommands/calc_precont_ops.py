@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sylvie.michel-ponnelle@edf.fr
 
 import copy
 
@@ -69,7 +68,7 @@ def calc_precont_ops(
     ETAT_INIT=None,
     INFO=1,
     TITRE=None,
-    **args
+    **args,
 ):
     """
     Ecriture de la macro CALC_PRECONT
@@ -110,7 +109,7 @@ def calc_precont_ops(
         if reuse is None:
             __TMIN = __L1[0]
         else:
-            __dico = reuse.LIST_VARI_ACCES()
+            __dico = reuse.getAccessParameters()
             __TMIN = __dico["INST"][-1]
     else:
         __TMIN = dIncrement["INST_INIT"]
@@ -439,8 +438,23 @@ def calc_precont_ops(
             MODELE=MODELE,
             AFFE=_F(
                 TOUT="OUI",
-                NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ", "GLIS", "SITY"),
-                VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                NOM_CMP=(
+                    "DX",
+                    "DY",
+                    "DZ",
+                    "DRX",
+                    "DRY",
+                    "DRZ",
+                    "GLIS",
+                    "SITY",
+                    "EPXX",
+                    "EPYY",
+                    "EPZZ",
+                    "EPXY",
+                    "EPYZ",
+                    "EPXZ",
+                ),
+                VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
             ),
         )
 
@@ -496,7 +510,7 @@ def calc_precont_ops(
             INFO=INFO,
             TITRE=TITRE,
             EXCIT=dExcit1,
-            **motscle4
+            **motscle4,
         )
 
         # -----------------------------------------------------------------------
@@ -523,7 +537,7 @@ def calc_precont_ops(
             INFO=INFO,
             TITRE=TITRE,
             EXCIT=dExcit2,
-            **motscle5
+            **motscle5,
         )
     elif adher == "NON":
         motscle4 = {}
@@ -854,7 +868,7 @@ def calc_precont_ops(
                 INFO=INFO,
                 TITRE=TITRE,
                 EXCIT=dExcit1a,
-                **motscle4
+                **motscle4,
             )
             # construction de la fonction multiplicatrice afin de ne pas
             # provoquer un recul d'ancrage
@@ -927,7 +941,7 @@ def calc_precont_ops(
                 INFO=INFO,
                 TITRE=TITRE,
                 EXCIT=dExcit1,
-                **motscle4
+                **motscle4,
             )
 
         if __recul_exists:

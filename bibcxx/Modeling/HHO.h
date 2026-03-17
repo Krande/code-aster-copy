@@ -2,7 +2,7 @@
  * @file HHO.h
  * @brief Header of class HHO
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,6 +28,8 @@
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
 #include "Functions/Function.h"
+#include "LinearAlgebra/AssemblyMatrix.h"
+#include "LinearAlgebra/ElementaryVector.h"
 #include "Studies/PhysicalProblem.h"
 
 /**
@@ -56,6 +58,8 @@ class HHO {
     /** @brief Default constructor disabled */
     HHO( void ) = delete;
 
+    HHO( const ModelPtr &model );
+
     /**
      * @brief Constructor
      * @param PhysicalProblemPtr study
@@ -71,7 +75,10 @@ class HHO {
     /**
      * @brief Project HHO field to H^1-field
      */
-    FieldOnNodesRealPtr projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const;
+    std::variant< FieldOnNodesRealPtr, FieldOnCellsRealPtr >
+    projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field,
+                            const VectorString &groupsOfCells = VectorString(),
+                            const bool average = true ) const;
 
     /**
      * @brief Evaluate HHO field at quadrature points
@@ -114,6 +121,15 @@ class HHO {
                                                ASTERDOUBLE time = 0.0 ) const;
     FieldOnNodesRealPtr projectOnHHOCellSpace( const std::vector< GenericFunctionPtr > fct,
                                                ASTERDOUBLE time = 0.0 ) const;
+
+    std::pair< std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr >,
+               std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr > >
+    static_condensation( const ElementaryMatrixDisplacementRealPtr &me1,
+                         const ElementaryVectorDisplacementRealPtr &ve1 ) const;
+
+    FieldOnNodesRealPtr static_decondensation( const AssemblyMatrixDisplacementRealPtr &MD,
+                                               const FieldOnNodesRealPtr &lD,
+                                               const FieldOnNodesRealPtr &uF ) const;
 };
 
 using HHOPtr = std::shared_ptr< HHO >;

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
 ! IN  LPRECO :  LOG   : MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 !-----------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf_types.h"
 #include "asterf.h"
@@ -59,6 +58,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
+#include "asterfort/filter_rhs_c.h"
+#include "asterfort/filter_rhs.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -324,6 +325,18 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         if (.not. lpreco .and. prepos) then
 !
             if (rang .eq. 0 .or. lmhpc) then
+!           --- DANS LE CAS DES LAGRANGE EN HPC, CERTAINES CONTRIBUTIONS
+!           --- AU SECOND MEMBRE PEUVENT VENIR D'UN AUTRE PROCESSEUR
+!           --- CAR LES MAILLES TARDIVES NE SONT PAS PARTAGEES DONC
+!           --- CALCULEES SEULEMENT SUR UN PROC
+                if (lmhpc) then
+                    if (.not. ltypr) then
+                        call filter_rhs_c(csolu, nonu//".NUME")
+                    else
+                        call filter_rhs(rsolu, nonu//".NUME")
+                    end if
+                end if
+
 !           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
 !           --- RANG 0 UNIQUEMENT
                 if (ltypr) then
@@ -440,6 +453,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     call c_f_pointer(pteur_c, csolu2, [nnbsol])
                 end if
             end if
+            call jedetr("&&AMUMPP.LAGR")
         else
             if (ltypr) then
                 if (l_debug) then

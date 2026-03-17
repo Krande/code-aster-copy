@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
     aster_logical, intent(in) :: l_temp_nonl

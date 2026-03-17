@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
@@ -81,7 +80,7 @@ def C_TEST_REFERENCE(keyword, max=1):  # COMMUN#
             condition="""exists("REFERENCE")""",
             VALE_REFE=SIMP(statut="f", typ="R", max=max),
             PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-3),
-            **opts_ref
+            **opts_ref,
         )
         opts["REFERENCE"] = SIMP(
             statut="f",
@@ -98,7 +97,7 @@ def C_TEST_REFERENCE(keyword, max=1):  # COMMUN#
                 ORDRE_GRANDEUR=SIMP(statut="f", typ="R"),
             ),
             LEGENDE=SIMP(statut="f", typ="TXM"),
-            **opts
+            **opts,
         )
     }
     return kwargs

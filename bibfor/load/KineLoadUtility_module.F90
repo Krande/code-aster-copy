@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,7 @@ module KineLoadUtility_module
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "MeshTypes_type.h"
 contains
 ! ==================================================================================================
 ! --------------------------------------------------------------------------------------------------
@@ -1001,7 +1002,7 @@ contains
         integer(kind=8) :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode
         integer(kind=8) :: cellMastNume, cellSlavNume
         aster_logical :: mastHasPOI1, slavHasPOI1
-        real(kind=8) :: normCell(3), cellCoor(27)
+        real(kind=8) :: normCell(3), cellCoor(3*MT_NNOMAX2D)
 !   ------------------------------------------------------------------------------------------------
 !
         mesh = meshZ
@@ -1030,7 +1031,7 @@ contains
                         exit
                     end if
                     inoma = 1
-                    ASSERT(nbNode .le. 27)
+                    ASSERT(nbNode .le. MT_NNOMAX2D)
                     call pacoor(mesh, cellMastNume, nbNode, cellCoor)
                     call canorm(cellCoor, normCell, geomDime, cellTypeNume, normNorm)
                     normMast = normMast+normCell
@@ -1057,7 +1058,7 @@ contains
                         exit
                     end if
                     inoma = 1
-                    ASSERT(nbNode .le. 27)
+                    ASSERT(nbNode .le. MT_NNOMAX2D)
                     call pacoor(mesh, cellSlavNume, nbNode, cellCoor)
                     call canorm(cellCoor, normCell, geomDime, cellTypeNume, normNorm)
                     normSlav = normSlav+normCell

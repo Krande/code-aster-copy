@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,6 +26,7 @@ void exportHHOToPython( py::module_ &mod ) {
 
     py::class_< HHO, HHO::HHOPtr >( mod, "HHO" )
         .def( py::init( &initFactoryPtr< HHO, PhysicalProblemPtr > ) )
+        .def( py::init( &initFactoryPtr< HHO, ModelPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( define_pickling< HHO >() )
         .def( "getModel", &HHO::getModel,
@@ -52,11 +53,14 @@ void exportHHOToPython( py::module_ &mod ) {
 
       Arguments:
             hho_field (FieldOnNodesReal): hho field like displacement or thermic
+            groupOfCells (list[str]): groups where to compute
+            average (bool): average or not the field at nodes.
 
       Returns:
             FieldOnNodesReal: HHO field project on Lagrange space
         )",
-              py::arg( "hho_field" ) )
+              py::arg( "hho_field" ), py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "average" ) = true )
         .def( "projectOnHHOSpace",
               py::overload_cast< const FieldOnNodesRealPtr >( &HHO::projectOnHHOSpace, py::const_ ),
               R"(
@@ -195,5 +199,34 @@ void exportHHOToPython( py::module_ &mod ) {
       Returns:
             FieldOnNodesReal: HHO field
         )",
-              py::arg( "value" ) );
+              py::arg( "value" ) )
+        .def( "static_condensation", &HHO::static_condensation,
+              R"(
+      Performs static condensation.
+
+      Arguments:
+            matr_elem (ElementaryMatrixDisplacementReal): elementary (symetric) matrix.
+            vect_elem (ElementaryVectorDisplacementReal): elementary vector.
+
+      Returns:
+            [
+            [AssemblyMatrixDisplacementReal, FieldOnNodesReal],
+            [AssemblyMatrixDisplacementReal, FieldOnNodesReal]
+            ]: return two pairs of a matrix and a rhs. First pair is the condensated system
+            to solve. Second pair is used for static decondensation.
+        )",
+              py::arg( "matr_elem" ), py::arg( "vect_elem" ) )
+        .def( "static_decondensation", &HHO::static_decondensation,
+              R"(
+      Performs static decondensation. Update cell DoFs.
+
+      Arguments:
+            mD (AssemblyMatrixDisplacementReal): matrix of decondensation.
+            lD (FieldOnNodesReal): rhs of decondensation.
+            uF (FieldOnNodesReal): solution computed after condensation.
+
+      Returns:
+            FieldOnNodesReal: solution after decondensation.
+        )",
+              py::arg( "mD" ), py::arg( "lD" ), py::arg( "uF" ) );
 };

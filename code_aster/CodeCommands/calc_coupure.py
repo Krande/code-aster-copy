@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -299,7 +299,7 @@ class ModSpec(object):
             dict: dict of the modal analysis parameters
         """
         if self._para is None:
-            self._para = self.mode_meca.LIST_PARA()
+            self._para = self.mode_meca.getParameters()
         return self._para
 
     def getFreq(self):

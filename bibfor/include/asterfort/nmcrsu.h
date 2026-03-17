@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmcrsu(sddisc, lisins     , ds_conv, ds_algopara, l_implex,&
-                      solveu, ds_contact_)
+    subroutine nmcrsu(sddisc, listInst, ds_conv, &
+                      l_implex_, ds_contact_)
         use NonLin_Datastructure_type
-        character(len=19) :: sddisc, lisins, solveu
+        character(len=19), intent(in) :: sddisc, listInst
         type(NL_DS_Conv), intent(in) :: ds_conv
-        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        aster_logical :: l_implex
+        aster_logical, optional, intent(in) :: l_implex_
         type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     end subroutine nmcrsu
 end interface

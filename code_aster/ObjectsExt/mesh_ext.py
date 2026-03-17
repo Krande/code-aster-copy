@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`Mesh` --- Assignment of mesh
 ************************************************************************
@@ -29,7 +28,7 @@ import tempfile
 
 from ..CodeCommands import CREA_MAILLAGE
 from ..MedUtils.MedConverter import convertMesh2MedCoupling
-from ..Objects import Mesh, MeshReader, PythonBool
+from ..Objects import Mesh, MedToAsterReader, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ExecutionParameter, force_list, injector
 from . import mesh_builder
@@ -303,7 +302,7 @@ class ExtendedMesh:
         node_groups = self.getGroupsOfNodes()
         if not node_groups:
             return []
-        return [(node_group, len(self.getNodes(node_group))) for node_group in node_groups]
+        return [(node_group, len(self.getNodes(node_group, True))) for node_group in node_groups]
 
     def LIST_GROUP_MA(self):
         """Retourne la liste des groupes de mailles sous la forme :
@@ -351,9 +350,13 @@ class ExtendedMesh:
             meshname (str): Name of the mesh to be read from file.
             verbose (int): 0 - warnings, 1 - informations about main steps,
                 2 - informations about all steps
+
+        Returns:
+            ParallelMesh: the object itself
         """
-        mr = MeshReader()
+        mr = MedToAsterReader()
         mr.readMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
+        return self
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.
@@ -395,7 +398,7 @@ class ExtendedMesh:
 
         return convertMesh2MedCoupling(self, spacedim_3d)
 
-    def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
+    def getNodes(self, group_name=[], localNumbering=False, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.
 
         Arguments:
@@ -411,7 +414,7 @@ class ExtendedMesh:
 
         return self._getNodes(force_list(group_name), localNumbering, val[same_rank])
 
-    def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
+    def getNodesFromCells(self, group_name, localNumbering=False, same_rank=None):
         """Returns the nodes indexes of a group of cells.
 
         Arguments:
@@ -460,5 +463,5 @@ class ExtendedMesh:
         return [
             grp
             for grp in self.getGroupsOfNodes()
-            if any(ids in self.getNodes(grp) for ids in force_list(idnode))
+            if any(ids in self.getNodes(grp, True) for ids in force_list(idnode))
         ]

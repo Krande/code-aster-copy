@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL), normal(3)
         integer(kind=8) :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
         integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         ASSERT(hhoCell%l_face_init)
@@ -185,10 +185,10 @@ contains
 ! - Verif strange bug if info neq 0 in entry
         info = 0
         b_n = to_blas_int(dimMG)
-        b_nhrs = to_blas_int(total_dofs)
+        b_nrhs = to_blas_int(total_dofs)
         b_lda = to_blas_int(MSIZE_CELL_SCAL)
         b_ldb = to_blas_int(gradrec%max_nrows)
-        call dposv('U', b_n, b_nhrs, MG, b_lda, &
+        call dposv('U', b_n, b_nrhs, MG, b_lda, &
                    gradrec%m, b_ldb, info)
 !
 ! - Sucess ?
@@ -328,7 +328,7 @@ contains
         real(kind=8) :: normal(3)
         integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, max_deg, gbs_cmp
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, b_m
         integer(kind=8) :: iface, fromFace, toFace, cell_offset
         blas_int, parameter :: b_one = 1
 !
@@ -448,10 +448,10 @@ contains
 ! - Verif strange bug if info neq 0 in entry
             info = 0
             b_n = to_blas_int(dimMassMat)
-            b_nhrs = to_blas_int(hhoCell%ndim*total_dofs)
+            b_nrhs = to_blas_int(hhoCell%ndim*total_dofs)
             b_lda = to_blas_int(massMat%max_nrows)
             b_ldb = to_blas_int(SOL%max_nrows)
-            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, SOL%m, b_ldb, info)
+            call dposv('U', b_n, b_nrhs, massMat%m, b_lda, SOL%m, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -633,13 +633,13 @@ contains
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCSGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
-        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
         integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat
         integer(kind=8):: cbs_comp, fbs_comp, gbs_sym, gbs_comp, max_deg
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
         integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = 1
 !
         ASSERT(hhoCell%l_face_init)
@@ -789,14 +789,14 @@ contains
                     b_lda = to_blas_int(dimMassMat)
                     b_m = to_blas_int(dimMassMat)
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = jbegCell+cbs_comp
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -804,14 +804,14 @@ contains
                     jbegFace = (iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
@@ -826,14 +826,14 @@ contains
                     b_lda = to_blas_int(dimMassMat)
                     b_m = to_blas_int(dimMassMat)
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = jbegCell+cbs_comp
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -841,14 +841,14 @@ contains
                     jbegFace = (iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 13
@@ -859,13 +859,13 @@ contains
                     jbegCell = faces_dofs+1
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = faces_dofs+2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -873,14 +873,14 @@ contains
                     jbegFace = (iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = (iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 23
@@ -891,14 +891,14 @@ contains
                     jbegCell = faces_dofs+cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = faces_dofs+2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
                     b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSCEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
@@ -906,14 +906,14 @@ contains
                     jbegFace = (iface-1)*fbs+1+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = (iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
                     b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_one, &
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
@@ -944,10 +944,10 @@ contains
 ! - Verif strange bug if info neq 0 in entry
             info = 0
             b_n = to_blas_int(dimMassMat)
-            b_nhrs = to_blas_int(nbdimMat*total_dofs)
+            b_nrhs = to_blas_int(nbdimMat*total_dofs)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             b_ldb = to_blas_int(SOL%max_nrows)
-            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, &
+            call dposv('U', b_n, b_nrhs, massMat%m, b_lda, &
                        SOL%m, b_ldb, info)
 !
 ! - Sucess ?
@@ -1017,7 +1017,7 @@ contains
         integer(kind=8) :: jbeginCell, jendCell, jbeginFace, jendFace, idim, j, dimStiffMat_cmp
         integer(kind=8) :: row_deb_MG, row_fin_MG, col_deb_MG, col_fin_MG, col_deb_BG, col_fin_BG
         integer(kind=8) :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST, faces_dof
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, LWORK, b_m
+        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, LWORK, b_m
         real(kind=8) :: qp_dphi_ss, normal(3)
         blas_int, parameter :: b_one = 1
 !
@@ -1225,10 +1225,10 @@ contains
         LWORK = to_blas_int(dimMGLag*total_dofs)
         info = 0
         b_n = to_blas_int(dimMGLag)
-        b_nhrs = to_blas_int(total_dofs)
+        b_nrhs = to_blas_int(total_dofs)
         b_lda = to_blas_int(MG%max_nrows)
         b_ldb = to_blas_int(gradrec%max_nrows)
-        call dsysv('U', b_n, b_nhrs, MG%m, b_lda, &
+        call dsysv('U', b_n, b_nrhs, MG%m, b_lda, &
                    IPIV, gradrec%m, b_ldb, WORK%m, LWORK, info)
         call WORK%free()
 !

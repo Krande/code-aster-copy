@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,11 @@ from zzzz154a_cmd import MACRO_TEST
 test = CA.TestCase()
 
 mesh = CA.Mesh.buildSquare()
+
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
+
+mater = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0))
+fieldmat = AFFE_MATERIAU(MODELE=model, AFFE=_F(TOUT="OUI", MATER=mater))
 
 ther1 = CREA_CHAMP(
     MAILLAGE=mesh,
@@ -73,6 +78,13 @@ ther_dict["13"] = CREA_RESU(
 )
 
 test.assertEqual(len(ther_dict), 2, msg="check len()")
+test.assertFalse("11" in ther_dict, msg="check not contains")
+test.assertTrue("12" in ther_dict, msg="check contains")
+test.assertSequenceEqual(
+    [key for key in ther_dict], list(ther_dict.keys()), msg="check iter / keys"
+)
+test.assertIn(ther_dict["12"], ther_dict.values(), msg="check values")
+
 test.assertIsNone(ther_dict.get("unknown"), msg="check invalid access")
 with test.assertRaises(KeyError):
     _ = ther_dict["unknown"]
@@ -90,8 +102,27 @@ dict_test = MACRO_TEST(
 )
 
 # test printing of dict-like objects
-
 IMPR_RESU(RESU=_F(RESULTAT=ther_dict), UNITE=80)
+
+# only TEMP
+for result in ther_dict.values():
+    test.assertIn("TEMP", result.getFieldsNames(), msg="check only TEMP")
+    test.assertNotIn("FLUX_ELGA", result.getFieldsNames(), msg="check only TEMP")
+
+# without reuse
+output = CALC_CHAMP(RESULTAT=ther_dict, MODELE=model, CHAM_MATER=fieldmat, THERMIQUE="FLUX_ELGA")
+for result in output.values():
+    test.assertNotIn("TEMP", result.getFieldsNames(), msg="check TEMP+FLUX")
+    test.assertIn("FLUX_ELGA", result.getFieldsNames(), msg="check TEMP+FLUX")
+
+# in place
+ther_dict = CALC_CHAMP(
+    reuse=ther_dict, RESULTAT=ther_dict, MODELE=model, CHAM_MATER=fieldmat, THERMIQUE="FLUX_ELGA"
+)
+for result in ther_dict.values():
+    test.assertIn("TEMP", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+    test.assertIn("FLUX_ELGA", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+
 
 test.printSummary()
 

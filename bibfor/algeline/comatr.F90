@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
 ! IN/OUT VECTR: R8  : MATRICE REELLE A COMMUNIQUER    (DIM1R X DIM2R)
 ! IN/OUT VECTC: C8  : MATRICE COMPLEXE A COMMUNIQUER  (DIM1C X DIM2C)
 ! ======================================================================
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 !
 ! PARAMETRES D'APPEL

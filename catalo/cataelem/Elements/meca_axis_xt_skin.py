@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sam.cuvilliez at edf.fr
 # CATALOGUES DES ELEMENTS AXIS X-FEM CRACKTIP DE BORD SANS CONTACT
 
 
@@ -72,9 +71,9 @@ CPRESSF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES", "C
 
 NTHETAR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
+
 # ------------------------------------------------------------
 class MEAXSE2_XT(Element):
-
     """Please document this element"""
 
     meshType = MT.SEG2
@@ -224,7 +223,6 @@ class MEAXSE2_XT(Element):
 
 # ------------------------------------------------------------
 class MEAXSE3_XT(MEAXSE2_XT):
-
     """Please document this element"""
 
     meshType = MT.SEG3

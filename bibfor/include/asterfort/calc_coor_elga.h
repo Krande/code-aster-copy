@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
+    subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus, &
+                              cacoquZ_)
         character(len=*), intent(in) :: modelZ
         character(len=19), intent(in) :: ligrel
         character(len=19), intent(in) :: chgeom
         character(len=19), intent(in) :: chgaus
+        character(len=*), optional, intent(in) :: cacoquZ_
     end subroutine calc_coor_elga
 end interface

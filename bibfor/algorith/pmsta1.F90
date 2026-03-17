@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmsta1(sigm, sigp, deps, vim, vip, &
-                  nbvari, nbvita, iforta, nbpar, nompar, &
-                  vr, igrad, typpar, nomvi, sddisc, &
-                  liccvg, itemax, conver, actite)
+subroutine pmsta1(sigmPrev, sigmCurr, epsiIncr, &
+                  nbVari, nbVariTabl, &
+                  vim, vip, &
+                  tablNbParaMaxi, tablNbPara, tablType, &
+                  tablParaName, tablParaType, tablVale, &
+                  lLoadGrad, variName, sddisc, &
+                  liccvg, lIterNewtMaxi, conver, newtLoopAction)
 !
     implicit none
-!-----------------------------------------------------------------------
-!           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT
-!-----------------------------------------------------------------------
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
@@ -41,161 +42,180 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    integer(kind=8) :: nbpar, i, nbvari, igrad, ncmp, nbvita, iforta, liccvg(5)
-    integer(kind=8) :: actite, jvari
-    aster_logical :: itemax, conver
-    character(len=4) :: nomeps(6), nomsig(6), nomgrd(9)
-    character(len=8) :: k8b, typpar(*), nomvi(*), vk8(2)
-    character(len=16) :: nompar(*)
-    character(len=19) :: tabinc, sddisc
-    complex(kind=8) :: cbid
-    real(kind=8) :: deps(9), sigm(6), sigp(6), vim(*), vip(*), vr(*), rac2
-    real(kind=8) :: dsig(6)
-    real(kind=8) :: depst(9), equi(17)
+    real(kind=8), intent(in) :: sigmPrev(6), sigmCurr(6), epsiIncr(9)
+    integer(kind=8), intent(in)  :: nbVari, nbVariTabl
+    real(kind=8), intent(in) :: vim(nbVari), vip(nbVari)
+    integer(kind=8), intent(in) :: tablNbParaMaxi
+    integer(kind=8), intent(in) :: tablNbPara, tablType
+    character(len=16), intent(in) :: tablParaName(tablNbParaMaxi), tablParaType(tablNbParaMaxi)
+    real(kind=8), intent(inout) :: tablVale(tablNbParaMaxi)
+    aster_logical, intent(in) :: lLoadGrad
+    character(len=8), intent(in) :: variName(nbVari)
+    character(len=19), intent(in) :: sddisc
+    integer(kind=8), intent(in) :: liccvg(5)
+    aster_logical, intent(in) :: lIterNewtMaxi, conver
+    integer(kind=8), intent(out) :: newtLoopAction
+!
+! --------------------------------------------------------------------------------------------------
+!
+! SIMU_POINT_MAT
+!
+! Save values in table
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8), parameter  :: rac2 = sqrt(2.d0)
+    complex(kind=8), parameter :: c16Dummy = (0.d0, 0.d0)
+    character(len=24), parameter :: tablIncr = '&&OP0033.TABINC'
+    character(len=8), parameter :: k8Dummy = " "
+    integer(kind=8) :: i, nbCmpEpsi
+    character(len=24), parameter :: variIncrJv = "&&OP0033.VARI"
+    integer(kind=8) :: jvVariIncr
+    character(len=8) :: vk8(2)
+    real(kind=8) :: sigmIncr(6), epsiIncrTabl(9), sigmEqui(17)
     blas_int :: b_incx, b_incy, b_n
-    data nomeps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
-    data nomsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
-    data nomgrd/'F11', 'F12', 'F13', 'F21', 'F22', 'F23', 'F31', 'F32', 'F33'/
-!-----------------------------------------------------------------------
+    character(len=4), parameter :: epsiName(6) = (/'EPXX', 'EPYY', 'EPZZ', &
+                                                   'EPXY', 'EPXZ', 'EPYZ'/)
+    character(len=4), parameter :: sigmName(6) = (/'SIXX', 'SIYY', 'SIZZ', &
+                                                   'SIXY', 'SIXZ', 'SIYZ'/)
+    character(len=4), parameter :: gradName(9) = (/'F11', 'F12', 'F13', &
+                                                   'F21', 'F22', 'F23', &
+                                                   'F31', 'F32', 'F33'/)
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    cbid = (0.d0, 0.d0)
-    rac2 = sqrt(2.d0)
-    if (igrad .ne. 0) then
-        ncmp = 9
+    if (lLoadGrad) then
+        nbCmpEpsi = 9
     else
-        ncmp = 6
+        nbCmpEpsi = 6
     end if
-!
-!     CALCUL DES INCREMENTS POUR NMEVDR
-!
-    b_n = to_blas_int(ncmp)
+
+! - Transform increment of strains for event
+    b_n = to_blas_int(nbCmpEpsi)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, deps, b_incx, depst, b_incy)
-    if (igrad .eq. 0) then
+    call dcopy(b_n, epsiIncr, b_incx, epsiIncrTabl, b_incy)
+    if (.not. lLoadGrad) then
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
-        call dscal(b_n, 1.d0/rac2, depst(4), b_incx)
+        call dscal(b_n, 1.d0/rac2, epsiIncrTabl(4), b_incx)
     end if
-!
+
+! - Compute increment of stress
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dcopy(b_n, sigp, b_incx, dsig, b_incy)
+    call dcopy(b_n, sigmCurr, b_incx, sigmIncr, b_incy)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -1.d0, sigm, b_incx, dsig, &
-               b_incy)
+    call daxpy(b_n, -1.d0, sigmPrev, b_incx, sigmIncr, b_incy)
+
+! - Compute invariants of increment of stress
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
-    call dscal(b_n, 1.d0/rac2, dsig, b_incx)
-    call fgequi(dsig, 'SIGM_DIR', 3, equi)
+    call dscal(b_n, 1.d0/rac2, sigmIncr, b_incx)
+    call fgequi(sigmIncr, 'SIGM_DIR', 3, sigmEqui)
+
+! - Create table for incremental values
+    call detrsd('TABLE', tablIncr)
+    call tbcrsd(tablIncr, 'V')
+    call tbajpa(tablIncr, tablNbPara, tablParaName, tablParaType)
 !
-!
-    if (iforta .eq. 0) then
-!
-        tabinc = '&&OP0033.TABINC'
-        call detrsd('TABLE', tabinc)
-        call tbcrsd(tabinc, 'V')
-        call tbajpa(tabinc, nbpar, nompar, typpar)
-!
-!        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
-!        ATTENTION, VR EST LIMITE A  9999 VALEURS
-        b_n = to_blas_int(nbvita)
+    if (tablType .eq. 0) then
+! ----- Compute increment of isnternal state variables and save them in table
+        b_n = to_blas_int(nbVariTabl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vip, b_incx, vr(1+ncmp+6+3), b_incy)
-        b_n = to_blas_int(nbvita)
+        call dcopy(b_n, vip, b_incx, tablVale(1+nbCmpEpsi+6+3), b_incy)
+        b_n = to_blas_int(nbVariTabl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, vim, b_incx, vr(1+ncmp+6+3), &
-                   b_incy)
-!
-        b_n = to_blas_int(ncmp)
+        call daxpy(b_n, -1.d0, vim, b_incx, tablVale(1+nbCmpEpsi+6+3), b_incy)
+
+! ----- Save increment of strains in table
+        b_n = to_blas_int(nbCmpEpsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, depst, b_incx, vr(2), b_incy)
+        call dcopy(b_n, epsiIncrTabl, b_incx, tablVale(2), b_incy)
+
+! ----- Save increment of stresses in table
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, dsig, b_incx, vr(ncmp+2), b_incy)
-        vr(ncmp+8) = equi(16)
-        vr(ncmp+9) = equi(1)
-!
-        call tbajli(tabinc, nbpar, nompar, [0], vr, &
-                    [cbid], k8b, 0)
+        call dcopy(b_n, sigmIncr, b_incx, tablVale(nbCmpEpsi+2), b_incy)
+
+! ----- Save invariants of increment of stress in table
+        tablVale(nbCmpEpsi+8) = sigmEqui(16)
+        tablVale(nbCmpEpsi+9) = sigmEqui(1)
+
+! ----- Add line in table
+        call tbajli(tablIncr, tablNbPara, tablParaName, [0], tablVale, &
+                    [c16Dummy], k8Dummy, 0)
 !
     else
-!
-        tabinc = '&&OPB033.TABINC'
-        call detrsd('TABLE', tabinc)
-        call tbcrsd(tabinc, 'V')
-        call tbajpa(tabinc, nbpar, nompar, typpar)
-!
-        call wkvect('&&OP0033.VARI', 'V V R8', nbvita, jvari)
-!
-!        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
-        b_n = to_blas_int(nbvita)
+        call wkvect(variIncrJv, 'V V R8', nbVariTabl, jvVariIncr)
+
+! ----- Compute increment of external state variables
+        b_n = to_blas_int(nbVariTabl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vip, b_incx, zr(jvari), b_incy)
-        b_n = to_blas_int(nbvita)
+        call dcopy(b_n, vip, b_incx, zr(jvVariIncr), b_incy)
+        b_n = to_blas_int(nbVariTabl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, vim, b_incx, zr(jvari), &
-                   b_incy)
+        call daxpy(b_n, -1.d0, vim, b_incx, zr(jvVariIncr), b_incy)
 !
-        vr(1) = 0.d0
+        tablVale(1) = 0.d0
         vk8(1) = 'EPSI'
-        do i = 1, ncmp
-            vr(2) = depst(i)
-            if (igrad .eq. 0) then
-                vk8(2) = nomeps(i)
+        do i = 1, nbCmpEpsi
+            tablVale(2) = epsiIncrTabl(i)
+            if (lLoadGrad) then
+                vk8(2) = gradName(i)
             else
-                vk8(2) = nomgrd(i)
+                vk8(2) = epsiName(i)
             end if
-            call tbajli(tabinc, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
+            call tbajli(tablIncr, tablNbPara, tablParaName, [0], tablVale, &
+                        [c16Dummy], vk8, 0)
 !
         end do
         vk8(1) = 'SIGM'
         do i = 1, 6
-            vr(2) = dsig(i)
-            vk8(2) = nomsig(i)
-            call tbajli(tabinc, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
+            tablVale(2) = sigmIncr(i)
+            vk8(2) = sigmName(i)
+            call tbajli(tablIncr, tablNbPara, tablParaName, [0], tablVale, &
+                        [c16Dummy], vk8, 0)
 !
         end do
         vk8(1) = 'SIEQ'
-        vr(2) = equi(1)
+        tablVale(2) = sigmEqui(1)
         vk8(2) = 'VMIS'
-        call tbajli(tabinc, nbpar, nompar, [0], vr, &
-                    [cbid], vk8, 0)
+        call tbajli(tablIncr, tablNbPara, tablParaName, [0], tablVale, &
+                    [c16Dummy], vk8, 0)
 !
-        vr(2) = equi(16)
+        tablVale(2) = sigmEqui(16)
         vk8(2) = 'TRACE'
-        call tbajli(tabinc, nbpar, nompar, [0], vr, &
-                    [cbid], vk8, 0)
+        call tbajli(tablIncr, tablNbPara, tablParaName, [0], tablVale, &
+                    [c16Dummy], vk8, 0)
 !
         vk8(1) = 'VARI'
-        do i = 1, nbvita
-            vr(2) = zr(jvari-1+i)
-            vk8(2) = nomvi(i)
-            call tbajli(tabinc, nbpar, nompar, [0], vr, &
-                        [cbid], vk8, 0)
+        do i = 1, nbVariTabl
+            tablVale(2) = zr(jvVariIncr-1+i)
+            vk8(2) = variName(i)
+            call tbajli(tablIncr, tablNbPara, tablParaName, [0], tablVale, &
+                        [c16Dummy], vk8, 0)
         end do
 !
     end if
+
+! - Check event-driven
+    call pmevdr(sddisc, tablType, tablIncr, &
+                liccvg, lIterNewtMaxi, conver, &
+                newtLoopAction)
 !
-!     VERIFICATION DES EVENT-DRIVEN
-!
-    call pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
-                actite)
-!
-    call jedetr('&&OP0033.VARI')
+    call jedetr(variIncrJv)
 !
     call jedema()
 end subroutine

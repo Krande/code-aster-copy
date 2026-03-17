@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,11 @@ To force the availability just access to an attribute (``__version__`` for examp
 Please *always* these mdoules using these wrappers rather than directly
 by doing, for example for PETSc: ``from ..Utilities import PETSc``...
 """
+
+try:
+    from typing import TYPE_CHECKING
+except (ImportError, ModuleNotFoundError):
+    TYPE_CHECKING = False
 
 # aslint: disable=C4008
 from .ExecutionParameter import disable_fpe
@@ -126,3 +131,8 @@ class _sympyMeta(type):
 
 class sympy(metaclass=_sympyMeta):
     """Wrapper to sympy"""
+
+
+if TYPE_CHECKING:
+    import medcoupling
+    import sympy

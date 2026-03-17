@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nbnode(noma, motfac, nzocu, nopono, nnocu)
-        character(len=8) :: noma
-        character(len=16) :: motfac
-        integer(kind=8) :: nzocu
-        character(len=24) :: nopono
-        integer(kind=8) :: nnocu
+    subroutine nbnode(mesh, zoneKeyword, nbUnilZone, noponoJv, nbNodeUnil)
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(in) :: zoneKeyword
+        integer(kind=8), intent(in) :: nbUnilZone
+        character(len=24), intent(in) :: noponoJv
+        integer(kind=8), intent(out) :: nbNodeUnil
     end subroutine nbnode
 end interface

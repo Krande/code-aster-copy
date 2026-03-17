@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine lc8146(BEHinteg, &
                   typmod, icomp, ndsde, dsidep, codret)
 !
     use Behaviour_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -33,7 +32,7 @@ subroutine lc8146(BEHinteg, &
 #include "asterfort/nmcpla.h"
 #include "asterfort/kitPrepBehaviour.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(inout) :: BEHinteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp

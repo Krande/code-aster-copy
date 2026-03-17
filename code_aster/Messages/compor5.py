@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,11 +77,6 @@ L'indicateur INDL_ELGA n'est pas possible avec le comportement %(k1)s.
 La nature du matériau élastique %(k1)s n'est pas traitée pour cet élément ou ce comportement. Soit vous n'avez pas renseigné les bons paramètres élastiques, soit il s'agit d'une erreur de programmation.
 """
     ),
-    16: _(
-        """
-On ne sait pas calculer les déformations thermiques avec le matériau élastique %(k1)s.
-"""
-    ),
     19: _(
         """
 Le groupe de fibre %(k1)s à déjà été affecté par :
@@ -120,7 +115,7 @@ déformation %(k1)s sur une modélisation %(k2)s. Ce n'est pas possible.
     ),
     24: _(
         """
-Sur la maille %(k1)s le calcul prend en compte le séchage. Mais il manque la valeur de référence.
+Le calcul prend en compte le séchage. Mais il manque la valeur de référence.
 On ne peut donc pas calculer la déformation de dessication associée.
 """
     ),
@@ -132,9 +127,8 @@ est autorisé pour ce comportement.
     ),
     32: _(
         """
-Sur la maille %(k1)s la variable de commande %(k2)s est définie. Mais il manque le paramètre
-matériau %(k3)s. On ne peut donc pas calculer la déformation générée par
-la variable de commande %(k2)s.
+La variable de commande %(k1)s est définie mais il manque le paramètre matériau %(k2)s.
+On ne peut donc pas calculer la déformation générée par la variable de commande %(k1)s.
 """
     ),
     40: _(

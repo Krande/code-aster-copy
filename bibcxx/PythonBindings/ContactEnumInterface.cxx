@@ -2,7 +2,7 @@
  * @file ContactEnumInterface.cxx
  * @brief Interface python de ContactEnum
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -87,5 +87,12 @@ Enumeration for jacobian type.
     )" )
         .value( "Analytical", JacobianType::Analytical )
         .value( "Perturbation", JacobianType::Perturbation )
+        .export_values();
+
+    py::enum_< IntegrationType >( mod, "IntegrationType", R"(
+Enumeration for integration type.
+    )" )
+        .value( "Elembased", IntegrationType::Elembased )
+        .value( "Segbased", IntegrationType::Segbased )
         .export_values();
 };

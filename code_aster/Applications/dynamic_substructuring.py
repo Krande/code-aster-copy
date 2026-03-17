@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -238,7 +238,9 @@ class Interface:
                 lINodes += connect[cell]
             interfaceNodes1 = list(np.unique(np.array(lINodes)))
         else:
-            interfaceNodes1 = list(np.array(self.sub1.mesh.getNodes(self.name)))
+            interfaceNodes1 = list(
+                np.array(self.sub1.mesh.getNodes(self.name, localNumbering=True))
+            )
         if not self.sub2.mesh.hasGroupOfNodes(self.name):
             connect = self.sub2.mesh.getConnectivity()
             lCells = np.array(self.sub2.mesh.getCells(self.name))
@@ -247,7 +249,9 @@ class Interface:
                 lINodes += connect[cell]
             interfaceNodes2 = list(np.unique(np.array(lINodes)))
         else:
-            interfaceNodes2 = list(np.array(self.sub2.mesh.getNodes(self.name)))
+            interfaceNodes2 = list(
+                np.array(self.sub2.mesh.getNodes(self.name, localNumbering=True))
+            )
         interfaceNodes = np.array(interfaceNodes1 + interfaceNodes2)
         nInterfaceNodes = len(interfaceNodes)
 
@@ -386,7 +390,7 @@ class SubStructure:
         self.mesh = stiffness.getMesh()
         self.modes = modes
         coords = np.array(self.mesh.getCoordinates().getValues())
-        self.nodes = np.array(self.mesh.getNodes())
+        self.nodes = np.array(self.mesh.getNodes(localNumbering=True))
         coords = np.array(coords)
         Nb_no = len(self.nodes)
         self.coords = coords.reshape((Nb_no, 3))
@@ -897,8 +901,8 @@ def macPlot(
     lMode2 = list2 or range(1, nModes2 + 1)
     lMode11 = list1 or range(nModes1)
     lMode22 = list2 or range(nModes2)
-    lFreq1 = lres1[0].LIST_VARI_ACCES()["FREQ"]
-    lFreq2 = lres2[0].LIST_VARI_ACCES()["FREQ"]
+    lFreq1 = lres1[0].getAccessParameters()["FREQ"]
+    lFreq2 = lres2[0].getAccessParameters()["FREQ"]
     rhof = fluid_material.RCVALE("FLUIDE", nomres=("RHO"), stop=2)[0][0] if fluid_material else 1.0
     # start MAC computation : MAC = MAC1 **2 / MAC2 / MAC3
     MAC1 = np.zeros((nModes2, nModes1))

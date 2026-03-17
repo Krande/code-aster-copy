@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -247,7 +247,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class MEQ4QU4(Element):
-
     """Mechanics - Plate (Q4G) - QUAD4"""
 
     meshType = MT.QUAD4
@@ -859,7 +858,6 @@ class MEQ4QU4(Element):
 
 # ------------------------------------------------------------
 class MET3TR3(MEQ4QU4):
-
     """Mechanics - Plate (T3G) - TRIA3"""
 
     meshType = MT.TRIA3

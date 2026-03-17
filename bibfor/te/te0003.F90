@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0003(option, nomte)
-! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 !      SUR UN ELEMENT ISOPARAMETRIQUE 2D/3D, LUMPE OU NON, VIA L'OPTION

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 module HHO_postpro_module
 !
@@ -44,6 +43,7 @@ module HHO_postpro_module
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
+#include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
 #include "asterfort/readVector.h"
 #include "asterfort/rsexch.h"
@@ -60,6 +60,7 @@ module HHO_postpro_module
 ! --------------------------------------------------------------------------------------------------
     public :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher, hhoPostTherElga
     public :: hhoPostMecaGradVari, hhoPostMecaElga
+    public :: hhoPostTherFace, hhoPostMecaFace
     private :: hhoPostDeplMecaOP
 !
 contains
@@ -84,23 +85,20 @@ contains
 !   In nbnodes         : number of nodes
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8), parameter :: max_comp = 81
+        integer(kind=8), parameter :: max_comp = 27
         type(HHO_basis_cell) :: hhoBasisCell
-        integer(kind=8) :: total_dofs, cbs, fbs, jvect, i, ino, ndim, idim, comp_dim
+        integer(kind=8) :: total_dofs, cbs, fbs, jvect, i, ino, ndim, idim
         real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_T
-        real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T_dim
-        real(kind=8), dimension(3, max_comp) :: post_sol
+        real(kind=8), dimension(3, max_comp) :: post_sol_T
 !
         ndim = hhoCell%ndim
         sol_T = 0.d0
-        sol_T_dim = 0.d0
-        post_sol = 0.d0
+        post_sol_T = 0.d0
 !
 ! --- number of dofs
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        ASSERT(ndim*nbnodes .le. max_comp)
-        comp_dim = cbs/ndim
+        ASSERT(nbnodes .le. max_comp)
 !
 ! --- We get the solution on the cell
 !
@@ -112,13 +110,10 @@ contains
 !
 ! --- Compute the solution in the cell nodes
 !
-        do idim = 1, ndim
-            sol_T_dim(1:comp_dim) = sol_T(1+(idim-1)*comp_dim:idim*comp_dim)
-            do ino = 1, nbnodes
-                post_sol(idim, ino) = hhoEvalScalCell( &
-                                      hhoBasisCell, hhoData%cell_degree(), &
-                                      hhoCell%coorno(1:3, ino), sol_T_dim)
-            end do
+        do ino = 1, nbnodes
+            post_sol_T(1:3, ino) = hhoEvalVecCell2( &
+                                   hhoBasisCell, hhoData%cell_degree(), &
+                                   hhoCell%coorno(1:3, ino), sol_T)
         end do
 !
 ! --- Copy of post_sol in PDEPL_R ('OUT' to fill)
@@ -128,7 +123,73 @@ contains
         i = 1
         do ino = 1, nbnodes
             do idim = 1, ndim
-                zr(jvect-1+i) = post_sol(idim, ino)
+                zr(jvect-1+i) = post_sol_T(idim, ino)
+                i = i+1
+            end do
+        end do
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostMecaFace(hhoFace, hhoData, nbnodes)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Data), intent(in) :: hhoData
+        integer(kind=8), intent(in) :: nbnodes
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Evaluate HHO face unknowns at the nodes
+!   In hhoFace         : a HHO Face
+!   In hhoData         : information on HHO methods
+!   In nbnodes         : number of nodes
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8), parameter :: max_comp = 9
+        type(HHO_basis_face) :: hhoBasisFace
+        integer(kind=8) :: fbs, jvect, i, ino, ndim, idim, numloc
+        real(kind=8), dimension(MSIZE_FACE_VEC) :: sol_F
+        real(kind=8), dimension(3, max_comp) :: post_sol_F
+!
+        ndim = hhoFace%ndim+1
+        sol_F = 0.d0
+        post_sol_F = 0.d0
+!
+! --- number of dofs
+!
+        call hhoMecaFaceDofs(hhoFace, hhoData, fbs)
+        ASSERT(nbnodes .le. max_comp)
+!
+! --- We get the solution on the face
+!
+        call readVector('PDEPLPR', fbs, sol_F)
+!
+! --- init face basis
+!
+        call hhoBasisFace%initialize(hhoFace)
+!
+! --- Compute the solution in the face nodes
+!
+        do ino = 1, nbnodes
+            numloc = hhoFace%nodes_loc(ino)
+            post_sol_F(1:3, numloc) = hhoEvalVecFace( &
+                                      hhoBasisFace, hhoData%face_degree(), &
+                                      hhoFace%coorno(1:3, ino), sol_F)
+        end do
+!
+! --- Copy of post_sol in PDEPL_R ('OUT' to fill)
+!
+        call jevech('PDEPL_R', 'E', jvect)
+!
+        i = 1
+        do ino = 1, nbnodes
+            do idim = 1, ndim
+                zr(jvect-1+i) = post_sol_F(idim, ino)
                 i = i+1
             end do
         end do
@@ -156,7 +217,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer(kind=8) :: total_dofs, cbs, fbs, jvect, i, ipg, ndim, idim, comp_dim
+        integer(kind=8) :: total_dofs, cbs, fbs, jvect, i, ipg, ndim, idim, cbs_cmp
         real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_T
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T_dim
         real(kind=8), dimension(3, MAX_QP_CELL) :: post_sol
@@ -169,7 +230,7 @@ contains
 ! --- number of dofs
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        comp_dim = cbs/ndim
+        cbs_cmp = cbs/ndim
 !
 ! --- We get the solution on the cell
 !
@@ -182,9 +243,9 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do idim = 1, ndim
-            sol_T_dim(1:comp_dim) = sol_T(1+(idim-1)*comp_dim:idim*comp_dim)
+            sol_T_dim(1:cbs_cmp) = sol_T(1+(idim-1)*cbs_cmp:idim*cbs_cmp)
             do ipg = 1, hhoQuad%nbQuadPoints
-                post_sol(idim, ipg) = hhoEvalScalCell( &
+                post_sol(idim, ipg) = hhoEvalScalCell2( &
                                       hhoBasisCell, hhoData%cell_degree(), &
                                       hhoQuad%points(1:3, ipg), sol_T_dim)
             end do
@@ -207,12 +268,12 @@ contains
 ! ==================================================================================================
 ! ==================================================================================================
 !
-    subroutine hhoPostMecaGradVari(hhoCell, hhoData, nbnodes)
+    subroutine hhoPostMecaGradVari(hhoCell, hhoDataMk, hhoDataGv, nbnodes)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Data), intent(in) :: hhoDataMk, hhoDataGv
         integer(kind=8), intent(in) :: nbnodes
 !
 ! --------------------------------------------------------------------------------------------------
@@ -225,25 +286,22 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer(kind=8) :: mk_total_dofs, mk_cbs, mk_fbs, jvect, i, ino, ndim, idim, comp_dim
+        integer(kind=8) :: mk_total_dofs, mk_cbs, mk_fbs, jvect, i, ino, ndim, idim
         integer(kind=8) :: faces_dofs, gv_cbs, gv_fbs, gv_total_dofs
         real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_U
-        real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_U_dim, sol_V, sol_L
-        real(kind=8), dimension(5, 27) :: post_sol
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_V, sol_L
+        real(kind=8), dimension(5, 27) :: post_sol_T
 !
         ndim = hhoCell%ndim
         sol_U = 0.d0
-        sol_U_dim = 0.d0
         sol_V = 0.d0
         sol_L = 0.d0
-        post_sol = 0.d0
+        post_sol_T = 0.d0
 !
 ! --- number of dofs
 !
-        call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-        call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
-        comp_dim = mk_cbs/ndim
-        ASSERT(comp_dim == gv_cbs)
+        call hhoMecaDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs)
         faces_dofs = mk_total_dofs-mk_cbs+gv_total_dofs-gv_cbs
 !
 ! --- We get the solution on the cell
@@ -258,21 +316,18 @@ contains
 !
 ! --- Compute the solution in the cell nodes
 !
-        do idim = 1, ndim
-            sol_U_dim(1:comp_dim) = sol_U(1+(idim-1)*comp_dim:idim*comp_dim)
-            do ino = 1, nbnodes
-                post_sol(idim, ino) = hhoEvalScalCell( &
-                                      hhoBasisCell, hhoData%cell_degree(), &
-                                      hhoCell%coorno(1:3, ino), sol_U_dim)
-            end do
+        do ino = 1, nbnodes
+            post_sol_T(1:3, ino) = hhoEvalVecCell2( &
+                                   hhoBasisCell, hhoDataMk%cell_degree(), &
+                                   hhoCell%coorno(1:3, ino), sol_U)
         end do
         do ino = 1, nbnodes
-            post_sol(ndim+1, ino) = hhoEvalScalCell( &
-                                    hhoBasisCell, hhoData%cell_degree(), &
-                                    hhoCell%coorno(1:3, ino), sol_V)
-            post_sol(ndim+2, ino) = hhoEvalScalCell( &
-                                    hhoBasisCell, hhoData%cell_degree(), &
-                                    hhoCell%coorno(1:3, ino), sol_L)
+            post_sol_T(ndim+1, ino) = hhoEvalScalCell2( &
+                                      hhoBasisCell, hhoDataGv%cell_degree(), &
+                                      hhoCell%coorno(1:3, ino), sol_V)
+            post_sol_T(ndim+2, ino) = hhoEvalScalCell2( &
+                                      hhoBasisCell, hhoDataGv%cell_degree(), &
+                                      hhoCell%coorno(1:3, ino), sol_L)
         end do
 !
 ! --- Copy of post_sol in PDEPL_R ('OUT' to fill)
@@ -282,7 +337,7 @@ contains
         i = 1
         do ino = 1, nbnodes
             do idim = 1, ndim+2
-                zr(jvect-1+i) = post_sol(idim, ino)
+                zr(jvect-1+i) = post_sol_T(idim, ino)
                 i = i+1
             end do
         end do
@@ -315,11 +370,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: ifm, niv
-        integer(kind=8), parameter :: nbin = 3
+        integer(kind=8), parameter :: nbin = 4
         integer(kind=8), parameter :: nbout = 1
         character(len=8) :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
         character(len=19) :: ligrel_model, field_elno, celmod, field_noeu
+        character(len=19), parameter :: chopt = "&&HHO.POST.OPTPOST"
         character(len=16) :: option
         character(len=1) :: base
         character(len=24) :: chgeom
@@ -376,6 +432,7 @@ contains
         call detrsd('CHAMP_GD', disp_hho_depl(1:19))
         call copisd('CHAMP_GD', 'G', field_noeu, disp_hho_depl(1:19))
         call detrsd('CHAMP_GD', field_noeu)
+        call detrsd('CHAMP', chopt)
 !
     end subroutine
 !
@@ -482,10 +539,10 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         integer(kind=8) :: total_dofs, cbs, fbs, ino
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T
-        real(kind=8), dimension(max_comp) :: post_sol
+        real(kind=8), dimension(max_comp) :: post_sol_T
 !
         sol_T = 0.d0
-        post_sol = 0.d0
+        post_sol_T = 0.d0
 !
 ! --- number of dofs
 !
@@ -503,13 +560,69 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ino = 1, nbnodes
-            post_sol(ino) = hhoEvalScalCell( &
-                            hhoBasisCell, hhoData%cell_degree(), hhoCell%coorno(1:3, ino), sol_T)
+            post_sol_T(ino) = hhoEvalScalCell2(hhoBasisCell, hhoData%cell_degree(), &
+                                               hhoCell%coorno(1:3, ino), sol_T)
         end do
 !
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
 !
-        call writeVector("PTEMP_R", nbnodes, post_sol)
+        call writeVector("PTEMP_R", nbnodes, post_sol_T)
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostTherFace(hhoFace, hhoData, nbnodes)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Data), intent(in) :: hhoData
+        integer(kind=8), intent(in) :: nbnodes
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - thermics
+!
+!   Evaluate HHO face unknowns at the nodes
+!   In hhoFace         : a HHO Face
+!   In hhoData         : information on HHO methods
+!   In nbnodes         : number of nodes
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8), parameter :: max_comp = 9
+        type(HHO_basis_face) :: hhoBasisFace
+        integer(kind=8) :: fbs, ino, numloc
+        real(kind=8), dimension(MSIZE_FACE_SCAL) :: sol_F
+        real(kind=8), dimension(max_comp) :: post_sol_F
+!
+        sol_F = 0.d0
+        post_sol_F = 0.d0
+!
+! --- number of dofs
+!
+        call hhoTherFaceDofs(hhoFace, hhoData, fbs)
+        ASSERT(nbnodes .le. max_comp)
+!
+! --- We get the solution on the face
+!
+        call readVector('PTMPCHF', fbs, sol_F)
+!
+! --- init face basis
+!
+        call hhoBasisFace%initialize(hhoFace)
+!
+! --- Compute the solution in the face nodes
+!
+        do ino = 1, nbnodes
+            numloc = hhoFace%nodes_loc(ino)
+            post_sol_F(numloc) = hhoEvalScalFace(hhoBasisFace, hhoData%face_degree(), &
+                                                 hhoFace%coorno(1:3, ino), sol_F)
+        end do
+!
+! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
+!
+        call writeVector("PTEMP_R", nbnodes, post_sol_F)
 !
     end subroutine
 !
@@ -556,8 +669,8 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ipg = 1, hhoQuad%nbQuadPoints
-            post_sol(ipg) = hhoEvalScalCell( &
-                            hhoBasisCell, hhoData%cell_degree(), hhoQuad%points(1:3, ipg), sol_T)
+            post_sol(ipg) = hhoEvalScalCell2(hhoBasisCell, hhoData%cell_degree(), &
+                                             hhoQuad%points(1:3, ipg), sol_T)
         end do
 !
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)

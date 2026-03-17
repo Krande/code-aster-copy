@@ -3,7 +3,7 @@
  * @brief Implementation de
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,7 @@
 
 #include "aster_fort_mesh.h"
 
+#include "IOManager/AsterToMedWriter.h"
 #include "ParallelUtilities/AsterMPI.h"
 
 #include <algorithm>
@@ -215,7 +216,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         /* Loop over the groups of nodes to tag/add those concerned by the proc */
         for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
             if ( mesh->hasGroupOfNodes( nameOfTheGroup, true ) ) {
-                const auto &nodesToFind = mesh->getNodes( nameOfTheGroup );
+                const auto &nodesToFind = mesh->getNodes( nameOfTheGroup, true );
                 const auto numberOfNodesToFind = nodesToFind.size();
                 VectorLong nodesOfTheGroupToSend;
                 nodesOfTheGroupToSend.reserve( numberOfNodesToFind );
@@ -686,12 +687,22 @@ VectorLong ConnectionMesh::getNodesFromCells( const VectorLong &cells, const boo
 
 VectorLong ConnectionMesh::getNodesFromCells( const VectorString &names, const bool,
                                               const ASTERINTEGER ) const {
-    return getNodesFromCells( this->getCells( names ) );
+    return getNodesFromCells( this->getCells( names ), true );
 };
 
 VectorLong ConnectionMesh::getNodesFromCells( const std::string name, const bool,
                                               const ASTERINTEGER ) const {
-    return getNodesFromCells( this->getCells( name ) );
+    return getNodesFromCells( this->getCells( name ), true );
+};
+
+bool ConnectionMesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                                   std::array< int, 3 > version ) const {
+#ifdef ASTER_HAVE_MED
+    auto aTMWriter = AsterToMedWriter();
+    return aTMWriter.printMesh( *this, fileName, local );
+#else
+    return false;
+#endif
 };
 
 #endif /* ASTER_HAVE_MPI */

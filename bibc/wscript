@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,39 +17,30 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
 import os.path as osp
 import sys
-import os
 from pathlib import Path
 
-
-from waflib import Configure, TaskGen, Utils, Logs, Build
+from waflib import Build, Configure, Logs, TaskGen, Utils
 
 
 def options(self):
     # already done by waftools/parallel.py: self.load("compiler_c")
     group = self.get_option_group("code_aster options")
     group.add_option(
-        "-e",
-        "--build-executable",
-        dest="embed_aster",
-        default=False,
+        "--enable-lto",
+        dest="lto",
+        default=None,
         action="store_true",
-        help="build aster as an executable: it is an alias for --embed-aster",
+        help="enable link time optimization (LTO)",
     )
     group.add_option(
-        "--embed-aster",
-        dest="embed_aster",
-        default=True,
-        action="store_true",
-        help="embed all aster components within a python interpreter",
-    )
-    group.add_option(
-        "--shared-aster",
-        dest="embed_aster",
-        default=True,
+        "--disable-lto",
+        dest="lto",
+        default=None,
         action="store_false",
-        help="build each aster component as a shared python module",
+        help="disable link time optimization (LTO)",
     )
 
 
@@ -79,16 +70,11 @@ def configure(self):
     # prefer memory usage over speed
     if not self.env.ASTER_PLATFORM_MSVC64:
         self.add_linkflags("-Wl,--no-keep-memory")
-        # this option removes the warning about executable stack because of nested functions
-        # https://sourceware.org/bugzilla/show_bug.cgi?id=29072
-        self.add_linkflags("-Wl,--no-warn-execstack")
-        self.add_linkflags("-Wl,-flto=auto", dest="LINKFLAGS")
 
-    # Do not pass GNU ld flags to MSVC
-    if not self.env.ASTER_PLATFORM_MSVC64:
         self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
-    # seems incompatible with subroutines like zerofr that takes function as argument (test ssnv168f)
-    # self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
+        self.add_linkflags([f"-Wl,{i}" for i in self.get_lto_options()], dest="LINKFLAGS")
+
+        self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
@@ -133,15 +119,12 @@ def build(self):
     # The build is splitted in 3 stages:
     # - compilation of C source files
     # - build of the shared lib (libaster)
-    get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
 
     build_libbibc(self, env)
     build_libaster(self, env)
 
     self.add_group()
-    # install headers
-    self.install_files(env.ASTERINCLUDEDIR, get_srcs("include/*.h"))
     # install generated headers (C + fortran)
     bld = self.path.get_bld().parent
     config_includes = bld.ant_glob("aster*_config.h", quiet=True)
@@ -157,7 +140,7 @@ def post_install_links(ctx):
     if not ctx.cmd.startswith("install"):
         return
 
-    asterlibdir = Path(ctx.env.ASTERLIBDIR)
+    asterlibdir = Path(ctx.env.SITEPACKAGESDIR)
 
     extlib = "so"
     mods = ["aster", "aster_core", "aster_fonctions"]
@@ -187,7 +170,7 @@ def post_install_links(ctx):
 
 def build_libbibc(self, env):
     use = [
-        "PYEXT",
+        "PYEMBED",
         "NUMPY",
         "BIBCXX",
         "HDF5",
@@ -197,6 +180,7 @@ def build_libbibc(self, env):
         # "GKLIB",
         "SCOTCH",
         "PETSC",
+        "ASAN",
     ]
     get_srcs = self.path.get_src().ant_glob
 
@@ -221,7 +205,15 @@ def build_libbibc(self, env):
 
 
 def build_libaster(self, env):
-    use = ["LIBASTER", "asterbibfor", "asterbibfor_ext", "asterbibc", "asterbibcxx", "astergc"]
+    use = [
+        "LIBASTER",
+        "ASAN",
+        "asterbibfor",
+        "asterbibfor_ext",
+        "asterbibc",
+        "asterbibcxx",
+        "astergc",
+    ]
     if self.env.ASTER_PLATFORM_MSYS2:
         use.append("GFORTRAN")
         use.append("DBGHELP")
@@ -229,12 +221,11 @@ def build_libaster(self, env):
         use.append("astermfront")
 
     # Determine install path for aster.dll
-    # On MSVC, DLLs go to BINDIR, on other platforms to SPDIR/ASTERLIBDIR
-    python_install_path = env.SPDIR if env.SPDIR else env.ASTERLIBDIR
+    # On MSVC, DLLs go to BINDIR, on other platforms to SITEPACKAGESDIR
     if self.env.ASTER_PLATFORM_MSVC64:
         install_path = env.ASTERBINDIR
     else:
-        install_path = python_install_path
+        install_path = env.SITEPACKAGESDIR
 
     # {bibfor, bibc, bibcxx}/*.o
     if self.env.ASTER_PLATFORM_MINGW:
@@ -267,7 +258,7 @@ def build_libaster(self, env):
         mods.extend(["libaster"])
         libaster = "aster.dll"
     for submodule in mods:
-        src = osp.join(python_install_path, submodule + extlib)
+        src = osp.join(env.SITEPACKAGESDIR, submodule + extlib)
         self.symlink_as(src, libaster)
 
     if not self.env.ASTER_PLATFORM_MSVC64:
@@ -278,8 +269,7 @@ def build_libaster(self, env):
 def check_c_compiler_flags(self):
     if self.env.CXX_NAME != 'msvc':
         self.check_c_compiler_options("-fPIC")
-    # needs more tests (size and build time)
-    # self.check_c_compiler_options("-fno-lto")
+        self.check_c_compiler_options(self.get_lto_options())
     self.start_msg("C compiler flags")
     self.end_msg(self.env["CFLAGS"])
 
@@ -299,16 +289,13 @@ def check_c_compiler_options(self, options):
 
 @Configure.conf
 def check_optimization_cflags(self):
+    self.remove_flags("CFLAGS", "^-O[0-9]")
     self.setenv("debug")
     self.start_msg("Setting C debug flags")
-    self.remove_optflags("CFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["CFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:
         flags.append("--coverage")
         self.add_linkflags("--coverage")
-    if self.options.enable_asan:
-        flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
-        self.add_linkflags(["-fsanitize=address", "-fno-omit-frame-pointer"])
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
 
@@ -345,3 +332,29 @@ def check_optimization_cflags_msvc(self):
     optimization_flags = ["/O2"]  # Maximize speed
     self.env.append_unique("CFLAGS", optimization_flags)
     self.end_msg(optimization_flags)
+
+
+@Configure.conf
+def check_asan(self):
+    if not self.options.enable_asan:
+        return
+    # there is only one profile.sh, so the flags must also be set for release
+    # setup compilation flags
+    flags = ["-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
+    for var in ("CFLAGS", "CXXFLAGS", "FCFLAGS"):
+        self.start_msg(f"Setting AddressSanitizer {var}")
+        self.env.append_unique(f"{var}_ASAN", flags)
+        self.end_msg(flags)
+    self.add_linkflags(flags, dest="LINKFLAGS_ASAN")
+
+    # setup runtime variables
+    self.find_program("ldd")
+    libasan = self.where_is_shlib(lib="asan")
+    self.env["ASAN_PRELOAD"] = [libasan]
+    self.env.append_unique("CONFIG_ENV_LD_PRELOAD", self.env["ASAN_PRELOAD"])
+    self.start_msg("Setting default ASAN_OPTIONS")
+    # to use the same defaults in catalo
+    self.env["ASAN_DEFAULT_OPTIONS"] = defaults = "detect_odr_violation=1,detect_leaks=0"
+    opts = os.environ.get("ASAN_OPTIONS", f"${{ASAN_OPTIONS:-{defaults}}}")
+    self.env["CONFIG_ENV_ASAN_OPTIONS"] = opts
+    self.end_msg(self.env["CONFIG_ENV_ASAN_OPTIONS"])

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2026 - EDF - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -124,14 +124,16 @@ extern void DEFSSPPSS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, 
                        const ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE,
                        const char *, STRING_SIZE );
 
-#define CALLO_PAIRWRAP( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )                        \
-    CALLPOOOOOPPPPPPPPPPO( PAIRWRAP, pairwrap, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
-extern void DEFPSSSSSPPPPPPPPPPS( PAIRWRAP, pairwrap, ASTERINTEGER *, const char *, STRING_SIZE,
-                                  const char *, STRING_SIZE, const char *, STRING_SIZE,
-                                  const char *, STRING_SIZE, const char *, STRING_SIZE,
-                                  ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER *,
-                                  ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
-                                  ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE );
+#define CALLO_PAIRWRAP( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r )                     \
+    CALLPOOOOOPPPPPPPPPPPO( PAIRWRAP, pairwrap, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, \
+                            r )
+extern void DEFPSSSSSPPPPPPPPPPPS( PAIRWRAP, pairwrap, ASTERINTEGER *, const char *, STRING_SIZE,
+                                   const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                   const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                   const ASTERDOUBLE *, const ASTERDOUBLE *, const ASTERDOUBLE *,
+                                   ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                   ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                   const char *, STRING_SIZE );
 
 #define CALLO_INTECELLAREAWRAP( a, b, c, d )                                                       \
     CALLOPPP( INTECELLAREAWRAP, intecellareawrap, a, b, c, d )

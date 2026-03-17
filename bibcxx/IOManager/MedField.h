@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,8 +23,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "IOManager/MedCalculationSequence.h"
 #include "IOManager/MedFilePointer.h"
@@ -59,7 +57,7 @@ class MedField {
     /** @brief support mesh */
     const MedMeshPtr _mesh;
     /** @brief iteration number */
-    med_int _nbIt = 0, _nbCmp;
+    med_int _nbCmp;
     /** @brief sequence vector */
     std::vector< MedCalculationSequence > _sequences;
     /** @brief map between step id/iteration id and position in _sequences */
@@ -90,15 +88,24 @@ class MedField {
      * @param profiles vector of all profiles in med file
      */
     MedField( const MedFilePointer &filePtr, const std::string &name,
-              const std::vector< std::string > &componentName, const MedMeshPtr &mesh, med_int nbIt,
-              med_int nbCmp, std::vector< MedProfilePtr > profiles )
+              const std::vector< std::string > &componentName, const MedMeshPtr &mesh, int nbIt,
+              std::vector< MedProfilePtr > profiles )
         : _name( name ),
           _componentName( componentName ),
           _mesh( mesh ),
-          _nbIt( nbIt ),
-          _nbCmp( nbCmp ),
+          _nbCmp( componentName.size() ),
           _filePtr( filePtr ),
           _profiles( profiles ) {
+        const auto fileId = _filePtr.getFileId();
+        for ( int j = 1; j <= nbIt; ++j ) {
+            med_int numdt, numit;
+            med_float dt;
+            MEDfieldComputingStepInfo( fileId, name.c_str(), j, &numdt, &numit, &dt );
+            _sequences.emplace_back( numdt, numit, dt );
+            _numdtNumitToSeq[numdt][numit] = curSeq;
+            ++curSeq;
+        }
+
         for ( int i = 0; i < _profiles.size(); ++i )
             _mapProfileNameRank[_profiles[i]->getName()] = i;
     };
@@ -108,12 +115,10 @@ class MedField {
      * @param numdt step id
      * @param numit iteration id
      * @param dt time step value
+     * @param meshnumdt mesh step id
+     * @param meshnumit mesh iteration id
      */
-    void addSequence( int numdt, int numit, float dt ) {
-        _sequences.emplace_back( numdt, numit, dt );
-        _numdtNumitToSeq[numdt][numit] = curSeq;
-        ++curSeq;
-    };
+    void addSequence( int numdt, int numit, float dt, int meshnumdt, int meshnumit );
 
     /** @brief Get vector of all entity type and geometry type in calculation sequence */
     std::vector< med_int > getAllSupportEntitiesAtSequence( int numdt, int numit ) const;
@@ -138,7 +143,7 @@ class MedField {
     };
 
     /** @brief Get time from id */
-    med_float getTime( int index ) const { return _sequences[index].getDt(); };
+    const med_float &getTime( int index ) const { return _sequences[index].getDt(); };
 
     /** @brief Get sequence number */
     int getSequenceNumber() const { return _sequences.size(); };
@@ -154,6 +159,10 @@ class MedField {
     std::vector< double > getValuesAtSequenceOnEntityAndProfile( int numdt, int numit, int ent,
                                                                  med_geometry_type geo,
                                                                  int profileit ) const;
+
+    /** @brief print real values on node */
+    void printRealValuesAtSequenceOnNodes( int numdt, int numit, int nodeNb, const VectorReal &,
+                                           MedFilterPtr filter = nullptr );
 };
 
 /**

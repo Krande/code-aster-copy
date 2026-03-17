@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine tresu_ordgrd(valr, ignore, compare, mcf, iocc)
     real(kind=8), intent(out) :: compare
     character(len=*), intent(in), optional :: mcf
     integer(kind=8), intent(in), optional :: iocc
-! person_in_charge: mathieu.courtois@edf.fr
 !
 !   Read the ORDRE_GRANDEUR keyword in the value of VALE_CALC(=valr) is null
 !

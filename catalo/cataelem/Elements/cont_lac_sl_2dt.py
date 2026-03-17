@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
@@ -40,6 +39,8 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY
 ECNEUT_R = LocatedComponents(
     phys=PHY.CLAC_R, type="ELEM", components=("PRES", "JEU", "CONT", "COEFSURF", "PRESCOOR")
 )
+
+
 ##------------------------------------------------------------
 class LACS22DT(Element):
     """

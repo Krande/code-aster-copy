@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 
 import copy
 import glob
@@ -98,7 +97,7 @@ def macr_recal_ops(
     COURBE=None,
     METHODE=None,
     INFO=None,
-    **args
+    **args,
 ):
     """Macro commande realisant le recalage de modeles Aster"""
     # Gestion des Exceptions
@@ -160,7 +159,7 @@ def macr_recal_ops(
         GRAPHIQUE,
         METHODE,
         INFO,
-        **args
+        **args,
     )
 
     onFatalError(prev_onFatalError)
@@ -183,7 +182,7 @@ def macr_recal(
     GRAPHIQUE,
     METHODE,
     INFO,
-    **args
+    **args,
 ):
     ASTER_ROOT = os.environ["ASTER_ROOT"]
 

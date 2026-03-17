@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: marina.bottoni at edf.fr
 # ---------------------------------------------------------------------------
 #                  POST_ENDO_FISS
 # PROCEDURE PYTHON DU RECHERCHE DU TRAJET DE FISSURATION
@@ -102,7 +101,7 @@ def cherche_trajet(
             OPERATION="ASSE",
             TYPE_CHAM=typeChampTrajet,
             ASSE=_F(CHAM_GD=__ENDO, GROUP_MA=groupma, NOM_CMP=NOM_CMP),
-            **motclefs1
+            **motclefs1,
         )
     else:
         __ENDOGM = __ENDO
@@ -168,7 +167,7 @@ def cherche_trajet(
         TYPE_CHAM="NOEU",
         NOM_CHAM=NOM_CHAM,
         NUME_ORDRE=1,
-        **motclefs2
+        **motclefs2,
     )
 
     __YBARCH = CREA_CHAMP(
@@ -253,7 +252,7 @@ def cherche_trajet(
         TYPE_CHAM="NOEU",
         NOM_CHAM=NOM_CHAM,
         NUME_ORDRE=1,
-        **motclefs2
+        **motclefs2,
     )
 
     __YBARCH = CREA_CHAMP(
@@ -375,7 +374,7 @@ def cherche_trajet(
                 TYPE_CHAM="NOEU",
                 NOM_CHAM=NOM_CHAM,
                 NUME_ORDRE=1,
-                **motclefs2
+                **motclefs2,
             )
 
         except libaster.AsterError as e:
@@ -613,7 +612,7 @@ def calcul_ouverture(
             INST=inst,
             REPERE="UTILISATEUR",
             AFFE=_F(ANGL_NAUT=(alpha, beta, gamma), TOUT="OUI"),
-            **motclefs
+            **motclefs,
         )
 
         # Projection of displ. or strain field on the orthogonal profile
@@ -630,7 +629,7 @@ def calcul_ouverture(
                 DISTANCE_MAX=distMax,
                 NOM_CHAM=champ,
                 INST=inst,
-                **motclefs2
+                **motclefs2,
             )
         except:
             lstOuvFiss.append("-")
@@ -662,7 +661,7 @@ def calcul_ouverture(
                     DISTANCE_MAX=distMax,
                     NOM_CHAM=champEndo,
                     INST=inst,
-                    **motclefs2
+                    **motclefs2,
                 )
             except:
                 if except1:
@@ -759,7 +758,7 @@ def post_endo_fiss_ops(
     else:
         build = "resu"
         __RESUIN = args["RESULTAT"]
-        dicVarAcc = __RESUIN.LIST_VARI_ACCES()
+        dicVarAcc = __RESUIN.getAccessParameters()
         if args.get("NUME_ORDRE") is not None:
             nume_ordre = args.get("NUME_ORDRE")
             if nume_ordre not in dicVarAcc["NUME_ORDRE"]:
@@ -791,11 +790,10 @@ def post_endo_fiss_ops(
     # CONTROLS ON THE INPUT FIELDS
     #
     if build == "resu":
-        ChampsResu = __RESUIN.LIST_CHAMPS()
-        lstChampsResu = list(ChampsResu.keys())
+        lstChampsResu = __RESUIN.getFieldsNames()
         if NOM_CHAM not in lstChampsResu:
             UTMESS("F", "POST0_42")
-        elif nume_ordre not in ChampsResu[NOM_CHAM]:
+        elif nume_ordre not in __RESUIN.getIndexesForFieldName(NOM_CHAM):
             UTMESS("F", "POST0_41")
         else:
             pass
@@ -867,7 +865,7 @@ def post_endo_fiss_ops(
             OPERATION="EXTR",
             RESULTAT=__RESUIN,
             NOM_CHAM=NOM_CHAM,
-            **motscles
+            **motscles,
         )
 
     # --------------------------------------------------

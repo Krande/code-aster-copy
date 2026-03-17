@@ -1,0 +1,174 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#  - CALCUL DE STABILITE D'UNE POUTRE CONSOLE SOUMISE A UN EFFORT
+#    DE FLEXION A UNE EXTREMITE. CALCUL DES CHARGES CRITIQUES
+#    CONDUISANT AU FLAMBEMENT ELASTIQUE PAR DEVERSEMENT D'UNE POUTRE
+#  - MODELISATION AVEC DES ELEMENTS '3D'(HEXA8)
+#  + EN ANNEXE, TEST DU COUPLAGE INFO_MODE+CALC_MODES SUR UN CAS
+#    DE FLAMBEMENT
+# ---------------------------------------------------------------------
+#
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MA = CREA_MAILLAGE(CREA_POI1=_F(GROUP_NO=("B"), NOM_GROUP_MA=("B")), MAILLAGE=mesh)
+
+MOEL = AFFE_MODELE(
+    AFFE=(
+        _F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"),
+        _F(GROUP_MA=("B"), MODELISATION="DIS_TR", PHENOMENE="MECANIQUE"),
+    ),
+    MAILLAGE=MA,
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+# ---------------------------------------------------------------------
+CARAELEM = AFFE_CARA_ELEM(
+    DISCRET=(
+        _F(CARA="K_TR_D_N", GROUP_MA=("B"), VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+        _F(
+            CARA="M_TR_D_N", GROUP_MA=("B"), VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        ),
+    ),
+    MODELE=MOEL,
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+# ---------------------------------------------------------------------
+MATERIAU = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3))
+
+CHAM_MAT = AFFE_MATERIAU(AFFE=_F(MATER=(MATERIAU,), TOUT="OUI"), MODELE=MOEL)
+
+# ---------------------------------------------------------------------
+#                     INSTANTS
+# ---------------------------------------------------------------------
+fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
+
+listinst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=10))
+
+# ---------------------------------------------------------------------
+#                     CHARGEMENTS
+# ---------------------------------------------------------------------
+CON_LI = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA="ENCASTRE"),
+    LIAISON_ELEM=_F(GROUP_MA_1=("FACE",), GROUP_NO_2=("B",), OPTION="3D_POU"),
+    MODELE=MOEL,
+)
+
+CHARGE = AFFE_CHAR_MECA(FORCE_NODALE=_F(FY=-1, GROUP_NO="B"), MODELE=MOEL)
+# ---------------------------------------------------------------------
+#                     CALCUL MECA_STATIQUE
+# ---------------------------------------------------------------------
+RES = MECA_STATIQUE(
+    CARA_ELEM=CARAELEM,
+    CHAM_MATER=CHAM_MAT,
+    EXCIT=(_F(CHARGE=CON_LI), _F(CHARGE=CHARGE)),
+    MODELE=MOEL,
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+)
+
+SIGMA = CREA_CHAMP(
+    NOM_CHAM="SIEF_ELGA",
+    OPERATION="EXTR",
+    RESULTAT=RES,
+    TYPE_CHAM="ELGA_SIEF_R",
+    TYPE_MAXI="MINI",
+    TYPE_RESU="VALE",
+)
+
+MEL_RI_G = CALC_MATR_ELEM(MODELE=MOEL, OPTION="RIGI_GEOM", SIEF_ELGA=SIGMA)
+
+MEL_RI_M = CALC_MATR_ELEM(
+    CARA_ELEM=CARAELEM,
+    CHAM_MATER=CHAM_MAT,
+    CHARGE=(CHARGE, CON_LI),
+    MODELE=MOEL,
+    OPTION="RIGI_MECA",
+)
+
+NUM = NUME_DDL(MATR_RIGI=MEL_RI_M)
+
+MAS_RI_M = ASSE_MATRICE(MATR_ELEM=MEL_RI_M, NUME_DDL=NUM)
+
+MAS_RI_G = ASSE_MATRICE(MATR_ELEM=MEL_RI_G, NUME_DDL=NUM)
+
+NBMOD1 = INFO_MODE(
+    CHAR_CRIT=(-120000, 120000),
+    COMPTAGE=_F(METHODE="STURM"),
+    MATR_RIGI=MAS_RI_M,
+    MATR_RIGI_GEOM=MAS_RI_G,
+    SOLVEUR=_F(NPREC=10),
+    TYPE_MODE="MODE_FLAMB",
+)
+
+RESULT1 = CALC_MODES(
+    CALC_CHAR_CRIT=_F(CHAR_CRIT=(-120000, 120000), TABLE_CHAR_CRIT=NBMOD1),
+    MATR_RIGI=MAS_RI_M,
+    MATR_RIGI_GEOM=MAS_RI_G,
+    OPTION="BANDE",
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=10),
+    TYPE_RESU="MODE_FLAMB",
+)
+
+RESULT2 = CALC_MODES(
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=10),
+    MATR_RIGI=MAS_RI_M,
+    OPTION="PLUS_PETITE",
+    MATR_RIGI_GEOM=MAS_RI_G,
+    TYPE_RESU="MODE_FLAMB",
+)
+"""
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESULT1,
+                  TOUT_ORDRE='OUI'),
+          UNITE=3)
+"""
+# ---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+# ---------------------------------------------------------------------
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE="RELATIF",
+            NUME_MODE=5,
+            PARA="CHAR_CRIT",
+            PRECISION=0.1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=RESULT2,
+            VALE_CALC=-96392.65271444411,
+            VALE_REFE=-104797.82,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_MODE=6,
+            PARA="CHAR_CRIT",
+            PRECISION=0.1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=RESULT2,
+            VALE_CALC=96392.65264523079,
+            VALE_REFE=104797.82,
+        ),
+    )
+)
+
+FIN()

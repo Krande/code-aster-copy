@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
                   vff2, wref, dffr2, geom, wg, &
                   kpg, ipg, idf2, rot, b)
-! person_in_charge: jerome.laverne at edf.fr
 ! aslint: disable=W1306
     implicit none
 #include "asterf_types.h"

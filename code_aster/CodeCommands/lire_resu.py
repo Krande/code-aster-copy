@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2026  EDF www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: j-pierre.lefebvre at edf.fr
 
 from ..Helpers import adapt_for_mgis_behaviour
 from ..Objects import (
@@ -100,7 +99,11 @@ class ResultsReader(ExecuteCommand):
             if dofNum:
                 self._result.setDOFNumbering(dofNum)
 
-        self._result.build()
+        if "NUME_DDL" in keywords:
+            numeEqua = keywords["NUME_DDL"].getEquationNumbering()
+            self._result.build([], [numeEqua])
+        else:
+            self._result.build()
 
 
 LIRE_RESU = ResultsReader.run

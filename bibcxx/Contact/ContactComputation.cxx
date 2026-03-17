@@ -1,7 +1,7 @@
 
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,13 +42,18 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
 
     // Get pairing
     ASTERINTEGER nbContPair = contPairing->getNumberOfPairs();
-    VectorLong nbInter = contPairing->getNumberOfIntersectionPoints();
-    std::vector< VectorOfVectorsReal > inter =
-        contPairing->getIntersectionPoints( CoordinatesSpace::Slave );
-    VectorPairLong listPairs = contPairing->getListOfPairs();
-    MapLong globPairToLocaPair = contPairing->globPairToLocaPair();
+    VectorLong nbInter;
+    std::vector< VectorOfVectorsReal > inter;
+    VectorPairLong listPairs;
+    MapLong globPairToLocaPair;
 
-    AS_ASSERT( nbContPair == nbInter.size() );
+    if ( nbContPair != 0 ) {
+        nbInter = contPairing->getNumberOfIntersectionPoints();
+        inter = contPairing->getIntersectionPoints( CoordinatesSpace::Slave );
+        listPairs = contPairing->getListOfPairs();
+        globPairToLocaPair = contPairing->globPairToLocaPair();
+        AS_ASSERT( nbContPair == nbInter.size() );
+    }
 
     // Acces to list of cells
     const auto meshConnex = contPairing->getMesh()->getConnectivity();
@@ -164,6 +169,8 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
             ( *data )[shift + 25] = double( cont->getVariant() );
             //  Value for TYPE_MATR_TANG
             ( *data )[shift + 26] = double( cont->getJacobianType() );
+            //  Value for INTE_TYPE
+            ( *data )[shift + 27] = double( cont->getIntegrationType() );
 
             //  Value for FROTTEMENT
             ( *data )[shift + 30] = fric->hasFriction();

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine premld(n1, diag, col, xadj1, adjnc1, &
                   nnz, deb, voisin, suiv, ladjn, &
                   nrl)
-! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "asterfort/caladj.h"
     integer(kind=8) :: n1, diag(0:*), col(*)

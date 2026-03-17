@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.pignet@edf.fr
 """
 :py:class:`ParallelMesh` --- Assignment of parallel mesh
 ************************************************************************
@@ -41,7 +40,7 @@ from ..Objects import (
     MedFileReader,
     Mesh,
     MeshBalancer,
-    MeshReader,
+    MedToAsterReader,
     ParallelMesh,
     PythonBool,
     ResultNaming,
@@ -114,6 +113,9 @@ class ExtendedParallelMesh:
             deterministic (bool): True if partitioning must be deterministic
             ghost (int): ghost layer number
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
+
+        Returns:
+            ParallelMesh: the object itself
         """
         if not partitioned:
             returnTuple = splitMeshFromMedFile(
@@ -122,8 +124,9 @@ class ExtendedParallelMesh:
             self = returnTuple[0]
             self.show(verbose & 3)
         else:
-            mr = MeshReader()
+            mr = MedToAsterReader()
             mr.readParallelMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
+        return self
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,
@@ -641,7 +644,7 @@ class ExtendedParallelMesh:
             mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
-    def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
+    def getNodes(self, group_name=[], localNumbering=False, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.
 
         Arguments:
@@ -659,7 +662,7 @@ class ExtendedParallelMesh:
 
         return self._getNodes(force_list(group_name), localNumbering, val[same_rank])
 
-    def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
+    def getNodesFromCells(self, group_name, localNumbering=False, same_rank=None):
         """Returns the nodes indexes of a group of cells.
 
         Arguments:
@@ -731,5 +734,5 @@ class ExtendedIncompleteMesh:
                             1 - informations about main steps
                             2 - informations about all steps
         """
-        mr = MeshReader()
+        mr = MedToAsterReader()
         mr.readIncompleteMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)

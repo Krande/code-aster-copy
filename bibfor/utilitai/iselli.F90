@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ function iselli(elrefz)
 #include "asterfort/assert.h"
     aster_logical :: iselli
     character(len=*) :: elrefz
-! person_in_charge: samuel.geniaut at edf.fr
 ! ----------------------------------------------------------------------
 !
 ! FONCTION VALANT TRUE SI L'ELEMENT DE REFERENCE EST LINEAIRE

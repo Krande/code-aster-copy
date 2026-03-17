@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`DataStructure` --- Base of all objects
 *************************************************
@@ -28,7 +27,7 @@ from libaster import DataStructure
 
 from ..CodeCommands import COPIER
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import deprecated, import_object, injector
+from ..Utilities import import_object, injector
 
 
 @injector(DataStructure)
@@ -125,12 +124,6 @@ class ExtendedDataStructure:
             bool: *True* if the objects are the same.
         """
         return isinstance(other, DataStructure) and self.id() == other.id()
-
-    # transitional functions - to remove later
-    @property
-    @deprecated(case=1, help="Use 'getName()' instead.")
-    def nom(self):
-        return self.getName()
 
 
 # This dictionnary avoids to add the DataStructure "_ext.py" file just

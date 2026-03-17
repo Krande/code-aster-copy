@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,8 @@ DDL_THER = LocatedComponents(
 CHHOBS = LocatedComponents(
     phys=PHY.N3600R, type="ELNO", diff=True, components=(("EN1", ("X[1]",)), ("EN2", ()))
 )
+
+TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -127,6 +129,15 @@ class THER3DQU9_HHO0_F(Element):
                 (OP.CHAR_THER_RAYO_R.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+        OP.HHO_TEMP_THER(
+            te=427,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PTMPCHF, DDL_THER),
+                (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
         OP.RIGI_THER_ECHA_F(
             te=457,

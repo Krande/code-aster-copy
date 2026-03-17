@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,9 @@ subroutine separ_RI_elas_3D(elas_id, nu, g, nui, gi, &
     real(kind=8), parameter :: deux = 2.d0
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    hr = 0.d0
+    hi = 0.d0
 !
     if (elas_id .eq. 1) then
 !

@@ -3,7 +3,7 @@
  * @brief Implementation de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -163,43 +163,10 @@ const JeveuxVectorLong BaseMesh::getMedCellsTypes() const {
     return result;
 }
 
-bool BaseMesh::printMedFile( const std::filesystem::path &fileName, bool local ) const {
-    const auto rank = getMPIRank();
-    LogicalUnitFile a;
-    ASTERINTEGER retour = -1;
-    // In case that the print file (single and absolute path) is unique between processors,
-    // it must only be created on proc 0.
-    if ( isParallel() || ( !isParallel() && rank == 0 ) ) {
-        a.openFile( fileName, Binary, New );
-        retour = a.getLogicalUnit();
-    }
-    CommandSyntax cmdSt( "IMPR_RESU" );
-
-    SyntaxMapContainer dict;
-
-    if ( isParallel() || isConnection() )
-        dict.container["PROC0"] = "NON";
-    else
-        dict.container["PROC0"] = "OUI";
-
-    dict.container["FORMAT"] = "MED";
-    dict.container["UNITE"] = retour;
-
-    ListSyntaxMapContainer listeResu;
-    SyntaxMapContainer dict2;
-    dict2.container["MAILLAGE"] = getName();
-    listeResu.push_back( dict2 );
-    dict.container["RESU"] = listeResu;
-
-    if ( !local && isParallel() )
-        dict.container["FICHIER_UNIQUE"] = "OUI";
-
-    cmdSt.define( dict );
-
-    ASTERINTEGER op = 39;
-    CALL_EXECOP( &op );
-
-    return true;
+bool BaseMesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                             std::array< int, 3 > version ) const {
+    AS_ASSERT( false );
+    return false;
 };
 
 const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {

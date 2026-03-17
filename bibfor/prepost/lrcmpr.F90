@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !_____________________________________________________________________
-! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 !     LECTURE D'UN CHAMP - FORMAT MED - PROFIL
 !     -    -       -              -     --
@@ -97,7 +96,7 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
         write (ifm, 4101) nomprf, lgprom
     end if
 4101 format('. LECTURE DU PROFIL : ', a,&
-   &     /, '... LONGUEUR : ', i8)
+&     /, '... LONGUEUR : ', i8)
 !
 !====
 ! 3. LECTURE DES VALEURS DU PROFIL MED

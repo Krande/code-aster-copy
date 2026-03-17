@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,7 @@ def crea_elem_ssd_ops(self, **args):
             MATR_MASS=_matmass,
             OPTION=CALC_FREQ["OPTION"],
             INFO=args["INFO"],
-            **motscit
+            **motscit,
         )
 
         motfilt["FILTRE_MODE"].append(_F(MODE=__modes, TOUT_ORDRE="OUI"))

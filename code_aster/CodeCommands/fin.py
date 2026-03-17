@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`FIN` --- Finalization of code_aster
 **********************************************
@@ -38,6 +37,7 @@ import sys
 import libaster
 
 from ..Supervis import ExecuteCommand, FinalizeOptions, saveObjects
+from ..Supervis.code_file import Tracking
 from ..Utilities import ExecutionParameter, Options, haveMPI, logger
 
 
@@ -115,7 +115,7 @@ class Closer(ExecuteCommand):
             else:
                 # called "atexit", objects may be deleted, only close database
                 libaster.jeveux_finalize(0)
-
+        Tracking.stop_timer(ExecutionParameter().timer)
         logger.info(repr(ExecutionParameter().timer))
 
     def post_exec(self, keywords):

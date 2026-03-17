@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: josselin.delmas at edf.fr
 
 
 from ..Commons import *
@@ -128,6 +126,7 @@ MACR_LIGN_COUPE = MACRO(
     # UNITE_MAILLAGE: pour rester optionnel dans AsterStudy,
     # la valeur par défaut est définie dans 'ops'
     UNITE_MAILLAGE=SIMP(statut="f", typ=UnitType(), inout="out"),
+    UNITE_RESU=SIMP(statut="f", typ=UnitType(), inout="out"),
     MODELE=SIMP(statut="f", typ=modele_sdaster),
     VIS_A_VIS=FACT(
         statut="f",
@@ -181,7 +180,7 @@ MACR_LIGN_COUPE = MACRO(
         ),
         b_local=BLOC(
             condition="""equal_to("REPERE", 'LOCAL') """,
-            VECT_Y=SIMP(statut="f", typ="R", min=2, max=3),
+            VECT_Y=SIMP(statut="f", typ="R", min=3, max=3),
         ),
         b_utili=BLOC(
             condition="""equal_to("REPERE", 'UTILISATEUR')""",

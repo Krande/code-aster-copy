@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 """
-Calcul de KCP 
+Calcul de KCP
 """
 from .post_kcp_utilities import recup_temp
 from .post_kcp_beta import calc_sif_beta, calc_kcp_beta

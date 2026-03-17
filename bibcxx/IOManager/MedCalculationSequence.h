@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedCalculationSequence
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,8 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "astercxx.h"
 
 #ifdef ASTER_HAVE_MED
@@ -34,7 +32,6 @@
 #include <iostream>
 #include <memory>
 #include <utility>
-
 /**
  * @class MedCalculationSequence
  * @brief Med profile interface
@@ -62,11 +59,11 @@ class MedCalculationSequence {
      * @param numit iteration id
      * @param dt time step value
      */
-    MedCalculationSequence( int numdt, int numit, float dt )
+    MedCalculationSequence( int numdt, int numit, const med_float &dt )
         : _numdt( numdt ), _numit( numit ), _dt( dt ) {};
 
     /** @brief Get time step value */
-    med_float getDt() const { return _dt; };
+    const med_float &getDt() const { return _dt; };
 
     /** @brief Get pair {step id, iteration id} */
     std::pair< med_int, med_int > getNumDtNumIt() const {

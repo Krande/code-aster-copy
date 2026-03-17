@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`Result` --- Results container
 **************************************************
@@ -164,15 +163,6 @@ class ResultStateBuilder(InternalStateBuilder):
 class ExtendedResult:
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder
-
-    def LIST_CHAMPS(self):
-        return aster.GetResu(self.getName(), "CHAMPS")
-
-    def LIST_VARI_ACCES(self):
-        return aster.GetResu(self.getName(), "VARI_ACCES")
-
-    def LIST_PARA(self):
-        return aster.GetResu(self.getName(), "PARAMETRES")
 
     def _createIndexFromParameter(self, para, value, crit, prec):
         """

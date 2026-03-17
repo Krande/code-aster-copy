@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterfort/assert.h"
@@ -207,7 +206,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             iproj = 2
         end if
 !
-    else if (alias(1:2) .eq. 'QU') then
+    else if (alias(1:2) .eq. 'QU' .or. alias .eq. 'Q12') then
 !
 !       premier ajustement : on positionne le point de coordonnees (ksi1, ksi2) sur
 !       le bord, s'il est à une distance (normalisee) inférieure a atol du bord

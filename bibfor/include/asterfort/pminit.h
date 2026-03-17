@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,51 +15,42 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
+#include "asterf_types.h"
 !
 interface
-    subroutine pminit(imate, nbvari, ndim, typmod, table,&
-                      nbpar, iforta, nompar, typpar, angl_naut,&
-                      pgl, irota, epsm, sigm, vim,&
-                      vip, vr, defimp, coef, indimp,&
-                      fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara,&
-                      pred, matrel, imptgt, option, nomvi,&
-                      nbvita, sderro)
+    subroutine pminit(jvMaterCode, nbVari, &
+                      tablName, tablNbParaMaxi, tablNbPara, tablType, &
+                      tablParaName, tablParaType, tablVale, &
+                      anglNaut, pgl, lRota, &
+                      epsiPrev, sigmPrev, vim, vip, &
+                      loadEpsiType, loadType, loadFunc, coefImpo, &
+                      coefMatrAdim, typeMatrPred, lMatrElas, matrElas, lPrintMatr, option, &
+                      variName, nbVariTabl, &
+                      sddisc, ds_conv, ds_algopara, sderro)
         use NonLin_Datastructure_type
-        integer(kind=8) :: nbvari
-        integer(kind=8) :: imate
-        integer(kind=8) :: ndim
-        character(len=8) :: typmod(2)
-        character(len=8) :: table
-        integer(kind=8) :: nbpar
-        integer(kind=8) :: iforta
-        character(len=16) :: nompar(*)
-        character(len=8) :: typpar(*)
-        real(kind=8) :: angl_naut(3)
-        real(kind=8) :: pgl(3, 3)
-        integer(kind=8) :: irota
-        real(kind=8) :: epsm(9)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: vim(nbvari)
-        real(kind=8) :: vip(nbvari)
-        real(kind=8) :: vr(*)
-        integer(kind=8) :: defimp
-        real(kind=8) :: coef
-        integer(kind=8) :: indimp(9)
-        character(len=8) :: fonimp(9)
-        real(kind=8) :: cimpo(6, 12)
-        real(kind=8) :: kel(6, 6)
-        character(len=19) :: sddisc
-        type(NL_DS_Conv), intent(inout) :: ds_conv
-        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-        integer(kind=8) :: pred
-        integer(kind=8) :: matrel
-        integer(kind=8) :: imptgt
-        character(len=16) :: option
-        character(len=8) :: nomvi(*)
-        integer(kind=8) :: nbvita
-        character(len=24) :: sderro
+        integer(kind=8), intent(in) :: jvMaterCode, nbVari
+        character(len=8), intent(out) :: tablName
+        integer(kind=8), intent(in) :: tablNbParaMaxi
+        integer(kind=8), intent(out) :: tablNbPara, tablType
+        character(len=16), intent(out) :: tablParaName(tablNbParaMaxi), tablParaType(tablNbParaMaxi)
+        real(kind=8), intent(out) :: tablVale(tablNbParaMaxi)
+        real(kind=8), intent(out) :: anglNaut(3), pgl(3, 3)
+        aster_logical, intent(out) :: lRota
+        real(kind=8), intent(out) :: epsiPrev(9), sigmPrev(6)
+        real(kind=8), intent(out) :: vim(nbVari), vip(nbVari)
+        integer(kind=8), intent(out) :: loadEpsiType, loadType(9)
+        character(len=8), intent(out) :: loadFunc(9)
+        real(kind=8), intent(out) :: coefImpo(6, 12), coefMatrAdim
+        integer(kind=8), intent(out) :: typeMatrPred
+        aster_logical, intent(out) :: lMatrElas
+        real(kind=8), intent(out) :: matrElas(6, 6)
+        aster_logical, intent(out) :: lPrintMatr
+        character(len=16), intent(out) :: option
+        character(len=8), intent(out) :: variName(nbVari)
+        integer(kind=8), intent(out) :: nbVariTabl
+        character(len=19), intent(out) :: sddisc
+        type(NL_DS_Conv), intent(out) :: ds_conv
+        type(NL_DS_AlgoPara), intent(out) :: ds_algopara
+        character(len=24), intent(out) :: sderro
     end subroutine pminit
 end interface

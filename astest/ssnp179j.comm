@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
 
 ########################################################################
 #          TEST DE VERIFICATION EN PLASTICITE INCOMPRESSIBLE           #
@@ -27,7 +26,8 @@
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 
-mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+medfile = CA.basedir / "ssnp178f.mmed"
+mesh0 = CA.ParallelMesh().readMedFile(medfile)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
@@ -59,11 +59,11 @@ times = DEFI_LIST_INST(
 )
 
 
-AY = [7.000025284667]
-AX = [-6.234179461563613]
+AY = [6.999745844318]
+AX = [-6.234606482741979]
 AT = [0.22883736395510168]
-CY = [1.4864395050119623]
-CX = [-0.2137252007971984]
+CY = [1.4864195687542638]
+CX = [-0.2137270839591672]
 CT = [0.8235931040135138]
 
 model = AFFE_MODELE(

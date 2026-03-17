@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -212,7 +212,7 @@ def all_coordinates(self, MAIL):
     Store in dict type
     """
 
-    nodes = [str(node + 1) for node in MAIL.getNodes()]
+    nodes = [str(node + 1) for node in MAIL.getNodes(localNumbering=True)]
     node_co = np.reshape(MAIL.getCoordinates().getValues(), (len(nodes), 3)).tolist()
 
     all_co = dict(zip(nodes, node_co))
@@ -2068,7 +2068,7 @@ def get_result(
     TPFISS[NP + 1] = "GLOBAL"
 
     mcfact = []
-    mcfact.append(_F(PARA="FOND_FISS", LISTE_K=[FOND_FISS.nom]))
+    mcfact.append(_F(PARA="FOND_FISS", LISTE_K=[FOND_FISS.getName()]))
     mcfact.append(_F(PARA="NUME_FOND", LISTE_I=[1]))
     mcfact.append(_F(PARA="NOEUD_FOND", LISTE_K=[TPFISS[iNP + 1]]))
     mcfact.append(_F(PARA="NUM_PT", LISTE_I=[iNP + 1]))
@@ -2275,7 +2275,7 @@ def post_jmod_ops(
                 LPfissSup += lst
 
             LPfissSup = list(set(LPfissSup))
-            dicLPfissSup = RESULTAT.LIST_VARI_ACCES()
+            dicLPfissSup = RESULTAT.getAccessParameters()
 
             __ncoorfisSup = POST_RELEVE_T(
                 ACTION=_F(
@@ -2330,7 +2330,7 @@ def post_jmod_ops(
                 LPfissInf += lst
 
             LPfissInf = list(set(LPfissInf))
-            dicLPfissInf = RESULTAT.LIST_VARI_ACCES()
+            dicLPfissInf = RESULTAT.getAccessParameters()
 
             __ncoorfisInf = POST_RELEVE_T(
                 ACTION=_F(
@@ -5308,7 +5308,7 @@ def post_jmod_ops(
         #   --------------------------------------------------------------------------
         #   GET CALCULATED INSTANTS
         #
-        dico = __RESU.LIST_VARI_ACCES()
+        dico = __RESU.getAccessParameters()
 
         if INST is not None:
             PRECISION = args["PRECISION"]
@@ -5337,7 +5337,9 @@ def post_jmod_ops(
                     if GROUP_NO[incr_gno] == knodes:
                         # print("collgrno[knodes]  ",collgrno[knodes])
 
-                        LIST_NODE__ = [str(node + 1) for node in MAIL.getNodes(knodes)]
+                        LIST_NODE__ = [
+                            str(node + 1) for node in MAIL.getNodes(knodes, localNumbering=True)
+                        ]
                         # print("LIST_NODE__  ",LIST_NODE__)
 
                         if incr_gno == 0:

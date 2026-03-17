@@ -6,7 +6,7 @@
  * @brief Header of class for FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -435,7 +435,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return nullptr;
     };
 
-    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::string version = std::string() ) const;
 
     /**
      * @brief Import a PETSc vector into a ParallelFieldOnNodes
@@ -508,7 +509,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         auto nbDofs = this->size();
 
-        auto nodes = this->getMesh()->getNodes( groupsOfNodes );
+        auto nodes = this->getMesh()->getNodes( groupsOfNodes, true );
         SetInt nodes_set;
         std::copy( nodes.begin(), nodes.end(), std::inserter( nodes_set, nodes_set.end() ) );
 
@@ -816,8 +817,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 };
 
 template < class ValueType >
-bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileName,
-                                              bool local ) const {
+bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileName, bool local,
+                                              std::string version ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;
@@ -841,6 +842,9 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileN
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = (ASTERINTEGER)retour;
+    if ( !version.empty() ) {
+        dict.container["VERSION_MED"] = version;
+    }
 
     if ( getMesh()->isParallel() ) {
         dict.container["PROC0"] = "NON";

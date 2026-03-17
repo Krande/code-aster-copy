@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: sylvie.granet at edf.fr
 
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
@@ -95,11 +93,6 @@ E1NEUTK = LocatedComponents(phys=PHY.NEUT_K24, type="ELEM", components=("Z1",))
 
 
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
-
-
-EREFCO = LocatedComponents(
-    phys=PHY.PREC_R, type="ELEM", components=("SIGM", "EPSI", "FHYDR[2]", "FTHERM", "LAG_GV")
-)
 
 
 ESIGMPC = LocatedComponents(
@@ -255,7 +248,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_HEXA20S_DIL(Element):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -415,7 +407,7 @@ class HM_HEXA20S_DIL(Element):
         ),
         OP.REFE_FORC_NODA(
             te=600,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, LC.CRESTHD)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_ELAS(
@@ -523,7 +515,6 @@ class HM_HEXA20S_DIL(Element):
 
 # ------------------------------------------------------------
 class HM_PENTA15S_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -545,7 +536,6 @@ class HM_PENTA15S_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_PYRAM13S_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PYRAM13
@@ -564,7 +554,6 @@ class HM_PYRAM13S_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_TETRA10S_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TETRA10
@@ -582,7 +571,6 @@ class HM_TETRA10S_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_HEXA20M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.HEXA20
@@ -603,7 +591,6 @@ class HM_HEXA20M_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_PENTA15M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PENTA15
@@ -625,7 +612,6 @@ class HM_PENTA15M_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_PYRAM13M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.PYRAM13
@@ -644,7 +630,6 @@ class HM_PYRAM13M_DIL(HM_HEXA20S_DIL):
 
 # ------------------------------------------------------------
 class HM_TETRA10M_DIL(HM_HEXA20S_DIL):
-
     """Please document this element"""
 
     meshType = MT.TETRA10

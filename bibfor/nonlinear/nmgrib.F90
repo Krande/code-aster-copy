@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,9 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc, &
             do alpha = 1, 2
                 do beta = 1, 2
                     do gamma = 1, 2
-                       b(i, n) = b(i, n)+r1(alpha)*r1(gamma)*a(beta, gamma)*dff(beta, n)*cnva(i, al&
-                                   &pha)/denomi
+                        b(i, n) = b(i, n)+ &
+                                  r1(alpha)*r1(gamma)*a(beta, gamma)* &
+                                  dff(beta, n)*cnva(i, alpha)/denomi
                     end do
                 end do
             end do

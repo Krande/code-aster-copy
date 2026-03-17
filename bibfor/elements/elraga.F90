@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -910,7 +910,8 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
             ASSERT(ASTER_FALSE)
         end if
 
-    else if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10' .or. elrefa .eq. 'T15') then
+    else if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10' &
+             .or. elrefa .eq. 'T15' .or. elrefa .eq. 'T20') then
         if (fapg .eq. 'FPG4') then
 ! --------- FORMULE A 4 POINTS :  (CF TOUZOT PAGE 300) - ORDRE 2 EN X Y Z
             a1 = (5.d0-rac5)/20.d0
@@ -5832,7 +5833,8 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 
         end if
 
-    else if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
+    else if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7' &
+             .or. elrefa .eq. 'TR1') then
         if (fapg .eq. 'FPG1') then
             xpg(1) = un/3.d0
             ypg(1) = un/3.d0
@@ -5868,18 +5870,18 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
             h2 = 0.054975871827661d0
             a1 = 0.445948490915965d0
             b1 = 0.091576213509771d0
-            xpg(3) = (t(b1)+un)/deux
-            ypg(3) = (t(un-deux*b1)+un)/deux
-            xpg(1) = (t(b1)+un)/deux
-            ypg(1) = (t(b1)+un)/deux
-            xpg(2) = (t(un-deux*b1)+un)/deux
-            ypg(2) = (t(b1)+un)/deux
-            xpg(6) = (t(un-deux*a1)+un)/deux
-            ypg(6) = (t(a1)+un)/deux
-            xpg(4) = (t(a1)+un)/deux
-            ypg(4) = (t(un-deux*a1)+un)/deux
-            xpg(5) = (t(a1)+un)/deux
-            ypg(5) = (t(a1)+un)/deux
+            xpg(3) = b1
+            ypg(3) = un-deux*b1
+            xpg(1) = b1
+            ypg(1) = b1
+            xpg(2) = un-deux*b1
+            ypg(2) = b1
+            xpg(6) = un-deux*a1
+            ypg(6) = a1
+            xpg(4) = a1
+            ypg(4) = un-deux*a1
+            xpg(5) = a1
+            ypg(5) = a1
             hpg(1) = h2
             hpg(2) = h2
             hpg(3) = h2
@@ -6703,7 +6705,8 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 
         end if
 
-    else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') then
+    else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9' &
+             .or. elrefa .eq. 'Q12') then
         if (fapg .eq. 'FPG1') then
             xpg(1) = zero
             ypg(1) = zero

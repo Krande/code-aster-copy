@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """
 ------------------------------------------------------------------------
@@ -75,7 +74,6 @@ from .cata_vari import DICT_NOM_VARI
 
 
 class CataComportementError(Exception):
-
     """Error"""
 
     def __init__(self, msg):
@@ -139,7 +137,6 @@ def first(args):
 
 
 class Base:
-
     """Classe de base : partie commune loi de comportement/kit."""
 
     __properties__ = (
@@ -236,7 +233,6 @@ class Base:
 
 
 class LoiComportement(Base):
-
     """Définition d'une loi de comportement.
 
     nom_vari, proprietes : definition, affectation de valeurs
@@ -327,7 +323,6 @@ class LoiComportement(Base):
 
 
 class LoiComportementMFront(LoiComportement):
-
     """Définition d'une loi de comportement MFront.
 
     modelisation, deformation, algo_inte : listes des valeurs acceptees
@@ -349,7 +344,6 @@ class LoiComportementMFront(LoiComportement):
 
 
 class KIT(Base):
-
     """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
     liste de comportements"""
 
@@ -396,7 +390,6 @@ class KIT(Base):
 
 
 class CataLoiComportement(metaclass=Singleton):
-
     """Catalogue de loi de comportement.
     Il s'agit juste d'un dictionnaire contenant les objets de type LoiComportement
     et quelques méthodes d'interrogation"""

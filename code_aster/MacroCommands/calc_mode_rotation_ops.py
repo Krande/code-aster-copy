@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ def calc_mode_rotation_ops(
     METHODE,
     CALC_FREQ,
     VERI_MODE,
-    **args
+    **args,
 ):
     """
     Macro pour calculer les frequences et modes en fonction des vitesses de rotation.
@@ -100,7 +100,7 @@ def calc_mode_rotation_ops(
             MATR_AMOR=__gyom,
             OPTION=CALC_FREQ["OPTION"],
             SOLVEUR_MODAL=_F(METHODE=METHODE),
-            **motscit
+            **motscit,
         )
 
         tab.append(

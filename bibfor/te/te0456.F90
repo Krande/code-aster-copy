@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,8 @@ subroutine te0456(nomopt, nomte)
     use HHO_quadrature_module
     use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga, hhoPostMecaGradVari, &
                                   hhoPostMecaElga
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCell, hhoInitFacesOfCell
+    use HHO_GV_module, only: hhoDataGVinit
 !
     implicit none
 !
@@ -33,14 +34,14 @@ subroutine te0456(nomopt, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
-!  Post-Processing for mecanic
+!  Post-Processing for a cell
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: nomte, nomopt
 !
 ! --- Local variables
 !
-    type(HHO_Data) :: hhoData
+    type(HHO_Data) :: hhoData, hhoDataGv
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuad
     integer(kind=8) :: nbnodes, npg
@@ -54,12 +55,15 @@ subroutine te0456(nomopt, nomte)
 !
     if (nomopt == 'HHO_DEPL_MECA') then
 ! --- post-traitement
+        call hhoInitFacesOfCell(hhoCell)
         if (lteatt('TYPMOD2', 'HHO_GRAD')) then
-            call hhoPostMecaGradVari(hhoCell, hhoData, nbnodes)
+            call hhoDataGVinit(hhoDataGv)
+            call hhoPostMecaGradVari(hhoCell, hhoData, hhoDataGv, nbnodes)
         else
             call hhoPostMeca(hhoCell, hhoData, nbnodes)
         end if
     else if (nomopt == 'HHO_TEMP_THER') then
+        call hhoInitFacesOfCell(hhoCell)
         call hhoPostTher(hhoCell, hhoData, nbnodes)
     else if (nomopt == 'TEMP_ELGA') then
         call hhoQuad%initCell(hhoCell, npg)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,10 +139,26 @@ DEFI_CONT_CATA = MACRO(
             into=("UNILATERAL", "BILATERAL"),
             fr=tr("Choix d'un modèle de contact"),
         ),
+        # le choix du type de methode d integration
+        TYPE_INTE=SIMP(
+            statut="f",
+            typ="TXM",
+            defaut="SEG_BASE",
+            into=("ELEM_BASE", "SEG_BASE"),
+            fr=tr("Choix d'une méthode d'intégration"),
+        ),
         # coefficient de nitche, pénalisation ou augmentation en fonction de la méthode de contact
         COEF_CONT=SIMP(statut="f", typ="R", defaut=100.0, val_min=0.0),
         # Pairing options (for segment to segment contact)
         APPARIEMENT=SIMP(statut="f", typ="TXM", defaut="MORTAR", into=("MORTAR",)),
+        b_zone_pair_param=BLOC(
+            condition="""equal_to("APPARIEMENT", "MORTAR") """,
+            APPA_TOLE=SIMP(statut="f", typ="R", defaut=1e-8, val_min=0.0),
+            AIRE_TOLE=SIMP(statut="f", typ="R", defaut=1e-8, val_min=0.0),
+            TYPE_APPA=SIMP(
+                statut="f", typ="TXM", defaut="RAPIDE", into=("RAPIDE", "FORCEBRUTE", "PANG")
+            ),
+        ),
         COEF_MULT_APPA=SIMP(statut="f", typ="R", defaut=-1.0),
         GROUP_MA_MAIT=SIMP(statut="o", typ=grma, max=1),
         GROUP_MA_ESCL=SIMP(statut="o", typ=grma, max=1),

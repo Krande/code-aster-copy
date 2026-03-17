@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -236,7 +236,7 @@ def check_petsc4py_headers(self):
         feature="c",
         header_name="Python.h petsc4py/petsc4py.h",
         includes=petsc4py_includes,
-        use="PETSC PYEXT",
+        use="PETSC PYEMBED",
         uselib_store="PETSC",
         errmsg="Could not find the petsc4py development headers",
     )

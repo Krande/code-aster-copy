@@ -1,13 +1,17 @@
 variables:
+  GIT_STRATEGY: fetch
+  # depth must be higher than the range used to search the last tag
+  GIT_DEPTH: 100
   MINIO_URL: https://minio.retd.edf.fr
-  MINIO_MC: ./mc --insecure
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   PREREQ_VERSION: 20251026
   OSNAME: debian-12
   IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
   ASTER_BUILD: mpi
-  # BUILDTYPE: ci, nightly, nightly-coverage, code-checking, docker
+  # BUILDTYPE: ci, nightly, nightly-coverage, nightly-sanitize, code-checking, docker
   BUILDTYPE: ci
+  # RUNNER_TAG_TEST: allow to override the runner for running tests (in schedule parameters)
+  RUNNER_TAG_TEST: hulk
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 12
@@ -16,6 +20,8 @@ variables:
   # WEEKLY_RUN should be set in scheduled pipeline
   WEEKLY_RUN: "unset"
   TZ: "Europe/Paris"
+  UV_DEFAULT_INDEX: "https://nexus.retd.edf.fr/repository/pypi-all/simple"
+  UV_INSECURE_HOST: "https://nexus.retd.edf.fr"
 
 default:
   tags:
@@ -32,9 +38,6 @@ workflow:
         REFREV: main
     - if: $BUILDTYPE == "code-checking"
     - if: $BUILDTYPE == "docker"
-    - if: $BUILDTYPE == "nightly-coverage"
-      variables:
-        ASTER_BUILD: debug
 
   auto_cancel:
     on_new_commit: interruptible
@@ -56,6 +59,7 @@ before_script:
   interruptible: true
   stage: setup
   script:
+    - .gitlabci/setup_pixi.sh
     - .gitlabci/prepare.sh
   artifacts:
     paths:
@@ -153,24 +157,21 @@ minimal_test:
 .verification_test:
   interruptible: true
   stage: test
+  rules:
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
   tags:
-    - hulk
+    - $RUNNER_TAG_TEST
   script:
     - .gitlabci/test.sh
         -L verification
-        --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   artifacts:
     when: always
     paths:
-      - results/run_testcases.xml
-      - results/Testing/Temporary/*
       - results/*
     expire_in: 3 days
     reports:
       junit: results/run_testcases.xml
-  rules:
-    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
 known_failures_test:
   interruptible: true
@@ -263,6 +264,60 @@ verification_test:
       artifacts: false
       optional: true
 
+# --- additional analysis
+keywords_coverage:
+  interruptible: true
+  stage: code-checking
+  needs:
+    - job: prepare
+    - job: compile
+    - job: verification_test
+  script:
+    - do_upload="no"
+    - test "$(date +%u)" = "${WEEKLY_RUN}"
+        && test "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH"
+        && test "${BUILDTYPE}" = "nightly"
+        && do_upload="upload"
+    - .gitlabci/coverage.sh . ./install ./results "${do_upload}"
+  artifacts:
+    when: always
+    paths:
+      - build/coverage/*
+  rules:
+    - if: $BUILDTYPE == "ci"
+      when: on_success
+    - if: $BUILDTYPE == "nightly"
+      when: always
+  allow_failure: true
+
+perf_analysis:
+  interruptible: true
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  stage: code-checking
+  needs:
+    - job: prepare
+    - job: verification_test
+  script:
+    - apt-get update
+    - apt-get install -y python3 python3-numpy python3-pandas jq
+    - do_upload="no"
+    - test "$(date +%u)" = "${WEEKLY_RUN}"
+        && test "$CI_COMMIT_REF_NAME" = "$CI_DEFAULT_BRANCH"
+        && test "${BUILDTYPE}" = "nightly"
+        && do_upload="upload"
+    - .gitlabci/perf.sh ./results "${do_upload}"
+  artifacts:
+    when: always
+    paths:
+      - build/perf/*
+  rules:
+    - if: $BUILDTYPE == "ci"
+      when: on_success
+    - if: $BUILDTYPE == "nightly"
+      when: always
+  allow_failure: true
+
 # --- variant debian-next for nightly build: no image available
 prepare_debian-next:
   variables:
@@ -291,17 +346,16 @@ verification_test_debian-next:
       optional: true
     - job: compile_debian-next
       optional: true
+  allow_failure: true
 
 # --- variant using code-aster-reqs package for nightly build / weekly testing
 prepare_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pkg
   extends: .prepare
   script:
-    - apt-get update
-    - apt-get install -y binutils curl git make patch
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -311,7 +365,7 @@ prepare_pkg:
 
 compile_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pkg
     ASTER_REQS_CONFIRM: y
@@ -320,13 +374,11 @@ compile_pkg:
     - job: prepare_pkg
       optional: true
   script:
-    - apt-get update
-    - apt-get install -y binutils curl git make patch
     - !reference [.compile, script]
 
 verification_test_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pkg
     OMPI_MCA_plm: ^rsh
@@ -337,10 +389,7 @@ verification_test_pkg:
     - job: compile_pkg
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
-    - apt-get update
-    - apt-get install -y cmake git wget
-    - .gitlabci/add-allow-run-as-root.sh
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - !reference [.verification_test, script]
   allow_failure: true
 
@@ -350,7 +399,7 @@ prepare_win:
     OSNAME: win
   extends: .prepare
   script:
-    - !reference [.prepare, script]
+    - .gitlabci/prepare.sh
   rules:
     - if: $BUILDTYPE == "nightly"
       when: on_success
@@ -377,19 +426,18 @@ verification_test_win:
     - job: compile_win
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - !reference [.verification_test, script]
   allow_failure: true
 
 # --- variant using pixi for nightly build / weekly testing
 prepare_pixi:
   image:
-    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pixi
   extends: .prepare
   script:
-    - .gitlabci/prepare_pixi.sh
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -399,7 +447,7 @@ prepare_pixi:
 
 compile_pixi:
   image:
-    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pixi
   extends: .compile
@@ -413,7 +461,7 @@ compile_pixi:
 
 verification_test_pixi:
   image:
-    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+    name: nexus.retd.edf.fr:5075/debian-base:trixie
   variables:
     OSNAME: pixi
   extends: .verification_test
@@ -423,10 +471,9 @@ verification_test_pixi:
     - job: compile_pixi
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/test.sh
         -L verification
-        --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   allow_failure: true

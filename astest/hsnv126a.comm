@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -508,9 +508,9 @@ TEST_RESU(
         _F(GROUP_NO="NO3", NOM_CMP="V1", CHAM_GD=CHVAR11, VALE_CALC=0.00239726027397),
         _F(GROUP_NO="NO3", NOM_CMP="V1", CHAM_GD=CHVAR14, VALE_CALC=0.0110411899313),
         _F(GROUP_NO="NO3", NOM_CMP="V1", CHAM_GD=CHVAR20, VALE_CALC=0.0287528604119),
-        _F(GROUP_NO="NO3", NOM_CMP="V7", CHAM_GD=CHVAR11, VALE_CALC=20.5479452055),
-        _F(GROUP_NO="NO3", NOM_CMP="V7", CHAM_GD=CHVAR14, VALE_CALC=91.76201373),
-        _F(GROUP_NO="NO3", NOM_CMP="V7", CHAM_GD=CHVAR20, VALE_CALC=149.42791762),
+        _F(GROUP_NO="NO3", NOM_CMP="V6", CHAM_GD=CHVAR11, VALE_CALC=20.5479452055),
+        _F(GROUP_NO="NO3", NOM_CMP="V6", CHAM_GD=CHVAR14, VALE_CALC=91.76201373),
+        _F(GROUP_NO="NO3", NOM_CMP="V6", CHAM_GD=CHVAR20, VALE_CALC=149.42791762),
         _F(GROUP_NO="NO3", NOM_CMP="EPTHER_L", CHAM_GD=CHEPT11, VALE_CALC=0.001),
         _F(GROUP_NO="NO3", NOM_CMP="EPTHER_L", CHAM_GD=CHEPT14, VALE_CALC=0.001),
         _F(GROUP_NO="NO3", NOM_CMP="EPTHER_L", CHAM_GD=CHEPT20, VALE_CALC=0.001),

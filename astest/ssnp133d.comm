@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -170,7 +170,7 @@ EVOL = STAT_NON_LINE(
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
 )
 
-dico = EVOL.LIST_VARI_ACCES()
+dico = EVOL.getAccessParameters()
 l_inst = dico["INST"]
 inst.append(l_inst[-1])
 
@@ -201,7 +201,7 @@ EVOL = STAT_NON_LINE(
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
 )
 
-dico = EVOL.LIST_VARI_ACCES()
+dico = EVOL.getAccessParameters()
 l_inst = dico["INST"]
 inst.append(l_inst[-1])
 
@@ -232,7 +232,7 @@ EVOL = STAT_NON_LINE(
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
 )
 
-dico = EVOL.LIST_VARI_ACCES()
+dico = EVOL.getAccessParameters()
 l_inst = dico["INST"]
 inst.append(l_inst[-1])
 

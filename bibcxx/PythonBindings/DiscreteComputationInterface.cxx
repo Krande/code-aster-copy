@@ -2,7 +2,7 @@
  * @file DiscreteComputationInterface.cxx
  * @brief Interface python de DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -863,6 +863,51 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "geom" ), py::arg( "displ_prev" ), py::arg( "displ_step" ),
               py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ),
               py::arg( "coef_cont" ), py::arg( "coef_frot" ) )
+
+        .def( "getMechanicalCouplingForces", &DiscreteComputation::getMechanicalCouplingForces, R"(
+            Compute coupling for LIAISON_MASSIF.
+
+            Arguments:
+                displ_prev (FieldOnNodes): displacement field at begin of current time
+                displ_step (FieldOnNodes): field of increment of displacement
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
+
+            Returns:
+                FieldOnNodesReal: coupling forces
+
+        )",
+              py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ) )
+
+        .def( "getMechanicalCouplingMatrix", &DiscreteComputation::getMechanicalCouplingMatrix, R"(
+            Compute coupling for LIAISON_MASSIF.
+
+            Arguments:
+                displ_prev (FieldOnNodes): displacement field at begin of current time
+                displ_step (FieldOnNodes): field of increment of displacement
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
+
+            Returns:
+                ElementaryMatrixDisplacementReal: coupling elementary matrix.
+
+        )",
+              py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ) )
+
+        .def( "getMechanicalLinearCouplingMatrix",
+              &DiscreteComputation::getMechanicalLinearCouplingMatrix, R"(
+            Compute coupling for LIAISON_MASSIF.
+
+      Arguments:
+            varc_curr (FieldOnCellsReal): external state variables for Nitsche method.
+
+      Returns:
+            ElementaryMatrixDisplacementReal: coupling elementary matrix.
+
+        )",
+              py::arg( "varc_curr" ) = nullptr )
 
         .def( "getMechanicalNodalForces", &DiscreteComputation::getMechanicalNodalForces,
               R"(

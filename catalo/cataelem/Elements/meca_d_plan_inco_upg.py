@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: mickael.abbas at edf.fr
 
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
@@ -241,8 +239,8 @@ class MIPLQU8(Element):
     elrefe = (
         ElrefeLoc(
             MT.QU8,
-            gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU", "FPG1=FPG1"),
-            mater=("RIGI", "MASS", "NOEU", "FPG1"),
+            gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU", "FPG1=FPG1", "MTGA=FPG9"),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG9",)),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG9",)),
@@ -640,6 +638,24 @@ class MIPLQU8(Element):
             ),
             para_out=((SP.PMATUUR, VMATUUR),),
         ),
+        OP.MATE_ELGA(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R),),
+        ),
+        OP.MATE_ELEM(
+            te=142,
+            para_in=(
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R),),
+        ),
         OP.NORME_L2(
             te=563,
             para_in=(
@@ -868,8 +884,8 @@ class MIPLTR6(MIPLQU8):
     elrefe = (
         ElrefeLoc(
             MT.TR6,
-            gauss=("RIGI=FPG3", "MASS=FPG6", "NOEU=NOEU", "FPG1=FPG1"),
-            mater=("RIGI", "MASS", "NOEU", "FPG1"),
+            gauss=("RIGI=FPG3", "MASS=FPG6", "NOEU=NOEU", "FPG1=FPG1", "MTGA=FPG3"),
+            mater=("RIGI", "MASS", "NOEU", "FPG1", "MTGA"),
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3",)),
         ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3",)),

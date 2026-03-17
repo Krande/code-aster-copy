@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine fointe_varc(codmes, fami, kpg, ksp, poum, &
 #include "asterfort/fointe.h"
 #include "asterfort/rcvarc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: codmes
     character(len=*), intent(in) :: fami

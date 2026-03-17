@@ -1,0 +1,144 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#  - CALCUL DE STABILITE D'UNE POUTRE CONSOLE SOUMISE A UN EFFORT
+#    DE FLEXION A UNE EXTREMITE. CALCUL DES CHARGES CRITIQUES
+#    CONDUISANT AU FLAMBEMENT ELASTIQUE PAR DEVERSEMENT D'UNE POUTRE
+#  - MODELISATION AVEC DES ELEMENTS '3D'(HEXA8)
+#  + EN ANNEXE, TEST DU COUPLAGE INFO_MODE+CALC_MODES SUR UN CAS
+#    DE FLAMBEMENT
+# ---------------------------------------------------------------------
+#
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MA = CREA_MAILLAGE(CREA_POI1=_F(GROUP_NO=("B"), NOM_GROUP_MA=("B")), MAILLAGE=mesh)
+
+MOEL = AFFE_MODELE(
+    AFFE=(
+        _F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"),
+        _F(GROUP_MA=("B"), MODELISATION="DIS_TR", PHENOMENE="MECANIQUE"),
+    ),
+    MAILLAGE=MA,
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+# ---------------------------------------------------------------------
+CARAELEM = AFFE_CARA_ELEM(
+    DISCRET=(
+        _F(CARA="K_TR_D_N", GROUP_MA=("B"), VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+        _F(
+            CARA="M_TR_D_N", GROUP_MA=("B"), VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        ),
+    ),
+    MODELE=MOEL,
+)
+
+# ---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+# ---------------------------------------------------------------------
+MATERIAU = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3))
+
+CHAM_MAT = AFFE_MATERIAU(AFFE=_F(MATER=(MATERIAU,), TOUT="OUI"), MODELE=MOEL)
+
+# ---------------------------------------------------------------------
+#                     INSTANTS
+# ---------------------------------------------------------------------
+fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
+
+listinst = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(_F(JUSQU_A=0.5, NOMBRE=5), _F(JUSQU_A=0.7, NOMBRE=8), _F(JUSQU_A=1, NOMBRE=3)),
+)
+
+liste = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=listinst),
+    ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_NIVEAU=3, SUBD_PAS=4),
+)
+
+# ---------------------------------------------------------------------
+#                     CHARGEMENTS
+# ---------------------------------------------------------------------
+CON_LI = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA="ENCASTRE"),
+    LIAISON_ELEM=_F(GROUP_MA_1=("FACE",), GROUP_NO_2=("B",), OPTION="3D_POU"),
+    MODELE=MOEL,
+)
+
+CHARGE = AFFE_CHAR_MECA(FORCE_NODALE=_F(FY=-1, GROUP_NO="B"), MODELE=MOEL)
+
+CHARGE1 = AFFE_CHAR_MECA(FORCE_NODALE=_F(FZ=100, GROUP_NO="D1"), MODELE=MOEL)
+
+# ---------------------------------------------------------------------
+#                     CALCUL STAT_NON_LINE + PILOTAGE
+# ---------------------------------------------------------------------
+dep = -0.1
+
+res = STAT_NON_LINE(
+    CARA_ELEM=CARAELEM,
+    CHAM_MATER=CHAM_MAT,
+    COMPORTEMENT=_F(DEFORMATION="GDEF_LOG", RELATION="ELAS", GROUP_MA="POUTRE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=300, RESI_GLOB_RELA=1e-06),
+    EXCIT=(
+        _F(CHARGE=CON_LI),
+        _F(CHARGE=CHARGE1, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=CHARGE, TYPE_CHARGE="FIXE_PILO"),
+    ),
+    INCREMENT=_F(LIST_INST=liste),
+    MODELE=MOEL,
+    NEWTON=_F(MATRICE="TANGENTE", MATR_RIGI_SYME="OUI", PREDICTION="ELASTIQUE", REAC_ITER=1),
+    PILOTAGE=_F(COEF_MULT=1 / dep, GROUP_NO="B", NOM_CMP="DY", TYPE="DDL_IMPO"),
+)
+
+IMPR_RESU(FORMAT="MED", RESU=_F(NOM_CHAM="DEPL", RESULTAT=res, TOUT_ORDRE="OUI"), UNITE=3)
+TAB_PILO = RECU_TABLE(CO=res, NOM_PARA="ETA_PILOTAGE")
+
+# IMPR_TABLE(FORMAT_R='1PE22.15', TABLE=TAB_PILO, UNITE=4)
+
+DEPS = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=res, NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ"), GROUP_NO="B"
+    )
+)
+
+# IMPR_TABLE(FORMAT_R='1PE22.15', TABLE=DEPS, UNITE=5)
+
+# ---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+# ---------------------------------------------------------------------
+# test de non régression
+
+TEST_TABLE(
+    VALE_CALC=107983.5208699947,
+    NOM_PARA="ETA_PILOTAGE",
+    TABLE=TAB_PILO,
+    FILTRE=_F(CRIT_COMP="EQ", NOM_PARA="NUME_ORDRE", VALE_I=16),
+)
+
+
+TEST_TABLE(
+    VALE_CALC=0.11382573021656056,
+    NOM_PARA="DZ",
+    TABLE=DEPS,
+    FILTRE=_F(CRIT_COMP="EQ", NOM_PARA="NUME_ORDRE", VALE_I=16),
+)
+
+FIN()

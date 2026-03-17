@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
 
 ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELEM", components=("X[30]",))
+
 
 # ---------------------------------------------------------------------------------------------------
 class MEPLSE2(Element):
@@ -316,6 +317,15 @@ class MEPLSE3(MEPLSE2):
     meshType = MT.SEG3
     attrs = ((AT.BORD_ISO, "OUI"),)
     elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",), mater=("RIGI",)),)
+
+
+# ---------------------------------------------------------------------------------------------------
+class MEPLSE4(MEPLSE2):
+    """Skin element for 2D isoparametric elements - On SE4"""
+
+    meshType = MT.SEG4
+    attrs = ((AT.BORD_ISO, "OUI"),)
+    elrefe = (ElrefeLoc(MT.SE4, gauss=("RIGI=FPG4",), mater=("RIGI",)),)
 
 
 # ---------------------------------------------------------------------------------------------------

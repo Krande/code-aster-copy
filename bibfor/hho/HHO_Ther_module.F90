@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,7 +185,7 @@ contains
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
-        call hho_dgemv_N(1.d0, gradrec, temp_curr, 0.0, G_curr_coeff)
+        call gradrec%dot(temp_curr, G_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -195,17 +195,16 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, max(hhoData%grad_degree(), &
+                                                         hhoData%cell_degree()), BSCEval)
 !
 ! --------- Eval gradient at T+
 !
-            G_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
-                                    coorpg(1:3), G_curr_coeff)
+            G_curr = hhoEvalVecCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
 !
 ! --------- Eval temperature at T+
 !
-            temp_pg_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                           coorpg(1:3), temp_T_curr)
+            temp_pg_curr = hhoEvalScalCell(cbs, BSCEval, temp_T_curr)
 !
 ! ------- Compute behavior
 !
@@ -370,8 +369,7 @@ contains
 !
 ! --------- Eval gradient at T+
 !
-            temp_pg_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                           coorpg, temp_T_curr)
+            temp_pg_curr = hhoEvalScalCell(cbs, BSCEval, temp_T_curr)
 !
 ! -------- Compute behavior
 !
@@ -501,8 +499,7 @@ contains
 !
 ! --------- Eval temperature at T+
 !
-            temp_pg_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                           coorpg, temp_T_curr)
+            temp_pg_curr = hhoEvalScalCell(cbs, BSCEval, temp_T_curr)
 !
 ! -------- Compute behavior
 !

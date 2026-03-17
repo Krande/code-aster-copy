@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine ptforp(itype, option, nomte, a, a2, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
+#include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
@@ -258,10 +259,12 @@ subroutine ptforp(itype, option, nomte, a, a2, &
         global = zk8(lforc+6) .eq. 'GLOBAL'
 !       Vitesses
         call tecach('NNO', 'PVITPLU', 'L', iret, iad=ichamp)
-        do i = 1, 3
-            wv(i) = zr(ichamp-1+i)
-            wv(i+3) = zr(ichamp-1+i+ncc)
-        end do
+        if (iret .eq. 0) then
+            do i = 1, 3
+                wv(i) = zr(ichamp-1+i)
+                wv(i+3) = zr(ichamp-1+i+ncc)
+            end do
+        end if
 !       Accélérations
         call tecach('NNN', 'PACCPLU', 'L', iret, iad=ichamp)
         if (iret .eq. 0) then

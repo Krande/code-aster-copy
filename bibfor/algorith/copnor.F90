@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine copnor(noma, ds_contact, posmai, ksi1, &
 #include "asterfort/mmtypm.h"
 #include "asterfort/normev.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8) :: posmai
     real(kind=8) :: tau1(3), tau2(3)

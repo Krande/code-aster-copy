@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,6 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
     character(len=16) :: typdis
 !
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
 !                TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES,
 !                ET LE PLAN DE FISSURE, DECOUPAGE EN FACETTES,
 !                POINT MILIEU DE FISSURE DANS LE CAS QUADRATIQUE (2D ET 3D)

@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,6 +23,8 @@
 #include "DataFields/FieldConverter.h"
 #include "Discretization/Calcul.h"
 
+HHO::HHO( const ModelPtr &model ) : HHO( std::make_shared< PhysicalProblem >( model, nullptr ) ) {};
+
 ModelPtr HHO::getModel() const {
     if ( _phys_problem ) {
         return _phys_problem->getModel();
@@ -43,11 +45,13 @@ FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
     return funct;
 };
 
-FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const {
-
+std::variant< FieldOnNodesRealPtr, FieldOnCellsRealPtr >
+HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field, const VectorString &groupsOfCells,
+                             const bool average ) const {
     std::string option, para_name_in, para_name_out;
 
     auto model = this->getModel();
+    auto mesh = model->getMesh();
 
     if ( model->isMechanical() ) {
         option = "HHO_DEPL_MECA";
@@ -61,9 +65,14 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
         AS_ABORT( "Not implemented for HHO" );
     }
 
+    auto fed = model->getFiniteElementDescriptor();
+    if ( !groupsOfCells.empty() ) {
+        fed = fed->restrict( groupsOfCells );
+    }
+
     // Main object
     CalculPtr calcul = std::make_unique< Calcul >( option );
-    calcul->setModel( model );
+    calcul->setFiniteElementDescriptor( fed );
 
     // Add input fields
     calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
@@ -72,12 +81,16 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
     calcul->addHHOField( model->getHHOModel() );
 
     // Add output terms
-    auto exitField = std::make_shared< FieldOnCellsReal >( model );
+    auto exitField = std::make_shared< FieldOnCellsReal >( fed );
     calcul->addOutputField( para_name_out, exitField );
 
     // Compute
     if ( model->existsFiniteElement() ) {
         calcul->compute();
+    }
+
+    if ( !average ) {
+        return exitField;
     }
 
     return toFieldOnNodes( exitField );
@@ -299,4 +312,77 @@ FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr h
     hho_elga->updateValuePointers();
 
     return hho_elga;
+};
+
+std::pair< std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr >,
+           std::pair< AssemblyMatrixDisplacementRealPtr, FieldOnNodesRealPtr > >
+HHO::static_condensation( const ElementaryMatrixDisplacementRealPtr &me1,
+                          const ElementaryVectorDisplacementRealPtr &ve1 ) const {
+
+    auto model = this->getModel();
+    auto mesh = model->getMesh();
+    auto dofNume = _phys_problem->getDOFNumbering();
+    AS_ASSERT( dofNume );
+
+    const std::string option = "HHO_COND_MECA";
+    auto calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( model );
+
+    // Input fields
+    calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
+
+    AS_ASSERT( me1->getNumberOfElementaryTerms() == 1 && me1->getElementaryTerms()[0]->exists() );
+    calcul->addInputElementaryTerm( "PMAELS1", me1->getElementaryTerms()[0] );
+    AS_ASSERT( ve1->getNumberOfElementaryTerms() == 1 && ve1->getElementaryTerms()[0]->exists() );
+    calcul->addInputElementaryTerm( "PVEELE1", ve1->getElementaryTerms()[0] );
+
+    // Create output
+    auto me_C = std::make_shared< ElementaryMatrixDisplacementReal >( model, option );
+    auto ve_C = std::make_shared< ElementaryVectorReal >( model );
+
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+    auto me_D = std::make_shared< ElementaryMatrixDisplacementReal >( model, option );
+    auto ve_D = std::make_shared< ElementaryVectorReal >( model );
+
+    calcul->addOutputElementaryTerm( "PMATUND", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTUD", std::make_shared< ElementaryTermReal >() );
+
+    // Compute
+    if ( model->existsFiniteElement() ) {
+        calcul->compute();
+
+        me_C->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+        me_C->build();
+        ve_C->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
+        ve_C->build();
+
+        me_D->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUND" ) );
+        me_D->build();
+        ve_D->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUD" ) );
+        ve_D->build();
+    };
+
+    auto MC = std::make_shared< AssemblyMatrixDisplacementReal >( _phys_problem );
+    MC->assemble( me_C, _phys_problem->getListOfLoads() );
+    auto lC = ve_C->assemble( dofNume );
+
+    auto MD = std::make_shared< AssemblyMatrixDisplacementReal >( _phys_problem );
+    MD->assemble( me_D, _phys_problem->getListOfLoads() );
+    auto lD = ve_D->assemble( dofNume );
+
+    return std::make_pair( std::make_pair( MC, lC ), std::make_pair( MD, lD ) );
+};
+
+FieldOnNodesRealPtr HHO::static_decondensation( const AssemblyMatrixDisplacementRealPtr &MD,
+                                                const FieldOnNodesRealPtr &lD,
+                                                const FieldOnNodesRealPtr &uF ) const {
+
+    FieldOnNodesRealPtr uT = std::make_shared< FieldOnNodesReal >( *lD );
+
+    ( *uT ) += ( *MD ) * ( *uF );
+    ( *uT ) += ( *uF );
+
+    return uT;
 };

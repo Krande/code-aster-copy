@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,7 +191,7 @@ def calc_ecrevisse_ops(self, **args):
             del dCONVERGENCE[i]
 
     # INSTANTS
-    _l_inst = dRESULTAT["MECANIQUE"].LIST_VARI_ACCES()
+    _l_inst = dRESULTAT["MECANIQUE"].getAccessParameters()
     if "INST" in dRESULTAT:
         Inst_Ecrevisse = dRESULTAT["INST"]
     else:
@@ -612,7 +612,7 @@ def calc_ecrevisse_ops(self, **args):
                     ITER_GLOB_MAXI=dCONVERGENCE["ITER_GLOB_MAXI"],
                     CRIT_CONV_DEBI=dCONVERGENCE["CRIT_CONV_DEBI"],
                 ),
-                **motscle2
+                **motscle2,
             )
 
             # -------------------------------------------------------------

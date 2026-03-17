@@ -3,7 +3,7 @@
  * @brief Création de LibAster
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,6 +33,7 @@
 #include "PythonBindings/AcousticLoadInterface.h"
 #include "PythonBindings/AcousticModeResultInterface.h"
 #include "PythonBindings/AssemblyMatrixInterface.h"
+#include "PythonBindings/AsterToMedWriterInterface.h"
 #include "PythonBindings/BaseAssemblyMatrixInterface.h"
 #include "PythonBindings/BaseDOFNumberingInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
@@ -51,6 +52,8 @@
 #include "PythonBindings/ContactPairingInterface.h"
 #include "PythonBindings/ContactParameterInterface.h"
 #include "PythonBindings/ContactZoneInterface.h"
+#include "PythonBindings/CouplingPairingInterface.h"
+#include "PythonBindings/CouplingZonePairingInterface.h"
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
 #include "PythonBindings/CrackInterface.h"
 #include "PythonBindings/CrackShapeInterface.h"
@@ -118,6 +121,7 @@
 #include "PythonBindings/MedFieldInterface.h"
 #include "PythonBindings/MedFileReaderInterface.h"
 #include "PythonBindings/MedMeshInterface.h"
+#include "PythonBindings/MedToAsterReaderInterface.h"
 #include "PythonBindings/MedVectorInterface.h"
 #include "PythonBindings/MeshBalancerInterface.h"
 #include "PythonBindings/MeshConnectionGraphInterface.h"
@@ -125,7 +129,6 @@
 #include "PythonBindings/MeshEntitiesInterface.h"
 #include "PythonBindings/MeshInterface.h"
 #include "PythonBindings/MeshPairingInterface.h"
-#include "PythonBindings/MeshReaderInterface.h"
 #include "PythonBindings/MeshUtilsInterface.h"
 #include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
@@ -158,6 +161,7 @@
 #include "PythonBindings/PtScotchPartitionerInterface.h"
 #include "PythonBindings/ResultBalancerInterface.h"
 #include "PythonBindings/ResultInterface.h"
+#include "PythonBindings/ResultManagerInterface.h"
 #include "PythonBindings/ResultNamingInterface.h"
 #include "PythonBindings/SetLoggingLevelInterface.h"
 #include "PythonBindings/SimpleFieldOnCellsInterface.h"
@@ -262,6 +266,8 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMeshPairingToPython( mod );
     exportContactPairingToPython( mod );
     exportContactComputationToPython( mod );
+    exportCouplingZonePairingToPython( mod );
+    exportCouplingPairingToPython( mod );
     exportBaseAssemblyMatrixToPython( mod );
     exportAssemblyMatrixToPython( mod );
     exportElementaryTermToPython( mod );
@@ -376,9 +382,11 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMedFamilyToPython( mod );
     exportMedVectorToPython( mod );
 #endif /* ASTER_HAVE_MED */
-    exportMeshReaderToPython( mod );
+    exportMedToAsterReaderToPython( mod );
+    exportAsterToMedWriterToPython( mod );
     exportFieldCharacteristicsToPython( mod );
     exportModelingUtilitiesToPython( mod );
     exportSyntaxSaverToPython( mod );
     exportMeshUtilsToPython( mod );
+    exportResultManagerToPython( mod );
 };

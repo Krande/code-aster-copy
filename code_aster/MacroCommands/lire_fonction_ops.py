@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 import os.path as osp
 from math import cos, sin
@@ -259,7 +258,7 @@ def lire_fonction_ops(
     VERIF=None,
     INFO=None,
     TITRE=None,
-    **args
+    **args,
 ):
     """Méthode corps de la macro"""
 
@@ -367,7 +366,7 @@ def lire_fonction_ops(
             INFO=INFO,
             TITRE=TITRE,
             VERIF=VERIF,
-            **motscles
+            **motscles,
         )
     # remet UNITE dans son état initial
     ReservedUnitUsed(UNITE)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1849,9 +1849,7 @@ class Surf_Circ_Solver(LEM_Solver):
         A = np.array([[x1 - x2, y1 - y2], [x1 - x3, y1 - y3]])
         if np.abs(np.linalg.det(A)) < 1e-6:
             raise Exception("Fatal: Colinear points.")
-        b = 0.5 * np.array(
-            [x1**2 - x2**2 + y1**2 - y2**2, x1**2 - x3**2 + y1**2 - y3**2]
-        )
+        b = 0.5 * np.array([x1**2 - x2**2 + y1**2 - y2**2, x1**2 - x3**2 + y1**2 - y3**2])
         centre = np.linalg.inv(A) @ b
         R = np.linalg.norm(centre - np.array([x1, y1]))
 
@@ -2296,10 +2294,7 @@ class Surf_Circ_Solver(LEM_Solver):
                             )
                         else:
                             fs_stat[3:] = eval_fs(
-                                [
-                                    cvt_dr(d_FS + incr_d / 2**n_div),
-                                    cvt_dr(d_FS - incr_d / 2**n_div),
-                                ]
+                                [cvt_dr(d_FS + incr_d / 2**n_div), cvt_dr(d_FS - incr_d / 2**n_div)]
                             )
 
                         # Eviter les surfaces illégales et enregistrer les surface testees

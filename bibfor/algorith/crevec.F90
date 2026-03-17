@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine crevec(nom, carac, dim, jadr)
-! person_in_charge: hassan.berro at edf.fr
 !
 ! Create a jeveux vector using a similar syntax to wkvect, but with persistent
 ! memory allocation, (jeveut). This utility is used in DYNA_VIBRA // mdallo.F90

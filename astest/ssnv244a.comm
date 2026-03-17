@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -210,7 +210,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.00124667554155,
-            GROUP_MA="M1",
         ),
         _F(
             INST=50,
@@ -219,7 +218,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.00356989525653,
-            GROUP_MA="M1",
         ),
         _F(
             INST=100,
@@ -228,7 +226,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.00436072570467,
-            GROUP_MA="M1",
         ),
         _F(
             INST=150,
@@ -237,7 +234,6 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DZ",
             VALE_CALC=-0.00484902545408,
-            GROUP_MA="M1",
         ),
     )
 )

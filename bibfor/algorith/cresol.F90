@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ subroutine cresol(solveu, basz, xfem)
     character(len=19) :: solveu
     character(len=1), optional :: basz
     character(len=3), optional :: xfem
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !
 !     CREATION D'UNE SD_SOLVEUR PAR LECTURE DU MOT CLE SOLVEUR

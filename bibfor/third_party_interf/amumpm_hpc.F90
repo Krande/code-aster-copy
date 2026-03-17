@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
 ! IN  LBLOC  :  LOG   : LOGIQUE PRECISANT SI ON EFFECTUE L ANALYSE PAR BLOCS
 !---------------------------------------------------------------
 ! aslint: disable=W1501
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
 #include "asterf_types.h"
@@ -114,6 +113,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     integer(kind=4), pointer :: iok(:) => null()
     integer(kind=4), pointer :: iok2(:) => null()
     real(kind=8), pointer :: filter(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -221,6 +221,11 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     call jeveuo(nonu//'.NUME.PDDL', 'L', vi=pddl)
     call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
     call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
+    call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
+    if (refn(4) .eq. "SIMPLE_LAGRANGE" .and. klag2 .ne. "NON") then
+        call utmess('I', 'ALGELINE_10')
+        klag2 = "NON"
+    end if
     neqg = to_mumps_int(nequ(2))
     nloc = nequ(1)
     ASSERT(n1 == nsmdi)

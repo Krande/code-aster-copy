@@ -5,7 +5,7 @@
  * @file ContactZone.h
  * @brief Header of class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -160,7 +160,7 @@ class ContactZone : public DSWithCppPickling {
     bool hasSmoothing() const { return _smoothing; };
 
     /** @brief Compute pairing of zone */
-    bool pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole );
+    bool pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole, ASTERDOUBLE &area_tole );
 
     /** @brief Get pairing of surface meshes */
     MeshPairingPtr getMeshPairing() { return _meshPairing; };

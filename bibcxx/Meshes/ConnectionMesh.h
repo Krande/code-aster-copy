@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -107,13 +107,13 @@ class ConnectionMesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of nodes indexes
      */
-    VectorLong getNodesFromCells( const std::string, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const std::string, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorString &, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorString &, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
@@ -121,6 +121,14 @@ class ConnectionMesh : public BaseMesh {
      * @return retourne true si le maillage est partiel
      */
     virtual bool isConnection() const { return true; };
+
+    /**
+     * @brief Impression du maillage au format MED
+     * @param fileName Nom du fichier MED à imprimer
+     * @return true
+     */
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::array< int, 3 > version = { 0, 0, 0 } ) const;
 };
 
 /**

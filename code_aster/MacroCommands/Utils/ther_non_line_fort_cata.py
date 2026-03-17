@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
 
 from ...Cata.Commons import *
 from ...Cata.Language.DataStructure import *
@@ -63,7 +62,8 @@ def compat_syntax(keywords):
             keywords["NEWTON"]["ITER_LINE_MAXI"] = keywords["RECH_LINEAIRE"]["ITER_LINE_MAXI"]
             del keywords["RECH_LINEAIRE"]
         else:
-            keywords["NEWTON"]["RESI_LINE_RELA"] = 0.1
+            # same default value than in fortran
+            keywords["NEWTON"]["RESI_LINE_RELA"] = 1e-3
             keywords["NEWTON"]["ITER_LINE_MAXI"] = 0
 
         del keywords["NEWTON"]["PREDICTION"]

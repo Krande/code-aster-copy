@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
     integer(kind=8) :: nfiss, ifiss, fisco(*), nfisc, nmaabs
     character(len=8) :: noma
     character(len=16) :: enr, typdis
-! person_in_charge: samuel.geniaut at edf.fr
 !                     TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 !                      ET LE PLAN DE FISSURE ET DÉCOUPAGE EN FACETTES
 !

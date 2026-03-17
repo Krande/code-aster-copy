@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine te0335(option, nomte)
 #include "asterfort/fgequi.h"
 #include "asterfort/tecach.h"
     character(len=16) :: nomte, option
-! person_in_charge: josselin.delmas at edf.fr
 !
 !     BUT:
 !       CALCULER LES GRANDEURS EQUIVALENTES SUIVANTES

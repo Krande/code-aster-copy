@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine refdaj(arret, result, nbordr, numer, typre, &
 #include "asterfort/jexnum.h"
 #include "asterfort/refdag.h"
 #include "asterfort/wkvect.h"
-! person_in_charge: hassan.berro at edf.fr
 !     ------------------------------------------------------------------
 !                              FONCTION
 !     _______________________________________________________________
@@ -111,7 +110,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre, &
     data lonref/3, 1, 1, 1/
 !
     typref = typre
-    conref = conre
+    conref(1) = conre(1)
+    conref(2) = conre(2)
+    conref(3) = conre(3)
     numer1 = numer
     codret = 0
     bl24 = '                        '

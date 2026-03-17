@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -259,7 +259,7 @@ subroutine ace_verif_affe(infoconcept, nbocc, nb_ty_el, zjdlm)
     end if
 !
 !   L'affectation des éléments MASSIF est facultative, on ne teste donc pas (nbelem .ne. 0)
-    nbelem = nb_ty_el(ACE_NU_MASSIF)+nb_ty_el(ACE_NU_THHMM)+nb_ty_el(ACE_NB_HHO)
+    nbelem = nb_ty_el(ACE_NU_MASSIF)+nb_ty_el(ACE_NU_THHMM)+nb_ty_el(ACE_NU_HHO)
     if (nbocc(ACE_MASSIF) .ne. 0) then
         if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nbelem)

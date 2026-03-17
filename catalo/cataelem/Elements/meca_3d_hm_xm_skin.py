@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: daniele.colombo at ifpen.fr
 # CATALOGUE DES ELEMNTS 3D HM-X-FEM DE BORD MULTI HEAVISIDE
 
 
@@ -148,7 +147,6 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 # ------------------------------------------------------------
 class HM_FACE8_XH1(Element):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -300,7 +298,6 @@ class HM_FACE8_XH1(Element):
 
 # ------------------------------------------------------------
 class HM_FACE6_XH1(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -310,7 +307,6 @@ class HM_FACE6_XH1(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE8_XH2(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -325,7 +321,6 @@ class HM_FACE8_XH2(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE6_XH2(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.TRIA6
@@ -335,7 +330,6 @@ class HM_FACE6_XH2(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE8_XH3(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.QUAD8
@@ -350,7 +344,6 @@ class HM_FACE8_XH3(HM_FACE8_XH1):
 
 # ------------------------------------------------------------
 class HM_FACE6_XH3(HM_FACE8_XH1):
-
     """Please document this element"""
 
     meshType = MT.TRIA6

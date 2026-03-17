@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,6 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p, &
 ! OUT CODRET  : CODE RETOUR DE L'INTEGRATION INTEGRATION DU
 !               0 => PAS DE PROBLEME
 !               1 => ABSENCE DE CONVERGENCE
-! person_in_charge: sebastien.fayolle at edf.fr
 !
 #include "asterfort/glrcdd.h"
 #include "asterfort/rcvalb.h"

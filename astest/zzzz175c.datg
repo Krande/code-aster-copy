@@ -1,7 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 """
 Geometrie et maillage
-Copyright EDF R&D 2014
+Copyright EDF 2014
 """
 __revision__ = "V2.2"
 

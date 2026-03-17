@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nsassp(list_func_acti, ds_contact, ds_system, &
                   hval_veasse, cnpilo, cndonn)
@@ -63,7 +62,7 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ifm, niv
-    character(len=19) :: cnffdo, cndfdo, cnfvdo, cnffpi, cndfpi
+    character(len=19) :: cnffdo, cndfdo, cnfvdo, cnffpi, cndfpi, cnbudi
     aster_logical :: l_macr, l_pilo
     type(NL_DS_VectComb) :: ds_vectcomb
     aster_logical :: l_unil_pena
@@ -93,6 +92,7 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
 !
     call nmasfi(list_func_acti, hval_veasse, cnffdo)
     call nonlinDSVectCombAddAny(cnffdo, +1.d0, ds_vectcomb)
+
 !
 ! - Get Dirichlet loads
 !

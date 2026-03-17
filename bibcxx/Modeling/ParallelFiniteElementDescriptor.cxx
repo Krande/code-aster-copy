@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -50,7 +50,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     VectorInt virtualCellToKeep;
     VectorInt meshNodesToKeep( owner.size(), -1 );
     ASTERINTEGER nbOldVirtualNodes = FEDesc->getNumberOfVirtualNodes();
-    _virtualCellToKeep = VectorLong( explorer.size(), 1 );
+    _contactFEDToKeep = VectorLong( explorer.size(), 1 );
     VectorInt virtualNodesToKeep( nbOldVirtualNodes, -1 );
     VectorInt virtualNodesNumbering( nbOldVirtualNodes, -1 );
     VectorInt virtualNodesMult( nbOldVirtualNodes, 0 );
@@ -114,7 +114,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         // Si l'element est a conserver, on le note
         if ( keepElem ) {
             virtualCellToKeep.push_back( numElem );
-            _virtualCellToKeep[numElem] = nbElemToKeep - 1;
+            _contactFEDToKeep[numElem] = nbElemToKeep - 1;
             --nbElemToKeep;
         }
     }
@@ -198,7 +198,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                     toCopy.push_back( -virtualNodesNumbering[-numNode - 1] - 1 );
                 }
             }
-            toCopy.push_back( explorer[numElem - 1].getType() );
+            toCopy.push_back( curElem.getType() );
             _virtualCellsDescriptor->push_back( toCopy );
         }
 
@@ -210,8 +210,8 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         for ( const auto &colObj : liel ) {
             bool addedElem = false;
             for ( const auto &val : colObj ) {
-                if ( _virtualCellToKeep[-val - 1] != 1 ) {
-                    toLiel[nbCollObj - 1].push_back( _virtualCellToKeep[-val - 1] );
+                if ( _contactFEDToKeep[-val - 1] != 1 ) {
+                    toLiel[nbCollObj - 1].push_back( _contactFEDToKeep[-val - 1] );
                     addedElem = true;
                     ++totalCollSize;
                 }

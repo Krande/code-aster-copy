@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ See ``bin/run_sbatch --help`` for the available options.
 import argparse
 import os
 import os.path as osp
-import re
 import stat
 import sys
 import tempfile
@@ -63,9 +62,9 @@ Use 'sbatch --help' for details and example below.
 """
 
 EPILOG = """Example:
-    run_sbatch --wckey=p11yb:aster --partition=bm FILE.export
+    run_sbatch --wckey=p10wb:aster --partition=bm FILE.export
 or:
-    export SBATCH_WCKEY=p11yb:aster
+    export SBATCH_WCKEY=p10wb:aster
     export SBATCH_PARTITION=bm
     run_sbatch FILE.export
 """
@@ -95,6 +94,8 @@ TEMPLATE = """#!/bin/bash
 #SBATCH --output={output}
 #SBATCH --error={output}.stderr
 
+# + passed on command line: {sbatch_args}
+
 {RUNASTER_ROOT}/bin/run_aster {run_aster_options} {study}
 """
 
@@ -106,7 +107,10 @@ def parse_args(argv):
         argv (list): List of command line arguments.
     """
     parser = argparse.ArgumentParser(
-        usage=USAGE, epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter
+        usage=USAGE,
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        allow_abbrev=False,
     )
     parser.add_argument(
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
@@ -205,6 +209,7 @@ def main(argv=None):
         "run_aster_options": " ".join(args.opts),
         "RUNASTER_ROOT": RUNASTER_ROOT,
         "testlist": export.get("testlist", []),
+        "sbatch_args": sbatch_args,
     }
     params["output"] = args.output or params["name"] + "-%j.txt"
     check_parameters(params)
@@ -220,6 +225,9 @@ def main(argv=None):
     if args.dry_run:
         logger.info("+ filename: %s", script)
         return 0
+    with open(params["output"].replace("-%j", "") + ".sbatch", "w") as fscr:
+        logger.info("+ filename: %s", fscr.name)
+        fscr.write(content)
     try:
         proc = _run(["sbatch"] + sbatch_args + [script])
     finally:

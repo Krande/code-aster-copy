@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ def configure(self):
     else:
         self.define("ASTER_HAVE_MED", 1)
         if not self.is_defined("ASTER_PLATFORM_MSYS2"):
-            self.define("ASTER_MED_SUPPORT_WRITE_V3",1)
+            self.define("ASTER_MED_SUPPORT_WRITE_V3", 1)
         self.env.BUILD_MED = True
 
     try:
@@ -313,7 +313,12 @@ int main(void){
         self.define("ASTER_MED_VERSION_MAJOR", int(major))
         self.define("ASTER_MED_VERSION_MINOR", int(minor))
         self.define("ASTER_MED_VERSION_RELEASE", int(release))
-        self.end_msg(ret)
+        if int(major) < 4 or (int(major) == 4 and int(minor) < 2):
+            self.define("ASTER_DISABLE_MED_DESCR", 1)
+            ret = ret + ": med 4.2 is needed. MED descriptions are disabled."
+            self.end_msg(ret, "YELLOW")
+        else:
+            self.end_msg(ret)
 
 
 @Configure.conf

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -150,14 +150,10 @@ def cart_cyl(table_meca):
 
     # Contrainte dans la base cylindrique
     sigma_rr = (
-        cos_theta**2 * sixx_values
-        + 2 * sin_cos_theta * sixy_values
-        + sin_theta**2 * siyy_values
+        cos_theta**2 * sixx_values + 2 * sin_cos_theta * sixy_values + sin_theta**2 * siyy_values
     )
     sigma_thethet = (
-        sin_theta**2 * sixx_values
-        - 2 * sin_cos_theta * sixy_values
-        + cos_theta**2 * siyy_values
+        sin_theta**2 * sixx_values - 2 * sin_cos_theta * sixy_values + cos_theta**2 * siyy_values
     )
     sigma_rtheta = (
         -sin_cos_theta * sixx_values

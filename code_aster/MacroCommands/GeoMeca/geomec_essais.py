@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -854,7 +854,7 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 print("\n!!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n\n%s" % (mess))
 
                 __EVPOST = self.get_last_concept()
-                TabRes = __EVPOST.LIST_VARI_ACCES()
+                TabRes = __EVPOST.getAccessParameters()
 
             else:
                 TabRes = __EVOL.EXTR_TABLE().values()

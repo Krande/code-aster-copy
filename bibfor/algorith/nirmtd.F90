@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, &
                   iw, vff2, vff3, ivf1, idff1, &
                   vu, vg, vp, igeom, mate, &
                   matr)
-! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"

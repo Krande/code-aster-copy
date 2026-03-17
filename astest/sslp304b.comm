@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
@@ -70,7 +69,7 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 CHARGT = AFFE_CHAR_MECA(
     MODELE=MODELE,
     DDL_IMPO=(_F(GROUP_NO="A", DX=0.0, DY=0.0), _F(GROUP_NO="B", DX=0.0)),
-    FORCE_CONTOUR=(_F(GROUP_MA="BORD_CH2", FX=1.0e4), _F(GROUP_MA="BORD_CH1", FX=-1.0e4))
+    FORCE_CONTOUR=(_F(GROUP_MA="BORD_CH2", FX=1.0e4), _F(GROUP_MA="BORD_CH1", FX=-1.0e4)),
     #                        ... EPAISSEUR UNITE ...
 )
 

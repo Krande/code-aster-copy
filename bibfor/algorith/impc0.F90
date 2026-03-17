@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine impc0(isor, ibl, nbc, tcm, tcmax, &
         write (isor, *) '------------------------------'
         write (isor, *) '-----------------------------------------'// &
             '--------------------------------------------'
-        write (isor, *) '!IB! CHOC/S ! REB/CH ! TCHOC MOYEN !'//&
-     &         ' TCHOC MAX   ! TCHOC MIN   ! T REBOND MOY!%T. CHOC!'
+        write (isor, *) '!IB! CHOC/S ! REB/CH ! TCHOC MOYEN !'// &
+            ' TCHOC MAX   ! TCHOC MIN   ! T REBOND MOY!%T. CHOC!'
         write (isor, *) '-----------------------------------------'// &
             '--------------------------------------------'
     else if (ibl .eq. 0) then
@@ -59,18 +59,18 @@ subroutine impc0(isor, ibl, nbc, tcm, tcmax, &
         write (isor, *) '! PAS ACQUIS  ! DUREE ACQUIS !'
         write (isor, 9) dt, tacqui
         write (isor, *) '------------------------------'
-        write (isor, *) '-------------------------------'//&
-     & '------------------------------------------------------'
-        write (isor, *) '!IB! CHOC/S ! REB/CH ! TCHOC MOYEN !'//&
-     &         ' TCHOC MAX   ! TCHOC MIN   ! T REBOND MOY!%TEMPS CHOC!'
+        write (isor, *) '-------------------------------'// &
+            '------------------------------------------------------'
+        write (isor, *) '!IB! CHOC/S ! REB/CH ! TCHOC MOYEN !'// &
+            ' TCHOC MAX   ! TCHOC MIN   ! T REBOND MOY!%TEMPS CHOC!'
         write (isor, *) '-----------------------------------------'// &
             '--------------------------------------------'
     end if
-    write (isor, 8) ibl, int(nbc/tacqui), nrepc, tcm, tcmax, tcmin, trebm,&
-     &                  (100.d0*tct/tacqui)
+    write (isor, 8) ibl, int(nbc/tacqui), nrepc, tcm, tcmax, tcmin, trebm, &
+        (100.d0*tct/tacqui)
 !
-8   format(' !', i2, '!', i5, '   !', i5, '   !', 1pd12.5, ' !',&
-       &          1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' %!')
+8   format(' !', i2, '!', i5, '   !', i5, '   !', 1pd12.5, ' !', &
+           1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' %!')
 9   format(' !', 1pd12.5, ' !', 1pd12.5, ' !')
 !
 end subroutine

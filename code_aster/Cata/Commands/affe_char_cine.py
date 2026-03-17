@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jacques.pellet at edf.fr
 
 from ..Commons import *
 from ..Language.DataStructure import *
@@ -136,6 +135,13 @@ AFFE_CHAR_CINE = OPER(
                 "LH1",
                 "GLIS",
                 "PSI",
+                "LAG_GV",
+                "EPXX",
+                "EPYY",
+                "EPZZ",
+                "EPXY",
+                "EPXZ",
+                "EPYZ",
             ),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -216,6 +222,13 @@ AFFE_CHAR_CINE = OPER(
         LH1=SIMP(statut="f", typ="R"),
         GLIS=SIMP(statut="f", typ="R"),
         PSI=SIMP(statut="f", typ="R"),
+        LAG_GV=SIMP(statut="f", typ="R"),
+        EPXX=SIMP(statut="f", typ="R"),
+        EPYY=SIMP(statut="f", typ="R"),
+        EPZZ=SIMP(statut="f", typ="R"),
+        EPXY=SIMP(statut="f", typ="R"),
+        EPXZ=SIMP(statut="f", typ="R"),
+        EPYZ=SIMP(statut="f", typ="R"),
     ),
     THER_IMPO=FACT(
         statut="f",

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
 #include "asterfort/iscode.h"
 #include "asterfort/isdeco.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer(kind=8), intent(in) :: cycl_long_acti
     integer(kind=8), intent(inout) :: cycl_ecod

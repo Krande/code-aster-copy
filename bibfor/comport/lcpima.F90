@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,10 +102,12 @@ subroutine lcpima(fami, kpg, ksp, poum, mate, &
     end if
 !
 !     CRIT_RUPT
-    if ((crit(13) .gt. 0.d0) .and. (vim(14) .gt. 0.d0)) then
-        lgpg = 14
-        call rupmat(fami, kpg, ksp, mate, vim, &
-                    lgpg, young, sigm)
+    if (crit(13) .gt. 0.d0) then
+        if (vim(14) .gt. 0.d0) then
+            lgpg = 14
+            call rupmat(fami, kpg, ksp, mate, vim, &
+                        lgpg, young, sigm)
+        end if
     end if
     mu = young/(2.d0*(1.d0+nu))
     troisk = young/(1.d0-2.d0*nu)

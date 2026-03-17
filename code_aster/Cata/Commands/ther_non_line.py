@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
 
 from ..Commons import *
 from ..Commons.c_comportement import compat_syntax as compat_comport
@@ -52,11 +51,11 @@ def compat_syntax(keywords):
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
 
     if "NEWTON" in keywords:
-        if "RECH_LINEAIRE" not in keywords:
-            keywords["RECH_LINEAIRE"] = {}
         keys = ("RESI_LINE_RELA", "ITER_LINE_MAXI")
         for key in keys:
             if key in keywords["NEWTON"]:
+                if "RECH_LINEAIRE" not in keywords:
+                    keywords["RECH_LINEAIRE"] = {}
                 keywords["RECH_LINEAIRE"][key] = keywords["NEWTON"][key]
                 del keywords["NEWTON"][key]
 

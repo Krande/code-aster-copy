@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine nmextr_crsd(sdextrz, nb_keyw_fact, nb_field, nb_field_comp)
 !
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: sdextrz
     integer(kind=8), intent(in) :: nb_keyw_fact

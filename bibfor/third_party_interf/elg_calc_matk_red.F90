@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1)
     use aster_petsc_module
     implicit none
 ! aslint: disable=
-! person_in_charge: natacha.bereux at edf.fr
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apetsc.h"

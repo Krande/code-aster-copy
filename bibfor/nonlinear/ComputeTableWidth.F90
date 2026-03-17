@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine ComputeTableWidth(table, line_width, nb_cols_active)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Table), intent(in) :: table
     integer(kind=8), intent(out) :: line_width

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ pMesh = ret[0]
 # Test node gathering while partitioning mesh
 ret2 = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True, nodeGrpToGather=[["ToGather"]])
 pMesh2 = ret2[0]
-nodeList = pMesh2.getNodes("ToGather")
+nodeList = pMesh2.getNodes("ToGather", localNumbering=True)
 nodeOwner = pMesh2.getNodesOwner()
 if len(nodeList) != 0:
     masterNodeOwner = nodeOwner[nodeList[0]]

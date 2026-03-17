@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_fie
 #include "asterfort/as_allocate.h"
 #include "asterfort/nmextc.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     integer(kind=8), intent(in) :: nb_keyw_fact

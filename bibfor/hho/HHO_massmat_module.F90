@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+!
 !
 module HHO_massmat_module
 !
@@ -146,7 +146,9 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisCell%isOrthonormal() .and. dbg) then
-                ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                if (hhoCell%measure .ge. 1.d-8) then
+                    ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                end if
             end if
 !
         end if
@@ -230,7 +232,9 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisFace%isOrthonormal() .and. dbg) then
-                ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                if (hhoFace%measure .ge. 1.d-7) then
+                    ASSERT(hhoIsIdentityMat(this%m, dimMat))
+                end if
             end if
         end if
 !

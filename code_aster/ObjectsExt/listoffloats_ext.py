@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`ListOfFloats` --- List of floats
 *******************************************
@@ -33,7 +32,7 @@ import numpy as np
 
 from libaster import ListOfFloats
 
-from ..Utilities import deprecated, injector
+from ..Utilities import injector
 
 
 @injector(ListOfFloats)
@@ -63,8 +62,3 @@ class ExtendedListOfFloats:
                 reference).
         """
         return np.array(self.getValues())
-
-    @deprecated(case=3, help="Use 'getValues()' instead")
-    def Valeurs(self):
-        """Deprecated: Use 'getValues()' instead."""
-        return self.getValues()

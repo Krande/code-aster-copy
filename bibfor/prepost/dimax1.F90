@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax, &
 #include "asterfort/jemarq.h"
     integer(kind=8) :: jvec1, jvec2, nbp1, nbp2
     real(kind=8) :: dismax, cu1max, cv1max, cu2max, cv2max
-! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: ENTRE DEUX LISTES DE POINTS, DETERMINER LES DEUX POINTS QUI SONT
 !     LE PLUS ELOIGNES.

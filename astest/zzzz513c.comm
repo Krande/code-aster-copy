@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -225,7 +225,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.150000000000000003,
             CHAM_GD=TM_0400,
-            VALE_CALC=22.035907898220227,
+            VALE_CALC=20.960730586859455,
             VALE_REFE=20.0,
         ),
         _F(

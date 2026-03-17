@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,8 @@ module Behaviour_module
     use BehaviourStrain_module
     use BehaviourStrain_type
     use BehaviourMGIS_type
+    use HHO_quadrature_module
+    use HHO_type
     use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
 ! ==================================================================================================
     implicit none
@@ -38,20 +40,21 @@ module Behaviour_module
     public :: behaviourSetParaCell, behaviourSetParaPoin, setFromCompor
     public :: behaviourPrepESVAPoin, behaviourPrepStrain, behaviourPrepESVAExte
     public :: behaviourPrepESVAGeom, behaviourPrepModel, behaviourPredictionStress
-    public :: behaviourCoorGauss
+    public :: behaviourCoorGauss, behaviourPrepESVAGeomHHO
     private :: computeStrainESVA, computeStrainMeca
     private :: varcIsGEOM, isSolverIsExte
     private :: prepEltSize1, prepGradVelo
     public :: getAsterVariableName, getMFrontVariableName
-    private :: setFromOption, setFromCarcri
+    private :: setFromOption, setFromCarcri, chckBounds
     public :: detectVarc, behaviourGetParameters
 ! ==================================================================================================
     private
+#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterc/mgis_get_esvs.h"
 #include "asterc/mgis_get_number_of_esvs.h"
 #include "asterc/r8nnem.h"
-#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
@@ -69,10 +72,8 @@ module Behaviour_module
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/verift.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-#include "jeveux.h"
 #include "MeshTypes_type.h"
 ! ==================================================================================================
 contains
@@ -255,6 +256,9 @@ contains
             WRITE (6, *) '<DEBUG>  Présence de métallurgie: ', BEHInteg%behavPara%lElasIsMeta
         end if
 
+! ----- Detect VERI_BORNE
+        call chckBounds(fami, jvMaterCode, BEHinteg)
+
 ! ----- Set parameters from option
         call setFromOption(option, BEHinteg)
 
@@ -315,6 +319,7 @@ contains
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Locals
         character(len=16) :: relaComp, defoLDC, defoComp, reguVisc, postIncr, mgisAddr
+        integer(kind=8) :: nvi, numlc
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -328,10 +333,13 @@ contains
         reguVisc = compor(REGUVISC)
         postIncr = compor(POSTINCR)
         mgisAddr = compor(MGIS_ADDR)
+        read (compor(NUME), '(I16)') numlc
+        read (compor(NVAR), '(I16)') nvi
 
 ! ----- Set flags from behaviour
         BEHinteg%behavPara%lFiniteStrain = defoComp .eq. 'SIMO_MIEHE' .or. &
-                                           defoComp .eq. 'GROT_GDEP'
+                                           defoComp .eq. 'GROT_GDEP' .or. &
+                                           defoComp .eq. 'GREEN_LAGRANGE'
         BEHinteg%behavPara%lGdefLog = defoComp .eq. 'GDEF_LOG'
         BEHinteg%behavPara%lAnnealing = postIncr .eq. "REST_ECRO"
         BEHinteg%behavPara%lStrainMeca = defoLDC .eq. 'MECANIQUE'
@@ -340,6 +348,8 @@ contains
         BEHinteg%behavPara%lReguVisc = reguVisc .eq. 'REGU_VISC_ELAS'
         BEHinteg%behavPara%lMetaLemaAni = relaComp .eq. 'META_LEMA_ANI'
         BEHinteg%behavESVA%behavESVAExte%mgisAddr = mgisAddr
+        BEHinteg%behavPara%nvi = nvi
+        BEHinteg%behavPara%numlc = numlc
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  From COMPOR - lFiniteStrain: ', BEHinteg%behavPara%lFiniteStrain
             WRITE (6, *) '<DEBUG>  From COMPOR - lGdefLog: ', BEHinteg%behavPara%lGdefLog
@@ -417,10 +427,10 @@ contains
             WRITE (6, *) '<DEBUG>  Paramètres du modèle'
         end if
 
-        BEHinteg%behavPara%lStandardFE = typmod(2) .eq. ' '
+        BEHinteg%behavPara%lStandardFE = typmod(2) .eq. ' ' .or. typmod(2) .eq. 'HHO'
         BEHinteg%behavPara%lTHM = typmod(2) .eq. 'THM'
         BEHinteg%behavPara%lCZM = typmod(2) .eq. 'ELEMJOIN'
-        BEHinteg%behavPara%lGradVari = typmod(2) .eq. 'GRADVARI'
+        BEHinteg%behavPara%lGradVari = typmod(2) .eq. 'GRADVARI' .or. typmod(2) .eq. 'HHO_GRAD'
         BEHinteg%behavPara%lAxis = typmod(1) .eq. 'AXIS'
         BEHinteg%behavPara%lThreeDim = typmod(1) (1:2) .eq. '3D'
         BEHinteg%behavPara%lPlaneStrain = typmod(1) (1:6) .eq. 'D_PLAN'
@@ -634,19 +644,93 @@ contains
 
 ! ----- Compute gradient of velocity
         if (BEHinteg%behavESVA%tabcod(GRADVELO) .eq. 1) then
-        if (.not. present(deplm_) .or. .not. present(ddepl_)) then
-            call utmess('F', 'COMPOR2_26')
-        end if
-        call prepGradVelo(nno, npg, ndim, &
-                          jv_poids, jv_func, jv_dfunc, &
-                          geom, deplm_, ddepl_, &
-                          BEHInteg%behavESVA%behavESVAGeom)
+            if (.not. present(deplm_) .or. .not. present(ddepl_)) then
+                call utmess('F', 'COMPOR2_26')
+            end if
+            call prepGradVelo(nno, npg, ndim, &
+                              jv_poids, jv_func, jv_dfunc, &
+                              geom, deplm_, ddepl_, &
+                              BEHInteg%behavESVA%behavESVAGeom)
         end if
 
 ! ----- Coordinates of Gauss points (always)
         call behaviourCoorGauss(nno, npg, ndim, &
                                 jv_func, geom, &
                                 BEHInteg%behavESVA%behavESVAGeom)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! behaviourPrepESVAGeom
+!
+! Prepare external state variables - Geometry
+!
+! In  nno              : number of nodes
+! In  npg              : number of Gauss points
+! In  ndim             : dimension of problem (2 or 3)
+! In  jv_poids         : JEVEUX adress for weight of Gauss points
+! In  jv_func          : JEVEUX adress for shape functions
+! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
+! In  geom             : initial coordinates of nodes
+! IO  BEHinteg         : main object for managing the integration of behavior laws
+! In  deplm            : displacements of nodes at beginning of time step
+! In  ddepl            : displacements of nodes since beginning of time step
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine behaviourPrepESVAGeomHHO(hhoCell, hhoQuad, BEHinteg)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+!   ------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: ndim, npg
+        real(kind=8) :: lc
+!
+        if (LDC_PREP_DEBUG .eq. 1) then
+            WRITE (6, *) '<DEBUG> Preparation of external state variable for each HHO element'
+        end if
+!
+        ndim = hhoCell%ndim
+        npg = hhoQuad%nbQuadPoints
+
+! ----- Compute element size 1
+        if (BEHinteg%behavESVA%tabcod(ELTSIZE1) .eq. 1) then
+            if (ndim == 3) then
+                if (npg .ge. 9) then
+                    lc = hhoCell%measure**0.33333333333333d0
+                else
+                    lc = sqrt(2.0)*hhoCell%measure**0.33333333333333d0
+                end if
+            else
+                if (npg .ge. 5) then
+                    lc = sqrt(hhoCell%measure)
+                else
+                    lc = sqrt(2.0*hhoCell%measure)
+                end if
+            end if
+            ! ------ Save values
+            BEHInteg%behavESVA%behavESVAGeom%lElemSize1 = ASTER_TRUE
+            BEHInteg%behavESVA%behavESVAGeom%elemSize1 = lc
+        end if
+
+! ----- Compute gradient of velocity
+        if (BEHinteg%behavESVA%tabcod(GRADVELO) .eq. 1) then
+            ASSERT(ASTER_FALSE)
+        end if
+
+! ----- Coordinates of Gauss points (always)
+        BEHInteg%behavESVA%behavESVAGeom%coorElga = 0.d0
+        ASSERT(npg .le. VARC_GEOM_NBMAXI)
+!
+        if (LDC_PREP_DEBUG .eq. 1) then
+            WRITE (6, *) '<DEBUG>  Compute coordinates of Gauss points'
+        end if
+
+        BEHInteg%behavESVA%behavESVAGeom%coorElga(1:npg, 1:ndim) = &
+            hhoQuad%points(1:npg, 1:ndim)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -1602,6 +1686,42 @@ contains
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
-
+! --------------------------------------------------------------------------------------------------
+!
+! chckBounds
+!
+! Detect VERI_BORNE
+!
+! In  fami             : Gauss family for integration point rule
+! In  jvMaterCode      : adress for material parameters
+! IO  BEHinteg         : main object for managing the integration of behavior laws
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine chckBounds(fami, jvMaterCode, BEHinteg)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=4), intent(in) :: fami
+        integer(kind=8), intent(in) :: jvMaterCode
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+! ----- Local
+        integer(kind=8), parameter :: kpg = 1, ksp = 1
+        character(len=8), parameter :: materi = ' '
+        integer(kind=8), parameter :: nbProp = 4
+        character(len=16), parameter :: propName(nbProp) = (/'EPSI_MAXI', 'VEPS_MAXI', &
+                                                             'TEMP_MINI', 'TEMP_MAXI'/)
+        real(kind=8) :: propVale(nbProp)
+        integer(kind=8) :: propCode(nbProp)
+!   ------------------------------------------------------------------------------------------------
+!
+        call rcvalb(fami, kpg, ksp, '+', jvMaterCode, &
+                    materi, 'VERI_BORNE', 0, ' ', [0.d0], &
+                    nbProp, propName, propVale, propCode, 0)
+        BEHinteg%behavPara%lChckBounds = propCode(1) .eq. 0 .or. &
+                                         propCode(2) .eq. 0 .or. &
+                                         propCode(3) .eq. 0 .or. &
+                                         propCode(4) .eq. 0
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
 !
 end module Behaviour_module

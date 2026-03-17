@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
+subroutine nmevdg(sddisc, hvalIncr, iEvent, i_echec_acti)
 !
     implicit none
 !
@@ -34,8 +33,8 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
 #include "asterfort/tbliva.h"
 #include "asterfort/utdidt.h"
 !
-    integer(kind=8) :: i_echec, i_echec_acti
-    character(len=19) :: sddisc, vale(*)
+    integer(kind=8) :: iEvent, i_echec_acti
+    character(len=19) :: sddisc, hvalIncr(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,21 +48,19 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
 ! IN  VALE   : INCREMENTS DES VARIABLES
 !               OP0070: VARIABLE CHAPEAU
 !               OP0033: TABLE
-! IN  i_echec : OCCURRENCE DE L'ECHEC
-! OUT i_echec_acti : VAUT i_echec SI EVENEMENT DECLENCHE
+! IN  iEvent : OCCURRENCE DE L'ECHEC
+! OUT i_echec_acti : VAUT iEvent SI EVENEMENT DECLENCHE
 !                   0 SINON
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: ifm, niv, ier
+    character(len=8), parameter :: typeExtr = 'MAX_ABS'
+    integer(kind=8) :: ifm, niv
     integer(kind=8) :: deb, fin, etat_loca
     integer(kind=8), pointer:: loca(:) => null()
-    real(kind=8) :: valref, dval, r8bid
-    integer(kind=8) :: ibid
-    character(len=8) :: k8bid, crit, typext
-    complex(kind=8) :: c16bid
-    character(len=16) :: nocham, nocmp
-    parameter(typext='MAX_ABS')
+    real(kind=8) :: valeRefe, vale
+    character(len=8) :: crit
+    character(len=16) :: fieldType, cmpName
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,65 +69,36 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> ... DELTA_GRANDEUR'
     end if
-!
-! --- INITIALISATIONS
-!
+
+! - INITIALISATIONS
     i_echec_acti = 0
-    r8bid = 0.d0
-!
-! --- PARAMETRES
-!
-    call utdidt('L', sddisc, 'ECHE', 'NOM_CHAM', index_=i_echec, &
-                valk_=nocham)
-    call utdidt('L', sddisc, 'ECHE', 'NOM_CMP', index_=i_echec, &
-                valk_=nocmp)
-    call utdidt('L', sddisc, 'ECHE', 'VALE_REF', index_=i_echec, &
-                valr_=valref)
-    call utdidt('L', sddisc, 'ECHE', 'CRIT_COMP', index_=i_echec, &
-                valk_=crit)
-!
-! --- DVAL :MAX EN VALEUR ABSOLUE DU DELTA(CHAMP+CMP)
-!
-    if (vale(1) (1:8) .eq. '&&OP0033') then
-!
-!       RESULTAT DE CALC_POINT_MAT OP0033, FORMAT_TABLE='CMP_COLONNE',
-        call tbacce(vale(1) (1:16), 1, nocmp, 'L', ibid, &
-                    dval, c16bid, k8bid)
-    else if (vale(1) (1:8) .eq. '&&OPB033') then
-!
-!       RESULTAT DE CALC_POINT_MAT OP0033, FORMAT_TABLE='CMP_LIGNE',
-        call tbliva(vale(1) (1:16), 1, 'CMP', [ibid], [r8bid], &
-                    [c16bid], nocmp, 'EGAL', [0.d0], 'VALEUR', &
-                    k8bid, ibid, dval, c16bid, k8bid, &
-                    ier)
-        if (ier .ne. 0) then
-            dval = 0.d0
-        end if
-    else
-!
-!       RESULTAT DE STAT_NON_LINE
 
-        ! Extraction du filtre sur la liste des mailles
-        call jeveuo(sddisc//'.ELOC', 'L', vi=loca)
-        etat_loca = loca(SIZE_LELOCA*(i_echec-1)+1)
-
-        if (etat_loca .eq. LOCA_VIDE) then
-            dval = 0
-        else if (etat_loca .eq. LOCA_PARTIEL) then
-            deb = loca(SIZE_LELOCA*(i_echec-1)+2)
-            fin = loca(SIZE_LELOCA*(i_echec-1)+3)
-            call extdch(typext, vale, nocham, nocmp, dval, lst_loca=loca(deb:fin))
-        else if (etat_loca .eq. LOCA_TOUT) then
-            call extdch(typext, vale, nocham, nocmp, dval)
-        else
-            ASSERT(.false.)
-        end if
-    end if
-!
+! - PARAMETRES
+    call utdidt('L', sddisc, 'ECHE', 'NOM_CHAM', index_=iEvent, valk_=fieldType)
+    call utdidt('L', sddisc, 'ECHE', 'NOM_CMP', index_=iEvent, valk_=cmpName)
+    call utdidt('L', sddisc, 'ECHE', 'VALE_REF', index_=iEvent, valr_=valeRefe)
+    call utdidt('L', sddisc, 'ECHE', 'CRIT_COMP', index_=iEvent, valk_=crit)
     ASSERT(crit .eq. 'GT')
+
+! - Extraction du filtre sur la liste des mailles
+    call jeveuo(sddisc//'.ELOC', 'L', vi=loca)
+    etat_loca = loca(SIZE_LELOCA*(iEvent-1)+1)
+
+    if (etat_loca .eq. LOCA_VIDE) then
+        vale = 0
+    else if (etat_loca .eq. LOCA_PARTIEL) then
+        deb = loca(SIZE_LELOCA*(iEvent-1)+2)
+        fin = loca(SIZE_LELOCA*(iEvent-1)+3)
+        call extdch(typeExtr, hvalIncr, fieldType, cmpName, vale, lst_loca=loca(deb:fin))
+    else if (etat_loca .eq. LOCA_TOUT) then
+        call extdch(typeExtr, hvalIncr, fieldType, cmpName, vale)
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+
 !
-    if (dval .gt. valref) then
-        i_echec_acti = i_echec
+    if (vale .gt. valeRefe) then
+        i_echec_acti = iEvent
     end if
 !
     call jedema()

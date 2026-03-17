@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine bgpg3d(ppas, bg, pg, mg, phig, treps, &
                   m1f, e1f, m2f, e2f, phig0, ttkf, nrjf, &
                   alat, young00, nu00, kgel, pgmax)
 
-! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
 !   calcul de la pression et de ses derivees / deformations anelastiques

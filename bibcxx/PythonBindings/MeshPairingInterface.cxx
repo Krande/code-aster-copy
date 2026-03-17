@@ -2,7 +2,7 @@
  * @file ContactZoneInterface.cxx
  * @brief Interface python de ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -105,8 +105,10 @@ Compute pairing
 Arguments:
     dist_pairing (real): tolerance from DIST_RATIO (projection outside cell)
     pair_tole (real): tolerance for pairing
+    area_tole (real): tolerance for removing intersection cells
         )",
-                py::arg( "dist_pairing" ) = -1.0, py::arg( "pair_tole" ) = 1.E-8 );
+                py::arg( "dist_pairing" ) = -1.0, py::arg( "pair_tole" ) = 1.E-8,
+                py::arg( "area_tole" ) = 1.E-8 );
     class_.def( "setVerbosity", &MeshPairing::setVerbosity, R"(
 Set level of verbosity
       0 - without

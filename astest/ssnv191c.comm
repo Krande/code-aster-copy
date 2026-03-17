@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,6 +125,7 @@ CH3 = AFFE_CHAR_MECA(
     MODELE=MODELEK,
     FORCE_CONTOUR=(_F(GROUP_MA="LPRESG", FX=10000.0), _F(GROUP_MA="LPRESD", FX=-10000.0)),
 )
+
 
 # pour tester option CHAR_MECA_FF1D2D
 def prinv(y):

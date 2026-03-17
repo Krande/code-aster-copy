@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """
 Module permettant le post-traitement d'un calcul MISS3D
@@ -1430,7 +1429,7 @@ class PostMissChar(PostMiss):
             list_nuno_affe = []
             self.List_Noeu_Fictif = []
             for gr in self.param["GROUP_NO_AFFE"]:
-                list_nuno_affe.extend([val for val in mail.getNodes(gr)])
+                list_nuno_affe.extend([val for val in mail.getNodes(gr, localNumbering=True)])
             for nuno in list_nuno_affe:
                 self.List_Noeu_Fictif.append(labels[nuno])
         else:

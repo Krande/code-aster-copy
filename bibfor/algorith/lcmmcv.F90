@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine lcmmcv(yd, dy, ddy, nr, itmax, &
                   toler, iter, r, rini, epstr, &
                   irteti)
-! person_in_charge: jean-michel.proix at edf.fr
 ! aslint: disable=W1306
     implicit none
 !       MONOCRISTAL        : CONTROLE DE LA CONVERGENCE

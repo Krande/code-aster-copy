@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
 #ifdef ASTER_HAVE_MPI
@@ -29,6 +28,7 @@
 #include "aster_fort_mesh.h"
 #include "aster_fort_utils.h"
 
+#include "IOManager/AsterToMedWriter.h"
 #include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
@@ -503,6 +503,16 @@ ParallelMeshPtr ParallelMesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     return mesh_out;
 };
 
+ParallelMeshPtr ParallelMesh::convertToCubic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< ParallelMesh >();
+    ASTERINTEGER quatre = 4, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &quatre, &inf );
+    mesh_out->updateGlobalGroupOfNodes();
+    mesh_out->updateGlobalGroupOfCells();
+    mesh_out->build();
+    return mesh_out;
+};
+
 ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob,
                                                    const bool &stop ) const {
     if ( !_global2localNodeIdsPtr || _global2localNodeIdsPtr->empty() ) {
@@ -658,5 +668,15 @@ const VectorLong ParallelMesh::getAllMedCellsTypes() const {
     }
     return out2;
 }
+
+bool ParallelMesh::printMedFile( const std::filesystem::path &fileName, bool local,
+                                 std::array< int, 3 > version ) const {
+#ifdef ASTER_HAVE_MED
+    auto aTMWriter = AsterToMedWriter();
+    return aTMWriter.printMesh( *this, fileName, local );
+#else
+    return false;
+#endif
+};
 
 #endif /* ASTER_HAVE_MPI */

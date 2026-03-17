@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,9 @@ TABFS = CALC_STAB_PENTE(
     CRITERE="MOHR_COULOMB",
     GROUP_MA=("range_pente",),
     NB_TRANCHE=5,
-    CHAM_PRES=_F(RESULTAT=CHPROJ, INST=CHPROJ.LIST_VARI_ACCES()["INST"][-1], ALGO_PRES="INVERSE"),
+    CHAM_PRES=_F(
+        RESULTAT=CHPROJ, INST=CHPROJ.getAccessParameters()["INST"][-1], ALGO_PRES="INVERSE"
+    ),
     RAFF_MAIL=_F(NB_RAFF_MAXI=1),
     X1_MINI=3.0,
     X1_MAXI=3.0,

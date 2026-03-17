@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,11 @@ cata_msg = {
         """
  La matrice de prédiction élastique (MATRICE='ELASTIQUE') est incompatible
  avec les lois des joints JOINT_MECA_FROT, JOINT_MECA_RUPT et JOINT_MECA_ENDO.
+ """
+    ),
+    4: _(
+        """
+ Les rigidités normale RIGI_NOR et tangentielle RIGI_TAN doivent être renseignées pour utiliser CZM_FROT_MIX avec ADHE='ELAS' (cas d'une adhérence élastique linéaire). Si vous ne souhaitez pas renseigner ces deux rigidités, vous pouvez utiliser ADHE='PARFAITE' (cas d'une adhérence parfaite).
  """
     ),
     87: _(

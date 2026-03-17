@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
     integer(kind=8) :: nfh, ddlm, ddlp, ddlc
     integer(kind=8) :: nfiss, contac
 !
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !          BUT : INITIALISER LES DIMENSIONS DES DDL DANS UN TE
 !                POUR LES ELEMENTS HM-XFEM

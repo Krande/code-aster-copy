@@ -4,7 +4,7 @@
  * @file BaseMesh.h
  * @brief Fichier entete de la classe BaseMesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -292,14 +292,14 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return VectorLong
      */
 
-    virtual VectorLong getNodes( const VectorString &names, const bool localNumbering = true,
+    virtual VectorLong getNodes( const VectorString &names, const bool localNumbering = false,
                                  const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
     }
 
     virtual VectorLong getNodes( const std::string name = std::string(),
-                                 const bool localNumbering = true,
+                                 const bool localNumbering = false,
                                  const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
@@ -309,20 +309,21 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the nodes indexes of a group of cells
      * @return VectorLong
      */
-    virtual VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
+    virtual VectorLong getNodesFromCells( const std::string name, const bool localNumbering = false,
                                           const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
     }
 
     virtual VectorLong getNodesFromCells( const VectorString &names,
-                                          const bool localNumbering = true,
+                                          const bool localNumbering = false,
                                           const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
     }
 
-    virtual VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
+    virtual VectorLong getNodesFromCells( const VectorLong &cells,
+                                          const bool localNumbering = false,
                                           const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
@@ -333,6 +334,15 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return VectorLong
      */
     virtual VectorLong getInnerNodes() const {
+        AS_ASSERT( false );
+        return {};
+    }
+
+    /**
+     * @brief Returns the nodes indexes of inner nodes
+     * @return VectorLong
+     */
+    virtual VectorLong getInnerCells() const {
         AS_ASSERT( false );
         return {};
     }
@@ -412,7 +422,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @param fileName Nom du fichier MED à imprimer
      * @return true
      */
-    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
+    virtual bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                               std::array< int, 3 > version = { 0, 0, 0 } ) const;
 
     /**
      * @brief Get the mapping between local and global numbering of nodes

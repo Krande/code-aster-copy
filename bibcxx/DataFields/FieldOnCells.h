@@ -5,7 +5,7 @@
  * @file FieldOnCells.h
  * @brief Header of class for FieldOnCells
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -93,14 +93,7 @@ class FieldOnCells : public DataField {
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
-        // JeveuxVector to be duplicated
-        *( _descriptor ) = *( toCopy._descriptor );
-        *( _reference ) = *( toCopy._reference );
-        *( _values ) = *( toCopy._values );
-        *( _title ) = *( toCopy._title );
-        // Pointers to be copied
-        setDescription( toCopy._dofDescription );
-        updateValuePointers();
+        *this = toCopy;
     }
 
     /** @brief constructor */
@@ -170,6 +163,19 @@ class FieldOnCells : public DataField {
         _reference->deallocate();
         _values->deallocate();
         _dofDescription = nullptr;
+    };
+
+    /**
+     * @brief Surcharge de l'operateur =
+     */
+    FieldOnCells &operator=( const FieldOnCells &toCopy ) {
+        *_descriptor = *toCopy._descriptor;
+        *_reference = *toCopy._reference;
+        *_values = *toCopy._values;
+        *_title = *toCopy._title;
+        setDescription( toCopy._dofDescription );
+        updateValuePointers();
+        return *this;
     };
 
     /**
@@ -520,7 +526,8 @@ class FieldOnCells : public DataField {
      */
     ASTERDOUBLE dot( const FieldOnCellsPtr &tmp ) const;
 
-    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true,
+                       std::string version = std::string() ) const;
 
     FieldOnCellsPtr asLocalization( const std::string &loc ) const {
         if ( loc == getLocalization() ) {
@@ -562,8 +569,8 @@ class FieldOnCells : public DataField {
 };
 
 template < class ValueType >
-bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileName,
-                                              bool local ) const {
+bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileName, bool local,
+                                              std::string version ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;
@@ -584,6 +591,9 @@ bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileN
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = (ASTERINTEGER)retour;
+    if ( !version.empty() ) {
+        dict.container["VERSION_MED"] = version;
+    }
 
     if ( getMesh()->isParallel() ) {
         dict.container["PROC0"] = "NON";

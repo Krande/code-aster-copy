@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine cnoadd(chno, chnop)
     character(len=8)  :: k8bid
     character(len=16) :: typsd
     character(len=19) :: cn19, nume_equa, nommai, cn19p
+    integer(kind=8), dimension(:), pointer :: delg => null()
 !----------------------------------------------------------------
     call jemarq()
 
@@ -62,6 +63,7 @@ subroutine cnoadd(chno, chnop)
 
         call jeveuo(nume_equa//'.PDDL', 'L', jprddl)
         call jelira(nume_equa//'.PDDL', 'LONMAX', nbeq, k8bid)
+        call jeveuo(nume_equa//'.DELG', 'L', vi=delg)
 
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
@@ -69,7 +71,8 @@ subroutine cnoadd(chno, chnop)
         call jeveuo(cn19p//'.VALE', 'E', jvale)
 
         do iaux = 1, nbeq
-            if (zi(jprddl+iaux-1) .ne. rang) then
+            ! if (zi(jprddl+iaux-1) .ne. rang) then
+            if (delg(iaux) .ge. 0d0 .and. zi(jprddl+iaux-1) .ne. rang) then
                 zr(jvale-1+iaux) = 0.d0
             end if
         end do

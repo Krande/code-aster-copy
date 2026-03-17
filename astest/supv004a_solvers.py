@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,6 @@ from code_aster.Solvers import (
     StorageManager,
     TimeStepper,
 )
-
-# from code_aster.Utilities.logger import INFO, logger
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
@@ -111,9 +109,11 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(stp.getInitial(), 0.0)
         self.assertEqual(stp.size(), 3)
         self.assertEqual(stp.remaining(), stp.size())
+        self.assertTrue(stp.isInitialStep())
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 0.25)
         stp.completed()
+        self.assertFalse(stp.isInitialStep())
         self.assertEqual(stp.remaining(), 2)
         self.assertFalse(stp.isFinished())
         step = stp.getCurrent()
@@ -138,9 +138,11 @@ class TestTimeStepper(unittest.TestCase):
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 1.0)
         self.assertEqual(stp.size(), 2)
+        self.assertTrue(stp.isInitialStep())
         stp.completed()
         self.assertEqual(stp.remaining(), 1)
         self.assertFalse(stp.isFinished())
+        self.assertFalse(stp.isInitialStep())
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.0)
         self.assertSequenceEqual(stp._times, [1.0, 2.0])

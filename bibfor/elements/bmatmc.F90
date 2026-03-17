@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf, &
 #include "asterfort/dfdm3d.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
+#include "MeshTypes_type.h"
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS
@@ -54,12 +55,13 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf, &
 !-----------------------------------------------------------------------
     integer(kind=8), intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
     real(kind=8), intent(in) :: nharm, xyz(1)
-    real(kind=8), intent(out) :: jacob, b(nbsig, 81)
+    real(kind=8), intent(out) :: jacob, b(nbsig, 3*MT_NNOMAX3D)
 !
     integer(kind=8) :: i, j, k, idecno
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), b3j(9), nharay, rayon
+    real(kind=8) :: dfdx(MT_NNOMAX3D), dfdy(MT_NNOMAX3D), dfdz(MT_NNOMAX3D)
+    real(kind=8) :: b3j(MT_NNOMAX2D), nharay, rayon
 !-----------------------------------------------------------------------
-    b(:, :) = 0.d0
+    b = 0.d0
 !
 !       -------------
 ! ----  CAS MASSIF 3D

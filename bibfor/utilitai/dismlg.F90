@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -272,8 +272,9 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
                             lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
-                            if (formul .eq. 'HHO_LINE') then
+                            if (formul .eq. 'HHO_LINE' .or. formul .eq. 'HHO_VLINE') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -287,6 +288,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_CSTE') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -298,8 +300,9 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
                             lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
-                            if (formul .eq. 'HHO_QUAD') then
+                            if (formul .eq. 'HHO_QUAD' .or. formul .eq. 'HHO_VQUAD') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -313,6 +316,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_CUBI') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if
@@ -326,6 +330,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_QUAR') then
                                 repk = 'OUI'
+                                go to 99
                             else
                                 repk = 'NON'
                             end if

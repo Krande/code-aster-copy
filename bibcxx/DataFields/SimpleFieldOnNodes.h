@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe SimpleFieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,8 +23,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "astercxx.h"
 
@@ -412,7 +410,7 @@ class SimpleFieldOnNodes : public DataField {
 
     void setValues( const std::map< std::string, ValueType > &values,
                     const VectorString &groupsOfNodes = {} ) {
-        setValues( values, this->getMesh()->getNodes( groupsOfNodes ) );
+        setValues( values, this->getMesh()->getNodes( groupsOfNodes, true ) );
     }
 
     /**
@@ -561,7 +559,7 @@ class SimpleFieldOnNodes : public DataField {
 
         VectorLong nodes_ = nodes;
         if ( nodes_.empty() ) {
-            nodes_ = _mesh->getNodes();
+            nodes_ = _mesh->getNodes( VectorString(), true );
         }
 
         VectorString list_cmp;

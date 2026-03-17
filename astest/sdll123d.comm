@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mohamed-amine.hassini at edf.fr
 #
 import numpy as NP
 import numpy.linalg as LA
@@ -207,15 +206,52 @@ TEST_TABLE(
 TEST_RESU(
     RESU=(
         _F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=MODEQ, VALE_CALC=123.429340927, CRITERE="RELATIF"),
-        _F(NUME_ORDRE=1, PARA="AMOR_REDUIT", RESULTAT=MODEQ, VALE_CALC=0.0, CRITERE="ABSOLU"),
+        _F(
+            NUME_ORDRE=1,
+            PARA="AMOR_REDUIT",
+            RESULTAT=MODEQ,
+            VALE_CALC=0.0,
+            ORDRE_GRANDEUR=1.0,
+            CRITERE="ABSOLU",
+        ),
         _F(NUME_ORDRE=20, PARA="FREQ", RESULTAT=MODEQ, VALE_CALC=7507.31292126, CRITERE="RELATIF"),
-        _F(NUME_ORDRE=20, PARA="AMOR_REDUIT", RESULTAT=MODEQ, VALE_CALC=0.0, CRITERE="ABSOLU"),
+        _F(
+            NUME_ORDRE=20,
+            PARA="AMOR_REDUIT",
+            RESULTAT=MODEQ,
+            VALE_CALC=0.0,
+            ORDRE_GRANDEUR=1.0,
+            CRITERE="ABSOLU",
+        ),
         _F(NUME_ORDRE=40, PARA="FREQ", RESULTAT=MODEQ, VALE_CALC=18555.3473347, CRITERE="RELATIF"),
-        _F(NUME_ORDRE=40, PARA="AMOR_REDUIT", RESULTAT=MODEQ, VALE_CALC=0.0, CRITERE="ABSOLU"),
-        _F(NUME_ORDRE=60, PARA="FREQ", RESULTAT=MODEQ, VALE_CALC=35125.2720473, CRITERE="RELATIF"),
-        _F(NUME_ORDRE=60, PARA="AMOR_REDUIT", RESULTAT=MODEQ, VALE_CALC=0.0, CRITERE="ABSOLU"),
+        _F(
+            NUME_ORDRE=40,
+            PARA="AMOR_REDUIT",
+            RESULTAT=MODEQ,
+            VALE_CALC=0.0,
+            ORDRE_GRANDEUR=1.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=60, PARA="FREQ", RESULTAT=MODEQ, VALE_CALC=35125.250043070, CRITERE="RELATIF"
+        ),
+        _F(
+            NUME_ORDRE=60,
+            PARA="AMOR_REDUIT",
+            RESULTAT=MODEQ,
+            VALE_CALC=0.0,
+            ORDRE_GRANDEUR=1.0,
+            CRITERE="ABSOLU",
+        ),
         _F(NUME_ORDRE=80, PARA="FREQ", RESULTAT=MODEQ, VALE_CALC=55643.0944058, CRITERE="RELATIF"),
-        _F(NUME_ORDRE=80, PARA="AMOR_REDUIT", RESULTAT=MODEQ, VALE_CALC=0.0, CRITERE="ABSOLU"),
+        _F(
+            NUME_ORDRE=80,
+            PARA="AMOR_REDUIT",
+            RESULTAT=MODEQ,
+            VALE_CALC=0.0,
+            ORDRE_GRANDEUR=1.0,
+            CRITERE="ABSOLU",
+        ),
     )
 )
 

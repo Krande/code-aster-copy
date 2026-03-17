@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2026  EDF www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,8 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "astercxx.h"
 
 #include "DataFields/FieldBuilder.h"
@@ -39,6 +37,8 @@
 #include "Modeling/Model.h"
 
 #include <filesystem>
+
+class ResultManager;
 
 /**
  * @class Result
@@ -168,6 +168,16 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Prepare list of parameters
      */
     void _listOfParameters( void );
+
+    friend class ResultManager;
+    /**
+     * @brief Add field to Result from string names (useful from Fortran call)
+     * @param nomSymb symbolic name (eg: DEPL)
+     * @param name real Jeveux name
+     * @param storageIndex Index to store field
+     */
+    void addFieldFromString( const std::string &nomSymb, const std::string &name,
+                             ASTERINTEGER storageIndex );
 
   public:
     using ResultPtr = std::shared_ptr< Result >;
@@ -458,7 +468,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get dict of access variables and their values
      * @return py::dict
      */
-    py::dict getAccessParameters() const;
+    py::dict getParameters( bool only_access = false ) const;
 
     /**
      * @brief Get the list of fields on nodes
@@ -547,7 +557,8 @@ class Result : public DataStructure, public ListOfTables {
      */
     virtual void printMedFile( const std::filesystem::path &fileName,
                                std::string medName = std::string(), bool local = true,
-                               bool internalVar = true ) const;
+                               bool internalVar = true, const VectorString &fields = VectorString(),
+                               std::string version = std::string() ) const;
 
     /**
      * @brief Get the number of steps stored in the Result

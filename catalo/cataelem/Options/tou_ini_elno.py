@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,8 @@ PHYDR_R = OutputParameter(phys=PHY.HYDR_R, type="ELNO")
 
 PFLUX_R = OutputParameter(phys=PHY.FLUX_R, type="ELNO")
 
+PMATE_R = OutputParameter(phys=PHY.MATE_R, type="ELNO")
+
 
 TOU_INI_ELNO = Option(
     para_in=(),
@@ -75,6 +77,7 @@ TOU_INI_ELNO = Option(
         PSIEF_R,
         PSOUR_R,
         PVARI_R,
+        PMATE_R,
     ),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"),)),

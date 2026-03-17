@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -268,14 +268,9 @@ subroutine nmdopi(modelz, numedd, ds_algopara, sdpilo)
         do iddl = 1, nddl
             nomcmp = zk8(jlicmp-1+iddl)
             do ino = 1, nbno
-                if (lSelectDof) then
-                    nume_node = zi(jlinoe-1+ino)
-                    call nueqch('F', chapil, nume_node, nomcmp, numequ)
-                end if
-
-                if (lSelectDof) then
-                    zr(jvale-1+numequ) = coef
-                end if
+                nume_node = zi(jlinoe-1+ino)
+                call nueqch('F', chapil, nume_node, nomcmp, numequ)
+                zr(jvale-1+numequ) = coef
             end do
         end do
     end if

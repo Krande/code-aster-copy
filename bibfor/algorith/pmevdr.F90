@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,96 +16,64 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
-                  actite)
+subroutine pmevdr(sddisc, tablType, tablIncr, &
+                  liccvg, lIterNewtMaxi, conver, &
+                  newtLoopAction)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/nmacto.h"
-#include "asterfort/nmevel.h"
+#include "asterfort/pmevel.h"
 !
-    aster_logical :: itemax, conver
-    character(len=19) :: sddisc, tabinc(*)
-    integer(kind=8) :: liccvg(*), actite
+    character(len=19), intent(in) :: sddisc
+    integer(kind=8), intent(in) :: tablType
+    character(len=24), intent(in) :: tablIncr
+    integer(kind=8), intent(in) :: liccvg(5)
+    aster_logical, intent(in) :: lIterNewtMaxi, conver
+    integer(kind=8), intent(out) :: newtLoopAction
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE SIMU_POINT_MAT
+! SIMU_POINT_MAT
 !
-! VERIFICATION DES CRITERES DE DIVERGENCE DE TYPE EVENT-DRIVEN
+! Detect event
 !
-! ----------------------------------------------------------------------
-!
-!
-! IN  SDDISC : SD DISCRETISATION
-! IN  TABINC : TABLE INCREMENTS DES VARIABLES
-! IN  ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE
-! IN  CONVER : .TRUE. SI CONVERGENCE REALISEE
-! IN  LICCVG : CODES RETOURS D'ERREUR
-!              (2) : INTEGRATION DE LA LOI DE COMPORTEMENT
-!                  = 0 OK
-!                  = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
-!                  = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
-!                  = 1 MATRICE DE CONTACT SINGULIERE
-!              (5) : MATRICE DU SYSTEME (MATASS)
-!                  = 0 OK
-!                  = 1 MATRICE SINGULIERE
-!                  = 3 ON NE SAIT PAS SI SINGULIERE
-! OUT ACTITE : BOUCLE NEWTON -> ACTION POUR LA SUITE
-!     0 - NEWTON OK   - ON SORT
-!     1 - NEWTON NOOK - IL FAUT FAIRE QUELQUE CHOSE
-!     2 - NEWTON NCVG - ON CONTINUE NEWTON
-!     3 - NEWTON STOP - TEMPS/USR1
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ifm, niv
-    integer(kind=8) :: faccvg, ldccvg, numins
-    aster_logical :: lerror, lsvimx, ldvres, linsta, lcritl, lresmx
-    character(len=24) :: k24bla
+    integer(kind=8) :: faccvg, ldccvg
+    aster_logical :: lerror
     integer(kind=8) :: ievdac
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         write (ifm, *) '<SIMUPOINTMAT> EVALUATION DES EVENT-DRIVEN'
     end if
-!
-! --- INITIALISATIONS
-!
+
+! - INITIALISATIONS
     ldccvg = liccvg(2)
     faccvg = liccvg(5)
-    lerror = (ldccvg .eq. 1) .or. (faccvg .ne. 0) .or. itemax
-    ievdac = 0
-    k24bla = ' '
-    lsvimx = .false.
-    ldvres = .false.
-    linsta = .false.
-    lcritl = .false.
-    numins = -1
-!
-! --- NEWTON A CONVERGE ?
-!
+    lerror = (ldccvg .eq. 1) .or. (faccvg .ne. 0) .or. lIterNewtMaxi
+
+! - NEWTON A CONVERGE ?
     if (conver) then
-        actite = 0
+        newtLoopAction = 0
     else
-        actite = 2
+        newtLoopAction = 2
     end if
-!
-! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
-!
-    call nmevel(sddisc, tabinc, 'NEWT', lsvimx, &
-                ldvres, lresmx, linsta, lcritl, lerror, conver)
-!
-! --- UN EVENEMENT SE DECLENCHE
-!
+
+! - Detect first event
+    call pmevel(sddisc, tablType, tablIncr, &
+                lerror, conver)
+
+! - UN EVENEMENT SE DECLENCHE
     call nmacto(sddisc, ievdac)
     if (ievdac .ne. 0) then
-        actite = 1
+        newtLoopAction = 1
     end if
 !
 end subroutine

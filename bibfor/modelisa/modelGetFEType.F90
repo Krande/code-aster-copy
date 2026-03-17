@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: formul
+    character(len=24) :: formul
     character(len=19), parameter :: keywordfact = 'AFFE'
     integer(kind=8) :: nbret
 !
@@ -107,6 +107,10 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
         modeli = modeli_in(1:lxlgut(modeli_in))//'#1'
     elseif (formul .eq. 'DIL_INCO') then
         modeli = modeli_in(1:lxlgut(modeli_in))//'#2'
+    elseif (formul .eq. 'STA') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#1'
+    elseif (formul .eq. 'STA_INCO') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#2'
     elseif (formul .ne. ' ') then
         ASSERT(ASTER_FALSE)
     end if

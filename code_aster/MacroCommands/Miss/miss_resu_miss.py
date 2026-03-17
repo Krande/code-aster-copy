@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
 
 """Module permettant de lire un fichier produit par Miss"""
 
@@ -30,7 +29,6 @@ from ...Messages import UTMESS
 
 
 class MissCsolReader:
-
     """Lit un fichier csol"""
 
     def __init__(self, nbpc, freq_nb):
@@ -84,7 +82,6 @@ class MissCsolReader:
 
 
 class ResultatPC:
-
     """Simple conteneur des valeurs relus en un point de contrôle"""
 
     def __init__(self):

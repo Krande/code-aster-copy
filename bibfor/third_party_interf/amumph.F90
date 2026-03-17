@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumph(action, solvez, matasz, rsolu, csolu, &
+subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
                   vcinez, nbsol, iret, prepos)
 !
 !
@@ -66,7 +66,6 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 !           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
 !           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
 !----------------------------------------------------------------------
-! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
 #include "asterf_types.h"
@@ -88,7 +87,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 !
 #include "asterfort/isParallelMatrix.h"
 
-    character(len=*) :: action, matasz, vcinez, solvez
+    character(len=*) :: actionz, matasz, vcinez, solvez
     integer(kind=8) :: iret, nbsol
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
@@ -107,6 +106,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     aster_logical :: lpreco, limpr_matsing, l_parallel_matrix
     character(len=1) :: rouc, prec
     character(len=4) :: etam
+    character(len=8) :: action
     character(len=14) :: nonu, nu, impr
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
     character(len=24) :: kpiv
@@ -119,6 +119,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 !----------------------------------------------------------------
     call jemarq()
 !
+    action = " "
+    ASSERT(len(actionz) <= 8)
+    action(1:len(actionz)) = actionz
     iretz = 0
     call infdbg('SOLVEUR', ifm, niv)
     if ((action(1:6) .ne. 'PRERES') .and. (action(1:6) .ne. 'RESOUD') .and. &

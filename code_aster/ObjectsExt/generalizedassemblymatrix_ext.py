@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`GeneralizedAssemblyMatrixReal` --- Generalized Assembly matrix
 ****************************************************
@@ -28,7 +27,7 @@ from libaster import GeneralizedAssemblyMatrixComplex, GeneralizedAssemblyMatrix
 
 from ..Objects.Serialization import InternalStateBuilder
 from ..Supervis import AsterError
-from ..Utilities import deprecated, injector
+from ..Utilities import injector
 
 
 class GeneralizedAssemblyMatrixStateBuilder(InternalStateBuilder):
@@ -200,30 +199,6 @@ class BaseGeneralizedAssemblyMatrix:
             raise KeyError
 
         self.build()
-
-    @deprecated(case=1, help="Use 'toNumpy() instead.")
-    def EXTR_MATR(self):
-        """Returns the matrix values as `numpy.array`."""
-
-        return self.toNumpy()
-
-    @deprecated(case=4, help="Use 'toNumpy() instead.")
-    def EXTR_MATR_GENE(self):
-        """Returns the matrix values as `numpy.array`."""
-
-        raise RuntimeError("EXTR_MATR_GENE() is replaced by toNumpy()")
-
-    @deprecated(case=1, help="Use 'fromNumpy() instead.")
-    def RECU_MATR(self, matrix):
-        """Returns the matrix values as `numpy.array`."""
-
-        self.fromNumpy(matrix)
-
-    @deprecated(case=4, help="Use 'fromNumpy() instead.")
-    def RECU_MATR_GENE(self):
-        """Returns the matrix values as `numpy.array`."""
-
-        raise RuntimeError("RECU_MATR_GENE() is replaced by fromNumpy()")
 
 
 @injector(GeneralizedAssemblyMatrixComplex)

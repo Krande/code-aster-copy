@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ subroutine nmfinp(sddisc, numeInst, lastTimeStep)
     real(kind=8) :: prec, jalon, timeCurr
     character(len=16) :: metlis
     integer(kind=8) :: nbStepMaxi
+    aster_logical :: lOutOFTime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,8 +83,8 @@ subroutine nmfinp(sddisc, numeInst, lastTimeStep)
 
 ! -  Detect last time step by automatic time stepping
     if (metlis .eq. 'AUTO') then
-        call nmjalo(sddisc, timeCurr, prec, jalon)
-        if (jalon .eq. r8vide()) then
+        call nmjalo(sddisc, timeCurr, prec, jalon, lOutOFTime)
+        if (lOutOFTime) then
             lastTimeStep = ASTER_TRUE
         end if
     end if

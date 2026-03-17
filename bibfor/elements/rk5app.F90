@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine rk5app(nbeq, vparam_real, vparam_int, vparam_car, dtemps, yinit, dyin
         end subroutine rk5fct
     end interface
 !
-! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
 !          INTÉGRATION PAR MÉTHODE DE RUNGE KUTTA D'ORDRE 5

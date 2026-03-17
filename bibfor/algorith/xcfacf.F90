@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn, &
     real(kind=8) :: lsn(nno), lst(nno), ptint(*), ainter(*)
     character(len=8) :: typma, noma
 !
-! person_in_charge: samuel.geniaut at edf.fr
 !              TROUVER LES PTS D'INTERSECTION ENTRE LE FOND DE FISSURE
 !                 ET LES FACES POUR LES ELEMENTS EN FOND DE FISSURE
 !

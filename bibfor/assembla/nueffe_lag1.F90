@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -595,6 +595,7 @@ subroutine nueffe_lag1(nbLigr, listLigr, base, numeDofZ, renumZ, &
     zk24(idref) = mesh
     zk24(idref+1) = gran_name
     zk24(idref+2) = modelZ
+    zk24(idref+3) = "SIMPLE_LAGRANGE"
 !
 ! - Create NUEQ object
 !
