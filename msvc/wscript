@@ -259,7 +259,7 @@ def check_optimization_cflags(self):
         return
     self.setenv("debug")
     self.start_msg("Setting C debug flags")
-    self.remove_optflags("CFLAGS")
+    self.remove_flags("CFLAGS", "^[-/]O[0-9a-z]")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["CFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:
         flags.append("--coverage")
@@ -284,7 +284,7 @@ def check_optimization_cflags_msvc(self):
 
     self.setenv("debug")
     self.start_msg("Setting C debug flags for MSVC")
-    self.remove_optflags("CFLAGS")
+    self.remove_flags("CFLAGS", "^[-/]O[0-9a-z]")
     debug_flags = ["/Zi", "/Od"]  # Debug information and no optimization
     self.env.append_unique("LINKFLAGS", ["/DEBUG:FULL", "/INCREMENTAL:NO"])
     self.env.append_unique("CFLAGS", debug_flags)
