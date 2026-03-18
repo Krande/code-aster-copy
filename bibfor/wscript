@@ -80,7 +80,7 @@ def build(self):
         target="bibfor",
         rpath="$ORIGIN",
         source=src_i8,
-        use=use + ["INT64", "asterbibcxx"],
+        use=use + ["INT64"],
         env=env.derive(),
         install_path=lib_install_path,
     )
