@@ -144,9 +144,9 @@ subroutine global_numbering_compute(nume_equa)
     if (nlili .eq. 1) then
         ! si la longueur de la collection '.PRNO' est 1, on ne peut pas utiliser
         ! l'attribut '.LONCUM'. On crée un objet temporaire contenant le
-        ! décalage pour le seul de la collection qui vaut donc 0
+        ! décalage pour le seul de la collection qui vaut donc 1
         call wkvect('&&CRNLGN.IDPRN', 'V V I', 1, idprn2)
-        zi(idprn2) = 0
+        zi(idprn2) = 1
     else
         call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
     end if
