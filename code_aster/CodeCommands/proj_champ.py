@@ -18,17 +18,18 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from ..Cata.SyntaxUtils import mixedcopy
 from ..Messages import UTMESS
 from ..Objects import (
+    ConnectionMesh,
     FieldOnCellsReal,
     FullResult,
     MeshesMapping,
-    ConnectionMesh,
     ParallelMesh,
     SimpleFieldOnNodesReal,
 )
-from ..Supervis import ExecuteCommand
-from ..Utilities import force_list, MPI
+from ..Supervis import ExecuteCommand, loop_on_dsdict
+from ..Utilities import force_list
 
 
 def _addGroup(mcf, groups, keys):
@@ -58,6 +59,7 @@ def _getGroups(keywords):
     return sorted(list(nodeGroups)), sorted(list(cellGroups))
 
 
+@loop_on_dsdict("RESULTAT")
 class FieldProjector(ExecuteCommand):
     """Command that allows to project fields."""
 
@@ -69,16 +71,16 @@ class FieldProjector(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        methode = keywords.get("METHODE")
+        method = keywords.get("METHODE")
         resultat = keywords.get("RESULTAT")
         chamGd = keywords.get("CHAM_GD")
         if resultat is None and chamGd is None:
             self._result = MeshesMapping()
             return
-        if resultat is not None:
+        if resultat:
             self._result = type(keywords["RESULTAT"])()
             return
-        if chamGd is not None and methode == "SOUS_POINT":
+        if chamGd and method == "SOUS_POINT":
             self._result = FieldOnCellsReal()
             return
         self._result = type(chamGd)()
@@ -91,14 +93,14 @@ class FieldProjector(ExecuteCommand):
         """
         method = keywords.get("METHODE")
         if keywords.get("RESULTAT") and method == "ECLA_PG":
-            kwargs = keywords.copy()
+            kwargs = mixedcopy(keywords)
             # check arguments
             try:
                 result_in = kwargs.pop("RESULTAT")
                 names = force_list(kwargs.pop("NOM_CHAM"))
                 assert kwargs["PROJECTION"] == "OUI"
                 kwargs["MODELE_2"]  # must exist for ECLA_PG
-            except (AssertionError, KeyError) as exc:
+            except (AssertionError, KeyError):
                 UTMESS("F", "CALCULEL5_9")
             result_out = self.result
             params = result_in.getAccessParameters()
@@ -185,7 +187,6 @@ class FieldProjector(ExecuteCommand):
                 self._result = resu.transferFromConnectionToParallelMesh(maillage_2)
 
             elif keywords["PROJECTION"] == "NON":
-
                 maillage_1 = keywords.pop("MAILLAGE_1")
                 maillage_2 = keywords.pop("MAILLAGE_2")
                 nodeGroups, cellGroups = _getGroups(keywords)

@@ -1061,7 +1061,7 @@ class loop_on_dsdict:
                     mcs = mcs.pop(0)
                     if store.get(mcs):
                         return mcf, mcs
-                return None, None
+                return None
 
             def extr_(kwds: dict, path: tuple[str]):
                 """Return the value of the relevant keyword"""
@@ -1077,9 +1077,17 @@ class loop_on_dsdict:
                     kwds = kwds[mcf]
                 kwds[mcs] = value
 
+            self.keep_caller_infos(kwargs)
+            caller = self._caller
             path = path_(kwargs)
-            if not isinstance(extr_(kwargs, path), DataStructureDict):
-                return command._orig_run_(self, **kwargs)
+            if not path or not isinstance(extr_(kwargs, path), DataStructureDict):
+                output = command._orig_run_(self, **kwargs)
+                if not getattr(output, "userName", "n/a"):
+                    # attribute does exist but is not defined
+                    output.userName = get_user_name(
+                        self.command_name, caller["filename"], caller["lineno"]
+                    )
+                return output
 
             keywords = mixedcopy(kwargs)
             input = extr_(keywords, path)

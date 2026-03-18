@@ -121,7 +121,7 @@ subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharc
         cmpNameVale(1) = "TEMP"
     end if
 
-! - Inverse connectivity and mesh paramters
+! - Inverse connectivity and mesh parameters
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call cncinv(mesh, [ibid], 0, 'V', connexInvName)
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=meshTypmail)

@@ -60,10 +60,8 @@ PROJ_CHAMP = OPER(
     nom="PROJ_CHAMP",
     op=166,
     sd_prod=proj_champ_prod,
-    reentrant="f:RESULTAT",
     fr=tr("Projeter des champs d'un maillage sur un autre"),
     compat_syntax=compat_syntax,
-    reuse=SIMP(statut="c", typ=CO),
     # faut-il projeter les champs ?
     PROJECTION=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     # pour projeter avec une sd_corresp_2_mailla deja calculée :
@@ -78,7 +76,7 @@ PROJ_CHAMP = OPER(
             UN_PARMI("MODELE_1", "MAILLAGE_1"),
             UN_PARMI("MODELE_2", "MAILLAGE_2"),
         ),
-        RESULTAT=SIMP(statut="f", typ=resultat_sdaster),
+        RESULTAT=SIMP(statut="f", typ=(resultat_sdaster, ds_dict)),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
         METHODE=SIMP(
             statut="f",
@@ -252,7 +250,7 @@ PROJ_CHAMP = OPER(
             GROUP_NO_2=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             NOEUD_2=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
             # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION'
-            # mais on ne peut pas le vérifier idans le catalogue.
+            # mais on ne peut pas le vérifier dans le catalogue.
             CAS_FIGURE=SIMP(statut="f", typ="TXM", into=("2D", "3D", "2.5D", "1.5D", "0D")),
             TRANSF_GEOM_1=SIMP(
                 statut="f",

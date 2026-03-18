@@ -29,6 +29,8 @@ test = CA.TestCase()
 mesh = CA.Mesh.buildSquare()
 
 model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
+# same model
+model2 = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
 
 mater = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0))
 fieldmat = AFFE_MATERIAU(MODELE=model, AFFE=_F(TOUT="OUI", MATER=mater))
@@ -56,7 +58,6 @@ ther_dict = CA.ThermalResultDict("ther_dict")
 test.assertEqual(len(ther_dict), 0, msg="check len()")
 test.assertEqual(ther_dict.getType(), "EVOL_THER_DICT", msg="check type")
 
-# mix direct (global)...
 r12 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
@@ -65,6 +66,12 @@ r12 = CREA_RESU(
         _F(NOM_CHAM="TEMP", CHAM_GD=ther2, INST=2.0),
     ),
 )
+
+# check that userName is correctly assigned for a decorated command
+pr12 = PROJ_CHAMP(MODELE_1=model, METHODE="AUTO", MODELE_2=model2, RESULTAT=r12)
+test.assertEqual(pr12.userName, "pr12", msg="check userName")
+
+# mix direct (global)...
 ther_dict["12"] = r12
 
 # ...and indirect references to DataStructures, see #32978
@@ -121,6 +128,24 @@ ther_dict = CALC_CHAMP(
 )
 for result in ther_dict.values():
     test.assertIn("TEMP", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+    test.assertIn("FLUX_ELGA", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+
+# with METHODE="AUTO", ELGA fields are not projected
+proj_dict1 = PROJ_CHAMP(MODELE_1=model, METHODE="AUTO", MODELE_2=model2, RESULTAT=ther_dict)
+for result in proj_dict1.values():
+    test.assertIn("TEMP", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+    test.assertNotIn("FLUX_ELGA", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
+
+proj_dict2 = PROJ_CHAMP(
+    METHODE="ECLA_PG",
+    MODELE_1=model,
+    MODELE_2=model2,
+    RESULTAT=ther_dict,
+    NOM_CHAM="FLUX_ELGA",
+    TOUT_ORDRE="OUI",
+)
+for result in proj_dict2.values():
+    test.assertNotIn("TEMP", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
     test.assertIn("FLUX_ELGA", result.getFieldsNames(), msg="check TEMP+FLUX reuse")
 
 
