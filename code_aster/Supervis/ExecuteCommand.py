@@ -1082,9 +1082,11 @@ class loop_on_dsdict:
             path = path_(kwargs)
             if not path or not isinstance(extr_(kwargs, path), DataStructureDict):
                 output = command._orig_run_(self, **kwargs)
-                output.userName = get_user_name(
-                    self.command_name, caller["filename"], caller["lineno"]
-                )
+                if not getattr(output, "userName", "n/a"):
+                    # attribute does exist but is not defined
+                    output.userName = get_user_name(
+                        self.command_name, caller["filename"], caller["lineno"]
+                    )
                 return output
 
             keywords = mixedcopy(kwargs)
