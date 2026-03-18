@@ -71,7 +71,10 @@ def _getValuesWithDescription_numpy(sfield, cmps_arg, groups):
     # Determine which cells to iterate
     mesh = sfield.getMesh()
     grp_list = force_list(groups) if groups else []
-    cells = list(mesh.getCells(grp_list) if grp_list else mesh.getCells())
+    if grp_list and all(isinstance(g, (int,)) for g in grp_list):
+        cells = grp_list
+    else:
+        cells = list(mesh.getCells(grp_list) if grp_list else mesh.getCells())
 
     # Get raw numpy arrays: values(n_rows, ncmps), mask(n_rows, ncmps), size_arr(1D)
     vals_arr, mask_arr, size_arr = sfield.toNumpy()
@@ -161,6 +164,12 @@ class ExtendedFieldOnCellsReal:
         import sys
         sfield = self.toSimpleFieldOnCells()
         cmps_arg = force_list(components)
+        grp_list = force_list(groups) if groups else []
+        # When groups contains integers, they are cell indices (not group
+        # names).  The C++ getValuesWithDescription expects group name
+        # strings, so we must use the numpy fallback for integer indices.
+        if grp_list and all(isinstance(g, (int,)) for g in grp_list):
+            return _getValuesWithDescription_numpy(sfield, cmps_arg, groups)
         result = sfield.getValuesWithDescription(cmps_arg, groups)
         # Workaround: on Windows, the C++ getValuesWithDescription loop can
         # return empty despite valid data.  Fall back to a pure-Python

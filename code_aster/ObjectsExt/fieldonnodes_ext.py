@@ -31,6 +31,7 @@ import functools
 import operator
 import os.path as osp
 import subprocess
+import sys
 
 from libaster import (
     DOFNumbering,
@@ -44,6 +45,46 @@ from ..Objects import PythonBool
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, PETSc, config, force_list, injector, SharedTmpdir
 from ..Utilities import medcoupling as medc
+
+
+def _restrict_python(field, cmps, groupsOfNodes):
+    """Python-level restrict for FieldOnNodes on Windows.
+
+    Bypasses the C++ _restrict() -> CNSCNO Fortran path which can fail
+    on Windows due to Jeveux pointer caching issues across the C++/Fortran
+    boundary.
+    """
+    from ..Objects import SimpleFieldOnNodesReal
+
+    sfield = field.toSimpleFieldOnNodes()
+    all_cmps = list(sfield.getComponents())
+    target_cmps = [c for c in cmps if c in all_cmps] if cmps else list(all_cmps)
+
+    if not target_cmps:
+        raise RuntimeError("Restriction on list of components is empty")
+
+    mesh = sfield.getMesh()
+    src_vals, src_mask = sfield.toNumpy()
+
+    cmp_indices = [all_cmps.index(c) for c in target_cmps]
+
+    new_sfield = SimpleFieldOnNodesReal(mesh, sfield.getPhysicalQuantity(), target_cmps)
+    dst_vals, dst_mask = new_sfield.toNumpy()
+
+    if groupsOfNodes:
+        node_set = set()
+        for grp in groupsOfNodes:
+            node_set.update(mesh.getNodes(grp, localNumbering=True))
+        for new_i, old_i in enumerate(cmp_indices):
+            for n in node_set:
+                dst_vals[n, new_i] = src_vals[n, old_i]
+                dst_mask[n, new_i] = src_mask[n, old_i]
+    else:
+        for new_i, old_i in enumerate(cmp_indices):
+            dst_vals[:, new_i] = src_vals[:, old_i]
+            dst_mask[:, new_i] = src_mask[:, old_i]
+
+    return new_sfield.toFieldOnNodes()
 
 
 class FieldOnNodesStateBuilder(InternalStateBuilder):
@@ -94,6 +135,8 @@ class ExtendedFieldOnNodesReal:
         Returns:
             FieldOnNodesReal: field restricted.
         """
+        if sys.platform == "win32":
+            return _restrict_python(self, force_list(cmps), force_list(groupsOfNodes))
 
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
@@ -355,6 +398,8 @@ class ExtendedFieldOnNodesComplex:
         Returns:
             FieldOnNodesComplex: field restricted.
         """
+        if sys.platform == "win32":
+            return _restrict_python(self, force_list(cmps), force_list(groupsOfNodes))
 
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 

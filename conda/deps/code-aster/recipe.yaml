@@ -77,6 +77,8 @@ requirements:
 
 tests:
   - script:
+      - set "PATH=%PREFIX%\Library\bin\compiler;%PATH%"
+      - set "FC=ifx.exe"
       - run_ctest --resutest=${{ env.get("OUTPUT_DIR", default="temp\\seq") }}\nompi -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results --clean
       - if errorlevel 1 exit 1
     requirements:
@@ -85,6 +87,7 @@ tests:
         - ninja
         - pyyaml
         - psutil
+        - ${{ compiler('fortran') }}
   - python:
       imports:
         - code_aster
