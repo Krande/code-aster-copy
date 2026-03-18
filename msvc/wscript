@@ -157,11 +157,14 @@ class PostBuild:
         Logs.debug(f"Copying {self.mod_task.module.value} to {build_dir}")
         library_prefix_ = pathlib.Path(bld.env.PREFIX)
 
-        # Determine destination: use SPDIR if available, otherwise fall back to ASTERLIBDIR
-        if bld.env.SPDIR:
-            dst_pyd = pathlib.Path(bld.env.SPDIR) / f"{self.mod_task.module.value}.pyd"
+        # Determine destination: use SITEPACKAGESDIR if available, otherwise fall back to ASTERLIBDIR
+        if bld.env.SITEPACKAGESDIR:
+            dst_pyd = pathlib.Path(bld.env.SITEPACKAGESDIR) / f"{self.mod_task.module.value}.pyd"
         else:
             dst_pyd = library_prefix_ / f"lib/aster/{self.mod_task.module.value}.pyd"
+
+        # Ensure destination directory exists
+        dst_pyd.parent.mkdir(parents=True, exist_ok=True)
 
         if self.mod_task.action == ModuleAction.CUSTOM:
             src = build_dir / f"msvc/{self.mod_task.module.value}_proxy.dll"

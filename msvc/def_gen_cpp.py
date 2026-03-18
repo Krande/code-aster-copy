@@ -75,6 +75,13 @@ def extract_symbols_from_dumpbin_lines(lines):
         "_raiseException",
         "getMaterialPropertiesNames",  # single legacy helper exported on Linux builds
         # Intentionally do NOT include getTridimMaterialPropertiesNames unless proven defined
+        # MITC plate element C++ functions called from Fortran
+        "BP1_qu9_Fortran",
+        "BP2_qu9_Fortran",
+        "BP4_qu9_Fortran",
+        "BP5_qu9_Fortran",
+        # Result manager C++ function called from Fortran
+        "add_field_in_current_result_",
     }
 
     # Explicitly-allowed MSVC C++ mangled symbols that must be exported from bibcxx
