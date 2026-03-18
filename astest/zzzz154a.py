@@ -58,7 +58,6 @@ ther_dict = CA.ThermalResultDict("ther_dict")
 test.assertEqual(len(ther_dict), 0, msg="check len()")
 test.assertEqual(ther_dict.getType(), "EVOL_THER_DICT", msg="check type")
 
-# mix direct (global)...
 r12 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
@@ -67,6 +66,12 @@ r12 = CREA_RESU(
         _F(NOM_CHAM="TEMP", CHAM_GD=ther2, INST=2.0),
     ),
 )
+
+# check that userName is correctly assigned for a decorated command
+pr12 = PROJ_CHAMP(MODELE_1=model, METHODE="AUTO", MODELE_2=model2, RESULTAT=r12)
+test.assertEqual(pr12.userName, "pr12", msg="check userName")
+
+# mix direct (global)...
 ther_dict["12"] = r12
 
 # ...and indirect references to DataStructures, see #32978
