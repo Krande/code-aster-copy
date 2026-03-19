@@ -60,6 +60,7 @@ from .generalizedassemblyvector_ext import (
     GeneralizedAssemblyVectorComplex,
     GeneralizedAssemblyVectorReal,
 )
+from .generalizedload_ext import GeneralizedLoad
 from .generalizedmodel_ext import GeneralizedModel
 from .equationnumbering_ext import EquationNumbering
 from .linearsolver_ext import (

@@ -95,6 +95,7 @@
 #include "PythonBindings/GeneralizedAssemblyMatrixInterface.h"
 #include "PythonBindings/GeneralizedAssemblyVectorInterface.h"
 #include "PythonBindings/GeneralizedDOFNumberingInterface.h"
+#include "PythonBindings/GeneralizedLoadInterface.h"
 #include "PythonBindings/GeneralizedModeResultInterface.h"
 #include "PythonBindings/GeneralizedModelInterface.h"
 #include "PythonBindings/GeneralizedResultInterface.h"
@@ -260,6 +261,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportElementaryVectorToPython( mod );
     exportGeneralizedAssemblyMatrixToPython( mod );
     exportGeneralizedAssemblyVectorToPython( mod );
+    exportGeneralizedLoadToPython( mod );
     exportInterspectralMatrixToPython( mod );
     exportLinearSolverToPython( mod );
     exportModalBasisToPython( mod );
