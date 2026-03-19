@@ -29,6 +29,7 @@
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 #include "aster_mpi.h"
+#include "aster_pybind.h"
 #include "aster_utils.h"
 #include "shared_vars.h"
 
@@ -159,4 +160,9 @@ int asmpi_split( const int parent, int color, std::string name ) {
     fparent = MPI_Fint( parent );
     CALL_ASMPI_SPLIT_COMM( &fparent, &color, &key, name, &newcomm );
     return newcomm;
+}
+
+void set_option( const std::string &option, const ASTERINTEGER value ) {
+    py::object method = py::cast< py::object >( GetJdcAttr( (char *)"set_option" ) );
+    py::object none = method( option, value );
 }
