@@ -33,17 +33,6 @@ def getConnectivityOfGroup(grma, mesh):
     return con
 
 
-def getNodeNames(lnodes, mesh):
-    """
-    Get list of node names from the list of their ids
-    """
-    lnames = []
-    for nd in lnodes:
-        ndname = "N" + mesh.getNodeName(nd)
-        lnames.append(ndname)
-    return lnames
-
-
 def nautelemorie(gx):
     """
     Get nautical angles (in degrees) from a 3D-vector.
@@ -315,23 +304,22 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
     LX = abs(l_coorPy[a_conn[25]][idOrie] - l_coorPy[a_conn[23]][idOrie])
 
     # noeuds pour les conditions limites
-    l_nameNdsSXm = getNodeNames(a_conn[[1, 4, 5, 8]], MA)
-    l_nameNdsSXp = getNodeNames(a_conn[[2, 3, 6, 7]], MA)
-    l_nameNdsS = getNodeNames(a_conn[range(1, 9)], MA)
-    l_nameNdsPXm = getNodeNames(a_conn[[25]], MA)
-    l_nameNdsPXp = getNodeNames(a_conn[[23]], MA)
-    l_nameNdsP = getNodeNames(a_conn[[25, 23]], MA)
+    MA.setGroupOfNodes("GSXM", a_conn[[1, 4, 5, 8]])
+    MA.setGroupOfNodes("GSXP", a_conn[[2, 3, 6, 7]])
+    MA.setGroupOfNodes("GS", a_conn[range(1, 9)])
+    MA.setGroupOfNodes("GPXM", a_conn[[25]])
+    MA.setGroupOfNodes("GPXP", a_conn[[23]])
+    MA.setGroupOfNodes("GP", a_conn[[25, 23]])
 
     # noeuds pour les posttraitements
+    MA.setGroupOfNodes("GSXM1", a_conn[[1]])
+    MA.setGroupOfNodes("GSXP1", a_conn[[2]])
     MA = DEFI_GROUP(
         MAILLAGE=MA,
         reuse=MA,
         CREA_GROUP_NO=(
-            _F(NOM="GRNP", UNION=(l_nameNdsPXm[0], l_nameNdsPXp[0])),
-            _F(
-                NOM="GRNS",
-                UNION=[getNodeNames(a_conn[[1]], MA)[0], getNodeNames(a_conn[[2]], MA)[0]],
-            ),
+            _F(NOM="GRNP", UNION=("GPXM", "GPXP")),
+            _F(NOM="GRNS", UNION=["GSXM1", "GSXP1"]),
         ),
     )
 
@@ -420,17 +408,9 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
     CLPT = AFFE_CHAR_CINE(
         MODELE=MODELE,
         MECA_IMPO=(
-            _F(GROUP_NO=l_nameNdsS, DX=0.0, DY=0.0, DZ=0.0),
-            _F(GROUP_NO=l_nameNdsPXm, DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-            _F(
-                GROUP_NO=l_nameNdsPXp,
-                DX=ldimp[0],
-                DY=ldimp[1],
-                DZ=ldimp[2],
-                DRX=0.0,
-                DRY=0.0,
-                DRZ=0.0,
-            ),
+            _F(GROUP_NO="GS", DX=0.0, DY=0.0, DZ=0.0),
+            _F(GROUP_NO="GPXM", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+            _F(GROUP_NO="GPXP", DX=ldimp[0], DY=ldimp[1], DZ=ldimp[2], DRX=0.0, DRY=0.0, DRZ=0.0),
         ),
     )
 
@@ -438,17 +418,9 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
     CLPR = AFFE_CHAR_CINE(
         MODELE=MODELE,
         MECA_IMPO=(
-            _F(GROUP_NO=l_nameNdsS, DX=0.0, DY=0.0, DZ=0.0),
-            _F(GROUP_NO=l_nameNdsPXm, DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-            _F(
-                GROUP_NO=l_nameNdsPXp,
-                DX=0.0,
-                DY=0.0,
-                DZ=0.0,
-                DRX=ldimp[0],
-                DRY=ldimp[1],
-                DRZ=ldimp[2],
-            ),
+            _F(GROUP_NO="GS", DX=0.0, DY=0.0, DZ=0.0),
+            _F(GROUP_NO="GPXM", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+            _F(GROUP_NO="GPXP", DX=0.0, DY=0.0, DZ=0.0, DRX=ldimp[0], DRY=ldimp[1], DRZ=ldimp[2]),
         ),
     )
 
@@ -456,9 +428,9 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
     CLST = AFFE_CHAR_CINE(
         MODELE=MODELE,
         MECA_IMPO=(
-            _F(GROUP_NO=l_nameNdsP, DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-            _F(GROUP_NO=l_nameNdsSXm, DX=0.0, DY=0.0, DZ=0.0),
-            _F(GROUP_NO=l_nameNdsSXp, DX=ldimp[0], DY=ldimp[1], DZ=ldimp[2]),
+            _F(GROUP_NO="GP", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+            _F(GROUP_NO="GSXM", DX=0.0, DY=0.0, DZ=0.0),
+            _F(GROUP_NO="GSXP", DX=ldimp[0], DY=ldimp[1], DZ=ldimp[2]),
         ),
     )
 

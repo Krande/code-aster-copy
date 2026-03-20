@@ -16,14 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine carorsolpi(nutyel, ntyele, itspi, ino1, ino2)
+    subroutine carorsolpi(nutyel, ntyele, IsIntsolpi, ino1, ino2)
         integer(kind=8) :: nutyel
         integer(kind=8) :: ntyele(*)
         integer(kind=8) :: ino1
         integer(kind=8) :: ino2
-        aster_logical :: itspi
+        logical :: IsIntsolpi
     end subroutine carorsolpi
 end interface

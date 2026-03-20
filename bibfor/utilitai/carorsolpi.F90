@@ -52,7 +52,7 @@ subroutine carorsolpi(nutyel, ntyele, IsIntsolpi, ino1, ino2)
     do jj = 1, ACE_NB_TYPE_ELEM
         if (nutyel .eq. ntyele(jj)) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunomel)
-            call teattr('S', 'TYPMOD2', typmod2, iret2, typel=nunomel)
+            call teattr('C', 'TYPMOD2', typmod2, iret2, typel=nunomel)
             if (typmod2 .eq. 'INTSOLPI') then
                 IsIntsolpi = .TRUE.
                 ino1 = 25
