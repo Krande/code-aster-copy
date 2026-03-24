@@ -32,7 +32,6 @@ subroutine te0248(option, nomte)
 #include "asterfort/nmasym.h"
 #include "asterfort/nmiclb.h"
 #include "asterfort/nmmaba.h"
-#include "asterfort/nmpime.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
@@ -57,13 +56,12 @@ subroutine te0248(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: neq, nbt, nvamax, imate, igeom, iorie, isect, iinstm
+    integer(kind=8) :: neq, nbt, imate, igeom, iorie, isect, iinstm
     integer(kind=8) :: iinstp, ideplm, ideplp, icontm, ivarim
     integer(kind=8) :: icarcr, imatuu, ivectu, icontp, nno, nc, ivarip, jcret
-    parameter(neq=6, nbt=21, nvamax=8)
+    parameter(neq=6, nbt=21)
     character(len=4) :: fami
 !
-!   constantes pour PINTO_MENEGOTTO
     integer(kind=8) :: ncstpm, codret
     parameter(ncstpm=13)
     real(kind=8) :: cstpm(ncstpm)
@@ -72,7 +70,7 @@ subroutine te0248(option, nomte)
     real(kind=8) :: aire, xlong0, xlongm, sigy, dsde
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: dul(neq), uml(neq), dlong
-    real(kind=8) :: klv(nbt), vip(nvamax), vim(nvamax)
+    real(kind=8) :: klv(nbt)
     real(kind=8) :: effnom, effnop, fono(neq)
     real(kind=8) :: w(6), ang1(3), xd(3), matuu(21), vectu(6)
     real(kind=8) :: deplm(6), deplp(6)
@@ -286,42 +284,6 @@ subroutine te0248(option, nomte)
             if (option(1:9) .eq. 'FULL_MECA') then
                 call utpslg(nno, nc, pgl, klv, matuu)
             end if
-            call utpvlg(nno, nc, pgl, fono, vectu)
-        end if
-!
-    else if (rela_comp .eq. 'PINTO_MENEGOTTO') then
-!       Récupération des caractéristiques du matériau
-        call nmmaba(zi(imate), rela_comp, e, dsde, sigy, &
-                    ncstpm, cstpm)
-!
-        vim(1) = zr(ivarim)
-        vim(2) = zr(ivarim+1)
-        vim(3) = zr(ivarim+2)
-        vim(4) = zr(ivarim+3)
-        vim(5) = zr(ivarim+4)
-        vim(6) = zr(ivarim+5)
-        vim(7) = zr(ivarim+6)
-        vim(8) = zr(ivarim+7)
-        call nmpime(fami, 1, 1, zi(imate), option, &
-                    xlong0, aire, xlongm, dlong, ncstpm, &
-                    cstpm, vim, effnom, vip, effnop, &
-                    klv, fono)
-!
-        if (option(1:10) .eq. 'RIGI_MECA_') then
-            call utpslg(nno, nc, pgl, klv, matuu)
-        else
-            zr(icontp) = effnop
-            if (option(1:9) .eq. 'FULL_MECA') then
-                call utpslg(nno, nc, pgl, klv, matuu)
-            end if
-            zr(ivarip) = vip(1)
-            zr(ivarip+1) = vip(2)
-            zr(ivarip+2) = vip(3)
-            zr(ivarip+3) = vip(4)
-            zr(ivarip+4) = vip(5)
-            zr(ivarip+5) = vip(6)
-            zr(ivarip+6) = vip(7)
-            zr(ivarip+7) = vip(8)
             call utpvlg(nno, nc, pgl, fono, vectu)
         end if
 !

@@ -29,7 +29,6 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dco.h"
 #include "asterfort/nm1dis.h"
-#include "asterfort/nm1dpm.h"
 #include "asterfort/nmmaba.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -76,7 +75,7 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
     real(kind=8) :: depsth, depsm, tmoins, tplus
     real(kind=8) :: em, ep, dsdem, dsdep
     real(kind=8) :: valres(4), syc, etc, syt, ett, cr, val(1)
-    aster_logical :: isot, cine, elas, corr, implex, isotli, pinto, asyml, sans
+    aster_logical :: isot, cine, elas, corr, implex, isotli, asyml, sans
     data nomasl/'SY_C', 'DC_SIGM_', 'SY_T', 'DT_SIGM_'/
 !
 !
@@ -88,7 +87,6 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
     corr = .false.
     implex = option(1:16) .eq. 'RIGI_MECA_IMPLEX'
     isotli = .false.
-    pinto = .false.
     asyml = .false.
     if (rela_comp .eq. 'ELAS') then
         elas = .true.
@@ -101,8 +99,6 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
         cine = .true.
     else if (rela_comp .eq. 'CORR_ACIER') then
         corr = .true.
-    else if (rela_comp .eq. 'PINTO_MENEGOTTO') then
-        pinto = .true.
     else if (rela_comp .eq. 'VMIS_ASYM_LINE') then
         asyml = .true.
     else if (rela_comp .eq. 'SANS') then
@@ -185,15 +181,6 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
                 end if
             end if
         end if
-    else if (pinto) then
-        call verift(fami, kpg, ksp, 'T', imate, &
-                    epsth_=depsth)
-        depsm = deps-depsth
-        call nmmaba(imate, rela_comp, ep, dsde, sigy, &
-                    ncstpm, cstpm)
-        call nm1dpm(fami, kpg, ksp, imate, option, &
-                    8, ncstpm, cstpm, sigm, vim, &
-                    depsm, vip, sigp, dsde)
     else if (sans) then
         sigp = 0.d0
         dsde = 0.d0

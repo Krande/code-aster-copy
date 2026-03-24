@@ -64,7 +64,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/pmf_mazars_unilater.h"
-#include "asterfort/pmf_pinto_menegotto.h"
 #include "asterfort/pmf_vmis.h"
 #include "asterfort/nm1dco.h"
 #include "asterfort/nm1vil.h"
@@ -160,20 +159,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
         for_pmf%instap = instap
         for_pmf%epsm = epsm
         call pmf_mazars_unilater(for_pmf, nf, nbvalc, &
-                                 compor, crit, defam, defap, varim, &
-                                 varimp, contm, defm, ddefp, modf, &
-                                 sigf, varip, codret)
-!
-! --------------------------------------------------------------------------------------------------
-    else if (rela_comp .eq. 'PINTO_MENEGOTTO') then
-        for_pmf%kpg = kpg
-        for_pmf%icdmat = icdmat
-        for_pmf%option = option
-        for_pmf%debsp = debsp
-        for_pmf%instam = instam
-        for_pmf%instap = instap
-        for_pmf%epsm = epsm
-        call pmf_pinto_menegotto(for_pmf, nf, nbvalc, &
                                  compor, crit, defam, defap, varim, &
                                  varimp, contm, defm, ddefp, modf, &
                                  sigf, varip, codret)
