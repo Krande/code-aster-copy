@@ -120,6 +120,7 @@ subroutine lcspelas(fami, kpg, ksp, ndim, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, epsm, b_incx, epsp, b_incy)
+    if (resi) call daxpy(b_n, 1.d0, deps, b_incx, epsp, b_incy)
 !
 ! #####################################
 ! CALCUL DE LA CONTRAINTE ET DE LA RIGIDITE ELASTIQUE
