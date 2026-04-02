@@ -198,7 +198,7 @@ for i in range(len(l_inst)):
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES,
             NOM_CHAM="SAUT_ELNO",
-            NOM_CMP="DRLY",
+            NOM_CMP="DY",
             VALE_CALC=l_nreg[i],
             VALE_REFE=l_res[i],
             CRITERE=crit,

@@ -41,10 +41,10 @@ DDL_MECA = LocatedComponents(
 )
 
 EDEPSPG = LocatedComponents(
-    phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DRLX", "DRLY", "DRLZ")
+    phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY", "DZ")
 )
 
-EDEPSNO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DRLX", "DRLY", "DRLZ"))
+EDEPSNO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
 CCAGEPO = LocatedComponents(phys=PHY.CAGEPO_R, type="ELEM", components=("HY1", "HZ1", "R1", "TSEC"))
 
@@ -69,12 +69,12 @@ EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", comp
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 ECONTPG = LocatedComponents(
-    phys=PHY.SIEF_R, type="ELGA", location="RIGI", components=("FLX", "FLY", "FLZ")
+    phys=PHY.SIEF_R, type="ELGA", location="RIGI", components=("FX", "FY", "FZ")
 )
 
-ECONTNO = LocatedComponents(phys=PHY.SIEF_R, type="ELNO", components=("FLX", "FLY", "FLZ"))
+ECONTNO = LocatedComponents(phys=PHY.SIEF_R, type="ELNO", components=("FX", "FY", "FZ"))
 
-ECONTNC = LocatedComponents(phys=PHY.SIEF_C, type="ELNO", components=("FLX", "FLY", "FLZ"))
+ECONTNC = LocatedComponents(phys=PHY.SIEF_C, type="ELNO", components=("FX", "FY", "FZ"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
