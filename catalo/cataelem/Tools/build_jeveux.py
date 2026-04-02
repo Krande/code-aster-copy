@@ -24,9 +24,6 @@
 import copy
 import os
 import os.path as osp
-import re
-import traceback
-import copy
 from collections import OrderedDict
 
 from cataelem.Commons import attributes as AT
@@ -809,7 +806,6 @@ def imprime_ojb(cel, file, dbgdir):
 
     for pheno in cel.getPhenomenons():
         ph = pheno.name
-        codph = pheno.code
         lmod = pheno.modelisations
         PHENOMENE.ajout_nom(ph)
         MODELI = JV.cree_co(
@@ -824,10 +820,8 @@ def imprime_ojb(cel, file, dbgdir):
         NOMMODELI = JV.cree_pn(d, nom="&CATA." + txtpad(13, ph) + ".MODL", tsca="K16")
         for mod in list(lmod.keys()):
             modeli = lmod[mod]
-            codmod = modeli.code
             (d1, d2) = modeli.dim
             laffe = modeli.elements
-            lattrib = modeli.attrs
             NOMMODELI.ajout_nom(mod)
             MODELI.cree_oc(nom=mod, long=(nbtm + 2))
             MODELI.ecri_co(nom=mod, indice=nbtm + 1, valeur=int(d1))
@@ -895,8 +889,6 @@ def get_liattr(cel, cata):
         codph = pheno.code
         codmod = modeli.code
         (d1, d2) = modeli.dim
-        laffe = modeli.elements
-        lattrib = modeli.attrs
         d1 = int(d1)
         d2 = int(d2)
         assert d1 in (-1, 0, 1, 2, 3), d1
@@ -943,7 +935,7 @@ def get_liattr(cel, cata):
         else:
             dicattr[AT.DISCRET] = "NON"
             if d1 > d2:
-                ERR.mess("E", "Pb. pour les dimensions  d1 d2 de la modelisation:" + mod)
+                ERR.mess("E", "Pb. pour les dimensions  d1 d2 de la modelisation:" + codmod)
 
             if dimtma == d1:
                 dicattr[AT.PRINCIPAL] = "OUI"

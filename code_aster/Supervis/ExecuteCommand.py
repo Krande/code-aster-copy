@@ -1027,7 +1027,7 @@ def command_time(counter, cpu, system, elapsed):
 
 
 class loop_on_dsdict:
-    """Decorator on ExecuteCommand that overloads 'run\_' method to
+    r"""Decorator on ExecuteCommand that overloads 'run\_' method to
     loop on each result of a DataStructureDict.
 
     Arguments:
