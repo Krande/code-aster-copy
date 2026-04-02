@@ -68,6 +68,7 @@ subroutine te0363(option, nomte)
     aster_logical :: lVect, lMatr, lVari, lSigm, lElas
     type(Behaviour_Integ) :: BEHinteg
     character(len=8) :: matint, matpou
+    integer(kind=8) :: ii
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,7 +128,7 @@ subroutine te0363(option, nomte)
     compor(NVAR) = '1'
 
 ! - Force option
-    optionz = 'FULL_MECA_ELAS'
+    optionz = 'RAPH_MECA'
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, optionz, &
@@ -161,12 +162,14 @@ subroutine te0363(option, nomte)
 ! - Get orientation
     call matrot(zr(iorie), pgl)
 
+! - Initialize
+
 ! - Main calculation
     call nmspfm(BEHinteg, typmod, ndim, nno, nddl, nddlsym, &
                 nno_p, nno_s, nddl_p, nddl_s, npg, lgpg, &
                 zr(ipoids), zr(ivfs), zr(ivfp), &
                 pgl, zr(igeom), 3, zi(imater), matint, matpou, optionz, &
-                zr(idepm), zr(iddep), zr(icontm), zr(icontp), zr(ivect), &
+                zr(idepm), (/(0.d0, ii=1, nddl)/), zr(icontm), zr(icontp), zr(ivect), &
                 zr(imatr), zr(ivarim), zr(ivarip), zr(icarcr), compor, &
                 zr(iinstm), zr(iinstp), coopg, matsym, lMatr, lVect, lSigm, lElas, &
                 codret)
