@@ -191,6 +191,11 @@ cata_msg = {
  RIGI_PARASOL n'est pas disponible pour le modèle COQUE_3D.
 """
     ),
+    40: _(
+        """
+ RIGI_PARASOL n'est pas disponible pour cette modélisation.
+"""
+    ),
     58: _(
         """
  BETA et RHO_CP ne peuvent pas être définies avec des nappes (mot-clé THER_NL).
