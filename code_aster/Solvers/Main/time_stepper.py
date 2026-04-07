@@ -970,8 +970,17 @@ class TimeStepper(Observer):
                 context (dict): Context of the event.
             """
             stp = context["timeStepper"]
-            currIncr = stp.getIncrement()
-            return self._factor * currIncr
+            delta_t = self._factor * stp.getIncrement()
+            next_dt = stp.getNextIncrement()
+            # t + next_dt will be necessarly computed.
+            # So (if all goes well) there is no reason to go further than
+            # this intermediate increment.
+            # The more the second step is long, the more delta_t will be long
+            # after t + next_dt the required timestep.
+            interm = next_dt / (1 + self._factor)
+            if next_dt and interm < delta_t < 0.99 * next_dt:
+                delta_t = interm
+            return delta_t
 
     class AdaptFromNbIter(AdaptAction):
         """This action returns a multiplicative factor for the next timestep
