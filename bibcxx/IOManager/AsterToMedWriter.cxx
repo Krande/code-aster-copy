@@ -664,7 +664,7 @@ bool AsterToMedWriter::printResult( const ResultPtr &resu, const std::filesystem
                 first = false;
             }
             medField->addSequence( index, index, resu->getTime( index ), MED_NO_DT, MED_NO_IT );
-            auto valuesDescPair = sFON->getValuesWithDescription( cmpsVector, (VectorString) {} );
+            auto valuesDescPair = sFON->getValuesWithDescription( cmpsVector, ( VectorString ) {} );
             if ( !local ) {
                 auto values = vectorFilter< ASTERDOUBLE >( nodeList, valuesDescPair.first,
                                                            cmpsVector.size() );
