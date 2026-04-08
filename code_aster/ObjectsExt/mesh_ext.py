@@ -327,7 +327,7 @@ class ExtendedMesh:
         """
         mesh_builder.buildFromMedCouplingMesh(self, mcmesh, verbose)
 
-    def plot(self, command="gmsh", local=False):
+    def plot(self, command="gmsh", local=True):
         """Plot the mesh.
 
         Arguments:
