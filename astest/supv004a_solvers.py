@@ -20,8 +20,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-
-from code_aster.Commands import *
+from code_aster.Commands import DEFI_LIST_ENTI, DEFI_LIST_REEL
 from code_aster import CA
 from code_aster.Solvers import (
     ConvergenceManager,
@@ -31,12 +30,13 @@ from code_aster.Solvers import (
     TimeStepper,
 )
 
-list0 = DEFI_LIST_REEL(VALE=0.0)
-listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
-
 
 class TestTimeStepper(unittest.TestCase):
     """Check for TimeStepper."""
+
+    def setUp(self):
+        self.list0 = DEFI_LIST_REEL(VALE=0.0)
+        self.listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
 
     def test00_init(self):
         stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
@@ -324,12 +324,12 @@ class TestTimeStepper(unittest.TestCase):
         self.assertTrue(stp.isFinished())
 
     def test08_ther_lineaire(self):
-        stp = TimeStepper.from_keywords(LIST_INST=list0, INST_INIT=None, PRECISION=1.0e-6)
+        stp = TimeStepper.from_keywords(LIST_INST=self.list0, INST_INIT=None, PRECISION=1.0e-6)
         self.assertEqual(stp.size(), 1)
         self.assertAlmostEqual(stp.getInitial(), None)
         self.assertAlmostEqual(stp.getFinal(), 0.0)
 
-        stp = TimeStepper.from_keywords(LIST_INST=listr, INST_FIN=5.0, PRECISION=1.0e-6)
+        stp = TimeStepper.from_keywords(LIST_INST=self.listr, INST_FIN=5.0, PRECISION=1.0e-6)
         self.assertEqual(stp.size(), 5)
         self.assertAlmostEqual(stp.getInitial(), 0.0)
         self.assertAlmostEqual(stp.getFinal(), 5.0)
@@ -344,7 +344,7 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(stp.getFinal(), 11.5)
 
         stp = TimeStepper.from_keywords(
-            LIST_INST=listr, NUME_INST_INIT=0, NUME_INST_FIN=1, PRECISION=1.0e-6
+            LIST_INST=self.listr, NUME_INST_INIT=0, NUME_INST_FIN=1, PRECISION=1.0e-6
         )
         self.assertEqual(stp.size(), 1)
         self.assertAlmostEqual(stp.getInitial(), 0.0)
@@ -469,6 +469,52 @@ class TestTimeStepper(unittest.TestCase):
         nbSteps, ratio = TimeStepper.AutoSplit._splittingRatio(residuals, crit)
         self.assertEqual(nbSteps, 4)
         self.assertAlmostEqual(ratio, 0.14285714285)
+
+
+def do_step(stp, ok: bool, label: str = ""):
+    print("+ step", label)
+    print(f"  current time: {stp.getCurrent()}, increment: {stp.getIncrement()}")
+    print(f"  list: {stp._times}")
+    if ok:
+        state = PhysicalState(pb_type=ProblemType.MecaStat)
+        state.getCurrentDelta = lambda: None
+        chk = stp.check_event(state)
+        # assert not chk, "should not occur here!"
+        stp.completed()
+    else:
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
+        return False
+    return True
+
+
+def test40_auto():
+    times = [-1.0, 0.0, 1.0, 10.0]
+    stp = TimeStepper(times, initial=None)
+    stp.setInitial(-1.0)
+    on_error = TimeStepper.Error()
+    stp._maxLevel = 3
+    split = TimeStepper.Split(on_error, nbSubSteps=4, minStep=1.0e-2)
+    stp.register_event(split)
+
+    stp.register_event(TimeStepper.Finalize(TimeStepper.MaximumNbOfSteps(100000)))
+    always = TimeStepper.Always()
+    mult = TimeStepper.AdaptConst(always, factor=2.0)
+    stp.register_event(mult)
+
+    print("initial time:", stp.getInitial())
+    do_step(stp, True, "t=0")
+    do_step(stp, False, "error at t=1.0")
+    do_step(stp, True, "ok at t=0.25")
+    do_step(stp, True, "ok at t=0.5")
+    do_step(stp, True, "ok at t=0.75")
+    do_step(stp, True, "ok at t=1.0")
+    do_step(stp, True, "accel1")
+    do_step(stp, True, "accel2")
+    do_step(stp, True, "accel3")
+    do_step(stp, True, "accel4")
+    do_step(stp, True, "accel5")
+    do_step(stp, True, "accel6")
+    return stp
 
 
 class TestPhysicalState(unittest.TestCase):
@@ -796,6 +842,9 @@ class TestStorageManager(unittest.TestCase):
 class TestResult(unittest.TestCase):
     """Check for static methods of Result"""
 
+    def setUp(self):
+        self.listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
+
     def test01_indexes(self):
         params = {"NUME_ORDRE": (1, 2, 3, 4, 5), "INST": (1.0, 2.0, 3.0, 4.0, 5.0)}
         # TOUT_ORDRE
@@ -814,9 +863,11 @@ class TestResult(unittest.TestCase):
         res = CA.Result.getIndexesFromKeywords(params, {"INST": [1.0, 3.0, 5.0]})
         self.assertSequenceEqual(res, (1, 3, 5))
         # LIST_INST
-        res = CA.Result.getIndexesFromKeywords(params, {"LIST_INST": listr})
+        res = CA.Result.getIndexesFromKeywords(params, {"LIST_INST": self.listr})
         self.assertSequenceEqual(res, (1, 2, 3, 4, 5))
 
 
 if __name__ == "__main__":
-    unittest.main()
+    CA.init()
+    # unittest.main()
+    stp = test40_auto()
