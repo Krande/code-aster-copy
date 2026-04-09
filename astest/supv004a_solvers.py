@@ -350,6 +350,14 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(stp.getInitial(), 0.0)
         self.assertAlmostEqual(stp.getFinal(), 1.0)
 
+    def test09_skip(self):
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 2.0)
+        stp._skip_before(4.5)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 5.0)
+
     def test20_event(self):
         stp = TimeStepper([1.0, 1.1, 2.0])
         stp.register_event(TimeStepper.Interrupt(TimeStepper.Error()))
@@ -470,51 +478,107 @@ class TestTimeStepper(unittest.TestCase):
         self.assertEqual(nbSteps, 4)
         self.assertAlmostEqual(ratio, 0.14285714285)
 
+    def test40_auto(self):
+        def do_step(stp, ok: bool, label: str = ""):
+            # print(f"+ step at {stp.getCurrent()}: {label}")
+            # print(f"  increment: {stp.getIncrement()}, next incr: {stp.getNextIncrement()}")
+            # print(f"  list: {stp._times}")
+            # print(f"  forced: {stp._forced}")
+            if ok:
+                state = MagicMock(name="phys_state")
+                chk = stp.check_event(state)
+                assert chk, "should not occur here!"
+                stp.completed()
+            else:
+                stp.failed(CA.ConvergenceError("MESSAGEID"))
+                return False
+            return True
 
-def do_step(stp, ok: bool, label: str = ""):
-    print("+ step", label)
-    print(f"  current time: {stp.getCurrent()}, increment: {stp.getIncrement()}")
-    print(f"  list: {stp._times}")
-    if ok:
-        state = PhysicalState(pb_type=ProblemType.MecaStat)
-        state.getCurrentDelta = lambda: None
-        chk = stp.check_event(state)
-        # assert not chk, "should not occur here!"
-        stp.completed()
-    else:
-        stp.failed(CA.ConvergenceError("MESSAGEID"))
-        return False
-    return True
+        times = [-1.0, 0.0, 1.0, 10.0]
+        stp = TimeStepper(times, initial=None)
+        stp.setInitial(-1.0)
+        on_error = TimeStepper.Error()
+        stp._maxLevel = 3
+        split = TimeStepper.Split(on_error, nbSubSteps=4, minStep=1.0e-2)
+        stp.register_event(split)
 
+        stp.register_event(TimeStepper.Finalize(TimeStepper.MaximumNbOfSteps(100000)))
+        always = TimeStepper.Always()
+        mult = TimeStepper.AdaptConst(always, factor=2.0)
+        stp.register_event(mult)
 
-def test40_auto():
-    times = [-1.0, 0.0, 1.0, 10.0]
-    stp = TimeStepper(times, initial=None)
-    stp.setInitial(-1.0)
-    on_error = TimeStepper.Error()
-    stp._maxLevel = 3
-    split = TimeStepper.Split(on_error, nbSubSteps=4, minStep=1.0e-2)
-    stp.register_event(split)
+        self.assertAlmostEqual(stp.getInitial(), -1.0)
 
-    stp.register_event(TimeStepper.Finalize(TimeStepper.MaximumNbOfSteps(100000)))
-    always = TimeStepper.Always()
-    mult = TimeStepper.AdaptConst(always, factor=2.0)
-    stp.register_event(mult)
+        self.assertAlmostEqual(stp.getCurrent(), 0.0)
+        self.assertEqual(stp.size(), 3)
+        self.assertTrue(all(stp._forced))
+        self.assertAlmostEqual(stp.getIncrement(), 1.0)
+        self.assertAlmostEqual(stp.getNextIncrement(), 1.0)
+        do_step(stp, True, "t=0")
 
-    print("initial time:", stp.getInitial())
-    do_step(stp, True, "t=0")
-    do_step(stp, False, "error at t=1.0")
-    do_step(stp, True, "ok at t=0.25")
-    do_step(stp, True, "ok at t=0.5")
-    do_step(stp, True, "ok at t=0.75")
-    do_step(stp, True, "ok at t=1.0")
-    do_step(stp, True, "accel1")
-    do_step(stp, True, "accel2")
-    do_step(stp, True, "accel3")
-    do_step(stp, True, "accel4")
-    do_step(stp, True, "accel5")
-    do_step(stp, True, "accel6")
-    return stp
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        self.assertEqual(stp.size(), 3)
+        self.assertTrue(all(stp._forced))
+        self.assertAlmostEqual(stp.getIncrement(), 1.0)
+        self.assertAlmostEqual(stp.getNextIncrement(), 9.0)
+        do_step(stp, False, "error at t=1.0")
+
+        self.assertAlmostEqual(stp.getCurrent(), 0.25)
+        self.assertEqual(stp.size(), 6)
+        self.assertEqual(stp._forced.count(False), 3)
+        self.assertAlmostEqual(stp.getIncrement(), 0.25)
+        self.assertAlmostEqual(stp.getNextIncrement(), 0.75)
+        do_step(stp, True, "ok at t=0.25")
+
+        self.assertAlmostEqual(stp.getCurrent(), 0.5)
+        self.assertEqual(stp.size(), 6)
+        self.assertEqual(stp._forced.count(False), 2)
+        self.assertAlmostEqual(stp.getIncrement(), 0.25)
+        self.assertAlmostEqual(stp.getNextIncrement(), 0.5)
+        do_step(stp, True, "ok at t=0.5 accel limited to dt=0.25 to maximize next step")
+
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        # 0.75 has been removed
+        self.assertEqual(stp.size(), 5)
+        self.assertTrue(all(stp._forced))
+        self.assertAlmostEqual(stp.getIncrement(), 0.5)
+        self.assertAlmostEqual(stp.getNextIncrement(), 9.0)
+        do_step(stp, True, "ok at t=1.0 accel with dt=0.5")
+
+        self.assertAlmostEqual(stp.getCurrent(), 2.0)
+        # 2.0 has been inserted
+        self.assertEqual(stp.size(), 6)
+        self.assertEqual(stp._forced.count(False), 1)
+        self.assertAlmostEqual(stp.getIncrement(), 1.0)
+        self.assertAlmostEqual(stp.getNextIncrement(), 8.0)
+        do_step(stp, True, "ok at t=2.0 accel with dt=1.0")
+
+        self.assertAlmostEqual(stp.getCurrent(), 4.0)
+        # 4.0 has been inserted
+        self.assertEqual(stp.size(), 7)
+        self.assertEqual(stp._forced.count(False), 1)
+        self.assertAlmostEqual(stp.getIncrement(), 2.0)
+        self.assertAlmostEqual(stp.getNextIncrement(), 6.0)
+        do_step(stp, True, "ok at t=4.0 accel with dt=2.0")
+
+        self.assertAlmostEqual(stp.getCurrent(), 6.0)
+        # 6.0 has been inserted
+        self.assertEqual(stp.size(), 8)
+        self.assertEqual(stp._forced.count(False), 1)
+        self.assertAlmostEqual(stp.getIncrement(), 2.0)
+        self.assertAlmostEqual(stp.getNextIncrement(), 4.0)
+        do_step(stp, True, "ok at t=6.0 accel with dt=2.0")
+
+        self.assertAlmostEqual(stp.getCurrent(), 10.0)
+        self.assertEqual(stp.size(), 8)
+        self.assertTrue(all(stp._forced))
+        self.assertAlmostEqual(stp.getIncrement(), 4.0)
+        self.assertIsNone(stp.getNextIncrement())
+        do_step(stp, True, "ok at t=10.0 accel with dt=4.0")
+
+        self.assertTrue(stp.isFinished())
+        with self.assertRaisesRegex(IndexError, "no more timesteps"):
+            do_step(stp, True, "ended")
 
 
 class TestPhysicalState(unittest.TestCase):
@@ -869,5 +933,4 @@ class TestResult(unittest.TestCase):
 
 if __name__ == "__main__":
     CA.init()
-    # unittest.main()
-    stp = test40_auto()
+    unittest.main()
