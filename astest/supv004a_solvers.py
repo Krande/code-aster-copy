@@ -479,21 +479,6 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(ratio, 0.14285714285)
 
     def test40_auto(self):
-        def do_step(stp, ok: bool, label: str = ""):
-            # print(f"+ step at {stp.getCurrent()}: {label}")
-            # print(f"  increment: {stp.getIncrement()}, next incr: {stp.getNextIncrement()}")
-            # print(f"  list: {stp._times}")
-            # print(f"  forced: {stp._forced}")
-            if ok:
-                state = MagicMock(name="phys_state")
-                chk = stp.check_event(state)
-                assert chk, "should not occur here!"
-                stp.completed()
-            else:
-                stp.failed(CA.ConvergenceError("MESSAGEID"))
-                return False
-            return True
-
         times = [-1.0, 0.0, 1.0, 10.0]
         stp = TimeStepper(times, initial=None)
         stp.setInitial(-1.0)
@@ -579,6 +564,56 @@ class TestTimeStepper(unittest.TestCase):
         self.assertTrue(stp.isFinished())
         with self.assertRaisesRegex(IndexError, "no more timesteps"):
             do_step(stp, True, "ended")
+
+    def test41_auto(self):
+
+        stp = TimeStepper([0.0, 20.0])
+        # ECHEC, /4
+        on_error = TimeStepper.Error()
+        stp._maxLevel = 3
+        split = TimeStepper.Split(on_error, nbSubSteps=4, minStep=1.0e-2)
+        stp.register_event(split)
+        # ADAPTATION, FIXE +75%
+        stp.register_event(TimeStepper.Finalize(TimeStepper.MaximumNbOfSteps(100000)))
+        always = TimeStepper.Always()
+        mult = TimeStepper.AdaptConst(always, factor=2.0)
+        stp.register_event(mult)
+
+        # "PAS INIT"
+        self.assertTrue(stp.isInitialStep())
+        self.assertAlmostEqual(stp.getInitial(), 0.0)
+
+        dt0 = 1.0
+        self.assertLessEqual(stp.getInitial() + dt0, stp.getCurrent())
+        stp._insert(0, stp.getInitial() + dt0)
+        do_step(stp, False, "t=1.0 fails")
+        do_step(stp, True, "ok at t=0.25")
+        do_step(stp, True, "ok at t=0.75")
+        do_step(stp, True, "ok at t=1.75")
+        do_step(stp, True, "ok at t=3.75")
+        do_step(stp, True, "ok at t=7.75")
+        maxdt = (20.0 - 7.75) / 3.0
+        do_step(stp, True, f"ok at t={7.75 + maxdt}")
+        do_step(stp, True, "ok at t=20.0")
+        self.assertTrue(stp.isFinished())
+        self.assertSequenceEqual(stp._times, [0.25, 0.75, 1.75, 3.75, 7.75, 7.75 + maxdt, 20.0])
+
+
+def do_step(stp, ok: bool, label: str = "", verbose: bool = False):
+    if verbose:
+        print(f"+ step at {stp.getCurrent()}: {label}")
+        print(f"  increment: {stp.getIncrement()}, next incr: {stp.getNextIncrement()}")
+        print(f"  list: {stp._times}")
+        print(f"  forced: {stp._forced}")
+    if ok:
+        state = MagicMock(name="phys_state")
+        chk = stp.check_event(state)
+        assert chk, "should not occur here!"
+        stp.completed()
+    else:
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
+        return False
+    return True
 
 
 class TestPhysicalState(unittest.TestCase):

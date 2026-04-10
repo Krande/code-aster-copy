@@ -165,6 +165,7 @@ DEFI_LIST_INST = OPER(
             regles=(UN_PARMI("LIST_INST", "VALE"),),
             VALE=SIMP(statut="f", typ="R", max="**"),
             LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
+            PAS_INIT=SIMP(statut="f", typ="R", max=1, val_min=1.0e-12),
             PAS_MINI=SIMP(statut="f", typ="R", max=1, val_min=1.0e-12),
             PAS_MAXI=SIMP(statut="f", typ="R", max=1),
             NB_PAS_MAXI=SIMP(statut="f", typ="I", max=1, val_max=1000000, defaut=1000000),

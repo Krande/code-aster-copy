@@ -46,13 +46,13 @@ class TimeStepper(Observer):
 
     _times = _forced = _eps = _current = _initial = _final = _last = None
     _actions = _state = None
-    _split = _maxLevel = _minStep = _maxStep = None
+    _split = _maxLevel = _minStep = _maxStep = _initStep = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     default_increment = 1.0e-12
     maxNbSteps = 1.0e6
 
-    def __init__(self, times, epsilon=default_increment, initial=0.0, final=None):
+    def __init__(self, times, epsilon=default_increment, initial=0.0, final=None, init_step=None):
         super().__init__()
         times = list(times)
         if sorted(times) != times:
@@ -67,6 +67,7 @@ class TimeStepper(Observer):
         self._maxLevel = -1
         self._minStep = 1.0e-99
         self._maxStep = 1.0e99
+        self._initStep = init_step
         self._resetState()
         logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
         self._check_bounds()
@@ -94,6 +95,7 @@ class TimeStepper(Observer):
         new._maxLevel = self._maxLevel
         new._minStep = self._minStep
         new._maxStep = self._maxStep
+        new._initStep = self._initStep
         for act in self._actions:
             new.register_event(act.copy())
         new.register_default_error_event()
@@ -145,6 +147,16 @@ class TimeStepper(Observer):
         """
         self._initial = time
         self._check_bounds()
+        if self._initStep is not None:
+            first = self.getCurrent()
+            dt0 = first - time
+            if self._initStep < dt0:
+                logger.info(MessageLog.GetText("I", "DISCRETISATION3_87", valr=self._initStep))
+                self._insert(0, time + self._initStep)
+            else:
+                logger.info(
+                    MessageLog.GetText("I", "DISCRETISATION3_86", valr=(dt0, self._initStep))
+                )
 
     def setFinal(self, time=None, current=None):
         """Limit the sequence to the times lower than `time`.
@@ -457,6 +469,8 @@ class TimeStepper(Observer):
             stp.register_event(act)
 
         if args["METHODE"] == "AUTO":
+            if "PAS_INIT" in definition:
+                stp._initStep = definition["PAS_INIT"]
             if "PAS_MINI" in definition:
                 stp._minStep = definition["PAS_MINI"]
             if "PAS_MAXI" in definition:
