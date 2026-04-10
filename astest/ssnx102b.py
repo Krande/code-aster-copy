@@ -17,6 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Commands import *
+from code_aster import CA
+
 import numpy as np
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
@@ -176,7 +179,7 @@ def calcSRef(uimp, vOrie, LX, anglvril, kddll):
     return FglobPR, FglobPT, FglobST, SglobST
 
 
-def getValReg(testnum, typres="nlin"):
+def getValReg(testnum, restype="STAT_NON_LINE"):
     """
     Get numerical reference values for non-regression test.
     """
@@ -249,37 +252,50 @@ def getValReg(testnum, typres="nlin"):
             0.13999999999999985,
         ]
 
-    elif testnum == 2:
-        lvalReg = [
-            0.371230501935536,
-            18.43161917689161,
-            -2.2731312297060983e-17,
-            23.576469276950043,
-            10.818197573087605,
-            22.05,
-            5.894117319237511,
-            2.704549393271901,
-            5.512500000000001,
-        ]
-
-    if typres == "lin":
-        lass = 9
-    elif typres == "nlin":
-        lass = 27
-    assert len(lvalReg) == lass
-
     return lvalReg
 
 
-def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
+def checkOptions(idOrie, sectype, restype, postOptions, nomComportement):
+    """
+    Check Options
+    """
+    assert idOrie in [0, 1, 2], "The reinforcement orientation axis should be 0(x), 1(y), or 2(z)."
+    assert sectype in ["RECTANGLE", "CERCLE"], "The section type should be 'RECTANGLE' or 'CERCLE'."
+    assert restype in [
+        "STAT_NON_LINE",
+        "MECA_STATIQUE",
+    ], "The resolution operattion should be 'STAT_NON_LINE' or 'MECA_STATIQUE'."
+    for option in postOptions:
+        assert option in [
+            "FORC_NODA",
+            "SIEF_ELGA",
+            "SIEF_ELNO",
+            "SAUT_ELNO",
+        ], "The postprocessing fields should be in ['FORC_NODA', 'SIEF_ELGA', 'SIEF_ELNO', 'SAUT_ELNO']."
+    assert nomComportement in [
+        "SP_ELAS",
+        "SP_CINE",
+    ], "The behaviour for STAT_NON_LINE should be 'SP_ELAS' or 'SP_CINE'."
+
+
+def faireTest(
+    idOrie, anglvril, sectype, nomComportement, restype, dimp, testOptions, valRegression
+):
     """
     Testcase for 3D_INTSOLPIEU element.
 
     testing :
-    - element orientation on X (idOrie=0), Y (idOrie=1) or Z (idOrie=2)
-    - section orientation : anglvril in degrees
+    - element orientation on X (idOrie=0), Y (idOrie=1) or Z (idOrie=2) : MODI_MAILLAGE(ORIE_HEXA27)
+    - section orientation : anglvril in degrees. ORIENTATION(CARA="ANGL_VRIL")
     - section type : "RECTANGLE" or "CERCLE" (with fixed geometrical properties)
+    - calculation options : STAT_NON_LINE, RIGI_MECA, FORC_NODA, SIEF_ELGA, SIEF_ELNO, SAUT_ELGA, SAUT_ELNO
     """
+    ################################################################################
+
+    #  VÉRIFICATION DES ENTRÉES
+    #
+
+    checkOptions(idOrie, sectype, restype, testOptions, nomComportement)
 
     ################################################################################
 
@@ -386,9 +402,7 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
         ORIENTATION=(_F(GROUP_MA=Grma27, CARA="ANGL_VRIL", VALE=anglvril),),
     )
 
-    CHMAT = AFFE_MATERIAU(
-        MODELE=MODELE, AFFE=(_F(GROUP_MA=Grma27, MATER=(INT, POU)),)  # ordre imposé
-    )
+    CHMAT = AFFE_MATERIAU(MODELE=MODELE, AFFE=(_F(GROUP_MA=Grma27, MATER=(INT, POU)),))
 
     ############################################
 
@@ -445,10 +459,9 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
 
     for iCL in l_CL:
 
-        if typres == "lin":
+        if restype == "MECA_STATIQUE":
 
             RES = MECA_STATIQUE(
-                # INFO=2,
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CAREL,
@@ -457,29 +470,27 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
             )
 
             RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_ELGA",))
-            RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, FORCE=("FORC_NODA",))
 
-        elif typres == "nlin":
+        elif restype == "STAT_NON_LINE":
 
             RES = STAT_NON_LINE(
-                # INFO=2,
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CAREL,
                 EXCIT=(_F(CHARGE=iCL, FONC_MULT=FONCT),),
                 COMPORTEMENT=_F(
-                    RELATION="SP_CINE", GROUP_MA=Grma27, RESI_INTE=1e-8, ITER_INTE_PAS=-4
+                    RELATION=nomComportement, GROUP_MA=Grma27, RESI_INTE=1e-8, ITER_INTE_PAS=-4
                 ),
                 INCREMENT=_F(LIST_INST=LINST),
             )
 
-            RES = CALC_CHAMP(
-                reuse=RES,
-                RESULTAT=RES,
-                FORCE=("FORC_NODA",),
-                DEPLACEMENT=("SAUT_ELGA", "SAUT_ELNO"),
-                CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
-            )
+        RES = CALC_CHAMP(
+            reuse=RES,
+            RESULTAT=RES,
+            FORCE=("FORC_NODA",),
+            DEPLACEMENT=("SAUT_ELGA", "SAUT_ELNO"),
+            CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
+        )
 
         l_RES.append(RES)
 
@@ -489,205 +500,210 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
     #
 
     # Solutions de référence de non-régression
-    l_valCalc = valReg
+    l_valCalc = valRegression
     iValCalc = 0
 
     # Solutions de référence analytiques
     kddll = [k_t * facts_loc[0], k_n * facts_loc[1], k_n * facts_loc[2]]
     FresPR, FresPT, FresST, SresST = calcSRef(ldimp, vOrie, LX, anglvril, kddll)
 
-    ####################
+    if "FORC_NODA" in testOptions:
 
-    # ROTATION IMPOSEE sur 1 noeud du PIEU
+        ####################
 
-    iRES = l_RES[0]
+        # ROTATION IMPOSEE sur 1 noeud du PIEU
 
-    TAB = POST_RELEVE_T(
-        ACTION=(
-            _F(
-                INTITULE="TABLE",
-                OPERATION="EXTRACTION",
-                GROUP_NO="GRNP",
-                RESULTAT=iRES,
-                NOM_CHAM="FORC_NODA",
-                TOUT_CMP="OUI",
+        iRES = l_RES[0]
+
+        TAB = POST_RELEVE_T(
+            ACTION=(
+                _F(
+                    INTITULE="TABLE",
+                    OPERATION="EXTRACTION",
+                    GROUP_NO="GRNP",
+                    RESULTAT=iRES,
+                    NOM_CHAM="FORC_NODA",
+                    TOUT_CMP="OUI",
+                ),
+            )
+        )
+
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresPR[0],
+            NOM_PARA="DX",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(
+                _F(NOM_PARA="INST", VALE=1.0),
+                # _F(NOM_PARA="NOM_CHAM", VALE_K="FORC_NODA"),
             ),
         )
-    )
 
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresPR[0],
-        NOM_PARA="DX",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(
-            _F(NOM_PARA="INST", VALE=1.0),
-            # _F(NOM_PARA="NOM_CHAM", VALE_K="FORC_NODA"),
-        ),
-    )
+        iValCalc += 1
 
-    iValCalc += 1
-
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresPR[1],
-        NOM_PARA="DY",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
-
-    iValCalc += 1
-
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresPR[2],
-        NOM_PARA="DZ",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
-
-    iValCalc += 1
-
-    ####################
-
-    # DEPLACEMENT IMPOSE sur 1 noeud du PIEU
-
-    iRES = l_RES[1]
-
-    TAB = POST_RELEVE_T(
-        ACTION=(
-            _F(
-                INTITULE="TABLE",
-                OPERATION="EXTRACTION",
-                GROUP_NO="GRNP",
-                RESULTAT=iRES,
-                NOM_CHAM="FORC_NODA",
-                TOUT_CMP="OUI",
-            ),
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresPR[1],
+            NOM_PARA="DY",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
         )
-    )
 
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresPT[0],
-        NOM_PARA="DX",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
+        iValCalc += 1
 
-    iValCalc += 1
-
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresPT[1],
-        NOM_PARA="DY",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
-
-    iValCalc += 1
-
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresPT[2],
-        NOM_PARA="DZ",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
-
-    iValCalc += 1
-
-    ####################
-
-    # DEPLACEMENT IMPOSE sur 4 noeuds du SOL
-
-    iRES = l_RES[2]
-
-    TAB = POST_RELEVE_T(
-        ACTION=(
-            _F(
-                INTITULE="TABLE",
-                OPERATION="EXTRACTION",
-                GROUP_NO="GRNS",
-                RESULTAT=iRES,
-                NOM_CHAM="FORC_NODA",
-                TOUT_CMP="OUI",
-            ),
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresPR[2],
+            NOM_PARA="DZ",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
         )
-    )
 
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresST[0],
-        NOM_PARA="DX",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
+        iValCalc += 1
 
-    iValCalc += 1
+        ####################
 
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresST[1],
-        NOM_PARA="DY",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
+        # DEPLACEMENT IMPOSE sur 1 noeud du PIEU
 
-    iValCalc += 1
+        iRES = l_RES[1]
 
-    TEST_TABLE(
-        REFERENCE="ANALYTIQUE",
-        PRECISION=1e-5,
-        CRITERE="RELATIF",
-        VALE_CALC=l_valCalc[iValCalc],
-        VALE_REFE=FresST[2],
-        NOM_PARA="DZ",
-        TYPE_TEST="SOMM",
-        TABLE=TAB,
-        FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
-    )
+        TAB = POST_RELEVE_T(
+            ACTION=(
+                _F(
+                    INTITULE="TABLE",
+                    OPERATION="EXTRACTION",
+                    GROUP_NO="GRNP",
+                    RESULTAT=iRES,
+                    NOM_CHAM="FORC_NODA",
+                    TOUT_CMP="OUI",
+                ),
+            )
+        )
 
-    iValCalc += 1
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresPT[0],
+            NOM_PARA="DX",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
+        )
 
-    if typres == "nlin":
+        iValCalc += 1
+
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresPT[1],
+            NOM_PARA="DY",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
+        )
+
+        iValCalc += 1
+
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresPT[2],
+            NOM_PARA="DZ",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
+        )
+
+        iValCalc += 1
+
+        ####################
+
+        # DEPLACEMENT IMPOSE sur 4 noeuds du SOL
+
+        iRES = l_RES[2]
+
+        TAB = POST_RELEVE_T(
+            ACTION=(
+                _F(
+                    INTITULE="TABLE",
+                    OPERATION="EXTRACTION",
+                    GROUP_NO="GRNS",
+                    RESULTAT=iRES,
+                    NOM_CHAM="FORC_NODA",
+                    TOUT_CMP="OUI",
+                ),
+            )
+        )
+
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresST[0],
+            NOM_PARA="DX",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
+        )
+
+        iValCalc += 1
+
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresST[1],
+            NOM_PARA="DY",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
+        )
+
+        iValCalc += 1
+
+        TEST_TABLE(
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            CRITERE="RELATIF",
+            VALE_CALC=l_valCalc[iValCalc],
+            VALE_REFE=FresST[2],
+            NOM_PARA="DZ",
+            TYPE_TEST="SOMM",
+            TABLE=TAB,
+            FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
+        )
+
+        iValCalc += 1
+
+    FF1 = lambda xi: (1 - xi) / 2
+    FF2 = lambda xi: (1 + xi) / 2
+
+    if "SIEF_ELGA" in testOptions:
 
         # SIEF_ELGA : repère local
 
-        FF1 = lambda xi: (1 - xi) / 2
-        FF2 = lambda xi: (1 + xi) / 2
+        iRES = l_RES[2]
+        iValCalc = 9
 
         for i, xi in enumerate([-np.sqrt(1 / 3), np.sqrt(1 / 3)]):
 
@@ -746,7 +762,12 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
 
             iValCalc += 1
 
+    if "SIEF_ELNO" in testOptions:
+
         # SIEF_ELNO : repère local
+
+        iRES = l_RES[2]
+        iValCalc = 15
 
         for i, xi in enumerate([-1.0, 1.0]):
 
@@ -809,7 +830,12 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
 
             iValCalc += 1
 
+    if "SAUT_ELNO" in testOptions:
+
         # SAUT_ELNO
+
+        iRES = l_RES[2]
+        iValCalc = 21
 
         for i, xi in enumerate([-1.0, 1.0]):
 
@@ -872,37 +898,20 @@ def faireTest(idOrie, anglvril, sectype, dimp, typres, valReg):
 
             iValCalc += 1
 
-    # # RIGI_MECA
 
+# ------------------------------------------------------------------------------ #
 
-################################################################################
+# Tests
 
-#  REALISATION DES TESTS
-#
-
-faireTest(
-    idOrie=2,
-    anglvril=35.0,
-    sectype="RECTANGLE",
-    dimp=np.array([1.5, 0.4, 0.7]),
-    typres="nlin",
-    valReg=getValReg(0, typres="nlin"),
-)
 faireTest(
     idOrie=1,
     anglvril=197.0,
     sectype="CERCLE",
+    nomComportement="SP_CINE",
+    restype="STAT_NON_LINE",
     dimp=np.array([3.2, 1.7, 0.14]),
-    typres="nlin",
-    valReg=getValReg(1, typres="nlin"),
-)
-faireTest(
-    idOrie=2,
-    anglvril=35.0,
-    sectype="RECTANGLE",
-    dimp=np.array([1.5, 0.4, 0.7]),
-    typres="lin",
-    valReg=getValReg(2, typres="lin"),
+    testOptions=["FORC_NODA", "SIEF_ELGA", "SIEF_ELNO", "SAUT_ELNO"],
+    valRegression=getValReg(1, restype="STAT_NON_LINE"),
 )
 
 FIN()
