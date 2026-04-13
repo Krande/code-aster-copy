@@ -91,7 +91,7 @@ class TimeStepper(Observer):
             TimeStepper: copy of the object.
         """
         new = TimeStepper(self._times, initial=self._initial, final=self._final, epsilon=self._eps)
-        new._forced = self._forced
+        new._forced = self._forced[:]
         new._maxLevel = self._maxLevel
         new._minStep = self._minStep
         new._maxStep = self._maxStep

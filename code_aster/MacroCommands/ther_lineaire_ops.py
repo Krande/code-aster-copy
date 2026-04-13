@@ -187,7 +187,7 @@ def _createTimeStepper(stationary, args):
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: initial = %s", stepper.getInitial())
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: final = %s", stepper.getFinal())
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: size = %s", stepper.size())
-    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: times = %s", stepper._times)
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: times = %s", repr(stepper))
     return stepper
 
 
