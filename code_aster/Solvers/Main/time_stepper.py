@@ -236,7 +236,8 @@ class TimeStepper(Observer):
         """
         idx = self._current + 1
         i = 0
-        while self._times[idx + i] < time:
+        # "idx + i < len(self._times)" should not be necessary but...
+        while idx + i < len(self._times) and self.cmp(self._times[idx + i], time) < 0:
             i += 1
         for _ in range(i):
             del self._times[idx]
@@ -465,6 +466,7 @@ class TimeStepper(Observer):
                     # TODO not supported yet
                     act = TimeStepper.AutoSplit(event, minStep=fail["SUBD_PAS_MINI"])
             else:  # not supported yet, ignored
+                # raise KeyError(rf"ACTION=\"{fail['ACTION']}\" is not yet supported")
                 continue
             stp.register_event(act)
 
@@ -481,7 +483,7 @@ class TimeStepper(Observer):
                 if adapt["EVENEMENT"] == "AUCUN":
                     continue
                 elif adapt["EVENEMENT"] == "SEUIL":
-                    # not supported yet, ignored
+                    # raise KeyError(r"EVENEMENT=\"SEUIL\" is not yet supported")
                     continue
                 else:
                     event = TimeStepper.Always()
@@ -571,16 +573,16 @@ class TimeStepper(Observer):
     def _check_adapt(self, delta):
         """Check for AdaptAction actions."""
         # last step?
-        if self.remaining() == 1:
+        if self.remaining() <= 1:
             return
-        delta_t = 2.1e6
+        delta_t = 2.1e12
         currIncr = self.getIncrement()
         for act in self._actions:
             if not isinstance(act, TimeStepper.AdaptAction):
                 continue
-            if delta_t > 2.0e6:
+            if delta_t > 2.0e12:
                 logger.info(MessageLog.GetText("I", "ADAPTATION_1"))
-            delta_t = min(delta_t, 1.1e6)
+            delta_t = min(delta_t, 1.1e12)
             enabled = act.event.is_raised(delta=delta)
             if enabled:
                 try:
@@ -591,7 +593,7 @@ class TimeStepper(Observer):
                     enabled = False
             if not enabled:
                 logger.info(MessageLog.GetText("I", "ADAPTATION_3", valk=act.name))
-        if delta_t < 1.0e6:
+        if delta_t < 1.0e12:
             logger.info(MessageLog.GetText("I", "ADAPTATION_5", valr=delta_t))
             nextIncr = self.getNextIncrement()
             if self.cmp(delta_t, nextIncr) > 0:
@@ -608,7 +610,7 @@ class TimeStepper(Observer):
             self._skip_before(new)
             if self.cmp(new, self._times[index]) < 0:
                 self._insert(index, new)
-        elif delta_t < 2.0e6:
+        elif delta_t < 2.0e12:
             logger.info(MessageLog.GetText("I", "ADAPTATION_4", valr=currIncr))
         return True
 
@@ -1016,14 +1018,18 @@ class TimeStepper(Observer):
             stp = context["timeStepper"]
             delta_t = self._factor * stp.getIncrement()
             next_dt = stp.getNextIncrement()
+            logger.debug(
+                "AdaptConst: mult=%.4f, estim=%.4f, next_dt=%.4f", self._factor, delta_t, next_dt
+            )
             # t + next_dt will be necessarly computed.
             # So (if all goes well) there is no reason to go further than
             # this intermediate increment.
             # The more the second step is long, the more delta_t will be long
-            # after t + next_dt the required timestep.
+            # after the required timestep: t + next_dt.
             interm = next_dt / (1 + self._factor)
-            if next_dt and interm < delta_t < 0.99 * next_dt:
+            if next_dt and stp.cmp(interm, delta_t) < 0 and stp.cmp(delta_t, next_dt) < 0:
                 delta_t = interm
+            logger.debug("AdaptConst: interm=%.4f, returned=%.4f", interm, delta_t)
             return delta_t
 
     class AdaptFromNbIter(AdaptAction):
