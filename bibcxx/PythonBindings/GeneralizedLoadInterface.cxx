@@ -33,5 +33,6 @@ void exportGeneralizedLoadToPython( py::module_ &mod ) {
         .def( "setDOFNumbering", &GeneralizedLoad::setDOFNumbering )
         .def( "getDOFNumbering", &GeneralizedLoad::getDOFNumbering )
         .def( "getAssemblyVector", &GeneralizedLoad::getAssemblyVector )
-        .def_property( "_liaisons", &GeneralizedLoad::getLiaisons, &GeneralizedLoad::setLiaisons );
+        .def( "getMPCs", &GeneralizedLoad::getMPCs )
+        .def( "setMPCs", &GeneralizedLoad::setMPCs );
 };

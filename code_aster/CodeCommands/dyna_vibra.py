@@ -74,7 +74,7 @@ class VibrationDynamics(ExecuteCommand):
             nume_gene = char_gene.getDOFNumbering()
             # add of linear relations between modes
             basis = nume_gene.getModalBasis()
-            liaisons = char_gene._liaisons
+            liaisons = char_gene.getMPCs()
             nb_modes_with_lagr = basis.getNumberOfIndexes()
             nb_lagr = len(liaisons)
             nb_modes = nb_modes_with_lagr - nb_lagr

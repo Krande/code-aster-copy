@@ -42,7 +42,7 @@ class GeneralizedLoadStateBuilder(InternalStateBuilder):
         """
         super().save(result)
         self._st["nume"] = result.getDOFNumbering()
-        self._st["liaisons"] = result._liaisons
+        self._st["liaisons"] = result.getMPCs()
 
         return self
 
@@ -55,7 +55,7 @@ class GeneralizedLoadStateBuilder(InternalStateBuilder):
         """
         super().restore(result)
         result.setDOFNumbering(self._st["nume"])
-        result._liaisons = self._st["liaisons"]
+        result.setMPCs(self._st["liaisons"])
 
 
 @injector(GeneralizedLoad)

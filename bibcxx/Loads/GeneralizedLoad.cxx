@@ -32,3 +32,11 @@ const GeneralizedAssemblyVectorRealPtr GeneralizedLoad::getAssemblyVector() cons
     assemblyVector->allocate();
     return assemblyVector;
 };
+
+void GeneralizedLoad::setMPCs( std::vector< std::tuple< VectorInt, VectorReal, double > > &mpcs ) {
+    for ( auto [nume_mode, coef_mult, coef_impo] : mpcs ) {
+        if ( nume_mode.size() != coef_mult.size() )
+            throw std::runtime_error( "Inconsistent size between NUME_MODE and COEF_MULT" );
+    }
+    _mpcs = mpcs;
+}

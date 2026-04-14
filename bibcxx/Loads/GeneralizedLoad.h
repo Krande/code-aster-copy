@@ -38,8 +38,8 @@ class GeneralizedLoad : public DataStructure {
   private:
     /** @brief generalized dof_numbering */
     GeneralizedDOFNumberingPtr _nume;
-    /** @brief attributes for liaisons */
-    std::vector< std::tuple< VectorInt, VectorReal, double > > _liaisons;
+    /** @brief attributes for multi-point constraints */
+    std::vector< std::tuple< VectorInt, VectorReal, double > > _mpcs;
 
   public:
     /**
@@ -70,16 +70,14 @@ class GeneralizedLoad : public DataStructure {
     const GeneralizedDOFNumberingPtr getDOFNumbering() const { return _nume; }
 
     /**
-     * @brief Getter for liaisons property
+     * @brief Getter for multi-point constraints
      */
-    const auto &getLiaisons() const { return _liaisons; }
+    const auto &getMPCs() const { return _mpcs; }
 
     /**
-     * @brief Setter for liaisons property
+     * @brief Setter for multi-point constraints
      */
-    void setLiaisons( std::vector< std::tuple< VectorInt, VectorReal, double > > &liaisons ) {
-        _liaisons = liaisons;
-    }
+    void setMPCs( std::vector< std::tuple< VectorInt, VectorReal, double > > &mpcs );
 
     /**
      * @brief return empty RHS
