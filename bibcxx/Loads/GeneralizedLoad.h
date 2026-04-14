@@ -38,8 +38,8 @@ class GeneralizedLoad : public DataStructure {
   private:
     /** @brief generalized dof_numbering */
     GeneralizedDOFNumberingPtr _nume;
-    /** @brief Python attributes for liaisons */
-    py::object _liaisons;
+    /** @brief attributes for liaisons */
+    std::vector< std::tuple< VectorInt, VectorReal, double > > _liaisons;
 
   public:
     /**
@@ -57,7 +57,7 @@ class GeneralizedLoad : public DataStructure {
      * @brief Constructor
      */
     GeneralizedLoad( const std::string name )
-        : DataStructure( name, 8, "CHAR_GENE" ), _nume( nullptr ), _liaisons( py::none() ) {};
+        : DataStructure( name, 8, "CHAR_GENE" ), _nume( nullptr ) {};
 
     /**
      * @brief Setter for GeneralizedDOFNumbering
@@ -72,12 +72,14 @@ class GeneralizedLoad : public DataStructure {
     /**
      * @brief Getter for liaisons property
      */
-    const py::object &getLiaisons() const { return _liaisons; }
+    const auto &getLiaisons() const { return _liaisons; }
 
     /**
      * @brief Setter for liaisons property
      */
-    void setLiaisons( py::object &liaisons ) { _liaisons = liaisons; }
+    void setLiaisons( std::vector< std::tuple< VectorInt, VectorReal, double > > &liaisons ) {
+        _liaisons = liaisons;
+    }
 
     /**
      * @brief return empty RHS

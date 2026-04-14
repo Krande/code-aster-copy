@@ -60,6 +60,6 @@ def affe_char_gene_ops(self, **args):
     # create char_gene
     char_gene = GeneralizedLoad()
     char_gene.setDOFNumbering(nume_gene)
-    char_gene._liaisons = liaisons
+    char_gene._liaisons = [(l["NUME_MODE"], l["COEF_MULT"], l["COEF_IMPO"]) for l in liaisons]
 
     return char_gene

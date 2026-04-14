@@ -85,7 +85,7 @@ class VibrationDynamics(ExecuteCommand):
             values[:-nb_lagr, :-nb_lagr] = matr_rigi.toNumpy()
             for i_lagr, liaison in enumerate(liaisons):
                 nume_mode_lagr = nb_modes + i_lagr + 1
-                for nume_mode, coef_mult in zip(liaison["NUME_MODE"], liaison["COEF_MULT"]):
+                for nume_mode, coef_mult in zip(liaison[0], liaison[1]):
                     values[nume_mode_lagr - 1, nume_mode - 1] = coef_mult
                     values[nume_mode - 1, nume_mode_lagr - 1] = coef_mult
 
@@ -117,7 +117,7 @@ class VibrationDynamics(ExecuteCommand):
             vect_gen = char_gene.getAssemblyVector()
             vect_gen_values = vect_gen.getValues()
             for i_lagr, liaison in enumerate(liaisons):
-                coef_impo = liaison["COEF_IMPO"]
+                coef_impo = liaison[2]
                 vect_gen_values[nb_modes + i_lagr] = coef_impo
             vect_gen.setValues(vect_gen_values)
 
