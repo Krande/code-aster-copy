@@ -44,20 +44,21 @@ class TimeStepper(Observer):
         final (float, optional): Final time (default: the last given).
     """
 
-    _times = _eps = _current = _initial = _final = _last = None
+    _times = _forced = _eps = _current = _initial = _final = _last = None
     _actions = _state = None
-    _split = _maxLevel = _minStep = _maxStep = None
+    _split = _maxLevel = _minStep = _maxStep = _initStep = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     default_increment = 1.0e-12
     maxNbSteps = 1.0e6
 
-    def __init__(self, times, epsilon=default_increment, initial=0.0, final=None):
+    def __init__(self, times, epsilon=default_increment, initial=0.0, final=None, init_step=None):
         super().__init__()
         times = list(times)
         if sorted(times) != times:
             raise ValueError("the time steps must be ordered")
         self._times = times
+        self._forced = [True] * len(self._times)
         self._eps = epsilon
         self._initial = initial
         self._final = final
@@ -66,6 +67,7 @@ class TimeStepper(Observer):
         self._maxLevel = -1
         self._minStep = 1.0e-99
         self._maxStep = 1.0e99
+        self._initStep = init_step
         self._resetState()
         logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
         self._check_bounds()
@@ -89,9 +91,11 @@ class TimeStepper(Observer):
             TimeStepper: copy of the object.
         """
         new = TimeStepper(self._times, initial=self._initial, final=self._final, epsilon=self._eps)
+        new._forced = self._forced[:]
         new._maxLevel = self._maxLevel
         new._minStep = self._minStep
         new._maxStep = self._maxStep
+        new._initStep = self._initStep
         for act in self._actions:
             new.register_event(act.copy())
         new.register_default_error_event()
@@ -103,11 +107,17 @@ class TimeStepper(Observer):
         if self._initial is not None:
             while times and self.cmp(times[0], self._initial) <= 0:
                 times.pop(0)
+                self._forced.pop(0)
         if self._final is not None:
             while times and self.cmp(times[-1], self._final) > 0:
                 times.pop()
+                self._forced.pop()
             if not times or self.cmp(self._final, times[-1]) > 0:
                 times.append(self._final)
+                self._forced.append(True)
+        if self._forced:
+            self._forced[0] = True
+            self._forced[-1] = True
         self._current = 0
         if not times:
             # empty list
@@ -137,6 +147,16 @@ class TimeStepper(Observer):
         """
         self._initial = time
         self._check_bounds()
+        if self._initStep is not None:
+            first = self.getCurrent()
+            dt0 = first - time
+            if self._initStep < dt0:
+                logger.info(MessageLog.GetText("I", "DISCRETISATION3_87", valr=self._initStep))
+                self._insert(0, time + self._initStep)
+            else:
+                logger.info(
+                    MessageLog.GetText("I", "DISCRETISATION3_86", valr=(dt0, self._initStep))
+                )
 
     def setFinal(self, time=None, current=None):
         """Limit the sequence to the times lower than `time`.
@@ -189,13 +209,14 @@ class TimeStepper(Observer):
         """
         return self._current > self._last
 
-    def _insert(self, index, time):
+    def _insert(self, index: int, time: float, forced: bool = False):
         """Inserts the step to given index. The caller must check for already
         existing time.
 
         Arguments:
             index (int): index to insert new time.
             time (float): time value to insert.
+            forced (bool): tell if this step should be forced.
         """
         # print("\ninsert at", index, time, self._current, end=" ")
         if index < self._current:
@@ -203,8 +224,24 @@ class TimeStepper(Observer):
         if self.size() >= TimeStepper.maxNbSteps:
             logger.error(MessageLog.GetText("F", "ADAPTATION_13"))
         self._times.insert(index, time)
+        self._forced.insert(index, forced)
         self._last = len(self._times) - 1
         # print("\n->", self._current, self._last, self._times, flush=True)
+
+    def _skip_before(self, time: float):
+        """Skip times up to 'time'.
+
+        Arguments:
+            time (float): skip values between the current time and this time.
+        """
+        idx = self._current + 1
+        i = 0
+        # "idx + i < len(self._times)" should not be necessary but...
+        while idx + i < len(self._times) and self.cmp(self._times[idx + i], time) < 0:
+            i += 1
+        for _ in range(i):
+            del self._times[idx]
+            del self._forced[idx]
 
     def getInitial(self):
         """Returns the initial time (not calculated).
@@ -257,20 +294,25 @@ class TimeStepper(Observer):
         return self.getCurrent() - prev
 
     def getNextIncrement(self):
-        """Returns the next increment to next step to be calculated.
+        """Returns the next increment to next forced step to be calculated.
 
         Returns:
             float: increment to the next time value.
         """
         if self._current >= self._last:
             return None
-        return self._times[self._current + 1] - self.getCurrent()
+        idx = self._current + 1
+        # at least the last one is forced
+        while not self._forced[idx]:
+            idx += 1
+        return self._times[idx] - self.getCurrent()
 
     def completed(self):
         """Register the current step as completed successfully."""
         self._resetState()
         if self.isFinished():
             raise IndexError("no more timesteps")
+        self._forced[self._current] = True
         self._current += 1
         if not self.isFinished():
             last = self.getCurrent()
@@ -424,10 +466,13 @@ class TimeStepper(Observer):
                     # TODO not supported yet
                     act = TimeStepper.AutoSplit(event, minStep=fail["SUBD_PAS_MINI"])
             else:  # not supported yet, ignored
+                # raise KeyError(rf"ACTION=\"{fail['ACTION']}\" is not yet supported")
                 continue
             stp.register_event(act)
 
         if args["METHODE"] == "AUTO":
+            if "PAS_INIT" in definition:
+                stp._initStep = definition["PAS_INIT"]
             if "PAS_MINI" in definition:
                 stp._minStep = definition["PAS_MINI"]
             if "PAS_MAXI" in definition:
@@ -438,7 +483,7 @@ class TimeStepper(Observer):
                 if adapt["EVENEMENT"] == "AUCUN":
                     continue
                 elif adapt["EVENEMENT"] == "SEUIL":
-                    # not supported yet, ignored
+                    # raise KeyError(r"EVENEMENT=\"SEUIL\" is not yet supported")
                     continue
                 else:
                     event = TimeStepper.Always()
@@ -528,16 +573,16 @@ class TimeStepper(Observer):
     def _check_adapt(self, delta):
         """Check for AdaptAction actions."""
         # last step?
-        if self.remaining() == 1:
+        if self.remaining() <= 1:
             return
-        delta_t = 2.1e6
+        delta_t = 2.1e12
         currIncr = self.getIncrement()
         for act in self._actions:
             if not isinstance(act, TimeStepper.AdaptAction):
                 continue
-            if delta_t > 2.0e6:
+            if delta_t > 2.0e12:
                 logger.info(MessageLog.GetText("I", "ADAPTATION_1"))
-            delta_t = min(delta_t, 1.1e6)
+            delta_t = min(delta_t, 1.1e12)
             enabled = act.event.is_raised(delta=delta)
             if enabled:
                 try:
@@ -548,7 +593,7 @@ class TimeStepper(Observer):
                     enabled = False
             if not enabled:
                 logger.info(MessageLog.GetText("I", "ADAPTATION_3", valk=act.name))
-        if delta_t < 1.0e6:
+        if delta_t < 1.0e12:
             logger.info(MessageLog.GetText("I", "ADAPTATION_5", valr=delta_t))
             nextIncr = self.getNextIncrement()
             if self.cmp(delta_t, nextIncr) > 0:
@@ -562,9 +607,10 @@ class TimeStepper(Observer):
                 logger.error(MessageLog.GetText("F", "ADAPTATION_11", valr=delta_t))
             new = self.getCurrent() + delta_t
             index = self._current + 1
+            self._skip_before(new)
             if self.cmp(new, self._times[index]) < 0:
                 self._insert(index, new)
-        elif delta_t < 2.0e6:
+        elif delta_t < 2.0e12:
             logger.info(MessageLog.GetText("I", "ADAPTATION_4", valr=currIncr))
         return True
 
@@ -970,8 +1016,21 @@ class TimeStepper(Observer):
                 context (dict): Context of the event.
             """
             stp = context["timeStepper"]
-            currIncr = stp.getIncrement()
-            return self._factor * currIncr
+            delta_t = self._factor * stp.getIncrement()
+            next_dt = stp.getNextIncrement()
+            logger.debug(
+                "AdaptConst: mult=%.4f, estim=%.4f, next_dt=%.4f", self._factor, delta_t, next_dt
+            )
+            # t + next_dt will be necessarly computed.
+            # So (if all goes well) there is no reason to go further than
+            # this intermediate increment.
+            # The more the second step is long, the more delta_t will be long
+            # after the required timestep: t + next_dt.
+            interm = next_dt / (1 + self._factor)
+            if next_dt and stp.cmp(interm, delta_t) < 0 and stp.cmp(delta_t, next_dt) < 0:
+                delta_t = interm
+            logger.debug("AdaptConst: interm=%.4f, returned=%.4f", interm, delta_t)
+            return delta_t
 
     class AdaptFromNbIter(AdaptAction):
         """This action returns a multiplicative factor for the next timestep

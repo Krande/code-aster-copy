@@ -100,4 +100,8 @@ Nombre de pas maximum: %(i1)d
     85: _(
         """Le pas de temps suivant sera modifié à l'aide d'un coefficient NB_ITER_NEWTON_REF dont la référence est %(i1)d."""
     ),
+    86: _(
+        """Le premier pas de temps (%(r1)f) est plus petit que PAS_INIT (%(r2)f). PAS_INIT est ignoré."""
+    ),
+    87: _("""Un premier pas de temps est inséré (PAS_INIT=%(r1)f)."""),
 }
