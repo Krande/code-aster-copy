@@ -229,16 +229,6 @@ cata_msg = {
 Relation 1d sans loi de fluence appropriée
 """
     ),
-    59: _(
-        """
- erreur direction grandissement
-"""
-    ),
-    #     62: _(
-    #         """
-    #  ITER_INTE_MAXI insuffisant lors du calcul de la borne
-    # """
-    # ),
     63: _(
         """
  CAM_CLAY :

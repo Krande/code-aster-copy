@@ -18,6 +18,7 @@
 !
 subroutine dilata(ds_thm, phi, tbiot, alphfi)
 !
+    use MaterialPara_module
     use MaterialPara_type
     use THM_type
     implicit none
@@ -25,6 +26,7 @@ subroutine dilata(ds_thm, phi, tbiot, alphfi)
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     real(kind=8), intent(in) :: phi
@@ -51,7 +53,7 @@ subroutine dilata(ds_thm, phi, tbiot, alphfi)
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: i
-    real(kind=8) :: alpha(6)
+    real(kind=8) :: alpha(6), anglNautZero(3)
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8) :: talpha(3, 3), talphal(3, 3)
     real(kind=8) :: passag(3, 3), work(3, 3)
@@ -60,11 +62,12 @@ subroutine dilata(ds_thm, phi, tbiot, alphfi)
 ! --------------------------------------------------------------------------------------------------
 !
     materPara = ds_thm%ds_behaviour%BEHInteg%materPara
+    anglNautZero = 0.d0
     alphfi = 0.d0
-    talpha(:, :) = 0.d0
-    talphal(:, :) = 0.d0
-    work(:, :) = 0.d0
-    passag(:, :) = 0.d0
+    talpha = 0.d0
+    talphal = 0.d0
+    work = 0.d0
+    passag = 0.d0
 !
 ! - Get parameters
 !
@@ -85,7 +88,11 @@ subroutine dilata(ds_thm, phi, tbiot, alphfi)
     end if
 
 ! - Change reference frame
-    call matrot(materPara%lcsPara%lcsAngle, passag)
+    if (chckLCSDefine(materPara%lcsPara)) then
+        call matrot(materPara%lcsPara%lcsAngle, passag)
+    else
+        call matrot(anglNautZero, passag)
+    end if
     call utbtab('ZERO', 3, 3, talpha, passag, work, talphal)
 
 ! - Compute differential thermal expansion ratio

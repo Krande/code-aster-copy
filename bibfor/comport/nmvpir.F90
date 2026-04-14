@@ -24,6 +24,7 @@ subroutine nmvpir(BEHInteg, &
                   sigp, vip, dsidep, iret)
 !
     use Behaviour_type
+    use MaterialPara_module
     use MaterialPara_type
     implicit none
 !
@@ -335,16 +336,21 @@ subroutine nmvpir(BEHInteg, &
     call granac(fami, kpg, ksp, jvMaterCode, '        ', &
                 relaComp, irrap, irram, tm, tp, &
                 depsgr)
-! --- RECUPERATION DU REPERE POUR LE GRANDISSEMENT
-!
-    if (relaComp(1:13) .eq. 'LEMAITRE_IRRA' .or. relaComp(1:13) .eq. 'GRAN_IRRA_LOG') then
-        if (ndim .eq. 2) then
-            if (materPara%lcsPara%lcsAngle(2) .ne. 0.d0) then
-                call utmess('F', 'ALGORITH11_82', nr=2, valr=materPara%lcsPara%lcsAngle(2))
+
+! - RECUPERATION DU REPERE POUR LE GRANDISSEMENT
+    if (relaComp(1:13) .eq. 'LEMAITRE_IRRA' .or. &
+        relaComp(1:13) .eq. 'GRAN_IRRA_LOG') then
+        if (chckLCSDefine(materPara%lcsPara)) then
+            if (ndim .eq. 2) then
+                if (materPara%lcsPara%lcsAngle(2) .ne. 0.d0) then
+                    call utmess('F', 'ALGORITH11_82', nr=2, valr=materPara%lcsPara%lcsAngle(2))
+                end if
             end if
+            alpha = materPara%lcsPara%lcsAngle(1)
+            beta = materPara%lcsPara%lcsAngle(2)
+        else
+            call utmess('F', 'ALGORITH7_83')
         end if
-        alpha = materPara%lcsPara%lcsAngle(1)
-        beta = materPara%lcsPara%lcsAngle(2)
         caa = cos(alpha)
         saa = sin(alpha)
         cba = cos(beta)

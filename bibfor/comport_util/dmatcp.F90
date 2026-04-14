@@ -81,13 +81,13 @@ subroutine dmatcp(materPara, poum, time, &
 
 ! - Compute Hooke matrix
     if (present(di_)) then
-        call matrHookePlaneStress(materPara%elasID, materPara%lcsPara%lcsAngle, &
+        call matrHookePlaneStress(materPara, &
                                   hi, gi, g1i, &
                                   di)
         di_ = di
     end if
     if (present(dr_)) then
-        call matrHookePlaneStress(materPara%elasID, materPara%lcsPara%lcsAngle, &
+        call matrHookePlaneStress(materPara, &
                                   hr, gr, g1r, &
                                   dr)
         dr_ = dr

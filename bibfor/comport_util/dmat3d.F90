@@ -80,13 +80,13 @@ subroutine dmat3d(materPara, poum, time, &
 
 ! - Compute Hooke matrix
     if (present(di_)) then
-        call matrHooke3d(materPara%elasID, materPara%lcsPara%lcsAngle, &
+        call matrHooke3d(materPara, &
                          hi, gi, g1i, g2i, g3i, &
                          di)
         di_ = di
     end if
     if (present(dr_)) then
-        call matrHooke3d(materPara%elasID, materPara%lcsPara%lcsAngle, &
+        call matrHooke3d(materPara, &
                          hr, gr, g1r, g2r, g3r, &
                          dr)
         dr_ = dr

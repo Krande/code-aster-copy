@@ -59,8 +59,7 @@ subroutine te0248(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8), parameter :: fami = 'RIGI'
-    integer(kind=8), parameter :: neq = 6, nbt = 21, ncstpm = 13
-    real(kind=8) :: cstpm(ncstpm)
+    integer(kind=8), parameter :: neq = 6, nbt = 21
     integer(kind=8) :: jvMaterc, jvGeom, iorie, isect, jvInstmr
     integer(kind=8) :: jvInstpr, ideplm, ideplp, icontm, ivarim
     integer(kind=8) :: jvCarcri, imatuu, ivectu, icontp, nno, nc, ivarip, jcret
@@ -273,8 +272,7 @@ subroutine te0248(option, nomte)
         end if
 !
     else if (relaComp .eq. 'VMIS_ASYM_LINE') then
-        call nmmaba(zi(jvMaterc), relaComp, e, dsde, sigy, &
-                    ncstpm, cstpm)
+        call nmmaba(zi(jvMaterc), relaComp, e, dsde, sigy)
         call nmasym(materPara, option, &
                     xlong0, aire, dlong, &
                     effnom, zr(ivarim), zr(icontp), zr(ivarip), klv, &

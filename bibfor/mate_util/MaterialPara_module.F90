@@ -28,7 +28,7 @@ module MaterialPara_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    public :: initParaCell, initParaPoin, chckLCSValid, initLCSPg
+    public :: initParaCell, initParaPoin, chckLCSValid, initLCSPg, chckLCSDefine
     public :: initParaCsteCell, setMaterPara
     public :: getUserLCS, getUserLCSWithBaryCenter, initLCSZero, initLCSNone
     public :: compCellBary, getUserLCSCommand
@@ -288,8 +288,10 @@ contains
         call compCellBary(ndim, nbNode, jvGeom, coorBary)
         call tecach('NNO', 'PCAMASS', 'L', iret, iad=jvCamass)
         anglNaut = 0.d0
+        lcsPara%lcsType = MATER_LCS_ZERO
         if (iret .eq. 0) then
             if (zr(jvCamass) .gt. 0.d0) then
+                lcsPara%lcsType = MATER_LCS_NAUT
                 anglNaut(1) = zr(jvCamass+1)*r8dgrd()
                 if (ndim .eq. 3) then
                     anglNaut(2) = zr(jvCamass+2)*r8dgrd()
@@ -297,6 +299,7 @@ contains
                 end if
 
             else if (abs(zr(jvCamass)+1.d0) .lt. 1.d-3) then
+                lcsPara%lcsType = MATER_LCS_CYL
 ! ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE
                 orig(1:ndim) = zr(jvCamass+3+1:jvCamass+3+ndim)
                 if (ndim .eq. 3) then
@@ -331,7 +334,6 @@ contains
         end if
 
 ! ----- Set parameters
-        lcsPara%lcsType = MATER_LCS_USER
         lcsPara%lcsAngle = anglNaut
 !
 !   ------------------------------------------------------------------------------------------------
@@ -395,6 +397,7 @@ contains
         anglNaut = 0.d0
         if (iret .eq. 0) then
             if (zr(jvCamass) .gt. 0.d0) then
+                lcsPara%lcsType = MATER_LCS_NAUT
                 anglNaut(1) = zr(jvCamass+1)*r8dgrd()
                 if (ndim .eq. 3) then
                     anglNaut(2) = zr(jvCamass+2)*r8dgrd()
@@ -402,6 +405,7 @@ contains
                 end if
 
             else if (abs(zr(jvCamass)+1.d0) .lt. 1.d-3) then
+                lcsPara%lcsType = MATER_LCS_CYL
 ! ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE
                 orig(1:ndim) = zr(jvCamass+3+1:jvCamass+3+ndim)
                 if (ndim .eq. 3) then
@@ -436,7 +440,6 @@ contains
         end if
 
 ! ----- Set parameters
-        lcsPara%lcsType = MATER_LCS_USER
         lcsPara%lcsAngle = anglNaut
 !
 !   ------------------------------------------------------------------------------------------------
@@ -460,6 +463,28 @@ contains
         lMaterVisc = materPara%elasID .eq. ELAS_VISC_ISOT .or. &
                      materPara%elasID .eq. ELAS_VISC_ISTR .or. &
                      materPara%elasID .eq. ELAS_VISC_ORTH
+!
+!   ------------------------------------------------------------------------------------------------
+    end function
+! --------------------------------------------------------------------------------------------------
+!
+! chckLCSDefine
+!
+! Detect if anisotropic local coordinate system has been defined
+!
+! In  materPara        : parameters of material
+!
+! --------------------------------------------------------------------------------------------------
+    aster_logical function chckLCSDefine(lcsPara)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(LCS_Para), intent(in) :: lcsPara
+!   ------------------------------------------------------------------------------------------------
+!
+        chckLCSDefine = lcsPara%lcsType .eq. MATER_LCS_NAUT .or. &
+                        lcsPara%lcsType .eq. MATER_LCS_CYL .or. &
+                        lcsPara%lcsType .eq. MATER_LCS_EULER .or. &
+                        lcsPara%lcsType .eq. MATER_LCS_ZERO
 !
 !   ------------------------------------------------------------------------------------------------
     end function
@@ -492,7 +517,7 @@ contains
                 anglNaut(2) = anglNaut(2)*r8dgrd()
                 anglNaut(3) = anglNaut(3)*r8dgrd()
             end if
-            lcsPara%lcsType = MATER_LCS_USER
+            lcsPara%lcsType = MATER_LCS_NAUT
             lcsPara%lcsAngle = anglNaut
         else if (n2 .gt. 0) then
             call eulnau(anglEuler, angd)
@@ -501,8 +526,12 @@ contains
                 anglNaut(2) = angd(2)*r8dgrd()
                 anglNaut(3) = angd(3)*r8dgrd()
             end if
-            lcsPara%lcsType = MATER_LCS_USER
+            lcsPara%lcsType = MATER_LCS_EULER
             lcsPara%lcsAngle = anglNaut
+        else
+            lcsPara%lcsType = MATER_LCS_ZERO
+            lcsPara%lcsAngle = 0.d0
+
         end if
 !
 !   ------------------------------------------------------------------------------------------------

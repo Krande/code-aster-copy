@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine epstmc(materPara, poum, time, ndim, &
+subroutine epstmc(materPara, &
+                  poum, time, ndim, &
                   indxVarcStrain, allVarcStrain, &
                   epsiVarc_)
 !
@@ -92,6 +93,9 @@ subroutine epstmc(materPara, poum, time, ndim, &
         if (materPara%elasID .eq. ELAS_ISOT) then
             epsiVarc_ = epsiVarcLoca
         else
+            if (.not. chckLCSDefine(materPara%lcsPara)) then
+                call utmess("F", "ALGORITH8_20")
+            end if
             call matrot(materPara%lcsPara%lcsAngle, pgl)
             epsiVarcLocaIn(1) = epsiVarcLoca(1)
             epsiVarcLocaIn(2) = epsiVarcLoca(4)

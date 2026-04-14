@@ -45,6 +45,7 @@ subroutine nmhuj(BEHInteg, &
 #include "asterfort/hujres.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
+#include "asterfort/MaterialPara_type.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
@@ -222,7 +223,7 @@ subroutine nmhuj(BEHInteg, &
 !
 ! --- REORIENTATION DES PLANS DE GLISSEMENT SUR LES AXES DU
 !     REPERE LOCAL DONNE PAR LES ANGLES NAUTIQUES (ANGMAS)
-    if (materPara%lcsPara%lcsAngle(1) .eq. r8vide()) then
+    if (materPara%lcsPara%lcsType .eq. MATER_LCS_NONE) then
         call utmess('F', 'ALGORITH8_20')
     end if
 !

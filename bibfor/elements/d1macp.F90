@@ -18,6 +18,7 @@
 !
 subroutine d1macp(materPara, poum, time, d1)
 !
+    use MaterialPara_module
     use MaterialPara_type
     implicit none
 !
@@ -25,7 +26,7 @@ subroutine d1macp(materPara, poum, time, d1)
 #include "asterfort/assert.h"
 #include "asterfort/d1pa2d.h"
 #include "asterfort/ElasticityMaterial_type.h"
-#include "asterfort/rccoma.h"
+#include "asterfort/MaterialPara_type.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
@@ -83,7 +84,8 @@ subroutine d1macp(materPara, poum, time, d1)
         call rcvalb(materPara%schemePara%fami, &
                     materPara%schemePara%kpg, &
                     materPara%schemePara%ksp, &
-                    poum, materPara%jvMaterCode, ' ', materPara%elasKeyword, &
+                    poum, &
+                    materPara%jvMaterCode, ' ', materPara%elasKeyword, &
                     nbPara, paraName, [paraVale], &
                     nbProp, propName, propVale, propCode, 1)
         e = propVale(1)
@@ -95,7 +97,9 @@ subroutine d1macp(materPara, poum, time, d1)
         d1(4, 4) = deux*(un+nu)/e
 
     else if (materPara%elasID == ELAS_ORTH) then
-
+        if (.not. chckLCSDefine(materPara%lcsPara)) then
+            call utmess("F", "ALGORITH8_20")
+        end if
         propName(1) = 'E_L'
         propName(2) = 'E_T'
         propName(3) = 'NU_LT'
@@ -104,7 +108,8 @@ subroutine d1macp(materPara, poum, time, d1)
         call rcvalb(materPara%schemePara%fami, &
                     materPara%schemePara%kpg, &
                     materPara%schemePara%ksp, &
-                    poum, materPara%jvMaterCode, ' ', materPara%elasKeyword, &
+                    poum, &
+                    materPara%jvMaterCode, ' ', materPara%elasKeyword, &
                     nbPara, paraName, [paraVale], &
                     nbProp, propName, propVale, propCode, 1)
         e1 = propVale(1)
@@ -130,8 +135,7 @@ subroutine d1macp(materPara, poum, time, d1)
 !        ----------------------------------
         ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
-            call utbtab('ZERO', 4, 4, d1orth, passag, &
-                        work, d1)
+            call utbtab('ZERO', 4, 4, d1orth, passag, work, d1)
         else if (irep .eq. 0) then
             do i = 1, 4
                 do j = 1, 4
@@ -147,7 +151,8 @@ subroutine d1macp(materPara, poum, time, d1)
         call rcvalb(materPara%schemePara%fami, &
                     materPara%schemePara%kpg, &
                     materPara%schemePara%ksp, &
-                    '+', materPara%jvMaterCode, ' ', materPara%elasKeyword, &
+                    '+', &
+                    materPara%jvMaterCode, ' ', materPara%elasKeyword, &
                     nbPara, paraName, [paraVale], &
                     nbProp, propName, propVale, propCode, 1)
         e = propVale(1)

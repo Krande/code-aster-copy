@@ -24,6 +24,7 @@ subroutine calcms(materPara, &
     implicit none
 !
 #include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
 #include "asterfort/lcmmsg.h"
 #include "asterfort/matrot.h"
 #include "asterfort/promat.h"
@@ -48,7 +49,7 @@ subroutine calcms(materPara, &
 !     ----------------------------------------------------------------
     character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
-    real(kind=8) :: ang(3), pgl1(3, 3), pgl2(3, 3)
+    real(kind=8) :: anglNautPhase(3), pgl1(3, 3), pgl2(3, 3)
     real(kind=8) :: ms(6), ng(3), lg(3)
     integer(kind=8) :: nbfsys, i, ifa, nbsys, is, indori, indcp, ir
     integer(kind=8) :: indpha, iphas
@@ -60,18 +61,16 @@ subroutine calcms(materPara, &
         indpha = nbcomm(1+iphas, 1)
 !         recuperer l'orientation de la phase et la proportion
         indori = nbcomm(1+iphas, 3)+1
-        ang(1) = coeft(indori)*r8dgrd()
-        ang(2) = coeft(indori+1)*r8dgrd()
-        ang(3) = coeft(indori+2)*r8dgrd()
-        call matrot(ang, pgl1)
+        anglNautPhase(1) = coeft(indori)*r8dgrd()
+        anglNautPhase(2) = coeft(indori+1)*r8dgrd()
+        anglNautPhase(3) = coeft(indori+2)*r8dgrd()
+        call matrot(anglNautPhase, pgl1)
         call matrot(materPara%lcsPara%lcsAngle, pgl2)
         call promat(pgl1, 3, 3, 3, pgl2, &
                     3, 3, 3, pgl)
         nbfsys = nbcomm(indpha, 1)
         indcp = nbcomm(1+iphas, 2)
-        if (nbfsys .gt. nfs) then
-            call utmess('F', 'ALGORITH_69')
-        end if
+        ASSERT(nbfsys .le. nfs)
 !        Nombre de variables internes de la phase (=monocristal)
         do ifa = 1, nbfsys
             nomfam = cpmono(indcp+5*(ifa-1)+1) (1:16)

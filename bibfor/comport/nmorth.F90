@@ -179,7 +179,11 @@ subroutine nmorth(materPara, ndim, poum, &
         end if
 
 !       RECUPERATION DE LA MATRICE DE PASSAGE
-        call matrot(materPara%lcsPara%lcsAngle, p)
+        if (chckLCSDefine(materPara%lcsPara)) then
+            call matrot(materPara%lcsPara%lcsAngle, p)
+        else
+            call utmess("F", "ALGORITH8_20")
+        end if
 
 ! ----- Thermal strains (global)
         do i = 1, 3

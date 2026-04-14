@@ -74,14 +74,12 @@ subroutine nmiclg(materPara, &
     integer(kind=8), parameter :: kpgFPG1 = 1, kspFPG1 = 1
     character(len=8), parameter :: famiFPG1 = "FPG1"
     type(Material_Para) :: materParaFPG1
-    integer(kind=8), parameter :: nvarpi = 8, ncstpm = 13
     integer(kind=8), parameter :: nbProp = 4
     integer(kind=8) :: propCode(nbProp)
     real(kind=8) :: propVale(nbProp)
     character(len=16), parameter :: propName(nbProp) = &
                                     (/'SY_C        ', 'DC_SIGM_EPSI', &
                                       'SY_T        ', 'DT_SIGM_EPSI'/)
-    real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: depsth, depsm, tmoins, tplus
     real(kind=8) :: em, ep, dsdem, dsdep
     real(kind=8) :: syc, etc, syt, ett
@@ -194,8 +192,7 @@ subroutine nmiclg(materPara, &
 
     else if (asyml) then
         call nmmaba(materPara%jvMaterCode, relaComp, &
-                    ep, dsde, sigy, &
-                    ncstpm, cstpm)
+                    ep, dsde, sigy)
 
 ! ----- Copy material parameters with other scheme parameters
         call copyMaterPara(materPara, famiFPG1, kpgFPG1, kspFPG1, &

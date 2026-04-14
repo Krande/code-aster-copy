@@ -71,9 +71,6 @@ subroutine nmco1d(BEHInteg, &
     integer(kind=8) :: propCode(nbProp)
     character(len=8), parameter :: materPoin = ' '
     aster_logical :: cine, isot, com1d, elas, cinegc
-    real(kind=8) :: e, et, sigy
-    integer(kind=8), parameter :: nvarpi = 8, ncstpm = 13
-    real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: em, ep, depsth, depsm
 ! --------------------------------------------------------------------------------------------------
 !

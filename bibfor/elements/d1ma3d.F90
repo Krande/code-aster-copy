@@ -18,6 +18,7 @@
 !
 subroutine d1ma3d(materPara, poum, time, d1)
 !
+    use MaterialPara_module
     use MaterialPara_type
     implicit none
 !
@@ -25,6 +26,7 @@ subroutine d1ma3d(materPara, poum, time, d1)
 #include "asterfort/assert.h"
 #include "asterfort/d1pa3d.h"
 #include "asterfort/ElasticityMaterial_type.h"
+#include "asterfort/MaterialPara_type.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
@@ -40,19 +42,6 @@ subroutine d1ma3d(materPara, poum, time, d1)
 !                  POUR LES ELEMENTS MASSIFS EN 3D OU EN SERIE DE
 !                  FOURIER POUR DES MATERIAUX ISOTROPE, ORTHOTROPE
 !                  ET ISOTROPE TRANSVERSE
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   ARGUMENT        E/S  TYPE         ROLE
-!    FAMI           IN     K*       FAMILLE DU POINT DE GAUSS
-!    MATER          IN     I        MATERIAU
-!    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
-!    POUM           IN     K1       T ou T+DT
-!    KPG            IN     I        POINT DE GAUSS
-!    KSP            IN     I        SOUS-POINT DE GAUSS
-!    ANGL(3)        IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
-!                                   D'ORTHOTROPIE
-!    D1(6,6)        OUT    R        INVERSE DE LA MATRICE DE HOOKE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,8 +81,11 @@ subroutine d1ma3d(materPara, poum, time, d1)
         propName(1) = 'E'
         propName(2) = 'NU'
         nbProp = 2
-        call rcvalb(materPara%schemePara%fami, materPara%schemePara%kpg, materPara%schemePara%ksp, &
-                    poum, materPara%jvMaterCode, ' ', materPara%elasKeyword, &
+        call rcvalb(materPara%schemePara%fami, &
+                    materPara%schemePara%kpg, &
+                    materPara%schemePara%ksp, &
+                    poum, &
+                    materPara%jvMaterCode, ' ', materPara%elasKeyword, &
                     nbPara, paraName, [paraVale], &
                     nbProp, propName, propVale, propCode, 1)
         e = propVale(1)
@@ -115,6 +107,9 @@ subroutine d1ma3d(materPara, poum, time, d1)
         d1(6, 6) = coef3
 
     else if (materPara%elasID == ELAS_ORTH) then
+        if (.not. chckLCSDefine(materPara%lcsPara)) then
+            call utmess("F", "ALGORITH8_20")
+        end if
         propName(1) = 'E_L'
         propName(2) = 'E_T'
         propName(3) = 'E_N'
@@ -125,8 +120,11 @@ subroutine d1ma3d(materPara, poum, time, d1)
         propName(8) = 'G_LN'
         propName(9) = 'G_TN'
         nbProp = 9
-        call rcvalb(materPara%schemePara%fami, materPara%schemePara%kpg, materPara%schemePara%ksp, &
-                    poum, materPara%jvMaterCode, ' ', materPara%elasKeyword, &
+        call rcvalb(materPara%schemePara%fami, &
+                    materPara%schemePara%kpg, &
+                    materPara%schemePara%ksp, &
+                    poum, &
+                    materPara%jvMaterCode, ' ', materPara%elasKeyword, &
                     nbPara, paraName, [paraVale], &
                     nbProp, propName, propVale, propCode, 1)
         e1 = propVale(1)
@@ -166,7 +164,6 @@ subroutine d1ma3d(materPara, poum, time, d1)
         ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 6, 6, d1orth, passag, work, d1)
-
         else if (irep .eq. 0) then
             do i = 1, 6
                 do j = 1, 6
@@ -176,6 +173,9 @@ subroutine d1ma3d(materPara, poum, time, d1)
         end if
 
     else if (materPara%elasID == ELAS_ISTR) then
+        if (.not. chckLCSDefine(materPara%lcsPara)) then
+            call utmess("F", "ALGORITH8_20")
+        end if
         propName(1) = 'E_L'
         propName(2) = 'E_N'
         propName(3) = 'NU_LT'
@@ -186,8 +186,11 @@ subroutine d1ma3d(materPara, poum, time, d1)
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 ! ----   ET DU TEMPS
 !        -----------
-        call rcvalb(materPara%schemePara%fami, materPara%schemePara%kpg, materPara%schemePara%ksp, &
-                    poum, materPara%jvMaterCode, ' ', materPara%elasKeyword, &
+        call rcvalb(materPara%schemePara%fami, &
+                    materPara%schemePara%kpg, &
+                    materPara%schemePara%ksp, &
+                    poum, &
+                    materPara%jvMaterCode, ' ', materPara%elasKeyword, &
                     nbPara, paraName, [paraVale], &
                     nbProp, propName, propVale, propCode, 1)
 !

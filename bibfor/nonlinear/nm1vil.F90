@@ -30,8 +30,10 @@ subroutine nm1vil(materPara, &
     implicit none
 !
 #include "asterc/r8t0.h"
+#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/granac.h"
+#include "asterfort/MaterialPara_type.h"
 #include "asterfort/nmasse.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
@@ -205,11 +207,9 @@ subroutine nm1vil(materPara, &
     if (relaComp(1:10) .eq. 'GRAN_IRRA_') then
         vip(3) = vim(3)+depsgr
         if (depsgr .ne. 0.d0) then
-            alpha = materPara%lcsPara%lcsAngle(1)
-            if (materPara%lcsPara%lcsAngle(2) .ne. 0.d0) then
-                call utmess('F', 'ALGORITH6_59')
-            end if
-!
+            ASSERT(materPara%lcsPara%lcsType .eq. MATER_LCS_ZERO)
+            alpha = 0.d0
+
 !        INCREMENT DEFORMATION DE GRANDISSEMENT DANS LE REPERE
             degran = depsgr*cos(alpha)*cos(alpha)
         end if

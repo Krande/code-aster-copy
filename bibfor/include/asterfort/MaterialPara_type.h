@@ -23,6 +23,8 @@
 ! --------------------------------------------------------------------------------------------------
 #define MATER_LCS_UNDEF        0
 #define MATER_LCS_NONE         1
-#define MATER_LCS_USER         2
+#define MATER_LCS_NAUT         2
+#define MATER_LCS_CYL          3
+#define MATER_LCS_EULER        4
 #define MATER_LCS_PG           100
 #define MATER_LCS_ZERO         10

@@ -215,9 +215,6 @@ subroutine op0033()
             end if
         end do
         ASSERT(defoComp .eq. 'PETIT')
-        b_n = to_blas_int(3)
-        b_incx = to_blas_int(1)
-        call dscal(b_n, rac2, valeImpo(4), b_incx)
     else if (loadEpsiType .eq. 2) then
         lLoadGrad = ASTER_TRUE
         do i = 1, 9
@@ -230,6 +227,11 @@ subroutine op0033()
         call tnsvec(6, ndim, matrRotaLoad, valeImpo, 1.d0)
         call utbtab('ZERO', 3, 3, matrRotaLoad, pgl, work, vectRotaLoad)
         call tnsvec(3, ndim, vectRotaLoad, valeImpo, 1.d0)
+    end if
+    if (loadEpsiType .lt. 2) then
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, valeImpo(4), b_incx)
     end if
 
 ! - Initialisation of behaviour datastructure - Special for SIMU_POINT_MAT
@@ -417,7 +419,7 @@ subroutine op0033()
     call pmimpr(1, &
                 timeCurr, iterNewt, &
                 loadType, valeImpo, &
-                epsiIncr, sigmPrev, nbVari, zr(jvVip), resi)
+                epsiIncr, sigmCurr, nbVari, zr(jvVip), resi)
 
     if (iret .ne. 0) then
         conver = ASTER_FALSE

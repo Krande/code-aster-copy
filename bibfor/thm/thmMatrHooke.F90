@@ -72,7 +72,7 @@ subroutine thmMatrHooke(ds_thm)
                           nu12i=nu12i, nu13i=nu13i, nu23i=nu23i, &
                           hr=h, hi=hi)
 ! - Compute matrix
-    call matrHooke3d(materPara%elasID, materPara%lcsPara%lcsAngle, &
+    call matrHooke3d(materPara, &
                      h=h, g=g, &
                      g1=ds_thm%ds_material%elas%g_lt, &
                      g2=ds_thm%ds_material%elas%g_ln, &
