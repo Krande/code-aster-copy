@@ -43,6 +43,7 @@ import stat
 import sys
 import tempfile
 from math import ceil
+from pathlib import Path
 from subprocess import run
 from typing import Any
 
@@ -123,7 +124,7 @@ rm -f ${{ftmp}}
 """
 
 
-def parse_args(argv):
+def parse_args(argv: list[str]):
     """Parse command line arguments.
 
     Arguments:
@@ -139,7 +140,10 @@ def parse_args(argv):
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
     )
     parser.add_argument(
-        "--output", action="store", help="output file (default: <export filename>-%%j.txt)"
+        "--output",
+        action="store",
+        type=Path,
+        help="output file (default: <export filename>-%%j.txt)",
     )
     parser.add_argument(
         "--run_aster_option",
@@ -180,7 +184,7 @@ def parse_args(argv):
     return args, others
 
 
-def _run(cmd):
+def _run(cmd: list[str]):
     logger.debug("execute: %s", " ".join(cmd))
     return run(cmd)
 
@@ -248,7 +252,8 @@ class SlurmJob:
         if dry_run:
             logger.info("+ filename: %s", script)
             return 0
-        with open(self._params["output"].replace("-%j", "") + ".sbatch", "w") as fscr:
+        self._params["output"].parent.mkdir(parents=True, exist_ok=True)
+        with open(str(self._params["output"]).replace("-%j", "") + ".sbatch", "w") as fscr:
             logger.info("+ filename: %s", fscr.name)
             fscr.write(content)
         try:
