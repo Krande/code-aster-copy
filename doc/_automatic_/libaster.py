@@ -9446,6 +9446,9 @@ class GeneralizedAssemblyMatrixReal(GeneralizedAssemblyMatrix):
         2. __init__(self: libaster.GeneralizedAssemblyMatrixReal, arg0: str) -> None
         """
 
+    def allocate(self, isSymmetric=True):
+        """Allocate the matrix"""
+
     def getLowerValues(self):
         """Return the lower part of the matrix.
 
@@ -9633,6 +9636,44 @@ class GeneralizedAssemblyVectorComplex(GeneralizedAssemblyVector):
         Arguments:
             values (list[complex]): set vector.
         """
+
+
+# class GeneralizedLoad in libaster
+
+
+class GeneralizedLoad(DataStructure):
+    pass
+
+    # Method resolution order:
+    #     GeneralizedLoad
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.GeneralizedLoad) -> None
+
+        2. __init__(self: libaster.GeneralizedLoad, arg0: str) -> None
+        """
+
+    def getAssemblyVector(self):
+        pass
+
+    def getDOFNumbering(self):
+        pass
+
+    def getMPCs(self):
+        pass
+
+    def setDOFNumbering(self, arg0):
+        pass
+
+    def setMPCs(self, arg0):
+        pass
 
 
 # class InterspectralMatrix in libaster

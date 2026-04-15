@@ -191,6 +191,8 @@
      - ``vect_asse_gene``
    * - :py:class:`~code_aster.Objects.GeneralizedDOFNumbering`
      - ``nume_ddl_gene``
+   * - :py:class:`~code_aster.Objects.GeneralizedLoad`
+     - ``char_gene``
    * - :py:class:`~code_aster.Objects.GeneralizedModeResult`
      - ``mode_gene``
    * - :py:class:`~code_aster.Objects.GeneralizedModel`
