@@ -226,9 +226,24 @@ sonarqube:
 
 docker:
   stage: build
-  image:
-    name: nexus.retd.edf.fr/kaniko-project/executor:debug
-    entrypoint: [""]
+  image: docker:29.4.0-cli
+  services:
+    - docker:29.4.0-dind
+  before_script:
+    - docker info
+  variables:
+    # When you use the dind service, you must instruct Docker to talk with
+    # the daemon started inside of the service. The daemon is available
+    # with a network connection instead of the default
+    # /var/run/docker.sock socket. Docker 19.03 does this automatically
+    # by setting the DOCKER_HOST in
+    # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03/docker-entrypoint.sh#L23-L29
+    #
+    # The 'docker' hostname is the alias of the service container as described at
+    # https://docs.gitlab.com/ci/services/#accessing-the-services.
+    #
+    # This instructs Docker not to start over TLS.
+    DOCKER_TLS_CERTDIR: ""
   script:
     - sh .gitlabci/build_docker_codeaster.sh ${OSNAME}
   allow_failure: true
@@ -239,6 +254,8 @@ docker:
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $BUILDTYPE == "nightly"
     - if: $BUILDTYPE == "docker"
+    - when: manual
+      allow_failure: true
 
 # --- default build
 prepare:

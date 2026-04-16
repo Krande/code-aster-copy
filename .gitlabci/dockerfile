@@ -1,17 +1,24 @@
-FROM %baseimage%
+ARG baseimage
+ARG osname
+FROM ${baseimage}
 
 USER root
-ENV WRKDIR /opt/repo
+ENV DEVTOOLS_COMPUTER_ID=${osname}
+ENV WRKDIR=/opt/repo
 WORKDIR ${WRKDIR}
 
 RUN \
     mkdir -p ${WRKDIR} ; \
     cd ${WRKDIR} ; \
-    git clone --depth=100 https://gitlab.pleiade.edf.fr/codeaster/src ; \
+    git clone --depth=100 https://gitlab.pleiade.edf.fr/codeaster/src.git
+
+RUN \
     cd ${WRKDIR}/src ; \
     ./configure --prefix=/opt/codeaster ; \
     jobs=$(( $(nproc) - 2 )) ; \
-    make install -j ${jobs} ; \
+    make install -j ${jobs}
+
+RUN \
     cd / ; \
     rm -rf ${WRKDIR}
 
