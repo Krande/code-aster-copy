@@ -219,6 +219,11 @@ init_norm = rhs.norm("NORM_INFINITY")
 S.scaleRHS(rhs)
 test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), 0.00970509418019451)
 
+rhs_s = rhs.toSimpleFieldOnNodes()
+for norme in ("NORM_1", "NORM_2", "NORM_INFINITY"):
+    test.assertAlmostEqual(rhs.norm(norme), rhs_s.norm(norme))
+
+
 # Check the solution of the scaled system with respect to the reference solution
 mySolver.factorize(newMat)
 solution = mySolver.solve(rhs)

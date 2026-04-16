@@ -244,7 +244,17 @@ Returns:
                  )",
               py::arg( "cmps" ), py::arg( "nodes" ) )
 
-        .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
+        .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers )
+        .def( "norm", &SimpleFieldOnNodesReal::norm, R"(
+            Return the norm of the field
+
+            Arguments:
+                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+
+            Returns:
+                float: norm
+            )" );
+    ;
 
     py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataField >(
         mod, "SimpleFieldOnNodesComplex" )

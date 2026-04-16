@@ -4137,6 +4137,16 @@ class SimpleFieldOnCellsReal(DataField):
             bool: True  if the value is affected
         """
 
+    def norm(self, arg0):
+        """Return the norm of the field
+
+        Arguments:
+            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+
+        Returns:
+            float: norm
+        """
+
     def restrict(self, cmps=[], groupsOfCells=[]):
         """Return a new field restricted to the list of components and groups of cells given
 
@@ -4368,6 +4378,16 @@ class SimpleFieldOnNodesReal(DataField):
 
     def hasComponent(self, arg0):
         pass
+
+    def norm(self, arg0):
+        """Return the norm of the field
+
+        Arguments:
+            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+
+        Returns:
+            float: norm
+        """
 
     def setValues(self, *args, **kwargs):
         """Overloaded function.

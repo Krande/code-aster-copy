@@ -323,5 +323,14 @@ Returns:
             Returns:
                 SimpleFieldOnCellsReal: field with name physical quantity.
             )",
-              py::arg( "physQuantity" ), py::arg( "map_cmps" ) );
+              py::arg( "physQuantity" ), py::arg( "map_cmps" ) )
+        .def( "norm", &SimpleFieldOnCellsReal::norm, R"(
+            Return the norm of the field
+
+            Arguments:
+                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+
+            Returns:
+                float: norm
+            )" );
 };
