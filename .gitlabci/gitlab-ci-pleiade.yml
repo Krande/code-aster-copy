@@ -247,10 +247,6 @@ docker:
   script:
     - sh .gitlabci/build_docker_codeaster.sh ${OSNAME}
   allow_failure: true
-  artifacts:
-    paths:
-      - artf/codeaster-main-*.dockerfile
-    expire_in: 1 day
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $BUILDTYPE == "nightly"
     - if: $BUILDTYPE == "docker"

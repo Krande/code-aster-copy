@@ -1,5 +1,5 @@
-ARG baseimage
-ARG osname
+ARG baseimage="debian:12"
+ARG osname="debian-12"
 FROM ${baseimage}
 
 USER root
@@ -10,15 +10,14 @@ WORKDIR ${WRKDIR}
 RUN \
     mkdir -p ${WRKDIR} ; \
     cd ${WRKDIR} ; \
-    git clone --depth=100 https://gitlab.pleiade.edf.fr/codeaster/src.git
-
-RUN \
+    echo "+ cloning..." ; \
+    git clone --depth=100 https://gitlab.pleiade.edf.fr/codeaster/src.git ; \
+    echo "+ running configure..." ; \
     cd ${WRKDIR}/src ; \
     ./configure --prefix=/opt/codeaster ; \
+    echo "+ compiling..." ; \
     jobs=$(( $(nproc) - 2 )) ; \
-    make install -j ${jobs}
-
-RUN \
+    make install -j ${jobs} ; \
     cd / ; \
     rm -rf ${WRKDIR}
 
