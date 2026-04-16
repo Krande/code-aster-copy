@@ -28,10 +28,11 @@ from .convergence_manager import ConvergenceManager
 from .iteration_solver import BaseIterationSolver
 from .line_search import BaseLineSearch
 
+#  Debug parameters
 USE_SCALING = False  # for testing only
-PERTURB_JAC = False  # for checking only (sloooow)
 
 
+#  Newton solver class
 class NewtonSolver(BaseIterationSolver, EventSource):
     """Solves a step, loops on iterations."""
 
@@ -39,6 +40,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     solver_type = BaseIterationSolver.SubType.Newton
     _eventid = EventId.IterationSolver
     _data = _converg = _line_search = None
+    _use_scaling = _S = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
@@ -61,6 +63,9 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     def __init__(self):
         super().__init__()
         self._data = {}
+        # - for debug
+        self._use_scaling = USE_SCALING
+        self._S = None
 
     def initialize(self):
         """Initialize the object for the next step."""
@@ -162,81 +167,42 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             tuple (FieldOnNodesReal, AssemblyMatrixDisplacementReal): Tuple
             with incremental primal, Jacobian matrix used (if computed).
         """
-        # we need the matrix to have scaling factor for Lagrange
+        # -- We need the matrix to have scaling factor for Lagrange
 
-        if self.contact:
-            self.contact.update(self.state)
-            self.contact.pairing()
-
-        if not matrix:
-            jacobian = self.oper.getJacobian(matrix_type)
-        else:
-            jacobian = matrix
-
+        # Specific operations for contact
+        self._update_contact_geometry()
+        # Preparation of the linear system
+        jacobian = self._get_jacobian_iteration(matrix, matrix_type)
         # Get scaling for Lagrange (j'aimerais bien m'en débarasser de là)
         scaling = self.oper.getLagrangeScaling(matrix_type)
-
-        # compute residual
-        residuals = self.oper.getResidual(scaling)
-
-        # ---------------------------------------------------------------------
-        if PERTURB_JAC:
-            neq = self.state.deltaU.size()
-            jac = np.zeros((neq, neq))
-            deltaU_saved = self.state.deltaU.copy()
-            res_0 = np.array(residuals.resi.getValues())
-            eps = 1.0e-6
-            for i_eq in range(neq):
-                if abs(self.state.deltaU[i_eq]) < eps:
-                    self.state.deltaU[i_eq] = -eps
-                    dd = eps
-                else:
-                    self.state.deltaU[i_eq] *= 1 - eps
-                    dd = -self.state.deltaU[i_eq] + deltaU_saved[i_eq]
-                res_p = np.array(self.oper.getResidual(scaling).resi.getValues())
-                jac[:, i_eq] = (res_p - res_0)[:] / dd
-                # return to initial value
-                self.state.deltaU = deltaU_saved.copy()
-            residuals = self.oper.getResidual(scaling)
-            with np.printoptions(precision=3, suppress=False, linewidth=2000):
-                print("perturb_jac=", flush=True)
-                for row in range(0, neq):
-                    print(jac[row, :], flush=True)
-        # ---------------------------------------------------------------------
-
-        # evaluate convergence
+        # Compute residual
+        residuals = self._compute_residuals(scaling)
+        # Evaluate convergence
         resi_fields = self._converg.evalNormResidual(residuals)
+        deltaU = self._compute_primal_incr(residuals, jacobian, force, scaling)
+        # evaluate geometric - convergence
+        self._converg.evalGeometricResidual(deltaU)
+        self.notifyObservers(matrix_type)
 
+        return deltaU, jacobian, resi_fields
+
+    def _compute_primal_incr(self, residuals, jacobian, force, scaling):
+        """
+        Solve the linear system to obtain the current solution increment
+        """
         if not self._converg.isConverged() or force:
             disc_comp = DiscreteComputation(self.problem)
 
-            # Compute Dirichlet BC:=
+            # Compute Dirichlet BC
             diriBCs = disc_comp.getIncrementalDirichletBC(self.state.time_curr, self.state.U)
-
+            # Scale (optional step)
+            self._generate_matrix_scaler(jacobian, residuals)
             # Solve linear system
-            if USE_SCALING:
-                S = MatrixScaler.MatrixScaler()
-                S.computeScaling(jacobian, merge_dof=[["DX", "DY"], ["LAGS_C", "LAGS_F1"]])
-                S.scaleMatrix(jacobian)
-                S.scaleRHS(residuals.resi)
-            # ------------------------------------------------------------------------
-            if PERTURB_JAC:
-                A = jacobian.toNumpy()
-                neq = A.shape[0]
-                neql = range(0, neq // 2)
-                with np.printoptions(precision=3, suppress=False, linewidth=2000):
-                    print("residual=", np.asarray(residuals.resi.getValues())[neql], flush=True)
-                    print("pert_jac vs jac=", flush=True)
-                    for row in neql:
-                        print(jac[row, neql], flush=True)
-                        print(A[row, neql], flush=True)
-                        print("-" * 20)
-            # ------------------------------------------------------------------------
             if not jacobian.isFactorized():
                 self.linear_solver.factorize(jacobian, raiseException=True)
             deltaU = self.linear_solver.solve(residuals.resi, diriBCs)
-            if USE_SCALING:
-                S.unscaleSolution(deltaU)
+            # Unscale (optional step)
+            self._unscale_solution(deltaU)
             # Use line search
             if not self._converg.isPrediction():
                 if self._line_search.isEnabled() and not force:
@@ -244,10 +210,61 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         else:
             deltaU = self.state.createPrimal(self.problem, 0.0)
 
-        # evaluate geometric - convergence
-        self._converg.evalGeometricResidual(deltaU)
+        return deltaU
 
-        return deltaU, jacobian, resi_fields
+    def _get_jacobian_iteration(self, matrix, matrix_type):
+        """Obtain the Jacobian matric (recompute or use the one provided)
+
+        Arguments:
+            matrix_type (str): type of matrix used.
+            matrix (AssemblyMatrixDisplacementReal, optional): Stiffness matrix
+                to be reused.
+
+        Returns:
+            jacobian (AssemblyMatrixDisplacementReal) : Stiffness matrix to use
+            in the current iteration
+        """
+        if not matrix:
+            jacobian = self.oper.getJacobian(matrix_type)
+        else:
+            jacobian = matrix
+        return jacobian
+
+    def _compute_residuals(self, scaling):
+        """Computation of the residual"""
+        residuals = self.oper.getResidual(scaling)
+        return residuals
+
+    def _update_contact_geometry(self):
+        """Update the pairing for contact"""
+        if self.contact:
+            self.contact.update(self.state)
+            self.contact.pairing()
+
+    def _generate_matrix_scaler(self, jacobian, residuals):
+        """Generate the matrix scaler if scaling activated. Instantiate a Matrix Scaler
+        and perform the scaling for the stiffness matrix and residuals
+
+        Arguments:
+            matrix_type (str): type of matrix used.
+            jacobian (AssemblyMatrixDisplacementReal, optional): Stiffness matrix
+            residuals (Solvers.Basics.residual.Residuals): Residuals
+
+        """
+        if self._use_scaling:
+            self._S = MatrixScaler.MatrixScaler()
+            self._S.computeScaling(jacobian, merge_dof=[["DX", "DY"], ["LAGS_C", "LAGS_F1"]])
+            self._S.scaleMatrix(jacobian)
+            self._S.scaleRHS(residuals.resi)
+
+    def _unscale_solution(self, deltaU):
+        """Unscale solution if scaling activated
+
+        Arguments:
+            deltaU (FieldOnNodesReal): Primal solution increment
+        """
+        if self._use_scaling:
+            self._S.unscaleSolution(deltaU)
 
     def notifyObservers(self, matrix_type):
         """Notify observers about the convergence.
