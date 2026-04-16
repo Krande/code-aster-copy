@@ -175,6 +175,7 @@ VERSION_PARAMS = {
     "FCFLAGS": "varlist[str]",
     "exectool": "dict[str]",
     "outputdir": "str",
+    "use_s3sp": "bool",
 }
 
 

@@ -115,7 +115,7 @@ mkdir -p ${{SPDIR}}
 
 {RUNASTER_ROOT}/bin/run_aster {run_aster_options} {study} | tee ${{ftmp}}
 
-{RUNASTER_ROOT}/bin/run_aster_extract -o ${{fcap}} ${{ftmp}}
+{RUNASTER_ROOT}/share/aster/run_aster_extract -o ${{fcap}} ${{ftmp}}
 
 echo "+ cleaning old files from ${{SPDIR}}..."
 find ${{SPDIR}} -type f -mmin +240 -print -delete
@@ -224,7 +224,7 @@ class SlurmJob:
         """Setup for S3 Slurm Plugin."""
         # check if the plugin is installed within this version
         # and if it is not disabled with the ASTER_S3SP environment variable (=0).
-        is_enabled = os.environ.get("ASTER_S3SP", "1") != "0"
+        is_enabled = CFG.get("use_s3sp") and os.environ.get("ASTER_S3SP", "1") != "0"
         if not is_enabled:
             return
         self._template = HEADER + HEADER_S3SP + COMMAND_S3SP
