@@ -21,43 +21,81 @@
 Definition of a convenient object to synchronize MEDCoupling fields.
 """
 
-from ..Objects import LoadResult, SimpleFieldOnCellsReal, SimpleFieldOnNodesReal
+import time
+
+from ..Objects import LoadResult, SimpleFieldOnCellsReal, SimpleFieldOnNodesReal, ParallelMesh
 from ..Utilities import ParaMEDMEM as PMM
-from ..Utilities import logger, no_new_attributes
+from ..Utilities import logger, no_new_attributes, MPI
 from ..Utilities import medcoupling as MEDC
+
+# need mecoupling >= 9.16.0 to use InterpKernelDECWithOverlap
+# remove PMM.InterpKernelDEC later
+IKDEC = getattr(PMM, "InterpKernelDECWithOverlap", PMM.InterpKernelDEC)
 
 
 class CoupledField(PMM.ParaFIELD):
     """Define the properties of an coupled field.
 
     Attributes:
-        support (TypeOfField): Support: ON_NODES or ON_CELLS.
+        support (TypeOfField): Support: ON_NODES or ON_NODES_FE or ON_CELLS.
         td (TypeOfTimeDiscretization): time discretization
-        dec (ExtendedDEC): dec.
+        dec (ExtendedInterpKernelDECWithOverlap): dec.
         topo (ComponentTopology): topology.
     """
 
     def __init__(self, sup, td, dec, topo):
-        assert sup in (MEDC.ON_NODES, MEDC.ON_CELLS), sup
+        assert sup in (MEDC.ON_NODES, MEDC.ON_NODES_FE, MEDC.ON_CELLS), sup
         self.dec = dec
         super().__init__(sup, td, dec.mesh, topo)
 
     def fillWithZero(self):
-        self.getField().getArray().fillWithZero()
+        self.getArray().fillWithZero()
 
     def setArray(self, array):
         assert self.getNbOfElems() == array.getNbOfElems()
         self.getField().setArray(array)
 
     def getNbOfElems(self):
-        return self.getField().getArray().getNbOfElems()
+        return self.getArray().getNbOfElems()
+
+    def getInfoOnComponents(self):
+        return self.getArray().getInfoOnComponents()
+
+    def setInfoOnComponents(self, info):
+        return self.getArray().setInfoOnComponents(info)
+
+    def setDescription(self, desc):
+        self.getField().setDescription(desc)
+
+    def getArray(self):
+        return self.getField().getArray()
+
+    def getValues(self):
+        return self.getArray().getValues()
+
+    def setNature(self, nature):
+        return self.getField().setNature(nature)
+
+    def getTypeOfField(self):
+        return self.getField().getTypeOfField()
 
     @property
     def sup(self):
         return self.getField().getTypeOfField()
 
+    @property
+    def sup_name(self):
+        type_field = self.getField().getTypeOfField()
+        if type_field == MEDC.ON_NODES:
+            return "nodes"
+        elif type_field == MEDC.ON_NODES_FE:
+            return "nodes_fe"
+        elif type_field == MEDC.ON_CELLS:
+            return "cells"
+        return "None"
 
-class ExtendedDEC(PMM.InterpKernelDEC):
+
+class ExtendedInterpKernelDECWithOverlap(IKDEC):
     """Object that represents a DEC and the necessary properties.
 
     Arguments:
@@ -85,6 +123,55 @@ class ExtendedDEC(PMM.InterpKernelDEC):
         return super().synchronize()
 
 
+class ExtendedCFEMDEC(PMM.CFEMDEC):
+    """Object that represents a DEC and the necessary properties.
+
+    Arguments:
+        src_ranks (list[int]): source procs IDs.
+        trg_ranks (list[int]): target procs IDs.
+    """
+
+    mesh = _synced = None
+    pfield = None
+
+    def __init__(self, src_ranks, trg_ranks):
+        self.mesh = None
+        self._synced = False
+        super().__init__(src_ranks, trg_ranks)
+
+    @property
+    def synced(self):
+        """bool: Tell if the DEC has already been synced."""
+        return self._synced
+
+    def synchronize(self):
+        """Wrapper on DEC function."""
+        if self._synced:
+            return
+        self._synced = True
+        return super().synchronize()
+
+    def attachLocalField(self, pfield):
+        """Attach a local field"""
+        self.pfield = pfield
+
+    def sendData(self):
+        """Send the field attached"""
+        if self.isInSourceSide():
+            self.sendToTarget(self.pfield.getField())
+        else:
+            self.sendToSource(self.pfield.getField())
+
+    def recvData(self):
+        """Received the field inside the field attached"""
+        if self.isInSourceSide():
+            field = self.receiveFromTarget()
+        else:
+            field = self.receiveFromSource()
+
+        self.pfield.setArray(field.getArray())
+
+
 class MEDCoupler:
     """Class handling the MEDCoupling related calls."""
 
@@ -95,42 +182,88 @@ class MEDCoupler:
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
+    def supportOverlap(self):
+        # To remove with IKDEC
+        return hasattr(PMM, "InterpKernelDECWithOverlap")
+
     def __init__(self, logfunc=None, debug=False):
-        self.dec = {MEDC.ON_NODES: None, MEDC.ON_CELLS: None}
+        self.dec = {}
         self.mesh_interf = self.mc_interf = self.mesh = None
         self.exch_fields = {}
         self.debug = debug
         self.log = logfunc if logfunc else logger
 
-    def init_coupling(self, ranks1, ranks2):
+    def init_coupling(self, ranks1, ranks2, list_dec=None):
         """Start ParaMEDMEM coupling and DEC.
 
         Arguments:
             ranks1 (list[int]): List of ranks allocated to the first application.
             ranks2 (list[int]): List of ranks allocated to the second application.
+            list_dec [list[MEDC.TypeOfField]] : list of dec to create
         """
-        self.log("initializing ParaMEDMEM InterpKernelDEC")
-        # Creating the send and recv DEC's
-        for sup in (MEDC.ON_CELLS, MEDC.ON_NODES):
-            sup_name = "nodes" if sup == MEDC.ON_NODES else "cells"
+        self.log("initializing ParaMEDMEM DEC")
+
+        dec_to_create = list_dec
+        if dec_to_create is None:
+            dec_to_create = [MEDC.ON_CELLS, MEDC.ON_NODES, MEDC.ON_NODES_FE]
+
+        if MEDC.ON_CELLS in dec_to_create:
             self.log(
-                f"creating InterpKernelDEC on {sup_name} with "
-                f"ranks1={ranks1} and ranks2={ranks2}",
+                f"creating InterpKernelDEC on cells with " f"ranks1={ranks1} and ranks2={ranks2}",
                 verbosity=2,
             )
-            self.dec[sup] = ExtendedDEC(ranks1, ranks2)
-            self.dec[sup].setMethod("P0" if sup == MEDC.ON_CELLS else "P1")
 
-    def _create_paramesh(self):
+            self.dec[MEDC.ON_CELLS] = ExtendedInterpKernelDECWithOverlap(ranks1, ranks2)
+            self.dec[MEDC.ON_CELLS].setMethod("P0")
+
+        if MEDC.ON_NODES in dec_to_create:
+            self.log(
+                f"creating InterpKernelDEC on nodes with " f"ranks1={ranks1} and ranks2={ranks2}",
+                verbosity=2,
+            )
+
+            self.dec[MEDC.ON_NODES] = ExtendedInterpKernelDECWithOverlap(ranks1, ranks2)
+            self.dec[MEDC.ON_NODES].setMethod("P1")
+
+        if MEDC.ON_NODES_FE in dec_to_create:
+
+            self.log(
+                f"creating CFEMDEC on nodes with " f"ranks1={ranks1} and ranks2={ranks2}",
+                verbosity=2,
+            )
+
+            self.dec[MEDC.ON_NODES_FE] = ExtendedCFEMDEC(ranks1, ranks2)
+
+    def _create_paramesh(self, nodesIdsGlob, cellsIdsGlob):
         """Create the ParaMEDMEM mesh, support of coupling."""
 
         self.log("creating coupling mesh in memory", verbosity=2)
-        for dec in self.dec.values():
+        for sup, dec in self.dec.items():
             if dec.isInSourceSide():
                 group = dec.getSourceGrp()
             else:
                 group = dec.getTargetGrp()
             dec.mesh = PMM.ParaMESH(self.mc_interf, group, "couplingMesh")
+            dec.mesh.setCellGlobal(cellsIdsGlob)
+            if sup != MEDC.ON_NODES:
+                dec.mesh.setNodeGlobal(nodesIdsGlob)
+
+    def _chech_mesh(self):
+        assert self.mesh_interf.getNumberOfNodes() == self.mc_interf.getNumberOfNodes()
+        assert self.mesh_interf.getNumberOfCells() == self.mc_interf.getNumberOfCells()
+
+        connAster = self.mesh_interf.getConnectivity()
+
+        for cellId in range(self.mesh_interf.getNumberOfCells()):
+            nodesAst = connAster[cellId]
+            nodesMec = self.mc_interf.getNodeIdsOfCell(cellId)
+
+            if sorted(nodesAst) != sorted(nodesMec):
+                raise RuntimeError(
+                    f"Incompatible mesh connectivity of cell {cellId}: {nodesAst} vs {nodesMec}"
+                )
+
+        # TODO: add indirection and use it for medc <-> aster field conversion
 
     def create_mesh_interface(self, mesh, groupsOfCells):
         """Create the Medcoupling mesh of the interface.
@@ -142,6 +275,9 @@ class MEDCoupler:
         """
 
         self.log("creating interface mesh", verbosity=2)
+
+        if MPI.ASTER_COMM_WORLD.Get_size() > 1:
+            assert isinstance(mesh, ParallelMesh)
 
         self.mesh = mesh
         self.mesh_interf = mesh.restrict(groupsOfCells)
@@ -156,8 +292,34 @@ class MEDCoupler:
         assert len(levels) == 1, "Groups are not at one level"
         meshDimRelToMaxExt = levels[0]
         self.mc_interf = mm.getMeshAtLevel(meshDimRelToMaxExt)
+        # check that each mesh has the same cell numbering
+        self._chech_mesh()
 
-        self._create_paramesh()
+        # add mesh and global ids - specific to CFEMDEC
+        if self.mesh_interf.isParallel():
+            nodesIdsGl = MEDC.DataArrayInt64(self.mesh_interf.getLocalToGlobalNodeIds())
+            assert nodesIdsGl.getNbOfElems() == self.mesh_interf.getNumberOfNodes()
+            cellsIdsGl = MEDC.DataArrayInt64(self.mesh_interf.getLocalToGlobalCellIds())
+            assert cellsIdsGl.getNbOfElems() == self.mesh_interf.getNumberOfCells()
+
+            # cell numbering could be incomplete
+            ids = cellsIdsGl.findIdsStrictlyNegative()
+            if ids.getNbOfElems() > 0:
+                raise RuntimeError(
+                    "Some cells have a negative Ids. This is forbidden. Update the global cell numbering"
+                )
+        else:
+            nodesIdsGl = MEDC.DataArrayInt64(
+                [i for i in range(self.mesh_interf.getNumberOfNodes())]
+            )
+            cellsIdsGl = MEDC.DataArrayInt64(
+                [i for i in range(self.mesh_interf.getNumberOfCells())]
+            )
+
+        self._create_paramesh(nodesIdsGl, cellsIdsGl)
+
+        if MEDC.ON_NODES_FE in self.dec:
+            self.dec[MEDC.ON_NODES_FE].attachLocalMesh(self.mc_interf, nodesIdsGl)
 
     def get_field(self, name, silent=False):
         """Return a coupled field by name.
@@ -215,11 +377,12 @@ class MEDCoupler:
         Arguments:
             field_name (str): Field name.
             components (list[str]): Components of the field.
-            field_type (str): On "NODES" or "CELLS".
+            field_type (str): On "NODES" or "NODES_FE" or "CELLS".
         """
         if not self.get_field(field_name, silent=True):
-            assert field_type in ("NODES", "CELLS")
-            sup = MEDC.ON_CELLS if field_type == "CELLS" else MEDC.ON_NODES
+            assert field_type in ("NODES", "NODES_FE", "CELLS")
+            conv = {"NODES": MEDC.ON_NODES, "NODES_FE": MEDC.ON_NODES_FE, "CELLS": MEDC.ON_CELLS}
+            sup = conv[field_type]
             dec = self.dec[sup]
             if field_type == "CELLS":
                 nature = MEDC.IntensiveConservation
@@ -230,15 +393,14 @@ class MEDCoupler:
             pfield = CoupledField(sup, MEDC.ONE_TIME, dec, topo)
             field = pfield.getField()
             field.setName(field_name)
-            field.setNature(nature)
-            array = field.getArray()
-            array.fillWithZero()
-            array.setInfoOnComponents(components)
+            pfield.setNature(nature)
+            pfield.fillWithZero()
+            pfield.setInfoOnComponents(components)
 
             self.exch_fields[field_name] = pfield
 
             self.log(f"add field {field_name!r} on {field_type}...")
-            self.log(repr(array), verbosity=2)
+            self.log(repr(pfield.getArray()), verbosity=2)
 
     def send(self, fields):
         """Send fields to the partner code with ParaMEDMEM.
@@ -249,7 +411,7 @@ class MEDCoupler:
         for field_name, field in fields.items():
             pfield = self.get_field(field_name)
             dec = pfield.dec
-            sup_name = "nodes" if pfield.sup == MEDC.ON_NODES else "cells"
+            sup_name = pfield.sup_name
             self.log(f"sending field {field_name!r} on {sup_name}...")
             # update values
             pfield.setArray(field.getArray())
@@ -258,8 +420,12 @@ class MEDCoupler:
             dec.attachLocalField(pfield)
             self.log("sync...", verbosity=2)
             dec.synchronize()
-            self.log("sendData...")
+            start = time.perf_counter()
+            self.log("sendData...", verbosity=2)
             dec.sendData()
+            delta = time.perf_counter() - start
+            self.log(f"in {delta} sec.")
+
         self.log("pmm_send: done", verbosity=2)
 
     def recv(self, fields_names):
@@ -269,22 +435,24 @@ class MEDCoupler:
             fields_names (list[str]): Fields names.
 
         Returns:
-            dict[*ParaFIELD*]: Received fields.
+            dict[*CoupledField*]: Received fields.
         """
         fields = {}
 
         for field_name in fields_names:
             pfield = self.get_field(field_name)
             dec = pfield.dec
-            sup_name = "nodes" if pfield.sup == MEDC.ON_NODES else "cells"
+            sup_name = pfield.sup_name
             self.log(f"waiting for field {field_name!r} on {sup_name}...")
             dec.attachLocalField(pfield)
-            fields[field_name] = pfield.getField()
+            fields[field_name] = pfield
             self.log("sync...", verbosity=2)
             dec.synchronize()
             self.log("recvData...", verbosity=2)
+            start = time.perf_counter()
             dec.recvData()
-            self.log(f"received field {field_name!r} on {sup_name}...")
+            delta = time.perf_counter() - start
+            self.log(f"received field {field_name!r} on {sup_name} in {delta} sec...", verbosity=2)
             if self.debug:
                 self.log(repr(pfield.getField()), verbosity=2)
 
@@ -300,28 +468,43 @@ class MEDCoupler:
         Returns:
             *SimpleField*: aster field.
         """
-        if mc_field.getTypeOfField() == MEDC.ON_NODES:
-            sfield = SimpleFieldOnNodesReal.fromMedCouplingField(mc_field, self.mesh_interf)
+        if mc_field.getTypeOfField() in (MEDC.ON_NODES, MEDC.ON_NODES_FE):
+            if isinstance(mc_field, CoupledField):
+                sfield = SimpleFieldOnNodesReal.fromMedCouplingField(
+                    mc_field.getField(), self.mesh_interf
+                )
+            else:
+                sfield = SimpleFieldOnNodesReal.fromMedCouplingField(mc_field, self.mesh_interf)
         else:
-            sfield = SimpleFieldOnCellsReal.fromMedCouplingField(mc_field, self.mesh_interf)
+            if isinstance(mc_field, CoupledField):
+                sfield = SimpleFieldOnCellsReal.fromMedCouplingField(
+                    mc_field.getField(), self.mesh_interf
+                )
+            else:
+                sfield = SimpleFieldOnCellsReal.fromMedCouplingField(mc_field, self.mesh_interf)
 
         return sfield
 
-    def import_field(self, mc_field, model=None):
+    def import_field(self, mc_field, physq, symbname, model=None):
         """Convert a MEDCoupling field defined on the interface as
         a code_aster field defined on the whole mesh.
 
         Arguments:
             mc_field (*MEDCouplingField*): MEDCoupling field.
+            physq (str): Physical quantity of field (e.g. DEPL_R).
+            symbname (str): Symbolic name of field (e.g. SIEQ_ELGA).
             model (Model): model to use for FieldOnCells.
 
         Returns:
             *FieldOnNodesReal*: code_aster field defined on the whole mesh.
         """
 
+        internal_desc = "-".join((physq, symbname))
+        mc_field.setDescription(internal_desc)
+
         field = self._medcfield2aster(mc_field)
 
-        if mc_field.getTypeOfField() == MEDC.ON_NODES:
+        if mc_field.getTypeOfField() in (MEDC.ON_NODES_FE, MEDC.ON_NODES):
             return self.extent_field(field).toFieldOnNodes()
         else:
             fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
@@ -361,9 +544,7 @@ class MEDCoupler:
             FieldOnNodesReal: code_aster displacement field.
         """
 
-        mc_displ.setDescription("DEPL_R-DEPL")
-
-        return self.import_field(mc_displ)
+        return self.import_field(mc_displ, "DEPL_R", "DEPL")
 
     def export_displacement(self, displ, field_name="DEPL"):
         """Create a MEDCoupling field of displacement reduced on the interface mesh.
@@ -388,7 +569,8 @@ class MEDCoupler:
         Returns:
             FieldOnNodesReal: code_aster velocity field.
         """
-        return self.import_displacement(mc_velo)
+
+        return self.import_displacement(mc_velo, "DEPL_R", "VITE")
 
     def export_velocity(self, velo, field_name="VELOCITY"):
         """Create a MEDCoupling field of velocity reduced on the interface mesh.
@@ -426,9 +608,7 @@ class MEDCoupler:
             FieldOnNodesReal: code_aster thermal field.
         """
 
-        mc_temp.setDescription("TEMP_R-TEMP")
-
-        return self.import_field(mc_temp)
+        return self.import_field(mc_temp, "TEMP_R", "TEMP")
 
     def export_pressure(self, pres, field_name="PRES"):
         """Create a MEDCoupling field of pressure reduced on the interface mesh.
@@ -453,9 +633,7 @@ class MEDCoupler:
             *FieldOnNodesReal*: code_aster pressure field.
         """
 
-        mc_pres.setDescription("PRES_R-PRES")
-
-        return self.import_field(mc_pres)
+        return self.import_field(mc_pres, "PRES_R", "PRES")
 
     def import_fluidforces(self, mc_fluidf, model, time=0.0):
         """Convert a MEDCoupling fluid forces field as a code_aster field.
@@ -469,8 +647,7 @@ class MEDCoupler:
             *LoadResult*: surface forces load.
         """
 
-        mc_fluidf.setDescription("FORC_R-FORC")
-        forc_elem = self.import_field(mc_fluidf, model)
+        forc_elem = self.import_field(mc_fluidf, "FORC_R", "FORC", model)
 
         evol_char = LoadResult()
         evol_char.allocate(1)
