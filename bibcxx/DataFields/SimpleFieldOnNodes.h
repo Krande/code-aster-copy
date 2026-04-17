@@ -139,7 +139,8 @@ class SimpleFieldOnNodes : public DataField {
           _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
           _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
           _nbNodes( 0 ),
-          _nbComp( 0 ) {};
+          _nbComp( 0 ),
+          _mesh( nullptr ) {};
 
     /**
      * @brief Constructeur
@@ -434,7 +435,9 @@ class SimpleFieldOnNodes : public DataField {
         _buildComponentsName2Index();
 
         AS_ASSERT( _values->size() == _nbNodes * _nbComp );
-        AS_ASSERT( _values->size() > 0 );
+        if ( !this->getMesh()->isParallel() ) {
+            AS_ASSERT( _values->size() > 0 );
+        }
 
         return true;
     }
