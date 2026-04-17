@@ -5,7 +5,9 @@ TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "no-tag")
 REVISION=$(git rev-parse HEAD)
 DISTANCE=$(git rev-list "${TAG}"..HEAD --count 2>/dev/null || echo "0")
 DATE=$(git show -s --format=%cd --date=format:%d/%m/%Y HEAD)
-BRANCH=$(git branch --show-current || echo "detached")
+BRANCH=$(git branch --show-current || echo "${CI_COMMIT_REF_NAME}")
+
+FROM_BRANCH=${CI_DEFAULT_BRANCH}
 
 echo "Version info:"
 echo "($TAG, $REVISION, $BRANCH, $DATE, $DISTANCE)"
@@ -18,3 +20,9 @@ VERSION_BRANCH=$BRANCH
 VERSION_DATE=$DATE
 VERSION_DISTANCE=$DISTANCE
 EOF
+
+echo "+ setting pkginfo..."
+cat << EOF > code_aster/pkginfo.py
+pkginfo = ([int(i) for i in '${TAG}'.split('.')], '${REVISION}', '${BRANCH}', '${DATE}', '${FROM_BRANCH}', ${DISTANCE}, [])
+EOF
+cat code_aster/pkginfo.py
