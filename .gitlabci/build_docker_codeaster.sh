@@ -12,7 +12,13 @@ echo "${DOCKER_NEXUS_PASSWD}" | docker login ${DOCKER_NEXUS_URL} -u "${DOCKER_NE
 cd .gitlabci
 docker build \
     --build-arg baseimage=${baseimage} \
-    --build-arg osname=${variant} \
+    --build-arg variant=${variant} \
+    --build-arg TAG=${VERSION_TAG} \
+    --build-arg REVISION=${VERSION_REVISION} \
+    --build-arg BRANCH=${CI_COMMIT_REF_NAME} \
+    --build-arg FROM_BRANCH=${CI_DEFAULT_BRANCH} \
+    --build-arg DATE=${VERSION_DATE} \
+    --build-arg DISTANCE=${VERSION_DISTANCE} \
     -t ${dest} .
 
 docker image push ${dest}

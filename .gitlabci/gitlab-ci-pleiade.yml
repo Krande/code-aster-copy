@@ -58,10 +58,15 @@ before_script:
 .prepare:
   interruptible: true
   stage: setup
+  variables:
+    GIT_DEPTH: 0
   script:
     - .gitlabci/setup_pixi.sh
     - .gitlabci/prepare.sh
+    - .gitlabci/version_info.sh
   artifacts:
+    reports:
+      dotenv: version.env
     paths:
       - devtools/*
       - data-src/*

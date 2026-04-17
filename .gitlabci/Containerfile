@@ -1,0 +1,40 @@
+ARG baseimage="debian:12"
+FROM ${baseimage}
+
+ARG variant
+ENV DEVTOOLS_COMPUTER_ID=${variant}
+ARG TAG
+ARG REVISION
+ARG BRANCH
+ARG FROM_BRANCH
+ARG DATE
+ARG DISTANCE
+
+USER root
+ENV WRKDIR=/opt/repo
+WORKDIR ${WRKDIR}
+
+RUN \
+    mkdir -p ${WRKDIR} ; \
+    cd ${WRKDIR} ; \
+    echo "+ cloning..." ; \
+    git clone --depth=1 https://gitlab.pleiade.edf.fr/codeaster/src.git ; \
+    cd ${WRKDIR}/src ; \
+    echo "+ setting pkginfo..." ; \
+    echo "pkginfo = ('${TAG}'.split('.'), '${REVISION}', '${BRANCH}', '${DATE}', '${FROM_BRANCH}', ${DISTANCE}, [])" > code_aster/pkginfo.py ; \
+    cat code_aster/pkginfo.py ; \
+    echo "+ running configure..." ; \
+    source /opt/public/${DEVTOOLS_COMPUTER_ID}_mpi.sh ; \
+    ./configure --prefix=/opt/codeaster ; \
+    echo "+ compiling..." ; \
+    jobs=$(( $(nproc) - 2 )) ; \
+    make install -j ${jobs} ; \
+    cd / ; \
+    rm -rf ${WRKDIR}
+
+ENV WRKDIR=
+
+USER user
+WORKDIR /home/user
+
+ENTRYPOINT ["/opt/codeaster/bin/run_aster"]
