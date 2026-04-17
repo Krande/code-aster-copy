@@ -259,14 +259,13 @@ docker:
   script:
     - echo "+ $(date) - building code_aster Docker image from ${baseimage}..."
     - echo "${DOCKER_NEXUS_PASSWD}" | docker login ${DOCKER_NEXUS_URL} -u "${DOCKER_NEXUS_USER}" --password-stdin
-    - cd containers
     - docker build
         --build-arg baseimage=${baseimage}
         --build-arg variant=${variant}
         --build-arg BRANCH=${VERSION_BRANCH}
-        --build-arg PKGINFO="$(cat ../code_aster/pkginfo.py)"
+        --build-arg PKGINFO="$(cat code_aster/pkginfo.py)"
         -t ${dest}
-        -f Containerfile .
+        -f containers/Containerfile .
     - docker image push ${dest}
 
   allow_failure: true

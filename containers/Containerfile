@@ -7,13 +7,13 @@ ARG PKGINFO
 ARG BRANCH
 
 USER root
-ENV WRKDIR=/wrk
-WORKDIR ${WRKDIR}
+ENV workdir=/wrk
+WORKDIR ${workdir}
 
-COPY build.sh /wrk/build.sh
-RUN chmod u+x ${WRKDIR}/build.sh && ${WRKDIR}/build.sh
+COPY . ${workdir}/src
+RUN chmod u+x ${workdir}/src/containers/build.sh && ${workdir}/src/containers/build.sh
 
-ENV WRKDIR=
+ENV workdir=
 
 USER user
 WORKDIR /home/user

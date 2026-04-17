@@ -1,15 +1,19 @@
 #!/bin/bash -ex
 # because it may use dash...
 
-mkdir -p ${WRKDIR}
-cd ${WRKDIR}
+mkdir -p ${workdir}
+cd ${workdir}
 
-echo "+ cloning..."
-git clone --depth=1 --branch=${BRANCH} https://gitlab.pleiade.edf.fr/codeaster/src.git
-cd ${WRKDIR}/src
+echo "+ checking context..."
+cd ${workdir}/src
+ls -la
 
 echo "+ creating pkginfo..."
-echo "${PKGINFO}" > code_aster/pkginfo.py
+if [ ! -f code_aster/pkginfo.py ]; then
+    echo "${PKGINFO}" > code_aster/pkginfo.py
+else
+    echo "already exists (usually from artifacts)"
+fi
 cat code_aster/pkginfo.py
 
 echo "+ running configure..."
@@ -22,4 +26,4 @@ make install -j ${jobs}
 
 echo "+ cleaning..."
 cd /
-rm -rf ${WRKDIR}
+rm -rf ${workdir}
