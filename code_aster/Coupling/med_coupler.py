@@ -107,24 +107,48 @@ class CoupledField(PMM.ParaFIELD):
         """Shorcut for medcoupling method"""
         return self.getArray().getNumberOfComponents()
 
-    def computeAsterMapping(self, desc, mesh_interf):
+    def computeAsterMapping(self, field, mesh_interf):
         """Compute mapping from medcoupling with restricted mesh
         to aster with full mesh.
+
+        Arguments:
+            field (FieldOnNodes): field on full mesh.
+            mesh_interf (ParallelMesh): restricted mesh.
+
         """
-        self.desc = desc
-        orig2rest = mesh_interf.getOriginalToRestrictedNodesIds()
-        assert len(orig2rest) == mesh_interf.getNumberOfNodes()
+        self.desc = field.getDescription()
 
         nbCmp = self.getNumberOfComponents()
-        assert nbCmp == len(desc.getComponents())
+        assert nbCmp == len(field.getComponents())
 
         if isinstance(self.desc, (EquationNumbering, ParallelEquationNumbering)):
+            orig2rest = mesh_interf.getOriginalToRestrictedNodesIds()
+            assert len(orig2rest) == mesh_interf.getNumberOfNodes()
             descrip = self.desc.getNodeAndComponentIdFromDOF(local=True)
             self.m2a = [orig2rest[node] * nbCmp + cmpId - 1 for node, cmpId in descrip]
         else:
-            raise NotImplementedError()
+            orig2rest = mesh_interf.getOriginalToRestrictedCellsIds()
+            assert len(orig2rest) == mesh_interf.getNumberOfCells()
+            assert field.getLocalization() == "ELEM"
+            values, [cells, cmps_name, pts, subpts] = field.getValuesWithDescription()
+            cmps = field.getComponents()
+            map_cmps = {}
+            for i in range(len(cmps)):
+                map_cmps[cmps[i]] = i
+
+            nbDofs = len(values)
+            self.m2a = [-1] * nbDofs
+
+            for iDof in range(nbDofs):
+                cell = cells[iDof]
+                cmp_name = cmps_name[iDof]
+                pt = pts[iDof]
+                subpt = subpts[iDof]
+                assert pt == 0 and subpt == 0
+                self.m2a[iDof] = orig2rest[cell] * nbCmp + map_cmps[cmp_name]
 
     def getAsterField(self):
+        """Get FieldOnNodes/FieldOnCells on full mesh"""
         if self.desc is None or len(self.m2a) == 0:
             raise RuntimeError("Mapping is missing")
 
@@ -562,16 +586,8 @@ class MEDCoupler:
             *FieldOnNodesReal*: code_aster field defined on the whole mesh.
         """
 
-        if isinstance(mc_field, CoupledField) and mc_field.getTypeOfField() in (
-            MEDC.ON_NODES_FE,
-            MEDC.ON_NODES,
-        ):
-            if mc_field.desc is not None:
-                return mc_field.getAsterField()
-            else:
-                fa = self.import_field(mc_field.getField(), physq, symbname, model)
-                mc_field.computeAsterMapping(fa.getDescription(), self.mesh_interf)
-                return fa
+        if mc_field.desc is not None:
+            return mc_field.getAsterField()
 
         internal_desc = "-".join((physq, symbname))
         mc_field.setDescription(internal_desc)
@@ -579,10 +595,13 @@ class MEDCoupler:
         field = self._medcfield2aster(mc_field)
 
         if mc_field.getTypeOfField() in (MEDC.ON_NODES_FE, MEDC.ON_NODES):
-            return self.extent_field(field).toFieldOnNodes()
+            fa = self.extent_field(field).toFieldOnNodes()
         else:
             fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
-            return self.extent_field(field).toFieldOnCells(fed)
+            fa = self.extent_field(field).toFieldOnCells(fed)
+
+        mc_field.computeAsterMapping(fa, self.mesh_interf)
+        return fa
 
     def export_field(self, field, field_name="COUPLINGFIELD", cmps=[]):
         """Convert a code_aster field defined on the whole mesh to

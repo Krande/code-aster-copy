@@ -2641,13 +2641,15 @@ class FieldOnCellsReal(DataField):
 
         4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str) -> None
 
-        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
+        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
 
-        6. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty, elem_char: libaster.ElementaryCharacteristics) -> None
+        6. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
 
-        7. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty) -> None
+        7. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty, elem_char: libaster.ElementaryCharacteristics) -> None
 
-        8. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, elem_char: libaster.ElementaryCharacteristics) -> None
+        8. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty) -> None
+
+        9. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, elem_char: libaster.ElementaryCharacteristics) -> None
         """
 
     def __isub__(self, arg0):
@@ -2904,7 +2906,9 @@ class FieldOnCellsComplex(DataField):
 
         2. __init__(self: libaster.FieldOnCellsComplex, arg0: str) -> None
 
-        3. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FieldOnCellsComplex) -> None
+        3. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
+
+        4. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FieldOnCellsComplex) -> None
         """
 
     def __isub__(self, arg0):
@@ -3230,9 +3234,11 @@ class FieldOnNodesReal(DataField):
 
         5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
 
-        6. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
+        6. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.EquationNumbering) -> None
 
-        7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
+        7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
+
+        8. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
         """
 
     def __isub__(self, arg0):
@@ -3557,6 +3563,8 @@ class FieldOnNodesComplex(DataField):
         4. __init__(self: libaster.FieldOnNodesComplex, arg0: Model) -> None
 
         5. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.BaseDOFNumbering) -> None
+
+        6. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.EquationNumbering) -> None
         """
 
     def __setitem__(self, arg0, arg1):

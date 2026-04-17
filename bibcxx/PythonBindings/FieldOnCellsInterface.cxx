@@ -36,6 +36,8 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, FiniteElementDescriptorPtr, std::string,
+                                         std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, const FieldOnCellsReal & > ) )
         .def( py::init( []( const ModelPtr model, const std::string &loc,
                             const std::string &quantity, const BehaviourPropertyPtr behaviour,
@@ -261,6 +263,8 @@ Returns:
                                                                           "FieldOnCellsComplex" )
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsComplex, FiniteElementDescriptorPtr,
+                                         std::string, std::string > ) )
         .def( py::init< const FieldOnCellsComplex & >() )
         .def( "copy", &FieldOnCellsComplex::copy )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
