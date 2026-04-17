@@ -41,7 +41,7 @@ class FakeSaturne(ExternalCoupling):
             params (dict): Parameters of the coupling scheme.
         """
 
-        self._fields_out = [("fluid_forces", ["FX", "FY", "FZ"], "CELLS")]
+        self._fields_out = [("fluid_pressure", ["FX", "FY", "FZ"], "CELLS")]
         self._fields_in = [
             ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
             ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),

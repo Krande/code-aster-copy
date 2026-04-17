@@ -443,7 +443,7 @@ class SaturneCoupling(ExternalCoupling):
                 input_data = self.recv_input_fields()
                 assert len(input_data) == 1
 
-                solver.run_iteration(i_iter, current_time, delta_time, input_data["fluid_pressure"])
+                solver.run_iteration(i_iter, current_time, delta_time)
 
                 # received cvg
                 converged = bool(self.MPI.COUPLING_COMM_WORLD.recv(istep, "ICVAST", self.MPI.INT))
@@ -471,3 +471,35 @@ class SaturneCoupling(ExternalCoupling):
         )
 
         return exit_coupling
+
+    def export_displacement(self, displ):
+        """Export displacement field
+
+        Arguments:
+            displ (*FieldOnNodes*): Displacement field.
+        """
+
+        self._medcpl.export_displacement("mesh_displacement", displ)
+
+    def export_velocity(self, velocity):
+        """Export displacement field
+
+        Arguments:
+            velocity (*FieldOnNodes*): Velocity field.
+        """
+
+        self._medcpl.export_velocity("mesh_velocity", velocity)
+
+    def import_fluidLoad(self, model, time):
+        """Import fluid load
+
+        Arguments:
+            model (Model): Mechanical model.
+            time (float): Time of assignment.
+
+        Returns:
+            *LoadResult*: surface forces load.
+        """
+
+        fluid = self._medcpl.get_field("fluid_pressure")
+        return self._medcpl.import_fluidforces(fluid, model, time)
