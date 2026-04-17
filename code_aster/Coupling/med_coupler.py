@@ -24,11 +24,9 @@ Definition of a convenient object to synchronize MEDCoupling fields.
 import time
 
 from ..Objects import (
-    EquationNumbering,
     FieldOnCellsReal,
     FieldOnNodesReal,
     LoadResult,
-    ParallelEquationNumbering,
     ParallelMesh,
     SimpleFieldOnCellsReal,
     SimpleFieldOnNodesReal,
@@ -121,15 +119,18 @@ class CoupledField(PMM.ParaFIELD):
         nbCmp = self.getNumberOfComponents()
         assert nbCmp == len(field.getComponents())
 
-        if isinstance(self.desc, (EquationNumbering, ParallelEquationNumbering)):
+        if field.getLocalization() == "NOEU":
+            assert self.getTypeOfField() in (MEDC.ON_NODES, MEDC.ON_NODES_FE)
             orig2rest = mesh_interf.getOriginalToRestrictedNodesIds()
             assert len(orig2rest) == mesh_interf.getNumberOfNodes()
             descrip = self.desc.getNodeAndComponentIdFromDOF(local=True)
+            assert len(descrip) == self.getArray().getNbOfElems()
             self.m2a = [orig2rest[node] * nbCmp + cmpId - 1 for node, cmpId in descrip]
         else:
+            assert field.getLocalization() == "ELEM"
+            assert self.getTypeOfField() == MEDC.ON_CELLS
             orig2rest = mesh_interf.getOriginalToRestrictedCellsIds()
             assert len(orig2rest) == mesh_interf.getNumberOfCells()
-            assert field.getLocalization() == "ELEM"
             values, [cells, cmps_name, pts, subpts] = field.getValuesWithDescription()
             cmps = field.getComponents()
             map_cmps = {}
@@ -137,6 +138,7 @@ class CoupledField(PMM.ParaFIELD):
                 map_cmps[cmps[i]] = i
 
             nbDofs = len(values)
+            assert nbDofs == self.getArray().getNbOfElems()
             self.m2a = [-1] * nbDofs
 
             for iDof in range(nbDofs):
@@ -170,7 +172,7 @@ class CoupledField(PMM.ParaFIELD):
 
         if self.getTypeOfField() in (MEDC.ON_NODES_FE, MEDC.ON_NODES):
             fa = FieldOnNodesReal(self.desc)
-            assert len(array) == self.desc.getNumberOfDOFs()
+            assert len(array) == self.desc.getNumberOfDOFs(local=True)
         else:
             physq = self.getField().getDescription().split("-")[0]
             fa = FieldOnCellsReal(self.desc, "ELEM", physq)
@@ -647,7 +649,7 @@ class MEDCoupler:
         assert field.getMesh() == self.mesh
 
         field_interf = self.restrict_field(field, cmps)
-        return field_interf.toMedCouplingField(self.mc_interf, "COUPLINGFIELD")
+        return field_interf.toMedCouplingField(self.mc_interf, field.getName())
 
     def set_field(self, field_name, field, cmps=[]):
         """Set the MEDCoupling field reduced on the interface mesh.
