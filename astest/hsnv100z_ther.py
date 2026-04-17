@@ -68,10 +68,6 @@ def coupled_thermics(cpl):
 
     t5 = 90.0
 
-    t4 = 85.0
-
-    t2 = t1 + ((t3 - t1) / 2.0)
-
     L_INST = DEFI_LIST_REEL(
         DEBUT=0.0,
         INTERVALLE=(_F(JUSQU_A=t1, NOMBRE=1), _F(JUSQU_A=t3, NOMBRE=2), _F(JUSQU_A=t5, NOMBRE=2)),

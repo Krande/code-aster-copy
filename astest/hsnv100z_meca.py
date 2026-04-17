@@ -99,7 +99,7 @@ def coupled_mechanics(cpl):
 
             self._medcpl = cpl.medcpl
             input_data = cpl.recv_input_fields()
-            TEMPE = self._medcpl.import_temperature(input_data["TEMP"])
+            TEMPE = self._medcpl.import_temperature("TEMP")
 
             self.evol_ther = CREA_RESU(
                 TYPE_RESU="EVOL_THER",

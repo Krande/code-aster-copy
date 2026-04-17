@@ -1972,6 +1972,20 @@ class EquationNumbering(DataStructure):
             list[str]: list of components
         """
 
+    def getComponentsIdToName(self):
+        """Get map between id and name of components
+
+        Returns:
+            dict[int]: map between id and name
+        """
+
+    def getComponentsNameToId(self):
+        """Get map between id and name of components
+
+        Returns:
+            dict[int]: map between id and name
+        """
+
     def getDOFFromNodeAndComponent(self, local=True):
         """Return the dict of dofs with the pair (node id, component's name) as keys
 

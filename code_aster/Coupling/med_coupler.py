@@ -55,7 +55,8 @@ class CoupledField(PMM.ParaFIELD):
     def __init__(self, sup, td, dec, topo):
         assert sup in (MEDC.ON_NODES, MEDC.ON_NODES_FE, MEDC.ON_CELLS), sup
         self.dec = dec
-        self.desc = None
+        self.desc_m2a = None
+        self.desc_a2m = None
         self.m2a = None
         self.a2m = None
         super().__init__(sup, td, dec.mesh, topo)
@@ -113,19 +114,22 @@ class CoupledField(PMM.ParaFIELD):
             field (*FieldOnNodes*): field on whole mesh.
             mesh_interf (ParallelMesh): restricted mesh.
         """
-        self.desc = field.getDescription()
 
+        self.desc_m2a = field.getDescription()
+
+        cmps_med = self.getInfoOnComponents()
         nbCmp = self.getNumberOfComponents()
-        assert nbCmp == len(field.getComponents())
+        assert set(cmps_med) == set(field.getComponents())
 
         if field.getLocalization() == "NOEU":
             assert self.getTypeOfField() in (MEDC.ON_NODES, MEDC.ON_NODES_FE)
             orig2rest = mesh_interf.getOriginalToRestrictedNodesIds()
             assert len(orig2rest) == mesh_interf.getNumberOfNodes()
-            descrip = self.desc.getNodeAndComponentIdFromDOF(local=True)
+            descrip = self.desc_m2a.getNodeAndComponentIdFromDOF(local=True)
             assert len(descrip) == self.getArray().getNbOfElems()
-            # cmpId est 1-based dans ton code -> -1
-            self.m2a = [orig2rest[node] * nbCmp + cmpId - 1 for node, cmpId in descrip]
+            cmpsN2I = self.desc_m2a.getComponentsNameToId()
+            cmps_map = {cmpsN2I[name]: i for i, name in enumerate(cmps_med)}
+            self.m2a = [orig2rest[node] * nbCmp + cmps_map[cmpId] for node, cmpId in descrip]
         else:
             assert field.getLocalization() == "ELEM"
             assert self.getTypeOfField() == MEDC.ON_CELLS
@@ -136,8 +140,7 @@ class CoupledField(PMM.ParaFIELD):
             assert set(subpts) == {0}
             assert len(values) == self.getArray().getNbOfElems()
 
-            cmps = field.getComponents()
-            cmps_map = {name: i for i, name in enumerate(cmps)}
+            cmps_map = {name: i for i, name in enumerate(cmps_med)}
 
             self.m2a = [
                 orig2rest[cell] * nbCmp + cmps_map[cmp_name]
@@ -153,22 +156,23 @@ class CoupledField(PMM.ParaFIELD):
             mesh_interf (ParallelMesh): restricted mesh.
         """
 
-        cmps_ast = field.getComponents()
+        if field.getDescription() == self.desc_a2m and len(self.a2m) > 0:
+            return
+
+        self.desc_a2m = field.getDescription()
+
         cmps_med = self.getInfoOnComponents()
         nbCmp = len(cmps_med)
-        assert len(cmps_ast) >= len(cmps_med)
-
-        ast_pos = {name: i for i, name in enumerate(cmps_ast)}  # O(n)
+        assert field.getNumberOfComponents() >= nbCmp
 
         if field.getLocalization() == "NOEU":
             assert self.getTypeOfField() in (MEDC.ON_NODES, MEDC.ON_NODES_FE)
             orig2rest = mesh_interf.getOriginalToRestrictedNodesIds()
             assert len(orig2rest) == mesh_interf.getNumberOfNodes()
-            desc = field.getDescription()
-            descrip = desc.getNodeAndComponentIdFromDOF(local=True)
+            descrip = self.desc_a2m.getNodeAndComponentIdFromDOF(local=True)
             assert len(descrip) >= self.getArray().getNbOfElems()
-            # cmpId est 1-based dans ton code -> -1
-            cmps_map = {ast_pos[name] + 1: i for i, name in enumerate(cmps_med) if name in ast_pos}
+            cmpsN2I = self.desc_a2m.getComponentsNameToId()
+            cmps_map = {cmpsN2I[name]: i for i, name in enumerate(cmps_med)}
 
             size = len(orig2rest) * nbCmp
             self.a2m = [-1] * size
@@ -189,7 +193,7 @@ class CoupledField(PMM.ParaFIELD):
             assert set(subpts) == {0}
             assert len(values) >= self.getArray().getNbOfElems()
 
-            cmps_map = {name: i for i, name in enumerate(cmps_med) if name in ast_pos}
+            cmps_map = {name: i for i, name in enumerate(cmps_med)}
 
             size = len(orig2rest) * nbCmp
             self.a2m = [-1] * size
@@ -201,19 +205,21 @@ class CoupledField(PMM.ParaFIELD):
                 except KeyError:
                     pass
 
+        assert -1 not in set(self.a2m)
+
     def getAsterField(self):
         """Get FieldOnNodes/FieldOnCells on whole mesh"""
-        if self.desc is None or len(self.m2a) == 0:
+        if self.desc_m2a is None or self.m2a is None or len(self.m2a) == 0:
             raise RuntimeError("Mapping is missing")
 
         array = self.getArray().getValues()
 
         if self.getTypeOfField() in (MEDC.ON_NODES_FE, MEDC.ON_NODES):
-            fa = FieldOnNodesReal(self.desc)
-            assert len(array) == self.desc.getNumberOfDOFs(local=True)
+            fa = FieldOnNodesReal(self.desc_m2a)
+            assert len(array) == self.desc_m2a.getNumberOfDOFs(local=True)
         else:
             physq = self.getField().getDescription().split("-")[0]
-            fa = FieldOnCellsReal(self.desc, "ELEM", physq)
+            fa = FieldOnCellsReal(self.desc_m2a, "ELEM", physq)
 
         values = [array[valId] for valId in self.m2a]
 
@@ -226,6 +232,12 @@ class CoupledField(PMM.ParaFIELD):
         Arguments:
             field (*FieldOnNodes*): field on whole mesh.
         """
+
+        if self.desc_a2m is None or self.a2m is None or len(self.a2m) == 0:
+            raise RuntimeError("Mapping is missing")
+
+        if field.getDescription() != self.desc_a2m:
+            raise RuntimeError("Mapping has to be recomputed")
 
         if field.getLocalization() == "NOEU":
             assert self.getTypeOfField() in (MEDC.ON_NODES, MEDC.ON_NODES_FE)
@@ -580,7 +592,7 @@ class MEDCoupler:
             else:
                 assert pfield == field
             if self.debug:
-                self.log(repr(field), verbosity=2)
+                self.log(repr(pfield.getField()), verbosity=2)
             dec.attachLocalField(pfield)
             self.log("sync...", verbosity=2)
             dec.synchronize()
@@ -663,7 +675,7 @@ class MEDCoupler:
             *FieldOnNodesReal*: code_aster field defined on the whole mesh.
         """
 
-        if isinstance(mc_field, CoupledField) and mc_field.desc is not None:
+        if isinstance(mc_field, CoupledField) and mc_field.desc_m2a is not None:
             return mc_field.getAsterField()
 
         internal_desc = "-".join((physq, symbname))
@@ -693,6 +705,8 @@ class MEDCoupler:
             *MEDCouplingFieldDouble*: medcoupling field.
         """
 
+        assert self.mesh == field.getMesh()
+
         if len(cmps) == 0:
             cmps = field.getComponents()
 
@@ -709,10 +723,11 @@ class MEDCoupler:
             field (FieldOnNodesReal): code_aster field.
         """
 
+        assert field.getMesh() == self.mesh
+
         pfield = self.get_field(field_name)
 
-        if pfield.a2m is None:
-            pfield.computeMedcMapping(field, self.mesh_interf)
+        pfield.computeMedcMapping(field, self.mesh_interf)
 
         pfield.setAsterField(field)
 
