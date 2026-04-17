@@ -107,17 +107,13 @@ class FakeSaturne(ExternalCoupling):
                 elif i_iter > 0:
                     input_data = self.recv_input_fields()
 
-                has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
-                )
-
-                assert "fluid_forces" in output_data
+                has_cvg = solver.run_iteration(i_iter, current_time, delta_time, input_data)
 
                 # send cvg
                 self.MPI.COUPLING_COMM_WORLD.send(istep, "ICVAST", int(has_cvg), self.MPI.INT)
 
                 # send results to code_aster
-                self.send_output_fields(output_data)
+                self.send_output_fields()
 
                 if has_cvg:
                     break

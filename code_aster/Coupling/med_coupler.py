@@ -112,7 +112,7 @@ class CoupledField(PMM.ParaFIELD):
         to aster with full mesh.
 
         Arguments:
-            field (FieldOnNodes): field on full mesh.
+            field (*FieldOnNodes*): field on full mesh.
             mesh_interf (ParallelMesh): restricted mesh.
 
         """
@@ -147,6 +147,20 @@ class CoupledField(PMM.ParaFIELD):
                 assert pt == 0 and subpt == 0
                 self.m2a[iDof] = orig2rest[cell] * nbCmp + map_cmps[cmp_name]
 
+    def computeMedcMapping(self, field, mesh_interf):
+        """Compute mapping from medcoupling with restricted mesh
+        to aster with full mesh.
+
+        Arguments:
+            field (*FieldOnNodes*): field on full mesh.
+            mesh_interf (ParallelMesh): restricted mesh.
+
+        """
+
+        nbCmp = self.getNumberOfComponents()
+        assert nbCmp == len(field.getComponents())
+        raise NotImplementedError()
+
     def getAsterField(self):
         """Get FieldOnNodes/FieldOnCells on full mesh"""
         if self.desc is None or len(self.m2a) == 0:
@@ -165,6 +179,14 @@ class CoupledField(PMM.ParaFIELD):
 
         fa.setValues(values)
         return fa
+
+    def setAsterField(self, field):
+        """Set FieldOnNodes/FieldOnCells on restricted mesh
+
+        Arguments:
+            field (*FieldOnNodes*): field on full mesh.
+        """
+        raise NotImplementedError()
 
     @property
     def sup(self):
@@ -501,7 +523,10 @@ class MEDCoupler:
             sup_name = pfield.sup_name
             self.log(f"sending field {field_name!r} on {sup_name}...")
             # update values
-            pfield.setArray(field.getArray())
+            if isinstance(field, MEDC.MEDCouplingFieldDouble):
+                pfield.setArray(field.getArray())
+            else:
+                assert pfield == field
             if self.debug:
                 self.log(repr(field), verbosity=2)
             dec.attachLocalField(pfield)
@@ -586,7 +611,7 @@ class MEDCoupler:
             *FieldOnNodesReal*: code_aster field defined on the whole mesh.
         """
 
-        if mc_field.desc is not None:
+        if isinstance(mc_field, CoupledField) and mc_field.desc is not None:
             return mc_field.getAsterField()
 
         internal_desc = "-".join((physq, symbname))
@@ -600,20 +625,20 @@ class MEDCoupler:
             fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
             fa = self.extent_field(field).toFieldOnCells(fed)
 
-        mc_field.computeAsterMapping(fa, self.mesh_interf)
+        if isinstance(mc_field, CoupledField):
+            mc_field.computeAsterMapping(fa, self.mesh_interf)
         return fa
 
-    def export_field(self, field, field_name="COUPLINGFIELD", cmps=[]):
+    def export_field(self, field, cmps=[]):
         """Convert a code_aster field defined on the whole mesh to
             a MEDCoupling field defined on the interface.
 
         Arguments:
-            field *FieldOnNodesReal*: code_aster field defined on the whole mesh.
-            field_name (str): name of the field (like `DEPL`) (default: field's name)
+            field (*FieldOnNodesReal*): code_aster field defined on the whole mesh.
             cmps (list[str]): list of components. (default: all)
 
         Returns:
-            *MEDCouplingField*: MEDCoupling field.
+            *MEDCouplingFieldDouble*: medcoupling field.
         """
 
         if len(cmps) == 0:
@@ -622,117 +647,120 @@ class MEDCoupler:
         assert field.getMesh() == self.mesh
 
         field_interf = self.restrict_field(field, cmps)
-        pfield = field_interf.toMedCouplingField(self.mc_interf, field_name)
+        return field_interf.toMedCouplingField(self.mc_interf, "COUPLINGFIELD")
 
-        return pfield
+    def set_field(self, field_name, field, cmps=[]):
+        """Set the MEDCoupling field reduced on the interface mesh.
 
-    def import_displacement(self, mc_displ):
+        Arguments:
+            field_name (str): name of the coupled field
+            field (FieldOnNodesReal): code_aster field.
+            cmps (list[str]): list of components. (default: all)
+        """
+
+        pfield = self.get_field(field_name)
+
+        if pfield.a2m is not None:
+            pfield.setAsterField(field)
+        else:
+            mc_field = self.export_field(field, cmps)
+            pfield.setArray(mc_field.getArray())
+
+    def import_displacement(self, field_name):
         """Convert a MEDCoupling displacement field defined on the interface as
         a code_aster field.
 
         Arguments:
-            mc_displ (*MEDCouplingField*): MEDCoupling displacement field.
+            field_name (str): name of the coupled field
 
         Returns:
             FieldOnNodesReal: code_aster displacement field.
         """
 
-        return self.import_field(mc_displ, "DEPL_R", "DEPL")
+        return self.import_field(self.get_field(field_name), "DEPL_R", "DEPL")
 
-    def export_displacement(self, displ, field_name="DEPL"):
-        """Create a MEDCoupling field of displacement reduced on the interface mesh.
+    def export_displacement(self, field_name, displ):
+        """Set the MEDCoupling field of displacement reduced on the interface mesh.
 
         Arguments:
+            field_name (str): name of the coupled field
             displ (FieldOnNodesReal): code_aster displacement field.
-            field_name (str): Field name. (default: field's name)
-
-        Returns:
-            *MEDCouplingFieldDouble*: Displacement field.
         """
 
-        return self.export_field(displ, field_name, ["DX", "DY", "DZ"])
+        self.set_field(field_name, displ, ["DX", "DY", "DZ"])
 
-    def import_velocity(self, mc_velo):
+    def import_velocity(self, field_name):
         """Convert a MEDCoupling velocity field defined on the interface as
         a code_aster field.
 
         Arguments:
-            mc_velo (*MEDCouplingField*): MEDCoupling velocity field.
+            field_name (str): name of the coupled field
 
         Returns:
             FieldOnNodesReal: code_aster velocity field.
         """
 
-        return self.import_displacement(mc_velo, "DEPL_R", "VITE")
+        return self.import_displacement(self.get_field(field_name), "DEPL_R", "VITE")
 
-    def export_velocity(self, velo, field_name="VELOCITY"):
-        """Create a MEDCoupling field of velocity reduced on the interface mesh.
+    def export_velocity(self, field_name, velo):
+        """Set the MEDCoupling field of velocity reduced on the interface mesh.
 
         Arguments:
+            field_name (str): name of the coupled field
             velo (FieldOnNodesReal): code_aster velocity field.
-            field_name (str): Field name. (default: field's name)
-
-        Returns:
-            *MEDCouplingFieldDouble*: Velocity field.
         """
 
-        return self.export_displacement(velo, field_name)
+        self.export_displacement(field_name, velo)
 
-    def export_temperature(self, temp, field_name="TEMP"):
-        """Create a MEDCoupling field of temperature reduced on the interface mesh.
+    def export_temperature(self, field_name, temp):
+        """Set the MEDCoupling field of temperature reduced on the interface mesh.
 
         Arguments:
+            field_name (str): name of the coupled field
             temp (FieldOnNodesReal): code_aster thermal field.
-            field_name (str): Field name. (default: field's name)
-
-        Returns:
-            *MEDCouplingFieldDouble*: Thermal field on cells.
         """
 
-        return self.export_field(temp, field_name, ["TEMP"])
+        self.set_field(field_name, temp, ["TEMP"])
 
-    def import_temperature(self, mc_temp):
+    def import_temperature(self, field_name):
         """Convert a MEDCoupling thermal field as a code_aster field.
 
         Arguments:
-            mc_temp (*MEDCouplingFieldDouble*): MEDCoupling thermal field.
+            field_name (str): name of the coupled field
 
         Returns:
             FieldOnNodesReal: code_aster thermal field.
         """
 
-        return self.import_field(mc_temp, "TEMP_R", "TEMP")
+        return self.import_field(self.get_field(field_name), "TEMP_R", "TEMP")
 
-    def export_pressure(self, pres, field_name="PRES"):
-        """Create a MEDCoupling field of pressure reduced on the interface mesh.
+    def export_pressure(self, field_name, pres):
+        """Set the MEDCoupling field of pressure reduced on the interface mesh.
 
         Arguments:
+            field_name (str): name of the coupled field
             press (*FieldOnNodesReal*): code_aster pressure field.
-            field_name (str): Field name. (default: field's name)
-
-        Returns:
-            *MEDCouplingFieldDouble*: Pressure field on cells.
         """
 
-        return self.export_field(pres, field_name, ["PRES"])
+        self.set_field(field_name, pres, ["PRES"])
 
-    def import_pressure(self, mc_pres):
+    def import_pressure(self, field_name):
         """Convert a MEDCoupling pressure field as a code_aster field.
 
         Arguments:
-            mc_pres (*MEDCouplingFieldDouble*): MEDCoupling pressure field.
+            field_name (str): name of the coupled field
 
         Returns:
             *FieldOnNodesReal*: code_aster pressure field.
         """
 
-        return self.import_field(mc_pres, "PRES_R", "PRES")
+        return self.import_field(self.get_field(field_name), "PRES_R", "PRES")
 
-    def import_fluidforces(self, mc_fluidf, model, time=0.0):
+    def import_fluidforces(self, fluid_forces, model, time=0.0):
         """Convert a MEDCoupling fluid forces field as a code_aster field.
 
         Arguments:
-            mc_fluidf (*MEDCouplingField*): MEDCoupling fluid forces field.
+            fluid_forces (MEDCouplingFieldDouble): name of the coupled field
             model (Model): Mechanical model.
             time (float): Time of assignment.
 
@@ -740,7 +768,7 @@ class MEDCoupler:
             *LoadResult*: surface forces load.
         """
 
-        forc_elem = self.import_field(mc_fluidf, "FORC_R", "FORC", model)
+        forc_elem = self.import_field(fluid_forces, "FORC_R", "FORC", model)
 
         evol_char = LoadResult()
         evol_char.allocate(1)

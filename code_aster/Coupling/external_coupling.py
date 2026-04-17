@@ -124,17 +124,16 @@ class ExternalCoupling:
         names = [name for name, _, _ in self._fields_in]
         return self._medcpl.recv(names)
 
-    def send_output_fields(self, outputs):
+    def send_output_fields(self):
         """Send the output fields to the other code.
 
         Arguments:
             outputs (dict[*ParaFIELD*]): fields used to define the inputs of the other code.
         """
-        assert len(outputs) == len(self._fields_out)
 
         send_field = {}
         for name, _, _ in self._fields_out:
-            send_field[name] = outputs[name]
+            send_field[name] = self._medcpl.get_field(name)
 
         self._medcpl.send(send_field)
 
@@ -283,13 +282,11 @@ class ExternalCoupling:
                 else:
                     input_data = self.recv_input_fields()
 
-                has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
-                )
+                has_cvg = solver.run_iteration(i_iter, current_time, delta_time, input_data)
 
                 # send data to other code
                 if self._starter:
-                    self.send_output_fields(output_data)
+                    self.send_output_fields()
                     converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
@@ -297,7 +294,7 @@ class ExternalCoupling:
                     converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
-                    self.send_output_fields(output_data)
+                    self.send_output_fields()
 
                 if converged:
                     break
@@ -446,15 +443,13 @@ class SaturneCoupling(ExternalCoupling):
                 input_data = self.recv_input_fields()
                 assert len(input_data) == 1
 
-                output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data["fluid_pressure"]
-                )
+                solver.run_iteration(i_iter, current_time, delta_time, input_data["fluid_pressure"])
 
                 # received cvg
                 converged = bool(self.MPI.COUPLING_COMM_WORLD.recv(istep, "ICVAST", self.MPI.INT))
 
                 # send results to code_saturne
-                self.send_output_fields(output_data)
+                self.send_output_fields()
 
                 if converged:
                     break

@@ -99,8 +99,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
-                dict[*MEDCouplingFieldDouble*]: Output fields, on nodes with keys "mesh_displacement"
-                and "mesh_velocity".
             """
 
             FORCE = self._medcpl.import_fluidforces(fluid_forces, MOSOLIDE, current_time)
@@ -142,12 +140,10 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = self._medcpl.export_displacement(displ)
+            self._medcpl.export_displacement("mesh_displacement", displ)
 
             velo = self.result.getField("VITE", self.result.getLastIndex())
-            mc_velo = self._medcpl.export_velocity(velo)
-
-            return {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
+            self._medcpl.export_velocity("mesh_velocity", velo)
 
     ################################################################################
     # loop on time steps
