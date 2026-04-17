@@ -108,7 +108,7 @@ def coupled_mechanics(cpl):
             mc_ther = data["TEMP"]
 
             # MEDC field => .med => code_aster field
-            TEMP = self._medcpl.import_temperature(mc_ther)
+            TEMP = self._medcpl.import_temperature(mc_ther.getField())
 
             self.evol_ther = CREA_RESU(
                 TYPE_RESU="EVOL_THER",

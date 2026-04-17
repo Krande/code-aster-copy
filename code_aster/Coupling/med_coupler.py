@@ -23,10 +23,21 @@ Definition of a convenient object to synchronize MEDCoupling fields.
 
 import time
 
-from ..Objects import LoadResult, SimpleFieldOnCellsReal, SimpleFieldOnNodesReal, ParallelMesh
+from ..Objects import (
+    EquationNumbering,
+    FieldOnCellsReal,
+    FieldOnNodesReal,
+    LoadResult,
+    ParallelEquationNumbering,
+    ParallelMesh,
+    SimpleFieldOnCellsReal,
+    SimpleFieldOnNodesReal,
+)
+from ..Utilities import MPI
 from ..Utilities import ParaMEDMEM as PMM
-from ..Utilities import logger, no_new_attributes, MPI
+from ..Utilities import logger
 from ..Utilities import medcoupling as MEDC
+from ..Utilities import no_new_attributes
 
 # need mecoupling >= 9.16.0 to use InterpKernelDECWithOverlap
 # remove PMM.InterpKernelDEC later
@@ -46,38 +57,90 @@ class CoupledField(PMM.ParaFIELD):
     def __init__(self, sup, td, dec, topo):
         assert sup in (MEDC.ON_NODES, MEDC.ON_NODES_FE, MEDC.ON_CELLS), sup
         self.dec = dec
+        self.desc = None
+        self.m2a = None
+        self.a2m = None
         super().__init__(sup, td, dec.mesh, topo)
 
     def fillWithZero(self):
+        """Shorcut for medcoupling method"""
         self.getArray().fillWithZero()
 
     def setArray(self, array):
+        """Shorcut for medcoupling method"""
         assert self.getNbOfElems() == array.getNbOfElems()
         self.getField().setArray(array)
 
     def getNbOfElems(self):
+        """Shorcut for medcoupling method"""
         return self.getArray().getNbOfElems()
 
     def getInfoOnComponents(self):
+        """Shorcut for medcoupling method"""
         return self.getArray().getInfoOnComponents()
 
     def setInfoOnComponents(self, info):
+        """Shorcut for medcoupling method"""
         return self.getArray().setInfoOnComponents(info)
 
     def setDescription(self, desc):
+        """Shorcut for medcoupling method"""
         self.getField().setDescription(desc)
 
     def getArray(self):
+        """Shorcut for medcoupling method"""
         return self.getField().getArray()
 
     def getValues(self):
+        """Shorcut for medcoupling method"""
         return self.getArray().getValues()
 
     def setNature(self, nature):
+        """Shorcut for medcoupling method"""
         return self.getField().setNature(nature)
 
     def getTypeOfField(self):
+        """Shorcut for medcoupling method"""
         return self.getField().getTypeOfField()
+
+    def getNumberOfComponents(self):
+        """Shorcut for medcoupling method"""
+        return self.getArray().getNumberOfComponents()
+
+    def computeAsterMapping(self, desc, mesh_interf):
+        """Compute mapping from medcoupling with restricted mesh
+        to aster with full mesh.
+        """
+        self.desc = desc
+        orig2rest = mesh_interf.getOriginalToRestrictedNodesIds()
+        assert len(orig2rest) == mesh_interf.getNumberOfNodes()
+
+        nbCmp = self.getNumberOfComponents()
+        assert nbCmp == len(desc.getComponents())
+
+        if isinstance(self.desc, (EquationNumbering, ParallelEquationNumbering)):
+            descrip = self.desc.getNodeAndComponentIdFromDOF(local=True)
+            self.m2a = [orig2rest[node] * nbCmp + cmpId - 1 for node, cmpId in descrip]
+        else:
+            raise NotImplementedError()
+
+    def getAsterField(self):
+        if self.desc is None or len(self.m2a) == 0:
+            raise RuntimeError("Mapping is missing")
+
+        array = self.getArray().getValues()
+
+        if self.getTypeOfField() in (MEDC.ON_NODES_FE, MEDC.ON_NODES):
+            fa = FieldOnNodesReal(self.desc)
+            assert len(array) == self.desc.getNumberOfDOFs()
+        else:
+            physq = self.getField().getDescription().split("-")[0]
+            fa = FieldOnCellsReal(self.desc, "ELEM", physq)
+
+        values = [array[valId] for valId in self.m2a]
+
+        fa.setValues(values)
+        return fa
 
     @property
     def sup(self):
@@ -87,12 +150,12 @@ class CoupledField(PMM.ParaFIELD):
     def sup_name(self):
         type_field = self.getField().getTypeOfField()
         if type_field == MEDC.ON_NODES:
-            return "nodes"
+            return "ON_NODES"
         elif type_field == MEDC.ON_NODES_FE:
-            return "nodes_fe"
+            return "ON_NODES_FE"
         elif type_field == MEDC.ON_CELLS:
-            return "cells"
-        return "None"
+            return "ON_CELLS"
+        return "Unknown"
 
 
 class ExtendedInterpKernelDECWithOverlap(IKDEC):
@@ -498,6 +561,17 @@ class MEDCoupler:
         Returns:
             *FieldOnNodesReal*: code_aster field defined on the whole mesh.
         """
+
+        if isinstance(mc_field, CoupledField) and mc_field.getTypeOfField() in (
+            MEDC.ON_NODES_FE,
+            MEDC.ON_NODES,
+        ):
+            if mc_field.desc is not None:
+                return mc_field.getAsterField()
+            else:
+                fa = self.import_field(mc_field.getField(), physq, symbname, model)
+                mc_field.computeAsterMapping(fa.getDescription(), self.mesh_interf)
+                return fa
 
         internal_desc = "-".join((physq, symbname))
         mc_field.setDescription(internal_desc)

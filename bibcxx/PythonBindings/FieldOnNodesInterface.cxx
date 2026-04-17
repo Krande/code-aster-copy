@@ -40,6 +40,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, const FieldOnNodesReal & > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesReal, EquationNumberingPtr > ) )
         .def( py::init( []( const BaseMeshPtr mesh, const std::string &quantity,
                             const VectorString &cmps ) {
                   return FieldOnNodesPtrBuilder< ASTERDOUBLE >( mesh, quantity, cmps );
@@ -353,6 +354,7 @@ Returns:
         .def( py::init< const FieldOnNodesComplex & >() )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesComplex, EquationNumberingPtr > ) )
         .def(
             "toSimpleFieldOnNodes",
             []( const FieldOnNodesComplex &f ) { return toSimpleFieldOnNodes( f ); },

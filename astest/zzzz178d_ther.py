@@ -106,7 +106,7 @@ def coupled_thermics(cpl):
             mc_depl = data["DEPL"]
             if mc_depl:
                 # MEDC field => .med => code_aster field
-                depl = self._medcpl.import_displacement(mc_depl)
+                depl = self._medcpl.import_displacement(mc_depl.getField())
 
             self.result = THER_LINEAIRE(
                 MODELE=MODE_TL,
