@@ -107,12 +107,11 @@ class CoupledField(PMM.ParaFIELD):
 
     def computeAsterMapping(self, field, mesh_interf):
         """Compute mapping from medcoupling with restricted mesh
-        to aster with full mesh.
+        to aster with whole mesh.
 
         Arguments:
-            field (*FieldOnNodes*): field on full mesh.
+            field (*FieldOnNodes*): field on whole mesh.
             mesh_interf (ParallelMesh): restricted mesh.
-
         """
         self.desc = field.getDescription()
 
@@ -125,6 +124,7 @@ class CoupledField(PMM.ParaFIELD):
             assert len(orig2rest) == mesh_interf.getNumberOfNodes()
             descrip = self.desc.getNodeAndComponentIdFromDOF(local=True)
             assert len(descrip) == self.getArray().getNbOfElems()
+            # cmpId est 1-based dans ton code -> -1
             self.m2a = [orig2rest[node] * nbCmp + cmpId - 1 for node, cmpId in descrip]
         else:
             assert field.getLocalization() == "ELEM"
@@ -132,39 +132,77 @@ class CoupledField(PMM.ParaFIELD):
             orig2rest = mesh_interf.getOriginalToRestrictedCellsIds()
             assert len(orig2rest) == mesh_interf.getNumberOfCells()
             values, [cells, cmps_name, pts, subpts] = field.getValuesWithDescription()
+            assert set(pts) == {0}
+            assert set(subpts) == {0}
+            assert len(values) == self.getArray().getNbOfElems()
+
             cmps = field.getComponents()
-            map_cmps = {}
-            for i in range(len(cmps)):
-                map_cmps[cmps[i]] = i
+            cmps_map = {name: i for i, name in enumerate(cmps)}
 
-            nbDofs = len(values)
-            assert nbDofs == self.getArray().getNbOfElems()
-            self.m2a = [-1] * nbDofs
-
-            for iDof in range(nbDofs):
-                cell = cells[iDof]
-                cmp_name = cmps_name[iDof]
-                pt = pts[iDof]
-                subpt = subpts[iDof]
-                assert pt == 0 and subpt == 0
-                self.m2a[iDof] = orig2rest[cell] * nbCmp + map_cmps[cmp_name]
+            self.m2a = [
+                orig2rest[cell] * nbCmp + cmps_map[cmp_name]
+                for (cell, cmp_name) in zip(cells, cmps_name)
+            ]
 
     def computeMedcMapping(self, field, mesh_interf):
-        """Compute mapping from medcoupling with restricted mesh
-        to aster with full mesh.
+        """Compute mapping from aster with whole mesh
+        to medocupling with restricted mesh.
 
         Arguments:
-            field (*FieldOnNodes*): field on full mesh.
+            field (*FieldOnNodes*): field on whole mesh.
             mesh_interf (ParallelMesh): restricted mesh.
-
         """
 
-        nbCmp = self.getNumberOfComponents()
-        assert nbCmp == len(field.getComponents())
-        raise NotImplementedError()
+        cmps_ast = field.getComponents()
+        cmps_med = self.getInfoOnComponents()
+        nbCmp = len(cmps_med)
+        assert len(cmps_ast) >= len(cmps_med)
+
+        ast_pos = {name: i for i, name in enumerate(cmps_ast)}  # O(n)
+
+        if field.getLocalization() == "NOEU":
+            assert self.getTypeOfField() in (MEDC.ON_NODES, MEDC.ON_NODES_FE)
+            orig2rest = mesh_interf.getOriginalToRestrictedNodesIds()
+            assert len(orig2rest) == mesh_interf.getNumberOfNodes()
+            desc = field.getDescription()
+            descrip = desc.getNodeAndComponentIdFromDOF(local=True)
+            assert len(descrip) >= self.getArray().getNbOfElems()
+            # cmpId est 1-based dans ton code -> -1
+            cmps_map = {ast_pos[name] + 1: i for i, name in enumerate(cmps_med) if name in ast_pos}
+
+            size = len(orig2rest) * nbCmp
+            self.a2m = [-1] * size
+            a2m_loc = self.a2m  # alias local (micro-optim)
+
+            for iDof, (node, cmpId) in enumerate(descrip):
+                try:
+                    a2m_loc[orig2rest[node] * nbCmp + cmps_map[cmpId]] = iDof
+                except KeyError:
+                    pass
+        else:
+            assert field.getLocalization() == "ELEM"
+            assert self.getTypeOfField() == MEDC.ON_CELLS
+            orig2rest = mesh_interf.getOriginalToRestrictedCellsIds()
+            assert len(orig2rest) == mesh_interf.getNumberOfCells()
+            values, [cells, cmps_name, pts, subpts] = field.getValuesWithDescription()
+            assert set(pts) == {0}
+            assert set(subpts) == {0}
+            assert len(values) >= self.getArray().getNbOfElems()
+
+            cmps_map = {name: i for i, name in enumerate(cmps_med) if name in ast_pos}
+
+            size = len(orig2rest) * nbCmp
+            self.a2m = [-1] * size
+            a2m_loc = self.a2m  # alias local (micro-optim)
+
+            for iDof, (cell, cmp_name) in enumerate(zip(cells, cmps_name)):
+                try:
+                    a2m_loc[orig2rest[cell] * nbCmp + cmps_map[cmp_name]] = iDof
+                except KeyError:
+                    pass
 
     def getAsterField(self):
-        """Get FieldOnNodes/FieldOnCells on full mesh"""
+        """Get FieldOnNodes/FieldOnCells on whole mesh"""
         if self.desc is None or len(self.m2a) == 0:
             raise RuntimeError("Mapping is missing")
 
@@ -186,9 +224,21 @@ class CoupledField(PMM.ParaFIELD):
         """Set FieldOnNodes/FieldOnCells on restricted mesh
 
         Arguments:
-            field (*FieldOnNodes*): field on full mesh.
+            field (*FieldOnNodes*): field on whole mesh.
         """
-        raise NotImplementedError()
+
+        if field.getLocalization() == "NOEU":
+            assert self.getTypeOfField() in (MEDC.ON_NODES, MEDC.ON_NODES_FE)
+        else:
+            assert field.getLocalization() == "ELEM"
+            assert self.getTypeOfField() == MEDC.ON_CELLS
+
+        values = field.getValues(self.a2m)
+        array = self.getArray()
+        info = array.getInfoOnComponents()
+        array.setValues(values)
+        array.rearrange(len(info))
+        array.setInfoOnComponents(info)
 
     @property
     def sup(self):
@@ -651,22 +701,20 @@ class MEDCoupler:
         field_interf = self.restrict_field(field, cmps)
         return field_interf.toMedCouplingField(self.mc_interf, field.getName())
 
-    def set_field(self, field_name, field, cmps=[]):
+    def set_field(self, field_name, field):
         """Set the MEDCoupling field reduced on the interface mesh.
 
         Arguments:
             field_name (str): name of the coupled field
             field (FieldOnNodesReal): code_aster field.
-            cmps (list[str]): list of components. (default: all)
         """
 
         pfield = self.get_field(field_name)
 
-        if pfield.a2m is not None:
-            pfield.setAsterField(field)
-        else:
-            mc_field = self.export_field(field, cmps)
-            pfield.setArray(mc_field.getArray())
+        if pfield.a2m is None:
+            pfield.computeMedcMapping(field, self.mesh_interf)
+
+        pfield.setAsterField(field)
 
     def import_displacement(self, field_name):
         """Convert a MEDCoupling displacement field defined on the interface as
@@ -689,7 +737,7 @@ class MEDCoupler:
             displ (FieldOnNodesReal): code_aster displacement field.
         """
 
-        self.set_field(field_name, displ, ["DX", "DY", "DZ"])
+        self.set_field(field_name, displ)
 
     def import_velocity(self, field_name):
         """Convert a MEDCoupling velocity field defined on the interface as
@@ -722,7 +770,7 @@ class MEDCoupler:
             temp (FieldOnNodesReal): code_aster thermal field.
         """
 
-        self.set_field(field_name, temp, ["TEMP"])
+        self.set_field(field_name, temp)
 
     def import_temperature(self, field_name):
         """Convert a MEDCoupling thermal field as a code_aster field.
@@ -744,7 +792,7 @@ class MEDCoupler:
             press (*FieldOnNodesReal*): code_aster pressure field.
         """
 
-        self.set_field(field_name, pres, ["PRES"])
+        self.set_field(field_name, pres)
 
     def import_pressure(self, field_name):
         """Convert a MEDCoupling pressure field as a code_aster field.

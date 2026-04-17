@@ -2782,11 +2782,28 @@ class FieldOnCellsReal(DataField):
             str: physical quantity
         """
 
-    def getValues(self):
-        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[float]: List of values.
+        1. getValues(self: libaster.FieldOnCellsReal) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[float]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnCellsReal, dofs: list[int] = []) -> list[float]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
+
+                    Returns:
+                        list[float]: List of values.
         """
 
     def norm(self, arg0):
@@ -2959,11 +2976,28 @@ class FieldOnCellsComplex(DataField):
             str: physical quantity
         """
 
-    def getValues(self):
-        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[complex]: List of values.
+        1. getValues(self: libaster.FieldOnCellsComplex) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[complex]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnCellsComplex, dofs: list[int] = []) -> list[complex]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
+
+                    Returns:
+                        list[complex]: List of values.
         """
 
     def printMedFile(self, filename, local=True, version=""):
@@ -3096,11 +3130,28 @@ class FieldOnCellsLong(DataField):
             BaseMesh: Mesh object
         """
 
-    def getValues(self):
-        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[int]: List of values.
+        1. getValues(self: libaster.FieldOnCellsLong) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[int]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnCellsLong, dofs: list[int] = []) -> list[int]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
+
+                    Returns:
+                        list[int]: List of values.
         """
 
     def printMedFile(self, filename, local=True, version=""):
