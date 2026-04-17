@@ -238,6 +238,8 @@ docker:
     - docker:29.4.0-dind
   before_script:
     - docker info
+  needs:
+    - job: prepare
   variables:
     # When you use the dind service, you must instruct Docker to talk with
     # the daemon started inside of the service. The daemon is available
@@ -254,22 +256,17 @@ docker:
     variant: "${OSNAME}"
     baseimage: "${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${variant}"
     dest: "${DOCKER_NEXUS_URL}/codeaster:${VERSION_TAG}-${variant}"
-
   script:
-    - sh .gitlabci/build_docker_codeaster.sh ${OSNAME}
     - echo "+ $(date) - building code_aster Docker image from ${baseimage}..."
     - echo "${DOCKER_NEXUS_PASSWD}" | docker login ${DOCKER_NEXUS_URL} -u "${DOCKER_NEXUS_USER}" --password-stdin
     - cd containers
     - docker build
         --build-arg baseimage=${baseimage}
         --build-arg variant=${variant}
-        --build-arg TAG=${VERSION_TAG}
-        --build-arg REVISION=${VERSION_REVISION}
-        --build-arg BRANCH=${CI_COMMIT_REF_NAME}
-        --build-arg FROM_BRANCH=${CI_DEFAULT_BRANCH}
-        --build-arg DATE=${VERSION_DATE}
-        --build-arg DISTANCE=${VERSION_DISTANCE}
-        -t ${dest} .
+        --build-arg BRANCH=${VERSION_BRANCH}
+        --build-arg PKGINFO="$(cat ../code_aster/pkginfo.py)"
+        -t ${dest}
+        -f Containerfile .
     - docker image push ${dest}
 
   allow_failure: true

@@ -8,8 +8,8 @@ echo "+ cloning..."
 git clone --depth=1 --branch=${BRANCH} https://gitlab.pleiade.edf.fr/codeaster/src.git
 cd ${WRKDIR}/src
 
-echo "+ setting pkginfo..."
-echo "pkginfo = ([int(i) for i in '${TAG}'.split('.')], '${REVISION}', '${BRANCH}', '${DATE}', '${FROM_BRANCH}', ${DISTANCE}, [])" > code_aster/pkginfo.py
+echo "+ creating pkginfo..."
+echo "${PKGINFO}" > code_aster/pkginfo.py
 cat code_aster/pkginfo.py
 
 echo "+ running configure..."
