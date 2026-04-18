@@ -96,7 +96,11 @@ class CoupledField(PMM.ParaFIELD):
 
     def setNature(self, nature):
         """Shorcut for medcoupling method"""
-        return self.getField().setNature(nature)
+        self.getField().setNature(nature)
+
+    def getNature(self):
+        """Shorcut for medcoupling method"""
+        return self.getField().getNature()
 
     def getTypeOfField(self):
         """Shorcut for medcoupling method"""
@@ -276,7 +280,7 @@ class ExtendedInterpKernelDECWithOverlap(IKDEC):
         trg_ranks (list[int]): target procs IDs.
     """
 
-    mesh = _synced = None
+    mesh = _synced = nature = None
 
     def __init__(self, src_ranks, trg_ranks):
         self.mesh = None
@@ -287,6 +291,14 @@ class ExtendedInterpKernelDECWithOverlap(IKDEC):
     def synced(self):
         """bool: Tell if the DEC has already been synced."""
         return self._synced
+
+    def attachLocalField(self, field):
+        """Overload method."""
+
+        if self.nature != field.getNature():
+            self._synced = False
+            self.nature = field.getNature()
+        super().attachLocalField(field)
 
     def synchronize(self):
         """Wrapper on DEC function."""
