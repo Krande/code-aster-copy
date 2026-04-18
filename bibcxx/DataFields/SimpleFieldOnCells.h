@@ -219,15 +219,19 @@ class SimpleFieldOnCells : public DataField {
           _nbCells( 0 ),
           _nbComp( 0 ),
           _nbPt( 0 ),
-          _nbSpt( 0 ) {};
+          _nbSpt( 0 ),
+          _mesh( nullptr ) {};
 
     /**
      * @brief Constructeur
 
      */
-    SimpleFieldOnCells() : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ) {};
+    SimpleFieldOnCells() = delete;
 
-    SimpleFieldOnCells( const BaseMeshPtr mesh ) : SimpleFieldOnCells() { _mesh = mesh; };
+    SimpleFieldOnCells( const BaseMeshPtr mesh )
+        : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ) {
+        _mesh = mesh;
+    };
 
     SimpleFieldOnCells( const BaseMeshPtr mesh, const std::string &loc, const std::string &quantity,
                         const VectorString &comp, bool zero = false )
@@ -272,6 +276,18 @@ class SimpleFieldOnCells : public DataField {
     }
 
     BaseMeshPtr getMesh() const { return _mesh; };
+
+    void setMesh( const BaseMeshPtr mesh ) {
+        if ( mesh ) {
+            if ( _mesh ) {
+                if ( _mesh != mesh ) {
+                    raiseAsterError( "Incompatible meshes." );
+                }
+            } else {
+                _mesh = mesh;
+            }
+        }
+    }
 
     void allocate( const std::string &loc, const std::string &quantity, const VectorString &comp,
                    const ASTERINTEGER &nbPG, ASTERINTEGER nbSP = 1, bool zero = false ) {
