@@ -36,6 +36,7 @@ from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import logger
 from ..Utilities import medcoupling as MEDC
 from ..Utilities import no_new_attributes
+from ..Utilities import force_list
 
 # need mecoupling >= 9.16.0 to use InterpKernelDECWithOverlap
 # remove PMM.InterpKernelDEC later
@@ -109,6 +110,10 @@ class CoupledField(PMM.ParaFIELD):
     def getNumberOfComponents(self):
         """Shorcut for medcoupling method"""
         return self.getArray().getNumberOfComponents()
+
+    def writeField(self, fileName):
+        """Shorcut for medcoupling method"""
+        MEDC.WriteField(fileName, self.getField(), True)
 
     def computeAsterMapping(self, field, mesh_interf):
         """Compute mapping from medcoupling with restricted mesh
@@ -465,10 +470,10 @@ class MEDCoupler:
             assert isinstance(mesh, ParallelMesh)
 
         self.mesh = mesh
-        self.mesh_interf = mesh.restrict(groupsOfCells)
+        self.mesh_interf = mesh.restrict(force_list(groupsOfCells))
 
         groupsOfCells_res = []
-        for grp in groupsOfCells:
+        for grp in force_list(groupsOfCells):
             if self.mesh.hasGroupOfCells(grp, local=True):
                 groupsOfCells_res.append(grp)
 

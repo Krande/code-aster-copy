@@ -145,7 +145,7 @@ def coupled_mechanics(cpl):
     mech_solv = MechanicalSolver(cpl)
 
     cpl.setup(
-        interface=(ML, ["Volume"]),
+        interface=(ML, "Volume"),
         input_fields=[("TEMP", ["TEMP"], "NODES")],
         output_fields=[("DEPL", ["DX", "DY", "DZ"], "NODES")],
     )
