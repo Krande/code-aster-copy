@@ -2110,13 +2110,13 @@ DEFI_MATERIAU = MACRO(
             typ="TXM",
             into=("ENDO", "ENDO_FLUA", "ENDO_FLUA_RAG"),
             defaut="ENDO",
-            enum=(1, 2, 3),
+            enum=(1, 2, 4),
         ),
         b_endo=BLOC(
             condition="""equal_to("COMP_BETON", 'ENDO') or \
                                           equal_to("COMP_BETON", 'ENDO_FLUA') or \
                                           equal_to("COMP_BETON", 'ENDO_FLUA_RAG')""",
-            fr=tr("Loi BETON_RAG : mécanique endommagente seule."),
+            fr=tr("Loi BETON_RAG : mécanique endommageante seule."),
             ENDO_MC=SIMP(
                 statut="o", typ="R", fr=tr("Paramètre de fragilité du béton en compression")
             ),
@@ -2133,11 +2133,15 @@ DEFI_MATERIAU = MACRO(
             condition="""equal_to("COMP_BETON", 'ENDO_FLUA') or \
                                                  equal_to("COMP_BETON", 'ENDO_FLUA_RAG')""",
             fr=tr("Loi BETON_RAG : mécanique et fluage."),
+            FLUA_KAPPAI=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr(
+                    "Coefficient d'augmentation exponentielle de la viscosité de fluage irréversible [unité de déformation]"
+                ),
+            ),
             FLUA_SPH_KR=SIMP(
                 statut="o", typ="R", fr=tr("Raideur fluage sphérique réversible [Pa].")
-            ),
-            FLUA_SPH_KI=SIMP(
-                statut="o", typ="R", fr=tr("Raideur fluage sphérique irréversible [Pa]")
             ),
             FLUA_SPH_NR=SIMP(
                 statut="o", typ="R", fr=tr("Viscosité fluage sphérique réversible [Pa.s].")
@@ -2147,9 +2151,6 @@ DEFI_MATERIAU = MACRO(
             ),
             FLUA_DEV_KR=SIMP(
                 statut="o", typ="R", fr=tr("Raideur fluage déviatorique réversible [Pa].")
-            ),
-            FLUA_DEV_KI=SIMP(
-                statut="o", typ="R", fr=tr("Raideur fluage déviatorique irréversible [Pa].")
             ),
             FLUA_DEV_NR=SIMP(
                 statut="o", typ="R", fr=tr("Viscosité fluage déviatorique réversible [Pa.s].")
