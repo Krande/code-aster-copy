@@ -120,6 +120,13 @@ class mScaler:
         self.lvect = None
         self.rvect = None
 
+    @classmethod
+    def factory(cls, scaling_type):
+        if scaling_type:
+            return MatrixScaler()
+        else:
+            return NoScaler()
+
     def computeScaling(self, matrix, merge_dof, verbose):
         raise NotImplementedError("Should be implemented for the specific mScaler")
 
@@ -308,20 +315,20 @@ class MatrixScaler(mScaler):
         return self.lvect, self.rvect
 
 
-class Scaler:
-    @classmethod
-    def factory(cls, scaling_type):
-        print("je suis dans la factory")
-        if scaling_type:
-            return MatrixScaler()
-        else:
-            return NoScaler()
+# class Scaler:
+#     @classmethod
+#     def factory(cls, scaling_type):
+#         print("je suis dans la factory")
+#         if scaling_type:
+#             return MatrixScaler()
+#         else:
+#             return NoScaler()
 
 
 class matrixScaler(AbstractContextManager):
     def __init__(self, matrix, rhs, merge_dof=None, scaling_type=False, verbose=False):
         print("initialisation de matrixScaler - CM")
-        self._scaling = Scaler.factory(scaling_type)
+        self._scaling = mScaler.factory(scaling_type)
         self._matrix = matrix
         self._rhs = rhs
         self._merge_dof = merge_dof or [["DX", "DY", "DZ"], ["DRX", "DRY", "DRZ"]]

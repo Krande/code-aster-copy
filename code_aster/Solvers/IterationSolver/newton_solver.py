@@ -28,11 +28,11 @@ from .convergence_manager import ConvergenceManager
 from .iteration_solver import BaseIterationSolver
 from .line_search import BaseLineSearch
 
-#  Debug parameters
+# Debug parameters
 USE_SCALING = False  # for testing only
 
 
-#  Newton solver class
+# Newton solver class
 class NewtonSolver(BaseIterationSolver, EventSource):
     """Solves a step, loops on iterations."""
 
@@ -41,7 +41,6 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     _eventid = EventId.IterationSolver
     _data = _converg = _line_search = None
     _use_scaling = None
-    _context = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
@@ -66,7 +65,6 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         self._data = {}
         # - for debug
         self._use_scaling = USE_SCALING
-        self._S = None
 
     def initialize(self):
         """Initialize the object for the next step."""
