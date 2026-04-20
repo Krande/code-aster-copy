@@ -1,6 +1,6 @@
 variables:
   GIT_STRATEGY: fetch
-  # depth must be higher than the range used to search the last tag
+  # only 'prepare' download more revisions to search the last tag
   GIT_DEPTH: 100
   MINIO_URL: https://minio.retd.edf.fr
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
@@ -60,7 +60,7 @@ before_script:
   interruptible: true
   stage: setup
   variables:
-    GIT_DEPTH: 0
+    GIT_DEPTH: 300
   script:
     - .gitlabci/setup_pixi.sh
     - .gitlabci/prepare.sh
