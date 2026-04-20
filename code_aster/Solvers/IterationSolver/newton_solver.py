@@ -40,7 +40,8 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     solver_type = BaseIterationSolver.SubType.Newton
     _eventid = EventId.IterationSolver
     _data = _converg = _line_search = None
-    _use_scaling = _S = None
+    _use_scaling = None
+    _context = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
@@ -194,19 +195,26 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             disc_comp = DiscreteComputation(self.problem)
 
             # Compute Dirichlet BC
-            diriBCs = disc_comp.getIncrementalDirichletBC(self.state.time_curr, self.state.U)
-            # Scale (optional step)
-            self._generate_matrix_scaler(jacobian, residuals)
-            # Solve linear system
-            if not jacobian.isFactorized():
-                self.linear_solver.factorize(jacobian, raiseException=True)
-            deltaU = self.linear_solver.solve(residuals.resi, diriBCs)
-            # Unscale (optional step)
-            self._unscale_solution(deltaU)
-            # Use line search
-            if not self._converg.isPrediction():
-                if self._line_search.isEnabled() and not force:
-                    deltaU = self._line_search.solve(deltaU, scaling)
+            diriBCs = disc_comp.getIncrementalDirichletBC(
+                self.state.time_curr, self.state.primal_curr
+            )
+
+            with MatrixScaler.matrixScaler(
+                jacobian,
+                residuals.resi,
+                merge_dof=[["DX", "DY"], ["LAGS_C", "LAGS_F1"]],
+                scaling_type=self._use_scaling,
+                verbose=False,
+            ) as matScaler:
+                # Solve linear system
+                if not jacobian.isFactorized():
+                    self.linear_solver.factorize(jacobian, raiseException=True)
+                primal_incr = self.linear_solver.solve(residuals.resi, diriBCs)
+                # Unscale if MatrixScaler is used
+                matScaler.unscaleSolution(primal_incr)
+                if not self._converg.isPrediction():
+                    if self._line_search.isEnabled() and not force:
+                        primal_incr = self._line_search.solve(primal_incr, scaling)
         else:
             deltaU = self.state.createPrimal(self.problem, 0.0)
 
@@ -240,31 +248,6 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         if self.contact:
             self.contact.update(self.state)
             self.contact.pairing()
-
-    def _generate_matrix_scaler(self, jacobian, residuals):
-        """Generate the matrix scaler if scaling activated. Instantiate a Matrix Scaler
-        and perform the scaling for the stiffness matrix and residuals
-
-        Arguments:
-            matrix_type (str): type of matrix used.
-            jacobian (AssemblyMatrixDisplacementReal, optional): Stiffness matrix
-            residuals (Solvers.Basics.residual.Residuals): Residuals
-
-        """
-        if self._use_scaling:
-            self._S = MatrixScaler.MatrixScaler()
-            self._S.computeScaling(jacobian, merge_dof=[["DX", "DY"], ["LAGS_C", "LAGS_F1"]])
-            self._S.scaleMatrix(jacobian)
-            self._S.scaleRHS(residuals.resi)
-
-    def _unscale_solution(self, deltaU):
-        """Unscale solution if scaling activated
-
-        Arguments:
-            deltaU (FieldOnNodesReal): Primal solution increment
-        """
-        if self._use_scaling:
-            self._S.unscaleSolution(deltaU)
 
     def notifyObservers(self, matrix_type):
         """Notify observers about the convergence.
