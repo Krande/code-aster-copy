@@ -375,6 +375,20 @@ class FieldOnCells : public DataField {
     }
 
     /**
+     * @brief Get the values of the field for some dofs
+     * @param cmps the dofs to extract
+     *
+     */
+    std::vector< ValueType > getValues( const VectorLong &dofs ) const {
+        std::vector< ValueType > result;
+        result.reserve( dofs.size() );
+        _values->updateValuePointer();
+        for ( auto &dof : dofs )
+            result.push_back( ( *_values )[dof] );
+        return result;
+    }
+
+    /**
      * @brief Get descriptor of the field
      */
     JeveuxVectorLong getDescriptor() const { return _descriptor; };

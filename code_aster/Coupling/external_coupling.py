@@ -23,6 +23,7 @@ Definition of objects for coupled simulations with code_aster.
 import os
 
 from ..Utilities import logger, no_new_attributes
+from ..Utilities import medcoupling as MEDC
 from .med_coupler import MEDCoupler
 from .mpi_calcium import MPICalcium
 from .parameters import SchemeParams
@@ -96,12 +97,16 @@ class ExternalCoupling:
         other_ranks = self._ple.get_app_ranks(with_app)
 
         # Creating the parallel DEC
-        fields_name = {}
+        list_dec = []
+        conv = {"NODES": MEDC.ON_NODES, "NODES_FE": MEDC.ON_NODES_FE, "CELLS": MEDC.ON_CELLS}
+        for _, _, discr in self._fields_in + self._fields_out:
+            if conv[discr] not in list_dec:
+                list_dec.append(conv[discr])
 
         if self._starter:
-            self._medcpl.init_coupling(ranks1=my_ranks, ranks2=other_ranks)
+            self._medcpl.init_coupling(ranks1=my_ranks, ranks2=other_ranks, list_dec=list_dec)
         else:
-            self._medcpl.init_coupling(ranks1=other_ranks, ranks2=my_ranks)
+            self._medcpl.init_coupling(ranks1=other_ranks, ranks2=my_ranks, list_dec=list_dec)
 
         # Define coupling mesh
         self._medcpl.create_mesh_interface(interface[0], interface[1])
@@ -119,14 +124,18 @@ class ExternalCoupling:
         names = [name for name, _, _ in self._fields_in]
         return self._medcpl.recv(names)
 
-    def send_output_fields(self, outputs):
+    def send_output_fields(self):
         """Send the output fields to the other code.
 
         Arguments:
             outputs (dict[*ParaFIELD*]): fields used to define the inputs of the other code.
         """
-        assert len(outputs) == len(self._fields_out)
-        self._medcpl.send(outputs)
+
+        send_field = {}
+        for name, _, _ in self._fields_out:
+            send_field[name] = self._medcpl.get_field(name)
+
+        self._medcpl.send(send_field)
 
     def set_parameters(self, params):
         """Set parameters.
@@ -273,13 +282,11 @@ class ExternalCoupling:
                 else:
                     input_data = self.recv_input_fields()
 
-                has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
-                )
+                has_cvg = solver.run_iteration(i_iter, current_time, delta_time, input_data)
 
                 # send data to other code
                 if self._starter:
-                    self.send_output_fields(output_data)
+                    self.send_output_fields()
                     converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
@@ -287,7 +294,7 @@ class ExternalCoupling:
                     converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
-                    self.send_output_fields(output_data)
+                    self.send_output_fields()
 
                 if converged:
                     break
@@ -338,10 +345,19 @@ class SaturneCoupling(ExternalCoupling):
     def __init__(self, app="code_aster", debug=False):
         super().__init__(app, False, debug)
 
+    def init_coupling(self, with_app="code_saturne"):
+        """Initialize the coupling with code_saturne.
+
+        Arguments:
+            with_app (str): Name of the code_saturne application.
+        """
+
+        super().init_coupling(with_app)
+
     def setup(self, interface, **params):
         """Initialize the coupling.
 
-        The input filed is the fluid forces and the output fields ate the mesh_displacement
+        The input filed is the fluid pressure and the output fields ate the mesh_displacement
         and the mesh_velocity of the interface.
 
         These names are impodes by code_saturne.
@@ -354,10 +370,16 @@ class SaturneCoupling(ExternalCoupling):
         if interface[0].getDimension() != 3:
             raise RuntimeError("The mesh has to be 3D.")
 
-        self._fields_in = [("fluid_forces", ["FX", "FY", "FZ"], "CELLS")]
+        # need mecoupling >= 9.16.0 to use InterpKernelDECWithOverlap
+        # remove PMM.InterpKernelDEC later
+        node_typ = "NODES"
+        if self._medcpl.supportOverlap():
+            node_typ = "NODES_FE"
+
+        self._fields_in = [("fluid_pressure", ["FX", "FY", "FZ"], "CELLS")]
         self._fields_out = [
-            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
-            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
+            ("mesh_displacement", ["DX", "DY", "DZ"], node_typ),
+            ("mesh_velocity", ["DX", "DY", "DZ"], node_typ),
         ]
         self.set_parameters(params)
         self._init_paramedmem(self._other_app, interface)
@@ -421,20 +443,13 @@ class SaturneCoupling(ExternalCoupling):
                 input_data = self.recv_input_fields()
                 assert len(input_data) == 1
 
-                output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data["fluid_forces"]
-                )
+                solver.run_iteration(i_iter, current_time, delta_time)
 
                 # received cvg
                 converged = bool(self.MPI.COUPLING_COMM_WORLD.recv(istep, "ICVAST", self.MPI.INT))
 
                 # send results to code_saturne
-                self.send_output_fields(
-                    {
-                        "mesh_displacement": output_data["mesh_displacement"],
-                        "mesh_velocity": output_data["mesh_velocity"],
-                    }
-                )
+                self.send_output_fields()
 
                 if converged:
                     break
@@ -456,3 +471,35 @@ class SaturneCoupling(ExternalCoupling):
         )
 
         return exit_coupling
+
+    def export_displacement(self, displ):
+        """Export displacement field
+
+        Arguments:
+            displ (*FieldOnNodes*): Displacement field.
+        """
+
+        self._medcpl.export_displacement("mesh_displacement", displ)
+
+    def export_velocity(self, velocity):
+        """Export displacement field
+
+        Arguments:
+            velocity (*FieldOnNodes*): Velocity field.
+        """
+
+        self._medcpl.export_velocity("mesh_velocity", velocity)
+
+    def import_fluidLoad(self, model, time):
+        """Import fluid load
+
+        Arguments:
+            model (Model): Mechanical model.
+            time (float): Time of assignment.
+
+        Returns:
+            *LoadResult*: surface forces load.
+        """
+
+        fluid = self._medcpl.get_field("fluid_pressure")
+        return self._medcpl.import_fluidforces(fluid, model, time)

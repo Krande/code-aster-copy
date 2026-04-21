@@ -139,15 +139,19 @@ class SimpleFieldOnNodes : public DataField {
           _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
           _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
           _nbNodes( 0 ),
-          _nbComp( 0 ) {};
+          _nbComp( 0 ),
+          _mesh( nullptr ) {};
 
     /**
      * @brief Constructeur
 
      */
-    SimpleFieldOnNodes() : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ) {};
+    SimpleFieldOnNodes() = delete;
 
-    SimpleFieldOnNodes( const BaseMeshPtr mesh ) : SimpleFieldOnNodes() { _mesh = mesh; };
+    SimpleFieldOnNodes( const BaseMeshPtr mesh )
+        : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ) {
+        _mesh = mesh;
+    };
 
     SimpleFieldOnNodes( const BaseMeshPtr mesh, const std::string quantity,
                         const VectorString &comp, bool zero = false )
@@ -169,6 +173,18 @@ class SimpleFieldOnNodes : public DataField {
         FreeStr( tabNames );
 
         build();
+    }
+
+    void setMesh( const BaseMeshPtr mesh ) {
+        if ( mesh ) {
+            if ( _mesh ) {
+                if ( _mesh != mesh ) {
+                    raiseAsterError( "Incompatible meshes." );
+                }
+            } else {
+                _mesh = mesh;
+            }
+        }
     }
 
     /**
@@ -434,7 +450,9 @@ class SimpleFieldOnNodes : public DataField {
         _buildComponentsName2Index();
 
         AS_ASSERT( _values->size() == _nbNodes * _nbComp );
-        AS_ASSERT( _values->size() > 0 );
+        if ( !this->getMesh()->isParallel() ) {
+            AS_ASSERT( _values->size() > 0 );
+        }
 
         return true;
     }
@@ -542,6 +560,82 @@ class SimpleFieldOnNodes : public DataField {
 
         new_field->build();
         return new_field;
+    };
+
+    /**
+     * @brief Compute norm
+     * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
+     */
+    ASTERDOUBLE norm( const std::string normType ) const {
+
+        if constexpr ( !std::is_same_v< ValueType, ASTERDOUBLE > &&
+                       !std::is_same_v< ValueType, ASTERINTEGER > &&
+                       !std::is_same_v< ValueType, ASTERCOMPLEX > ) {
+            raiseAsterError( " norm method not defined for type " +
+                             std::string( typeid( ValueType ).name() ) );
+        }
+        CALL_JEMARQ();
+        ASTERDOUBLE norme = 0.0;
+        _values->updateValuePointer();
+
+        const int rank = getMPIRank();
+
+        JeveuxVectorLong nodesRank = getMesh()->getNodesOwner();
+        nodesRank->updateValuePointer();
+        const ASTERINTEGER nbNodes = _mesh->getNumberOfNodes();
+        const ASTERINTEGER nbCmp = this->getNumberOfComponents();
+
+        if ( normType == "NORM_1" ) {
+            for ( ASTERINTEGER node = 0; node < nbNodes; ++node ) {
+                if ( ( *nodesRank )[node] == rank ) {
+                    for ( ASTERINTEGER icmp = 0; icmp < nbCmp; icmp++ ) {
+                        if ( this->hasValue( node, icmp ) ) {
+                            const auto val = ( *this )( node, icmp );
+                            norme += std::abs( val );
+                        }
+                    }
+                }
+            }
+        } else if ( normType == "NORM_2" ) {
+            for ( ASTERINTEGER node = 0; node < nbNodes; ++node ) {
+                if ( ( *nodesRank )[node] == rank ) {
+                    for ( ASTERINTEGER icmp = 0; icmp < nbCmp; icmp++ ) {
+                        if ( this->hasValue( node, icmp ) ) {
+                            const auto val = ( *this )( node, icmp );
+                            norme += val * val;
+                        }
+                    }
+                }
+            }
+        } else if ( normType == "NORM_INFINITY" ) {
+            for ( ASTERINTEGER node = 0; node < nbNodes; ++node ) {
+                if ( ( *nodesRank )[node] == rank ) {
+                    for ( ASTERINTEGER icmp = 0; icmp < nbCmp; icmp++ ) {
+                        if ( this->hasValue( node, icmp ) ) {
+                            const auto val = ( *this )( node, icmp );
+                            norme = std::max( norme, std::abs( val ) );
+                        }
+                    }
+                }
+            }
+        } else {
+            raiseAsterError( "Unknown norm: " + normType );
+        }
+
+#ifdef ASTER_HAVE_MPI
+        if ( this->getMesh()->isParallel() ) {
+            ASTERDOUBLE norm2 = norme;
+            if ( normType == "NORM_1" || normType == "NORM_2" )
+                norme = AsterMPI::sum( norm2 );
+            else
+                norme = AsterMPI::max( norm2 );
+        }
+#endif
+
+        if ( normType == "NORM_2" )
+            norme = std::sqrt( norme );
+        CALL_JEDEMA();
+        return norme;
     };
 
     std::pair< std::vector< ValueType >, std::pair< VectorLong, VectorString > >

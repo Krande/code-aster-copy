@@ -36,6 +36,8 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, FiniteElementDescriptorPtr, std::string,
+                                         std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, const FieldOnCellsReal & > ) )
         .def( py::init( []( const ModelPtr model, const std::string &loc,
                             const std::string &quantity, const BehaviourPropertyPtr behaviour,
@@ -153,12 +155,24 @@ Returns:
                 values (list[float]): list of values to set
             )",
               py::arg( "values" ) )
-        .def( "getValues", &FieldOnCellsReal::getValues, R"(
+        .def( "getValues", py::overload_cast<>( &FieldOnCellsReal::getValues, py::const_ ), R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
                 list[float]: List of values.
             )" )
+        .def( "getValues",
+              py::overload_cast< const VectorLong & >( &FieldOnCellsReal::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+            Arguments:
+                dofs: dofs to extract
+
+            Returns:
+                list[float]: List of values.
+            )",
+              py::arg( "dofs" ) = VectorLong() )
         .def( "size", &FieldOnCellsReal::size, R"(
             Return the size of the field
 
@@ -261,6 +275,8 @@ Returns:
                                                                           "FieldOnCellsComplex" )
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsComplex, FiniteElementDescriptorPtr,
+                                         std::string, std::string > ) )
         .def( py::init< const FieldOnCellsComplex & >() )
         .def( "copy", &FieldOnCellsComplex::copy )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
@@ -291,12 +307,26 @@ Returns:
                 values (list[complex]): list of values to set
             )",
               py::arg( "values" ) )
-        .def( "getValues", &FieldOnCellsComplex::getValues, R"(
+        .def( "getValues", py::overload_cast<>( &FieldOnCellsComplex::getValues, py::const_ ),
+              R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
                 list[complex]: List of values.
             )" )
+        .def(
+            "getValues",
+            py::overload_cast< const VectorLong & >( &FieldOnCellsComplex::getValues, py::const_ ),
+            R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+            Arguments:
+                dofs: dofs to extract
+
+            Returns:
+                list[complex]: List of values.
+            )",
+            py::arg( "dofs" ) = VectorLong() )
         .def(
             "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
         .def(
@@ -392,12 +422,25 @@ Returns:
                 values (list[complex]): list of values to set
             )",
               py::arg( "values" ) )
-        .def( "getValues", &FieldOnCellsLong::getValues, R"(
+        .def( "getValues", py::overload_cast<>( &FieldOnCellsLong::getValues, py::const_ ),
+              R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
                 list[int]: List of values.
             )" )
+        .def( "getValues",
+              py::overload_cast< const VectorLong & >( &FieldOnCellsLong::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+            Arguments:
+                dofs: dofs to extract
+
+            Returns:
+                list[int]: List of values.
+            )",
+              py::arg( "dofs" ) = VectorLong() )
         .def(
             "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
         .def(

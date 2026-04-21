@@ -1972,6 +1972,20 @@ class EquationNumbering(DataStructure):
             list[str]: list of components
         """
 
+    def getComponentsIdToName(self):
+        """Get map between id and name of components
+
+        Returns:
+            dict[int]: map between id and name
+        """
+
+    def getComponentsNameToId(self):
+        """Get map between id and name of components
+
+        Returns:
+            dict[int]: map between id and name
+        """
+
     def getDOFFromNodeAndComponent(self, local=True):
         """Return the dict of dofs with the pair (node id, component's name) as keys
 
@@ -2641,13 +2655,15 @@ class FieldOnCellsReal(DataField):
 
         4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str) -> None
 
-        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
+        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
 
-        6. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty, elem_char: libaster.ElementaryCharacteristics) -> None
+        6. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
 
-        7. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty) -> None
+        7. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty, elem_char: libaster.ElementaryCharacteristics) -> None
 
-        8. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, elem_char: libaster.ElementaryCharacteristics) -> None
+        8. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty) -> None
+
+        9. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, elem_char: libaster.ElementaryCharacteristics) -> None
         """
 
     def __isub__(self, arg0):
@@ -2780,11 +2796,28 @@ class FieldOnCellsReal(DataField):
             str: physical quantity
         """
 
-    def getValues(self):
-        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[float]: List of values.
+        1. getValues(self: libaster.FieldOnCellsReal) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[float]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnCellsReal, dofs: list[int] = []) -> list[float]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
+
+                    Returns:
+                        list[float]: List of values.
         """
 
     def norm(self, arg0):
@@ -2904,7 +2937,9 @@ class FieldOnCellsComplex(DataField):
 
         2. __init__(self: libaster.FieldOnCellsComplex, arg0: str) -> None
 
-        3. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FieldOnCellsComplex) -> None
+        3. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
+
+        4. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FieldOnCellsComplex) -> None
         """
 
     def __isub__(self, arg0):
@@ -2955,11 +2990,28 @@ class FieldOnCellsComplex(DataField):
             str: physical quantity
         """
 
-    def getValues(self):
-        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[complex]: List of values.
+        1. getValues(self: libaster.FieldOnCellsComplex) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[complex]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnCellsComplex, dofs: list[int] = []) -> list[complex]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
+
+                    Returns:
+                        list[complex]: List of values.
         """
 
     def printMedFile(self, filename, local=True, version=""):
@@ -3092,11 +3144,28 @@ class FieldOnCellsLong(DataField):
             BaseMesh: Mesh object
         """
 
-    def getValues(self):
-        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[int]: List of values.
+        1. getValues(self: libaster.FieldOnCellsLong) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[int]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnCellsLong, dofs: list[int] = []) -> list[int]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
+
+                    Returns:
+                        list[int]: List of values.
         """
 
     def printMedFile(self, filename, local=True, version=""):
@@ -3230,9 +3299,11 @@ class FieldOnNodesReal(DataField):
 
         5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
 
-        6. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
+        6. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.EquationNumbering) -> None
 
-        7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
+        7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
+
+        8. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
         """
 
     def __isub__(self, arg0):
@@ -3557,6 +3628,8 @@ class FieldOnNodesComplex(DataField):
         4. __init__(self: libaster.FieldOnNodesComplex, arg0: Model) -> None
 
         5. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.BaseDOFNumbering) -> None
+
+        6. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.EquationNumbering) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -3967,21 +4040,19 @@ class SimpleFieldOnCellsReal(DataField):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.SimpleFieldOnCellsReal) -> None
+        1. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
 
-        2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
+        2. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh) -> None
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str]) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str]) -> None
+        4. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], prol_zero: bool) -> None
 
-        5. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], prol_zero: bool) -> None
+        5. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int) -> None
 
-        6. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int) -> None
+        6. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int, prol_zero: bool) -> None
 
-        7. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int, prol_zero: bool) -> None
-
-        8. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: list[int], nbSubPoints: int, prol_zero: bool) -> None
+        7. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: list[int], nbSubPoints: int, prol_zero: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -4137,6 +4208,16 @@ class SimpleFieldOnCellsReal(DataField):
             bool: True  if the value is affected
         """
 
+    def norm(self, arg0):
+        """Return the norm of the field
+
+        Arguments:
+            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+
+        Returns:
+            float: norm
+        """
+
     def restrict(self, cmps=[], groupsOfCells=[]):
         """Return a new field restricted to the list of components and groups of cells given
 
@@ -4148,6 +4229,13 @@ class SimpleFieldOnCellsReal(DataField):
 
         Returns:
             SimpleFieldOnCellsReal: field restricted.
+        """
+
+    def setMesh(self, mesh):
+        """Set mesh.
+
+        Arguments:
+            mesh [BaseMesh]: mesh to set.
         """
 
     def setValue(self, *args, **kwargs):
@@ -4275,15 +4363,13 @@ class SimpleFieldOnNodesReal(DataField):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.SimpleFieldOnNodesReal) -> None
+        1. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
 
-        2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
+        2. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh) -> None
+        3. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
-
-        5. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str], prol_zero: bool) -> None
+        4. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str], prol_zero: bool) -> None
         """
 
     def __setitem__(self, *args, **kwargs):
@@ -4368,6 +4454,23 @@ class SimpleFieldOnNodesReal(DataField):
 
     def hasComponent(self, arg0):
         pass
+
+    def norm(self, arg0):
+        """Return the norm of the field
+
+        Arguments:
+            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+
+        Returns:
+            float: norm
+        """
+
+    def setMesh(self, mesh):
+        """Set mesh.
+
+        Arguments:
+            mesh [BaseMesh]: mesh to set.
+        """
 
     def setValues(self, *args, **kwargs):
         """Overloaded function.
@@ -4499,11 +4602,9 @@ class SimpleFieldOnNodesComplex(DataField):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.SimpleFieldOnNodesComplex) -> None
+        1. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: str) -> None
 
-        2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: str) -> None
-
-        3. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
+        2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -4532,6 +4633,13 @@ class SimpleFieldOnNodesComplex(DataField):
 
     def hasComponent(self, arg0):
         pass
+
+    def setMesh(self, mesh):
+        """Set mesh.
+
+        Arguments:
+            mesh [BaseMesh]: mesh to set.
+        """
 
     def toNumpy(self):
         """Returns two numpy arrays with shape ( number_of_components, space_dimension )
