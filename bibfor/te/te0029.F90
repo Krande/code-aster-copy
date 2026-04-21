@@ -61,7 +61,7 @@ subroutine te0029(option, nomte)
     real(kind=8) :: valpar(4), pr
     character(len=8) :: nompar(4)
     character(len=16) :: elas_keyword
-    character(len=4) :: fami
+    character(len=8) :: fami
 
     real(c_double) :: cst(5), coor(27), kappa, cdofs_f(12)
     ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_f

@@ -48,7 +48,7 @@ subroutine te0225(option, nomte)
     parameter(nbres=3)
     character(len=32) :: phenom
     character(len=16) :: nomres(nbres)
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres), dfdx(3), r, cour, jac, cosa, sina
     real(kind=8) :: tpg1, tpg2, tpg3, tpg, zero, un, deux, x3

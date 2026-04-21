@@ -18,19 +18,15 @@
 !
 interface
     subroutine comp1d(BEHinteg, &
-                      fami, kpg, ksp, option, sigx, &
-                      epsx, depx, angmas, vim, vip, &
+                      option, sigx, &
+                      epsx, depx, vim, vip, &
                       sigxp, etan, codret)
         use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
-        character(len=*) :: fami
-        integer(kind=8) :: kpg
-        integer(kind=8) :: ksp
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
         character(len=16) :: option
         real(kind=8) :: sigx
         real(kind=8) :: epsx
         real(kind=8) :: depx
-        real(kind=8) :: angmas(3)
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: sigxp

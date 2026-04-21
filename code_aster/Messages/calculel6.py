@@ -197,13 +197,6 @@ Erreur lors de l'interpolation de la fonction %(k1)s sur la maille %(k3)s, il ma
  Code retour: %(i1)d
 """
     ),
-    64: _(
-        """
- Variables internes en nombre différent aux instants '+' et '-' pour la maille %(k1)s
- Instant '-' : %(i1)d
- Instant '+' : %(i2)d
-"""
-    ),
     65: _(
         """
 Erreur lors de l'interpolation de la fonction %(k1)s, il manque la géométrie.

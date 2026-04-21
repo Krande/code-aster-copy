@@ -43,7 +43,7 @@ subroutine te0434(option, nomte)
 !                       NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=32) :: phenom
     integer(kind=8) :: nddl, nno, nnos, npg, ndim, ncomp
     integer(kind=8) :: n, kpg

@@ -49,7 +49,7 @@ subroutine te0422(option, nomte)
     real(kind=8) :: effgt(32)
     real(kind=8) :: t2iu(4), t2ui(4), c, s
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
 !
 !     ------------------------------------------------------------------
 !

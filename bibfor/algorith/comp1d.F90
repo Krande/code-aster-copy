@@ -16,26 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp1d(BEHinteg, &
-                  fami, kpg, ksp, option, sigx, &
-                  epsx, depx, angmas, vim, vip, &
+subroutine comp1d(BEHInteg, &
+                  option, sigx, &
+                  epsx, depx, vim, vip, &
                   sigxp, etan, codret)
 !
     use Behaviour_type
     use Behaviour_module
-!
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmcomp.h"
+#include "jeveux.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
-    character(len=*) :: fami
+    type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=16) :: option
-    integer(kind=8) :: codret, kpg, ksp
-    real(kind=8) :: angmas(3)
+    integer(kind=8) :: codret
     real(kind=8) :: vim(*), vip(*), sigx, sigxp, epsx, depx, etan
+!
+! --------------------------------------------------------------------------------------------------
 !
 !     INTEGRATION DE LOIS DE COMPORTEMENT NON LINEAIRES
 !     POUR DES ELEMENTS 1D PAR UNE METHODE INSPIREE DE CELLE DE DEBORST
@@ -44,8 +43,7 @@ subroutine comp1d(BEHinteg, &
 !     PERMET D'UTILISER TOUS LES COMPORTEMENTS DEVELOPPES EN AXIS POUR
 !     TRAITER DES PROBLEMES 1D (BARRES, PMF,...)
 !
-!     POUR POUVOIR UTILISER CETTE METHODE, IL FAUT FOURNIR SOUS LE
-!     MOT-CLES COMP_INCR : ALGO_1D='DEBORST'
+! --------------------------------------------------------------------------------------------------
 !
 !     EN ENTREE ON DONNE LES VALEURS UNIAXIALES A L'INSTANT PRECEDENT :
 !      - SIGX(T-),EPSX(T-),VIM(T-) ET L'INCREMENT DEPSX
@@ -57,10 +55,8 @@ subroutine comp1d(BEHinteg, &
 !   EN SORTIE DE COMP1D, CE CODE RETOUR EST TRANSMIS A LA ROUTINE NMCONV
 !   POUR AJOUTER DES ITERATIONS SI SIGYY OU SIGZZ NE SONT PAS NULLES.
 !
-! ----------------------------------------------------------------------
-! IN  FAMI      : FAMILLE DU POINT DE GAUSS
-!     KPG       : NUMERO DU POINT DE GAUSS
-!     KSP       : NUMERO DU SOUS-POINT DE GAUSS
+! --------------------------------------------------------------------------------------------------
+!
 !     OPTION    : NOM DE L'OPTION A CALCULER
 !     SIGM      : SIGMA XX A L'INSTANT MOINS
 !     EPSX      : EPSI XX A L'INSTANT MOINS
@@ -74,12 +70,12 @@ subroutine comp1d(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: imate, iinstm
-    integer(kind=8) :: iinstp, icarcr
+    character(len=16), parameter :: multComp = " "
+    character(len=8), parameter :: typmod(2) = (/'COMP1D  ', '        '/)
+    integer(kind=8) :: jvInstmr, jvInstpr, jvCarcri
     integer(kind=8), parameter :: ndimLdc = 2
     real(kind=8) :: dsidep(6, 6)
     real(kind=8) :: sigm(6), sigp(6), eps(6), deps(6)
-    character(len=8) :: typmod(2)
     character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -92,28 +88,27 @@ subroutine comp1d(BEHinteg, &
     eps(1) = epsx
     deps(1) = depx
     sigm(1) = sigx
-    typmod(1) = 'COMP1D '
-    typmod(2) = '        '
-!
-!
-! ---    PARAMETRES EN ENTREE
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PINSTMR', 'L', iinstm)
-    call jevech('PINSTPR', 'L', iinstp)
+
+! - Input fields
+    call jevech('PINSTMR', 'L', jvInstmr)
+    call jevech('PINSTPR', 'L', jvInstpr)
     call jevech('PCOMPOR', 'L', vk16=compor)
-    call jevech('PCARCRI', 'L', icarcr)
+    call jevech('PCARCRI', 'L', jvCarcri)
 
 ! - Integrator
     sigp = 0.d0
-    call nmcomp(BEHinteg, &
-                fami, kpg, ksp, ndimLdc, typmod, &
-                zi(imate), compor, zr(icarcr), zr(iinstm), zr(iinstp), &
-                6, eps, deps, 6, sigm, &
-                vim, option, angmas, &
-                sigp, vip, 36, dsidep, codret)
+    call nmcomp(BEHInteg, &
+                ndimLdc, option, typmod, &
+                zr(jvInstmr), zr(jvInstpr), &
+                compor, zr(jvCarcri), multComp, &
+                6, eps, deps, &
+                6, sigm, &
+                vim, &
+                sigp, vip, &
+                36, dsidep, &
+                codret)
 !
     sigxp = sigp(1)
     etan = dsidep(1, 1)
-!
 !
 end subroutine

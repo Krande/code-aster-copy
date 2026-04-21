@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine dxmath(fami, epais, df, dm, dmf,&
-                      pgl, multic, indith, t2iu, t2ui,&
+    subroutine dxmath(famiZ, epais, df, dm, dmf, &
+                      pgl, multic, indith, t2iu, t2ui, &
                       t1ve, npg)
+        character(len=*), intent(in) :: famiZ
         character(len=4) :: fami
         real(kind=8) :: epais
         real(kind=8) :: df(3, 3)

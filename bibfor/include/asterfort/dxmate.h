@@ -21,10 +21,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dxmate(fami, df, dm, dmf, dc,&
-                      dci, dmc, dfc, nno, pgl,&
+    subroutine dxmate(famiZ, df, dm, dmf, dc, &
+                      dci, dmc, dfc, nno, pgl, &
                       multic, coupmf, t2iu, t2ui, t1ve)
-        character(len=4) :: fami
+        character(len=*), intent(in) :: famiZ
         real(kind=8) :: df(3, 3)
         real(kind=8) :: dm(3, 3)
         real(kind=8) :: dmf(3, 3)

@@ -15,14 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
-                      idfde, geom, typmod, compor, deplm,&
-                      ddepl, depl0, depl1, dfdi, fm,&
+    subroutine pipdef(typmod, compor, &
+                      ndim, nno, kpg, ipoids, ivf, &
+                      idfde, geom, deplm, &
+                      ddepl, depl0, depl1, dfdi, fm, &
                       epsm, epsp, epsd)
+        character(len=8), intent(in) :: typmod(2)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         integer(kind=8) :: ndim
         integer(kind=8) :: nno
         integer(kind=8) :: kpg
@@ -30,8 +32,6 @@ interface
         integer(kind=8) :: ivf
         integer(kind=8) :: idfde
         real(kind=8) :: geom(ndim, *)
-        character(len=8) :: typmod(*)
-        character(len=16) :: compor(*)
         real(kind=8) :: deplm(*)
         real(kind=8) :: ddepl(*)
         real(kind=8) :: depl0(*)

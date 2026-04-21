@@ -50,7 +50,7 @@ subroutine te0430(option, nomte)
 ! ......................................................................
 !
     integer(kind=8) :: codres(2)
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=16) :: nomres(2)
     integer(kind=8) :: nddl, nno, npg, i, kpg, n, ndim, nnos, jgano
     integer(kind=8) :: ipoids, ivf, idfde, igeom, imate, icontm, ivectu, iret, ier

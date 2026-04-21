@@ -57,8 +57,7 @@ subroutine get_elas_id(jvMaterCode, elasID, elasKeyword_)
         elasKeyword .eq. 'ELAS_MEMBRANE' .or. &
         elasKeyword .eq. 'ELAS_META' .or. &
         elasKeyword .eq. 'ELAS_GLRC' .or. &
-        elasKeyword .eq. 'ELAS_DHRC' .or. &
-        elasKeyword .eq. 'ELAS_COQUE') then
+        elasKeyword .eq. 'ELAS_DHRC') then
         elasID = ELAS_ISOT
 
     elseif (elasKeyword .eq. 'ELAS_ORTH') then
@@ -75,6 +74,12 @@ subroutine get_elas_id(jvMaterCode, elasID, elasKeyword_)
 
     elseif (elasKeyword .eq. 'ELAS_VISCO_ISTR') then
         elasID = ELAS_VISC_ISTR
+
+    elseif (elasKeyword .eq. 'ELAS_COQUE') then
+        elasID = ELAS_SHELL
+
+    elseif (elasKeyword .eq. 'ELAS_COQMU') then
+        elasID = ELAS_COMPOSITE
 
     else
         call utmess('F', 'COMPOR5_15', sk=elasKeyword)

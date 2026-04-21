@@ -49,7 +49,7 @@ subroutine tuefgeElno(lLine, nbNode, nbDof, nbFourier)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4), parameter :: fami = "RIGI"
+    character(len=8), parameter :: fami = "RIGI"
     integer(kind=8) :: jvf, jdfde, jdfd2, jcoopg, jpoids, jgano
     integer(kind=8) :: jvDisp
     real(kind=8) :: weightLayer(2*PIPE_MAX_LAYERS+1), weightSect(2*PIPE_MAX_SECTORS+1)

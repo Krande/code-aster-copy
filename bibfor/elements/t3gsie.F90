@@ -30,7 +30,7 @@ subroutine t3gsie(option, fami, xyzl, pgl, depl, &
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
 #include "asterfort/t3gbc.h"
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=16) :: option
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)
     integer(kind=8) :: nbcou

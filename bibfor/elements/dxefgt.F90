@@ -44,7 +44,7 @@ subroutine dxefgt(pgl, sigt)
     real(kind=8) :: tmoypg, tsuppg, tinfpg
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
     integer(kind=8) :: icodre(56)
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=10) :: phenom
 !     ------------------------------------------------------------------
 !

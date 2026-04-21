@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dxmate(fami, df, dm, dmf, dc, &
+subroutine dxmate(famiZ, df, dm, dmf, dc, &
                   dci, dmc, dfc, nno, pgl, &
                   multic, coupmf, t2iu, t2ui, t1ve)
     implicit none
@@ -41,12 +41,14 @@ subroutine dxmate(fami, df, dm, dmf, dc, &
 #include "asterfort/utdtab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
+
+    character(len=*), intent(in) :: famiZ
     aster_logical :: coupmf
     integer(kind=8) :: nno, multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
-    character(len=4) :: fami
+
 !     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
 !     MEMBRANE-FLEXION ET CISAILLEMENT POUR UN MATERIAU ISOTROPE OU
 !     MULTICOUCHE
@@ -73,8 +75,10 @@ subroutine dxmate(fami, df, dm, dmf, dc, &
     character(len=16) :: nomres(33)
     character(len=32) :: phenom
     character(len=16) :: nomte
+    character(len=8) :: fami
 !
 !---------------------------------------------------------------------
+    fami = famiZ
     zero = 0.0d0
     deux = 2.0d0
     elasco = 0

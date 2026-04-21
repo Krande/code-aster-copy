@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
+subroutine refthm(ds_thm, &
+                  ndim, l_axi, fnoevo, &
                   mecani, press1, press2, tempe, second, &
                   nno, nnos, npi, npg, elem_coor, &
                   dt, dimdef, dimcon, dimuel, jv_poids, &
@@ -26,7 +27,6 @@ subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
                   nddl_2nd, b, r, vectu)
 !
     use THM_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -39,7 +39,6 @@ subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
 #include "blas/daxpy.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer(kind=8), intent(in) :: jv_mater
     integer(kind=8), intent(in) :: ndim
     aster_logical, intent(in) :: l_axi
     aster_logical, intent(in) :: fnoevo
@@ -86,7 +85,7 @@ subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
 ! In  dimuel           : number of dof for element
 ! In  jv_poids         : JEVEUX adress for weight of Gauss points (linear shape functions)
 ! In  jv_poids2        : JEVEUX adress for weight of Gauss points (quadratic shape functions)
-! In  jv_func          : JEVEUX adress for shape functions (linear shape functions)
+! In  jv_func          : JEVEUX adress for shape functions (linear shape funcjvMaterctions)
 ! In  jv_func2         : JEVEUX adress for shape functions (quadratic shape functions)
 ! In  jv_dfunc         : JEVEUX adress for derivative of shape functions (linear shape functions)
 ! In  jv_dfunc2        : JEVEUX adress for derivative of shape functions (quadratic shape functions)
@@ -198,7 +197,8 @@ subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
 ! --------- Compute
             if (vale_refe .ne. r8vide()) then
                 sigtm(i_dim+dimcon*(kpi-1)) = vale_refe
-                call fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
+                call fnothm(ds_thm, &
+                            ndim, l_axi, fnoevo, &
                             mecani, press1, press2, tempe, second, &
                             nno, nnos, npi, npg, elem_coor, &
                             dt, dimdef, dimcon, dimuel, jv_poids, &

@@ -17,16 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0413
 !
-subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
+subroutine nmgvno(BEHInteg, &
+                  ndim, nnoQ, nnoL, npg, &
                   iw, vff1, vff2, idfde1, idfde2, &
-                  geom, typmod, option, mat, compor, &
+                  geom, typmod, option, compor, &
                   lgpg, carcri, instam, instap, ddlm, &
-                  ddld, angmas, sigm, vim, sigp, &
+                  ddld, sigm, vim, sigp, &
                   vip, matr, vect, codret)
 !
     use Behaviour_type
     use Behaviour_module
-!
+    use MaterialPara_module
+    use MaterialPara_type
     implicit none
 !
 #include "asterf_types.h"
@@ -42,16 +44,16 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 #include "asterfort/rcvalb.h"
 #include "jeveux.h"
 !
-    character(len=8) :: typmod(2)
-    character(len=*) :: fami
-    character(len=16) :: option, compor(COMPOR_SIZE)
-    integer(kind=8) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mat, lgpg, codret
-    real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
-    real(kind=8) :: geom(ndim, nno1)
-    real(kind=8) :: carcri(CARCRI_SIZE), instam, instap
+    type(Behaviour_Integ), intent(inout) :: BEHInteg
+    character(len=8), intent(in) :: typmod(2)
+    character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    integer(kind=8) :: ndim, nnoQ, nnoL, npg, idfde1, idfde2, iw, lgpg, codret
+    real(kind=8) :: vff1(nnoQ, npg), vff2(nnoL, npg)
+    real(kind=8) :: geom(ndim, nnoQ)
+    real(kind=8) :: instam, instap
     real(kind=8) :: ddlm(*), ddld(*), sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(*), vect(*)
-    real(kind=8) :: angmas(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,11 +71,6 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS
 ! IN  IW      : POIDS DES POINTS DE GAUSS DE REFERENCE (INDICE)
 ! IN  GEOM    : COORDONNEES DES NOEUDS
-! IN  TYPMOD  : TYPE DE MODEELISATION
-! IN  OPTION  : OPTION DE CALCUL
-! IN  MAT     : MATERIAU CODE
-! IN  COMPOR  : COMPORTEMENT
-! IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
 ! IN  INSTAM  : INSTANT PRECEDENT
 ! IN  INSTAP  : INSTANT DE CALCUL
 ! IN  TEMPM   : TEMPERATURE AUX NOEUDS A L'INSTANT PRECEDENT
@@ -93,16 +90,21 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: multComp = " "
     integer(kind=8), parameter :: ksp = 1
-    integer(kind=8) :: k2(1)
-    character(len=16), parameter :: nom(1) = (/'C_GRAD_VARI'/)
-    character(len=8), parameter ::  famiNonLocal = "FPG1"
-    character(len=8) :: poum
-    aster_logical :: grand, axi, lElas, lMatrPred
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    aster_logical, parameter :: grand = ASTER_FALSE
+    integer(kind=8), parameter :: kpgNonLocal = 1, kspNonLocal = 1
+    character(len=16), parameter :: propName(1) = (/'C_GRAD_VARI'/)
+    character(len=8), parameter :: famiNonLocal = "FPG1"
+    character(len=8), parameter :: poumNonLocal = "+"
+    integer(kind=8) :: propCode(1)
+    aster_logical :: axi, lElas, lMatrPred
     aster_logical :: lVect, lMatr, lVari, lSigm
+    character(len=16) :: relaComp
     integer(kind=8) :: nddl, ndimsi, kpg, cod(27), n, i, m, j, kl, pq, os, osa, kk
-    integer(kind=8) :: iu(3*27), ia(8), spt
-    real(kind=8) :: rac2, c, val(1)
+    integer(kind=8) :: iu(3*27), ia(8)
+    real(kind=8) :: cGradVari, propVale(1)
     real(kind=8) :: deplm(3*27), depld(3*27), dfdi1(27, 3)
     real(kind=8) :: avm, avd, avp, agm(3), agd(3), agp(3), bp
     real(kind=8) :: r, wg, epsm(2*ndim+1), epsd(2*ndim+1), f(3, 3), b(6, 3, 27)
@@ -110,20 +112,10 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
     real(kind=8) :: di, char
     real(kind=8) :: dfdi2(8*3)
     real(kind=8) :: critd(20)
-    type(Behaviour_Integ) :: BEHinteg
+    type(Material_Para) :: materParaNonLocal
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-! - Initialisation of behaviour datastructure
-    call behaviourInit(BEHinteg)
-
-! - Set main parameters for behaviour (on cell)
-    call behaviourSetParaCell(ndim, typmod, option, &
-                              compor, carcri, &
-                              instam, instap, &
-                              fami, mat, &
-                              BEHinteg)
 
 ! - Select objects to construct from option name
     call behaviourOption(option, compor, &
@@ -132,22 +124,28 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
     lElas = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS'
     lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
-    rac2 = sqrt(2.d0)
-    grand = .false.
     axi = typmod(1) .eq. 'AXIS'
-    nddl = nno1*ndim+nno2
+    nddl = nnoQ*ndim+nnoL
     ndimsi = 2*ndim
+    relaComp = compor(RELA_NAME)
 
-    kpg = 1
-    spt = 1
-    poum = '+'
-    call rcvalb(famiNonLocal, kpg, spt, poum, mat, &
-                ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
-                1, nom, val, k2, 2)
-    call coefdg(compor(1), mat, di)
-!
-    c = val(1)
-!
+! - Copy material parameters with other scheme parameters
+    call copyMaterPara(BEHInteg%materPara, famiNonLocal, kpgNonLocal, kspNonLocal, &
+                       materParaNonLocal)
+
+! - Get parameter
+    call rcvalb(materParaNonLocal%schemePara%fami, &
+                materParaNonLocal%schemePara%kpg, &
+                materParaNonLocal%schemePara%ksp, &
+                poumNonLocal, &
+                materParaNonLocal%jvMaterCode, &
+                ' ', 'NON_LOCAL', 0, &
+                ' ', [0.d0], &
+                1, propName, propVale, propCode, &
+                2)
+    cGradVari = propVale(1)
+    call coefdg(relaComp, materParaNonLocal, di)
+
     cod = 0
 !
     if (lMatr) then
@@ -157,42 +155,38 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
         call r8inir(nddl, 0.d0, vect, 1)
     end if
 !
-    call nmgvdn(ndim, nno1, nno2, iu, ia)
-!
-!    EXTRACTION DES DEPLACEMENTS
-!
-    do n = 1, nno1
+    call nmgvdn(ndim, nnoQ, nnoL, iu, ia)
+
+!   EXTRACTION DES DEPLACEMENTS
+    do n = 1, nnoQ
         do i = 1, ndim
-            deplm(i+(n-1)*ndim) = ddlm(iu(nno1*(i-1)+n))
+            deplm(i+(n-1)*ndim) = ddlm(iu(nnoQ*(i-1)+n))
             if (lMatrPred) then
                 depld(i+(n-1)*ndim) = 0.d0
             else
-                depld(i+(n-1)*ndim) = ddld(iu(nno1*(i-1)+n))
+                depld(i+(n-1)*ndim) = ddld(iu(nnoQ*(i-1)+n))
             end if
         end do
     end do
-!
+
 ! - CREATION D'UN VECTEUR VALANT 0 POUR ABSENCE DE DEPLACEMENT
-!
-    do n = 1, nno2
+    do n = 1, nnoL
         critd(n) = 0.d0
         do i = 1, ndim
-            critd(n) = critd(n)+abs(ddld(iu(nno1*(i-1)+n)))
+            critd(n) = critd(n)+abs(ddld(iu(nnoQ*(i-1)+n)))
         end do
     end do
-!
+
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
-!
     do kpg = 1, npg
-!
+
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A
-!
-        call dfdmip(ndim, nno2, axi, geom, kpg, &
+        call dfdmip(ndim, nnoL, axi, geom, kpg, &
                     iw, vff2(1, kpg), idfde2, r, wg, &
                     dfdi2)
         avm = 0
         avd = 0
-        do n = 1, nno2
+        do n = 1, nnoL
             avm = avm+vff2(n, kpg)*ddlm(ia(n))
             avd = avd+vff2(n, kpg)*ddld(ia(n))
             if (lMatrPred) then
@@ -200,43 +194,40 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
             end if
         end do
         avp = avm+avd
-!
 
-!
         do i = 1, ndim
             agm(i) = 0
             agd(i) = 0
-            do n = 1, nno2
-                agm(i) = agm(i)+dfdi2(nno2*(i-1)+n)*ddlm(ia(n))
-                agd(i) = agd(i)+dfdi2(nno2*(i-1)+n)*ddld(ia(n))
+            do n = 1, nnoL
+                agm(i) = agm(i)+dfdi2(nnoL*(i-1)+n)*ddlm(ia(n))
+                agd(i) = agd(i)+dfdi2(nnoL*(i-1)+n)*ddld(ia(n))
                 if (lMatrPred) then
                     agd(i) = 0.d0
                 end if
             end do
             agp(i) = agm(i)+agd(i)
         end do
-!
+
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
-!
-        call dfdmip(ndim, nno1, axi, geom, kpg, &
+        call dfdmip(ndim, nnoQ, axi, geom, kpg, &
                     iw, vff1(1, kpg), idfde1, r, wg, &
                     dfdi1)
 
 !
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
+        call nmepsi(ndim, nnoQ, axi, grand, vff1(1, kpg), &
                     r, dfdi1, deplm, f, epsm(1:ndimsi))
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
+        call nmepsi(ndim, nnoQ, axi, grand, vff1(1, kpg), &
                     r, dfdi1, depld, f, epsd(1:ndimsi))
-        call nmmabu(ndim, nno1, .false._1, grand, dfdi1, &
+        call nmmabu(ndim, nnoQ, .false._1, grand, dfdi1, &
                     b)
         if (axi) then
-            do n = 1, nno1
+            do n = 1, nnoQ
                 b(3, 1, n) = vff1(n, kpg)/r
             end do
         end if
 
 ! ----- Set main parameters for behaviour (on point)
-        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+        call behaviourSetParaPoin(kpg, ksp, BEHInteg)
 
 ! ----- Integrator
         do kl = 1, 3
@@ -249,21 +240,20 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
         epsm(2*ndim+1) = avm
         epsd(2*ndim+1) = avd
 
-        call nmcomp(BEHinteg, &
-                    fami, kpg, ksp, ndim, typmod, &
-                    mat, compor, carcri, instam, instap, &
-                    ndimsi+1, epsm, epsd, ndimsi+1, sigmam, &
-                    vim(1, kpg), option, angmas, &
-                    sigma, vip(1, kpg), (ndimsi+1)*(ndimsi+1), dsidep, cod(kpg))
+        call nmcomp(BEHInteg, &
+                    ndim, option, typmod, &
+                    instam, instap, &
+                    compor, carcri, multComp, &
+                    ndimsi+1, epsm, epsd, &
+                    ndimsi+1, sigmam, &
+                    vim(1, kpg), &
+                    sigma, vip(1, kpg), &
+                    (ndimsi+1)*(ndimsi+1), dsidep, cod(kpg))
 !
         if (cod(kpg) .eq. 1) goto 900
-!
-!      FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
-!
+
+!       FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
         if (lSigm) then
-!
-!        CONTRAINTES
-!
             do kl = 1, 3
                 sigp(kl, kpg) = sigma(kl)
             end do
@@ -278,9 +268,9 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
 !        VECTEUR FINT:U
 !
-            do n = 1, nno1
+            do n = 1, nnoQ
                 do i = 1, ndim
-                    kk = iu(nno1*(i-1)+n)
+                    kk = iu(nnoQ*(i-1)+n)
                     t1 = 0
                     do kl = 1, ndimsi
                         t1 = t1+sigma(kl)*b(kl, i, n)
@@ -291,11 +281,11 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
 !        VECTEUR FINT:A
 !
-            do n = 1, nno2
+            do n = 1, nnoL
                 t1 = vff2(n, kpg)*bp
                 t2 = 0
                 do i = 1, ndim
-                    t2 = t2+c*dfdi2(nno2*(i-1)+n)*agp(i)
+                    t2 = t2+cGradVari*dfdi2(nnoL*(i-1)+n)*agp(i)
                 end do
                 kk = ia(n)
                 vect(kk) = vect(kk)+wg*(t2+t1)
@@ -309,13 +299,13 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
 !        MATRICE K:U(I,N),U(J,M)
 !
-            do n = 1, nno1
+            do n = 1, nnoQ
                 do i = 1, ndim
-                    os = ((iu(nno1*(i-1)+n)-1)*iu(nno1*(i-1)+n))/2
-                    do m = 1, nno1
+                    os = ((iu(nnoQ*(i-1)+n)-1)*iu(nnoQ*(i-1)+n))/2
+                    do m = 1, nnoQ
                         do j = 1, ndim
-                            if (iu(nno1*(j-1)+m) .gt. iu(nno1*(i-1)+n)) goto 821
-                            kk = os+iu(nno1*(j-1)+m)
+                            if (iu(nnoQ*(j-1)+m) .gt. iu(nnoQ*(i-1)+n)) goto 821
+                            kk = os+iu(nnoQ*(j-1)+m)
                             t1 = 0
                             do kl = 1, ndimsi
                                 do pq = 1, ndimsi
@@ -331,15 +321,15 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
 !        MATRICES K:A(N),A(M) SI ENDO NON-NUL
 !
-            do n = 1, nno2
+            do n = 1, nnoL
                 osa = ((ia(n)-1)*ia(n))/2
-                do m = 1, nno2
+                do m = 1, nnoL
                     t1 = vff2(n, kpg)*vff2(m, kpg)*dsidep(ndimsi+1, ndimsi+1)
                     t2 = 0
                     do i = 1, ndim
-                        t2 = t2+dfdi2(nno2*(i-1)+n)*dfdi2(nno2*(i-1)+m)
+                        t2 = t2+dfdi2(nnoL*(i-1)+n)*dfdi2(nnoL*(i-1)+m)
                     end do
-                    t2 = c*t2
+                    t2 = cGradVari*t2
                     if (ia(m) .le. ia(n)) then
                         kk = osa+ia(m)
                         matr(kk) = matr(kk)+wg*(t2+t1)
@@ -352,18 +342,18 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
 !        MATRICES K:A(N),U(J,M)
 !
-            do n = 1, nno2
-                do m = 1, nno1
+            do n = 1, nnoL
+                do m = 1, nnoQ
                     do j = 1, ndim
                         t1 = 0
                         do kl = 1, ndimsi
                             t1 = t1+dsidep(kl, ndimsi+1)*b(kl, j, m)
                         end do
                         t1 = vff2(n, kpg)*t1
-                        if (ia(n) .ge. iu(nno1*(j-1)+m)) then
-                            kk = ((ia(n)-1)*ia(n))/2+iu(nno1*(j-1)+m)
+                        if (ia(n) .ge. iu(nnoQ*(j-1)+m)) then
+                            kk = ((ia(n)-1)*ia(n))/2+iu(nnoQ*(j-1)+m)
                         else
-                            kk = ((iu(nno1*(j-1)+m)-1)*iu(nno1*(j-1)+m))/2+ia(n)
+                            kk = ((iu(nnoQ*(j-1)+m)-1)*iu(nnoQ*(j-1)+m))/2+ia(n)
                         end if
                         matr(kk) = matr(kk)+wg*t1
                     end do
@@ -374,9 +364,9 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
         if (lMatr) then
 !
-            do n = 1, nno2
+            do n = 1, nnoL
                 osa = ((ia(n)-1)*ia(n))/2
-                do m = 1, nno2
+                do m = 1, nnoL
                     if (ia(m) .le. ia(n)) then
                         kk = osa+ia(m)
 !
@@ -413,18 +403,18 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
         if (lMatr .and. .not. lElas) then
 !
-            do n = 1, nno2
+            do n = 1, nnoL
 !
                 char = ddld(ia(n))
 !
                 if (char .eq. 0.d0 .and. critd(n) .ne. 0.d0) then
-                    do m = 1, nno1
+                    do m = 1, nnoQ
                         do j = 1, ndim
-                            if (ia(n) .ge. iu(nno1*(j-1)+m)) then
-                                kk = ((ia(n)-1)*ia(n))/2+iu(nno1*(j-1) &
+                            if (ia(n) .ge. iu(nnoQ*(j-1)+m)) then
+                                kk = ((ia(n)-1)*ia(n))/2+iu(nnoQ*(j-1) &
                                                             +m)
                             else
-                                kk = ((iu(nno1*(j-1)+m)-1)*iu(nno1*(j-1) &
+                                kk = ((iu(nnoQ*(j-1)+m)-1)*iu(nnoQ*(j-1) &
                                                               +m))/2+ia(n)
                             end if
                             matr(kk) = 0.d0

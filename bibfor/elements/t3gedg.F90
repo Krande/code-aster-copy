@@ -49,7 +49,7 @@ subroutine t3gedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: qsi, eta
     aster_logical :: coupmf
-    character(len=4) :: fami
+    character(len=8) :: fami
 !     ------------------------------------------------------------------
 !
     fami = 'RIGI'

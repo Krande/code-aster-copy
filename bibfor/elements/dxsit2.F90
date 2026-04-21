@@ -67,7 +67,7 @@ subroutine dxsit2(nomte, pgl, sigma)
     real(kind=8) :: tinf(4), tmoy(4), tsup(4)
     real(kind=8) :: ordi, epi, epais, coe1, coe2
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=10) :: phenom
 !
     aster_logical :: dkg

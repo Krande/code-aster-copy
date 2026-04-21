@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+!
 subroutine te0404(option, nomte)
 !
     implicit none
@@ -46,7 +47,7 @@ subroutine te0404(option, nomte)
 !
     character(len=16) :: option, nomte
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
     integer(kind=8) :: icodre(1)
     integer(kind=8) :: codres(2)
     character(len=16) :: nomres(2)

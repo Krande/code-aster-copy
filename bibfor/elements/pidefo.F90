@@ -16,71 +16,60 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidefo(ndim, npg, kpg, compor, fm, &
+subroutine pidefo(compor, &
+                  ndim, npg, kpg, fm, &
                   epsm, epsp, epsd, copilo)
-!
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
+#include "jeveux.h"
+!
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
     integer(kind=8) :: ndim, kpg, npg
-    character(len=16) :: compor(*)
     real(kind=8) :: epsm(6), epsp(6), epsd(6)
     real(kind=8) :: fm(3, 3)
     real(kind=8) :: copilo(5, npg)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS/DEFORMATION)
 !
 ! PILOTAGE PAR DEFORMATION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  NDIM   : DIMENSION DE L'ESPACE
 ! IN  NPG    : NOMBRE DE POINTS DE GAUSS
 ! IN  KPG    : NUMERO DU POINT DE GAUSS
-! IN  COMPOR : COMPORTEMENT
 ! IN  FM     : GRADIENT DE LA TRANSFORMATION AU TEMPS MOINS
 ! IN  EPSM   : DEFORMATIONS AU TEMPS MOINS
 ! IN  EPSP   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES FIXES
 ! IN  EPSD   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES PILOTEES
 ! OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
     aster_logical :: grand
     integer(kind=8) :: ndimsi
-    integer(kind=8) :: indi(6), indj(6), prac(6)
-    real(kind=8) :: ff
-    real(kind=8) :: rac2
-    real(kind=8) :: em(6), epsmno
+    real(kind=8) :: ff, em(6), epsmno
     integer(kind=8) :: ij, kl, i, j, k, l
     blas_int :: b_incx, b_incy, b_n
+    integer(kind=8), parameter :: indi(6) = (/1, 2, 3, 2, 3, 3/)
+    integer(kind=8), parameter :: indj(6) = (/1, 2, 3, 1, 1, 2/)
+    integer(kind=8), parameter :: prac(6) = (/0, 0, 0, 1, 1, 1/)
 !
-    data indi/1, 2, 3, 2, 3, 3/
-    data indj/1, 2, 3, 1, 1, 2/
-    data prac/0, 0, 0, 1, 1, 1/
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-!
-!
-! --- INITIALISATIONS
-!
-    rac2 = sqrt(2.d0)
-    grand = compor(3) .ne. 'PETIT'
+    grand = compor(DEFO) .ne. 'PETIT'
     ndimsi = 2*ndim
-!
-! --- TRANSPORT DU TENSEUR DES DEFORMATIONS E := F E FT
-!
+
+! - TRANSPORT DU TENSEUR DES DEFORMATIONS E := F E FT
     if (grand) then
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
@@ -100,9 +89,8 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
             end do
         end do
     end if
-!
-! --- INCREMENT DE DEFORMATION PROJETE
-!
+
+! - INCREMENT DE DEFORMATION PROJETE
     b_n = to_blas_int(ndimsi)
     b_incx = to_blas_int(1)
     epsmno = dnrm2(b_n, epsm, b_incx)
@@ -114,6 +102,5 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     copilo(2, kpg) = ddot(b_n, epsm, b_incx, epsd, b_incy)/epsmno
-!
 !
 end subroutine

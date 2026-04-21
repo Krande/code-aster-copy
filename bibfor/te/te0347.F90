@@ -75,7 +75,7 @@ subroutine te0347(option, nomte)
     real(kind=8) :: valres(2), e, nu, g, aa, xiy, xiz, alfay, alfaz
     real(kind=8) :: phiy, phiz, gamma
     character(len=2) :: nomres(2)
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=8) :: peffor
 !
     aster_logical :: lefgno, reactu, okelem

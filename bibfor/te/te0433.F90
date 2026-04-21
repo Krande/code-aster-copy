@@ -50,7 +50,7 @@ subroutine te0433(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: codres(2)
-    character(len=4), parameter :: fami = 'RIGI'
+    character(len=8), parameter :: fami = 'RIGI'
     character(len=16) :: nomres(2)
     integer(kind=8) :: nddl, nno, npg, i, j, n, kpg
     integer(kind=8) :: ipoids, ivf, idfde, igeom, imate

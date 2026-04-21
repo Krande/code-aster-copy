@@ -15,43 +15,35 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine lc3053(BEHinteg, fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, neps, epsm,&
-                  deps, nsig, sigm, nvi, vim, option, angmas, &
-                  sigp, vip, typmod, icomp,&
-                  ndsde, dsidep, codret)
-    use Behaviour_type
-                      
-    type(Behaviour_Integ)        :: BEHinteg
-    character(len=*) ,intent(in) :: fami
-    integer(kind=8)          ,intent(in) :: kpg
-    integer(kind=8)          ,intent(in) :: ksp
-    integer(kind=8)          ,intent(in) :: ndim
-    integer(kind=8)          ,intent(in) :: imate
-    character(len=16),intent(in) :: compor(*)
-    real(kind=8)     ,intent(in) :: crit(*)
-    real(kind=8)     ,intent(in) :: instam
-    real(kind=8)     ,intent(in) :: instap
-    integer(kind=8)          ,intent(in) :: neps
-    real(kind=8)     ,intent(in) :: epsm(neps)
-    real(kind=8)     ,intent(in) :: deps(neps)
-    integer(kind=8)          ,intent(in) :: nsig
-    real(kind=8)     ,intent(in) :: sigm(nsig)
-    integer(kind=8)          ,intent(in) :: nvi
-    real(kind=8)     ,intent(in) :: vim(nvi)
-    character(len=16),intent(in) :: option
-    real(kind=8)     ,intent(in) :: angmas(*)
-    real(kind=8)                 :: sigp(nsig)
-    real(kind=8)                 :: vip(nvi)
-    character(len=8) ,intent(in) :: typmod(*)
-    integer(kind=8)          ,intent(in) :: icomp
-    integer(kind=8)          ,intent(in) :: ndsde
-    real(kind=8)                 :: dsidep(nsig,neps)
-    integer(kind=8)          ,intent(out):: codret
-
-    end subroutine 
+    subroutine lc3053(BEHinteg, &
+                      fami, kpg, ksp, ndim, imate, &
+                      instam, instap, neps, epsm, &
+                      deps, nsig, sigm, nvi, vim, option, &
+                      sigp, vip, typmod, &
+                      ndsde, dsidep, codret)
+        use Behaviour_type
+        type(Behaviour_Integ) :: BEHinteg
+        character(len=*), intent(in) :: fami
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: imate, nvi
+        real(kind=8), intent(in) :: instam, instap
+        integer(kind=8), intent(in) :: neps
+        real(kind=8), intent(in) :: epsm(neps)
+        real(kind=8), intent(in) :: deps(neps)
+        integer(kind=8), intent(in) :: nsig
+        real(kind=8), intent(in) :: sigm(nsig)
+        real(kind=8), intent(in) :: vim(nvi)
+        character(len=16), intent(in) :: option
+        real(kind=8) :: sigp(nsig)
+        real(kind=8) :: vip(nvi)
+        character(len=8), intent(in) :: typmod(*)
+        integer(kind=8), intent(in) :: ndsde
+        real(kind=8)    :: dsidep(nsig, neps)
+        integer(kind=8), intent(out):: codret
+    end subroutine
 end interface

@@ -17,11 +17,14 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501
 !
-subroutine vdpnlr(option, nomte, codret)
+subroutine vdpnlr(BEHInteg, &
+                  option, nomte, &
+                  codret)
 !
     use Behaviour_type
     use Behaviour_module
-!
+    use MaterialPara_module
+    use MaterialPara_type
     implicit none
 !
 #include "asterc/r8vide.h"
@@ -29,6 +32,7 @@ subroutine vdpnlr(option, nomte, codret)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/btdbma.h"
 #include "asterfort/btsig.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/gdt.h"
 #include "asterfort/hsaco.h"
 #include "asterfort/jacbm1.h"
@@ -44,7 +48,6 @@ subroutine vdpnlr(option, nomte, codret)
 #include "asterfort/nmcomp.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rogllo.h"
 #include "asterfort/tecach.h"
@@ -59,6 +62,7 @@ subroutine vdpnlr(option, nomte, codret)
 #include "blas/ddot.h"
 #include "jeveux.h"
 !
+    type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=16) :: option, nomte
     integer(kind=8) :: codret
 !
@@ -86,6 +90,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: multComp = " "
     real(kind=8) :: bid33(3, 3)
     integer(kind=8) :: i, j
     integer(kind=8) :: in
@@ -104,9 +109,9 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: veczn(27)
     real(kind=8) :: antzi(3, 3)
     real(kind=8) :: rignc(3, 3)
-    integer(kind=8) :: igeom, icontp, imatun, ivectu, ivarip, cod
+    integer(kind=8) :: jvGeom, icontp, imatun, ivectu, ivarip, cod
     integer(kind=8) :: icontm, ivarix
-    integer(kind=8) :: lzi, lzr, jcara
+    integer(kind=8) :: lzi, lzr, jvCacoqu
     integer(kind=8) :: nb1, nb2, ndimv
     real(kind=8) :: matc(5, 5)
     real(kind=8) :: dtild(5, 5)
@@ -165,22 +170,18 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: theta(3), thetan
     real(kind=8) :: tmoin1(3, 3), tm1t(3, 3)
     real(kind=8) :: term(3)
-    integer(kind=8), parameter :: nbv = 2
-    character(len=16), parameter :: nomres(nbv) = (/'E ', 'NU'/)
-    integer(kind=8) :: icodre(nbv)
-    real(kind=8) :: valres(nbv)
-    character(len=32) :: elasKeyword
-    integer(kind=8) :: imate, icarcr, iinstm, iinstp, ivarim
+    integer(kind=8), parameter :: nbProp = 2
+    character(len=16), parameter :: propName(nbProp) = (/'E ', 'NU'/)
+    integer(kind=8) :: propCode(nbProp)
+    real(kind=8) :: propVale(nbProp)
+    integer(kind=8) :: jvCarcri, iinstm, iinstp, ivarim
     integer(kind=8) :: nbvari, itab(8), lgpg, k2, iret
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8) :: angmas(3)
-    character(len=16) :: defo_comp, rela_comp
+    character(len=16) :: defoComp, relaComp
     aster_logical :: lVect, lMatr, lVari, lSigm
     real(kind=8) :: cisail
     integer(kind=8), parameter :: ndimLdc = 2
     character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
-    type(Behaviour_Integ) :: BEHinteg
-    character(len=4), parameter :: fami = "MASS"
     blas_int :: b_incx, b_incy, b_n
     character(len=16), pointer :: compor(:) => null()
 !
@@ -188,39 +189,32 @@ subroutine vdpnlr(option, nomte, codret)
 !
     codret = 0
 
-! - Initialisation of behaviour datastructure
-    call behaviourInit(BEHinteg)
-
-! - Get input fields
+! - Get shell parameters
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
         call utmess('F', 'PLATE1_10')
     end if
-    call jevech('PMATERC', 'L', imate)
+    call jevech('PCACOQU', 'L', jvCacoqu)
+    eptot = zr(jvCacoqu)
+    kappa = zr(jvCacoqu+3)
+    ctor = zr(jvCacoqu+4)
+    zmin = -eptot/2.d0
+    epais = eptot/nbcou
+
     call jevech('PVARIMR', 'L', ivarim)
-    call jevech('PMATERC', 'L', imate)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call jevech('PCOMPOR', 'L', vk16=compor)
-    call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
-                itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
     else
         lgpg = itab(6)*itab(7)
     end if
 
-! - Don"t use AFFE_CARA_ELEM/MASSIF
-    angmas = r8vide()
-
 ! - Set main parameters for behaviour (on cell)
-    call behaviourSetParaCell(ndimLdc, typmod, option, &
-                              compor, zr(icarcr), &
-                              zr(iinstm), zr(iinstp), &
-                              fami, zi(imate), &
-                              BEHinteg)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    call jevech('PCARCRI', 'L', jvCarcri)
 
 ! - Select objects to construct from option name
     call behaviourOption(option, compor, &
@@ -229,15 +223,13 @@ subroutine vdpnlr(option, nomte, codret)
                          codret)
 
 ! - Properties of behaviour
-    rela_comp = compor(RELA_NAME)
-    defo_comp = compor(DEFO)
+    relaComp = compor(RELA_NAME)
+    defoComp = compor(DEFO)
     read (compor(NVAR), '(I16)') nbvari
-!
+
 ! - Get elastic properties
-!
-    call rccoma(zi(imate), 'ELAS', 1, elasKeyword, icodre(1))
-    if (elasKeyword .ne. 'ELAS') then
-        call utmess('F', 'PLATE1_12', sk=elasKeyword)
+    if (BEHInteg%materPara%elasID .ne. ELAS_ISOT) then
+        call utmess('F', 'PLATE1_12', sk=BEHInteg%materPara%elasKeyword)
     end if
 !______________________________________________________________________
 !
@@ -246,7 +238,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !....... GEOMETRIE INITIALE ( COORDONNEES INITIALE DES NOEUDS )
 !
-    call jevech('PGEOMER', 'L', igeom)
+    call jevech('PGEOMER', 'L', jvGeom)
 !
 !---- RECUPERATION DES OBJETS INITIALISES
 !
@@ -321,31 +313,6 @@ subroutine vdpnlr(option, nomte, codret)
         call r8inir(27, 0.d0, veczn, 1)
 !
     end if
-!______________________________________________________________________
-!
-!---- CARACTERISTIQUES DE COQUE
-!
-    call jevech('PCACOQU', 'L', jcara)
-!
-!---- EPAISSEUR TOTALE
-!
-    eptot = zr(jcara)
-!
-!---- COEFFICIENT DE CORRECTION DU SHEAR
-!
-    kappa = zr(jcara+3)
-!
-!---- COEFFICIENT DE RIGIDITE AUTOUR DE LA TRANSFORMEE DE LA NORMALE
-!
-    ctor = zr(jcara+4)
-!
-!---- COORDONNEE MINIMALE SUIVANT L EPAISSEUR
-!
-    zmin = -eptot/2.d0
-!
-!---- EPAISSEUR D UNE COUCHE
-!
-    epais = eptot/nbcou
 !
 !______________________________________________________________________
 !
@@ -369,7 +336,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !---- REPERE LOCAUX AUX NOEUDS SUR LA CONFIGURATION INITIALE
 !
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
+    call vectan(nb1, nb2, zr(jvGeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 !---- DEPLACEMENT TOTAL AUX NOEUDS DE SERENDIP
@@ -379,10 +346,8 @@ subroutine vdpnlr(option, nomte, codret)
 !
     do in = 1, nb1
         do ii = 1, 3
-!
             vecu(in, ii) = zr(ium-1+6*(in-1)+ii)+zr(iup-1+6*(in-1)+ii)
             vecum(in, ii) = zr(ium-1+6*(in-1)+ii)
-!
         end do
     end do
 !
@@ -391,7 +356,7 @@ subroutine vdpnlr(option, nomte, codret)
     call r8inir(9*3, 0.d0, vecthe, 1)
     call r8inir(9*3, 0.d0, vecthm, 1)
 !
-    if (defo_comp .eq. 'GROT_GDEP') then
+    if (defoComp .eq. 'GROT_GDEP') then
 !
 !------- EN ACCORD AVEC LA MISE A JOUR DES GRANDES ROTATIONS AUFAURE
 !
@@ -508,7 +473,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
             do intsr = 1, npgsr
 !
-                call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
+                call vectgt(0, nb1, zr(jvGeom), ksi3s2, intsr, &
                             zr(lzr), epais, vectn, vectg, vectt)
 !
                 call jacbm1(epais, vectg, vectt, bid33, jm1, &
@@ -578,8 +543,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
             do intsn = 1, npgsn
 !
-!C
-                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn, &
+                call vectgt(1, nb1, zr(jvGeom), ksi3s2, intsn, &
                             zr(lzr), epais, vectn, vectg, vectt)
 !
                 call jacbm1(epais, vectg, vectt, bid33, jm1, &
@@ -688,22 +652,29 @@ subroutine vdpnlr(option, nomte, codret)
                 ksp = (icou-1)*npge+inte
 
 ! ------------- Set main parameters for behaviour (on point)
-                call behaviourSetParaPoin(intsn, ksp, BEHinteg)
+                call behaviourSetParaPoin(intsn, ksp, BEHInteg)
 
 ! ------------- Integrator
                 sigma = 0.d0
-                call nmcomp(BEHinteg, &
-                            fami, intsn, ksp, ndimLdc, typmod, &
-                            zi(imate), compor, zr(icarcr), zr(iinstm), zr(iinstp), &
-                            4, eps2d, deps2d, 4, sign, &
-                            zr(ivarim+k2), option, angmas, &
-                            sigma, zr(ivarip+k2), 36, dsidep, cod)
+                call nmcomp(BEHInteg, &
+                            ndimLdc, option, typmod, &
+                            zr(iinstm), zr(iinstp), &
+                            compor, zr(jvCarcri), multComp, &
+                            4, eps2d, deps2d, &
+                            4, sign, &
+                            zr(ivarim+k2), &
+                            sigma, zr(ivarip+k2), &
+                            36, dsidep, cod)
 !
-                call rcvalb(fami, intsn, ksp, '+', zi(imate), &
-                            ' ', elasKeyword, 0, ' ', [0.d0], &
-                            nbv, nomres, valres, icodre, 1)
-!
-                cisail = valres(1)/(1.d0+valres(2))
+                call rcvalb(BEHInteg%materPara%schemePara%fami, &
+                            BEHInteg%materPara%schemePara%kpg, &
+                            BEHInteg%materPara%schemePara%ksp, &
+                            '+', BEHInteg%materPara%jvMaterCode, &
+                            ' ', BEHInteg%materPara%elasKeyword, &
+                            0, ' ', [0.d0], &
+                            nbProp, propName, propVale, &
+                            propCode, 1)
+                cisail = propVale(1)/(1.d0+propVale(2))
 !
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
@@ -808,8 +779,9 @@ subroutine vdpnlr(option, nomte, codret)
 !
                         do i = 1, 5
 !
-                            stlis(i, kntsr) = stlis(i, kntsr)+zr(lzr-1+702+4*(intsn-1)+kntsr)*sti&
-                                              &ld(i)*zr(lzr-1+127+intsn-1)
+                            stlis(i, kntsr) = stlis(i, kntsr)+ &
+                                              zr(lzr-1+702+4*(intsn-1)+kntsr)* &
+                                              stild(i)*zr(lzr-1+127+intsn-1)
 !
                         end do
                     end do
@@ -899,7 +871,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
                 do intsr = 1, npgsr
 !
-                    call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
+                    call vectgt(0, nb1, zr(jvGeom), ksi3s2, intsr, &
                                 zr(lzr), epais, vectn, vectg, vectt)
 !
                     call jacbm1(epais, vectg, vectt, bid33, jm1, &
@@ -994,7 +966,6 @@ subroutine vdpnlr(option, nomte, codret)
 !
         do jd = 1, (6*nb1+3)*(6*nb1+3)
             zr(imatun-1+jd) = zr(imatun-1+jd)+vrignc(jd)-vrigni(jd)+vrigri(jd)+vrigrc(jd)
-!
         end do
 !
 !------- AFFECTATION DE LA RIGIDITE NON CLASSIQUE RIGNC ( 3 , 3 )
@@ -1064,10 +1035,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
         call promat(tm1t, 3, 3, 3, vecni, &
                     3, 3, 1, term)
-!
-!
-!
-!
+
         if (lMatr) then
 !
             if (in .le. nb1) then
@@ -1079,10 +1047,8 @@ subroutine vdpnlr(option, nomte, codret)
                     j = 6*(in-1)+jj+3
                     do ii = 1, 3
                         i = 6*(in-1)+ii+3
-                        zr(imatun-1+(6*nb1+3)*(j-1) &
-                           +i) = zr(imatun-1+(6*nb1+3)*( &
-                                    j-1)+i)+knn*term(ii)*term &
-                              (jj)
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = &
+                            zr(imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii)*term(jj)
                     end do
                 end do
 !
@@ -1093,10 +1059,8 @@ subroutine vdpnlr(option, nomte, codret)
                     j = 6*nb1+jj
                     do ii = 1, 3
                         i = 6*nb1+ii
-                        zr(imatun-1+(6*nb1+3)*(j-1) &
-                           +i) = zr(imatun-1+(6*nb1+3)*( &
-                                    j-1)+i)+knn*term(ii)*term &
-                              (jj)
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = &
+                            zr(imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii)*term(jj)
                     end do
                 end do
 !
@@ -1128,8 +1092,5 @@ subroutine vdpnlr(option, nomte, codret)
         end if
 !
     end do
-!
-!
-! FIN
 !
 end subroutine

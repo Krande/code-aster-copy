@@ -48,7 +48,7 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: vfm(3), vmf(3), vmc(3), vfc(3), vcm(2), vcf(2), caraq4(25)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), jacob(5), qsi, eta
     aster_logical :: coupmf
-    character(len=4) :: fami
+    character(len=8) :: fami
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then

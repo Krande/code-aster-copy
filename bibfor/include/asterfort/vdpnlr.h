@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vdpnlr(option, nomte, codret)
-        character(len=16) :: option
-        character(len=16) :: nomte
+    subroutine vdpnlr(BEHinteg, &
+                      option, nomte, codret)
+        use Behaviour_type
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+        character(len=16) :: option, nomte
         integer(kind=8) :: codret
     end subroutine vdpnlr
 end interface

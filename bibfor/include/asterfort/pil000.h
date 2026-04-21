@@ -15,20 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+#include "asterfort/Behaviour_type.h"
 !
-!
-
 interface
-    subroutine pil000(typilo, compor, neps, dtau, mat, &
-                  vim, sigm, epsm, epsd_cste, epsd_pilo, &
-                  typmod, etamin, etamax, copilo)
-        character(len=8), intent(in) :: typmod(*)
-        character(len=16), intent(in) :: compor(*), typilo
-        integer(kind=8), intent(in) :: neps, mat
+    subroutine pil000(typilo, relaComp, neps, dtau, jvMaterCode, &
+                      vim, epsm, epsd_cste, epsd_pilo, &
+                      typmod, etamin, etamax, copilo)
+        character(len=8), intent(in) :: typmod(2)
+        character(len=16), intent(in) :: relaComp, typilo
+        integer(kind=8), intent(in) :: neps, jvMaterCode
         real(kind=8), intent(in) :: dtau, epsm(neps), epsd_pilo(neps), epsd_cste(neps)
         real(kind=8), intent(in) :: etamin, etamax
-        real(kind=8), intent(in) :: vim(:), sigm(neps)
+        real(kind=8), intent(in) :: vim(:)
         real(kind=8), intent(out) :: copilo(5)
     end subroutine pil000
 end interface

@@ -75,7 +75,7 @@ subroutine te0295(option, nomte)
     real(kind=8) :: k3a, ttrgv, tgvdm(3)
     real(kind=8) :: valpar(4), lsng, lstg, puls, coef, ffp(27)
 !
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=8) :: nompar(4)
     character(len=16) :: nomres(4)
     character(len=32) :: phenom

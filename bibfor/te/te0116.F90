@@ -41,7 +41,7 @@ subroutine te0116(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4), parameter :: fami = "RIGI"
+    character(len=8), parameter :: fami = "RIGI"
     integer(kind=8), parameter :: kspg = 1, nbVariMaxi = 30
     integer(kind=8) :: kpg, iVari, iVariEcro
     integer(kind=8) :: npg, nbVari, nbVariEcro, nbVariAnneal

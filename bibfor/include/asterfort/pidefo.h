@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine pidefo(ndim, npg, kpg, compor, fm,&
+    subroutine pidefo(compor, &
+                      ndim, npg, kpg, fm, &
                       epsm, epsp, epsd, copilo)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         integer(kind=8) :: npg
         integer(kind=8) :: ndim
         integer(kind=8) :: kpg
-        character(len=16) :: compor(*)
         real(kind=8) :: fm(3, 3)
         real(kind=8) :: epsm(6)
         real(kind=8) :: epsp(6)

@@ -19,17 +19,18 @@
 !
 subroutine te0409(option, nomte)
 !
-    use Behaviour_module, only: behaviourOption
-!
+    use Behaviour_module
+    use MaterialPara_module
+    use MaterialPara_type
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/coqrep.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/coqgth.h"
+#include "asterfort/coqrep.h"
 #include "asterfort/dhrc_lc.h"
 #include "asterfort/dhrc_recup_mate.h"
 #include "asterfort/dkqbf.h"
@@ -44,16 +45,17 @@ subroutine te0409(option, nomte)
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
 #include "asterfort/dxtpgl.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/glrc_recup_mate.h"
 #include "asterfort/glrc_lc.h"
+#include "asterfort/glrc_recup_mate.h"
 #include "asterfort/glrcmm.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
-#include "asterfort/maglrc.h"
 #include "asterfort/kit_glrc_dm_vmis.h"
+#include "asterfort/maglrc.h"
 #include "asterfort/pmrvec.h"
 #include "asterfort/q4gbc.h"
 #include "asterfort/r8inir.h"
@@ -62,11 +64,11 @@ subroutine te0409(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/utmess.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -85,16 +87,11 @@ subroutine te0409(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-!
-! TOUTES LES VARIABLES EN DEHORS
-! DE LA BOUCLE SUR LES POINTS DE GAUSS PEUVENT ETRE
-! INITIALISES AU MOMENT DE LA DECLARATION
-! matloc et vecloc SONT INITIALISES EN FONCTION DE
-! L OPTION FULL_MECA, RIGI_MECA_*
+    character(len=8), parameter :: fami = 'RIGI'
+    integer(kind=8), parameter :: ksp = 1
     integer(kind=8) :: codret
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
-    real(kind=8) :: ul(6, 4), dul(6, 4), angmas(3)
+    real(kind=8) :: ul(6, 4), dul(6, 4)
     real(kind=8) :: matloc((6*4)*(6*4+1)/2), vecloc(6, 4)
 !  ----------------
 !  CMPS DE DEPLACEMENT :
@@ -160,18 +157,17 @@ subroutine te0409(option, nomte)
 !           LE MATERIAU EST SUPPOSE HOMOGENE
 !
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), c, s
-!
     aster_logical :: t3g, q4g
-    aster_logical :: leul, lLinear
+    aster_logical :: leul, lLinear, lNonLine
     aster_logical :: lVect, lMatr, lVari, lSigm
     aster_logical :: q4gg
     aster_logical :: coupmf
     aster_logical :: is_param_opt(2)
 !
     integer(kind=8) :: ndim, nno, npg, ipoids, icoopg
-    integer(kind=8) :: imate, iret, icontm, ivarim, igeom, icarcr, ideplm, ideplp
-    integer(kind=8) :: icacoq, icontp, ivarip, ino, nbcont, ivectu, jcret, imatuu
-    integer(kind=8) :: nbvari, ipg
+    integer(kind=8) :: iret, icontm, ivarim, jvGeom, jvCarcri, ideplm, ideplp
+    integer(kind=8) :: jvCacoqu, icontp, ivarip, ino, nbcont, ivectu, jcret, imatuu
+    integer(kind=8) :: nbvari, kpg
     integer(kind=8) :: i, i1, i2, j, k, l
     integer(kind=8) :: icpg, icpv
     integer(kind=8) :: jtab(7), nbsig
@@ -189,18 +185,15 @@ subroutine te0409(option, nomte)
     real(kind=8) :: cstseu(6)
 !   -- attention la taille de ecp depend du nombre de variable interne
 !   -- lors de l ajout de variable interne il faut incrementer ecr et ecrp
-    integer(kind=8), parameter :: nbvarmax = 36
-    real(kind=8) :: epst(6), ep, surfgp, sig(8), dsig(8), ecr(nbvarmax), ecrp(nbvarmax)
+    integer(kind=8), parameter :: nbVariMax = 36
+    real(kind=8) :: epst(6), ep, surfgp, sig(8), dsig(8), ecr(nbVariMax), ecrp(nbVariMax)
     real(kind=8) :: epsm(6), qsi, eta, ctor
     real(kind=8) :: carat3(21), jacob(5), caraq4(25)
     real(kind=8) :: matr(50), sigm(8), alfmc
     real(kind=8) :: epsi_c, epsi_els, epsi_lim, val_param_opt(10)
-!
     character(len=16), pointer :: compor(:) => null()
-    character(len=16) :: type_comp, mult_comp, rela_plas, rela_comp, defo_comp
-!
-    integer(kind=8)      ::  codret2(1)
-    character(len=32) :: elasKeyword
+    character(len=16) :: relaPlas, relaComp, defoComp
+    type(Material_Para) :: materPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -208,7 +201,6 @@ subroutine te0409(option, nomte)
     xyzl = 0.0d0
     ul = 0.d0
     dul = 0.d0
-    angmas = 0.0d0
     dff = 0.0d0
     dmm = 0.0d0
     dmff = 0.0d0
@@ -235,7 +227,6 @@ subroutine te0409(option, nomte)
     q4g = ASTER_FALSE
     leul = ASTER_FALSE
     coupmf = ASTER_FALSE
-    mult_comp = ' '
 !
     if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
         t3g = ASTER_TRUE
@@ -251,107 +242,108 @@ subroutine te0409(option, nomte)
     end if
 !
     lLinear = option .eq. 'RIGI_MECA'
+    lNonLine = .not. lLinear
+
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, &
+    call elrefe_info(fami=fami, &
+                     ndim=ndim, nno=nno, npg=npg, &
                      jpoids=ipoids, jcoopg=icoopg)
-    call jevech('PGEOMER', 'L', igeom)
+    call jevech('PGEOMER', 'L', jvGeom)
 !
     if (nno .eq. 3) then
-        call dxtpgl(zr(igeom), pgl)
+        call dxtpgl(zr(jvGeom), pgl)
     else if (nno .eq. 4) then
-        call dxqpgl(zr(igeom), pgl)
+        call dxqpgl(zr(jvGeom), pgl)
     else
         ASSERT(ASTER_FALSE)
     end if
 !
-    call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
-!
-    call jevech('PMATERC', 'L', imate)
-! ---   COQUE HOMOGENEISEE ?
-    if (.not. lLinear) then
-        call rccoma(zi(imate), 'ELAS', 1, elasKeyword, codret2(1))
-        if ((elasKeyword .eq. 'ELAS_COQUE') .or. (elasKeyword .eq. 'ELAS_COQMU') .or. &
-            (elasKeyword .eq. 'ELAS_ORTH')) then
+    call utpvgl(nno, 3, pgl, zr(jvGeom), xyzl)
+
+! - Initializations of material parameters on current cell
+    call setMaterPara(fami, materPara)
+
+! - No definition of local coordinate system
+    call initLCSNone(materPara)
+
+! - COQUE HOMOGENEISEE ?
+    if (lNonLine) then
+        if ((materPara%elasID .eq. ELAS_SHELL) .or. &
+            (materPara%elasID .eq. ELAS_COMPOSITE) .or. &
+            (materPara%elasID .eq. ELAS_ORTH)) then
             call utmess('F', 'PLATE1_5')
         end if
     end if
 
-    if (lLinear) then
-        lMatr = ASTER_TRUE
-        lVect = ASTER_FALSE
-        lVari = ASTER_FALSE
-        lSigm = ASTER_FALSE
-        codret = 0
-    else
-! ----- Select objects to construct from option name
+! - Behaviour
+    lMatr = ASTER_TRUE
+    lVect = ASTER_FALSE
+    lVari = ASTER_FALSE
+    lSigm = ASTER_FALSE
+    codret = 0
+    if (lNonLine) then
+! ----- Get fields for non-linear behaviour
         call jevech('PCOMPOR', 'L', vk16=compor)
+        call jevech('PCARCRI', 'L', jvCarcri)
+
+! ----- Properties of behaviour
+        relaComp = compor(RELA_NAME)
+        defoComp = compor(DEFO)
+        leul = defoComp .eq. 'GROT_GDEP'
+        read (compor(NVAR), '(I16)') nbvari
+        ASSERT(nbvari .le. nbVariMax)
+        if (defoComp(6:10) .eq. '_REAC') then
+            call utmess('F', 'PLATE1_6')
+        end if
+
+! ----- Select objects to construct from option name
         call behaviourOption(option, compor, &
                              lMatr, lVect, &
                              lVari, lSigm, &
                              codret)
+
     end if
 
-    if (.not. lLinear) then
-        call jevech('PCARCRI', 'L', icarcr)
+    if (lNonLine) then
         call jevech('PVARIMR', 'L', ivarim)
-
-        rela_comp = compor(RELA_NAME)
-        type_comp = compor(INCRELAS)
-        defo_comp = compor(DEFO)
-        leul = defo_comp .eq. 'GROT_GDEP'
-        read (compor(NVAR), '(I16)') nbvari
-!           -- on verifie que le nombre de varint tient dans ecr
-        ASSERT(nbvari .le. nbvarmax)
-!
         call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
         icontm = jtab(1)
         ASSERT(npg .eq. jtab(3))
-!
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-
-        if (defo_comp(6:10) .eq. '_REAC') then
-            call utmess('F', 'PLATE1_6')
-        end if
-
         if (leul) then
             do i = 1, nno
                 i1 = 3*(i-1)
                 i2 = 6*(i-1)
-                zr(igeom+i1) = zr(igeom+i1)+zr(ideplm+i2)+zr(ideplp+i2)
-                zr(igeom+i1+1) = zr(igeom+i1+1)+zr(ideplm+i2+1)+zr(ideplp+i2+1)
-                zr(igeom+i1+2) = zr(igeom+i1+2)+zr(ideplm+i2+2)+zr(ideplp+i2+2)
+                zr(jvGeom+i1) = zr(jvGeom+i1)+zr(ideplm+i2)+zr(ideplp+i2)
+                zr(jvGeom+i1+1) = zr(jvGeom+i1+1)+zr(ideplm+i2+1)+zr(ideplp+i2+1)
+                zr(jvGeom+i1+2) = zr(jvGeom+i1+2)+zr(ideplm+i2+2)+zr(ideplp+i2+2)
             end do
-!
             if (nno .eq. 3) then
-                call dxtpgl(zr(igeom), pgl)
+                call dxtpgl(zr(jvGeom), pgl)
             else if (nno .eq. 4) then
-                call dxqpgl(zr(igeom), pgl)
+                call dxqpgl(zr(jvGeom), pgl)
             end if
-!
-            call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
+            call utpvgl(nno, 3, pgl, zr(jvGeom), xyzl)
         end if
-!
         call utpvgl(nno, 6, pgl, zr(ideplm), ul)
         call utpvgl(nno, 6, pgl, zr(ideplp), dul)
     else
         nbvari = 0
-        call tecach('NNO', 'PMATERC', 'L', iret, iad=imate)
-        call rccoma(zi(imate), 'ELAS', 1, rela_comp(1:10), iret)
-        icarcr = 1
+        jvCarcri = 1
         ivarim = 1
         icontm = 1
+        relaComp = materPara%elasKeyword
     end if
 
     call r8inir(8, 0.d0, sig, 1)
     call r8inir(8, 0.d0, dsig, 1)
 !
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PCACOQU', 'L', icacoq)
+    call jevech('PCACOQU', 'L', jvCacoqu)
 !       --  EPAISSEUR TOTALE
-    ep = zr(icacoq)
-    ctor = zr(icacoq+3)
-    excen = zr(icacoq+4)
+    ep = zr(jvCacoqu)
+    ctor = zr(jvCacoqu+3)
+    excen = zr(jvCacoqu+4)
 !
     icontp = icontm
     ivarip = ivarim
@@ -413,7 +405,7 @@ subroutine te0409(option, nomte)
 !       -- CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY,QX,QY
     nbcont = 8
 !
-    if (.not. lLinear) then
+    if (lNonLine) then
 !      -- SIGMAM : EFFORTS DANS REPERE UTILISATEUR
         do i = 1, nbcont*npg
             sigmEnerm(i) = zr(icontm-1+i)
@@ -423,19 +415,23 @@ subroutine te0409(option, nomte)
 !              T2IU : MATRICE DE PASSAGE (2x2) ; UTILISATEUR -> INTRINSEQUE
 !              T2UI : MATRICE DE PASSAGE (2x2) ; INTRINSEQUE -> UTILISATEUR
 !
-        alpha = zr(icacoq+1)*r8dgrd()
-        beta = zr(icacoq+2)*r8dgrd()
+        alpha = zr(jvCacoqu+1)*r8dgrd()
+        beta = zr(jvCacoqu+2)*r8dgrd()
         call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 !       -- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !              DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
         call dxefro(npg, t2ui, sigmEnerm, efform)
     end if
-!
-!     BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
-!
-    do ipg = 1, npg
-        call r8inir(nbvarmax, 0.d0, ecrp, 1)
+
+! - Loop on Gauss point
+    do kpg = 1, npg
+! ----- Initializations of material parameters on current integration point
+        if (lNonLine) then
+            call initParaPoin(kpg, ksp, materPara)
+        end if
+
+        call r8inir(nbVariMax, 0.d0, ecrp, 1)
         call r8inir(3, 0.d0, n, 1)
         call r8inir(3, 0.d0, m, 1)
         call r8inir(2, 0.d0, q, 1)
@@ -444,27 +440,27 @@ subroutine te0409(option, nomte)
         call r8inir(9, 0.d0, dmf, 1)
         call r8inir(4, 0.d0, dc, 1)
 !
-        qsi = zr(icoopg-1+ndim*(ipg-1)+1)
-        eta = zr(icoopg-1+ndim*(ipg-1)+2)
+        qsi = zr(icoopg-1+ndim*(kpg-1)+1)
+        eta = zr(icoopg-1+ndim*(kpg-1)+2)
 !
-        icpg = (ipg-1)*nbcont
-        icpv = (ipg-1)*nbvari
+        icpg = (kpg-1)*nbcont
+        icpv = (kpg-1)*nbvari
 !
         if (nomte .eq. 'MEDKTG3') then
             call dxtbm(carat3(9), bm)
             call dktbf(qsi, eta, carat3, bf)
-            poids = zr(ipoids+ipg-1)*carat3(7)
+            poids = zr(ipoids+kpg-1)*carat3(7)
         else if (nomte .eq. 'MEDKQG4') then
             call jquad4(xyzl, qsi, eta, jacob)
             call dxqbm(qsi, eta, jacob(2), bm)
             call dkqbf(qsi, eta, jacob(2), caraq4, bf)
-            poids = zr(ipoids+ipg-1)*jacob(1)
+            poids = zr(ipoids+kpg-1)*jacob(1)
         else if (nomte .eq. 'MEQ4GG4') then
             call jquad4(xyzl, qsi, eta, jacob)
             call dxqbm(qsi, eta, jacob(2), bm)
             call dsqbfb(qsi, eta, jacob(2), bf)
             call q4gbc(qsi, eta, jacob(2), caraq4, bc)
-            poids = zr(ipoids+ipg-1)*jacob(1)
+            poids = zr(ipoids+kpg-1)*jacob(1)
         else if (nomte .eq. 'MET3GG3') then
             call dxtbm(carat3(9), bm)
             call dstbfb(carat3(9), bf)
@@ -513,13 +509,12 @@ subroutine te0409(option, nomte)
 !
         call r8inir(50, 0.d0, matr, 1)
 !
-        if (.not. lLinear) then
+        if (lNonLine) then
             do i = 1, 3
                 deps(i+3) = dkhi(i)
                 epsm(i) = eps(i)
                 epsm(i+3) = khi(i)
             end do
-
             do i = 1, nbsig
                 sig(i) = efform(icpg+i)
                 sigm(i) = sig(i)
@@ -527,15 +522,14 @@ subroutine te0409(option, nomte)
         end if
 !
 !EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
-        if (rela_comp(1:4) .ne. 'ELAS' .and. excen .gt. 0.0d0) then
+        if (relaComp(1:4) .ne. 'ELAS' .and. excen .gt. 0.0d0) then
             do i = 1, 3
                 epsm(i) = epsm(i)+excen*khi(i)
                 deps(i) = deps(i)+excen*khi(i)
             end do
         end if
 
-        if (rela_comp(1:4) .eq. 'ELAS') then
-
+        if (relaComp(1:4) .eq. 'ELAS') then
             call r8inir(3*3, 0.d0, dff, 1)
             call r8inir(3*3, 0.d0, dmm, 1)
             call r8inir(3*3, 0.d0, dmff, 1)
@@ -543,9 +537,10 @@ subroutine te0409(option, nomte)
             call r8inir(2*2, 0.d0, dci, 1)
             call r8inir(3*2, 0.d0, dmc, 1)
             call r8inir(3*2, 0.d0, dfc, 1)
-            call dxmate('RIGI', dff, dmm, dmff, dcc, &
+            call dxmate(fami, dff, dmm, dmff, dcc, &
                         dci, dmc, dfc, nno, pgl, &
                         multic, coupmf, t2iu, t2ui, t1ve)
+
             call r8inir(36, 0.d0, dsidep, 1)
             do i = 1, 3
                 do j = 1, 3
@@ -562,8 +557,8 @@ subroutine te0409(option, nomte)
 !EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
 ! ON NE FAIT RIEN CAR LE COUPLAGE MEMBRANE_FLEXION INDUIT EST PRIS EN COMPTE DANS DXMATE
 !               --  prise en compte de la dilatation thermique
-            if (.not. lLinear) then
-                call coqgth(zi(imate), rela_comp, 'RIGI', ipg, ep, epsm, deps)
+            if (lNonLine) then
+                call coqgth(materPara, ep, epsm, deps)
             end if
 !
 !               -- calcul de l'accroissement de contrainte
@@ -583,12 +578,12 @@ subroutine te0409(option, nomte)
                 sig(i) = sig(i)+dsig(i)
             end do
 !
-        else if (rela_comp(1:11) .eq. 'GLRC_DAMAGE') then
+        else if (relaComp(1:11) .eq. 'GLRC_DAMAGE') then
             do i = 1, nbvari
                 ecr(i) = zr(ivarim-1+icpv+i)
             end do
 !
-            call maglrc(zi(imate), matr, delas, ecr)
+            call maglrc(materPara%jvMaterCode, matr, delas, ecr)
             if (q4gg) then
                 dcc(1, 1) = matr(14)
                 dcc(2, 2) = matr(15)
@@ -600,15 +595,16 @@ subroutine te0409(option, nomte)
             surfgp = poids
 !
 !               --  prise en compte de la dilatation thermique
-            call coqgth(zi(imate), rela_comp, 'RIGI', ipg, ep, epsm, deps)
+            call coqgth(materPara, ep, epsm, deps)
             do i = 1, 6
                 epst(i) = epsm(i)+deps(i)
             end do
 !
             call r8inir(36, 0.d0, dsidep, 1)
-            call glrcmm(zi(imate), matr, ep, surfgp, pgl, &
+            call glrcmm(materPara%jvMaterCode, &
+                        matr, ep, surfgp, pgl, &
                         epst, deps, dsig, ecr, delas, &
-                        dsidep, zr(icarcr), codret)
+                        dsidep, zr(jvCarcri), codret)
 !
             do i = 1, 3
                 dsig(i) = dsig(i)*ep
@@ -628,14 +624,14 @@ subroutine te0409(option, nomte)
                 sig(i) = sig(i)+dsig(i)
             end do
 !
-        else if (rela_comp(1:7) .eq. 'GLRC_DM') then
-            if (.not. lLinear) then
+        else if (relaComp(1:7) .eq. 'GLRC_DM') then
+            if (lNonLine) then
                 do i = 1, nbvari
                     ecr(i) = zr(ivarim-1+icpv+i)
                 end do
             end if
 !
-            call glrc_recup_mate(zi(imate), rela_comp, lLinear, ep, lambda=lambda, &
+            call glrc_recup_mate(materPara%jvMaterCode, relaComp, lLinear, ep, lambda=lambda, &
                                  deuxmu=deuxmu, lamf=lamf, deumuf=deumuf, &
                                  gt=gt, gc=gc, gf=gf, seuil=seuil, &
                                  alpha=alphaf, alfmc=alfmc, epsic=epsi_c, &
@@ -644,44 +640,44 @@ subroutine te0409(option, nomte)
 
 !
 !               --  prise en compte de la dilatation thermique
-            call coqgth(zi(imate), rela_comp, 'RIGI', ipg, ep, epsm, deps)
+            call coqgth(materPara, ep, epsm, deps)
 !
 !               -- endommagement seulement
             call r8inir(36, 0.d0, dsidep, 1)
             call glrc_lc(epsm, deps, ecr, option, sig, &
                          ecrp, dsidep, lambda, deuxmu, lamf, &
                          deumuf, gt, gc, gf, seuil, &
-                         alphaf, alfmc, zr(icarcr), &
+                         alphaf, alfmc, zr(jvCarcri), &
                          epsi_c, epsi_els, epsi_lim, codret, &
                          ep, is_param_opt, val_param_opt, t2iu)
 !
-        else if (rela_comp(1:4) .eq. 'DHRC') then
+        else if (relaComp(1:4) .eq. 'DHRC') then
 !
-            if (.not. lLinear) then
+            if (lNonLine) then
                 do i = 1, nbvari
                     ecr(i) = zr(ivarim-1+icpv+i)
                 end do
             end if
 !
-            call dhrc_recup_mate(zi(imate), rela_comp, a0, c0, &
+            call dhrc_recup_mate(materPara%jvMaterCode, relaComp, a0, c0, &
                                  aa_t, ga_t, ab_, gb_, ac_, &
                                  gc_, aa_c, ga_c, cstseu)
 
 !
 !               --  prise en compte de la dilatation thermique
-            call coqgth(zi(imate), rela_comp, 'RIGI', ipg, ep, epsm, deps)
+            call coqgth(materPara, ep, epsm, deps)
 !
 !               -- endommagement couple glissement acier beton
             call r8inir(36, 0.d0, dsidep, 1)
             call dhrc_lc(epsm, deps, ecr, pgl, option, &
                          sig, ecrp, a0, c0, aa_t, &
                          ga_t, ab_, gb_, ac_, gc_, &
-                         aa_c, ga_c, cstseu, zr(icarcr), codret, &
+                         aa_c, ga_c, cstseu, zr(jvCarcri), codret, &
                          dsidep, ASTER_FALSE)
 !
-        else if (rela_comp(1:7) .eq. 'KIT_DDI') then
+        else if (relaComp(1:7) .eq. 'KIT_DDI') then
 !
-            if (.not. lLinear) then
+            if (lNonLine) then
                 do i = 1, nbvari
                     ecr(i) = zr(ivarim-1+icpv+i)
                 end do
@@ -691,18 +687,17 @@ subroutine te0409(option, nomte)
 !               --  Prise en compte de la dilatation thermique
 !                   En realite, on ne sait pas encore faire ...
 !                   La routine coqgth nous arretera s'il y a de la dilatation
-            call coqgth(zi(imate), rela_comp, 'RIGI', ipg, ep, epsm, deps)
+            call coqgth(materPara, ep, epsm, deps)
 !               -- endommagement plus plasticite
-            call r8inir(3, r8vide(), angmas, 1)
-            rela_plas = compor(PLAS_NAME)
-            call kit_glrc_dm_vmis(zi(imate), rela_plas, epsm, deps, ecr, &
+            relaPlas = compor(PLAS_NAME)
+            call kit_glrc_dm_vmis(materPara%jvMaterCode, relaPlas, epsm, deps, ecr, &
                                   option, sigm, sig, ecrp, dsidep, &
-                                  zr(icarcr), codret, t2iu)
+                                  zr(jvCarcri), codret, t2iu)
         else
-            call utmess('F', 'PLATE1_7', sk=rela_comp)
+            call utmess('F', 'PLATE1_7', sk=relaComp)
         end if
 !
-        if (.not. lLinear) then
+        if (lNonLine) then
             do i = 1, nbvari
                 zr(ivarip-1+icpv+i) = ecrp(i)
             end do
@@ -718,7 +713,7 @@ subroutine te0409(option, nomte)
             end do
 !               -- PRISE EN COMPTE DE L'EXCENTREMENT DANS LE TERME DE FLEXION (VOIR AUSSI DKTNLI)
 
-            if (rela_comp(1:4) .ne. 'ELAS' .and. excen .gt. 0.d0) then
+            if (relaComp(1:4) .ne. 'ELAS' .and. excen .gt. 0.d0) then
                 do i = 1, 3
                     m(i) = m(i)+excen*n(i)
                 end do
@@ -731,13 +726,13 @@ subroutine te0409(option, nomte)
 !                  BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
 !
             do k = 1, 3
-                effint((ipg-1)*8+k) = n(k)
-                effint((ipg-1)*8+3+k) = m(k)
+                effint((kpg-1)*8+k) = n(k)
+                effint((kpg-1)*8+3+k) = m(k)
             end do
 !
             if (q4gg) then
                 do k = 1, 2
-                    effint((ipg-1)*8+6+k) = q(k)
+                    effint((kpg-1)*8+6+k) = q(k)
                 end do
             end if
 !
@@ -803,7 +798,7 @@ subroutine te0409(option, nomte)
         end if
     end do
 !
-    if (.not. lLinear) then
+    if (lNonLine) then
 !           -- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !              DU REPERE INTRINSEQUE AU REPERE LOCAL
 !              STOCKAGE DES EFFORTS GENERALISES

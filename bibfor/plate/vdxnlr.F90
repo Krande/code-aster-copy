@@ -16,12 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdxnlr(option, nomte, xi, rig, nb1, &
+subroutine vdxnlr(BEHInteg, &
+                  option, nomte, xi, rig, nb1, &
                   codret)
 !
     use Behaviour_type
     use Behaviour_module
-!
+    use MaterialPara_module
+    use MaterialPara_type
     implicit none
 !
 #include "asterc/r8vide.h"
@@ -32,6 +34,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 #include "asterfort/btdmsn.h"
 #include "asterfort/btdmsr.h"
 #include "asterfort/btkb.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/epseff.h"
 #include "asterfort/hsj1f.h"
 #include "asterfort/hsj1ms.h"
@@ -43,7 +46,6 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 #include "asterfort/matrkb.h"
 #include "asterfort/moytpg.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/trndgl.h"
@@ -55,58 +57,57 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 #include "blas/dscal.h"
 #include "jeveux.h"
 !
+    type(Behaviour_Integ), intent(inout) :: BEHInteg
+    character(len=16), intent(in) :: option, nomte
+    real(kind=8) :: xi(3, 9)
+    real(kind=8) :: rig(51, 51)
+    integer(kind=8) :: nb1
+    integer(kind=8), intent(out) :: codret
+!
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: multComp = " "
     integer(kind=8) :: jnbspi
-    character(len=32) :: elasKeyword
-    character(len=16) :: option, nomte
-    integer(kind=8) :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8), codret
+    integer(kind=8) :: nb2, nddle, npge, npgsr, npgsn, itab(8)
     integer(kind=8) :: cod, ksp
-    real(kind=8) :: xi(3, 9)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), vecpt(9, 3, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
     real(kind=8) :: btdm(4, 3, 42), btds(4, 2, 42)
     real(kind=8) :: hsf(3, 9), hsj1fx(3, 9), wgt
     real(kind=8) :: btdf(3, 42), btild(5, 42), wmatcb(5, 42), ktildi(42, 42)
-    real(kind=8) :: ktild(42, 42), rig(51, 51)
+    real(kind=8) :: ktild(42, 42)
     real(kind=8) :: ctor, epais, kappa
-    integer(kind=8), parameter :: nbv = 2
-    character(len=16), parameter :: nomres(nbv) = (/'E ', 'NU'/)
-    integer(kind=8) :: valret(nbv)
-    real(kind=8) :: valres(nbv)
+    integer(kind=8), parameter :: nbProp = 2
+    character(len=16), parameter :: propName(nbProp) = (/'E ', 'NU'/)
+    integer(kind=8) :: propCode(nbProp)
+    real(kind=8) :: propVale(nbProp)
     real(kind=8) :: rotfcm(9), rotfcp(9)
     real(kind=8) :: deplm(42), deplp(42)
     real(kind=8) :: epsi(5), depsi(5), eps2d(4), deps2d(4)
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
-    real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3)
+    real(kind=8) :: sign(4), sigma(4), dsidep(6, 6)
     real(kind=8) :: matc(5, 5), valpar
-    integer(kind=8) :: i, ib, icarcr, icontm, icontp, icou
-    integer(kind=8) :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn
+    integer(kind=8) :: i, ib, jvCarcri, icontm, icontp, icou
+    integer(kind=8) :: ideplm, ideplp, iinstm, iinstp, inte, intsn
     integer(kind=8) :: intsr, iret, ivarim, ivarip, ivarix, ivectu, j
-    integer(kind=8) :: jcara, jcrf, k1, k2, kpgs, kwgt, lgpg
+    integer(kind=8) :: jvCacoqu, jcrf, k1, k2, kpgs, kwgt, lgpg
     integer(kind=8) :: lzi, lzr, nbcou, nbvari, nddlet, ndimv
     real(kind=8) :: coef, crf, gxz, gyz, hic
     real(kind=8) :: x(1), zic, zmin
     parameter(npge=3)
     real(kind=8) :: ksi3s2
     aster_logical :: lVect, lMatr, lVari, lSigm
-
     blas_int :: b_incx, b_incy, b_n
     real(kind=8) :: cisail
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     integer(kind=8), parameter :: ndimLdc = 2
     character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
-    type(Behaviour_Integ) :: BEHinteg
-    character(len=4), parameter :: fami = "MASS"
     character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-
-! - Initialisation of behaviour datastructure
-    call behaviourInit(BEHinteg)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
     nb1 = zi(lzi-1+1)
@@ -120,40 +121,38 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 
-! - Get input fields
-    call jevech('PMATERC', 'L', imate)
+! - Get shell parameters
+    call jevech('PNBSP_I', 'L', jnbspi)
+    nbcou = zi(jnbspi-1+1)
+    if (nbcou .le. 0) then
+        call utmess('F', 'PLATE1_10')
+    end if
+    call jevech('PCACOQU', 'L', jvCacoqu)
+    epais = zr(jvCacoqu)
+    kappa = zr(jvCacoqu+3)
+    ctor = zr(jvCacoqu+4)
+    zmin = -epais/2.d0
+    hic = epais/nbcou
+
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PNBSP_I', 'L', jnbspi)
-    call jevech('PCARCRI', 'L', icarcr)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMP', 'L', ivarix)
-    call jevech('PCACOQU', 'L', jcara)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
-                itab=itab)
+    call jevech('PCACOQU', 'L', jvCacoqu)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
     else
         lgpg = itab(6)*itab(7)
     end if
-    nbcou = zi(jnbspi-1+1)
-    if (nbcou .le. 0) then
-        call utmess('F', 'PLATE1_10')
-    end if
-
-! - Don"t use AFFE_CARA_ELEM/MASSIF
-    angmas = r8vide()
 
 ! - Set main parameters for behaviour (on cell)
-    call behaviourSetParaCell(ndimLdc, typmod, option, &
-                              compor, zr(icarcr), &
-                              zr(iinstm), zr(iinstp), &
-                              fami, zi(imate), &
-                              BEHinteg)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    call jevech('PCARCRI', 'L', jvCarcri)
 
 ! - Select objects to construct from option name
     call behaviourOption(option, compor, &
@@ -163,12 +162,12 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 
 ! - Properties of behaviour
     read (compor(NVAR), '(I16)') nbvari
-!
-    epais = zr(jcara)
-    kappa = zr(jcara+3)
-    ctor = zr(jcara+4)
-    zmin = -epais/2.d0
-    hic = epais/nbcou
+
+! - Get elastic properties
+    if (BEHInteg%materPara%elasID .ne. ELAS_ISOT .and. &
+        BEHInteg%materPara%elasID .ne. ELAS_ORTH) then
+        call utmess('F', 'PLATE1_12', sk=BEHInteg%materPara%elasKeyword)
+    end if
 
 ! - Get output fields
     if (option .eq. 'RAPH_MECA') then
@@ -187,7 +186,6 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
     end if
-!
     ndimv = lgpg*npgsn
     b_n = to_blas_int(ndimv)
     b_incx = to_blas_int(1)
@@ -196,11 +194,6 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
     call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
-!
-    call rccoma(zi(imate), 'ELAS', 1, elasKeyword, valret(1))
-    if (elasKeyword .ne. 'ELAS' .and. elasKeyword .ne. 'ELAS_ORTH') then
-        call utmess('F', 'PLATE1_12', sk=elasKeyword)
-    end if
 !
 !===============================================================
 !     CALCULS DES 2 DDL INTERNES
@@ -302,17 +295,31 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                 ksp = (icou-1)*npge+inte
 
 ! ------------- Set main parameters for behaviour (on point)
-                call behaviourSetParaPoin(intsn, ksp, BEHinteg)
+                call behaviourSetParaPoin(intsn, ksp, BEHInteg)
 
 ! ------------- Integrator
-                if (elasKeyword .eq. 'ELAS') then
+                if (BEHInteg%materPara%elasID .eq. ELAS_ISOT) then
                     sigma = 0.d0
-                    call nmcomp(BEHinteg, &
-                                fami, intsn, ksp, ndimLdc, typmod, &
-                                zi(imate), compor, zr(icarcr), zr(iinstm), zr(iinstp), &
-                                4, eps2d, deps2d, 4, sign, &
-                                zr(ivarim+k2), option, angmas, &
-                                sigma, zr(ivarip+k2), 36, dsidep, cod)
+                    call nmcomp(BEHInteg, &
+                                ndimLdc, option, typmod, &
+                                zr(iinstm), zr(iinstp), &
+                                compor, zr(jvCarcri), multComp, &
+                                4, eps2d, deps2d, &
+                                4, sign, &
+                                zr(ivarim+k2), &
+                                sigma, zr(ivarip+k2), &
+                                36, dsidep, cod)
+
+                    call rcvalb(BEHInteg%materPara%schemePara%fami, &
+                                BEHInteg%materPara%schemePara%kpg, &
+                                BEHInteg%materPara%schemePara%ksp, &
+                                '+', BEHInteg%materPara%jvMaterCode, &
+                                ' ', BEHInteg%materPara%elasKeyword, &
+                                0, ' ', [0.d0], &
+                                nbProp, propName, propVale, &
+                                propCode, 1)
+                    cisail = propVale(1)/(1.d0+propVale(2))
+
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
                     if (cod .ne. 0) then
@@ -322,13 +329,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         if (cod .eq. 1) goto 999
                     end if
 !
-                    call rcvalb(fami, intsn, ksp, '+', zi(imate), &
-                                ' ', elasKeyword, 0, ' ', [0.d0], &
-                                nbv, nomres, valres, valret, 1)
-!
-                    cisail = valres(1)/(1.d0+valres(2))
-!
-                else if (elasKeyword .eq. 'ELAS_ORTH') then
+                else if (BEHInteg%materPara%elasID .eq. ELAS_ORTH) then
                     call moytpg('RIGI', intsn, 3, '+', valpar, &
                                 iret)
                     call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
@@ -337,7 +338,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
                 if (lMatr) then
-                    if (elasKeyword .eq. 'ELAS') then
+                    if (BEHInteg%materPara%elasID .eq. ELAS_ISOT) then
                         dtild(1, 1) = dsidep(1, 1)
                         dtild(1, 2) = dsidep(1, 2)
                         dtild(1, 3) = dsidep(1, 4)/rac2
@@ -363,7 +364,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         dtild(5, 3) = 0.d0
                         dtild(5, 4) = 0.d0
                         dtild(5, 5) = cisail*kappa/2.d0
-                    else if (elasKeyword .eq. 'ELAS_ORTH') then
+                    else if (BEHInteg%materPara%elasID .eq. ELAS_ORTH) then
                         dtild(1, 1) = matc(1, 1)
                         dtild(1, 2) = matc(1, 2)
                         dtild(1, 3) = matc(1, 3)
@@ -409,7 +410,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
                 if (lSigm) then
                     ASSERT(lVect)
-                    if (elasKeyword .eq. 'ELAS') then
+                    if (BEHInteg%materPara%elasID .eq. ELAS_ISOT) then
                         do i = 1, 3
                             zr(icontp-1+k1+i) = sigma(i)
                         end do
@@ -424,7 +425,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(4) = cisail*kappa*gxz/2.d0
                         sgmtd(5) = cisail*kappa*gyz/2.d0
 !
-                    else if (elasKeyword .eq. 'ELAS_ORTH') then
+                    else if (BEHInteg%materPara%elasID .eq. ELAS_ORTH) then
                         zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1, 1)+ &
                                             (epsi(2)+depsi(2))*matc(1, 2)+ &
                                             (epsi(3)+depsi(3))*matc(1, 3)
@@ -445,12 +446,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(4) = dtild(4, 4)*gxz
                         sgmtd(5) = dtild(5, 5)*gyz
                     end if
-!
-                    call epseff('EFFORI', nb1, x, btild, sgmtd, &
-                                x, wgt, effint)
-!
+                    call epseff('EFFORI', nb1, x, btild, sgmtd, x, wgt, effint)
                 end if
-!
             end do
         end do
     end do

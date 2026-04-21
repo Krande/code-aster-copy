@@ -18,34 +18,33 @@
 #include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
+    subroutine nmgvno(BEHInteg, &
+                      ndim, nno1, nno2, npg, &
                       iw, vff1, vff2, idfde1, idfde2, &
-                      geom, typmod, option, mat, compor, &
+                      geom, typmod, option, compor, &
                       lgpg, carcri, instam, instap, ddlm, &
-                      ddld, angmas, sigm, vim, sigp, &
+                      ddld, sigm, vim, sigp, &
                       vip, matr, vect, codret)
+        use Behaviour_type
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+        character(len=8), intent(in) :: typmod(2)
+        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         integer(kind=8) :: lgpg
         integer(kind=8) :: npg
         integer(kind=8) :: nno2
         integer(kind=8) :: nno1
         integer(kind=8) :: ndim
-        character(len=*) :: fami
         integer(kind=8) :: iw
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)
         integer(kind=8) :: idfde1
         integer(kind=8) :: idfde2
         real(kind=8) :: geom(ndim, nno1)
-        character(len=8) :: typmod(2)
-        character(len=16) :: option
-        integer(kind=8) :: mat
-        character(len=16) :: compor(COMPOR_SIZE)
-        real(kind=8) :: carcri(CARCRI_SIZE)
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: ddlm(*)
         real(kind=8) :: ddld(*)
-        real(kind=8) :: angmas(3)
         real(kind=8) :: sigm(2*ndim+1, npg)
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: sigp(2*ndim+1, npg)

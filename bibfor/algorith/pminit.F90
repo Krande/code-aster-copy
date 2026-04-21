@@ -17,16 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0413
 !
-subroutine pminit(jvMaterCode, nbVari, &
-                  tablName, tablNbParaMaxi, tablNbPara, tablType, &
+subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
                   tablParaName, tablParaType, tablVale, &
-                  anglNaut, pgl, lRota, &
-                  epsiPrev, sigmPrev, vim, vip, &
+                  pgl, lRota, &
+                  epsiPrev, sigmPrev, &
+                  nbVari, vim, vip, &
                   loadEpsiType, loadType, loadFunc, coefImpo, &
-                  coefMatrAdim, typeMatrPred, lMatrElas, matrElas, lPrintMatr, option, &
+                  coefAdim, typeMatrPred, lMatrElas, matrElas, lPrintMatr, option, &
                   variName, nbVariTabl, &
-                  sddisc, ds_conv, ds_algopara, sderro)
+                  sddisc, ds_conv, ds_algopara, sderro, materPara)
 !
+    use MaterialPara_module
+    use MaterialPara_type
     use NonLin_Datastructure_type
     implicit none
 !
@@ -62,19 +64,19 @@ subroutine pminit(jvMaterCode, nbVari, &
 #include "blas/dscal.h"
 #include "jeveux.h"
 !
-    integer(kind=8), intent(in) :: jvMaterCode, nbVari
+    integer(kind=8), intent(in) :: nbVari
     character(len=8), intent(out) :: tablName
     integer(kind=8), intent(in) :: tablNbParaMaxi
     integer(kind=8), intent(out) :: tablNbPara, tablType
     character(len=16), intent(out) :: tablParaName(tablNbParaMaxi), tablParaType(tablNbParaMaxi)
     real(kind=8), intent(out) :: tablVale(tablNbParaMaxi)
-    real(kind=8), intent(out) :: anglNaut(3), pgl(3, 3)
+    real(kind=8), intent(out) :: pgl(3, 3)
     aster_logical, intent(out) :: lRota
     real(kind=8), intent(out) :: epsiPrev(9), sigmPrev(6)
     real(kind=8), intent(out) :: vim(nbVari), vip(nbVari)
     integer(kind=8), intent(out) :: loadEpsiType, loadType(9)
     character(len=8), intent(out) :: loadFunc(9)
-    real(kind=8), intent(out) :: coefImpo(6, 12), coefMatrAdim
+    real(kind=8), intent(out) :: coefImpo(6, 12), coefAdim
     integer(kind=8), intent(out) :: typeMatrPred
     aster_logical, intent(out) :: lMatrElas
     real(kind=8), intent(out) :: matrElas(6, 6)
@@ -83,9 +85,10 @@ subroutine pminit(jvMaterCode, nbVari, &
     character(len=8), intent(out) :: variName(nbVari)
     integer(kind=8), intent(out) :: nbVariTabl
     character(len=19), intent(out) :: sddisc
-    type(NL_DS_Conv), intent(out) :: ds_conv
-    type(NL_DS_AlgoPara), intent(out) :: ds_algopara
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     character(len=24), intent(out) :: sderro
+    type(Material_Para), intent(inout) :: materPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,7 +129,6 @@ subroutine pminit(jvMaterCode, nbVari, &
 !
     integer(kind=8), parameter :: ndim = 3
     real(kind=8), parameter  :: rac2 = sqrt(2.d0)
-    integer(kind=8), parameter :: kpg = 1, ksp = 1
     complex(kind=8), parameter :: c16Dummy = (0.d0, 0.d0)
     character(len=4), parameter :: epsiName(6) = (/'EPXX', 'EPYY', 'EPZZ', &
                                                    'EPXY', 'EPXZ', 'EPYZ'/)
@@ -148,7 +150,7 @@ subroutine pminit(jvMaterCode, nbVari, &
     character(len=19) :: listInst
     real(kind=8) :: timePrev, vale, timeInit
     real(kind=8) :: sigmInitVale, epsiInitVale
-    real(kind=8) :: angd(3), ang1(1), anglEuler(3), dsidep(36)
+    real(kind=8) :: ang1(1), dsidep(36)
     real(kind=8) :: sigmInit(6), epsiInit(6), gradInitImpo(9)
     aster_logical :: lSetLinearRela, lGrad
     blas_int :: b_incx, b_incy, b_n
@@ -278,26 +280,16 @@ subroutine pminit(jvMaterCode, nbVari, &
     call tbcrsd(tablName, 'G')
     call tbajpa(tablName, tablNbPara, tablParaName, tablParaType)
 
-! - Get local coordinate system for material parameters
-    anglNaut = 0.d0
-    anglEuler = 0.d0
-    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=anglNaut, nbret=n1)
-    if (n1 .gt. 0) then
-        anglNaut(1) = anglNaut(1)*r8dgrd()
-        if (ndim .eq. 3) then
-            anglNaut(2) = anglNaut(2)*r8dgrd()
-            anglNaut(3) = anglNaut(3)*r8dgrd()
-        end if
-    end if
+! - Get local coordinate system
+    call getUserLCSCommand(ndim, materPara%lcsPara)
 
-    call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=anglEuler, nbret=n1)
-    if (n1 .gt. 0) then
-        call eulnau(anglEuler, angd)
-        anglNaut(1) = angd(1)*r8dgrd()
-        if (ndim .eq. 3) then
-            anglNaut(2) = angd(2)*r8dgrd()
-            anglNaut(3) = angd(3)*r8dgrd()
-        end if
+    if (nbCmpEpsi .eq. 6) then
+        epsiPrev = 0.d0
+    else
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, id, b_incx, epsiPrev, b_incy)
     end if
 
 ! - ANGLE DE ROTATION
@@ -550,7 +542,6 @@ subroutine pminit(jvMaterCode, nbVari, &
     else if (ds_algopara%matrix_pred .eq. 'EXTRAPOLE') then
         typeMatrPred = -1
     end if
-
 ! - Automatic management of time stepping
     call nmcrsu(sddisc, listInst, ds_conv)
 
@@ -559,16 +550,16 @@ subroutine pminit(jvMaterCode, nbVari, &
 
 ! - Compute elastic matrix
     matrElas = 0.d0
-    call dmat3d('PMAT', jvMaterCode, timePrev, '+', kpg, &
-                ksp, anglNaut, matrElas)
+    call dmat3d(materPara, '+', timePrev, matrElas)
+
 !     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
-    coefMatrAdim = max(matrElas(1, 1), matrElas(2, 2), matrElas(3, 3))
+    coefAdim = max(matrElas(1, 1), matrElas(2, 2), matrElas(3, 3))
     do j = 4, 6
         matrElas(j, j) = matrElas(j, j)*2.d0
-        coefMatrAdim = max(coefMatrAdim, matrElas(j, j))
+        coefAdim = max(coefAdim, matrElas(j, j))
     end do
     if (lSetLinearRela) then
-        coefMatrAdim = 1.d0
+        coefAdim = 1.d0
     end if
 !
 end subroutine

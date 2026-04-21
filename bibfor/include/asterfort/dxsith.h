@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine dxsith(nomte, mater, sigma)
-        character(len=16) :: nomte
-        integer(kind=8) :: mater
-        real(kind=8) :: sigma(*)
+    subroutine dxsith(nomte, materPara, sigma)
+        use MaterialPara_type
+        character(len=16), intent(in) :: nomte
+        type(Material_Para), intent(inout) :: materPara
+        real(kind=8), intent(out) :: sigma(*)
     end subroutine dxsith
 end interface

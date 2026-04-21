@@ -60,7 +60,7 @@ subroutine te0442(option, nomte)
     integer(kind=8), parameter :: nptmax = 9, nspmax = 162
     real(kind=8), dimension(3) :: axe_z, orig, x, xsp, xbary
     real(kind=8) :: rep
-    character(len=4) :: fami
+    character(len=8) :: fami
     character(len=8) :: pain, paout
     integer(kind=8) :: ipt, ino, joff, type_pt, ipaxe, ipaxe2
     real(kind=8) :: a, b, xnorm, epais, excen, zic, hicou
