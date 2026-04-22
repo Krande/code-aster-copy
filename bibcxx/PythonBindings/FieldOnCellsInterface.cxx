@@ -33,12 +33,13 @@
 void exportFieldOnCellsToPython( py::module_ &mod ) {
     py::class_< FieldOnCellsReal, FieldOnCellsRealPtr, DataField >( mod, "FieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, FiniteElementDescriptorPtr, std::string,
                                          std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, const FieldOnCellsReal & > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, const py::tuple & > ) )
+        .def( define_pickling< FieldOnCellsReal >() )
         .def( py::init( []( const ModelPtr model, const std::string &loc,
                             const std::string &quantity, const BehaviourPropertyPtr behaviour,
                             const ElementaryCharacteristicsPtr carael ) {
@@ -274,10 +275,11 @@ Returns:
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, DataField >( mod,
                                                                           "FieldOnCellsComplex" )
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsComplex, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex, FiniteElementDescriptorPtr,
                                          std::string, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsComplex, const py::tuple & > ) )
         .def( py::init< const FieldOnCellsComplex & >() )
+        .def( define_pickling< FieldOnCellsComplex >() )
         .def( "copy", &FieldOnCellsComplex::copy )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
         .def( "getDescription", &FieldOnCellsComplex::getDescription )
@@ -392,8 +394,9 @@ Returns:
 
     py::class_< FieldOnCellsLong, FieldOnCellsLongPtr, DataField >( mod, "FieldOnCellsLong" )
         .def( py::init( &initFactoryPtr< FieldOnCellsLong > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsLong, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsLong, const py::tuple & > ) )
         .def( py::init< const FieldOnCellsLong & >() )
+        .def( define_pickling< FieldOnCellsLong >() )
         .def( "copy", &FieldOnCellsLong::copy )
         .def( "setDescription", &FieldOnCellsLong::setDescription )
         .def( "getDescription", &FieldOnCellsLong::getDescription )
@@ -478,8 +481,9 @@ Returns:
      */
     py::class_< FieldOnCellsChar8, FieldOnCellsChar8Ptr, DataField >( mod, "FieldOnCellsChar8" )
         .def( py::init( &initFactoryPtr< FieldOnCellsChar8 > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsChar8, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsChar8, const py::tuple & > ) )
         .def( py::init< const FieldOnCellsChar8 & >() )
+        .def( define_pickling< FieldOnCellsChar8 >() )
         .def( "setDescription", &FieldOnCellsChar8::setDescription )
         .def( "getDescription", &FieldOnCellsChar8::getDescription, R"(
             Return the description associated with the FieldOnCellsChar8 object

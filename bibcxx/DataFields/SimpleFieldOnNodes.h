@@ -120,6 +120,21 @@ class SimpleFieldOnNodes : public DataField {
         }
     }
 
+    /**
+     * @brief Constructeur
+     * @param name Nom Jeveux du champ aux noeuds
+     */
+    SimpleFieldOnNodes( const std::string name, const BaseMeshPtr mesh = nullptr )
+        : DataField( name, "CHAM_NO_S" ),
+          _descriptor( JeveuxVectorChar8( getName() + ".CNSK" ) ),
+          _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
+          _component( JeveuxVectorChar8( getName() + ".CNSC" ) ),
+          _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
+          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
+          _nbNodes( 0 ),
+          _nbComp( 0 ),
+          _mesh( mesh ) {};
+
   public:
     /**
      * @typedef SimpleFieldOnNodesPtr
@@ -129,35 +144,26 @@ class SimpleFieldOnNodes : public DataField {
 
     /**
      * @brief Constructeur
-     * @param name Nom Jeveux du champ aux noeuds
-     */
-    SimpleFieldOnNodes( const std::string name )
-        : DataField( name, "CHAM_NO_S" ),
-          _descriptor( JeveuxVectorChar8( getName() + ".CNSK" ) ),
-          _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
-          _component( JeveuxVectorChar8( getName() + ".CNSC" ) ),
-          _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
-          _nbNodes( 0 ),
-          _nbComp( 0 ),
-          _mesh( nullptr ) {};
-
-    /**
-     * @brief Constructeur
 
      */
     SimpleFieldOnNodes() = delete;
 
     SimpleFieldOnNodes( const BaseMeshPtr mesh )
-        : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ) {
-        _mesh = mesh;
-    };
+        : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ), mesh ) {};
 
     SimpleFieldOnNodes( const BaseMeshPtr mesh, const std::string quantity,
                         const VectorString &comp, bool zero = false )
         : SimpleFieldOnNodes( mesh ) {
         this->allocate( quantity, comp, zero );
     }
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    SimpleFieldOnNodes( const py::tuple &tup )
+        : SimpleFieldOnNodes( tup[0].cast< std::string >(), tup[1].cast< BaseMeshPtr >() ) {
+        build();
+    };
+
+    py::tuple _getState() const { return py::make_tuple( getName(), getMesh() ); };
 
     BaseMeshPtr getMesh() const { return _mesh; };
 
@@ -173,18 +179,6 @@ class SimpleFieldOnNodes : public DataField {
         FreeStr( tabNames );
 
         build();
-    }
-
-    void setMesh( const BaseMeshPtr mesh ) {
-        if ( mesh ) {
-            if ( _mesh ) {
-                if ( _mesh != mesh ) {
-                    raiseAsterError( "Incompatible meshes." );
-                }
-            } else {
-                _mesh = mesh;
-            }
-        }
     }
 
     /**
