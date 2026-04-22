@@ -293,13 +293,13 @@ class PODAnalysis:
         """
         ## - Compression step
         if self._methodCompress == "snapshot":
-            Phi, singval = self.snapshotMethod()
+            Phi, singval = self.snapshotMethod(self._snapshots)
         elif self._methodCompress == "SVD":
-            Phi, singval = self.SVDMethod()
+            Phi, singval = self.SVDMethod(self._snapshots)
         elif self._methodCompress == "GS-classical":
-            Phi, singval = self.GSmethod(self._crit_tolerance, "classical")
+            Phi, singval = self.GSMethod(self._snapshots, self._crit_tolerance, "classical")
         elif self._methodCompress == "GS-modified":
-            Phi, singval = self.GSmethod(self._crit_tolerance, "modified")
+            Phi, singval = self.GSMethod(self._snapshots, self._crit_tolerance, "modified")
         else:
             raise ValueError(
                 f"PODAnalysis: Method '{self._methodCompress}' is not implemented yet."
@@ -319,7 +319,7 @@ class PODAnalysis:
         else:
             raise ValueError("PODAnalysis: computePODBasis should be 1 or 2.")
 
-    def SVDMethod(self):
+    def SVDMethod(self, matS):
         """Compression method using SVD on the snapshot matrix
 
         Returns
@@ -329,9 +329,8 @@ class PODAnalysis:
         singval : numpy.ndarray
             Singular values (only if option=2)
         """
-        S = self._snapshots
         ## - Apply SVD directly on the snapshot matrix
-        U, sigma, _ = np.linalg.svd(S, full_matrices=False)
+        U, sigma, _ = np.linalg.svd(matS, full_matrices=False)
         ## - Order eigenvalues and compute basis
         n = np.where(sigma == 0)[0]
         if n.size == 0:
@@ -340,7 +339,7 @@ class PODAnalysis:
             n = n[0]
         return U[:, :n], sigma[:n]
 
-    def snapshotMethod(self):
+    def snapshotMethod(self, matS):
         """Compression method using the snapshot method on a correlation matrix
 
         Returns
@@ -351,8 +350,7 @@ class PODAnalysis:
             Singular values (only if option=2)
         """
         ## - Compute correlation matrix
-        S = self._snapshots
-        corrMatrix = S.T @ self._CorrOperator @ S
+        corrMatrix = matS.T @ self._CorrOperator @ matS
         ## - Solve eigenproblem
         eigenvalues, eigenvectors = np.linalg.eigh(corrMatrix)
         ## - Order eigenvalues and compute basis
@@ -367,20 +365,20 @@ class PODAnalysis:
         else:
             n = n[0]
         # - Return reduced order basis and singular values
-        return np.dot(S, eigenvectors[:, :n]) / np.sqrt(eigenvalues[:n]), np.sqrt(eigenvalues[:n])
+        return np.dot(matS, eigenvectors[:, :n]) / np.sqrt(eigenvalues[:n]), np.sqrt(
+            eigenvalues[:n]
+        )
 
-    def GSmethod(self, tole, methodGS):
-        s_0_norm = np.linalg.norm(self._snapshots[:, 0])
-        Phi = self._snapshots[:, 0:1] / s_0_norm
+    def GSMethod(self, matS, tole, methodGS):
+        s_0_norm = np.linalg.norm(matS[:, 0])
+        Phi = matS[:, 0:1] / s_0_norm
         singval = np.array([s_0_norm])
-        n_snap = self._snapshots.shape[1]
+        n_snap = matS.shape[1]
         for i in range(1, n_snap):
-            Phi, singval = self.update_GStype(
-                Phi, singval, self._snapshots[:, i : i + 1], tole, methodGS
-            )
+            Phi, singval = self.updateGStype(Phi, singval, matS[:, i : i + 1], tole, methodGS)
         return Phi, singval
 
-    def update_GStype(self, Phi, singval, snapshot_new, tole, methodGS):
+    def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
         ## - Check that the added snapshot is 1D
         s_new = snapshot_new.flatten()
         s_new_norm = np.linalg.norm(snapshot_new)
