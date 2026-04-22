@@ -275,11 +275,13 @@ class PODAnalysis:
         singval_v = singval[:nbModes_v]
         return Phi_v, singval_v
 
-    def computePODBasis(self, option=1):
+    def POD(self, matS, option):
         """Method to construct a reduced order basis
 
         Arguments
         ----------
+        matS : numpy.ndarray
+            Matrix of snapshots on which the POD operator should be applied
         option : int
             Changes the outputs of the function. If option=1, only reduced order basis.
             If option=2, returns reduced order basis and singular values.
@@ -293,13 +295,13 @@ class PODAnalysis:
         """
         ## - Compression step
         if self._methodCompress == "snapshot":
-            Phi, singval = self.snapshotMethod(self._snapshots)
+            Phi, singval = self.snapshotMethod(matS)
         elif self._methodCompress == "SVD":
-            Phi, singval = self.SVDMethod(self._snapshots)
+            Phi, singval = self.SVDMethod(matS)
         elif self._methodCompress == "GS-classical":
-            Phi, singval = self.GSMethod(self._snapshots, self._crit_tolerance, "classical")
+            Phi, singval = self.GSMethod(matS, self._crit_tolerance, "classical")
         elif self._methodCompress == "GS-modified":
-            Phi, singval = self.GSMethod(self._snapshots, self._crit_tolerance, "modified")
+            Phi, singval = self.GSMethod(matS, self._crit_tolerance, "modified")
         else:
             raise ValueError(
                 f"PODAnalysis: Method '{self._methodCompress}' is not implemented yet."
@@ -319,15 +321,22 @@ class PODAnalysis:
         else:
             raise ValueError("PODAnalysis: computePODBasis should be 1 or 2.")
 
+    def computePODBasis(self, option=1):
+        return self.POD(self._snapshots, option=option)
+
     def SVDMethod(self, matS):
         """Compression method using SVD on the snapshot matrix
 
+        Arguments
+        ----------
+        matS : numpy.ndarray
+            Matrix of snapshots on which the POD operator should be applied
         Returns
         -------
         Phi : numpy.ndarray
             Reduced order basis
         singval : numpy.ndarray
-            Singular values (only if option=2)
+            Singular values
         """
         ## - Apply SVD directly on the snapshot matrix
         U, sigma, _ = np.linalg.svd(matS, full_matrices=False)
@@ -342,12 +351,17 @@ class PODAnalysis:
     def snapshotMethod(self, matS):
         """Compression method using the snapshot method on a correlation matrix
 
+        Arguments
+        ----------
+        matS : numpy.ndarray
+            Matrix of snapshots on which the POD operator should be applied
+
         Returns
         -------
         Phi : numpy.ndarray
             Reduced order basis
         singval : numpy.ndarray
-            Singular values (only if option=2)
+            Singular values
         """
         ## - Compute correlation matrix
         corrMatrix = matS.T @ self._CorrOperator @ matS
@@ -370,6 +384,24 @@ class PODAnalysis:
         )
 
     def GSMethod(self, matS, tole, methodGS):
+        """Compression method using a Gram-Schmidt process
+
+        Arguments
+        ----------
+        matS : numpy.ndarray
+            Matrix of snapshots on which the POD operator should be applied
+        tole : float
+            Tolerance used for the test when adding new snapshot
+        methodGS : str
+            Should be "classical" or "modified" = GS method applied
+
+        Returns
+        -------
+        Phi : numpy.ndarray
+            Reduced order basis
+        singval : numpy.ndarray
+            Singular values
+        """
         s_0_norm = np.linalg.norm(matS[:, 0])
         Phi = matS[:, 0:1] / s_0_norm
         singval = np.array([s_0_norm])
@@ -379,6 +411,29 @@ class PODAnalysis:
         return Phi, singval
 
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
+        """Update a basis with a new snapshot method using a Gram-Schmidt process
+
+        Arguments
+        ----------
+        Phi : numpy.ndarray
+            Basis to enrich
+        singval : numpy.ndarray
+            Singular values
+        snapshot_new : numpy.ndarray
+            Snapshot to add
+        tole : float
+            Tolerance used for the test when adding new snapshot
+        methodGS : str
+            Should be "classical" or "modified" = GS method applied
+
+        Returns
+        -------
+        Phi : numpy.ndarray
+            Reduced order basis
+        singval : numpy.ndarray
+            Singular values
+        """
+        assert methodGS in ["classical", "modified"]
         ## - Check that the added snapshot is 1D
         s_new = snapshot_new.flatten()
         s_new_norm = np.linalg.norm(snapshot_new)
