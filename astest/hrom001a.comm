@@ -104,4 +104,11 @@ POD_An3 = PODAnalysis(arr_depl, method="SVD", criterion="nbModes", nbModes=4)
 Phi = POD_An3.computePODBasis(option=1)
 test.assertEqual(Phi.shape[1], 4)
 
+POD_An4 = PODAnalysis(arr_depl, method="GS-classical", criterion="energy", tolerance=1e-5)
+Phi = POD_An4.computePODBasis(option=1)
+test.assertEqual(Phi.shape[1], 7)
+
+POD_An4 = PODAnalysis(arr_depl, method="GS-modified", criterion="energy", tolerance=1e-5)
+Phi = POD_An4.computePODBasis(option=1)
+test.assertEqual(Phi.shape[1], 7)
 FIN()

@@ -123,7 +123,9 @@ def computeProjectionErrors(Phi, snapshots):
 
 
 # CLASS DEFINITION FOR A POD ANALYSIS
-POD_VALID_METHOD = ["SVD", "snapshot"]
+POD_VALID_METHOD = ["SVD", "snapshot", "GS-classical", "GS-modified"]
+POD_METHOD_WITHOUT_CRIT = ["GS-classical", "GS-modified"]
+assert all(item in POD_VALID_METHOD for item in POD_METHOD_WITHOUT_CRIT)
 POD_CRITERION_METHOD = ["energy", "nbModes"]
 
 
@@ -167,12 +169,15 @@ class PODAnalysis:
         self.setCorrelationOperator(CorrOperator=CorrOp)
         self.setCriterionModes(criterion)
         ## - Tests
-        self.runCompatibilityTests()
+        self._correctionSnapshots()
+        self._runCompatibilityTests()
         assert self._methodCompress is not None
         assert self._criterionModes is not None
 
-    def runCompatibilityTests(self):
+    def _runCompatibilityTests(self):
         """Testing compatibility between options (for arguments)"""
+        if self._methodCompress in ["GS-classical", "GS-modified"] and self._crit_tolerance is None:
+            raise ValueError("If method is of GS type, user should provide a tolerance")
         if self._criterionModes == "energy" and self._crit_tolerance is None:
             raise ValueError("If criterion = energy, user should provide a tolerance")
         if self._criterionModes == "nbModes" and self._crit_nbModes is None:
@@ -207,6 +212,11 @@ class PODAnalysis:
             raise ValueError(
                 f"PODAnalysis: Method '{criterion}' is not valid. Choose method in {POD_CRITERION_METHOD}."
             )
+
+    def _correctionSnapshots(self):
+        tol = 1e-12
+        norms = np.linalg.norm(self._snapshots, axis=0)
+        self._snapshots = self._snapshots[:, norms > 0]
 
     def getCompressionMethod(self, method):
         """Get method for the criterion for selecting modes"""
@@ -286,12 +296,21 @@ class PODAnalysis:
             Phi, singval = self.snapshotMethod()
         elif self._methodCompress == "SVD":
             Phi, singval = self.SVDMethod()
+        elif self._methodCompress == "GS-classical":
+            Phi, singval = self.GSmethod(self._crit_tolerance, "classical")
+        elif self._methodCompress == "GS-modified":
+            Phi, singval = self.GSmethod(self._crit_tolerance, "modified")
         else:
             raise ValueError(
                 f"PODAnalysis: Method '{self._methodCompress}' is not implemented yet."
             )
-        ## - Apply truncation
-        Phi_t, singval_t = self.selectModes(Phi, singval, self._crit_tolerance, self._crit_nbModes)
+        if self._methodCompress in POD_METHOD_WITHOUT_CRIT:
+            Phi_t, singval_t = Phi, singval
+        else:
+            ## - Apply truncation
+            Phi_t, singval_t = self.selectModes(
+                Phi, singval, self._crit_tolerance, self._crit_nbModes
+            )
         ## - Return outputs
         if option == 1:
             return Phi_t
@@ -349,6 +368,38 @@ class PODAnalysis:
             n = n[0]
         # - Return reduced order basis and singular values
         return np.dot(S, eigenvectors[:, :n]) / np.sqrt(eigenvalues[:n]), np.sqrt(eigenvalues[:n])
+
+    def GSmethod(self, tole, methodGS):
+        s_0_norm = np.linalg.norm(self._snapshots[:, 0])
+        Phi = self._snapshots[:, 0:1] / s_0_norm
+        singval = np.array([s_0_norm])
+        n_snap = self._snapshots.shape[1]
+        for i in range(1, n_snap):
+            Phi, singval = self.update_GStype(
+                Phi, singval, self._snapshots[:, i : i + 1], tole, methodGS
+            )
+        return Phi, singval
+
+    def update_GStype(self, Phi, singval, snapshot_new, tole, methodGS):
+        ## - Check that the added snapshot is 1D
+        s_new = snapshot_new.flatten()
+        s_new_norm = np.linalg.norm(snapshot_new)
+        ## - GS orthogonalisation
+        n_modes = Phi.shape[1]
+        for kp in range(2):  # Kahan-Parlett process
+            if methodGS == "classical":
+                s_new_loc = s_new
+                for k in range(n_modes):
+                    s_new = s_new - np.dot(s_new_loc, Phi[:, k]) * Phi[:, k]
+            if methodGS == "modified":
+                for k in range(n_modes):
+                    s_new = s_new - np.dot(s_new, Phi[:, k]) * Phi[:, k]
+        ## - Check the relevance of the new information
+        s_new_perp_norm = np.linalg.norm(s_new)
+        if s_new_perp_norm > tole * s_new_norm:
+            Phi = np.column_stack((Phi, s_new / s_new_perp_norm))
+            singval = np.hstack([singval, s_new_perp_norm])
+        return Phi, singval
 
     def computeDecayRate(self, singval):
         """Compute a decay rate of a list of singular values
