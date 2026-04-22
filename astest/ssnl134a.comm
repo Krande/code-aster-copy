@@ -209,43 +209,6 @@ for i, pas in enumerate(pas_tab):
         # AFFICHAGE=_F(UNITE=21),
     )
 
-    ## - Previous data entry, in two stages
-    # tforc = 0.5
-    # tfin = 10.0
-    # L_INST = DEFI_LIST_REEL(
-    #     DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=tforc, NOMBRE=5), _F(JUSQU_A=tfin, PAS=0.01))
-    # )
-    # RESO0 = STAT_NON_LINE(
-    #     MODELE=MOD_TGM,
-    #     CHAM_MATER=MATER,
-    #     CARA_ELEM=CARACT,
-    #     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=FORCE, FONC_MULT=FO_MULT)),
-    #     COMPORTEMENT=_F(RELATION="MULTIFIBRE", DEFORMATION="GROT_GDEP"),
-    #     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=tforc),
-    #     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    #     CONVERGENCE=_F(RESI_GLOB_RELA=1e-6, ITER_GLOB_MAXI=50),
-    # )
-    # RESO = STAT_NON_LINE(
-    #     MODELE=MOD_TGM,
-    #     CHAM_MATER=MATER,
-    #     CARA_ELEM=CARACT,
-    #     ETAT_INIT=_F(EVOL_NOLI=RESO0),
-    #     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=FORCE, TYPE_CHARGE="FIXE_PILO")),
-    #     COMPORTEMENT=_F(RELATION="MULTIFIBRE", DEFORMATION="GROT_GDEP"),
-    #     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=tfin),
-    #     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    #     PILOTAGE=_F(
-    #         TYPE="LONG_ARC",
-    #         SELECTION="ANGL_INCR_DEPL",
-    #         COEF_MULT=0.01,
-    #         GROUP_NO="OMEGA",
-    #         NOM_CMP=("DX", "DY"),
-    #         ETA_PILO_MAX=etaMax,
-    #         PROJ_BORNES="OUI",
-    #     ),
-    #     CONVERGENCE=_F(RESI_GLOB_RELA=1e-5, ITER_GLOB_MAXI=10),
-    # )
-
     ## ------------------------------------
     # Preparing functions for testing
     ## ------------------------------------
@@ -299,27 +262,6 @@ for i, pas in enumerate(pas_tab):
         PROL_DROITE="CONSTANT",
         PROL_GAUCHE="CONSTANT",
     )
-
-    # # Print of curves
-
-    # IMPR_FONCTION(
-    #     FORMAT="XMGRACE",
-    #     COURBE=(
-    #         _F(FONC_X=DEPX, FONC_Y=ETA_PILO, LEGENDE="DX", MARQUEUR=0),
-    #         _F(FONC_X=MDEPY, FONC_Y=ETA_PILO, LEGENDE="-DY", MARQUEUR=0),
-    #         _F(LIST_PARA=DEPX_REF, LIST_RESU=ETA_REF, LEGENDE="DX (ref.)"),
-    #         _F(LIST_PARA=DEPY_REF, LIST_RESU=ETA_REF, LEGENDE="-DY (ref.)"),
-    #     ),
-    #     TITRE="Reponse force-deplacement",
-    #     BORNE_X=(0.0, 105.0),
-    #     BORNE_Y=(-1.0, 2.0),
-    #     ECHELLE_X="LIN",
-    #     ECHELLE_Y="LIN",
-    #     GRILLE_X=10,
-    #     GRILLE_Y=0.5,
-    #     LEGENDE_X="Deplacement (cm)",
-    #     LEGENDE_Y="Force (N)",
-    # )
 
     ## ------------------------------------
     # Tests
