@@ -127,6 +127,8 @@ POD_VALID_METHOD = ["SVD", "snapshot", "GS-classical", "GS-modified"]
 POD_METHOD_WITHOUT_CRIT = ["GS-classical", "GS-modified"]
 assert all(item in POD_VALID_METHOD for item in POD_METHOD_WITHOUT_CRIT)
 POD_CRITERION_METHOD = ["energy", "nbModes"]
+INCR_POD_VALID_METHOD = ["HPOD"]
+GS_METHOD = ["classical", "modified"]
 
 
 class PODAnalysis:
@@ -214,6 +216,7 @@ class PODAnalysis:
             )
 
     def _correctionSnapshots(self):
+        """Correct the snapshots by removing null values"""
         tol = 1e-12
         norms = np.linalg.norm(self._snapshots, axis=0)
         self._snapshots = self._snapshots[:, norms > 0]
@@ -276,7 +279,7 @@ class PODAnalysis:
         return Phi_v, singval_v
 
     def POD(self, matS, option):
-        """Method to construct a reduced order basis
+        """Method to construct a reduced order basis by POD
 
         Arguments
         ----------
@@ -322,7 +325,40 @@ class PODAnalysis:
             raise ValueError("PODAnalysis: computePODBasis should be 1 or 2.")
 
     def computePODBasis(self, option=1):
+        """Method to construct a reduced order basis by POD
+        using the stored snapshots
+
+        Arguments
+        ----------
+        option : int
+            Changes the outputs of the function. If option=1, only reduced order basis.
+            If option=2, returns reduced order basis and singular values.
+
+        """
         return self.POD(self._snapshots, option=option)
+
+    def computePODBasisIncremental(self, Phi, method="HPOD"):
+        """Method to enrich a reduced order basis with the stored snapshots
+
+        Arguments
+        ----------
+        Phi : numpy.ndarray
+            Reduced order basis which has been previously computed
+        method : str
+            Name of the incremental approach to use
+        """
+        assert method in INCR_POD_VALID_METHOD
+        if method == "HPOD":
+            matS = self._snapshots
+            projS = np.zeros(np.shape(matS))
+            for i in range(matS.shape[1]):
+                projS[:, i] = self.computeGSprojection(Phi, matS[:, i], "modified")
+            Phi_new = self.POD(projS, option=1)
+            return np.column_stack((Phi, Phi_new))
+        else:
+            raise ValueError(
+                f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_VALID_METHOD}."
+            )
 
     def SVDMethod(self, matS):
         """Compression method using SVD on the snapshot matrix
@@ -410,6 +446,20 @@ class PODAnalysis:
             Phi, singval = self.updateGStype(Phi, singval, matS[:, i : i + 1], tole, methodGS)
         return Phi, singval
 
+    def computeGSprojection(self, Phi, s_new, methodGS):
+        assert methodGS in GS_METHOD
+        ## - GS orthogonalisation
+        n_modes = Phi.shape[1]
+        for kp in range(2):  # Kahan-Parlett process
+            if methodGS == "classical":
+                s_new_loc = s_new
+                for k in range(n_modes):
+                    s_new = s_new - np.dot(s_new_loc, Phi[:, k]) * Phi[:, k]
+            if methodGS == "modified":
+                for k in range(n_modes):
+                    s_new = s_new - np.dot(s_new, Phi[:, k]) * Phi[:, k]
+        return s_new
+
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
         """Update a basis with a new snapshot method using a Gram-Schmidt process
 
@@ -433,20 +483,22 @@ class PODAnalysis:
         singval : numpy.ndarray
             Singular values
         """
-        assert methodGS in ["classical", "modified"]
+        assert methodGS in GS_METHOD
         ## - Check that the added snapshot is 1D
         s_new = snapshot_new.flatten()
         s_new_norm = np.linalg.norm(snapshot_new)
         ## - GS orthogonalisation
-        n_modes = Phi.shape[1]
-        for kp in range(2):  # Kahan-Parlett process
-            if methodGS == "classical":
-                s_new_loc = s_new
-                for k in range(n_modes):
-                    s_new = s_new - np.dot(s_new_loc, Phi[:, k]) * Phi[:, k]
-            if methodGS == "modified":
-                for k in range(n_modes):
-                    s_new = s_new - np.dot(s_new, Phi[:, k]) * Phi[:, k]
+        s_new = self.computeGSprojection(Phi, s_new, methodGS)
+        # ## - GS orthogonalisation
+        # n_modes = Phi.shape[1]
+        # for kp in range(2):  # Kahan-Parlett process
+        #     if methodGS == "classical":
+        #         s_new_loc = s_new
+        #         for k in range(n_modes):
+        #             s_new = s_new - np.dot(s_new_loc, Phi[:, k]) * Phi[:, k]
+        #     if methodGS == "modified":
+        #         for k in range(n_modes):
+        #             s_new = s_new - np.dot(s_new, Phi[:, k]) * Phi[:, k]
         ## - Check the relevance of the new information
         s_new_perp_norm = np.linalg.norm(s_new)
         if s_new_perp_norm > tole * s_new_norm:
