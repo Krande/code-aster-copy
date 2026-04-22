@@ -77,7 +77,7 @@ arr_depl_B = arr_depl[:, n_cut:]
 
 # - Compute the ROB using the snapshot method
 POD_An_A = PODAnalysis(arr_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
-Phi_A = POD_An_A.computePODBasis(option=1)
+Phi_A, singval_A = POD_An_A.computePODBasis(option=2)
 
 test.assertEqual(Phi_A.shape[0], nDOF)
 test.assertEqual(Phi_A.shape[1], 2)
@@ -88,4 +88,7 @@ Phi_B = POD_An_B.computePODBasisIncremental(Phi_A, method="HPOD")
 test.assertEqual(Phi_B.shape[0], nDOF)
 test.assertEqual(Phi_B.shape[1], 5)
 
+Phi_B2 = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HAPOD")
+test.assertEqual(Phi_B2.shape[0], nDOF)
+test.assertEqual(Phi_B2.shape[1], 2)
 FIN()

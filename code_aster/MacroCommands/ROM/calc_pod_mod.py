@@ -127,7 +127,7 @@ POD_VALID_METHOD = ["SVD", "snapshot", "GS-classical", "GS-modified"]
 POD_METHOD_WITHOUT_CRIT = ["GS-classical", "GS-modified"]
 assert all(item in POD_VALID_METHOD for item in POD_METHOD_WITHOUT_CRIT)
 POD_CRITERION_METHOD = ["energy", "nbModes"]
-INCR_POD_VALID_METHOD = ["HPOD"]
+INCR_POD_VALID_METHOD = ["HPOD", "HAPOD"]
 GS_METHOD = ["classical", "modified"]
 
 
@@ -337,7 +337,7 @@ class PODAnalysis:
         """
         return self.POD(self._snapshots, option=option)
 
-    def computePODBasisIncremental(self, Phi, method="HPOD"):
+    def computePODBasisIncremental(self, Phi, singval=None, method="HPOD"):
         """Method to enrich a reduced order basis with the stored snapshots
 
         Arguments
@@ -355,6 +355,12 @@ class PODAnalysis:
                 projS[:, i] = self.computeGSprojection(Phi, matS[:, i], "modified")
             Phi_new = self.POD(projS, option=1)
             return np.column_stack((Phi, Phi_new))
+        elif method == "HAPOD":
+            assert singval is not None
+            mPhi = singval * Phi
+            assert np.shape(Phi) == np.shape(mPhi)
+            mS = np.column_stack((mPhi, self._snapshots))
+            return self.POD(mS, option=1)
         else:
             raise ValueError(
                 f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_VALID_METHOD}."
@@ -489,17 +495,6 @@ class PODAnalysis:
         s_new_norm = np.linalg.norm(snapshot_new)
         ## - GS orthogonalisation
         s_new = self.computeGSprojection(Phi, s_new, methodGS)
-        # ## - GS orthogonalisation
-        # n_modes = Phi.shape[1]
-        # for kp in range(2):  # Kahan-Parlett process
-        #     if methodGS == "classical":
-        #         s_new_loc = s_new
-        #         for k in range(n_modes):
-        #             s_new = s_new - np.dot(s_new_loc, Phi[:, k]) * Phi[:, k]
-        #     if methodGS == "modified":
-        #         for k in range(n_modes):
-        #             s_new = s_new - np.dot(s_new, Phi[:, k]) * Phi[:, k]
-        ## - Check the relevance of the new information
         s_new_perp_norm = np.linalg.norm(s_new)
         if s_new_perp_norm > tole * s_new_norm:
             Phi = np.column_stack((Phi, s_new / s_new_perp_norm))
