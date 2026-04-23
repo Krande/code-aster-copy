@@ -108,11 +108,7 @@ class ComputeHydr(BaseHook):
         try:
             hydr_prev = current.getState(-1).auxiliary["HYDR_ELGA"]
             hydr_curr = post.computeHydration(
-                current.primal_prev,
-                current.primal_curr,
-                current.time_prev,
-                current.time_curr,
-                hydr_prev,
+                current.U_t, current.primal_curr, current.time_prev, current.time_curr, hydr_prev
             )
         except IndexError:
             hydr_curr = current.createFieldOnCells(nl_oper.problem, "ELGA", "HYDR_R")

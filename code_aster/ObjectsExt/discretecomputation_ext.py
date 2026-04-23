@@ -414,7 +414,7 @@ class ExtendedDiscreteComputation:
             else:
                 tempVar = tmp_internVar
             _, codret, internVar, stress, r_stress = self.getInternalMechanicalForces(
-                phys_state.primal_prev,
+                phys_state.U_t,
                 phys_state.primal_step,
                 phys_state.stress,
                 phys_state.internVar,
@@ -426,7 +426,7 @@ class ExtendedDiscreteComputation:
             )
         else:
             codret, stress, r_stress = self.getInternalThermalForces(
-                phys_state.primal_prev, phys_state.primal_step, phys_state.externVar
+                phys_state.U_t, phys_state.primal_step, phys_state.externVar
             )
             internVar = None
 
@@ -496,10 +496,7 @@ class ExtendedDiscreteComputation:
             )
 
             resi_ext -= self.getMechanicalCouplingForces(
-                phys_state.primal_prev,
-                phys_state.primal_step,
-                phys_state.time_prev,
-                phys_state.time_step,
+                phys_state.U_t, phys_state.primal_step, phys_state.time_prev, phys_state.time_step
             )
         else:
             raise RuntimeError()
@@ -522,15 +519,15 @@ class ExtendedDiscreteComputation:
         if contact_manager:
             if contact_manager.defi.isParallel():
                 cMesh = contact_manager.defi.getConnectionModel().getMesh()
-                primal_prev = phys_state.primal_prev.transfertToConnectionMesh(cMesh)
+                U_t = phys_state.U_t.transfertToConnectionMesh(cMesh)
                 primal_step = phys_state.primal_step.transfertToConnectionMesh(cMesh)
             else:
-                primal_prev = phys_state.primal_prev
+                U_t = phys_state.U_t
                 primal_step = phys_state.primal_step
             # Compute contact forces
             contact_forces = self.getContactForces(
                 contact_manager.getPairingCoordinates(),
-                primal_prev,
+                U_t,
                 primal_step,
                 phys_state.time_prev,
                 phys_state.time_step,
@@ -597,7 +594,7 @@ class ExtendedDiscreteComputation:
         elif matrix_type == "PRED_TANGENTE":
             if phys_pb.isMechanical():
                 _, codret, matr_elem_rigi = self.getPredictionTangentStiffnessMatrix(
-                    phys_state.primal_prev,
+                    phys_state.U_t,
                     phys_state.primal_step,
                     phys_state.stress,
                     phys_state.internVar,
@@ -608,10 +605,7 @@ class ExtendedDiscreteComputation:
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal_prev,
-                    phys_state.primal_step,
-                    phys_state.externVar,
-                    with_dual=False,
+                    phys_state.U_t, phys_state.primal_step, phys_state.externVar, with_dual=False
                 )
                 codret = 0
         elif matrix_type == "TANGENTE":
@@ -621,7 +615,7 @@ class ExtendedDiscreteComputation:
                 else:
                     tempVar = tmp_internVar
                 _, codret, matr_elem_rigi = self.getTangentStiffnessMatrix(
-                    phys_state.primal_prev,
+                    phys_state.U_t,
                     phys_state.primal_step,
                     phys_state.stress,
                     phys_state.internVar,
@@ -633,10 +627,7 @@ class ExtendedDiscreteComputation:
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal_prev,
-                    phys_state.primal_step,
-                    phys_state.externVar,
-                    with_dual=False,
+                    phys_state.U_t, phys_state.primal_step, phys_state.externVar, with_dual=False
                 )
                 codret = 0
         else:
@@ -675,14 +666,14 @@ class ExtendedDiscreteComputation:
         if contact_manager:
             if contact_manager.defi.isParallel():
                 cMesh = contact_manager.defi.getConnectionModel().getMesh()
-                primal_prev = phys_state.primal_prev.transfertToConnectionMesh(cMesh)
+                U_t = phys_state.U_t.transfertToConnectionMesh(cMesh)
                 primal_step = phys_state.primal_step.transfertToConnectionMesh(cMesh)
             else:
-                primal_prev = phys_state.primal_prev
+                U_t = phys_state.U_t
                 primal_step = phys_state.primal_step
             matr_elem_cont = self.getContactMatrix(
                 contact_manager.getPairingCoordinates(),
-                primal_prev,
+                U_t,
                 primal_step,
                 phys_state.time_prev,
                 phys_state.time_step,
@@ -728,10 +719,7 @@ class ExtendedDiscreteComputation:
             matr_elem_ext.build()
         elif phys_pb.isMechanical():
             matr_elem_ext = self.getMechanicalCouplingMatrix(
-                phys_state.primal_prev,
-                phys_state.primal_step,
-                phys_state.time_prev,
-                phys_state.time_step,
+                phys_state.U_t, phys_state.primal_step, phys_state.time_prev, phys_state.time_step
             )
 
         return matr_elem_ext

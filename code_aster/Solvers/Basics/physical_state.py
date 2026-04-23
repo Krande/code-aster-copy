@@ -119,12 +119,12 @@ class PhysicalState:
             return self._time_step
 
         @property
-        def primal_prev(self):
+        def U_t(self):
             """FieldOnNodesReal: Primal field at previous time."""
             return self._prim_prev[self._primal]
 
-        @primal_prev.setter
-        def primal_prev(self, field):
+        @U_t.setter
+        def U_t(self, field):
             """Set previous primal field.
 
             Arguments:
@@ -279,8 +279,8 @@ class PhysicalState:
         def debugPrint(self, label=""):
             """Print a representation of the object."""
             print(f"*** {label}Physical State at", self.time_curr, flush=True)
-            values = self.primal_prev.getValues()
-            print("* primal_prev ", sum(values) / len(values), flush=True)
+            values = self.U_t.getValues()
+            print("* U_t ", sum(values) / len(values), flush=True)
             if self.primal_step:
                 values = self.primal_step.getValues()
                 print("* primal_step", sum(values) / len(values), flush=True)
@@ -446,18 +446,18 @@ class PhysicalState:
         self.current._time_step = value
 
     @property
-    def primal_prev(self):
+    def U_t(self):
         """FieldOnNodesReal: Primal field at previous time."""
-        return self.current.primal_prev
+        return self.current.U_t
 
-    @primal_prev.setter
-    def primal_prev(self, field):
+    @U_t.setter
+    def U_t(self, field):
         """Set previous primal field.
 
         Arguments:
            field (FieldOnNodesReal): primal
         """
-        self.current.primal_prev = field
+        self.current.U_t = field
 
     @property
     def primal_curr(self):
