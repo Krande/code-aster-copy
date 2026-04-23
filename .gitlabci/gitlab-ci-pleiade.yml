@@ -260,7 +260,7 @@ docker:
     - echo "${DOCKER_NEXUS_PASSWD}" | docker login ${DOCKER_NEXUS_URL} -u "${DOCKER_NEXUS_USER}" --password-stdin
     - imgtag="main-${variant}"
     - test "${VERSION_DISTANCE}" = "0" && imgtag="${VERSION_TAG}-${variant}"
-    - dest="${DOCKER_NEXUS_URL}/codeaster:${imgtag}-${variant}"
+    - dest="${DOCKER_NEXUS_URL}/codeaster:${imgtag}"
     - docker build
         --build-arg baseimage=${baseimage}
         --build-arg variant=${variant}
