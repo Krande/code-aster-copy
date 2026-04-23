@@ -54,6 +54,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         instance._converg = ConvergenceManager.builder(context)
         instance._line_search = BaseLineSearch.factory(context)
         instance.add_observer(context.stepper)
+        instance.add_observer(context.state)
         return instance
 
     def __init__(self):
@@ -125,6 +126,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
             # Update
             self.update(deltaU, resi_fields, callback)
+            self.notifyObservers(matrix_type)
 
             if self.current_incr > 0:
                 self.logManager.printConvTableRow(
@@ -243,7 +245,6 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
         # evaluate geometric - convergence
         self._converg.evalGeometricResidual(deltaU)
-        self.notifyObservers(matrix_type)
 
         return deltaU, jacobian, resi_fields
 

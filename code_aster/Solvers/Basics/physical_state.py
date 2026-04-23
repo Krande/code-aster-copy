@@ -17,12 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
-from ...Utilities import no_new_attributes, profile
-from .bases import ProblemType as PBT
 from abc import ABC, abstractmethod
 from functools import wraps
 from typing import Any
+
+from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
+from ...Utilities import no_new_attributes, profile
+from .bases import Observer
+from .bases import ProblemType as PBT
 
 
 def _primalgetter(deriv):
@@ -52,7 +54,7 @@ def _primalsetter(deriv):
     return decorator
 
 
-class PhysicalState:
+class PhysicalState(Observer):
     """This object represents a Physical State of the model.
 
     Actually, it stores a stack of physical states and works as an *adapter*
@@ -318,7 +320,7 @@ class PhysicalState:
         _primal_names = ("TEMP",)
         _dual = "FLUX_ELGA"
 
-    _current = _stack = _size = _stash = None
+    _current = _stack = _size = _stash = _observ = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, pb_type, size=1):
@@ -327,6 +329,7 @@ class PhysicalState:
         self._stack = []
         self._size = size
         self._stash = None
+        self._observ = None
 
     def copy(self, other):
         """Copy the content of an object into the current one.
@@ -382,6 +385,16 @@ class PhysicalState:
     def pb_type(self):
         """ProblemType: The type of the physical problem"""
         return self._current.pb_type
+
+    def setObservation(self, observation):
+        """Register the Observation object."""
+        self._observ = observation
+
+    def notify(self, event):
+        """Delegate to Observation object."""
+        if not self._observ:
+            return
+        self._observ.notify(event)
 
     @property
     def current(self):

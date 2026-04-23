@@ -41,7 +41,7 @@ from ...Utilities import (
     no_new_attributes,
     profile,
 )
-from ..Basics import Context, ContextMixin, PhysicalState
+from ..Basics import Context, ContextMixin, Observation, PhysicalState
 from ..Basics import ProblemType as PBT
 from ..Operators import BaseOperators
 from ..Post import Annealing, ComputeDisplFromHHO, ComputeHydr, ComputeTempFromHHO
@@ -117,6 +117,7 @@ class NonLinearOperator(ContextMixin):
         if _get("SOLVEUR"):
             context.linear_solver = LinearSolver.factory("MECA_NON_LINE", mcf=_get("SOLVEUR"))
         context.state = PhysicalState(context.problem_type, size=1)
+        context.state.setObservation(Observation.builder(context))
         context.check()
         return NonLinearOperator.builder(context)
 
