@@ -150,7 +150,7 @@ class ComputeStress(BaseHook):
             )
             current.set("STRX_ELGA", strx_elga)
 
-        sief_elga = self._post.computeStress(
+        sief_el.stress = self._post.computeStress(
             current.primal_curr, current.time_curr, current.externVar, strx_elga
         )
         current.set("SIEF_ELGA", sief_elga)

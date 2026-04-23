@@ -173,7 +173,7 @@ class ThermalOperators(BaseOperators):
     def _getResidualStat(self, scaling=1.0):
         """Computes the residual for the stationary case."""
         residual, internVar, stress = super().getResidual(scaling=scaling)
-        self._tmp_stress = stress
+        self._tmp_stress = stress  # should be named Phi
         self._tmp_internVar = internVar
         if self._stat_init:
             self._resi_temp = residual

@@ -458,7 +458,7 @@ class ConvergenceManager(ContextMixin):
                 self.state.externVar,
                 self.state.getState(-1).externVar,
                 self.state.internVar,
-                self.state.getState(-1).stress,
+                self.state.getState(-1).dual,
             ).getValues()
 
         for [_, cmp], ieq in cmp2dof.items():
@@ -574,11 +574,9 @@ class ConvergenceManager(ContextMixin):
         # NOTE: By default resi_glob_maxi does not have a reference
 
         if not resi_maxi.isDefined():
-
             resiMaxiRefeIsUndefined = True
 
             if self.isInitialStep():
-
                 # NOTE: the initial external force
                 # could not be zero if RESI_GLOB_MAXI is undefined
                 message = (

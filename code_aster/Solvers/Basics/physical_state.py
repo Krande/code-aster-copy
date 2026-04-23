@@ -65,8 +65,9 @@ class PhysicalState:
 
         For the primal fields, one stores the field at the beginning of the step
         and its increment. They are accessed with U and eventually dU, d2U.
-        The dual field is accessed with D property.
-        The other fields are accessed by name.
+        The dual field is accessed with S (stress in mechanics) or
+        Phi (heat flux in thermics) properties (value at t+dt).
+        The other fields are accessed by name (value at t+dt).
         """
 
         _time_prev = _time_step = None
@@ -181,9 +182,20 @@ class PhysicalState:
             self._data[key] = field
 
         @property
-        def stress(self):
-            """FieldOnCellsReal: Stress field."""
+        def dual(self):
+            """FieldOnCellsReal: Dual field."""
             return self.get(self._dual)
+
+        @dual.setter
+        def dual(self, field: FieldOnCellsReal):
+            """Set Stress field.
+
+            Arguments:
+                field (FieldOnCellsReal): Stress field
+            """
+            if field:
+                assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
+            self.set(self._dual, field)
 
         @property
         def internVar(self):
@@ -476,20 +488,20 @@ class PhysicalState:
         self.current.primal_step = field
 
     @property
-    def stress(self):
-        """FieldOnCellsReal: Stress field."""
-        return self.current.stress
+    def dual(self):
+        """FieldOnCellsReal: Dual field."""
+        return self.current.dual
 
-    @stress.setter
-    def stress(self, field):
-        """Set Stress field.
+    @dual.setter
+    def dual(self, field: FieldOnCellsReal):
+        """Set the dual field.
 
         Arguments:
-            field (FieldOnCellsReal): Stress field
+            field (FieldOnCellsReal): Dual field
         """
-        if field:
-            assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
-        self.current.set(self.current._dual, field)
+        self.current.dual = field
+
+    stress = phi = dual
 
     @property
     def internVar(self):
@@ -606,8 +618,9 @@ class PhysicalState:
         return ret
 
     # FIXME setPrimalValue?
+    @staticmethod
     @profile
-    def createPrimal(self, phys_pb, value=0.0):
+    def createPrimal(phys_pb, value=0.0):
         """Create primal field with a given value
 
         Arguments:
@@ -621,8 +634,9 @@ class PhysicalState:
         field.setValues(value)
         return field
 
+    @staticmethod
     @profile
-    def createFieldOnCells(self, phys_pb, localization, quantity, value=0.0):
+    def createFieldOnCells(phys_pb, localization, quantity, value=0.0):
         """Create a field with a given value
 
         Arguments:
@@ -645,9 +659,10 @@ class PhysicalState:
         field.setValues(value)
         return field
 
+    @staticmethod
     @profile
-    def createStress(self, phys_pb, value):
-        """Create stress field with a given value
+    def createDual(phys_pb, value):
+        """Create the dual field with a given value
 
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
@@ -656,16 +671,16 @@ class PhysicalState:
         Returns:
             FieldOnCells: Stress field with a given value (SIEF_ELGA/FLUX_ELGA)
         """
-
         if phys_pb.isMechanical():
             type_field = "SIEF_R"
         else:
             type_field = "FLUX_R"
 
-        return self.createFieldOnCells(phys_pb, "ELGA", type_field, value)
+        return PhysicalState.createFieldOnCells(phys_pb, "ELGA", type_field, value)
 
+    @staticmethod
     @profile
-    def createInternalVariablesNext(self, phys_pb, value):
+    def createInternalVariablesNext(phys_pb, value):
         """Create internal state variables field with a given value
 
         Arguments:
@@ -675,10 +690,11 @@ class PhysicalState:
         Returns:
             FieldOnCells: internal state variables field with a given value (VARI_ELGA)
         """
-        return self.createFieldOnCells(phys_pb, "ELGA", "VARI_R", value)
+        return PhysicalState.createFieldOnCells(phys_pb, "ELGA", "VARI_R", value)
 
+    @staticmethod
     @profile
-    def createTimeField(self, phys_pb, value):
+    def createTimeField(phys_pb, value):
         """Create time field with a given value
 
         Arguments:
@@ -709,7 +725,7 @@ class PhysicalState:
             current.fields_step[field] = self.createPrimal(phys_pb, 0.0)
 
         if phys_pb.getBehaviourProperty():
-            self.stress = self.createStress(phys_pb, 0.0)
+            self.dual = self.createDual(phys_pb, 0.0)
             if phys_pb.isMechanical():
                 self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
                 self.externVar = None
