@@ -247,7 +247,7 @@ class PhysicalState:
             for key in set(self._data.keys()).union(other._data.keys()):
                 self._data[key], other._data[key] = other._data.het(key), self._data.get(key)
 
-        def as_dict(self):
+        def asdict(self):
             """Returns the fields as a dict.
 
             Returns:
@@ -571,7 +571,7 @@ class PhysicalState:
         """Return the delta for the current state between it has been stashed.
 
         Returns:
-            dict: Delta between states as returned by py:method:`as_dict`.
+            dict: Delta between states as returned by py:method:`asdict`.
         """
         return self._states_difference(self._stash, self.current)
 
@@ -587,13 +587,13 @@ class PhysicalState:
             index2 (int): Index of the second state.
 
         Returns:
-            dict: Delta between states as returned by py:method:`as_dict`.
+            dict: Delta between states as returned by py:method:`asdict`.
         """
         return self._states_difference(self.getState(index1), self.getState(index2))
 
     @staticmethod
     def _states_difference(one, two):
-        """Delta between states as returned by py:method:`as_dict`."""
+        """Delta between states as returned by py:method:`asdict`."""
         ret = {}
 
         for field in one.getFields():
@@ -714,13 +714,13 @@ class PhysicalState:
                 self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
                 self.externVar = None
 
-    def as_dict(self):
+    def asdict(self):
         """Returns the fields as a dict.
 
         Returns:
             dict: Dict of fields.
         """
-        return self.current.as_dict()
+        return self.current.asdict()
 
     def debugPrint(self, label="", recursive=False):
         """Print a representation of the object."""
