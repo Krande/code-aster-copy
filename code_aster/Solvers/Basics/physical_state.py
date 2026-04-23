@@ -20,6 +20,36 @@
 from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
 from ...Utilities import no_new_attributes, profile
 from .bases import ProblemType as PBT
+from abc import ABC, abstractmethod
+from functools import wraps
+from typing import Any
+
+
+def _primalgetter(deriv):
+    def decorator(dummy):
+        @wraps(dummy)
+        def wrapper(state):
+            return (
+                state._prim_prev[state._primal_names[deriv]]
+                + state._prim_step[state._primal_names[deriv]]
+            )
+
+        return wrapper
+
+    return decorator
+
+
+def _primalsetter(deriv):
+    def decorator(dummy):
+        @wraps(dummy)
+        def wrapper(state, value: Any):
+            state._prim_step[state._primal_names[deriv]] = (
+                value - state._prim_prev[state._primal_names[deriv]]
+            )
+
+        return wrapper
+
+    return decorator
 
 
 class PhysicalState:
@@ -30,62 +60,43 @@ class PhysicalState:
     and so is writable. All other states on the stack are read-only.
     """
 
-    class State:
-        """Represents an elementary physical state (private)."""
+    class State(ABC):
+        """Represents an elementary physical state (private).
 
-        class CustomAttribute:
-            """A descriptor class to manage the field U in
-            static, and the fields U, dU and d2U in dynamic.
-            """
-
-            def __init__(self, field_name, attr_name):
-                self._field_name = field_name
-                self._attr_name = attr_name
-
-            def __get__(self, obj, objtype=None):
-                if self._attr_name not in obj._primal_names:
-                    name, attr = objtype.__name__, self._attr_name
-                    err_msg = "'{}' object has no attribute '{}'"
-                    raise AttributeError(err_msg.format(name, attr))
-
-                return obj._prim_prev[self._field_name] + obj._prim_step[self._field_name]
-
-            def __set__(self, obj, value):
-                if self._attr_name not in obj._primal_names:
-                    attr, name = self._attr_name, type(obj).__name__
-                    err_msg = "Can't add attribute {!r} to {}"
-                    raise AttributeError(err_msg.format(attr, name))
-
-                obj._prim_step[self._field_name] = value - obj._prim_prev[self._field_name]
+        For the primal fields, one stores the field at the beginning of the step
+        and its increment. They are accessed with U and eventually dU, d2U.
+        The dual field is accessed with D property.
+        The other fields are accessed by name.
+        """
 
         _time_prev = _time_step = None
         _prim_prev = _prim_step = None
         _primal = _primal_names = _dual = None
-        _pb_type = None
         _data = None
-        __setattr__ = no_new_attributes(object.__setattr__)
 
-        def __init__(self, pb_type):
-            if pb_type in [PBT.Unset]:
-                raise NotImplementedError("Not supported !")
-            self._pb_type = pb_type
+        @classmethod
+        def factory(cls, pb_type: PBT):
+            """Create a new State object of ProblemType."""
+            for kls in cls.__subclasses__():
+                if kls.pb_type == pb_type:
+                    return kls()
+            raise TypeError(f"no candidate for cls={cls}, scheme: {pb_type}")
+
+        def __init__(self):
             self._data = {}
-            self._primal = "DEPL"
-            self._dual = "SIEF_ELGA"
-            if pb_type == PBT.MecaDyna:
-                names = {"U": self._primal, "dU": "VITE", "d2U": "ACCE"}
-            elif pb_type == PBT.MecaStat:
-                names = {"U": self._primal}
-            elif pb_type == PBT.Thermal:
-                self._primal = "TEMP"
-                names = {"U": self._primal}
-                self._dual = "FLUX_ELGA"
-            self._primal_names = names.keys()
-            self._prim_prev = {f: None for f in names.values()}
-            self._prim_step = {f: None for f in names.values()}
-            for field, name in names.items():
-                setattr(type(self), field, PhysicalState.State.CustomAttribute(name, field))
+            self._primal = self._primal_names[0]
+            self._prim_prev = {f: None for f in self._primal_names}
+            self._prim_step = {f: None for f in self._primal_names}
             self._time_prev = self._time_step = None
+
+        @property
+        def U(self):
+            """U: Attribute that holds the primal unknown."""
+
+        @U.setter
+        @abstractmethod
+        def U(self, value):
+            pass
 
         def getFields(self):
             """Return the list of available fields."""
@@ -124,7 +135,7 @@ class PhysicalState:
         @property
         def primal_curr(self):
             """FieldOnNodesReal: Primal field at current time."""
-            return self._prim_prev[self._primal] + self._prim_step[self._primal]
+            return self.U
 
         @primal_curr.setter
         def primal_curr(self, field):
@@ -134,7 +145,7 @@ class PhysicalState:
                 field (FieldOnNodesReal): primal
             """
             # assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
-            self._prim_step[self._primal] = field - self._prim_prev[self._primal]
+            self.U = field
 
         @property
         def primal_step(self):
@@ -143,7 +154,7 @@ class PhysicalState:
 
         @primal_step.setter
         def primal_step(self, field):
-            """Set the primal step field.
+            """Set the primal increment field.
 
             Arguments:
                 field (FieldOnNodesReal): primal
@@ -193,7 +204,6 @@ class PhysicalState:
             Return:
                 PhysicalState.State: Current object.
             """
-            assert self._pb_type == other._pb_type
             self._time_prev = other.time_prev
             self._time_step = other.time_step
             self._primal = other._primal
@@ -213,7 +223,7 @@ class PhysicalState:
             Returns:
                 PhysicalState.State: the new physical state.
             """
-            return PhysicalState.State(self._pb_type).copy(self)
+            return PhysicalState.State.factory(self.pb_type).copy(self)
 
         def swap(self, other):
             """Swap the content of an object with the current one.
@@ -223,7 +233,6 @@ class PhysicalState:
             """
             self._time_prev, other._time_prev = other._time_prev, self._time_prev
             self._time_step, other._time_step = other._time_step, self._time_step
-            self._pb_type, other._pb_type = other._pb_type, self._pb_type
             self._primal, other._primal = other._primal, self._primal
             self._primal_names, other._primal_names = other._primal_names, self._primal_names
             for field in self.getFields():
@@ -268,14 +277,56 @@ class PhysicalState:
                     values = field.getValues()
                     print(f"* {key:10s} ", sum(values) / len(values), flush=True)
 
-    _current = _stack = _size = _stash = _pb_type = None
+    class StateMecaStat(State):
+        pb_type = PBT.MecaStat
+        _primal_names = ("DEPL",)
+        _dual = "SIEF_ELGA"
+
+        @property
+        @_primalgetter(0)
+        def U(self):
+            """U: Attribute that holds the displacement field."""
+
+        @U.setter
+        @_primalsetter(0)
+        def U(self, value):
+            pass
+
+    class StateMecaDyna(StateMecaStat):
+        pb_type = PBT.MecaDyna
+        _primal_names = ("DEPL", "VITE", "ACCE")
+
+        @property
+        @_primalgetter(1)
+        def dU(self):
+            """dU: Attribute that holds the derivative of displacement field."""
+
+        @dU.setter
+        @_primalsetter(1)
+        def dU(self, value):
+            pass
+
+        @property
+        @_primalgetter(2)
+        def d2U(self):
+            """U: Attribute that holds the second derivative of displacement field."""
+
+        @d2U.setter
+        @_primalsetter(2)
+        def d2U(self, value):
+            pass
+
+    class StateThermal(StateMecaStat):
+        pb_type = PBT.Thermal
+        _primal_names = ("TEMP",)
+        _dual = "FLUX_ELGA"
+
+    _current = _stack = _size = _stash = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, pb_type, size=1):
         assert size > 0, f"invalid value ({size}) for 'size'"
-        super().__init__()
-        self._pb_type = pb_type
-        self._current = PhysicalState.State(pb_type)
+        self._current = PhysicalState.State.factory(pb_type)
         self._stack = []
         self._size = size
         self._stash = None
@@ -289,15 +340,11 @@ class PhysicalState:
         Return:
             PhysicalState: Current object.
         """
-        self._pb_type = other._pb_type
-
         if other._stash:
             self._stash = other._stash.duplicate()
-
         self._current = other.current.duplicate()
         self._stack = [s.duplicate() for s in other._stack]
         self._size = other._size
-
         return self
 
     def duplicate(self):
@@ -306,7 +353,7 @@ class PhysicalState:
         Returns:
             PhysicalState: the new physical state.
         """
-        return PhysicalState(self._pb_type).copy(self)
+        return PhysicalState(self.pb_type).copy(self)
 
     def swap(self, other):
         """Swap the content of the physical state.
@@ -314,7 +361,6 @@ class PhysicalState:
         Arguments:
             other (PhysicalState): the physical state to be swaped.
         """
-        self._pb_type, other._pb_type = other._pb_type, self._pb_type
         self._current, other._current = other._current, self._current
         self._stack, other._stack = other._stack, self._stack
         self._size, other._size = other._size, self._size
@@ -338,7 +384,7 @@ class PhysicalState:
     @property
     def pb_type(self):
         """ProblemType: The type of the physical problem"""
-        return self._pb_type
+        return self._current.pb_type
 
     @property
     def current(self):
@@ -490,7 +536,7 @@ class PhysicalState:
 
     def stash(self):
         """Stores the object state to provide transactionality semantics."""
-        self._stash = PhysicalState.State(self._pb_type).copy(self.current)
+        self._stash = PhysicalState.State.factory(self.pb_type).copy(self.current)
 
     def revert(self):
         """Revert the object to its previous state."""
@@ -518,7 +564,7 @@ class PhysicalState:
             self._stack.pop(0)
         self._stack.append(current)
 
-        self._current = PhysicalState.State(self._pb_type).copy(current)
+        self._current = PhysicalState.State.factory(self.pb_type).copy(current)
 
     @profile
     def getCurrentDelta(self):
