@@ -651,19 +651,19 @@ class TestPhysicalState(unittest.TestCase):
         phys.time_step = 0.0
         # can not use the setters with FakeField object
         phys.current.U_t = TestPhysicalState.FakeField(99.0)
-        phys.current.primal_step = TestPhysicalState.FakeField(1.0)
+        phys.current.deltaU = TestPhysicalState.FakeField(1.0)
         self.assertEqual(phys.time_prev, 0.0)
         self.assertEqual(phys.U_t.value, 99.0)
-        self.assertEqual(phys.primal_step.value, 1.0)
-        self.assertEqual(phys.primal_curr.value, 100.0)
+        self.assertEqual(phys.deltaU.value, 1.0)
+        self.assertEqual(phys.U.value, 100.0)
         self.assertIsNotNone(phys._stash)
         self.assertIsNone(phys._stash._time_prev)
         self.assertIsNone(phys._stash.U_t)
         # valid this state
         phys.commit()
         self.assertEqual(phys.U_t.value, 100.0)
-        self.assertIsNotNone(phys.primal_step)
-        self.assertEqual(phys.primal_step.value, 0.0)
+        self.assertIsNotNone(phys.deltaU)
+        self.assertEqual(phys.deltaU.value, 0.0)
         # [phys_t0]
         self.assertEqual(len(phys._stack), 1)
 
@@ -683,7 +683,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertIsNone(phys._stash)
 
         phys.time_prev = 1.0
-        phys.current.primal_step = TestPhysicalState.FakeField(99.0)
+        phys.current.deltaU = TestPhysicalState.FakeField(99.0)
         self.assertEqual(phys.time_prev, 1.0)
         # valid this state
         phys.commit()
@@ -704,14 +704,14 @@ class TestPhysicalState(unittest.TestCase):
         phys.time_step = 0.0
         # can not use the setters with FakeField object
         phys.current.U_t = TestPhysicalState.FakeField(99.0)
-        phys.current.primal_step = TestPhysicalState.FakeField(1.0)
+        phys.current.deltaU = TestPhysicalState.FakeField(1.0)
         phys.commit()
         self.assertEqual(phys.U_t.value, 100.0)
         # [phys_t0]
         self.assertEqual(len(phys._stack), 1)
 
         phys.time_prev = 1.0
-        phys.current.primal_step = TestPhysicalState.FakeField(33.0)
+        phys.current.deltaU = TestPhysicalState.FakeField(33.0)
         self.assertEqual(phys.time_prev, 1.0)
         phys.commit()
         self.assertEqual(phys.U_t.value, 133.0)
@@ -719,7 +719,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertEqual(len(phys._stack), 2)
 
         phys.time_prev = 2.0
-        phys.current.primal_step = TestPhysicalState.FakeField(67.0)
+        phys.current.deltaU = TestPhysicalState.FakeField(67.0)
         self.assertEqual(phys.time_prev, 2.0)
         phys.commit()
         self.assertEqual(phys.U_t.value, 200.0)
@@ -727,7 +727,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertEqual(len(phys._stack), 3)
 
         phys.time_prev = 3.0
-        phys.current.primal_step = TestPhysicalState.FakeField(22.0)
+        phys.current.deltaU = TestPhysicalState.FakeField(22.0)
         self.assertEqual(phys.time_prev, 3.0)
         phys.commit()
         self.assertEqual(phys.U_t.value, 222.0)

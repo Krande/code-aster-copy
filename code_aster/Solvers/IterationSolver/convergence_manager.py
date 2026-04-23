@@ -23,7 +23,6 @@ from math import sqrt
 
 from ...Objects import DiscreteComputation
 from ...Utilities import MPI, logger, no_new_attributes, profile
-from ...Messages import UTMESS
 from ..Basics import ContextMixin
 import numpy as np
 
@@ -400,9 +399,7 @@ class ConvergenceManager(ContextMixin):
         # maybe not really efficient
         if loads.hasDirichletBC():
             disc_comp = DiscreteComputation(self.problem)
-            diriBCs = disc_comp.getIncrementalDirichletBC(
-                self.state.time_curr, self.state.primal_curr
-            )
+            diriBCs = disc_comp.getIncrementalDirichletBC(self.state.time_curr, self.state.U)
             eliminatedDofs = self.problem.getDirichletBCDOFs()
             nbElimination = len(eliminatedDofs)
             assert residual.size() == nbElimination

@@ -67,21 +67,21 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         iter_glob = self._converg.setdefault("ITER_GLOB_MAXI")
         iter_glob.minValue = 1
 
-    def update(self, primal_incr, resi_fields=None, callback=None):
+    def update(self, deltaU, resi_fields=None, callback=None):
         """Update the physical state.
 
         Arguments:
-            primal_incr (FieldOnNodes): Displacement increment.
+            deltaU (FieldOnNodes): Displacement increment.
             resi_fields (dict of FieldOnNodes): Fields of residual values
         """
 
-        self.state.primal_step += primal_incr
+        self.state.deltaU += deltaU
 
         for key, field in resi_fields.items():
             self.state.set(key, field)
 
         if callback:
-            callback(primal_incr)
+            callback(deltaU)
 
     def _resetMatrix(self):
         """Reset matrix if needed
@@ -119,12 +119,12 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             force = self.oper.shouldExecuteIteration(self.current_incr)
 
             # Solve current iteration
-            primal_incr, self.current_matrix, resi_fields = self.solve_iteration(
+            deltaU, self.current_matrix, resi_fields = self.solve_iteration(
                 matrix_type, self.current_matrix, force
             )
 
             # Update
-            self.update(primal_incr, resi_fields, callback)
+            self.update(deltaU, resi_fields, callback)
 
             if self.current_incr > 0:
                 self.logManager.printConvTableRow(
@@ -178,22 +178,22 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
         # ---------------------------------------------------------------------
         if PERTURB_JAC:
-            neq = self.state.primal_step.size()
+            neq = self.state.deltaU.size()
             jac = np.zeros((neq, neq))
-            primal_save = self.state.primal_step.copy()
+            deltaU_saved = self.state.deltaU.copy()
             res_0 = np.array(residuals.resi.getValues())
             eps = 1.0e-6
             for i_eq in range(neq):
-                if abs(self.state.primal_step[i_eq]) < eps:
-                    self.state.primal_step[i_eq] = -eps
+                if abs(self.state.deltaU[i_eq]) < eps:
+                    self.state.deltaU[i_eq] = -eps
                     dd = eps
                 else:
-                    self.state.primal_step[i_eq] *= 1 - eps
-                    dd = -self.state.primal_step[i_eq] + primal_save[i_eq]
+                    self.state.deltaU[i_eq] *= 1 - eps
+                    dd = -self.state.deltaU[i_eq] + deltaU_saved[i_eq]
                 res_p = np.array(self.oper.getResidual(scaling).resi.getValues())
                 jac[:, i_eq] = (res_p - res_0)[:] / dd
                 # return to initial value
-                self.state.primal_step = primal_save.copy()
+                self.state.deltaU = deltaU_saved.copy()
             residuals = self.oper.getResidual(scaling)
             with np.printoptions(precision=3, suppress=False, linewidth=2000):
                 print("perturb_jac=", flush=True)
@@ -208,9 +208,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             disc_comp = DiscreteComputation(self.problem)
 
             # Compute Dirichlet BC:=
-            diriBCs = disc_comp.getIncrementalDirichletBC(
-                self.state.time_curr, self.state.primal_curr
-            )
+            diriBCs = disc_comp.getIncrementalDirichletBC(self.state.time_curr, self.state.U)
 
             # Solve linear system
             if USE_SCALING:
@@ -233,21 +231,21 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             # ------------------------------------------------------------------------
             if not jacobian.isFactorized():
                 self.linear_solver.factorize(jacobian, raiseException=True)
-            primal_incr = self.linear_solver.solve(residuals.resi, diriBCs)
+            deltaU = self.linear_solver.solve(residuals.resi, diriBCs)
             if USE_SCALING:
-                S.unscaleSolution(primal_incr)
+                S.unscaleSolution(deltaU)
             # Use line search
             if not self._converg.isPrediction():
                 if self._line_search.isEnabled() and not force:
-                    primal_incr = self._line_search.solve(primal_incr, scaling)
+                    deltaU = self._line_search.solve(deltaU, scaling)
         else:
-            primal_incr = self.state.createPrimal(self.problem, 0.0)
+            deltaU = self.state.createPrimal(self.problem, 0.0)
 
         # evaluate geometric - convergence
-        self._converg.evalGeometricResidual(primal_incr)
+        self._converg.evalGeometricResidual(deltaU)
         self.notifyObservers(matrix_type)
 
-        return primal_incr, jacobian, resi_fields
+        return deltaU, jacobian, resi_fields
 
     def notifyObservers(self, matrix_type):
         """Notify observers about the convergence.

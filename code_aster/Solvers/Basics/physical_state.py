@@ -134,27 +134,12 @@ class PhysicalState:
             self._prim_prev[self._primal] = field
 
         @property
-        def primal_curr(self):
-            """FieldOnNodesReal: Primal field at current time."""
-            return self.U
-
-        @primal_curr.setter
-        def primal_curr(self, field):
-            """Set current primal field.
-
-            Arguments:
-                field (FieldOnNodesReal): primal
-            """
-            # assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
-            self.U = field
-
-        @property
-        def primal_step(self):
+        def deltaU(self):
             """FieldOnNodesReal: Primal increment."""
             return self._prim_step[self._primal]
 
-        @primal_step.setter
-        def primal_step(self, field):
+        @deltaU.setter
+        def deltaU(self, field):
             """Set the primal increment field.
 
             Arguments:
@@ -281,9 +266,9 @@ class PhysicalState:
             print(f"*** {label}Physical State at", self.time_curr, flush=True)
             values = self.U_t.getValues()
             print("* U_t ", sum(values) / len(values), flush=True)
-            if self.primal_step:
-                values = self.primal_step.getValues()
-                print("* primal_step", sum(values) / len(values), flush=True)
+            if self.deltaU:
+                values = self.deltaU.getValues()
+                print("* deltaU", sum(values) / len(values), flush=True)
             for key, field in self._data.items():
                 if field:
                     values = field.getValues()
@@ -460,32 +445,32 @@ class PhysicalState:
         self.current.U_t = field
 
     @property
-    def primal_curr(self):
+    def U(self):
         """FieldOnNodesReal: Primal field at current time."""
-        return self.current.primal_curr
+        return self.current.U
 
-    @primal_curr.setter
-    def primal_curr(self, field):
+    @U.setter
+    def U(self, field):
         """Set current primal field.
 
         Arguments:
            field (FieldOnNodesReal): primal
         """
-        self.current.primal_curr = field
+        self.current.U = field
 
     @property
-    def primal_step(self):
+    def deltaU(self):
         """FieldOnNodesReal: Primal increment."""
-        return self.current.primal_step
+        return self.current.deltaU
 
-    @primal_step.setter
-    def primal_step(self, field):
+    @deltaU.setter
+    def deltaU(self, field):
         """Set primal increment.
 
         Arguments:
             field (FieldOnNodesReal): Primal increment
         """
-        self.current.primal_step = field
+        self.current.deltaU = field
 
     @property
     def dual(self):

@@ -112,4 +112,4 @@ class EventSource(ABC):
 
     @abstractmethod
     def get_state(self):
-        """Returns the current state to be shared with observers."""
+        """Returns the event id and the current state to be shared with observers."""

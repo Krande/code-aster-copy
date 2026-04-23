@@ -251,9 +251,9 @@ class NonLinearOperator(ContextMixin):
                 assert isinstance(resu, NonLinearResult), resu
                 para, value = _extract_param(init_state, resu)
 
-                self.state.primal_curr = resu.getField(
-                    "DEPL", para=para, value=value
-                ).copyUsingDescription(nume_equa, True)
+                self.state.U = resu.getField("DEPL", para=para, value=value).copyUsingDescription(
+                    nume_equa, True
+                )
                 _msginit("DEPL", resu.userName)
 
                 if self.state.pb_type == PBT.MecaDyna:
@@ -295,7 +295,7 @@ class NonLinearOperator(ContextMixin):
                     if nume_didi:
                         displ = resu.getField("DEPL", nume_didi).copyUsingDescription(nume_equa)
                     else:
-                        displ = self.state.primal_curr
+                        displ = self.state.U
                     list_of_loads.setDifferentialDisplacement(displ)
 
             if "EVOL_THER" in init_state:
@@ -303,20 +303,18 @@ class NonLinearOperator(ContextMixin):
                 assert isinstance(resu, ThermalResult), resu
                 para, value = _extract_param(init_state, resu)
 
-                self.state.primal_curr = resu.getField(
-                    "TEMP", para=para, value=value
-                ).copyUsingDescription(nume_equa)
+                self.state.U = resu.getField("TEMP", para=para, value=value).copyUsingDescription(
+                    nume_equa
+                )
 
             if "CHAM_NO" in init_state:
-                self.state.primal_curr = init_state.get("CHAM_NO").copyUsingDescription(nume_equa)
+                self.state.U = init_state.get("CHAM_NO").copyUsingDescription(nume_equa)
 
             if "DEPL" in init_state:
-                self.state.primal_curr = init_state.get("DEPL").copyUsingDescription(
-                    nume_equa, False
-                )
+                self.state.U = init_state.get("DEPL").copyUsingDescription(nume_equa, False)
                 list_of_loads = self.problem.getListOfLoads()
                 if list_of_loads.hasDifferential():
-                    list_of_loads.setDifferentialDisplacement(self.state.primal_curr)
+                    list_of_loads.setDifferentialDisplacement(self.state.U)
                 _msginit("DEPL")
 
             if "SIGM" in init_state:
@@ -349,9 +347,9 @@ class NonLinearOperator(ContextMixin):
 
             if "VALE" in init_state:
                 if model.existsHHO():
-                    self.state.primal_curr = HHO(self.problem).projectOnHHOSpace(init_state["VALE"])
+                    self.state.U = HHO(self.problem).projectOnHHOSpace(init_state["VALE"])
                 else:
-                    self.state.primal_curr = self.state.createPrimal(
+                    self.state.U = self.state.createPrimal(
                         self.problem, value={"TEMP": init_state.get("VALE")}
                     )
 
