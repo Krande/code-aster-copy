@@ -37,6 +37,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
     __needs__ = ("problem", "state", "keywords", "oper", "linear_solver", "contact")
     solver_type = BaseIterationSolver.SubType.Newton
+    _eventid = EventId.IterationSolver
     _data = _converg = _line_search = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -261,4 +262,4 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
     def get_state(self):
         """Returns the current residuals to be shared with observers."""
-        return EventId.IterationSolver, self._data
+        return self._data

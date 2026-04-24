@@ -77,17 +77,23 @@ class EventId(IntFlag):
     """Identifiers of EventSource objects."""
 
     IterationSolver = auto()
+    AtConvergence = auto()
 
 
 class EventSource(ABC):
     """The EventSource interface declares a set of methods for managing observers."""
 
     # for no_new_attributes
-    _observers = None
+    _observers = _eventid = None
 
     def __init__(self) -> None:
         super().__init__()
         self._observers = []
+
+    @property
+    def eid(self):
+        """EventId: Attribute that holds the id of the event."""
+        return self._eventid
 
     def add_observer(self, observer):
         """Attach an observer to the event.
@@ -112,4 +118,4 @@ class EventSource(ABC):
 
     @abstractmethod
     def get_state(self):
-        """Returns the event id and the current state to be shared with observers."""
+        """Returns the current state to be shared with observers."""

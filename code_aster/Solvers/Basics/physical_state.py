@@ -54,6 +54,16 @@ def _primalsetter(deriv):
     return decorator
 
 
+def get_all_subclasses(cls):
+    """Return all subclasses of 'cls' recursively."""
+    subclasses = set()
+    for subclass in cls.__subclasses__():
+        subclasses.add(subclass)
+        subclasses.update(get_all_subclasses(subclass))
+
+    return subclasses
+
+
 class PhysicalState(Observer):
     """This object represents a Physical State of the model.
 
@@ -80,10 +90,10 @@ class PhysicalState(Observer):
         @classmethod
         def factory(cls, pb_type: PBT):
             """Create a new State object of ProblemType."""
-            for kls in cls.__subclasses__():
+            for kls in get_all_subclasses(cls):
                 if kls.pb_type == pb_type:
                     return kls()
-            raise TypeError(f"no candidate for cls={cls}, scheme: {pb_type}")
+            raise TypeError(f"no candidate for cls={cls}, scheme: {pb_type!r}")
 
         def __init__(self):
             self._data = {}

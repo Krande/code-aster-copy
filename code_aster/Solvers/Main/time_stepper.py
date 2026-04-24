@@ -334,8 +334,8 @@ class TimeStepper(Observer):
             event (EventSource): Object that sends the notification.
         """
         state = self._state
-        eid, data = event.get_state()
-        if eid & EventId.IterationSolver:
+        if event.eid & EventId.IterationSolver:
+            data = event.get_state()
             logger.debug("+ received from an iteration solver: %s", data)
             if "PRED" not in data.get("matrix", ""):
                 hist = state["history"]

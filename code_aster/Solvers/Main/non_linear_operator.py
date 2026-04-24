@@ -41,7 +41,7 @@ from ...Utilities import (
     no_new_attributes,
     profile,
 )
-from ..Basics import Context, ContextMixin, Observation, PhysicalState
+from ..Basics import Context, ContextMixin, EventId, EventSource, Observation, PhysicalState
 from ..Basics import ProblemType as PBT
 from ..Operators import BaseOperators
 from ..Post import Annealing, ComputeDisplFromHHO, ComputeHydr, ComputeTempFromHHO
@@ -51,7 +51,7 @@ from .storage_manager import StorageManager
 from .time_stepper import TimeStepper
 
 
-class NonLinearOperator(ContextMixin):
+class NonLinearOperator(ContextMixin, EventSource):
     """Solver for linear and non linear problem.
 
     Arguments:
@@ -61,6 +61,7 @@ class NonLinearOperator(ContextMixin):
 
     __needs__ = ("keywords", "stepper", "problem", "problem_type", "result", "state")
 
+    _eventid = EventId.AtConvergence
     _store = _step_solver = _hooks = None
     _verb = None
     # FIXME: prefer _current_matrix and property
@@ -131,12 +132,13 @@ class NonLinearOperator(ContextMixin):
         Returns:
             instance: New object.
         """
-        # same as constructor
-        return cls(context)
+        instance = cls(context)
+        instance.context = context
+        instance.add_observer(context.state)
+        return instance
 
     def __init__(self, context) -> None:
         super().__init__()
-        self.context = context
         self._hooks = []
         self._step_idx = None
         self.current_matrix = None
@@ -441,6 +443,7 @@ class NonLinearOperator(ContextMixin):
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
                 self._step_idx += 1
+                self.notifyObservers()
                 last_stored = self._storeState(state)
         # ensure that last step was stored
         if not last_stored:
@@ -450,6 +453,9 @@ class NonLinearOperator(ContextMixin):
         """Call post hooks"""
         for hook in self._hooks:
             hook(self)
+
+    def get_state(self):
+        """Returns nothing to observers."""
 
     def computeExternalStateVariables(self, current_time):
         """Compute and set external variables in the physical state.

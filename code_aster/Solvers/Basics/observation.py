@@ -51,10 +51,11 @@ class Observation(ContextMixin, Observer):
         Arguments:
             event (EventSource): Object that sends the notification.
         """
-        eid, _ = event.get_state()
-        if eid & EventId.IterationSolver:
-            logger.debug("+ check for observations")
+        if event.eid & EventId.IterationSolver:
+            logger.debug("+ check for observations during iterations")
             if self._data:  # loop on observables...
                 self.state.debugPrint(recursive=True)
+        elif event.eid & EventId.AtConvergence:
+            logger.debug("+ check for observations at convergence")
         else:
-            raise TypeError(f"unsupported event: eid={eid}")
+            raise TypeError(f"unsupported event: eid={event.eid!r}")
