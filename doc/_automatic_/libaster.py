@@ -86,7 +86,7 @@ class TimeLimitError(AsterError):
 # built-in function raiseAsterError in libaster
 
 
-def raiseAsterError(idmess="VIDE_1"):
+def raiseAsterError(idmess="VIDE_1", valk=[], vali=[], valr=[]):
     pass
 
 
