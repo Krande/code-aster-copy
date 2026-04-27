@@ -55,7 +55,9 @@ class Observation(ContextMixin, Observer):
             logger.debug("+ check for observations during iterations")
             if self._data:  # loop on observables...
                 self.state.debugPrint(recursive=True)
-        elif event.eid & EventId.AtConvergence:
+        elif event.eid & EventId.TimeStepper:
+            logger.debug("+ check for observations for time stepper")
+        elif event.eid & EventId.NonLinearOperator:
             logger.debug("+ check for observations at convergence")
         else:
             raise TypeError(f"unsupported event: eid={event.eid!r}")

@@ -61,7 +61,7 @@ class NonLinearOperator(ContextMixin, EventSource):
 
     __needs__ = ("keywords", "stepper", "problem", "problem_type", "result", "state")
 
-    _eventid = EventId.AtConvergence
+    _eventid = EventId.NonLinearOperator
     _store = _step_solver = _hooks = None
     _verb = None
     # FIXME: prefer _current_matrix and property
@@ -134,7 +134,6 @@ class NonLinearOperator(ContextMixin, EventSource):
         """
         instance = cls(context)
         instance.context = context
-        instance.add_observer(context.state)
         return instance
 
     def __init__(self, context) -> None:
@@ -209,6 +208,9 @@ class NonLinearOperator(ContextMixin, EventSource):
         """Initialize run"""
         phys_pb = self.problem
         kwds = self.keywords
+        # not in builder/__init__ to allow the user to define its own objects
+        self.add_observer(self.state)
+        self.stepper.add_observer(self.state)
         # essential to be called enough soon (may change the size of VARI field)
         if self.get_keyword("ETAT_INIT"):
             phys_pb.computeBehaviourProperty(kwds["COMPORTEMENT"], "OUI", 2)
@@ -439,11 +441,11 @@ class NonLinearOperator(ContextMixin, EventSource):
                     state.revert()
                     continue
                 self.post_hooks()
+                self.notifyObservers()
                 state.commit()
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
                 self._step_idx += 1
-                self.notifyObservers()
                 last_stored = self._storeState(state)
         # ensure that last step was stored
         if not last_stored:

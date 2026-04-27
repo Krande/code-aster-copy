@@ -73,11 +73,13 @@ class Observer(ABC):
         # calls event.get_state()
 
 
+# Could more general: "EntityId"
 class EventId(IntFlag):
     """Identifiers of EventSource objects."""
 
     IterationSolver = auto()
-    AtConvergence = auto()
+    TimeStepper = auto()
+    NonLinearOperator = auto()
 
 
 class EventSource(ABC):

@@ -24,11 +24,12 @@ from libaster import ConvergenceError, IntegrationError, SolverError
 
 from ...Cata.Syntax import _F
 from ...Messages import MessageLog
-from ...Utilities import cmp, force_list, logger, no_new_attributes, MPI
-from ..Basics import EventId, Observer
+from ...Utilities import MPI, cmp, force_list, logger, no_new_attributes
+from ..Basics import EventId, EventSource, Observer
 
 
-class TimeStepper(Observer):
+# TimeStepper is notified by IterationSolver and is observed by Observation
+class TimeStepper(Observer, EventSource):
     """This object deals with the time steps.
 
     It gives the list of the time steps to be calculated. The initial time is
@@ -44,6 +45,7 @@ class TimeStepper(Observer):
         final (float, optional): Final time (default: the last given).
     """
 
+    _eventid = EventId.TimeStepper
     _times = _forced = _eps = _current = _initial = _final = _last = None
     _actions = _state = None
     _split = _maxLevel = _minStep = _maxStep = _initStep = None
@@ -344,7 +346,10 @@ class TimeStepper(Observer):
                     hist.setdefault(para, []).append(data[para].value)
                     crit[para] = data[para].reference
         else:
-            raise TypeError(f"unsupported event: eid={eid}")
+            raise TypeError(f"unsupported event: eid={event.eid}")
+
+    def get_state(self):
+        """Returns nothing to observers."""
 
     @property
     def splitting_level(self):
@@ -553,7 +558,9 @@ class TimeStepper(Observer):
         Returns:
             bool: *False* if something went wrong, *True* if the step is ok.
         """
-        # compute increment
+        # notify Observation to update observable values
+        self.notifyObservers()
+        # todo: 'getCurrentDelta' replaced by a more general function
         delta = phys_state.getCurrentDelta()
         # check events & actions
         if not self._check_error_posteriori(delta):
