@@ -193,9 +193,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             disc_comp = DiscreteComputation(self.problem)
 
             # Compute Dirichlet BC
-            diriBCs = disc_comp.getIncrementalDirichletBC(
-                self.state.time_curr, self.state.primal_curr
-            )
+            diriBCs = disc_comp.getIncrementalDirichletBC(self.state.time_curr, self.state.U)
 
             with MatrixScaler.matrixScaler(
                 jacobian,
@@ -207,12 +205,12 @@ class NewtonSolver(BaseIterationSolver, EventSource):
                 # Solve linear system
                 if not jacobian.isFactorized():
                     self.linear_solver.factorize(jacobian, raiseException=True)
-                primal_incr = self.linear_solver.solve(residuals.resi, diriBCs)
+                deltaU = self.linear_solver.solve(residuals.resi, diriBCs)
                 # Unscale if MatrixScaler is used
-                matScaler.unscaleSolution(primal_incr)
+                matScaler.unscaleSolution(deltaU)
                 if not self._converg.isPrediction():
                     if self._line_search.isEnabled() and not force:
-                        primal_incr = self._line_search.solve(primal_incr, scaling)
+                        deltaU = self._line_search.solve(deltaU, scaling)
         else:
             deltaU = self.state.createPrimal(self.problem, 0.0)
 
