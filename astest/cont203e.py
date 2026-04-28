@@ -192,22 +192,30 @@ modele = AFFE_MODELE(
 AsterPairing = APP.AsterPairingProcess(grma_slv, grma_mas, ma)
 AsterPairing.setMethod(method="BrutForce")
 
-test.assertEqual(AsterPairing._groupMaSlv, grma_slv)
-test.assertEqual(AsterPairing._groupMaMas, grma_mas)
-test.assertEqual(AsterPairing._method, "BrutForce")
-test.assertEqual(AsterPairing._asterMesh, ma)
+test.assertEqual(AsterPairing._groupMaSlv, grma_slv, msg="Init. Slave group name")
+test.assertEqual(AsterPairing._groupMaMas, grma_mas, msg="Init. Master group name")
+test.assertEqual(AsterPairing._method, "BrutForce", msg="Init. Pairing algo")
+test.assertEqual(AsterPairing._asterMesh, ma, msg="Init. aster mesh")
 
 # - Pairing procedure
 AsterPairing.run()
-test.assertEqual(len(AsterPairing._listPairs), 7)
-test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._intePointsList))
-test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._quadPointsList))
+test.assertEqual(len(AsterPairing._listPairs), 7, msg="Check pairing - number of pairs")
+test.assertEqual(
+    len(AsterPairing._listPairs),
+    len(AsterPairing._intePointsList),
+    msg="Check pairing - consistency sizes of list (1)",
+)
+test.assertEqual(
+    len(AsterPairing._listPairs),
+    len(AsterPairing._quadPointsList),
+    msg="Check pairing - consistency sizes of list (2)",
+)
 
 # - Connectivity and group information (for visualisation)
 AsterPairing.extractMeshInfosFromAsterMesh()
-test.assertEqual(AsterPairing._coords.shape[0], 52)
-test.assertEqual(AsterPairing._coords.shape[1], 3)
-test.assertEqual(len(AsterPairing._asterConnectivity), 66)
+test.assertEqual(AsterPairing._coords.shape[0], 52, msg="Check connectivity array (1)")
+test.assertEqual(AsterPairing._coords.shape[1], 3, msg="Check connectivity array (2)")
+test.assertEqual(len(AsterPairing._asterConnectivity), 66, msg="Check connectivity array (3)")
 
 ## -------------------------------------------------------
 #           Prepare visualisation
@@ -217,11 +225,11 @@ AsterVisu = pObj.PairingAnalysisAster(
     dimMesh, grma_mas_d, grma_mas, grma_slv_d, grma_slv, AsterPairing
 )
 
-test.assertTrue(AsterVisu._flag_MeshInfos)
-test.assertTrue(AsterVisu._flag_PairingInfos)
-test.assertIsNotNone(AsterVisu._listPairs)
-test.assertIsNotNone(AsterVisu._listIntersectionPts)
-test.assertIsNotNone(AsterVisu._listQuadraturePts)
+test.assertTrue(AsterVisu._flag_MeshInfos, msg="Check PairingAnalysisAster flag (1)")
+test.assertTrue(AsterVisu._flag_PairingInfos, msg="Check PairingAnalysisAster flag (2)")
+test.assertIsNotNone(AsterVisu._listPairs, msg="Check PairingAnalysisAster flag (3)")
+test.assertIsNotNone(AsterVisu._listIntersectionPts, msg="Check PairingAnalysisAster flag (4)")
+test.assertIsNotNone(AsterVisu._listQuadraturePts, msg="Check PairingAnalysisAster flag (5)")
 
 ## -------------------------------------------------------
 #           Plot interactive

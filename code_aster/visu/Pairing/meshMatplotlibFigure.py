@@ -37,9 +37,36 @@ DEFAULT_TICKS_SIZE = 12
 OPTION_MESH_VISU = {"domain", "interface", "selectSlvCell"}
 SUBOPTION_MESH_VISU = {"all", "givenPair", "givenSlvIndex"}
 OPTION_PAIRING_VISU = {"meshOnly", "pairs", "intePoints", "quadPoints"}
+OPTION_PAIRING_VISU_DETAILS = OPTION_PAIRING_VISU - {"meshOnly"}
+
 DIM_AVAILABLE = {2, 3}
 
 INDEX_PLANE_PROJECTED = {"X", "Y", "Z", None}
+
+VALID_COMBINATION = {
+    2: {
+        "domain": {
+            "all": OPTION_PAIRING_VISU,
+            "givenPair": OPTION_PAIRING_VISU_DETAILS,
+            "givenSlvIndex": OPTION_PAIRING_VISU_DETAILS,
+        },
+        "interface": {
+            "all": OPTION_PAIRING_VISU,
+            "givenPair": OPTION_PAIRING_VISU_DETAILS,
+            "givenSlvIndex": OPTION_PAIRING_VISU_DETAILS,
+        },
+        "selectSlvCell": {"givenSlvIndex": OPTION_PAIRING_VISU_DETAILS},
+    },
+    3: {
+        "domain": {"all": {}, "givenPair": {}, "givenSlvIndex": {}},
+        "interface": {
+            "all": OPTION_PAIRING_VISU,
+            "givenPair": OPTION_PAIRING_VISU_DETAILS,
+            "givenSlvIndex": OPTION_PAIRING_VISU_DETAILS,
+        },
+        "selectSlvCell": {"givenSlvIndex": {}},
+    },
+}
 
 
 ## -----------------------------------------------------------
@@ -86,10 +113,14 @@ class meshMatplotlibFigure:
         self._addLegend = addLegend
         self._index = index
         self._indexPlaneProjected = indexPlaneProjected
+        # - Initialisation of some variables
+        self._dim = None
+        self._codim = None
         # - Precomputation
         self.checkConsistency()
         self.computeDimCodim()
         self.setIndicesProjected()
+        self.validityOptions()
 
     def checkConsistency(self):
         r"""Consistency check of the options"""
@@ -99,6 +130,30 @@ class meshMatplotlibFigure:
             raise ValueError(f"Key {self._suboptionMesh} not in SUBOPTION_MESH_VISU definition")
         if self._optionPair not in OPTION_PAIRING_VISU:
             raise ValueError(f"Key {self._optionPair} not in OPTION_PAIRING_VISU definition")
+        if self._indexPlaneProjected not in INDEX_PLANE_PROJECTED:
+            raise ValueError(
+                f"Key : indexPlaneProjected '{self._indexPlaneProjected}' not in INDEX_PLANE_PROJECTED"
+            )
+
+    def validityOptions(self):
+        # - Check whether the method is valid for the given dimension
+        if self._suboptionMesh not in VALID_COMBINATION[self._dim][self._optionMesh]:
+            raise ValueError(
+                f"ERROR : Option '{self._suboptionMesh}' invalid for the method '{self._optionMesh}' and dimension '{self._dim}'."
+            )
+        # - Check if the option is valid for the given method and dimension
+        if self._suboptionMesh not in VALID_COMBINATION[self._dim][self._optionMesh]:
+            raise ValueError(
+                f"ERROR : Option '{self._suboptionMesh}' invalid for the method '{self._optionMesh}' and dimension '{self._dim}'."
+            )
+        # - Check if the sub-option is valid for the given option
+        if (
+            self._optionPair
+            not in VALID_COMBINATION[self._dim][self._optionMesh][self._suboptionMesh]
+        ):
+            raise ValueError(
+                f"ERROR : Suboption '{self._optionPair}' invalid for option '{self._suboptionMesh}' and method '{self._optionMesh}'."
+            )
 
     def computeDimCodim(self):
         r"""Method to computed codimension"""

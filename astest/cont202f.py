@@ -49,7 +49,7 @@ dimMesh = 3
 # - If True, then choose a specific option, else loop over all the options
 specific_visu_option = True
 # - Option test to run
-option_test = 2
+option_test = 21
 # - Dictionnary of options
 option_dict = {
     2: {  # - Visualisation of the two interfaces of the mesh
@@ -211,18 +211,17 @@ option_dict = {
         "index": 0,
         "indexPlaneProjected": "Z",
     },
-    ## -- NOT AVAILABLE YET
-    # 18: {  # - Visualisation of the intersection points of the pairs
-    #     #     which involve the slave cell of index = 17
-    #     #     on the two interfaces of the mesh
-    #     "optionMesh": "interface",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "intePoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 17,
-    #     "indexPlaneProjected": "Z",
-    # },
+    18: {  # - Visualisation of the intersection points of the pairs
+        #     which involve the slave cell of index = 17
+        #     on the two interfaces of the mesh
+        "optionMesh": "interface",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "intePoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": "Z",
+    },
     ## -- ERROR in plotQuadPts
     # 19: {  # - Visualisation of the quadrature points
     #     # of index = 0 (first pair) on the two interfaces of the mesh
@@ -243,7 +242,7 @@ option_dict = {
     #     "optionPair": "quadPoints",
     #     "addMeshNodes": True,
     #     "addLegend": True,
-    #     "index": 17,
+    #     "index": 330,
     #     "indexPlaneProjected": "Z",
     # },
     ## -- NOT AVAILABLE YET
@@ -253,7 +252,7 @@ option_dict = {
     #     "optionPair": "pairs",
     #     "addMeshNodes": True,
     #     "addLegend": True,
-    #     "index": 18,
+    #     "index": 330,
     #     "indexPlaneProjected": "Z",
     # },
     ## -- NOT AVAILABLE YET
@@ -298,22 +297,30 @@ modele = AFFE_MODELE(MAILLAGE=ma, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MOD
 AsterPairing = APP.AsterPairingProcess(grma_slv, grma_mas, ma)
 AsterPairing.setMethod(method="BrutForce")
 
-test.assertEqual(AsterPairing._groupMaSlv, grma_slv)
-test.assertEqual(AsterPairing._groupMaMas, grma_mas)
-test.assertEqual(AsterPairing._method, "BrutForce")
-test.assertEqual(AsterPairing._asterMesh, ma)
+test.assertEqual(AsterPairing._groupMaSlv, grma_slv, msg="Init. Slave group name")
+test.assertEqual(AsterPairing._groupMaMas, grma_mas, msg="Init. Master group name")
+test.assertEqual(AsterPairing._method, "BrutForce", msg="Init. Pairing algo")
+test.assertEqual(AsterPairing._asterMesh, ma, msg="Init. aster mesh")
 
 # - Pairing procedure
 AsterPairing.run()
-test.assertEqual(len(AsterPairing._listPairs) == 73)
-test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._intePointsList))
-test.assertEqual(len(AsterPairing._listPairs), len(AsterPairing._quadPointsList))
+test.assertEqual(len(AsterPairing._listPairs), 73, msg="Check pairing - number of pairs")
+test.assertEqual(
+    len(AsterPairing._listPairs),
+    len(AsterPairing._intePointsList),
+    msg="Check pairing - consistency sizes of list (1)",
+)
+test.assertEqual(
+    len(AsterPairing._listPairs),
+    len(AsterPairing._quadPointsList),
+    msg="Check pairing - consistency sizes of list (2)",
+)
 
 # - Connectivity and group information (for visualisation)
 AsterPairing.extractMeshInfosFromAsterMesh()
-test.assertEqual(AsterPairing._coords.shape[0], 317)
-test.assertEqual(AsterPairing._coords.shape[1], 3)
-test.assertEqual(len(AsterPairing._asterConnectivity), 1432)
+test.assertEqual(AsterPairing._coords.shape[0], 317, msg="Check connectivity array (1)")
+test.assertEqual(AsterPairing._coords.shape[1], 3, msg="Check connectivity array (2)")
+test.assertEqual(len(AsterPairing._asterConnectivity), 1432, msg="Check connectivity array (3)")
 
 ## -------------------------------------------------------
 #           Prepare visualisation
@@ -323,11 +330,11 @@ AsterVisu = pObj.PairingAnalysisAster(
     dimMesh, grma_mas_d, grma_mas, grma_slv_d, grma_slv, AsterPairing
 )
 
-test.assertTrue(AsterVisu._flag_MeshInfos)
-test.assertTrue(AsterVisu._flag_PairingInfos)
-test.assertIsNotNone(AsterVisu._listPairs)
-test.assertIsNotNone(AsterVisu._listIntersectionPts)
-test.assertIsNotNone(AsterVisu._listQuadraturePts)
+test.assertTrue(AsterVisu._flag_MeshInfos, msg="Check PairingAnalysisAster flag (1)")
+test.assertTrue(AsterVisu._flag_PairingInfos, msg="Check PairingAnalysisAster flag (2)")
+test.assertIsNotNone(AsterVisu._listPairs, msg="Check PairingAnalysisAster flag (3)")
+test.assertIsNotNone(AsterVisu._listIntersectionPts, msg="Check PairingAnalysisAster flag (4)")
+test.assertIsNotNone(AsterVisu._listQuadraturePts, msg="Check PairingAnalysisAster flag (5)")
 
 ## -------------------------------------------------------
 #           Plot interactive
