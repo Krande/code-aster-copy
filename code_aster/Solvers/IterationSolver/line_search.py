@@ -86,10 +86,10 @@ class BaseLineSearch(ABC, ContextMixin):
 
     def compute_f(self, rho, solution, scaling=1.0):
         """Compute functional"""
-        self.state.primal_step += rho * solution
+        self.state.deltaU += rho * solution
         # compute residual
         resi_state = self.oper.getResidual(scaling)
-        self.state.primal_step -= rho * solution
+        self.state.deltaU -= rho * solution
         return -resi_state.resi.dot(solution)
 
     def check_limits(self, rho):

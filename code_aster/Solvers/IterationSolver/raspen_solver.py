@@ -112,7 +112,6 @@ class RASPENSolver(BaseIterationSolver):
 
     __needs__ = ("problem", "state", "keywords", "oper", "linear_solver")
     solver_type = BaseIterationSolver.SubType.Raspen
-    _primal_incr = _resi_comp = None
     _scaling = _options = None
     _local_solver = None
     rank = Instant = 0
@@ -135,7 +134,6 @@ class RASPENSolver(BaseIterationSolver):
 
     def __init__(self):
         super().__init__()
-        self._primal_incr = self._resi_comp = None
         self._scaling = self._options = None
         self._local_solver = None
 
@@ -206,7 +204,7 @@ class RASPENSolver(BaseIterationSolver):
             p_jac,
             self.oper,
             self.matrix_type,
-            self.state.primal_step,
+            self.state.deltaU,
             DDPart,
             self.current_incr,
             curr_time,

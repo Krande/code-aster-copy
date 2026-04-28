@@ -86,7 +86,7 @@ class TimeLimitError(AsterError):
 # built-in function raiseAsterError in libaster
 
 
-def raiseAsterError(idmess="VIDE_1"):
+def raiseAsterError(idmess="VIDE_1", valk=[], vali=[], valr=[]):
     pass
 
 
@@ -1147,11 +1147,11 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrices
         """
 
-    def getDualForces(self, disp_curr):
+    def getDualForces(self, U):
         """Return the imposed displacement assembled vector
 
         Arguments:
-              disp_curr (FieldOnNodes): current displacement vector
+              U (FieldOnNodes): current displacement vector
 
         Returns:
               FieldOnNodes: dual reaction vector (B^T*lambda)
@@ -1171,11 +1171,11 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrices
         """
 
-    def getDualPrimal(self, primal_curr, scaling=1.0):
+    def getDualPrimal(self, U, scaling=1.0):
         """Return the Dirichlet load vector
 
         Arguments:
-              disp_curr (FieldOnNodes): current displacement vector
+              U (FieldOnNodes): current displacement vector
 
         Returns:
               FieldOnNodes: Dirichlet load vector

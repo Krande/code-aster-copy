@@ -361,9 +361,9 @@ def env2dict(self, src):
     )
     sep = os.pathsep + "\\\n"
     dico = {}
-    dico["DEFINES"] = " ".join(
-        [d.split("=")[0] for d in env["DEFINES"] if not d.startswith("HAVE_")]
-    )
+    dico["DEFINES"] = " ".join([
+        d.split("=")[0] for d in env["DEFINES"] if not d.startswith("HAVE_")
+    ])
     # as_run compatibility
     if env.ASRUN_MPI_VERSION:
         dico["DEFINES"] += " _USE_MPI"
@@ -383,12 +383,10 @@ def env2dict(self, src):
             dico["BUILD_ENV"] = fobj.read()
     dico["CONFIG_ENV"] = config_env(env)
     dico["addmem"] = env["addmem"]
-    dico["srctest"] = os.linesep.join(
-        [
-            SRCTEST_TMPL % "%(SRC)s/astest" % dico,
-            SRCTEST_TMPL % "%(SRC)s/../validation/astest" % dico,
-        ]
-    )
+    dico["srctest"] = os.linesep.join([
+        SRCTEST_TMPL % "%(SRC)s/astest" % dico,
+        SRCTEST_TMPL % "%(SRC)s/../validation/astest" % dico,
+    ])
     dico["ASTERDATADIR"] = env["ASTERDATADIR"]
     dico["ASTER_TAG"] = ".".join([str(i) for i in env["ASTER_VERSION"][0]])
     dico["BIN_NODBG"] = "{PREFIX}/bin/aster".format(**env)
@@ -419,9 +417,6 @@ def to_cfg(cfgext, dict_values):
     """Format a dict of values to YAML or JSON."""
     if cfgext == "json":
         return json.dumps(dict_values, sort_keys=True, indent=4, separators=(",", ": "))
-
-    import yaml
-
     return yaml.dump(dict_values, default_flow_style=False)
 
 
