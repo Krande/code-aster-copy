@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+from abc import ABC, abstractmethod
 from contextlib import AbstractContextManager
 import copy
 from collections import Counter
@@ -113,7 +114,7 @@ def _busymscalinf(A, niter, atol):
     return As, DDl, DDr
 
 
-class mScaler:
+class mScaler(ABC):
     def __init__(self, scaling_type) -> None:
         "Initialization of mScaler"
         self.scaling_type = scaling_type
@@ -127,20 +128,25 @@ class mScaler:
         else:
             return NoScaler()
 
+    @abstractmethod
     def computeScaling(self, matrix, merge_dof, verbose):
-        raise NotImplementedError("Should be implemented for the specific mScaler")
+        pass
 
+    @abstractmethod
     def scaleMatrix(self, matrix: AssemblyMatrixDisplacementReal or AssemblyMatrixTemperatureReal):
-        raise NotImplementedError("Should be implemented for the specific matrixScaler")
+        pass
 
+    @abstractmethod
     def scaleRHS(self, rhs: FieldOnNodesReal):
-        raise NotImplementedError("Should be implemented for the specific matrixScaler")
+        pass
 
+    @abstractmethod
     def unscaleSolution(self, sol: FieldOnNodesReal):
-        raise NotImplementedError("Should be implemented for the specific matrixScaler")
+        pass
 
+    @abstractmethod
     def getScalingVectors(self):
-        raise NotImplementedError("Should be implemented for the specific matrixScaler")
+        pass
 
 
 class NoScaler(mScaler):
@@ -315,19 +321,8 @@ class MatrixScaler(mScaler):
         return self.lvect, self.rvect
 
 
-# class Scaler:
-#     @classmethod
-#     def factory(cls, scaling_type):
-#         print("je suis dans la factory")
-#         if scaling_type:
-#             return MatrixScaler()
-#         else:
-#             return NoScaler()
-
-
 class matrixScaler(AbstractContextManager):
     def __init__(self, matrix, rhs, merge_dof=None, scaling_type=False, verbose=False):
-        print("initialisation de matrixScaler - CM")
         self._scaling = mScaler.factory(scaling_type)
         self._matrix = matrix
         self._rhs = rhs

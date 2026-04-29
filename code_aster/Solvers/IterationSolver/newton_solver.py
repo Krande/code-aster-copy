@@ -228,11 +228,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             jacobian (AssemblyMatrixDisplacementReal) : Stiffness matrix to use
             in the current iteration
         """
-        if not matrix:
-            jacobian = self.oper.getJacobian(matrix_type)
-        else:
-            jacobian = matrix
-        return jacobian
+        return matrix or self.oper.getJacobian(matrix_type)
 
     def _compute_residuals(self, scaling):
         """Computation of the residual"""
