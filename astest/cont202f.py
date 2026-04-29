@@ -49,7 +49,7 @@ dimMesh = 3
 # - If True, then choose a specific option, else loop over all the options
 specific_visu_option = True
 # - Option test to run
-option_test = 21
+option_test = 23
 # - Dictionnary of options
 option_dict = {
     2: {  # - Visualisation of the two interfaces of the mesh
@@ -246,15 +246,15 @@ option_dict = {
     #     "indexPlaneProjected": "Z",
     # },
     ## -- NOT AVAILABLE YET
-    # 21: {  # - Visualisation of all the cells paired to the slave cell of index = 18
-    #     "optionMesh": "selectSlvCell",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "pairs",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 330,
-    #     "indexPlaneProjected": "Z",
-    # },
+    21: {  # - Visualisation of all the cells paired to the slave cell of index = 18
+        "optionMesh": "selectSlvCell",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "pairs",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": "Z",
+    },
     ## -- NOT AVAILABLE YET
     # 22: {  # - Visualisation of all the intersections of
     #     # the pairs to which the slave cell of index = 18 belongs

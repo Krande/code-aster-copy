@@ -64,7 +64,7 @@ VALID_COMBINATION = {
             "givenPair": OPTION_PAIRING_VISU_DETAILS,
             "givenSlvIndex": OPTION_PAIRING_VISU_DETAILS,
         },
-        "selectSlvCell": {"givenSlvIndex": {}},
+        "selectSlvCell": {"givenSlvIndex": OPTION_PAIRING_VISU_DETAILS},
     },
 }
 
