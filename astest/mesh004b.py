@@ -191,7 +191,7 @@ S = MatrixScaler.MatrixScaler()
 newMat = matrAsse.copy()
 
 # Compute scaling with DX and DY gathered (default behavior)
-S.computeScaling(matrAsse, verbose=True)
+S.computeScaling(matrAsse, merge_dof=[["DX", "DY", "DZ"], ["DRX", "DRY", "DRZ"]], verbose=True)
 S.scaleMatrix(newMat)
 
 pA_scaled = newMat.toPetsc()
