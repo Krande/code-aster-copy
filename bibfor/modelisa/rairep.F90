@@ -70,7 +70,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     real(kind=8) :: surf_cell, surtot, surf
     real(kind=8) :: xx, yy, zz, xyzg(3)
 !
-    character(len=8) :: k8b, nomnoe, typm, nommai
+    character(len=8) :: k8b, nomnoe, typm, nommai, method
     character(len=24) :: nomgr, magrno, magrma, manoma, matyma
 !
     aster_logical :: lfonc, trans, is_uniform, is_quadratic, is_line_or_biquad
@@ -100,7 +100,17 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     manoma = noma//'.CONNEX'
     matyma = noma//'.TYPMAIL'
 
-    is_uniform = ASTER_FALSE
+!   Methode UNIFORME : répartition surfacique uniforme
+!           DIAG     : répartition par intégration via les fonctions de forme
+    call getvtx('RIGI_PARASOL', 'METHODE', iocc=ioc, nbval=1, vect=method)
+    if (method(1:8) .eq. 'UNIFORME') then
+        is_uniform = ASTER_TRUE
+    else if (method(1:4) .eq. 'DIAG') then
+        is_uniform = ASTER_FALSE
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+        
     is_quadratic = ASTER_FALSE
     is_line_or_biquad = ASTER_FALSE
 !
@@ -427,7 +437,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 !
     do ij = 1, nbparno
         inoe = parno(ij)
-        print *, "coeno", ij, coeno(ij)
+        !print *, "coeno", ij, coeno(ij)
         r1 = rigiRep(1)*coeno(ij)
         r2 = rigiRep(2)*coeno(ij)
         if (ndim .eq. 3) then
