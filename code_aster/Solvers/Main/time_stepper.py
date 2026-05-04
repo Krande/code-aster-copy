@@ -23,7 +23,7 @@ import numpy
 from libaster import ConvergenceError, IntegrationError, SolverError
 
 from ...Cata.Syntax import _F
-from ...Messages import MessageLog
+from ...Messages import UTMESS, MessageLog
 from ...Utilities import MPI, cmp, force_list, logger, no_new_attributes
 from ..Basics import EventId, EventSource, Observer
 
@@ -574,7 +574,7 @@ class TimeStepper(Observer, EventSource):
             if not isinstance(act.event, TimeStepper.ErrorPosteriori):
                 continue
             if act.event.is_raised(timeStepper=self, delta=delta):
-                return act.call(timeStepper=self)
+                return act.call(exception=ConvergenceError(act.event.error_id), timeStepper=self)
         return True
 
     def _check_adapt(self, delta):
@@ -681,6 +681,8 @@ class TimeStepper(Observer, EventSource):
     class ErrorPosteriori(Event):
         """Event that may raise an error after the convergency."""
 
+        error_id = None
+
     class MaximumIncrement(ErrorPosteriori):
         """Event raised when the increment of a component exceeds a value
         (DELTA_GRANDEUR keyword).
@@ -692,6 +694,7 @@ class TimeStepper(Observer, EventSource):
             group (*misc*): Restrict the checking to a part of the model.
         """
 
+        error_id = "MECANONLINE9_52"
         _fieldName = _cmp = _value = _group = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -732,6 +735,7 @@ class TimeStepper(Observer, EventSource):
             maxNbSteps (int): Maximum number of time steps.
         """
 
+        error_id = "MECANONLINE9_53"
         _value = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -1127,3 +1131,9 @@ class TimeStepper(Observer, EventSource):
     # AUTRE_PILOTAGE
     # ADAPT_COEF_PENA
     # CONTINUE
+
+
+# indirect calls, associated to events
+def __fake__():
+    UTMESS("I", "MECANONLINE9_52")
+    UTMESS("I", "MECANONLINE9_53")

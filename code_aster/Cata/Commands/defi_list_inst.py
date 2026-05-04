@@ -260,7 +260,7 @@ DEFI_LIST_INST = OPER(
             b_deco=bloc_deco,
         ),
         b_resi_maxi=BLOC(
-            fr=tr("Event: residu troup grande"),
+            fr=tr("Event: residu trop grand"),
             condition="""equal_to("EVENEMENT", 'RESI_MAXI') """,
             RESI_GLOB_MAXI=SIMP(fr=tr("Valeur du seuil"), statut="o", typ="R", max=1),
             ACTION=SIMP(
@@ -274,7 +274,7 @@ DEFI_LIST_INST = OPER(
             b_deco=bloc_deco,
         ),
         b_instabilite=BLOC(
-            fr=tr("Event: instabilite"),
+            fr=tr("Event: instabilité"),
             condition="""equal_to("EVENEMENT", 'INSTABILITE') """,
             ACTION=SIMP(
                 fr=tr("Actions possibles"),
