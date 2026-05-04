@@ -24,15 +24,16 @@ This module gives common utilities for MPI communications.
 Need only mpi4py package.
 """
 
-import numpy as np
+from array import array
 
 from ..Utilities.logger import logger
 from ..Utilities.mpi_utils import MPI
 
 
-class MPICalcium:
+class MPICoupler:
     """
-    This class MPI is an encapsulation of CALCIUM communication.
+    This class MPICoupler is an encapsulation of MPI communication
+    between intra/inter software.
 
     The same API than mpi4py is used.
 
@@ -50,76 +51,80 @@ class MPICalcium:
 
     LAND = MPI.LAND
 
-    class CommCalcium:
+
+    class MPIComm:
         def __init__(self, comm, sub_comm, other_root, log):
             self.comm = comm
             self.sub_comm = sub_comm
-            self.tag = 0
             self._other_root = other_root
             self.log = log
 
+            # Buffers persistants
+            self._buf_int = array('i', [0])
+            self._buf_double = array('d', [0.0])
+            self._buf_bool = array('i', [0])
+
+
+        def _get_buffer(self, typ):
+            if typ == MPICoupler.INT:
+                return self._buf_int
+            elif typ == MPICoupler.DOUBLE:
+                return self._buf_double
+            elif typ == MPICoupler.BOOL:
+                return self._buf_bool
+            else:
+                raise RuntimeError(f"Unsupported MPI type {typ}")
+
+
         def recv(self, iteration, name, typ):
-            """Receive a parameter (equivalent to `cs_calcium_write_xxx`).
+            """Receive a scalar parameter.
 
             Arguments:
                 iteration (int): Iteration number.
                 name (str): Expected parameter name.
-                typ (:py:class:`~MPICalcium.INT`|:py:class:`~MPICalcium.DOUBLE`): Type of MPI data.
+                typ (:py:class:`~MPICoupler.INT`|:py:class:`~MPICoupler.DOUBLE`): Type of MPI data.
 
             Returns:
                 int|double: Received value of the parameter.
             """
 
-            args = dict(source=self._other_root, tag=self.tag)
-            data = None
+            value = None
+
             if self.sub_comm.rank == 0:
                 self.log(
-                    f"waiting for parameter {name!r} from proc #{self._other_root}...", verbosity=2
+                    f"waiting for parameter {name!r} from proc #{self._other_root}...",
+                    verbosity=2,
                 )
-                data = bytearray(128)
-                self.comm.Recv((data, 128, MPICalcium.CHAR), **args)
-                varname = data.decode("utf-8").strip("\x00")
-                assert varname == name, f"expecting {name!r}, get {varname!r}"
 
-                meta = np.zeros((3,), dtype=np.int32)
-                self.comm.Recv((meta, 3, MPICalcium.INT), **args)
-                assert meta[0] == iteration, meta
-                assert meta[1] == 1, meta
-                assert meta[2] == typ.size
+                args = dict(source=self._other_root, tag=iteration)
+                buf = self._get_buffer(typ)
+                self.comm.Recv(buf, **args)
+                value = buf[0]
 
-                ctype = np.double if typ == MPICalcium.DOUBLE else np.int32
-                value = np.zeros((1,), dtype=ctype)
-                self.comm.Recv((value, 1, typ), **args)
-                data = [varname, value[0]]
-                self.log(f"Returns value is {data}", verbosity=2)
+                self.log(f"received parameter {name!r}: {value}", verbosity=2)
 
-            # share the Returns, used as inputs by others
-            data = self.sub_comm.bcast(data, root=0)
-            self.log(f"receive parameter {name!r} (iteration {iteration}): {data[1]}")
-            return data[1]
+            # Broadcast scalaire Python
+            value = self.sub_comm.bcast(value, root=0)
+            self.log(f"receive parameter {name!r} (iteration {iteration}): {value}")
+            return value
 
         def send(self, iteration, name, value, typ):
-            """Send a parameter (equivalent to `cs_calcium_read_xxx`).
+            """Send a scalar parameter.
 
             Arguments:
                 iteration (int): Iteration number.
                 name (str): Parameter name.
                 value (int|double): Value of the parameter.
-                typ (:py:class:`~MPICalcium.INT`|:py:class:`~MPICalcium.DOUBLE`): Type of MPI data.
+                typ (:py:class:`~MPICoupler.INT`|:py:class:`~MPICoupler.DOUBLE`): Type of MPI data.
             """
 
             self.log(f"send parameter {name!r} (iteration {iteration}): {value}")
-            args = dict(dest=self._other_root, tag=self.tag)
+
             if self.sub_comm.rank == 0:
-                bname = (name + "\x00" * (128 - len(name))).encode("utf-8")
-                self.comm.Send((bname, 128, MPICalcium.CHAR), **args)
-
-                meta = np.array([iteration, 1, typ.size], dtype=np.int32)
-                self.comm.Send((meta, 3, MPICalcium.INT), **args)
-
-                ctype = np.double if typ == MPICalcium.DOUBLE else np.int32
-                value = np.array(value, dtype=ctype)
-                self.comm.Send((value, 1, typ), **args)
+                args = dict(dest=self._other_root, tag=iteration)
+                buf = self._get_buffer(typ)
+                buf[0] = value
+                self.comm.Send(buf, **args)
 
             self.sub_comm.Barrier()
 
@@ -131,7 +136,7 @@ class MPICalcium:
                 iteration (int): Iteration number.
                 name (str): Parameter name.
                 value (int|double): Value of the parameter.
-                typ (:py:class:`~MPICalcium.INT`|:py:class:`~MPICalcium.DOUBLE`): Type of MPI data.
+                typ (:py:class:`~MPICoupler.INT`|:py:class:`~MPICoupler.DOUBLE`): Type of MPI data.
 
             Returns:
                 (int|double): broadcasted value.
@@ -152,28 +157,25 @@ class MPICalcium:
                 iteration (int): Iteration number.
                 name (str): Parameter name.
                 value (int|double): Value of the parameter.
-                typ (:py:class:`~MPICalcium.BOOL`): Type of MPI data.
+                typ (:py:class:`~MPICoupler.BOOL`): Type of MPI data.
 
             Returns:
                 (bool): broadcasted value.
             """
 
-            if typ == MPICalcium.BOOL:
-                value = int(value)
-                typ = MPICalcium.INT
+            self.log(f"allreduce parameter {name!r} (iteration {iteration}): {value}")
 
-                b0 = bool(self.bcast(True, iteration, name, value, typ))
-                b1 = bool(self.bcast(False, iteration, name, value, typ))
+            if typ == MPICoupler.BOOL:
+                buf = self._get_buffer(MPICoupler.INT)
+                buf[0] = int(value)
+                self.comm.Allreduce(MPI.IN_PLACE, buf, op)
+                return bool(buf[0])
 
-                if op == MPICalcium.LAND:
-                    if b0 and b1:
-                        return True
-                    return False
             raise NotImplementedError()
 
     def __init__(self, comm, sub_comm, other_root, logfunc=None):
         self.log = logfunc if logfunc else logger
-        self.cpl_comm = self.CommCalcium(comm, sub_comm, other_root, self.log)
+        self.cpl_comm = self.MPIComm(comm, sub_comm, other_root, self.log)
 
     @property
     def ASTER_COMM_WORLD(self):

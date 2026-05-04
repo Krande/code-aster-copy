@@ -25,7 +25,7 @@ import os
 from ..Utilities import logger, no_new_attributes
 from ..Utilities import medcoupling as MEDC
 from .med_coupler import MEDCoupler
-from .mpi_calcium import MPICalcium
+from .mpi_coupler import MPICoupler
 from .parameters import SchemeParams
 from .ple_utils import pyple_coupler
 
@@ -196,7 +196,7 @@ class ExternalCoupling:
         other_ranks = self._ple.get_app_ranks(with_app)
         self.log(f"allocated ranks for {with_app!r}: {other_ranks}", verbosity=verbosity)
         assert other_ranks, f"Application {with_app!r} not found!"
-        self._MPI = MPICalcium(self._ple.base_comm, self._ple.my_comm, other_ranks[0], self.log)
+        self._MPI = MPICoupler(self._ple.base_comm, self._ple.my_comm, other_ranks[0], self.log)
 
         self.log(
             f"{self._whoami!r} coupler created from #{myranks[0]}, "
@@ -325,7 +325,7 @@ class ExternalCoupling:
 
     @property
     def MPI(self):
-        """MPICalCium: like mpi4py but for coupling."""
+        """MPICoupler: like mpi4py but for coupling."""
         return self._MPI
 
     @property
