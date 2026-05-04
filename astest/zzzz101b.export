@@ -6,9 +6,9 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm zzzz101b.comm D 1
-F med zzzz101b.20 D 20
-F med zzzz101b.21 D 21
-F med zzzz101b.22 D 22
-F med zzzz101b.23 D 23
-#F mess zzzz101b.mess R 6
-#F rmed zzzz101b.rmed R 80
+F libr zzzz101b.20 D 20
+F libr zzzz101b.21 D 21
+F libr zzzz101b.22 D 22
+F libr zzzz101b.23 D 23
+F libr zzzz101b.24 D 24
+F libr zzzz101b.25 D 25
