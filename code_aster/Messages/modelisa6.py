@@ -196,6 +196,11 @@ cata_msg = {
  RIGI_PARASOL n'est pas disponible pour cette modélisation.
 """
     ),
+    41: _(
+        """
+ RIGI_PARASOL : il y a un mélange d'éléments quadratiques et non-quadratiques dans le radier.
+"""
+    ),
     58: _(
         """
  BETA et RHO_CP ne peuvent pas être définies avec des nappes (mot-clé THER_NL).

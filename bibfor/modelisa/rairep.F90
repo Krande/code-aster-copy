@@ -73,10 +73,10 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     character(len=8) :: k8b, nomnoe, typm, nommai
     character(len=24) :: nomgr, magrno, magrma, manoma, matyma
 !
-    aster_logical :: lfonc, trans, is_uniform
+    aster_logical :: lfonc, trans, is_uniform, is_quadratic, is_line_or_biquad
 !
     integer(kind=8) :: npg, posi2, posit(9), ndim2, ipg
-    real(kind=8) :: xg(2, 16), wg(16), dff(3, 16), ff(16), ksi(2)
+    real(kind=8) :: xg(2, 9), wg(9), dff(3, 9), ff(9), ksi(2)
     real(kind=8) :: tan_1(3), tan_2(3), jac
     character(len=8) :: typelem, schema
 
@@ -101,6 +101,8 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     matyma = noma//'.TYPMAIL'
 
     is_uniform = ASTER_FALSE
+    is_quadratic = ASTER_FALSE
+    is_line_or_biquad = ASTER_FALSE
 !
 !   Coordonnées des noeuds
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coord)
@@ -181,10 +183,18 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
                 call utmess('F', 'MODELISA6_29')
             end if
             NbNoeud = NbNoeud+nm
+            if (nm .eq. 6 .or. nm .eq. 8) then
+                is_quadratic = .true.
+            else
+                is_line_or_biquad = .true.
+            end if
         end do
     end do
     ASSERT(appui .ne. -1)
     ASSERT(NbMaille .ne. 0)
+    if (is_quadratic .and. is_line_or_biquad) then
+        call utmess('F', 'MODELISA6_41')
+    end if
 !
     b_1 = to_blas_int(1)
     b_2 = to_blas_int(2)
@@ -304,7 +314,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
                     else if (nm .eq. 6) then
                         schema = 'FPG6'
                     else if (nm .eq. 8 .or. nm .eq. 9) then
-                        schema = 'FPG16'
+                        schema = 'FPG9'
                     else
                         ASSERT(.false.)
                     end if
@@ -341,10 +351,13 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
                     call elrfvf(typelem, ksi, ff)
                     ! ajout des contributions aux noeuds
                     do nn = 1, nm
-                        if ((nm .eq. 3) .or. (nm .eq. 4)) then
+                        if ((nm .eq. 3) .or. (nm .eq. 4) .or. (nm .eq. 9)) then
                             coeno(posit(nn)) = coeno(posit(nn))+ff(nn)*surf
                             surtot = surtot+ff(nn)*surf
                         else
+                            ! pour TR6 et QU8
+                            ! on prend la fonction de forme au carré pour éviter des contributions
+                            ! négative ou nuls
                             coeno(posit(nn)) = coeno(posit(nn))+ff(nn)*ff(nn)*surf
                             surtot = surtot+ff(nn)*ff(nn)*surf
                         end if
