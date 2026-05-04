@@ -75,7 +75,7 @@ before_script:
       - code_aster/pkginfo.py
     expire_in: 6 hours
   rules:
-    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
+    - if: $BUILDTYPE != "code-checking"
 
 .compile:
   interruptible: true
