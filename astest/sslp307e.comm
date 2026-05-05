@@ -26,7 +26,6 @@ YOUNG = 1.0e6
 POISSON = 0.3
 THICKNESS = 1e-3
 PRES = 1.0
-TOLERANCE = 1e-2
 
 
 from numpy import pi, sin, sinh, cosh
@@ -60,7 +59,11 @@ def w_(x, y, NB: int = 101):
     return PRES * s
 
 
-for niveau in range(4, 6):
+list_error = [4.91e-03, 1.23e-03, 3.04e-04]
+
+for i, niveau in enumerate(range(2, 5)):
+
+    tolerance = list_error[i]
 
     # NUMERICAL COMPUTATION
 
@@ -107,12 +110,12 @@ for niveau in range(4, 6):
     # ERROR COMPUTATION
     diff = w_analytical - w_numerical
     error = diff.norm("NORM_2") / w_analytical.norm("NORM_2")
-    if not (error <= TOLERANCE):
+    if not (error <= tolerance):
         test.assertTrue(
             False,
-            msg=f"{error:.3e} >> {TOLERANCE} for DZ. The thickness of the fine mesh is {THICKNESS}.",
+            msg=f"{error:.3e} >> {tolerance} for DZ. The thickness of the fine mesh is {THICKNESS}.",
         )
     else:
-        test.assertTrue(True, msg=f"{error:.3e} << {TOLERANCE} for DZ.")
+        test.assertTrue(True, msg=f"{error:.3e} << {tolerance} for DZ.")
 
 FIN()
