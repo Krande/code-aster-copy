@@ -33,7 +33,6 @@ subroutine filter_rhs(rsolu, nume_equa)
 !-----------------------------------------------------------------------
     integer(kind=8) :: rang, nloc, ieq, iexi
     mpi_int :: mrank
-    integer(kind=8), dimension(:), pointer :: delg => null()
     integer(kind=8), dimension(:), pointer :: nequ => null()
     integer(kind=8), dimension(:), pointer :: pddl => null()
 !-----------------------------------------------------------------------
@@ -42,13 +41,12 @@ subroutine filter_rhs(rsolu, nume_equa)
     call jeexin(nume_equa//'.PDDL', iexi)
     if (iexi .ne. 0) then
         call jeveuo(nume_equa//'.NEQU', 'L', vi=nequ)
-        call jeveuo(nume_equa//'.DELG', 'L', vi=delg)
         call jeveuo(nume_equa//'.PDDL', 'L', vi=pddl)
         call asmpi_info(rank=mrank)
         rang = to_aster_int(mrank)
         nloc = nequ(1)
         do ieq = 1, nloc
-            if (delg(ieq) .ge. 0d0 .and. pddl(ieq) .ne. rang) then
+            if (pddl(ieq) .ne. rang) then
                 rsolu(ieq) = 0.d0
             end if
         end do

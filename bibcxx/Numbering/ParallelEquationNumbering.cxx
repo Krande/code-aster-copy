@@ -42,6 +42,7 @@ ParallelEquationNumbering::ParallelEquationNumbering( const std::string &baseNam
     : EquationNumbering( baseName ),
       _localToGlobal( JeveuxVectorLong( getName() + ".NULG" ) ),
       _localToRank( JeveuxVectorLong( getName() + ".PDDL" ) ),
+      _globalDofNumIds( JeveuxVectorLong( getName() + ".LILT" ) ),
       _joints( nullptr ) {};
 
 void ParallelEquationNumbering::_buildGlobal2LocalMap() {

@@ -180,6 +180,9 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
             }
         }
 
+        if ( joints.size() == 0 ) {
+            joints.push_back( rank );
+        }
         _joints->setOppositeDomains( joints );
         _joints->setSendedElements( send );
         _joints->setReceivedElements( recv );
