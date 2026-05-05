@@ -188,17 +188,17 @@ cata_msg = {
     ),
     39: _(
         """
- RIGI_PARASOL n'est pas disponible pour le modèle COQUE_3D.
+ %(k1)s n'est pas disponible pour le modèle COQUE_3D.
 """
     ),
     40: _(
         """
- RIGI_PARASOL n'est pas disponible pour cette modélisation.
+ %(k1)s n'est pas disponible pour cette modélisation.
 """
     ),
     41: _(
         """
- RIGI_PARASOL : il y a un mélange d'éléments quadratiques et non-quadratiques dans le radier.
+ %(k1)s : il y a un mélange d'éléments quadratiques et non-quadratiques dans le radier.
 """
     ),
     58: _(

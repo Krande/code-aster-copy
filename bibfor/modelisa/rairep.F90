@@ -110,7 +110,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     else
         ASSERT(ASTER_FALSE)
     end if
-        
+
     is_quadratic = ASTER_FALSE
     is_line_or_biquad = ASTER_FALSE
 !
@@ -174,7 +174,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
             end if
             call jenuno(jexnum('&CATA.TE.NOMTE', zi(jdme-1+num_maille)), ktyelm)
             if ((ktyelm .eq. "MEC3TR7H") .or. (ktyelm .eq. "MEC3QU9H")) then
-                call utmess('F', 'MODELISA6_39')
+                call utmess('F', 'MODELISA6_39', sk='RIGI_GRILLE')
             end if
 
             NbMaille = NbMaille+1
@@ -203,7 +203,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     ASSERT(appui .ne. -1)
     ASSERT(NbMaille .ne. 0)
     if (is_quadratic .and. is_line_or_biquad) then
-        call utmess('F', 'MODELISA6_41')
+        call utmess('F', 'MODELISA6_41', sk='RIGI_GRILLE')
     end if
 !
     b_1 = to_blas_int(1)
@@ -290,7 +290,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
                 else if (nm .eq. 9) then
                     call jenuno(jexnum('&CATA.TE.NOMTE', zi(jdme-1+num_maille)), ktyelm)
                     if (ktyelm .ne. "MECA_FACE9") then
-                        call utmess('F', 'MODELISA6_40')
+                        call utmess('F', 'MODELISA6_40', sk='RIGI_GRILLE')
                     end if
                     typelem = 'QU9'
                 else
