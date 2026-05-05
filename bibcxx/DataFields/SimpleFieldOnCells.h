@@ -207,9 +207,15 @@ class SimpleFieldOnCells : public DataField {
 
     /**
      * @brief Constructeur
+
+     */
+    SimpleFieldOnCells() = delete;
+
+    /**
+     * @brief Constructeur
      * @param name Nom Jeveux du champ aux éléments
      */
-    SimpleFieldOnCells( const std::string name )
+    SimpleFieldOnCells( const std::string name, const BaseMeshPtr mesh = nullptr )
         : DataField( name, "CHAM_ELEM_S" ),
           _descriptor( JeveuxVectorChar8( getName() + ".CESK" ) ),
           _size( JeveuxVectorLong( getName() + ".CESD" ) ),
@@ -220,18 +226,10 @@ class SimpleFieldOnCells : public DataField {
           _nbComp( 0 ),
           _nbPt( 0 ),
           _nbSpt( 0 ),
-          _mesh( nullptr ) {};
-
-    /**
-     * @brief Constructeur
-
-     */
-    SimpleFieldOnCells() = delete;
+          _mesh( mesh ) {};
 
     SimpleFieldOnCells( const BaseMeshPtr mesh )
-        : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ) {
-        _mesh = mesh;
-    };
+        : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ), mesh ) {};
 
     SimpleFieldOnCells( const BaseMeshPtr mesh, const std::string &loc, const std::string &quantity,
                         const VectorString &comp, bool zero = false )
@@ -275,19 +273,15 @@ class SimpleFieldOnCells : public DataField {
         build();
     }
 
-    BaseMeshPtr getMesh() const { return _mesh; };
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    SimpleFieldOnCells( const py::tuple &tup )
+        : SimpleFieldOnCells( tup[0].cast< std::string >(), tup[1].cast< BaseMeshPtr >() ) {
+        build();
+    };
 
-    void setMesh( const BaseMeshPtr mesh ) {
-        if ( mesh ) {
-            if ( _mesh ) {
-                if ( _mesh != mesh ) {
-                    raiseAsterError( "Incompatible meshes." );
-                }
-            } else {
-                _mesh = mesh;
-            }
-        }
-    }
+    py::tuple _getState() const { return py::make_tuple( getName(), getMesh() ); };
+
+    BaseMeshPtr getMesh() const { return _mesh; };
 
     void allocate( const std::string &loc, const std::string &quantity, const VectorString &comp,
                    const ASTERINTEGER &nbPG, ASTERINTEGER nbSP = 1, bool zero = false ) {

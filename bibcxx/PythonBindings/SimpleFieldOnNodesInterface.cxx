@@ -31,7 +31,6 @@
 void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
     py::class_< SimpleFieldOnNodesReal, SimpleFieldOnNodesRealPtr, DataField >(
         mod, "SimpleFieldOnNodesReal" )
-        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, std::string > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr > ),
               py::arg( "mesh" ) )
         .def(
@@ -41,6 +40,8 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr, std::string,
                                          VectorString, bool > ),
               py::arg( "mesh" ), py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "prol_zero" ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, const py::tuple & > ) )
+        .def( define_pickling< SimpleFieldOnNodesReal >() )
         .def(
             "__getitem__", +[]( const SimpleFieldOnNodesReal &v,
                                 const PairLong &i ) { return v.operator()( i.first, i.second ); } )
@@ -67,14 +68,6 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
                 cmps [list[str]]: list of components.
             )",
               py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "zero" ) = false )
-        .def( "setMesh", &SimpleFieldOnNodesReal::setMesh,
-              R"(
-            Set mesh.
-
-            Arguments:
-                mesh [BaseMesh]: mesh to set.
-            )",
-              py::arg( "mesh" ) )
         .def(
             "toFieldOnNodes",
             []( const SimpleFieldOnNodesRealPtr &f ) { return toFieldOnNodes( f ); },
@@ -265,24 +258,16 @@ Returns:
 
     py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataField >(
         mod, "SimpleFieldOnNodesComplex" )
-        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex, std::string > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex, BaseMeshPtr, std::string,
                                          VectorString, bool > ) )
-
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex, const py::tuple & > ) )
+        .def( define_pickling< SimpleFieldOnNodesComplex >() )
         .def(
             "__getitem__", +[]( const SimpleFieldOnNodesComplex &v,
                                 const PairLong &i ) { return v.operator()( i.first, i.second ); } )
         .def(
             "__setitem__", +[]( SimpleFieldOnNodesComplex &v, const PairLong &i,
                                 ASTERCOMPLEX f ) { return v.operator()( i.first, i.second ) = f; } )
-        .def( "setMesh", &SimpleFieldOnNodesComplex::setMesh,
-              R"(
-            Set mesh.
-
-            Arguments:
-                mesh [BaseMesh]: mesh to set.
-            )",
-              py::arg( "mesh" ) )
         .def( "toNumpy", &SimpleFieldOnNodesComplex::toNumpy,
               R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )

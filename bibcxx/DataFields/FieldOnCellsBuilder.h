@@ -84,7 +84,8 @@ FieldOnCellsPtrBuilder( const FiniteElementDescriptorPtr FEDesc, const std::stri
             carele = carael->getName();
         }
 
-        auto _DCEL = std::make_shared< SimpleFieldOnCellsLong >( cham_elem->getName() );
+        auto _DCEL =
+            std::make_shared< SimpleFieldOnCellsLong >( cham_elem->getName(), FEDesc->getMesh() );
         CALLO_CESVAR( carele, comporName, cham_elem->getDescription()->getName(),
                       _DCEL->getName() );
         dcel = _DCEL->getName();

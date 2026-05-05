@@ -31,7 +31,6 @@
 void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
     py::class_< SimpleFieldOnCellsReal, SimpleFieldOnCellsRealPtr, DataField >(
         mod, "SimpleFieldOnCellsReal" )
-        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr > ),
               py::arg( "mesh" ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string,
@@ -55,6 +54,8 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
                                    VectorString, const VectorInt &, ASTERINTEGER, bool > ),
               py::arg( "mesh" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ),
               py::arg( "nbPoints" ), py::arg( "nbSubPoints" ), py::arg( "prol_zero" ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, const py::tuple & > ) )
+        .def( define_pickling< SimpleFieldOnCellsReal >() )
         .def(
             "__getitem__",
             +[]( const SimpleFieldOnCellsReal &v, const VectorLong &i ) {
@@ -73,14 +74,6 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
 
                 return v( i[0], i[1], i[2], i[3] ) = f;
             } )
-        .def( "setMesh", &SimpleFieldOnCellsReal::setMesh,
-              R"(
-            Set mesh.
-
-            Arguments:
-                mesh [BaseMesh]: mesh to set.
-            )",
-              py::arg( "mesh" ) )
         .def( "getValue", &SimpleFieldOnCellsReal::getValue, py::return_value_policy::copy, R"(
 Returns the value of the `icmp` component of the field on the `ima` cell,
 at the `ipt` point, at the `ispt` sub-point.

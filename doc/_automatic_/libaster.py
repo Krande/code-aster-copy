@@ -2589,11 +2589,12 @@ class FiberGeometry(DataStructure):
 # class DataField in libaster
 
 
-class DataField(DataStructure):
+class DataField(DSWithCppPickling):
     pass
 
     # Method resolution order:
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -2629,6 +2630,7 @@ class FieldOnCellsReal(DataField):
     # Method resolution order:
     #     FieldOnCellsReal
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -2641,6 +2643,9 @@ class FieldOnCellsReal(DataField):
     def __getitem__(self, arg0):
         pass
 
+    def __getstate__(self):
+        pass
+
     def __iadd__(self, arg0):
         pass
 
@@ -2649,15 +2654,15 @@ class FieldOnCellsReal(DataField):
 
         1. __init__(self: libaster.FieldOnCellsReal) -> None
 
-        2. __init__(self: libaster.FieldOnCellsReal, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnCellsReal, arg0: Model) -> None
 
-        3. __init__(self: libaster.FieldOnCellsReal, arg0: Model) -> None
+        3. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str) -> None
 
-        4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str) -> None
+        4. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
 
-        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
+        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
 
-        6. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
+        6. __init__(self: libaster.FieldOnCellsReal, arg0: tuple) -> None
 
         7. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty, elem_char: libaster.ElementaryCharacteristics) -> None
 
@@ -2682,6 +2687,9 @@ class FieldOnCellsReal(DataField):
         pass
 
     def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def __sub__(self, arg0):
@@ -2915,6 +2923,7 @@ class FieldOnCellsComplex(DataField):
     # Method resolution order:
     #     FieldOnCellsComplex
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -2927,6 +2936,9 @@ class FieldOnCellsComplex(DataField):
     def __getitem__(self, arg0):
         pass
 
+    def __getstate__(self):
+        pass
+
     def __iadd__(self, arg0):
         pass
 
@@ -2935,9 +2947,9 @@ class FieldOnCellsComplex(DataField):
 
         1. __init__(self: libaster.FieldOnCellsComplex) -> None
 
-        2. __init__(self: libaster.FieldOnCellsComplex, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
 
-        3. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FiniteElementDescriptor, arg1: str, arg2: str) -> None
+        3. __init__(self: libaster.FieldOnCellsComplex, arg0: tuple) -> None
 
         4. __init__(self: libaster.FieldOnCellsComplex, arg0: libaster.FieldOnCellsComplex) -> None
         """
@@ -2955,6 +2967,9 @@ class FieldOnCellsComplex(DataField):
         pass
 
     def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def __sub__(self, arg0):
@@ -3085,6 +3100,7 @@ class FieldOnCellsLong(DataField):
     # Method resolution order:
     #     FieldOnCellsLong
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -3097,6 +3113,9 @@ class FieldOnCellsLong(DataField):
     def __getitem__(self, arg0):
         pass
 
+    def __getstate__(self):
+        pass
+
     def __iadd__(self, arg0):
         pass
 
@@ -3105,7 +3124,7 @@ class FieldOnCellsLong(DataField):
 
         1. __init__(self: libaster.FieldOnCellsLong) -> None
 
-        2. __init__(self: libaster.FieldOnCellsLong, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnCellsLong, arg0: tuple) -> None
 
         3. __init__(self: libaster.FieldOnCellsLong, arg0: libaster.FieldOnCellsLong) -> None
         """
@@ -3123,6 +3142,9 @@ class FieldOnCellsLong(DataField):
         pass
 
     def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def __sub__(self, arg0):
@@ -3222,21 +3244,28 @@ class FieldOnCellsChar8(DataField):
     # Method resolution order:
     #     FieldOnCellsChar8
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.FieldOnCellsChar8) -> None
 
-        2. __init__(self: libaster.FieldOnCellsChar8, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnCellsChar8, arg0: tuple) -> None
 
         3. __init__(self: libaster.FieldOnCellsChar8, arg0: libaster.FieldOnCellsChar8) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def build(self, feds=[]):
         pass
@@ -3268,6 +3297,7 @@ class FieldOnNodesReal(DataField):
     # Method resolution order:
     #     FieldOnNodesReal
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -3278,6 +3308,9 @@ class FieldOnNodesReal(DataField):
         pass
 
     def __getitem__(self, arg0):
+        pass
+
+    def __getstate__(self):
         pass
 
     def __iadd__(self, arg0):
@@ -3291,15 +3324,15 @@ class FieldOnNodesReal(DataField):
 
         1. __init__(self: libaster.FieldOnNodesReal) -> None
 
-        2. __init__(self: libaster.FieldOnNodesReal, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.FieldOnNodesReal) -> None
 
-        3. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.FieldOnNodesReal) -> None
+        3. __init__(self: libaster.FieldOnNodesReal, arg0: Model) -> None
 
-        4. __init__(self: libaster.FieldOnNodesReal, arg0: Model) -> None
+        4. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
 
-        5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
+        5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.EquationNumbering) -> None
 
-        6. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.EquationNumbering) -> None
+        6. __init__(self: libaster.FieldOnNodesReal, arg0: tuple) -> None
 
         7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
 
@@ -3327,6 +3360,9 @@ class FieldOnNodesReal(DataField):
         pass
 
     def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def __sub__(self, arg0):
@@ -3607,6 +3643,7 @@ class FieldOnNodesComplex(DataField):
     # Method resolution order:
     #     FieldOnNodesComplex
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -3616,23 +3653,29 @@ class FieldOnNodesComplex(DataField):
     def __getitem__(self, arg0):
         pass
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.FieldOnNodesComplex) -> None
 
-        2. __init__(self: libaster.FieldOnNodesComplex, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.FieldOnNodesComplex) -> None
 
-        3. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.FieldOnNodesComplex) -> None
+        3. __init__(self: libaster.FieldOnNodesComplex, arg0: Model) -> None
 
-        4. __init__(self: libaster.FieldOnNodesComplex, arg0: Model) -> None
+        4. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.BaseDOFNumbering) -> None
 
-        5. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.BaseDOFNumbering) -> None
+        5. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.EquationNumbering) -> None
 
-        6. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.EquationNumbering) -> None
+        6. __init__(self: libaster.FieldOnNodesComplex, arg0: tuple) -> None
         """
 
     def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def build(self, mesh=None):
@@ -3813,23 +3856,30 @@ class FieldOnNodesLong(DataField):
     # Method resolution order:
     #     FieldOnNodesLong
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.FieldOnNodesLong) -> None
 
-        2. __init__(self: libaster.FieldOnNodesLong, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnNodesLong, arg0: libaster.FieldOnNodesLong) -> None
 
-        3. __init__(self: libaster.FieldOnNodesLong, arg0: libaster.FieldOnNodesLong) -> None
+        3. __init__(self: libaster.FieldOnNodesLong, arg0: libaster.BaseDOFNumbering) -> None
 
-        4. __init__(self: libaster.FieldOnNodesLong, arg0: libaster.BaseDOFNumbering) -> None
+        4. __init__(self: libaster.FieldOnNodesLong, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def build(self, mesh=None):
         pass
@@ -3856,23 +3906,30 @@ class FieldOnNodesChar8(DataField):
     # Method resolution order:
     #     FieldOnNodesChar8
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.FieldOnNodesChar8) -> None
 
-        2. __init__(self: libaster.FieldOnNodesChar8, arg0: str) -> None
+        2. __init__(self: libaster.FieldOnNodesChar8, arg0: libaster.FieldOnNodesChar8) -> None
 
-        3. __init__(self: libaster.FieldOnNodesChar8, arg0: libaster.FieldOnNodesChar8) -> None
+        3. __init__(self: libaster.FieldOnNodesChar8, arg0: libaster.BaseDOFNumbering) -> None
 
-        4. __init__(self: libaster.FieldOnNodesChar8, arg0: libaster.BaseDOFNumbering) -> None
+        4. __init__(self: libaster.FieldOnNodesChar8, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def build(self, mesh=None):
         pass
@@ -3923,19 +3980,26 @@ class ConstantFieldOnCellsReal(DataField):
     # Method resolution order:
     #     ConstantFieldOnCellsReal
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.ConstantFieldOnCellsReal, arg0: libaster.BaseMesh) -> None
 
-        2. __init__(self: libaster.ConstantFieldOnCellsReal, arg0: str, arg1: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.ConstantFieldOnCellsReal, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getMesh(self):
         pass
@@ -3974,19 +4038,26 @@ class ConstantFieldOnCellsChar16(DataField):
     # Method resolution order:
     #     ConstantFieldOnCellsChar16
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.ConstantFieldOnCellsChar16, arg0: libaster.BaseMesh) -> None
 
-        2. __init__(self: libaster.ConstantFieldOnCellsChar16, arg0: str, arg1: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.ConstantFieldOnCellsChar16, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getMesh(self):
         pass
@@ -4001,19 +4072,26 @@ class ConstantFieldOnCellsLong(DataField):
     # Method resolution order:
     #     ConstantFieldOnCellsLong
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.ConstantFieldOnCellsLong, arg0: libaster.BaseMesh) -> None
 
-        2. __init__(self: libaster.ConstantFieldOnCellsLong, arg0: str, arg1: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.ConstantFieldOnCellsLong, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getMesh(self):
         pass
@@ -4028,6 +4106,7 @@ class SimpleFieldOnCellsReal(DataField):
     # Method resolution order:
     #     SimpleFieldOnCellsReal
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -4037,25 +4116,31 @@ class SimpleFieldOnCellsReal(DataField):
     def __getitem__(self, arg0):
         pass
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
+        1. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh) -> None
 
-        2. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str]) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str]) -> None
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], prol_zero: bool) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], prol_zero: bool) -> None
+        4. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int) -> None
 
-        5. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int) -> None
+        5. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int, prol_zero: bool) -> None
 
-        6. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int, prol_zero: bool) -> None
+        6. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: list[int], nbSubPoints: int, prol_zero: bool) -> None
 
-        7. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: list[int], nbSubPoints: int, prol_zero: bool) -> None
+        7. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: tuple) -> None
         """
 
     def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def allocate(self, loc, quantity, cmps, nbPG, nbSP=1, zero=False):
@@ -4231,13 +4316,6 @@ class SimpleFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field restricted.
         """
 
-    def setMesh(self, mesh):
-        """Set mesh.
-
-        Arguments:
-            mesh [BaseMesh]: mesh to set.
-        """
-
     def setValue(self, *args, **kwargs):
         """Overloaded function.
 
@@ -4346,6 +4424,7 @@ class SimpleFieldOnNodesReal(DataField):
     # Method resolution order:
     #     SimpleFieldOnNodesReal
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -4360,16 +4439,19 @@ class SimpleFieldOnNodesReal(DataField):
         2. __getitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, str]) -> float
         """
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
+        1. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh) -> None
 
-        2. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
+        3. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str], prol_zero: bool) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str], prol_zero: bool) -> None
+        4. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple) -> None
         """
 
     def __setitem__(self, *args, **kwargs):
@@ -4379,6 +4461,9 @@ class SimpleFieldOnNodesReal(DataField):
 
         2. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, str]) -> float
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def allocate(self, quantity, cmps, zero=False):
         """Allocate the field.
@@ -4463,13 +4548,6 @@ class SimpleFieldOnNodesReal(DataField):
 
         Returns:
             float: norm
-        """
-
-    def setMesh(self, mesh):
-        """Set mesh.
-
-        Arguments:
-            mesh [BaseMesh]: mesh to set.
         """
 
     def setValues(self, *args, **kwargs):
@@ -4590,6 +4668,7 @@ class SimpleFieldOnNodesComplex(DataField):
     # Method resolution order:
     #     SimpleFieldOnNodesComplex
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -4599,15 +4678,21 @@ class SimpleFieldOnNodesComplex(DataField):
     def __getitem__(self, arg0):
         pass
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: str) -> None
+        1. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
 
-        2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
+        2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: tuple) -> None
         """
 
     def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def getComponent(self, arg0):
@@ -4633,13 +4718,6 @@ class SimpleFieldOnNodesComplex(DataField):
 
     def hasComponent(self, arg0):
         pass
-
-    def setMesh(self, mesh):
-        """Set mesh.
-
-        Arguments:
-            mesh [BaseMesh]: mesh to set.
-        """
 
     def toNumpy(self):
         """Returns two numpy arrays with shape ( number_of_components, space_dimension )
@@ -8840,6 +8918,7 @@ class ElementaryTermReal(DataField):
     # Method resolution order:
     #     ElementaryTermReal
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -8913,6 +8992,7 @@ class ElementaryTermComplex(DataField):
     # Method resolution order:
     #     ElementaryTermComplex
     #     DataField
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
