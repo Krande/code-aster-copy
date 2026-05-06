@@ -30,8 +30,9 @@ class FakeSaturne(ExternalCoupling):
         debug (bool): Enable debugging mode (default: "False")".
     """
 
-    def __init__(self, debug=False):
+    def __init__(self, debug=False, use_CFEMDEC=False):
         super().__init__("code_saturne", True, debug)
+        self._use_CFEMDEC = use_CFEMDEC
 
     def setup(self, interface, **params):
         """Initialize the coupling.
@@ -41,12 +42,22 @@ class FakeSaturne(ExternalCoupling):
             params (dict): Parameters of the coupling scheme.
         """
 
-        self._fields_out = [("fluid_pressure", ["FX", "FY", "FZ"], "CELLS")]
-        self._fields_in = [
-            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
-            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
-        ]
         self.set_parameters(params)
+
+        node_typ = "NODES"
+        if self._medcpl.supportOverlap():
+            node_typ = "NODES_FE"
+
+        if self._use_CFEMDEC:
+            fieldType = "NODES_FE"
+        else:
+            fieldType = "CELLS"
+
+        self._fields_out = [("fluid_pressure", ["FX", "FY", "FZ"], fieldType)]
+        self._fields_in = [
+            ("mesh_displacement", ["DX", "DY", "DZ"], node_typ),
+            ("mesh_velocity", ["DX", "DY", "DZ"], node_typ),
+        ]
         self._init_paramedmem(self._other_app, interface)
 
     def set_parameters(self, params):
@@ -57,6 +68,8 @@ class FakeSaturne(ExternalCoupling):
         """
 
         self._params.set_values(params)
+
+        self.MPI.COUPLING_COMM_WORLD.send(0, "ALGOP", int(self._use_CFEMDEC), self.MPI.INT)
 
         nb_step = (self._params.final_time - self._params.init_time) / self._params.delta_t
 

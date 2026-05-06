@@ -46,8 +46,6 @@ class ExternalCoupling:
     _fields_in = _fields_out = None
     _params = None
 
-    __setattr__ = no_new_attributes(object.__setattr__)
-
     def __init__(self, app="code_aster", starter=False, debug=False):
         self._whoami = app
         self._other_app = None
@@ -259,7 +257,6 @@ class ExternalCoupling:
         exit_coupling = self.sync()
 
         stepper = self._params.stepper
-        completed = False
         first_start = self._starter
         istep = 0
 
@@ -342,6 +339,10 @@ class SaturneCoupling(ExternalCoupling):
         debug (bool): Enable debugging mode (default: "False")".
     """
 
+    _use_CFEMDEC = False
+
+    __setattr__ = no_new_attributes(object.__setattr__)
+
     def __init__(self, app="code_aster", debug=False):
         super().__init__(app, False, debug)
 
@@ -370,18 +371,24 @@ class SaturneCoupling(ExternalCoupling):
         if interface[0].getDimension() != 3:
             raise RuntimeError("The mesh has to be 3D.")
 
+        self.set_parameters(params)
+
         # need mecoupling >= 9.16.0 to use InterpKernelDECWithOverlap
         # remove PMM.InterpKernelDEC later
         node_typ = "NODES"
         if self._medcpl.supportOverlap():
             node_typ = "NODES_FE"
 
-        self._fields_in = [("fluid_pressure", ["FX", "FY", "FZ"], "CELLS")]
+        if self._use_CFEMDEC:
+            fieldType = "NODES_FE"
+        else:
+            fieldType = "CELLS"
+
+        self._fields_in = [("fluid_pressure", ["FX", "FY", "FZ"], fieldType)]
         self._fields_out = [
             ("mesh_displacement", ["DX", "DY", "DZ"], node_typ),
             ("mesh_velocity", ["DX", "DY", "DZ"], node_typ),
         ]
-        self.set_parameters(params)
         self._init_paramedmem(self._other_app, interface)
 
     def set_parameters(self, params):
@@ -393,6 +400,8 @@ class SaturneCoupling(ExternalCoupling):
         Returns:
             (bool): True if the computation is a success else False.
         """
+
+        self._use_CFEMDEC = bool(self.MPI.COUPLING_COMM_WORLD.recv(0, "ALGOP", self.MPI.INT))
 
         self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBSSIT", self.MPI.INT)
         self._params.adapt_step = bool(self.MPI.COUPLING_COMM_WORLD.recv(0, "TADAPT", self.MPI.INT))

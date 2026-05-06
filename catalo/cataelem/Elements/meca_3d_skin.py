@@ -439,6 +439,7 @@ class MECA_FACE3(Element):
                 (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PPRES_R, LC.EPRE3DR),
                 (OP.TOU_INI_ELNO.PSIEF_R, LC.ESIG3DR),
+                (OP.TOU_INI_ELNO.PFORC_R, LC.ENFOR3R),
             ),
         ),
     )
