@@ -277,7 +277,7 @@ subroutine te0031(option, nomte)
         end if
 
 ! ----- Update configuration
-        if ((defoComp(6:10) .eq. '_REAC') .or. (defoComp .eq. 'GROT_GDEP')) then
+        if (defoComp .eq. 'GROT_GDEP') then
             do i = 1, nno
                 i1 = 3*(i-1)
                 i2 = 6*(i-1)
@@ -347,7 +347,7 @@ subroutine te0031(option, nomte)
         call tecach('NNO', 'PCOMPOR', 'L', iret, iad=jvCompor)
         if (jvCompor .ne. 0) then
             defoComp = zk16(jvCompor-1+DEFO)
-            if ((defoComp(6:10) .eq. '_REAC') .or. (defoComp .eq. 'GROT_GDEP')) then
+            if (defoComp .eq. 'GROT_GDEP') then
                 call jevech('PDEPLAR', 'L', jvDisp)
                 do i = 1, nno
                     i1 = 3*(i-1)
