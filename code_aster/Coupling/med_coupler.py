@@ -850,13 +850,22 @@ class MEDCoupler:
             *LoadResult*: surface forces load.
         """
 
-        forc_elem = self.import_field(fluid_forces, "FORC_R", "FORC", model)
-
         evol_char = LoadResult()
         evol_char.allocate(1)
         evol_char.setModel(model, 0)
         evol_char.setTime(time, 0)
-        evol_char.setField(forc_elem, "FSUR_3D", 0)
+
+        # convert field
+        if fluid_forces.getTypeOfField() == MEDC.ON_CELLS:
+            forc_elem = self.import_field(fluid_forces, "FORC_R", "FORC", model)
+            evol_char.setField(forc_elem, "FSUR_3D", 0)
+        else:
+            fluid_forces.setInfoOnComponents(["FX", "FY", "FZ"])
+            forc_noeu = self.import_field(fluid_forces, "FORC_R", "FORC")
+            fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
+            forc_elno = forc_noeu.toFieldOnCells(fed, "ELNO")
+            evol_char.setField(forc_elno, "FSUR_3D", 0)
+
         evol_char.build()
 
         return evol_char

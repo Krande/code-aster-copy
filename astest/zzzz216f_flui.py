@@ -80,6 +80,7 @@ def coupled_fluid(cpl, UNITE_MA):
             self.epsilon = 1e-7
             self.depl_prev = None
             self.result = []
+            self._use_CFEMDEC = cpl._use_CFEMDEC
 
         def extent(self, depl):
             fns = depl.toSimpleFieldOnNodes()
@@ -134,9 +135,9 @@ def coupled_fluid(cpl, UNITE_MA):
                 OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=PRES_F, CHAM_PARA=(CHXN, CHINST)
             )
 
-            force = CHNEUT.asPhysicalQuantity("FORC_R", {"X1": "FX", "X2": "FY", "X3": "FZ"})
+            force_noeu = CHNEUT.asPhysicalQuantity("FORC_R", {"X1": "FX", "X2": "FY", "X3": "FZ"})
 
-            force_elem = force.toFieldOnCells(MOFLUIDE.getFiniteElementDescriptor(), "ELEM")
+            force_elem = force_noeu.toFieldOnCells(MOFLUIDE.getFiniteElementDescriptor(), "ELEM")
 
             if i_iter == 0:
                 self.result.append(force_elem)
@@ -144,8 +145,10 @@ def coupled_fluid(cpl, UNITE_MA):
                 self.result[-1] = force_elem
 
             # export
-
-            self._medcpl.set_field("fluid_pressure", force_elem)
+            if self._use_CFEMDEC:
+                self._medcpl.set_field("fluid_pressure", force_noeu)
+            else:
+                self._medcpl.set_field("fluid_pressure", force_elem)
 
             # test convergence:
             has_cvg = False

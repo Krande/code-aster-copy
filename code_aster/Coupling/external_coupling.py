@@ -25,7 +25,7 @@ import os
 from ..Utilities import logger, no_new_attributes
 from ..Utilities import medcoupling as MEDC
 from .med_coupler import MEDCoupler
-from .mpi_calcium import MPICalcium
+from .mpi_coupler import MPICoupler
 from .parameters import SchemeParams
 from .ple_utils import pyple_coupler
 
@@ -45,8 +45,6 @@ class ExternalCoupling:
     _ple = _MPI = _medcpl = None
     _fields_in = _fields_out = None
     _params = None
-
-    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, app="code_aster", starter=False, debug=False):
         self._whoami = app
@@ -196,7 +194,7 @@ class ExternalCoupling:
         other_ranks = self._ple.get_app_ranks(with_app)
         self.log(f"allocated ranks for {with_app!r}: {other_ranks}", verbosity=verbosity)
         assert other_ranks, f"Application {with_app!r} not found!"
-        self._MPI = MPICalcium(self._ple.base_comm, self._ple.my_comm, other_ranks[0], self.log)
+        self._MPI = MPICoupler(self._ple.base_comm, self._ple.my_comm, other_ranks[0], self.log)
 
         self.log(
             f"{self._whoami!r} coupler created from #{myranks[0]}, "
@@ -259,7 +257,6 @@ class ExternalCoupling:
         exit_coupling = self.sync()
 
         stepper = self._params.stepper
-        completed = False
         first_start = self._starter
         istep = 0
 
@@ -325,7 +322,7 @@ class ExternalCoupling:
 
     @property
     def MPI(self):
-        """MPICalCium: like mpi4py but for coupling."""
+        """MPICoupler: like mpi4py but for coupling."""
         return self._MPI
 
     @property
@@ -341,6 +338,10 @@ class SaturneCoupling(ExternalCoupling):
         app (str): Application name (default: "code_aster").
         debug (bool): Enable debugging mode (default: "False")".
     """
+
+    _use_CFEMDEC = False
+
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, app="code_aster", debug=False):
         super().__init__(app, False, debug)
@@ -370,18 +371,24 @@ class SaturneCoupling(ExternalCoupling):
         if interface[0].getDimension() != 3:
             raise RuntimeError("The mesh has to be 3D.")
 
+        self.set_parameters(params)
+
         # need mecoupling >= 9.16.0 to use InterpKernelDECWithOverlap
         # remove PMM.InterpKernelDEC later
         node_typ = "NODES"
         if self._medcpl.supportOverlap():
             node_typ = "NODES_FE"
 
-        self._fields_in = [("fluid_pressure", ["FX", "FY", "FZ"], "CELLS")]
+        if self._use_CFEMDEC:
+            fieldType = "NODES_FE"
+        else:
+            fieldType = "CELLS"
+
+        self._fields_in = [("fluid_pressure", ["FX", "FY", "FZ"], fieldType)]
         self._fields_out = [
             ("mesh_displacement", ["DX", "DY", "DZ"], node_typ),
             ("mesh_velocity", ["DX", "DY", "DZ"], node_typ),
         ]
-        self.set_parameters(params)
         self._init_paramedmem(self._other_app, interface)
 
     def set_parameters(self, params):
@@ -393,6 +400,8 @@ class SaturneCoupling(ExternalCoupling):
         Returns:
             (bool): True if the computation is a success else False.
         """
+
+        self._use_CFEMDEC = bool(self.MPI.COUPLING_COMM_WORLD.recv(0, "ALGOP", self.MPI.INT))
 
         self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBSSIT", self.MPI.INT)
         self._params.adapt_step = bool(self.MPI.COUPLING_COMM_WORLD.recv(0, "TADAPT", self.MPI.INT))

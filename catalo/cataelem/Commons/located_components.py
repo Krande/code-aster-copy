@@ -1365,6 +1365,10 @@ EFOR3DR = LocatedComponents(
     phys=PHY.FORC_R, type="ELGA", location="RIGI", components=("FX", "FY", "FZ")
 )
 
+# For nodal forces (Real-3D)
+ENFOR3R = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY", "FZ"))
+
+
 # For body source in thermic
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
