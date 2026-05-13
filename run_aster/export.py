@@ -88,6 +88,7 @@ from .settings import (
     ParameterListStr,
     ParameterStr,
     Store,
+    subst_vars,
 )
 from .utils import RUNASTER_PLATFORM, RUNASTER_ROOT
 
@@ -239,6 +240,7 @@ class File:
 
     @path.setter
     def path(self, path):
+        path = subst_vars(path)
         if osp.exists(path):
             self._dir = osp.isdir(path)
         self._path = path
