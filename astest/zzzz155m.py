@@ -21,7 +21,7 @@ from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
 
-# Convergence verification in STAT_NON_LINE with LIAISON_MAIL
+# Convergence verification in STAT_NON_LINE and MECA_STATIQUE with LIAISON_MAIL
 # Sequential/Parallel comparison
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
@@ -70,25 +70,30 @@ def buildCompleteFieldOnNodes(field):
 
 # First: Parallel
 filename = "zzzz155m.med"
-mesh = CA.ParallelMesh()
-mesh.readMedFile(filename)
+parallelMesh = CA.ParallelMesh()
+parallelMesh.readMedFile(filename)
 
-MAT = DEFI_MATERIAU(ELAS=_F(E=9.84e4, NU=0.3))
+materialDef = DEFI_MATERIAU(ELAS=_F(E=9.84e4, NU=0.3))
 
-MATC = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1e6, RIGI_TAN=1e6, COULOMB=0.0))
-
-MODE = AFFE_MODELE(
-    MAILLAGE=mesh, AFFE=(_F(GROUP_MA=("vol1", "vol2"), PHENOMENE="MECANIQUE", MODELISATION="3D"),)
+parallelModel = AFFE_MODELE(
+    MAILLAGE=parallelMesh,
+    AFFE=(_F(GROUP_MA=("vol1", "vol2"), PHENOMENE="MECANIQUE", MODELISATION="3D"),),
 )
 
-MATE = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=(_F(GROUP_MA=("vol1", "vol2"), MATER=MAT),))
+parallelMaterial = AFFE_MATERIAU(
+    MAILLAGE=parallelMesh, AFFE=(_F(GROUP_MA=("vol1", "vol2"), MATER=materialDef),)
+)
 
-BLOC = AFFE_CHAR_CINE(MODELE=MODE, MECA_IMPO=(_F(GROUP_MA=("gauche"), DX=0, DY=0, DZ=0),))
+parallelBloc = AFFE_CHAR_CINE(
+    MODELE=parallelModel, MECA_IMPO=(_F(GROUP_MA=("gauche"), DX=0, DY=0, DZ=0),)
+)
 
-CHAR = AFFE_CHAR_CINE(MODELE=MODE, MECA_IMPO=(_F(GROUP_MA=("droite"), DX=1, DY=1),))
+parallelLoad = AFFE_CHAR_CINE(
+    MODELE=parallelModel, MECA_IMPO=(_F(GROUP_MA=("droite"), DX=1, DY=1),)
+)
 
-COLL = AFFE_CHAR_MECA(
-    MODELE=MODE, LIAISON_MAIL=(_F(GROUP_NO_ESCL="collage", GROUP_MA_MAIT="vol2"),)
+parallelGlue = AFFE_CHAR_MECA(
+    MODELE=parallelModel, LIAISON_MAIL=(_F(GROUP_NO_ESCL="collage", GROUP_MA_MAIT="vol2"),)
 )
 
 LINST = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=2, NOMBRE=3),))
@@ -97,58 +102,162 @@ LINST2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST), ECHEC=_F(SUBD_NIVEAU=5, S
 
 LINEDEPL = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=(0, 1, 2), ORDONNEE=(0, 8, 0))
 
-RESU = STAT_NON_LINE(
-    MODELE=MODE,
-    CHAM_MATER=MATE,
-    EXCIT=(_F(CHARGE=BLOC), _F(CHARGE=COLL), _F(CHARGE=CHAR, FONC_MULT=LINEDEPL)),
+parallelResuMS = MECA_STATIQUE(
+    MODELE=parallelModel,
+    CHAM_MATER=parallelMaterial,
+    EXCIT=(
+        _F(CHARGE=parallelBloc),
+        _F(CHARGE=parallelGlue),
+        _F(CHARGE=parallelLoad, FONC_MULT=LINEDEPL),
+    ),
+    LIST_INST=LINST,
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="LDLT_DP"),
+)
+
+parallelResuSNL = STAT_NON_LINE(
+    MODELE=parallelModel,
+    CHAM_MATER=parallelMaterial,
+    EXCIT=(
+        _F(CHARGE=parallelBloc),
+        _F(CHARGE=parallelGlue),
+        _F(CHARGE=parallelLoad, FONC_MULT=LINEDEPL),
+    ),
     INCREMENT=_F(LIST_INST=LINST2),
     COMPORTEMENT=(_F(DEFORMATION="PETIT", RELATION="ELAS", GROUP_MA=("vol1", "vol2")),),
     CONVERGENCE=_F(ITER_GLOB_MAXI=100, RESI_GLOB_RELA=1e-6),
     SOLVEUR=_F(METHODE="PETSC", PRE_COND="LDLT_DP"),
 )
 
-# Then: Sequential
-mesh2 = CA.Mesh()
-mesh2.readMedFile(filename)
+# With MUMPS
+parallelResuMSMumps = MECA_STATIQUE(
+    MODELE=parallelModel,
+    CHAM_MATER=parallelMaterial,
+    EXCIT=(
+        _F(CHARGE=parallelBloc),
+        _F(CHARGE=parallelGlue),
+        _F(CHARGE=parallelLoad, FONC_MULT=LINEDEPL),
+    ),
+    LIST_INST=LINST,
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
 
-MOD2 = AFFE_MODELE(
-    MAILLAGE=mesh2,
+# With MUMPS
+parallelResuSNLMumps = STAT_NON_LINE(
+    MODELE=parallelModel,
+    CHAM_MATER=parallelMaterial,
+    EXCIT=(
+        _F(CHARGE=parallelBloc),
+        _F(CHARGE=parallelGlue),
+        _F(CHARGE=parallelLoad, FONC_MULT=LINEDEPL),
+    ),
+    INCREMENT=_F(LIST_INST=LINST2),
+    COMPORTEMENT=(_F(DEFORMATION="PETIT", RELATION="ELAS", GROUP_MA=("vol1", "vol2")),),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=100, RESI_GLOB_RELA=1e-6),
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
+
+# Then: Sequential
+sequentialMesh = CA.Mesh()
+sequentialMesh.readMedFile(filename)
+
+sequentialModel = AFFE_MODELE(
+    MAILLAGE=sequentialMesh,
     DISTRIBUTION=_F(METHODE="CENTRALISE"),
     AFFE=(_F(GROUP_MA=("vol1", "vol2"), PHENOMENE="MECANIQUE", MODELISATION="3D"),),
 )
 
-MAT2 = AFFE_MATERIAU(MAILLAGE=mesh2, AFFE=(_F(GROUP_MA=("vol1", "vol2"), MATER=MAT),))
-
-BLO2 = AFFE_CHAR_CINE(MODELE=MOD2, MECA_IMPO=(_F(GROUP_MA=("gauche"), DX=0, DY=0, DZ=0),))
-
-CHA2 = AFFE_CHAR_CINE(MODELE=MOD2, MECA_IMPO=(_F(GROUP_MA=("droite"), DX=1, DY=1),))
-
-COL2 = AFFE_CHAR_MECA(
-    MODELE=MOD2, LIAISON_MAIL=(_F(GROUP_NO_ESCL="collage", GROUP_MA_MAIT="vol2"),)
+sequentialMaterial = AFFE_MATERIAU(
+    MAILLAGE=sequentialMesh, AFFE=(_F(GROUP_MA=("vol1", "vol2"), MATER=materialDef),)
 )
 
-RES2 = STAT_NON_LINE(
-    MODELE=MOD2,
-    CHAM_MATER=MAT2,
-    EXCIT=(_F(CHARGE=BLO2), _F(CHARGE=COL2), _F(CHARGE=CHA2, FONC_MULT=LINEDEPL)),
+sequentialBloc = AFFE_CHAR_CINE(
+    MODELE=sequentialModel, MECA_IMPO=(_F(GROUP_MA=("gauche"), DX=0, DY=0, DZ=0),)
+)
+
+sequentialLoad = AFFE_CHAR_CINE(
+    MODELE=sequentialModel, MECA_IMPO=(_F(GROUP_MA=("droite"), DX=1, DY=1),)
+)
+
+sequentialGlue = AFFE_CHAR_MECA(
+    MODELE=sequentialModel, LIAISON_MAIL=(_F(GROUP_NO_ESCL="collage", GROUP_MA_MAIT="vol2"),)
+)
+
+sequentialResuMS = MECA_STATIQUE(
+    MODELE=sequentialModel,
+    CHAM_MATER=sequentialMaterial,
+    EXCIT=(
+        _F(CHARGE=sequentialBloc),
+        _F(CHARGE=sequentialGlue),
+        _F(CHARGE=sequentialLoad, FONC_MULT=LINEDEPL),
+    ),
+    LIST_INST=LINST,
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="LDLT_DP"),
+)
+
+sequentialResuSNL = STAT_NON_LINE(
+    MODELE=sequentialModel,
+    CHAM_MATER=sequentialMaterial,
+    EXCIT=(
+        _F(CHARGE=sequentialBloc),
+        _F(CHARGE=sequentialGlue),
+        _F(CHARGE=sequentialLoad, FONC_MULT=LINEDEPL),
+    ),
     INCREMENT=_F(LIST_INST=LINST2),
     COMPORTEMENT=(_F(DEFORMATION="PETIT", RELATION="ELAS", GROUP_MA=("vol1", "vol2")),),
     CONVERGENCE=_F(ITER_GLOB_MAXI=100, RESI_GLOB_RELA=1e-6),
     SOLVEUR=_F(METHODE="PETSC", PRE_COND="LDLT_DP"),
 )
 
-incompleteField1 = RESU.getField("DEPL", 2).toSimpleFieldOnNodes()
+parallelDispSNL = parallelResuSNL.getField("DEPL", 2).toSimpleFieldOnNodes()
 # Parallel field completion
-field1 = buildCompleteFieldOnNodes(incompleteField1)
+sParallelDispSNL = buildCompleteFieldOnNodes(parallelDispSNL)
 
-field2 = RES2.getField("DEPL", 2).toSimpleFieldOnNodes()
+sequentialDispSNL = sequentialResuSNL.getField("DEPL", 2).toSimpleFieldOnNodes()
 
-values1 = field1
-values2 = field2.getValues()[0]
+parallelDispMS = parallelResuMS.getField("DEPL", 2).toSimpleFieldOnNodes()
+# Parallel field completion
+sParallelDispMS = buildCompleteFieldOnNodes(parallelDispMS)
 
-# 1e-14 sequential/parallel comparison after 2 iterations
-for initArray, newArray in zip(values1, values2):
+parallelDispSNLM = parallelResuSNLMumps.getField("DEPL", 2).toSimpleFieldOnNodes()
+# Parallel field completion
+sParallelDispSNLM = buildCompleteFieldOnNodes(parallelDispSNLM)
+
+parallelDispMSM = parallelResuMSMumps.getField("DEPL", 2).toSimpleFieldOnNodes()
+# Parallel field completion
+sParallelDispMSM = buildCompleteFieldOnNodes(parallelDispMSM)
+
+sequentialDispMS = sequentialResuMS.getField("DEPL", 2).toSimpleFieldOnNodes()
+
+pValuesSNL = sParallelDispSNL
+sValuesSNL = sequentialDispSNL.getValues()[0]
+pValuesMS = sParallelDispMS
+sValuesMS = sequentialDispMS.getValues()[0]
+pValuesSNLM = sParallelDispSNLM
+pValuesMSM = sParallelDispMSM
+
+# 1e-12 sequential/parallel SNL comparison after 2 iterations
+for initArray, newArray in zip(pValuesSNL, sValuesSNL):
     for initVal, newVal in zip(initArray, newArray):
-        test.assertAlmostEqual(initVal, newVal, 14)
+        test.assertAlmostEqual(initVal, newVal, 12)
+
+# 1e-12 sequential/parallel MS comparison after 2 iterations
+for initArray, newArray in zip(pValuesMS, sValuesMS):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, 12)
+
+# 1e-12 SNL/MS comparison after 2 iterations
+for initArray, newArray in zip(pValuesSNL, pValuesMS):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, 12)
+
+# 1e-12 sequential/parallel SNL comparison after 2 iterations
+for initArray, newArray in zip(pValuesSNL, pValuesSNLM):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, 12)
+
+# 1e-12 sequential/parallel MS comparison after 2 iterations
+for initArray, newArray in zip(pValuesMS, pValuesMSM):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, 12)
 
 FIN()

@@ -382,7 +382,7 @@ subroutine vector_update_ghost_values_c(vector, nume_equa, mode)
 !
 ! -- debug
     if (ldebug) then
-        print *, "DEBUG IN vect_asse_update_ghost_values"
+        print *, "DEBUG IN vector_update_ghost_values_c"
         call jeexin(nume_equa//'.NULS', iret)
         if (iret == 0) then
             call crnustd(nume_equa)

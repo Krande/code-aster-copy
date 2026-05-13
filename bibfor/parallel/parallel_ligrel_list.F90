@@ -31,6 +31,7 @@ subroutine parallel_ligrel_list(numeEquZ, base)
 #include "asterfort/jeecra.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
@@ -55,10 +56,10 @@ subroutine parallel_ligrel_list(numeEquZ, base)
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: iLigr, iret, nbLigrTot, iProc, nbLigr, shift
-    integer(kind=8) :: nbProc, rank, count, iNume, hashNb, iLigrT
+    integer(kind=8) :: nbProc, rank, count, iNume, hashNb, iLigrT, ier
     integer(kind=8), allocatable :: v_nbLigr(:)
     integer(kind=8), pointer :: v_lilt(:) => null()
-    character(len=8) :: typeLagr, typeLagrC, mesh
+    character(len=8) :: typeLagr, typeLagrC, mesh, model
     character(len=19) :: numeEqua
     character(len=24) :: modeLoc, idenRela, hash
     character(len=19) :: ligrelName, joints
@@ -78,6 +79,7 @@ subroutine parallel_ligrel_list(numeEquZ, base)
 
     call jeveuo(numeEqua//'.REFN', 'L', vk24=v_refn)
     mesh = v_refn(1)
+    model = v_refn(3)
     call jelira(numeEqua//'.PRNO', 'NMAXOC', ival=nbLigr)
     lParallelMesh = isParallelMesh(mesh)
     if (.not. lParallelMesh) then
@@ -99,11 +101,9 @@ subroutine parallel_ligrel_list(numeEquZ, base)
             do iLigr = 2, nbLigr
                 call jenuno(jexnum(numeEqua//'.LILI', iLigr), ligrelName)
                 call dismoi('JOINTS', ligrelName, 'LIGREL', repk=joints, arret='F')
-                write (6, *) "ligrelName ", ligrelName, iLigr, joints
-                flush (6)
 !               Dans le cas ou le premier ligrel est &MAILLA et le deuxieme est le ligrel de modele
 !               on doit oublier 2 ligrels pour obtenir des ligrels de charges
-                if (joints == ' ') then
+                if (ligrelName(1:8) .eq. model) then
                     if (iLigr .eq. 2) then
                         shift = 2
                         cycle
@@ -112,9 +112,16 @@ subroutine parallel_ligrel_list(numeEquZ, base)
                     end if
                 end if
                 hash = joints//'.HASH'
-                call jeveuo(hash, 'L', vk24=v_hash)
-                call jecroc(jexnom('&&TMP.HASHTABLE', v_hash(1)))
-                v_hash_list(iLigr-shift) = v_hash(1)
+                call jeexin(hash, ier)
+                if (ier .ne. 0) then
+                    call jeveuo(hash, 'L', vk24=v_hash)
+                    call jecroc(jexnom('&&TMP.HASHTABLE', v_hash(1)))
+                    v_hash_list(iLigr-shift) = v_hash(1)
+                else
+!                   Si joints//'.HASH' est absent, on est dans le cas d'une charge séquentielle
+!                   Son nom suffira a l'identifier car elle ne communiquera pas
+                    v_hash_list(iLigr-shift) = ligrelName
+                end if
             end do
 
             if (shift .eq. 2 .and. nbLigr .eq. 2) then

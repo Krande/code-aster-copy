@@ -34,6 +34,7 @@ subroutine crnustd(numddl)
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -568,6 +569,7 @@ subroutine crnustd(numddl)
     call jedetr('&&CRNSTD.NEC2')
     call jedetr('&&CRNSTD.CMP')
     call jedetr('&&CRNSTD.CMP2')
+    call jedetc('V', '&&CRNSTD', 1)
 !
     call jedema()
 #else
