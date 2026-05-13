@@ -153,7 +153,7 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
                 ksp = debsp-1+fib
                 depsm = ddefp(fib)
                 call initParaPoin(kpg, fib, materPara)
-                call vmci1d(materPara, &
+                call nm1dci(materPara, &
                             option, materPoin, &
                             em, ep, &
                             contm(fib), depsm, varim(ivari), &
@@ -166,7 +166,7 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
                 call paeldt(kpg, ksp, fami, 'T', jvMaterCode, materPoin, em, ep, nu, depsth)
                 depsm = ddefp(fib)-depsth
                 call initParaPoin(kpg, fib, materPara)
-                call vmci1d(materPara, &
+                call nm1dci(materPara, &
                             option, materPoin, &
                             em, ep, &
                             contm(fib), depsm, varim(ivari), &
