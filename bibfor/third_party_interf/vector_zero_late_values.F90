@@ -15,45 +15,48 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine filter_rhs(rsolu, nume_equa)
-!
-    implicit none
-!
+subroutine vector_zero_late_values(vector, nume_equa)
 #include "asterf_types.h"
+    implicit none
+#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/vector_update_ghost_values.h"
-    real(kind=8), intent(inout) :: rsolu(*)
+!
+    real(kind=8), intent(inout) :: vector(*)
     character(len=19), intent(in) :: nume_equa
-!-----------------------------------------------------------------------
-    integer(kind=8) :: rang, nloc, ieq, iexi
-    mpi_int :: mrank
+#if defined(ASTER_HAVE_MPI)
+    integer(kind=8) :: ieq, nddl, rang, nbproc
+    mpi_int :: mrank, msize
     integer(kind=8), dimension(:), pointer :: delg => null()
-    integer(kind=8), dimension(:), pointer :: nequ => null()
     integer(kind=8), dimension(:), pointer :: pddl => null()
-!-----------------------------------------------------------------------
+    integer(kind=8), dimension(:), pointer :: nequ => null()
+!
+!----------------------------------------------------------------------
+!
+!----------------------------------------------------------------------
+!
     call jemarq()
 !
-    call jeexin(nume_equa//'.PDDL', iexi)
-    if (iexi .ne. 0) then
-        call jeveuo(nume_equa//'.NEQU', 'L', vi=nequ)
-        call jeveuo(nume_equa//'.DELG', 'L', vi=delg)
-        call jeveuo(nume_equa//'.PDDL', 'L', vi=pddl)
-        call asmpi_info(rank=mrank)
-        rang = to_aster_int(mrank)
-        nloc = nequ(1)
-        do ieq = 1, nloc
-            if (delg(ieq) .ge. 0d0 .and. pddl(ieq) .ne. rang) then
-                rsolu(ieq) = 0.d0
-            end if
-        end do
-        call vector_update_ghost_values(rsolu, nume_equa, "BIDIR")
-    end if
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
+!
+    call jeveuo(nume_equa//'.PDDL', 'L', vi=pddl)
+    call jeveuo(nume_equa//'.NEQU', 'L', vi=nequ)
+    nddl = nequ(1)
+!
+    call jeveuo(nume_equa//'.DELG', 'L', vi=delg)
+    do ieq = 1, nddl
+        if ((delg(ieq) .lt. 0) .and. (pddl(ieq) .ne. rang)) then
+            vector(ieq) = 0.d0
+        end if
+    end do
 !
     call jedema()
+#endif
+!
 end subroutine
