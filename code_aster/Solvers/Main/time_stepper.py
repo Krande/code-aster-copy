@@ -244,6 +244,7 @@ class TimeStepper(Observer, EventSource):
         for _ in range(i):
             del self._times[idx]
             del self._forced[idx]
+            self._last -= 1
 
     def getInitial(self):
         """Returns the initial time (not calculated).
