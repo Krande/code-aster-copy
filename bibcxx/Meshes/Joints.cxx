@@ -113,7 +113,7 @@ void Joints::buildGroup() {
         if ( grpSize > 1 && rankFind ) {
             const aster_comm_t *curACommT = _jointsMPIGroup->getAsterCommunicator();
             aster_comm_t *curAComm = const_cast< aster_comm_t * >( curACommT );
-            AsterMPI::bcast( uniqueHash, minRank, curAComm );
+            AsterMPI::bcast( uniqueHash, 0, curAComm );
         }
         _hashContainer->allocate( 1 );
         ( *_hashContainer )[0] = uniqueHash;

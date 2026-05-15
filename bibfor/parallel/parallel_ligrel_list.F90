@@ -124,31 +124,26 @@ subroutine parallel_ligrel_list(numeEquZ, base)
                 end if
             end do
 
-            if (shift .eq. 2 .and. nbLigr .eq. 2) then
-                call wkvect(numeEqua//'.LILT', base//' V I', 2, vi=v_lilt)
-                v_lilt(1) = 1
-                v_lilt(2) = 2
-            else
-                allocate (v_nbLigr(nbProc))
-                allocate (v_displ(nbProc+1))
-                allocate (v_count(nbProc))
-                call asmpi_allgather_i([nbLigr-shift], mpi_one, v_nbLigr, mpi_one, mpicou)
-                v_displ = 0
-                count = 0
-                do iProc = 1, nbProc
-                    count = count+v_nbLigr(iProc)
-                    v_count(iProc) = to_mpi_int(v_nbLigr(iProc))
-                    v_displ(iProc+1) = to_mpi_int(count)
-                end do
-                allocate (v_recv(count))
-                countSend = to_mpi_int(nbLigr-shift)
-                call asmpi_allgatherv_char24(v_hash_list, countSend, v_recv, v_count, v_displ, &
-                                             mpicou)
-                deallocate (v_nbLigr)
-                deallocate (v_count)
-                deallocate (v_displ)
-                call jedetr('&&TMP.HASHLIST')
+            allocate (v_nbLigr(nbProc))
+            allocate (v_displ(nbProc+1))
+            allocate (v_count(nbProc))
+            call asmpi_allgather_i([nbLigr-shift], mpi_one, v_nbLigr, mpi_one, mpicou)
+            v_displ = 0
+            count = 0
+            do iProc = 1, nbProc
+                count = count+v_nbLigr(iProc)
+                v_count(iProc) = to_mpi_int(v_nbLigr(iProc))
+                v_displ(iProc+1) = to_mpi_int(count)
+            end do
+            allocate (v_recv(count))
+            countSend = to_mpi_int(nbLigr-shift)
+            call asmpi_allgatherv_char24(v_hash_list, countSend, v_recv, v_count, v_displ, &
+                                         mpicou)
+            deallocate (v_nbLigr)
+            deallocate (v_count)
+            deallocate (v_displ)
 
+            if (count .ne. 0) then
                 call jecreo('&&TMP.HASHTABLETOT', 'V N K24')
                 call jeecra('&&TMP.HASHTABLETOT', 'NOMMAX', count)
                 do iLigr = 1, count
@@ -157,8 +152,14 @@ subroutine parallel_ligrel_list(numeEquZ, base)
                         call jecroc(jexnom('&&TMP.HASHTABLETOT', v_recv(iLigr)))
                     end if
                 end do
-                deallocate (v_recv)
+            end if
+            deallocate (v_recv)
 
+            if (shift .eq. 2 .and. nbLigr .eq. 2) then
+                call wkvect(numeEqua//'.LILT', base//' V I', 2, vi=v_lilt)
+                v_lilt(1) = 1
+                v_lilt(2) = 2
+            else
                 call jelira('&&TMP.HASHTABLETOT', 'NOMUTI', ival=hashNb)
                 call wkvect(numeEqua//'.LILT', base//' V I', hashNb+shift, vi=v_lilt)
                 v_lilt(1) = 1
@@ -178,6 +179,7 @@ subroutine parallel_ligrel_list(numeEquZ, base)
                 end do
                 call jedetr('&&TMP.HASHTABLETOT')
             end if
+            call jedetr('&&TMP.HASHLIST')
             call jedetr('&&TMP.HASHTABLE')
         else
             call wkvect(numeEqua//'.LILT', base//' V I', 1, vi=v_lilt)
