@@ -583,25 +583,28 @@ class TimeStepper(Observer, EventSource):
         # last step?
         if self.remaining() <= 1:
             return
-        delta_t = 2.1e12
+        delta_t = 1.0e99
+        first = True
+        changed = False
         currIncr = self.getIncrement()
         for act in self._actions:
             if not isinstance(act, TimeStepper.AdaptAction):
                 continue
-            if delta_t > 2.0e12:
+            if first:
                 logger.info(MessageLog.GetText("I", "ADAPTATION_1"))
-            delta_t = min(delta_t, 1.1e12)
+                first = False
             enabled = act.event.is_raised(delta=delta)
             if enabled:
                 try:
                     dt_i = act.call(timeStepper=self, delta=delta)
                     act.show_status(delta_t=dt_i)
                     delta_t = min(delta_t, dt_i)
+                    changed = True
                 except ValueError:
                     enabled = False
             if not enabled:
                 logger.info(MessageLog.GetText("I", "ADAPTATION_3", valk=act.name))
-        if delta_t < 1.0e12:
+        if changed:
             logger.info(MessageLog.GetText("I", "ADAPTATION_5", valr=delta_t))
             nextIncr = self.getNextIncrement()
             if self.cmp(delta_t, nextIncr) > 0:
@@ -618,7 +621,7 @@ class TimeStepper(Observer, EventSource):
             self._skip_before(new)
             if self.cmp(new, self._times[index]) < 0:
                 self._insert(index, new)
-        elif delta_t < 2.0e12:
+        elif first:
             logger.info(MessageLog.GetText("I", "ADAPTATION_4", valr=currIncr))
         return True
 
