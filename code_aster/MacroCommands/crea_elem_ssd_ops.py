@@ -29,6 +29,7 @@ from ..CodeCommands import (
     MODE_STATIQUE,
     NUME_DDL,
 )
+from ..Messages import UTMESS
 
 
 def crea_elem_ssd_ops(self, **args):

@@ -1549,7 +1549,7 @@ class DynaLineResu:
                 **keywords_hg,
             )
             # retrieve also result in gene basis
-            self.parent.register_result(resgene, self.resu_gene)
+            self.parent.register_result(resu_gene, self.resu_gene)
             __calc_miss = resu_gene
         else:
             __calc_miss = CALC_MISS(

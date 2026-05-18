@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import os
+import sys
 import shutil
 from copy import copy
 from math import atan2, cos, degrees, radians, sin
