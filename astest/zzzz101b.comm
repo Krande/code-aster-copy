@@ -19,15 +19,6 @@
 
 DEBUT(CODE="OUI", IGNORE_ALARM=("MED_83", "CALCULEL4_24"))
 
-from code_aster.Utilities import get_version
-
-# version = get_version().split(".")
-# version = int(f"{int(version[0]):02d}{int(version[1]):02d}{int(version[2]):02d}")
-
-version = "%02d%02d%02d" % tuple([int(x) for x in get_version().split(".")])
-
-print(version)
-
 tr6 = LIRE_MAILLAGE(UNITE=20)
 qu8 = LIRE_MAILLAGE(UNITE=21)
 qu9 = LIRE_MAILLAGE(UNITE=22)
