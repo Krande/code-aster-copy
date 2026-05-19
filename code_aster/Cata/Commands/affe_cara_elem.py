@@ -1499,6 +1499,7 @@ AFFE_CARA_ELEM = OPER(
         FONC_GROUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule), max="**"),
         COEF_GROUP=SIMP(statut="f", typ="R", max="**"),
         REPERE=SIMP(statut="f", typ="TXM", into=("LOCAL", "GLOBAL"), defaut="GLOBAL"),
+        METHODE=SIMP(statut="f", typ="TXM", into=("DIAG", "UNIFORME"), defaut="DIAG"),
         # Pour que tout reste aligné
         CARA=SIMP(
             statut="o",
@@ -1552,6 +1553,7 @@ AFFE_CARA_ELEM = OPER(
         ),
         GROUP_NO_CENTRE=SIMP(statut="o", typ=grno, min=5, max=5),
         OPTION=SIMP(statut="f", typ="TXM", into=("RIGI",), defaut="RIGI"),
+        METHODE=SIMP(statut="f", typ="TXM", into=("DIAG", "UNIFORME"), defaut="DIAG"),
         VALE=SIMP(
             statut="o",
             typ="R",

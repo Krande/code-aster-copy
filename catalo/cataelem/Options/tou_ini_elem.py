@@ -48,6 +48,8 @@ PNEUT_F = OutputParameter(phys=PHY.NEUT_F, type="ELEM")
 
 PNEUT_K8 = OutputParameter(phys=PHY.NEUT_K8, type="ELEM")
 
+PCADISK = OutputParameter(phys=PHY.CADISK_R, type="ELEM")
+
 
 TOU_INI_ELEM = Option(
     para_in=(),
@@ -66,6 +68,7 @@ TOU_INI_ELEM = Option(
         SP.PNEUT_I,
         SP.PDEPLEL,
         PNEUT_K8,
+        PCADISK,
     ),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"),)),
