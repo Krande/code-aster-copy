@@ -36,5 +36,5 @@ SAUT_ELGA = Option(
         # CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "INTSOLPI"))),
     ),
-    comment=""" SAUT DE DEPLACEMENT AUX POINTS DE GAUSS POUR LA MODELISATION INTSOLPIEU """,
+    comment=""" SAUT DE DEPLACEMENT AUX POINTS DE GAUSS POUR LA MODELISATION INTERF_POU """,
 )

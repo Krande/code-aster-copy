@@ -40,7 +40,7 @@ subroutine te0383(option, nomte)
 !
 ! Elementary computation
 !
-! Element: 3D_INTSOLPIEU
+! Element: 3D_INTERF_POU
 !
 ! Options: SAUT_ELGA
 !

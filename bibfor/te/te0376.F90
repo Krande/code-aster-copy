@@ -41,7 +41,7 @@ subroutine te0376(option, nomte)
 !
 ! Elementary computation
 !
-! Element: 3D_INTSOLPIEU
+! Element: 3D_INTERF_POU
 !
 ! Options: FORC_NODA
 !

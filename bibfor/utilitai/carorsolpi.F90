@@ -21,10 +21,10 @@ subroutine carorsolpi(nutyel, ntyele, IsIntsolpi, ino1, ino2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!                           DETECTE S'IL S'AGIT D'UN ELEMENT INTSOLPIEU
+!                           DETECTE S'IL S'AGIT D'UN ELEMENT INTERF_POU
 !
 !   OUT
-!       IsIntsolpi : TRUE s'il s'agit d'un élément intsolpieu
+!       IsIntsolpi : TRUE s'il s'agit d'un élément INTERF_POU
 !       ino1, ino2 : indices des noeuds de la poutre
 !
 ! --------------------------------------------------------------------------------------------------

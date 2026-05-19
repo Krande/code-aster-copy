@@ -282,7 +282,7 @@ def faireTest(
     idOrie, anglvril, sectype, nomComportement, restype, dimp, testOptions, valRegression
 ):
     """
-    Testcase for 3D_INTSOLPIEU element.
+    Testcase for 3D_INTERF_POU element.
 
     testing :
     - element orientation on X (idOrie=0), Y (idOrie=1) or Z (idOrie=2) : MODI_MAILLAGE(ORIE_INTERF_POU)
@@ -393,7 +393,7 @@ def faireTest(
 
     MODELE = AFFE_MODELE(
         MAILLAGE=MA,
-        AFFE=(_F(GROUP_MA=Grma27, PHENOMENE="MECANIQUE", MODELISATION="3D_INTSOLPIEU"),),
+        AFFE=(_F(GROUP_MA=Grma27, PHENOMENE="MECANIQUE", MODELISATION="3D_INTERF_POU"),),
     )
 
     CAREL = AFFE_CARA_ELEM(

@@ -23,7 +23,7 @@ from .cata_comportement import LoiComportement
 loi = LoiComportement(
     nom="SP_CINE",
     lc_type=("MECANIQUE",),
-    doc="""Loi à écrouissage linéaire cinématique pour l'élément d'interface sol-pieu (3D_INTSOLPIEU)""",
+    doc="""Loi à écrouissage linéaire cinématique pour l'élément d'interface sol-pieu (3D_INTERF_POU)""",
     num_lc=2,  # ==> 9502
     nb_vari=3,
     nom_vari=("DEPPLX", "DEPPLY", "DEPPLZ"),

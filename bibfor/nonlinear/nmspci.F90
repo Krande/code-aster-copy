@@ -27,7 +27,7 @@ subroutine nmspci(nno_p, nno_s, vff_p, vff_s, b)
     real(kind=8) :: b(3, nno_s*3+nno_p*6)
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
-!  MATRICE CINEMATIQUE POUR 3D_INTSOLPIEU (EN UN POINT DE GAUSS DONNE)
+!  MATRICE CINEMATIQUE POUR 3D_INTERF_POU (EN UN POINT DE GAUSS DONNE)
 !-----------------------------------------------------------------------
 ! IN  NNO_P  NOMBRE DE NOEUDS DE L'ELEMENT DE POUTRE
 ! IN  NNO_S  NOMBRE DE NOEUDS DE L'ELEMENT DE SOL

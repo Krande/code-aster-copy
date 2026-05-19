@@ -49,7 +49,7 @@ subroutine nmspfn(ndim, nno, nddl, &
     character(len=8), intent(in)   :: matpou
 !
 !-----------------------------------------------------------------------
-!  CALCUL DE FORC_NODA POUR LES ELEMENTS 3D_INTSOLPIEU (TE0376)
+!  CALCUL DE FORC_NODA POUR LES ELEMENTS 3D_INTERF_POU (TE0376)
 !-----------------------------------------------------------------------
 ! IN  NDIM    DIMENSION DU PROBLEME (=3)
 ! IN  NNO     NOMBRE DE NOEUDS TOTAL DE L'ELEMENT

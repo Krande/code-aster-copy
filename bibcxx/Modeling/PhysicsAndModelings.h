@@ -86,7 +86,7 @@ enum Modelings {
     INCO_UPO_3D,
     INTERFACE_3D,
     INTERFACE_S_3D,
-    INTSOLPIEU_3D,
+    INTERF_POU_3D,
     JOINT_3D,
     JOINT_HYME_3D,
     SECH_3D,

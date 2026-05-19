@@ -92,7 +92,7 @@ AFFE_MODELE = OPER(
                     "3D_JOINT_HYME",
                     "3D_INTERFACE",
                     "3D_INTERFACE_S",
-                    "3D_INTSOLPIEU",
+                    "3D_INTERF_POU",
                     "AXIS",
                     "AXIS_FLUI_STRU",
                     "AXIS_FLUI_ABSO",

@@ -20,7 +20,7 @@ subroutine spmats(imater, matint, matpou)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!  Retourne les noms des materiaux des éléments 3D_INTSOLPIEU
+!  Retourne les noms des materiaux des éléments 3D_INTERF_POU
 !
 ! --------------------------------------------------------------------------------------------------
 !   out

@@ -71,7 +71,7 @@ subroutine nmspfm(BEHinteg, typmod, ndim, nno, nddl, nddlsym, &
 !
 !-----------------------------------------------------------------------
 !  CALCUL DE FULL_MECA, RIGI_MECA_TANG, RAPH_MECA
-!      POUR LES ELEMENTS 3D_INTSOLPIEU (TE0366)
+!      POUR LES ELEMENTS 3D_INTERF_POU (TE0366)
 !-----------------------------------------------------------------------
 ! IN  NDIM    DIMENSION DU PROBLEME (=3)
 ! IN  NNO     NOMBRE DE NOEUDS TOTAL DE L'ELEMENT

@@ -449,15 +449,15 @@ class NomChamIntoGenerator:
             "SECH": ((), tr("Séchage aux noeuds")),
             "SAUT_ELGA": (
                 ("lin", "nonlin", "dyna"),
-                tr("Sauts de déplacement aux points de Gauss pour la modélisation *_INTSOLPIEU"),
+                tr("Sauts de déplacement aux points de Gauss pour la modélisation *_INTERF_POU"),
             ),
             "SAUT_ELNO": (
                 ("lin", "nonlin", "dyna"),
-                tr("Sauts de déplacement aux noeuds pour la modélisation *_INTSOLPIEU"),
+                tr("Sauts de déplacement aux noeuds pour la modélisation *_INTERF_POU"),
             ),
             "SAUT_NOEU": (
                 ("lin", "nonlin", "dyna"),
-                tr("Sauts de déplacement moyennés aux noeuds pour la modélisation *_INTSOLPIEU"),
+                tr("Sauts de déplacement moyennés aux noeuds pour la modélisation *_INTERF_POU"),
             ),
         },
         Phenomenon.PROPRIETES: {

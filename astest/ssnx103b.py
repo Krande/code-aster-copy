@@ -110,7 +110,7 @@ def testLoi(nombrePas=1, nomComportement="SP_ELAS", optionSurfCharge=False):
 
     MODELE = AFFE_MODELE(
         MAILLAGE=MA,
-        AFFE=(_F(GROUP_MA="Hexa27", PHENOMENE="MECANIQUE", MODELISATION="3D_INTSOLPIEU"),),
+        AFFE=(_F(GROUP_MA="Hexa27", PHENOMENE="MECANIQUE", MODELISATION="3D_INTERF_POU"),),
     )
 
     CAREL = AFFE_CARA_ELEM(

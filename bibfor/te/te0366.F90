@@ -43,7 +43,7 @@ subroutine te0366(option, nomte)
 !
 ! Elementary computation
 !
-! Element: 3D_INTSOLPIEU
+! Element: 3D_INTERF_POU
 !
 ! Options: FULL_MECA_*, RIGI_MECA_*, RAPH_MECA
 !

@@ -48,7 +48,7 @@ subroutine nmspse(ndim, nno, nddl, &
     character(len=8), intent(in)   :: matpou
 !
 !-----------------------------------------------------------------------
-!  CALCUL DE SAUT_ELGA POUR LES ELEMENTS 3D_INTSOLPIEU (TE0383)
+!  CALCUL DE SAUT_ELGA POUR LES ELEMENTS 3D_INTERF_POU (TE0383)
 !-----------------------------------------------------------------------
 ! IN  NDIM    DIMENSION DU PROBLEME (=3)
 ! IN  NNO     NOMBRE DE NOEUDS TOTAL DE L'ELEMENT

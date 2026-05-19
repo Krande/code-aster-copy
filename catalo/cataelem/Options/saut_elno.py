@@ -42,5 +42,5 @@ SAUT_ELNO = Option(
         # CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "INTSOLPI"))),
     ),
-    comment="""  SAUT_ELNO : SAUT DE DEPLACEMENT PAR ELEM AUX NDS POUR MODELE INTSOLPIEU  """,
+    comment="""  SAUT_ELNO : SAUT DE DEPLACEMENT PAR ELEM AUX NDS POUR MODELE INTERF_POU  """,
 )

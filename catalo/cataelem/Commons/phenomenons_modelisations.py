@@ -1422,7 +1422,7 @@ phen.add(
 )
 
 phen.add(
-    "3D_INTSOLPIEU",
+    "3D_INTERF_POU",
     Modelisation(
         dim=(3, 3),
         code="3SP",

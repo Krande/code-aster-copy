@@ -23,7 +23,7 @@ from .cata_comportement import LoiComportement
 loi = LoiComportement(
     nom="SP_ELAS",
     lc_type=("MECANIQUE",),
-    doc="""Loi élastique pour l'élément d'interface sol-pieu (3D_INTSOLPIEU)""",
+    doc="""Loi élastique pour l'élément d'interface sol-pieu (3D_INTERF_POU)""",
     num_lc=1,  # ==> 9501
     nb_vari=1,
     nom_vari=("VIDE"),
