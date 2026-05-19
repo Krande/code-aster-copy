@@ -1,0 +1,166 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy as np
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
+
+### Model parameters
+freq = 4.0  # [Hz]
+omega = 2 * np.pi * freq  # [rad/s]
+Iy = 1.0  # [kg.m2/rad]
+kry = omega**2 * Iy  # [N.m/rad]
+
+# Nonlinear behavior law parameters
+nonlinear = True
+limy_ry = 50.0
+kcin_ry = 0.5 * kry
+
+### Time integration parameters
+dt = 5e-3  # [s]
+t0 = 0.0  # [s]
+tf = 1.0  # [s]
+
+### Load parameters
+freq_load = 3.5  # [Hz]
+omega_load = 2 * np.pi * freq_load  # [rad/s]
+my0 = 70.0  # [N.m]
+phi0 = 0.0  # [rad]
+
+### Mesh
+MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MA = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=(_F(NOM_GROUP_MA="MB", GROUP_NO="B"),))
+
+### Model
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA=("RESSORTS"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA=("MB"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
+
+### Elementary characteristics
+CARA_ELE = AFFE_CARA_ELEM(
+    MODELE=MO,
+    DISCRET=(
+        _F(CARA="K_TR_D_L", GROUP_MA="K1", VALE=(0, 0, 0, 0, kry, 0), REPERE="LOCAL"),
+        _F(CARA="M_TR_D_N", GROUP_MA="MB", VALE=(0, 0, Iy, 0, 0, 0, 0, 0, 0, 0), REPERE="LOCAL"),
+    ),
+)
+
+### Material
+if nonlinear:
+    MATER = DEFI_MATERIAU(DIS_ECRO_CINE=_F(LIMY_RY=limy_ry, KCIN_RY=kcin_ry))
+else:
+    MATER = DEFI_MATERIAU(ELAS=_F(E=1.0, RHO=1.0, NU=0.25))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA="RESSORTS", MATER=MATER))
+
+### Boundary conditions
+LIAISON = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(TOUT="OUI", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRZ=0.0), _F(GROUP_NO="A", DRY=0.0)),
+)
+
+### Imposed load
+LOAD = AFFE_CHAR_MECA(MODELE=MO, FORCE_NODALE=_F(GROUP_NO="B", MY=1.0))
+
+F_MULT0 = FORMULE(
+    VALE="my0*sin(omega_load*INST+phi0)", my0=my0, phi0=phi0, omega_load=omega_load, NOM_PARA="INST"
+)
+
+
+### Time discretization
+L_INST = DEFI_LIST_REEL(DEBUT=t0, INTERVALLE=(_F(JUSQU_A=tf, PAS=dt),))
+
+### Load multiplicative function
+F_MULT = CALC_FONC_INTERP(FONCTION=F_MULT0, LIST_PARA=L_INST, NOM_PARA="INST")
+
+print("F_MULT")
+for val in F_MULT.Ordo():
+    print(val)
+
+### Solve transient problem
+# Set behavior law
+if nonlinear:
+    relation = "DIS_ECRO_CINE"
+else:
+    relation = "ELAS"
+
+# Solve transient problem
+RESU = DYNA_NON_LINE(
+    MODELE=MO,
+    CARA_ELEM=CARA_ELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=LOAD, FONC_MULT=F_MULT)),
+    COMPORTEMENT=_F(RELATION=relation, GROUP_MA="RESSORTS"),
+    INCREMENT=_F(LIST_INST=L_INST, INST_INIT=t0, INST_FIN=tf),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    CONVERGENCE=_F(ARRET="OUI", RESI_GLOB_MAXI=1e-6, ITER_GLOB_MAXI=30),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    INFO=1,
+)
+
+CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE=("FORC_NODA", "REAC_NODA"))
+
+## Post-processing
+TAB = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="DEPLACEMENT",
+        RESULTAT=RESU,
+        NOM_CHAM="DEPL",
+        TOUT_ORDRE="OUI",
+        GROUP_NO="B",
+        NOM_CMP="DRY",
+    )
+)
+
+t = TAB.EXTR_TABLE().values()["INST"]
+dry = TAB.EXTR_TABLE().values()["DRY"]
+
+print("RESU")
+for i, tt in enumerate(t):
+    print(tt, dry[i])
+
+
+TABFO = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="DEPLACEMENT",
+        RESULTAT=RESU,
+        NOM_CHAM="FORC_NODA",
+        TOUT_ORDRE="OUI",
+        GROUP_NO="B",
+        NOM_CMP="DRY",
+    )
+)
+
+t = TABFO.EXTR_TABLE().values()["INST"]
+dry = TABFO.EXTR_TABLE().values()["DRY"]
+
+print("FORC")
+for i, tt in enumerate(t):
+    print(tt, dry[i])
+
+# ------------------------------------------------------------------------------
+###
+FIN()
