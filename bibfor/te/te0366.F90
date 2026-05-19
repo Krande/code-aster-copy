@@ -32,7 +32,7 @@ subroutine te0366(option, nomte)
 #include "asterfort/nmtstm.h"
 #include "asterfort/nmspfm.h"
 #include "asterfort/matrot.h"
-#include "asterfort/spmats.h"
+#include "asterfort/interfpoumats.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
@@ -133,7 +133,7 @@ subroutine te0366(option, nomte)
     lElas = ASTER_FALSE
 
 ! - Get multiple materials
-    call spmats(imater, matint, matpou)
+    call interfpoumats(imater, matint, matpou)
 
 ! - Get output fields
     if (lMatr) then

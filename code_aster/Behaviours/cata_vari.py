@@ -192,9 +192,6 @@ DICT_NOM_VARI = {
     "DEPPLAS3": _(
         "JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 2"
     ),
-    "DEPPLX": _("SP_CINE : déplacement relatif pastique, suivant x global"),
-    "DEPPLY": _("SP_CINE : déplacement relatif pastique, suivant y global"),
-    "DEPPLZ": _("SP_CINE : déplacement relatif pastique, suivant z global"),
     "DEPSPEQ": _("incrément de déformation plastique équivalente"),
     "DETOPTG": _("Hujeux : déterminant de la matrice tangente"),
     "DFLU": _("FLUA_ENDO_PORO endomagement par fluage"),
@@ -618,6 +615,9 @@ DICT_NOM_VARI = {
     "SAUT_N": _("saut normal"),
     "SAUT_PLAS_T1": _("saut plastique tangentiel 1"),
     "SAUT_PLAS_T2": _("saut plastique tangentiel 2"),
+    "SAUT_PLAS_X": _("saut pastique, suivant x global"),
+    "SAUT_PLAS_Y": _("saut pastique, suivant y global"),
+    "SAUT_PLAS_Z": _("saut pastique, suivant z global"),
     "SAUT_T1": _("saut tangentiel 1"),
     "SAUT_T2": _("saut tangentiel 2"),
     "SAUTEQUI": _("saut equivalent total"),

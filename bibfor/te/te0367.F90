@@ -32,7 +32,7 @@ subroutine te0367(option, nomte)
 #include "asterfort/nmtstm.h"
 #include "asterfort/nmspfm.h"
 #include "asterfort/matrot.h"
-#include "asterfort/spmats.h"
+#include "asterfort/interfpoumats.h"
 #include "asterfort/rccome.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
@@ -110,8 +110,8 @@ subroutine te0367(option, nomte)
                 coopg)
 
 ! - Get multiple materials
-    call spmats(imater, matint, matpou)
-    call rccome(matint, 'SP_ELAS', icodret)
+    call interfpoumats(imater, matint, matpou)
+    call rccome(matint, 'INTERF_POU_ELAS', icodret)
     ASSERT(icodret .eq. 0)
 
 ! - Initialisation of behaviour datastructure
@@ -120,7 +120,7 @@ subroutine te0367(option, nomte)
 ! - Force behaviour
     compor(1:COMPOR_SIZE) = 'VIDE'
     compor(DEFO_LDC) = 'TOTALE'
-    compor(RELA_NAME) = 'SP_ELAS'
+    compor(RELA_NAME) = 'INTERF_POU_ELAS'
     compor(DEFO) = 'PETIT'
     compor(NUME) = '1'
     compor(NVAR) = '1'

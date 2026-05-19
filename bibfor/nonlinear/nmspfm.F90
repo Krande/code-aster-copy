@@ -48,7 +48,7 @@ subroutine nmspfm(BEHinteg, typmod, ndim, nno, nddl, nddlsym, &
 #include "asterfort/utpplg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lonelesp.h"
-#include "asterfort/lcspelas.h"
+#include "asterfort/lcinterfpouelas.h"
 #include "MultiFiber_type.h"
 #include "blas/ddot.h"
 #include "blas/daxpy.h"
@@ -218,10 +218,10 @@ subroutine nmspfm(BEHinteg, typmod, ndim, nno, nddl, nddlsym, &
         end do
         sigma = 0.d0
         if (lElas) then
-            call lcspelas(fami, kpg, ksp, ndim, &
-                          mate, matint, carcri, tm, tp, 3, ur, &
-                          dur, 3, sigmo, 1, vim(1, kpg), option, &
-                          sigma, vip(1, kpg), 3*3, dsidep, cod(kpg), BEHinteg)
+            call lcinterfpouelas(fami, kpg, ksp, ndim, &
+                                 mate, matint, carcri, tm, tp, 3, ur, &
+                                 dur, 3, sigmo, 1, vim(1, kpg), option, &
+                                 sigma, vip(1, kpg), 3*3, dsidep, cod(kpg), BEHinteg)
         else
             call nmcomp(BEHinteg, &
                         fami, kpg, ksp, ndim, typmod, &

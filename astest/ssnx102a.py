@@ -273,9 +273,9 @@ def checkOptions(idOrie, sectype, restype, postOptions, nomComportement):
             "SAUT_ELNO",
         ], "The postprocessing fields should be in ['FORC_NODA', 'SIEF_ELGA', 'SIEF_ELNO', 'SAUT_ELNO']."
     assert nomComportement in [
-        "SP_ELAS",
-        "SP_CINE",
-    ], "The behaviour for STAT_NON_LINE should be 'SP_ELAS' or 'SP_CINE'."
+        "INTERF_POU_ELAS",
+        "INTERF_POU_CINE",
+    ], "The behaviour for STAT_NON_LINE should be 'INTERF_POU_ELAS' or 'INTERF_POU_CINE'."
 
 
 def faireTest(
@@ -383,7 +383,8 @@ def faireTest(
     POU = DEFI_MATERIAU(ELAS=_F(E=E_p, NU=nu_p))
 
     INT = DEFI_MATERIAU(
-        SP_ELAS=_F(K_N=k_n, K_T=k_t), SP_CINE=_F(F_NY=f_ny, F_TY=f_ty, G_N=g_n, G_T=g_t)
+        INTERF_POU_ELAS=_F(K_N=k_n, K_T=k_t),
+        INTERF_POU_CINE=_F(F_NY=f_ny, F_TY=f_ty, G_N=g_n, G_T=g_t),
     )
 
     ################################################################################
@@ -907,7 +908,7 @@ faireTest(
     idOrie=2,
     anglvril=35.0,
     sectype="RECTANGLE",
-    nomComportement="SP_CINE",
+    nomComportement="INTERF_POU_CINE",
     restype="STAT_NON_LINE",
     dimp=np.array([1.5, 0.4, 0.7]),
     testOptions=["FORC_NODA", "SIEF_ELGA", "SIEF_ELNO", "SAUT_ELNO"],

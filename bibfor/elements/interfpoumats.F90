@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine spmats(imater, matint, matpou)
+subroutine interfpoumats(imater, matint, matpou)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ subroutine spmats(imater, matint, matpou)
 ! - Sort materials using their phenomenon name
     do kmat = 1, nbmats
         nomi = nomats(kmat)
-        call rccome(nomi, 'SP_', icodre)
+        call rccome(nomi, 'INTERF_POU_', icodre)
         if (icodre .eq. 0) then
             matint = nomi
         else

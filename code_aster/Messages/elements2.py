@@ -110,7 +110,7 @@ cata_msg = {
     ),
     56: _(
         """
- section rectangulaire ou circulaire uniquement
+ La poutre dont on cherche à orienter la section ne peut posséder qu'une section rectangulaire ou circulaire
 """
     ),
     57: _(

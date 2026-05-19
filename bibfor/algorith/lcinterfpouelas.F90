@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcspelas(fami, kpg, ksp, ndim, &
+subroutine lcinterfpouelas(fami, kpg, ksp, ndim, &
                     mate, nomat, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, &
                     sigp, vip, ndsde, dsidep, codret, BEHinteg_)
@@ -106,7 +106,7 @@ subroutine lcspelas(fami, kpg, ksp, ndim, &
     end if
 !
     call rcvalb(fami, kpg, ksp, poum, mate, &
-                nomat, 'SP_ELAS', nb_para, para_name, [para_vale], &
+                nomat, 'INTERF_POU_ELAS', nb_para, para_name, [para_vale], &
                 nbpael, nomel, valel, codel, 2)
 ! DEFINITION DE PARAMETRES PHYSIQUE:
     kn = valel(1)

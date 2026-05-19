@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-module sp_cine_module
+module interf_pou_cine_module
 
     use Behaviour_type
 
@@ -338,12 +338,12 @@ contains
 
 !   Elasticity
         call rcvalb(fami, kpg, ksp, '+', imate, nomat, &
-                    'SP_ELAS', nb_para, para_name, [para_vale], &
+                    'INTERF_POU_ELAS', nb_para, para_name, [para_vale], &
                     nbel, nomel, valel, iokel, 2)
 
 !   Plasticity
         call rcvalb(fami, kpg, ksp, '+', imate, nomat, &
-                    'SP_CINE', nb_para, para_name, [para_vale], &
+                    'INTERF_POU_CINE', nb_para, para_name, [para_vale], &
                     nbpl, nompl, valpl, iokpl, 2)
 
         mat%kn = valel(1)
@@ -414,4 +414,4 @@ contains
         end do
     end function diag
 
-end module sp_cine_module
+end module interf_pou_cine_module

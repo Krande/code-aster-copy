@@ -30,7 +30,7 @@ subroutine te0383(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nmspse.h"
 #include "asterfort/matrot.h"
-#include "asterfort/spmats.h"
+#include "asterfort/interfpoumats.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
 !
@@ -81,7 +81,7 @@ subroutine te0383(option, nomte)
     call jevech('PDEPSGA', 'E', isdep)
 
 ! - Get multiple materials
-    call spmats(imater, matint, matpou)
+    call interfpoumats(imater, matint, matpou)
 
 ! - Get orientation
     call matrot(zr(iorie), pgl)

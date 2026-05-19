@@ -25,7 +25,7 @@ subroutine lc9502(BEHinteg, &
                   dsidep, codret)
 
     use Behaviour_type
-    use sp_cine_module, only: CONSTITUTIVE_LAW, Init, Integrate
+    use interf_pou_cine_module, only: CONSTITUTIVE_LAW, Init, Integrate
     implicit none
 
 #include "asterf_types.h"
@@ -60,7 +60,7 @@ subroutine lc9502(BEHinteg, &
     real(kind=8), intent(out) :: dsidep(nsig, neps)
     integer(kind=8), intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
-!   RELATION SP_CINE
+!   RELATION INTERF_POU_CINE
 ! --------------------------------------------------------------------------------------------------
     aster_logical         :: lMatr, lSigm, lVari
     integer(kind=8)       :: ndimsi

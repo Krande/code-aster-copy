@@ -23,7 +23,7 @@ from code_aster import CA
 import numpy as np
 
 
-def testLoi(nombrePas=1, nomComportement="SP_ELAS", optionSurfCharge=False):
+def testLoi(nombrePas=1, nomComportement="INTERF_POU_ELAS", optionSurfCharge=False):
 
     # ---------------------------------------------------------------------------- #
     CA.init("--test", "--abort")
@@ -101,7 +101,7 @@ def testLoi(nombrePas=1, nomComportement="SP_ELAS", optionSurfCharge=False):
                 NOM_PARA="X", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=l_vale
             )
 
-    INT = DEFI_MATERIAU(SP_ELAS_FO=d_parel, SP_CINE_FO=d_parpl)
+    INT = DEFI_MATERIAU(INTERF_POU_ELAS_FO=d_parel, INTERF_POU_CINE_FO=d_parpl)
 
     ################################################################################
 
@@ -241,4 +241,4 @@ def testLoi(nombrePas=1, nomComportement="SP_ELAS", optionSurfCharge=False):
 
 
 # ---------------------------------------------------------------------------- #
-testLoi(nombrePas=1, nomComportement="SP_ELAS", optionSurfCharge=False)
+testLoi(nombrePas=1, nomComportement="INTERF_POU_ELAS", optionSurfCharge=False)

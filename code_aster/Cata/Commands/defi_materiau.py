@@ -350,10 +350,10 @@ DEFI_MATERIAU = MACRO(
             "NORTON",
             "NORTON_FO",
             "GTN",
-            "SP_ELAS",
-            "SP_ELAS_FO",
-            "SP_CINE",
-            "SP_CINE_FO",
+            "INTERF_POU_ELAS",
+            "INTERF_POU_ELAS_FO",
+            "INTERF_POU_CINE",
+            "INTERF_POU_CINE_FO",
             # MFront
             "VISC_ISOT_PLAS",
             "VISC_ISOT_PLAS_FO",
@@ -1987,20 +1987,20 @@ DEFI_MATERIAU = MACRO(
         ),
     ),
     # Uniquement pour l'element d'interface sol-pieu
-    SP_ELAS=FACT(statut="f", K_N=SIMP(statut="o", typ="R"), K_T=SIMP(statut="o", typ="R")),
-    SP_ELAS_FO=FACT(
+    INTERF_POU_ELAS=FACT(statut="f", K_N=SIMP(statut="o", typ="R"), K_T=SIMP(statut="o", typ="R")),
+    INTERF_POU_ELAS_FO=FACT(
         statut="f",
         K_N=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         K_T=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
-    SP_CINE=FACT(
+    INTERF_POU_CINE=FACT(
         statut="f",
         F_NY=SIMP(statut="f", typ="R"),
         F_TY=SIMP(statut="f", typ="R"),
         G_N=SIMP(statut="f", typ="R", defaut=0.0),
         G_T=SIMP(statut="f", typ="R", defaut=0.0),
     ),
-    SP_CINE_FO=FACT(
+    INTERF_POU_CINE_FO=FACT(
         statut="f",
         F_NY=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         F_TY=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
