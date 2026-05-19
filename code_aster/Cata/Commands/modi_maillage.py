@@ -63,7 +63,7 @@ MODI_MAILLAGE = OPER(
             "DEFORME",
             "ORIE_PEAU",
             "ORIE_NORM_COQUE",
-            "ORIE_HEXA27",
+            "ORIE_INTERF_POU",
             "MODI_MAILLE",
             "TRANSLATION",
             "ROTATION",
@@ -80,7 +80,7 @@ MODI_MAILLAGE = OPER(
             "ORIE_NORM_COQUE",
             "MODI_MAILLE",
             "ORIE_LIGNE",
-            "ORIE_HEXA27",
+            "ORIE_INTERF_POU",
         ),
         PRESENT_ABSENT(
             "DEFORME",
@@ -89,7 +89,7 @@ MODI_MAILLAGE = OPER(
             "ORIE_NORM_COQUE",
             "MODI_MAILLE",
             "ORIE_LIGNE",
-            "ORIE_HEXA27",
+            "ORIE_INTERF_POU",
         ),
         PRESENT_ABSENT(
             "ORIE_PEAU",
@@ -98,7 +98,7 @@ MODI_MAILLAGE = OPER(
             "ORIE_NORM_COQUE",
             "MODI_MAILLE",
             "ORIE_LIGNE",
-            "ORIE_HEXA27",
+            "ORIE_INTERF_POU",
         ),
         PRESENT_ABSENT(
             "ORIE_NORM_COQUE",
@@ -107,9 +107,9 @@ MODI_MAILLAGE = OPER(
             "ORIE_PEAU",
             "MODI_MAILLE",
             "ORIE_LIGNE",
-            "ORIE_HEXA27",
+            "ORIE_INTERF_POU",
         ),
-        PRESENT_ABSENT("ORIE_HEXA27", "ORIE_FISSURE", "DEFORME", "MODI_MAILLE"),
+        PRESENT_ABSENT("ORIE_INTERF_POU", "ORIE_FISSURE", "DEFORME", "MODI_MAILLE"),
         PRESENT_ABSENT(
             "ORIE_FISSURE",
             "DEFORME",
@@ -117,7 +117,7 @@ MODI_MAILLAGE = OPER(
             "ORIE_NORM_COQUE",
             "MODI_MAILLE",
             "ORIE_LIGNE",
-            "ORIE_HEXA27",
+            "ORIE_INTERF_POU",
         ),
         PRESENT_ABSENT(
             "MODI_MAILLE",
@@ -126,7 +126,7 @@ MODI_MAILLAGE = OPER(
             "ORIE_PEAU",
             "ORIE_NORM_COQUE",
             "ORIE_LIGNE",
-            "ORIE_HEXA27",
+            "ORIE_INTERF_POU",
         ),
         EXCLUS("ROTATION", "MODI_BASE"),
         EXCLUS("SYMETRIE", "ROTATION"),
@@ -159,7 +159,7 @@ MODI_MAILLAGE = OPER(
         VECT_NORM=SIMP(statut="f", typ="R", max=3),
         b_vect_norm=BLOC(condition="""exists("VECT_NORM")""", GROUP_NO=SIMP(statut="f", typ=grno)),
     ),
-    ORIE_HEXA27=FACT(
+    ORIE_INTERF_POU=FACT(
         statut="f",
         max="**",
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),

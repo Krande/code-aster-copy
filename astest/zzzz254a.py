@@ -50,7 +50,7 @@ con1 = getConnectivityOfGroup(lgrma, mesh)
 mesh = MODI_MAILLAGE(
     reuse=mesh,
     MAILLAGE=mesh,
-    ORIE_HEXA27=_F(GROUP_MA=("GR_DEUX", "GR_OPPX", "GR_NOORI"), VECT_ORIE=[0.0, 0.0, 1.0]),
+    ORIE_INTERF_POU=_F(GROUP_MA=("GR_DEUX", "GR_OPPX", "GR_NOORI"), VECT_ORIE=[0.0, 0.0, 1.0]),
 )
 
 # get final connectivity

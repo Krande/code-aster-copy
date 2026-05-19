@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine orihex(mesh, listCellNume, nbCell, norien, vxorie)
+subroutine oriintpou(mesh, listCellNume, nbCell, norien, vxorie)
 !
     use mesh_module, only: checkCellsAreVolume
 !

@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine orihex(mesh, listCellNume, nbCell, norien, vxorie)
+    subroutine oriintpou(mesh, listCellNume, nbCell, norien, vxorie)
         character(len=8), intent(in) :: mesh
         integer(kind=8), intent(in) :: nbCell
         integer(kind=8), pointer :: listCellNume(:)
         integer(kind=8), intent(out) :: norien
         real(kind=8), intent(in) :: vxorie(3)
-    end subroutine orihex
+    end subroutine oriintpou
 end interface

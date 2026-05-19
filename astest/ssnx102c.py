@@ -261,18 +261,31 @@ def checkOptions(idOrie, sectype, restype, postOptions, nomComportement):
     """
     assert idOrie in [0, 1, 2], "The reinforcement orientation axis should be 0(x), 1(y), or 2(z)."
     assert sectype in ["RECTANGLE", "CERCLE"], "The section type should be 'RECTANGLE' or 'CERCLE'."
-    assert restype in ["STAT_NON_LINE", "MECA_STATIQUE"], "The resolution operattion should be 'STAT_NON_LINE' or 'MECA_STATIQUE'."
+    assert restype in [
+        "STAT_NON_LINE",
+        "MECA_STATIQUE",
+    ], "The resolution operattion should be 'STAT_NON_LINE' or 'MECA_STATIQUE'."
     for option in postOptions:
-        assert option in ["FORC_NODA", "SIEF_ELGA", "SIEF_ELNO", "SAUT_ELNO"], "The postprocessing fields should be in ['FORC_NODA', 'SIEF_ELGA', 'SIEF_ELNO', 'SAUT_ELNO']."
-    assert nomComportement in ["SP_ELAS", "SP_CINE"], "The behaviour for STAT_NON_LINE should be 'SP_ELAS' or 'SP_CINE'."
+        assert option in [
+            "FORC_NODA",
+            "SIEF_ELGA",
+            "SIEF_ELNO",
+            "SAUT_ELNO",
+        ], "The postprocessing fields should be in ['FORC_NODA', 'SIEF_ELGA', 'SIEF_ELNO', 'SAUT_ELNO']."
+    assert nomComportement in [
+        "SP_ELAS",
+        "SP_CINE",
+    ], "The behaviour for STAT_NON_LINE should be 'SP_ELAS' or 'SP_CINE'."
 
 
-def faireTest(idOrie, anglvril, sectype, nomComportement, restype, dimp, testOptions, valRegression):
+def faireTest(
+    idOrie, anglvril, sectype, nomComportement, restype, dimp, testOptions, valRegression
+):
     """
     Testcase for 3D_INTSOLPIEU element.
 
     testing :
-    - element orientation on X (idOrie=0), Y (idOrie=1) or Z (idOrie=2) : MODI_MAILLAGE(ORIE_HEXA27)
+    - element orientation on X (idOrie=0), Y (idOrie=1) or Z (idOrie=2) : MODI_MAILLAGE(ORIE_INTERF_POU)
     - section orientation : anglvril in degrees. ORIENTATION(CARA="ANGL_VRIL")
     - section type : "RECTANGLE" or "CERCLE" (with fixed geometrical properties)
     - calculation options : STAT_NON_LINE, RIGI_MECA, FORC_NODA, SIEF_ELGA, SIEF_ELNO, SAUT_ELGA, SAUT_ELNO
@@ -297,7 +310,7 @@ def faireTest(idOrie, anglvril, sectype, nomComportement, restype, dimp, testOpt
 
     MA = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
-    MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_HEXA27=_F(GROUP_MA=Grma27, VECT_ORIE=vOrie))
+    MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_INTERF_POU=_F(GROUP_MA=Grma27, VECT_ORIE=vOrie))
 
     a_conn = np.asarray(getConnectivityOfGroup(Grma27, MA))
 
@@ -389,9 +402,7 @@ def faireTest(idOrie, anglvril, sectype, nomComportement, restype, dimp, testOpt
         ORIENTATION=(_F(GROUP_MA=Grma27, CARA="ANGL_VRIL", VALE=anglvril),),
     )
 
-    CHMAT = AFFE_MATERIAU(
-        MODELE=MODELE, AFFE=(_F(GROUP_MA=Grma27, MATER=(INT, POU)),)
-    )
+    CHMAT = AFFE_MATERIAU(MODELE=MODELE, AFFE=(_F(GROUP_MA=Grma27, MATER=(INT, POU)),))
 
     ############################################
 
@@ -684,7 +695,6 @@ def faireTest(idOrie, anglvril, sectype, nomComportement, restype, dimp, testOpt
 
         iValCalc += 1
 
-
     FF1 = lambda xi: (1 - xi) / 2
     FF2 = lambda xi: (1 + xi) / 2
 
@@ -900,7 +910,7 @@ faireTest(
     nomComportement="SP_ELAS",
     restype="MECA_STATIQUE",
     dimp=np.array([1.5, 0.4, 0.7]),
-    testOptions=["FORC_NODA",],
+    testOptions=["FORC_NODA"],
     valRegression=getValReg(0, restype="MECA_STATIQUE"),
 )
 

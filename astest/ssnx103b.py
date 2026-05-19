@@ -44,7 +44,7 @@ def testLoi(nombrePas=1, nomComportement="SP_ELAS", optionSurfCharge=False):
     MA = CA.Mesh()
     MA.readAsterFile("zzzz366a.mail")
 
-    MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_HEXA27=_F(GROUP_MA=Grma27, VECT_ORIE=vOrie))
+    MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_INTERF_POU=_F(GROUP_MA=Grma27, VECT_ORIE=vOrie))
 
     ################################################################################
 

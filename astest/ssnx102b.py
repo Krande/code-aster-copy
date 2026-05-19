@@ -285,7 +285,7 @@ def faireTest(
     Testcase for 3D_INTSOLPIEU element.
 
     testing :
-    - element orientation on X (idOrie=0), Y (idOrie=1) or Z (idOrie=2) : MODI_MAILLAGE(ORIE_HEXA27)
+    - element orientation on X (idOrie=0), Y (idOrie=1) or Z (idOrie=2) : MODI_MAILLAGE(ORIE_INTERF_POU)
     - section orientation : anglvril in degrees. ORIENTATION(CARA="ANGL_VRIL")
     - section type : "RECTANGLE" or "CERCLE" (with fixed geometrical properties)
     - calculation options : STAT_NON_LINE, RIGI_MECA, FORC_NODA, SIEF_ELGA, SIEF_ELNO, SAUT_ELGA, SAUT_ELNO
@@ -310,7 +310,7 @@ def faireTest(
 
     MA = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
-    MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_HEXA27=_F(GROUP_MA=Grma27, VECT_ORIE=vOrie))
+    MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_INTERF_POU=_F(GROUP_MA=Grma27, VECT_ORIE=vOrie))
 
     a_conn = np.asarray(getConnectivityOfGroup(Grma27, MA))
 
