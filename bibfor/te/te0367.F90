@@ -20,6 +20,8 @@ subroutine te0367(option, nomte)
 !
     use Behaviour_module
     use Behaviour_type
+    use MaterialPara_module
+    use MaterialPara_type
 !
     implicit none
 !
@@ -66,6 +68,7 @@ subroutine te0367(option, nomte)
     aster_logical :: matsym
     aster_logical :: lVect, lMatr, lVari, lSigm, lElas
     type(Behaviour_Integ) :: BEHinteg
+    type(Material_Para) :: materPara
     character(len=8) :: matint, matpou
 !
 ! --------------------------------------------------------------------------------------------------
@@ -114,6 +117,14 @@ subroutine te0367(option, nomte)
     call rccome(matint, 'INTERF_POU_ELAS', icodret)
     ASSERT(icodret .eq. 0)
 
+! - Initializations of material parameters on current cell
+    call initParaCell(fami, zi(imater), materPara)
+    materPara%matname = matint
+
+! - Set local coordinate system from user
+    ! call getUserLCS(ndim, nno, igeom, materPara%lcsPara)
+    call initLCSNone(materPara)
+
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
 
@@ -126,11 +137,10 @@ subroutine te0367(option, nomte)
     compor(NVAR) = '1'
 
 ! - Set main parameters for behaviour (on cell)
-    call behaviourSetParaCell(ndim, typmod, option, &
+    call behaviourSetParaCell(typmod, option, &
                               compor, zr(icarcr), &
                               zr(iinstm), zr(iinstp), &
-                              fami, zi(imater), &
-                              BEHinteg)
+                              materPara, BEHinteg)
 
 ! - Select objects to construct from option name
     call behaviourOption(option, compor, &

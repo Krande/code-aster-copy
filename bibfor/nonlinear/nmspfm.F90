@@ -224,11 +224,11 @@ subroutine nmspfm(BEHinteg, typmod, ndim, nno, nddl, nddlsym, &
                                  sigma, vip(1, kpg), 3*3, dsidep, cod(kpg), BEHinteg)
         else
             call nmcomp(BEHinteg, &
-                        fami, kpg, ksp, ndim, typmod, &
-                        mate, compor, carcri, tm, tp, &
+                        ndim, option, typmod, &
+                        tm, tp, compor, carcri, '                ', &
                         3, ur, dur, 3, sigmo, &
-                        vim(1, kpg), option, angmas, &
-                        sigma, vip(1, kpg), 3*3, dsidep, cod(kpg), materi_=matint)
+                        vim(1, kpg), &
+                        sigma, vip(1, kpg), 3*3, dsidep, cod(kpg))
         end if
         if (cod(kpg) .eq. 1) goto 900
 

@@ -1027,16 +1027,16 @@ subroutine lc0000(BEHInteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     case (9501)
-        call lc9501(BEHinteg, fami, kpg, ksp, ndim, imate, &
+        call lc9501(BEHinteg, fami, kpg, ksp, ndim, jvMaterCode, &
                     compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, materi, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
                     ndsde, dsidep, codret)
     case (9502)
-        call lc9502(BEHinteg, fami, kpg, ksp, ndim, imate, &
+        call lc9502(BEHinteg, fami, kpg, ksp, ndim, jvMaterCode, &
                     compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, materi, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
                     ndsde, dsidep, codret)
 
     case default

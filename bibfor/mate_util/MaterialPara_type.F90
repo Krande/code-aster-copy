@@ -70,6 +70,9 @@ module MaterialPara_type
 ! ----- Adress for material parameters
         integer(kind=8) :: jvMaterCode = 0
 
+! ----- Material name
+        character(len=8) :: matname = " "
+
 ! ----- Type for elasticity
         integer(kind=8) :: elasID = ELAS_UNDEF
         character(len=16) :: elasKeyword = " "

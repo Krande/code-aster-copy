@@ -20,8 +20,8 @@
 subroutine lc9502(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
-                  deps, nsig, sigm, nvi, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, materi, ndsde, &
+                  deps, nsig, sigm, nvi, vim, option, &
+                  sigp, vip, typmod, ndsde, &
                   dsidep, codret)
 
     use Behaviour_type
@@ -50,12 +50,9 @@ subroutine lc9502(BEHinteg, &
     integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: angmas(*)
     real(kind=8) :: sigp(nsig)
     real(kind=8) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: icomp
-    character(len=8), intent(in) :: materi
     integer(kind=8), intent(in) :: ndsde
     real(kind=8), intent(out) :: dsidep(nsig, neps)
     integer(kind=8), intent(out):: codret
@@ -83,7 +80,8 @@ subroutine lc9502(BEHinteg, &
     eps = epsm(1:ndimsi)+deps(1:ndimsi)
     deltat = instap-instam
 
-    cl = Init(ndimsi, option, fami, kpg, ksp, imate, materi, deltat, &
+    cl = Init(ndimsi, option, fami, kpg, ksp, imate, &
+              BEHinteg%materPara%matname, deltat, &
               nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE), BEHinteg)
 
     call Integrate(cl, eps, vim(1:nvi), sig, vi, dsde)
