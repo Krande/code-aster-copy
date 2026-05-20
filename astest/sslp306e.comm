@@ -80,11 +80,9 @@ for k, refine in enumerate([COARSE_REFINEMENT, FINE_REFINEMENT]):
 
     mesh_line = CA.Mesh.buildSquare(refine=refine)
 
-    mesh_line_to_quad = mesh_line.convertToQuadratic()
+    mesh_line = CREA_MAILLAGE(MAILLAGE=mesh_line, MODI_MAILLE=_F(OPTION="QUAD_TRIA3", TOUT="OUI"))
 
-    mesh_quad = CREA_MAILLAGE(
-        MAILLAGE=mesh_line_to_quad, MODI_MAILLE=(_F(TOUT="OUI", OPTION="QUAD8_9"),)
-    )
+    mesh_quad = mesh_line.convertToQuadratic()
 
     mesh_quad = DEFI_GROUP(
         reuse=mesh_quad,
@@ -164,11 +162,9 @@ for thickness, tolerance in zip([0.1, 0.001], [TOLERANCE, TOLERANCE]):
 
     mesh_line = CA.Mesh.buildSquare(refine=FINE_REFINEMENT)
 
-    mesh_line_to_quad = mesh_line.convertToQuadratic()
+    mesh_line = CREA_MAILLAGE(MAILLAGE=mesh_line, MODI_MAILLE=_F(OPTION="QUAD_TRIA3", TOUT="OUI"))
 
-    mesh_quad = CREA_MAILLAGE(
-        MAILLAGE=mesh_line_to_quad, MODI_MAILLE=(_F(TOUT="OUI", OPTION="QUAD8_9"),)
-    )
+    mesh_quad = mesh_line.convertToQuadratic()
 
     mesh_quad = DEFI_GROUP(
         reuse=mesh_quad,

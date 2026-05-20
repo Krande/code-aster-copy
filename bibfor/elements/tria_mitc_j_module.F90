@@ -18,13 +18,13 @@
 !     RMQU9 - MODULE DE LA MATRICE J
 ! interface c++
 ! aslint: disable=W1403
-module c_interface_plaq_mitc_j
+module c_interface_tria_mitc_j
     use iso_c_binding
     implicit none
 
     interface
-        subroutine BP4_qu9_Fortran(w, nw, coordinate_dofs, ncd, &
-            &entity_local_index, ne, cst, ncst, A) bind(C, name="BP4_qu9_Fortran")
+        subroutine BP4_tr6_Fortran(w, nw, coordinate_dofs, ncd, &
+            &entity_local_index, ne, cst, ncst, A) bind(C, name="BP4_tr6_Fortran")
             import :: c_double, c_int
             implicit none
 !
@@ -42,9 +42,9 @@ module c_interface_plaq_mitc_j
 !
             ! Tableau de sortie Matrice de rigidité (taille supposée connue)
             real(c_double), intent(out) :: A(*)
-        end subroutine BP4_qu9_Fortran
-        subroutine BP5_qu9_Fortran(w, nw, coordinate_dofs, ncd, &
-            &entity_local_index, ne, cst, ncst, A) bind(C, name="BP5_qu9_Fortran")
+        end subroutine BP4_tr6_Fortran
+        subroutine BP5_tr6_Fortran(w, nw, coordinate_dofs, ncd, &
+            &entity_local_index, ne, cst, ncst, A) bind(C, name="BP5_tr6_Fortran")
             import :: c_double, c_int
             implicit none
 !
@@ -62,7 +62,7 @@ module c_interface_plaq_mitc_j
 !
             ! Tableau de sortie Matrice de rigidité (taille supposée connue)
             real(c_double), intent(out) :: A(*)
-        end subroutine BP5_qu9_Fortran
+        end subroutine BP5_tr6_Fortran
     end interface
 
-end module c_interface_plaq_mitc_j
+end module c_interface_tria_mitc_j

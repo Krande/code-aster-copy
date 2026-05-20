@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!     RMQU9 - MODULE DE LA MATRICE J
+!    RMQU9 - MODULE DU VECTEUR F
 ! interface c++
 ! aslint: disable=W1403
-module c_interface_plaq_mitc_j
+module c_interface_tria_mitc_f
     use iso_c_binding
     implicit none
 
     interface
-        subroutine BP4_qu9_Fortran(w, nw, coordinate_dofs, ncd, &
-            &entity_local_index, ne, cst, ncst, A) bind(C, name="BP4_qu9_Fortran")
+        subroutine BP1_tr6_Fortran(w, nw, coordinate_dofs, ncd,&
+            & entity_local_index, ne, cst, ncst, A) bind(C, name="BP1_tr6_Fortran")
             import :: c_double, c_int
             implicit none
 !
-            ! Longueurs des tableaux
+            ! Longueurs des tableaux w, coord_dof, cst, entity_loc_index
             integer(c_int), value, intent(in) :: nw
             integer(c_int), value, intent(in) :: ncd
             integer(c_int), value, intent(in) :: ncst
@@ -42,19 +42,20 @@ module c_interface_plaq_mitc_j
 !
             ! Tableau de sortie Matrice de rigidité (taille supposée connue)
             real(c_double), intent(out) :: A(*)
-        end subroutine BP4_qu9_Fortran
-        subroutine BP5_qu9_Fortran(w, nw, coordinate_dofs, ncd, &
-            &entity_local_index, ne, cst, ncst, A) bind(C, name="BP5_qu9_Fortran")
+        end subroutine BP1_tr6_Fortran
+        subroutine BP2_tr6_Fortran(w, nw, coordinate_dofs, ncd,&
+            & entity_local_index, ne, cst, ncst, A) bind(C, name="BP2_tr6_Fortran")
             import :: c_double, c_int
             implicit none
 !
-            ! Longueurs des tableaux
+            ! Longueurs des tableaux w, coord_dofs, cst, entity_loc_index
             integer(c_int), value, intent(in) :: nw
             integer(c_int), value, intent(in) :: ncd
             integer(c_int), value, intent(in) :: ncst
             integer(c_int), value, intent(in) :: ne
 !
-            ! Tableaux d'entrée
+            ! Tableaux d'entrée : w = 0.d0
+            ! cst : paramètres matériau
             real(c_double), intent(in) :: w(*)
             real(c_double), intent(in) :: coordinate_dofs(*)
             real(c_double), intent(in) :: cst(*)
@@ -62,7 +63,6 @@ module c_interface_plaq_mitc_j
 !
             ! Tableau de sortie Matrice de rigidité (taille supposée connue)
             real(c_double), intent(out) :: A(*)
-        end subroutine BP5_qu9_Fortran
+        end subroutine BP2_tr6_Fortran
     end interface
-
-end module c_interface_plaq_mitc_j
+end module c_interface_tria_mitc_f

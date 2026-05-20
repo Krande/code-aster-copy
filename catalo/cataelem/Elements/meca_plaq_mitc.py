@@ -36,11 +36,7 @@ DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
     diff=True,
-    components=(
-        ("EN1", ("DZ", "DRX", "DRY")),
-        ("EN2", ("DRX", "DRY", "PHI", "LAG_GV")),
-        ("EN3", ("DRX", "DRY")),
-    ),
+    components=(("EN1", ("DZ", "DRX", "DRY")), ("EN2", ("DRX", "DRY"))),
 )
 
 CCACOQU = LocatedComponents(
@@ -192,30 +188,9 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
-class PLAQ_MITC(Element):
+class TemplateElement(Element):
     """Mechanics - Plate (Reissner -Mindlin Mixed Interpolation of Tensorial Components)"""
 
-    meshType = MT.QUAD9
-    nodes = (
-        SetOfNodes("EN1", (1, 2, 3, 4)),
-        SetOfNodes("EN2", (5, 6, 7, 8)),
-        SetOfNodes("EN3", (9,)),
-    )
-    elrefe = (
-        ElrefeLoc(
-            MT.QU9,
-            gauss=(
-                "RIGI=FPG9",
-                "MASS=FPG9",
-                "FPG1=FPG1",
-                "NOEU_S=NOEU_S",
-                "NOEU=NOEU",
-                "MTGA=FPG9",
-            ),
-            mater=("RIGI", "NOEU", "FPG1", "MTGA"),
-        ),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
-    )
     calculs = (
         OP.TOU_INI_ELEM(
             te=99,
@@ -273,6 +248,39 @@ class PLAQ_MITC(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PCHCKPR, LC.CCHCKPR)),
             para_out=((OP.VERI_PLAN.PCODRET, LC.ECODRET), (OP.VERI_PLAN.PINDICR, LC.CINDICR)),
         ),
+        OP.VERI_CARA_ELEM(
+            te=119,
+            para_in=((SP.PCACOQU, CCACOQU),),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
+        ),
+        OP.NSPG_NBVA(
+            te=496,
+            para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2), (OP.NSPG_NBVA.PNBSP_I, ENBSP_I)),
+            para_out=((SP.PDCEL_I, LC.EDCEL_I),),
+        ),
+    )
+
+
+class PLAQ_MITC_QUAD9(TemplateElement):
+
+    meshType = MT.QUAD9
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6, 7, 8, 9)))
+    elrefe = (
+        ElrefeLoc(
+            MT.QU9,
+            gauss=(
+                "RIGI=FPG9",
+                "MASS=FPG9",
+                "FPG1=FPG1",
+                "NOEU_S=NOEU_S",
+                "NOEU=NOEU",
+                "MTGA=FPG9",
+            ),
+            mater=("RIGI", "NOEU", "FPG1", "MTGA"),
+        ),
+        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
+    )
+    calculs = (
         OP.RIGI_MECA(
             te=28,
             para_in=(
@@ -306,14 +314,54 @@ class PLAQ_MITC(Element):
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        OP.VERI_CARA_ELEM(
-            te=119,
-            para_in=((SP.PCACOQU, CCACOQU),),
-            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
+    )
+
+
+class PLAQ_MITC_TRIA6(TemplateElement):
+
+    meshType = MT.TRIA6
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", (4, 5, 6)))
+    elrefe = (
+        ElrefeLoc(
+            MT.TR6, gauss=("RIGI=FPG3", "MASS=FPG7", "FPG1=FPG1"), mater=("RIGI", "MASS", "FPG1")
         ),
-        OP.NSPG_NBVA(
-            te=496,
-            para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2), (OP.NSPG_NBVA.PNBSP_I, ENBSP_I)),
-            para_out=((SP.PDCEL_I, LC.EDCEL_I),),
+        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
+    )
+    calculs = (
+        OP.RIGI_MECA(
+            te=555,
+            para_in=(
+                (SP.PCACOQU, CCACOQU),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.RIGI_MECA.PNBSP_I, ENBSP_I),
+                (SP.PINSTR, LC.MTEMPSR),
+                (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
+        OP.CHAR_MECA_PRES_R(
+            te=556,
+            para_in=(
+                (SP.PCACOQU, CCACOQU),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PPRESSR, EPRESNO),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_PRES_F(
+            te=556,
+            para_in=(
+                (SP.PCACOQU, CCACOQU),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PPRESSF, CPRESSF),
+                (SP.PINSTR, LC.MTEMPSR),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
     )
+
+
+del TemplateElement

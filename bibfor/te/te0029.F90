@@ -66,14 +66,16 @@ subroutine te0029(option, nomte)
     real(c_double) :: cst(5), coor(27), kappa, cdofs_f(12)
     ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_f
 
-    integer(c_int) :: ncst, ncd, nk, ne0, nwinit
-    integer(c_int) :: entities0(1)
+    integer(c_int) :: ncst, ncd, ne0, ne1, ne2, ne3, nwinit
+    integer(c_int) :: entities0(1), entities1(1), entities2(1), entities3(1)
     integer(kind=8) :: elas_id
 
-    integer(kind=8), parameter :: size_mat = 30, size_fenicsx = 42*42
-    real(c_double) :: F_elem(size_fenicsx), F_elem_int(size_mat), w_0(size_mat)
-    real(kind=8) :: signs(size_mat)
-    integer(kind=8) :: reorder(size_mat)
+    integer(kind=8), parameter :: size_init = 30, size_final = 22
+    real(c_double), dimension(size_init) :: F_elem, F_elem0, F_elem1, F_elem2
+    real(c_double), dimension(size_init) :: F_elem3, F_elem4, w_0
+    real(c_double) :: F_elem_f(size_final)
+    real(kind=8) :: signs(size_final)
+    integer(kind=8) :: reorder(size_final)
     real(c_double) :: pres
     real(kind=8) :: e, nu
 
@@ -96,8 +98,6 @@ subroutine te0029(option, nomte)
         call get_elas_para(fami, zi(imate), '+', igau, 1, &
                            elas_id, elas_keyword, &
                            e_=e, nu_=nu)
-! ----- Fill integration weight vector (Divided by 4 for FEniCS)
-!
     end do
 !
     call dxroep(rho, epais)
@@ -139,10 +139,14 @@ subroutine te0029(option, nomte)
 !
     cst = 0.d0
     coor = 0.d0
-    F_elem_int = 0.d0
+    F_elem_f = 0.d0
     F_elem = 0.d0
+    F_elem0 = 0.d0
+    F_elem1 = 0.d0
+    F_elem2 = 0.d0
+    F_elem3 = 0.d0
+    F_elem4 = 0.d0
     w_0 = 0.d0
-    nk = 30
 !
 ! - Fill material parameters vector
     kappa = 5.0/6.0
@@ -157,8 +161,7 @@ subroutine te0029(option, nomte)
         coor(3*i+2) = zr(jgeom+3*i+1)
         coor(3*i+3) = zr(jgeom+3*i+2)
     end do
-!
-    ! Remplissage des degrés de liberté (N1,N2,N4,N3)
+! Remplissage des coordonées (N1, N4, N2, N3)
     cdofs_f(1) = coor(1)
     cdofs_f(2) = coor(2)
     cdofs_f(3) = coor(3)
@@ -178,53 +181,58 @@ subroutine te0029(option, nomte)
     nwinit = size(w_0)
     ncd = size(cdofs_f)
     ne0 = 1
+    ne1 = 1
+    ne2 = 1
+    ne3 = 1
     ncst = size(cst)
     entities0(1) = 0
+    entities1(1) = 1
+    entities2(1) = 2
+    entities3(1) = 3
 !
-    call BP1_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, F_elem)
+    call BP1_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, F_elem0)
+    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, F_elem1)
+    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities1, ne1, cst, ncst, F_elem2)
+    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities2, ne2, cst, ncst, F_elem3)
+    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities3, ne3, cst, ncst, F_elem4)
+    do i = 1, size_init
+        F_elem(i) = F_elem0(i)+F_elem1(i)+F_elem2(i)+F_elem3(i)+F_elem4(i)
+    end do
 !
+! Reorganisation du vecteur
     ![w1, θ_y1, -θ_x1, w2, θ_y2, -θ_x2, w3, θ_y3, -θ_x3, w4, θ_y4, -θ_x4,
-    ! θ_y5, -θ_x5, γ_r1, p1, θ_y6, -θ_x6, γ_r2, p2,θ_y7, -θ_x7,
-    ! γ_r3, p3, θ_y8, -θ_x8,γ_r4, p4, θ_y9, -θ_x9]
-    signs = (/ &
-            1.d0, 1.d0, -1.d0, &
-            1.d0, 1.d0, -1.d0, &
-            1.d0, 1.d0, -1.d0, &
-            1.d0, 1.d0, -1.d0, &
-            1.d0, -1.d0, &
-            1.d0, 1.d0, &
-            1.d0, -1.d0, &
-            1.d0, 1.d0, &
-            1.d0, -1.d0, &
-            1.d0, 1.d0, &
-            1.d0, -1.d0, &
-            1.d0, 1.d0, &
-            1.d0, -1.d0 &
-            /)
+    ! θ_y5, -θ_x5, θ_y6, -θ_x6, θ_y7, -θ_x7, θ_y8, -θ_x8, θ_y9, -θ_x9]
+    !
     reorder = (/ &
               19, 2, 1, &
               21, 6, 5, &
               22, 8, 7, &
               20, 4, 3, &
               12, 11, &
-              24, 28, &
               16, 15, &
-              26, 30, &
               14, 13, &
-              25, 29, &
               10, 9, &
-              23, 27, &
               18, 17 &
               /)
-
-    do i = 1, size_mat
-        F_elem_int(i) = -signs(i)*F_elem(reorder(i))
+    signs = (/ &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, -1.d0, &
+            1.d0, -1.d0, &
+            1.d0, -1.d0, &
+            1.d0, -1.d0, &
+            1.d0, -1.d0 &
+            /)
+    do i = 1, size_final
+        F_elem_f(i) = -signs(i)*F_elem(reorder(i))
     end do
 !
 ! - Set matrix in output field
     call jevech('PVECTUR', 'E', ivectu)
-    do i = 0, nk-1
-        zr(ivectu+i) = F_elem_int(i+1)
+    do i = 0, size_final-1
+        zr(ivectu+i) = F_elem_f(i+1)
     end do
 999 continue
 !
