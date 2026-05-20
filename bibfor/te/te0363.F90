@@ -34,7 +34,7 @@ subroutine te0363(option, nomte)
 #include "asterfort/nmtstm.h"
 #include "asterfort/nmspfm.h"
 #include "asterfort/matrot.h"
-#include "asterfort/interfpoumats.h"
+#include "asterfort/spmats.h"
 #include "asterfort/rccome.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
@@ -115,7 +115,7 @@ subroutine te0363(option, nomte)
                 coopg)
 
 ! - Get multiple materials
-    call interfpoumats(imater, matint, matpou)
+    call spmats(imater, matint, matpou)
     call rccome(matint, 'INTERF_POU_ELAS', icodret)
     ASSERT(icodret .eq. 0)
 

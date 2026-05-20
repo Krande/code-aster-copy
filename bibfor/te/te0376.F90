@@ -30,7 +30,7 @@ subroutine te0376(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nmspfn.h"
 #include "asterfort/matrot.h"
-#include "asterfort/interfpoumats.h"
+#include "asterfort/spmats.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
@@ -80,7 +80,7 @@ subroutine te0376(option, nomte)
     call jevech('PSIEFR', 'L', icontm)
 
 ! - Get multiple materials
-    call interfpoumats(imater, matint, matpou)
+    call spmats(imater, matint, matpou)
 
 ! - Get output fields
     call jevech('PVECTUR', 'E', ivect)

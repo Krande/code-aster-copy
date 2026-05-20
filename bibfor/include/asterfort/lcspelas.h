@@ -20,7 +20,7 @@
 !
 !
 interface
-    subroutine lcinterfpouelas(fami, kpg, ksp, ndim, &
+    subroutine lcspelas(fami, kpg, ksp, ndim, &
                           mate, nomat, carcri, instam, instap, neps, epsm, &
                           deps, nsig, sigm, nvi, vim, option, &
                           sigp, vip, ndsde, dsidep, codret, BEHinteg_)
@@ -48,5 +48,5 @@ interface
         real(kind=8), intent(out) :: dsidep(nsig, neps)
         integer(kind=8), intent(out) :: codret
         type(Behaviour_Integ), optional:: BEHinteg_
-    end subroutine lcinterfpouelas
+    end subroutine lcspelas
 end interface

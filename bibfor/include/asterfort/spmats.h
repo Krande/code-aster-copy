@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine interfpoumats(imater, matint, matpou)
+    subroutine spmats(imater, matint, matpou)
         use Behaviour_type
         integer(kind=8), intent(in) :: imater
         character(len=*), intent(out) :: matint, matpou
-    end subroutine interfpoumats
+    end subroutine spmats
 end interface

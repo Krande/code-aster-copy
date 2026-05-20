@@ -34,7 +34,7 @@ subroutine te0366(option, nomte)
 #include "asterfort/nmtstm.h"
 #include "asterfort/nmspfm.h"
 #include "asterfort/matrot.h"
-#include "asterfort/interfpoumats.h"
+#include "asterfort/spmats.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
@@ -119,7 +119,7 @@ subroutine te0366(option, nomte)
                 coopg)
 
 ! - Get multiple materials
-    call interfpoumats(imater, matint, matpou)
+    call spmats(imater, matint, matpou)
 
 ! - Initializations of material parameters on current cell
     call initParaCell(fami, zi(imater), materPara)

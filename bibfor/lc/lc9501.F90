@@ -27,7 +27,7 @@ subroutine lc9501(BEHinteg, &
 !
     implicit none
 !
-#include "asterfort/lcinterfpouelas.h"
+#include "asterfort/lcspelas.h"
 !
 ! aslint: disable=W1504,W0104
 !
@@ -65,8 +65,8 @@ subroutine lc9501(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    call lcinterfpouelas(fami, kpg, ksp, ndim, &
-                         imate, BEHinteg%materPara%matname, carcri, instam, instap, neps, epsm, &
-                         deps, nsig, sigm, nvi, vim, option, &
-                         sigp, vip, ndsde, dsidep, codret, BEHinteg)
+    call lcspelas(fami, kpg, ksp, ndim, &
+                  imate, BEHinteg%materPara%matname, carcri, instam, instap, neps, epsm, &
+                  deps, nsig, sigm, nvi, vim, option, &
+                  sigp, vip, ndsde, dsidep, codret, BEHinteg)
 end subroutine

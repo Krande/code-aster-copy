@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcinterfpouelas(fami, kpg, ksp, ndim, &
+subroutine lcspelas(fami, kpg, ksp, ndim, &
                     mate, nomat, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, &
                     sigp, vip, ndsde, dsidep, codret, BEHinteg_)
