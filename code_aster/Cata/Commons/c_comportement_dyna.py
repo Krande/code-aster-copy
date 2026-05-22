@@ -251,7 +251,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             regles=(
                 NON_VIDE(),
                 UN_PARMI("NOEUD_1", "GROUP_NO_1"),
-                UN_PARMI("NOEUD_2", "GROUP_NO_2"),
+                EXCLUS("NOEUD_2", "GROUP_NO_2"),
                 ENSEMBLE("KELA_DX", "LIMY_DX", "KCIN_DX"),
                 ENSEMBLE("PUIS_DX", "LIMU_DX"),
                 PRESENT_PRESENT("PUIS_DX", "KCIN_DX"),
@@ -454,38 +454,6 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
                 typ="R",
                 val_min=1.0,
                 fr=tr("Coefficient de non-linéarité suivant l'axe local Rz de l'élément."),
-            ),
-            KP=SIMP(
-                statut="f",
-                typ="R",
-                defaut=0.0,
-                fr=tr(
-                    "Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."
-                ),
-            ),
-            KT=SIMP(
-                statut="f",
-                typ="R",
-                defaut=0.0,
-                fr=tr(
-                    "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
-                ),
-            ),
-            KT1=SIMP(
-                statut="f",
-                typ="R",
-                defaut=0.0,
-                fr=tr(
-                    "Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."
-                ),
-            ),
-            KT2=SIMP(
-                statut="f",
-                typ="R",
-                defaut=0.0,
-                fr=tr(
-                    "Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."
-                ),
             ),
         ),  # end b_disecrocine
         #       C.2.6.3 Discrete elastic nonlinear behavior in axial direction
