@@ -250,8 +250,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             fr=tr("Loi pour un discret avec écrouissage cinématique ."),
             regles=(
                 NON_VIDE(),
-                UN_PARMI("NOEUD_1", "GROUP_NO_1"),
-                EXCLUS("NOEUD_2", "GROUP_NO_2"),
+                UN_PARMI("MAILLE", "GROUP_MA"),
                 ENSEMBLE("KELA_DX", "LIMY_DX", "KCIN_DX"),
                 ENSEMBLE("PUIS_DX", "LIMU_DX"),
                 PRESENT_PRESENT("PUIS_DX", "KCIN_DX"),
@@ -271,10 +270,8 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
                 ENSEMBLE("PUIS_RZ", "LIMU_RZ"),
                 PRESENT_PRESENT("PUIS_RZ", "KCIN_RZ"),
             ),
-            NOEUD_1=SIMP(statut="c", typ=no),
-            NOEUD_2=SIMP(statut="c", typ=no),
-            GROUP_NO_1=SIMP(statut="f", typ=grno),
-            GROUP_NO_2=SIMP(statut="f", typ=grno),
+            GROUP_MA=SIMP(statut="f", typ=grma, max="**"),
+            MAILLE=SIMP(statut="c", typ=ma, max="**"),
             KELA_DX=SIMP(
                 statut="f",
                 typ="R",

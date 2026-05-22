@@ -176,8 +176,7 @@ RESU_GENE = DYNA_VIBRA(
     ARCHIVAGE=_F(PAS_ARCH=1),
     COMPORTEMENT=_F(
         RELATION="DIS_ECRO_CINE",
-        GROUP_NO_1="A",
-        GROUP_NO_2="B",
+        GROUP_MA="K1",
         KELA_DX=kdx,
         KELA_DY=kdy,
         KELA_DZ=kdz,
@@ -214,17 +213,17 @@ RESU_GENE = DYNA_VIBRA(
 ## Post-processing
 RESU = REST_GENE_PHYS(RESU_GENE=RESU_GENE, NOM_CHAM=("DEPL", "VITE", "ACCE"))
 
-# TAB = POST_RELEVE_T(
-#     ACTION=_F(
-#         OPERATION="EXTRACTION",
-#         INTITULE="DEPLACEMENT",
-#         RESULTAT=RESU,
-#         NOM_CHAM="DEPL",
-#         TOUT_ORDRE="OUI",
-#         GROUP_NO="B",
-#         NOM_CMP=("DX","DY","DZ","DRX","DRY","DRZ"),
-#     )
-# )
+TAB = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="DEPLACEMENT",
+        RESULTAT=RESU,
+        NOM_CHAM="DEPL",
+        TOUT_ORDRE="OUI",
+        GROUP_NO="B",
+        NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ"),
+    )
+)
 
 # t = TAB.EXTR_TABLE().values()["INST"]
 # dx = TAB.EXTR_TABLE().values()["DX"]

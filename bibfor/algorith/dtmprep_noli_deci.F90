@@ -48,6 +48,7 @@ subroutine dtmprep_noli_deci(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/mdchdl.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlinivec.h"
@@ -59,6 +60,7 @@ subroutine dtmprep_noli_deci(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
@@ -68,10 +70,10 @@ subroutine dtmprep_noli_deci(sd_dtm_, sd_nl_, icomp)
 !   -0.2- Local variables
     aster_logical     :: lnoeu2, l_rota
     integer(kind=8) :: i, n1, nbdeci, nbnoli, ii
-    integer(kind=8) :: nbmcl, ier, nbno1, nbno2, ino1
-    integer(kind=8) :: ino2, ind1, ind2, nbmode
+    integer(kind=8) :: nbmcl, ier, nbma, ino1, jmama
+    integer(kind=8) :: ino2, ind1, ind2, nbmode, elem_nume
     integer(kind=8) :: j, neq, mxlevel, nexcit
-    integer(kind=8) :: nunoe, nuddl, nbnode, nbddl, iddl, n2, n3
+    integer(kind=8) :: nunoe, nuddl, nbnodes, nbddl, iddl, n2, n3
 !
     real(kind=8) :: r8bid, alpha, beta
     real(kind=8) :: axe(3)
@@ -80,7 +82,7 @@ subroutine dtmprep_noli_deci(sd_dtm_, sd_nl_, icomp)
     character(len=8)  :: sd_dtm, sd_nl, mesh, mesh1, mesh2
     character(len=8)  :: nume, nume1, nume2, no1_name, no2_name
     character(len=8)  :: monmot, intk
-    character(len=16) :: typnum, typem, limocl(2), tymocl(2)
+    character(len=16) :: typnum, typem, limocl(2)
     character(len=16) :: obst_typ, motfac
     character(len=19) :: nomres
     character(len=24) :: nl_title
@@ -96,7 +98,7 @@ subroutine dtmprep_noli_deci(sd_dtm_, sd_nl_, icomp)
     real(kind=8), pointer       :: bmodal_v(:) => null()
     real(kind=8), pointer       :: ps1del_v(:) => null()
 !
-    character(len=8), pointer  :: noeud(:) => null()
+    integer(kind=8), pointer :: elems(:) => null()
 !
 #define ps1del(m,n) ps1del_v((n-1)*neq+m)
 #define bmodal(m,n) bmodal_v((n-1)*neq+m)
@@ -142,51 +144,41 @@ subroutine dtmprep_noli_deci(sd_dtm_, sd_nl_, icomp)
 !
 !   --- 2 - Localisation (support nodes) of the buckling non linearity
 !
-!   --- 2.1 - Definition using nodes or nodal groups (NOEUD/GROUP_NO)
-!             Unlike the chocs case, here only a single nonlinearity
-!             can be defined per occurence
-    typem = 'NO_NOEUD'
-    nbmcl = 2
-    limocl(1) = 'GROUP_NO_1'
-    limocl(2) = 'NOEUD_1'
-    tymocl(1) = 'GROUP_NO'
-    tymocl(2) = 'NOEUD'
-    call reliem(' ', mesh1, typem, motfac, icomp, &
-                nbmcl, limocl, tymocl, sd_nl//'.INDI_NO1.TEMP', nbno1)
-!
-    ASSERT(nbno1 .eq. 1)
-    l_rota = ASTER_TRUE
-    nbnode = 1
-    call jeveuo(sd_nl//'.INDI_NO1.TEMP', 'L', vk8=noeud)
-    no1_name = noeud(1)
-    call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=no1_name)
-    call jedetr(sd_nl//'.INDI_NO1.TEMP')
+!   --- 2.1 - Definition using elements or element groups (MAILLE/GROUP_MA)
 
+    typem = 'NU_MAILLE'
+    nbmcl = 2
+    limocl(1) = 'GROUP_MA'
+    limocl(2) = 'MAILLE'
+    call reliem(' ', mesh1, typem, motfac, icomp, &
+                nbmcl, limocl, limocl, sd_nl//'.INDI_SUPP.TEMP', nbma)
+!
+    if (nbma .ne. 1) call utmess('F', 'ALGORITH13_38')
+
+    call jeveuo(sd_nl//'.INDI_SUPP.TEMP', 'L', vi=elems)
+    elem_nume = elems(1)
+    call jeveuo(jexnum(mesh1//'.CONNEX', elem_nume), 'L', jmama)
+    call jelira(jexnum(mesh1//'.CONNEX', elem_nume), 'LONMAX', nbnodes)
+    ASSERT(nbnodes .ge. 1 .and. nbnodes .le. 2)
+
+    no1_name = int_to_char8(zi(jmama))
+    call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=no1_name)
+    l_rota = ASTER_TRUE
     call posddl('NUME_DDL', nume1, no1_name, 'DRX', nunoe, &
                 nuddl)
     if (nuddl .eq. 0) l_rota = ASTER_FALSE
 
-    typem = 'NO_NOEUD'
-    nbmcl = 2
-    limocl(1) = 'GROUP_NO_2'
-    limocl(2) = 'NOEUD_2'
-    call reliem(' ', mesh2, typem, motfac, icomp, &
-                nbmcl, limocl, tymocl, sd_nl//'.INDI_NO2.TEMP', nbno2)
-
-    if (nbno2 .gt. 0) then
-        nbnode = 2
-        ASSERT(nbno2 .eq. 1)
-        call jeveuo(sd_nl//'.INDI_NO2.TEMP', 'L', vk8=noeud)
-        no2_name = noeud(1)
-        call nlsav(sd_nl, _NO2_NAME, 1, iocc=i, kscal=no2_name)
-        call jedetr(sd_nl//'.INDI_NO2.TEMP')
+    if (nbnodes .eq. 2) then
         lnoeu2 = ASTER_TRUE
+        no2_name = int_to_char8(zi(jmama+1))
+        call nlsav(sd_nl, _NO2_NAME, 1, iocc=i, kscal=no2_name)
+        call nlsav(sd_nl, _NUMDDL_2, 1, iocc=i, kscal=nume2(1:8))
+        call nlsav(sd_nl, _MESH_2, 1, iocc=i, kscal=mesh2)
         call posddl('NUME_DDL', nume2, no2_name, 'DRX', nunoe, &
                     nuddl)
         if (nuddl .eq. 0) l_rota = ASTER_FALSE
-        call nlsav(sd_nl, _NUMDDL_2, 1, iocc=i, kscal=nume2(1:8))
-        call nlsav(sd_nl, _MESH_2, 1, iocc=i, kscal=mesh2)
     end if
+    call jedetr(sd_nl//'.INDI_SUPP.TEMP')
 !
 !   --- 3 - Filling up the sd_nl with further information regarding the
 !           nonlinearity(ies)
