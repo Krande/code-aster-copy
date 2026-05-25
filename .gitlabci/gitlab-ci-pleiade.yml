@@ -274,6 +274,8 @@ docker:
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $BUILDTYPE == "nightly"
     - if: $BUILDTYPE == "docker"
+    - if: $BUILDTYPE == "code-checking"
+      when: never
     - when: manual
       allow_failure: true
 
