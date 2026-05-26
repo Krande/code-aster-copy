@@ -5,5 +5,5 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist submit verification sequential
 
-F comm test2_dnl.comm D 1
+F comm sdnd126c.comm D 1
 F mail sdld32a.mail D 20

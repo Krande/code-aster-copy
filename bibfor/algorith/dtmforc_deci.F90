@@ -243,27 +243,36 @@ subroutine dtmforc_deci(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
                 okdire, varplu, dflocal)
 
 !   Conversion to the global (physical) reference
-    call locglo(dflocal(1:3), sina, cosa, sinb, cosb, &
-                sing, cosg, dfglob(1:3))
-    if (l_rota) call locglo(dflocal(4:6), sina, cosa, sinb, cosb, &
-                            sing, cosg, dfglob(4:6))
+    if (nbno .eq. 2) then
+        call locglo(dflocal(1:3), sina, cosa, sinb, cosb, &
+                    sing, cosg, dfglob(1:3))
+        if (l_rota) call locglo(dflocal(4:6), sina, cosa, sinb, cosb, &
+                                sing, cosg, dfglob(4:6))
+    else
+        dfglob(1:nbddl) = dflocal(1:nbddl)
+    end if
     fglob(:) = fglob(:)+dfglob(:)
 !
 !   Force linéaire correspondante
     floc_lin(:) = raide0(:)*vdeploc(:)
-    call locglo(floc_lin(1:3), sina, cosa, sinb, cosb, &
-                sing, cosg, fglob_lin(1:3))
-    if (l_rota) call locglo(floc_lin(4:6), sina, cosa, sinb, cosb, &
-                            sing, cosg, fglob_lin(4:6))
+    if (nbno .eq. 2) then
+        call locglo(floc_lin(1:3), sina, cosa, sinb, cosb, &
+                    sing, cosg, fglob_lin(1:3))
+        if (l_rota) call locglo(floc_lin(4:6), sina, cosa, sinb, cosb, &
+                                sing, cosg, fglob_lin(4:6))
+    else
+        fglob_lin(1:nbddl) = floc_lin(1:nbddl)
+    end if
 !
 !   Force corrective par rapport au linéaire
     fglob_correc(:) = fglob(:)-fglob_lin(:)
 
-!   Generalized force on the first node
-    call togene(dplmod1, fglob_correc, fext, nbddl_=nbddl)
-!   Generalized force on the second node
+!   Generalized force on nodes
     if (nbno .eq. 2) then
+        call togene(dplmod1, fglob_correc, fext, nbddl_=nbddl)
         call togene(dplmod2, fglob_correc, fext, coef=-1.d0, nbddl_=nbddl)
+    else
+        call togene(dplmod1, fglob_correc, fext, coef=-1.d0, nbddl_=nbddl)
     end if
 !
 !   Internal variables, storage
