@@ -152,7 +152,7 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
                 ivari = nbvalc*(fib-1)+1
                 ksp = debsp-1+fib
                 depsm = ddefp(fib)
-                call initParaPoin(kpg, fib, materPara)
+                call initParaPoin(kpg, ksp, materPara)
                 call nm1dci(materPara, &
                             option, materPoin, &
                             em, ep, &
@@ -165,7 +165,7 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
                 ksp = debsp-1+fib
                 call paeldt(kpg, ksp, fami, 'T', jvMaterCode, materPoin, em, ep, nu, depsth)
                 depsm = ddefp(fib)-depsth
-                call initParaPoin(kpg, fib, materPara)
+                call initParaPoin(kpg, ksp, materPara)
                 call nm1dci(materPara, &
                             option, materPoin, &
                             em, ep, &
@@ -186,7 +186,7 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
                 ivari = nbvalc*(fib-1)+1
                 ksp = debsp-1+fib
                 depsm = ddefp(fib)
-                call initParaPoin(kpg, fib, materPara)
+                call initParaPoin(kpg, ksp, materPara)
                 call nm1dis(materPara, &
                             option, relaComp, materPoin, &
                             em, ep, &
@@ -200,7 +200,7 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
                 ksp = debsp-1+fib
                 call paeldt(kpg, ksp, fami, 'T', jvMaterCode, materPoin, em, ep, nu, depsth)
                 depsm = ddefp(fib)-depsth
-                call initParaPoin(kpg, fib, materPara)
+                call initParaPoin(kpg, ksp, materPara)
                 call nm1dis(materPara, &
                             option, relaComp, materPoin, &
                             em, ep, &
