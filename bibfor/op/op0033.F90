@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C0110
 !
 subroutine op0033()
 !
@@ -76,10 +75,9 @@ subroutine op0033()
     integer(kind=8), parameter :: ndim = 3, ksp = 1, kpg = 1
     character(len=4), parameter :: fami = "PMAT"
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer(kind=8), parameter :: tablNbParaMaxi = 9999
-    character(len=8) :: tablParaType(tablNbParaMaxi)
-    character(len=16) :: tablParaName(tablNbParaMaxi)
-    real(kind=8) :: tablVale(tablNbParaMaxi)
+    character(len=8), allocatable :: tablParaType(:)
+    character(len=16), allocatable :: tablParaName(:)
+    real(kind=8), allocatable :: tablVale(:)
     integer(kind=8) :: tablNbPara, tablType
     integer(kind=8) :: iret, nbVari, i, ier
     integer(kind=8) :: jvMaterCode, iterNewt, ncmp
@@ -160,7 +158,7 @@ subroutine op0033()
     call initParaPoin(kpg, ksp, materPara)
 
 ! - Initializations
-    call pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
+    call pminit(tablName, tablNbPara, tablType, &
                 tablParaName, tablParaType, tablVale, &
                 pgl, lRota, &
                 epsiPrev, sigmPrev, &
@@ -463,7 +461,7 @@ subroutine op0033()
     call pmsta1(sigmPrev, sigmCurr, epsiIncr, &
                 nbVari, nbVariTabl, &
                 zr(jvVim), zr(jvVip), &
-                tablNbParaMaxi, tablNbPara, tablType, &
+                tablNbPara, tablType, &
                 tablParaName, tablParaType, tablVale, &
                 lLoadGrad, zk8(jvVariName), sddisc, &
                 liccvg, lIterNewtMaxi, conver, newtLoopAction)
@@ -510,7 +508,7 @@ subroutine op0033()
     call pmstab(sigmPrev, sigmCurr, epsiPrev, epsiIncr, &
                 nbVari, zr(jvVim), zr(jvVip), &
                 timePrev, timeCurr, iterNewt, &
-                tablName, tablType, tablNbParaMaxi, tablNbPara, &
+                tablName, tablType, tablNbPara, &
                 tablParaName, tablVale, &
                 lLoadGrad, valeImpo, lPrintMatr, dsidep, zk8(jvVariName), &
                 nbVariTabl)
@@ -539,6 +537,11 @@ subroutine op0033()
     call vrcinp(0, timePrev, timeCurr)
 
     call detrsd('FONCTION', '&&CPM_F0')
+
+! - De-Allocate big objects
+    deallocate (tablParaType)
+    deallocate (tablParaName)
+    deallocate (tablVale)
 !
     call jedema()
 end subroutine

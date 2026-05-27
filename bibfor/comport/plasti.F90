@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,C0110
+! aslint: disable=W1504
 !
 subroutine plasti(BEHInteg, &
                   option, typmod, &
@@ -153,6 +153,7 @@ subroutine plasti(BEHInteg, &
 !
     integer(kind=8), parameter :: rungeKutta = 0
     integer(kind=8), parameter :: nmat = 90, nsg = 30, nfs = 5, nrm = nfs*nsg+6
+    real(kind=8), allocatable :: drdy(:)
     character(len=3) :: matcst
     character(len=7) :: etatd, etatf
     character(len=8) :: typmod1, typma
@@ -165,7 +166,7 @@ subroutine plasti(BEHInteg, &
     real(kind=8) :: epsd(9), deps(9)
     real(kind=8) :: seuil, theta, dt, devg(6), devgii
     real(kind=8) :: vp(3), vecp(3, 3), pgl(3, 3)
-    real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), drdy(nrm*nrm)
+    real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
     real(kind=8) :: tempd, tempf, tref
 !     POUR BETON_BURGER - ATTENTION DIMENSION MAXI POUR CE MODELE
     parameter(epsi=1.d-15)
@@ -200,6 +201,9 @@ subroutine plasti(BEHInteg, &
     numhsr(1) = 1
 !
     typma = 'VITESSE '
+
+! - Allocate big objects
+    allocate (drdy(nrm*nrm))
 
 ! - Get temperatures
     call get_varc(fami, kpg, ksp, 'T', tempd, &
@@ -353,5 +357,8 @@ subroutine plasti(BEHInteg, &
     goto 999
 !
 999 continue
+
+! - De-Allocate big objects
+    deallocate (drdy)
 !
 end subroutine

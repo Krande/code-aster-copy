@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C0110, W0413
+! aslint: disable=W0413
 !
 subroutine nmvprk(BEHInteg, &
                   option, typmod, ndim, &
@@ -131,32 +131,33 @@ subroutine nmvprk(BEHInteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: rungeKutta = 1
+    integer(kind=8), parameter :: rungeKutta = 1, nmat = 6000
+    integer(kind=8), parameter ::  nsg = 30, nfs = 5, nhsr = 5
     integer(kind=8) :: ndim, ndt, ndi, nr, i, nbphas, itmax
-    integer(kind=8) :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps
+    integer(kind=8) :: ioptio, idnr, neps
     integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
-!     POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
-    parameter(nmat=6000)
 !     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
 !        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
 !        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
-    parameter(nsg=30)
-    parameter(nfs=5)
-    parameter(nhsr=5)
-    integer(kind=8) :: nbcomm(nmat, 3), numhsr(nmat), iret
-    real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsdt(neps), depst(neps)
+    integer(kind=8), allocatable :: nbcomm(:, :)
+    real(kind=8), allocatable :: materd(:, :), materf(:, :)
+    character(len=24), allocatable :: cpmono(:)
+    integer(kind=8), allocatable :: numhsr(:)
+    real(kind=8), allocatable :: cothe(:), dcothe(:)
+    real(kind=8), allocatable :: coeff(:), dcoeff(:), coel(:)
+    integer(kind=8) :: iret
+    real(kind=8) :: epsdt(neps), depst(neps)
     real(kind=8) :: rbid
     real(kind=8) :: toler, ymfs, vind(*), vinf(*)
     real(kind=8) :: sigd(6), sigf(6), dsde(6, *)
-    real(kind=8) :: cothe(nmat), dcothe(nmat), pgl(3, 3), epsd(9)
-    real(kind=8) :: coeff(nmat), dcoeff(nmat), coel(nmat), dtime, x
+    real(kind=8) :: pgl(3, 3), epsd(9)
+    real(kind=8) :: dtime, x
 !     POUR POLYCRISTAL, 5 MATRICE HSR MAXI. POUR MONOCRISTAL, 1 MAXI
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg, nhsr), detot(9)
     character(len=3) :: matcst
     character(len=8) :: typmod1, typma
     character(len=11) :: meting
     character(len=16) ::  relaComp, defoComp, multComp
-    character(len=24) :: cpmono(5*nmat+1)
     blas_int :: b_incx, b_incy, b_n
     common/tdim/ndt, ndi
     common/opti/ioptio, idnr
@@ -186,6 +187,18 @@ subroutine nmvprk(BEHInteg, &
     end if
     gdef = 0
     if (defoComp .eq. 'SIMO_MIEHE') gdef = 1
+
+! - Allocate big objects
+    allocate (nbcomm(nmat, 3))
+    allocate (materd(nmat, 2))
+    allocate (materf(nmat, 2))
+    allocate (cpmono(5*nmat+1))
+    allocate (numhsr(nmat))
+    allocate (cothe(nmat))
+    allocate (dcothe(nmat))
+    allocate (coeff(nmat))
+    allocate (dcoeff(nmat))
+    allocate (coel(nmat))
 !
 !     YMFS EST UTILISE LORS DU CALCUL D ERREUR COMME MINIMUM DE
 !     CHAQUE COMPOSANTE DE VINT. L IDEAL SERAIT DE RENTRER CE
@@ -284,4 +297,17 @@ subroutine nmvprk(BEHInteg, &
     end if
 !
 999 continue
+
+! - De-Allocate big objects
+    deallocate (nbcomm)
+    deallocate (materd)
+    deallocate (materf)
+    deallocate (cpmono)
+    deallocate (numhsr)
+    deallocate (cothe)
+    deallocate (dcothe)
+    deallocate (coeff)
+    deallocate (dcoeff)
+    deallocate (coel)
+!
 end subroutine

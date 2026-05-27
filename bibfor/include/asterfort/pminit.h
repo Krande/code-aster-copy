@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
+    subroutine pminit(tablName, tablNbPara, tablType, &
                       tablParaName, tablParaType, tablVale, &
                       pgl, lRota, &
                       epsiPrev, sigmPrev, &
@@ -30,10 +30,10 @@ interface
         use NonLin_Datastructure_type
         use MaterialPara_type
         character(len=8), intent(out) :: tablName
-        integer(kind=8), intent(in) :: tablNbParaMaxi
         integer(kind=8), intent(out) :: tablNbPara, tablType
-        character(len=16), intent(out) :: tablParaName(tablNbParaMaxi), tablParaType(tablNbParaMaxi)
-        real(kind=8), intent(out) :: tablVale(tablNbParaMaxi)
+        character(len=16), allocatable, intent(out) :: tablParaName(:)
+        character(len=8), allocatable, intent(out) :: tablParaType(:)
+        real(kind=8), allocatable, intent(out) :: tablVale(:)
         real(kind=8), intent(out) :: pgl(3, 3)
         aster_logical, intent(out) :: lRota
         real(kind=8), intent(out) :: epsiPrev(9), sigmPrev(6)

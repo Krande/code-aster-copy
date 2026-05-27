@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0413
 !
-subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
+subroutine pminit(tablName, tablNbPara, tablType, &
                   tablParaName, tablParaType, tablVale, &
                   pgl, lRota, &
                   epsiPrev, sigmPrev, &
@@ -60,16 +60,14 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
-#include "blas/dcopy.h"
-#include "blas/dscal.h"
 #include "jeveux.h"
 !
     integer(kind=8), intent(in) :: nbVari
     character(len=8), intent(out) :: tablName
-    integer(kind=8), intent(in) :: tablNbParaMaxi
     integer(kind=8), intent(out) :: tablNbPara, tablType
-    character(len=16), intent(out) :: tablParaName(tablNbParaMaxi), tablParaType(tablNbParaMaxi)
-    real(kind=8), intent(out) :: tablVale(tablNbParaMaxi)
+    character(len=16), allocatable, intent(out) :: tablParaName(:)
+    character(len=8), allocatable, intent(out) :: tablParaType(:)
+    real(kind=8), allocatable, intent(out) :: tablVale(:)
     real(kind=8), intent(out) :: pgl(3, 3)
     aster_logical, intent(out) :: lRota
     real(kind=8), intent(out) :: epsiPrev(9), sigmPrev(6)
@@ -127,6 +125,7 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer(kind=8), parameter :: tablNbParaMaxi = 9999
     integer(kind=8), parameter :: ndim = 3
     real(kind=8), parameter  :: rac2 = sqrt(2.d0)
     complex(kind=8), parameter :: c16Dummy = (0.d0, 0.d0)
@@ -153,14 +152,11 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
     real(kind=8) :: ang1(1), dsidep(36)
     real(kind=8) :: sigmInit(6), epsiInit(6), gradInitImpo(9)
     aster_logical :: lSetLinearRela, lGrad
-    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     tablName = " "
     tablNbPara = 0
-    tablParaName = " "
-    tablParaType = " "
     sddisc = '&&OP0033.SDDISC'
     sderro = '&&OP0033.ERRE.'
 
@@ -230,13 +226,27 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
         call utmess('F', 'COMPOR1_68', si=nbcol)
     end if
 
-! - Number and names of parameters in table
-    tablParaName(1) = 'INST'
+! - Number of parameters in table
     if (tablType .eq. 0) then
         tablNbPara = 1+nbCmpEpsi+6+2+nbVariTabl+1
         if (lPrintMatr) then
             tablNbPara = tablNbPara+36
         end if
+    else
+        tablNbPara = 4
+    end if
+
+! - Allocate objects
+    allocate (tablParaType(tablNbPara))
+    allocate (tablParaName(tablNbPara))
+    allocate (tablVale(tablNbPara))
+    tablParaType(1:tablNbPara) = " "
+    tablParaName(1:tablNbPara) = " "
+    tablVale(1:tablNbPara) = 0.d0
+
+! - Names of parameters in table
+    tablParaName(1) = 'INST'
+    if (tablType .eq. 0) then
         if (lGrad) then
             do i = 1, nbCmpEpsi
                 tablParaName(1+i) = gradName(i)
@@ -266,7 +276,6 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
         tablParaName(tablNbPara) = 'NB_ITER'
         tablParaType(1:tablNbPara) = 'R'
     else
-        tablNbPara = 4
         tablParaName(2) = 'GRANDEUR'
         tablParaName(3) = 'CMP'
         tablParaName(4) = 'VALEUR'
@@ -286,10 +295,7 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
     if (nbCmpEpsi .eq. 6) then
         epsiPrev = 0.d0
     else
-        b_n = to_blas_int(9)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, id, b_incx, epsiPrev, b_incy)
+        epsiPrev = id
     end if
 
 ! - ANGLE DE ROTATION
@@ -298,9 +304,7 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
     call getvr8(' ', 'ANGLE', scal=ang1(1), nbret=n1)
     if ((n1 .ne. 0) .and. (ang1(1) .ne. 0.d0)) then
         lRota = ASTER_TRUE
-        b_n = to_blas_int(1)
-        b_incx = to_blas_int(1)
-        call dscal(b_n, r8dgrd(), ang1(1), b_incx)
+        ang1(1) = ang1(1)*r8dgrd()
         pgl(1, 1) = cos(ang1(1))
         pgl(2, 2) = cos(ang1(1))
         pgl(1, 2) = sin(ang1(1))
@@ -318,19 +322,14 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
                 sigmPrev(i) = sigmInitVale
             end if
         end do
-        b_n = to_blas_int(3)
-        b_incx = to_blas_int(1)
-        call dscal(b_n, rac2, sigmPrev(4), b_incx)
+        sigmPrev(4:6) = sigmPrev(4:6)*rac2
     end if
 
 ! - Get initial state - Strains
     epsiPrev = 0.d0
     if (lGrad) then
         ASSERT(nbCmpEpsi .eq. 9)
-        b_n = to_blas_int(9)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, id, b_incx, epsiPrev, b_incy)
+        epsiPrev = id
     else
         ASSERT(nbCmpEpsi .eq. 6)
         epsiPrev = 0.d0
@@ -343,9 +342,7 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
                 epsiPrev(i) = epsiInitVale
             end if
         end do
-        b_n = to_blas_int(3)
-        b_incx = to_blas_int(1)
-        call dscal(b_n, rac2, epsiPrev(4), b_incx)
+        epsiPrev(4:6) = epsiPrev(4:6)*rac2
     end if
 
 ! - Get initial state - Internal state variables
@@ -456,48 +453,30 @@ subroutine pminit(tablName, tablNbParaMaxi, tablNbPara, tablType, &
 
 ! - Set initial state in table
     if (tablType .eq. 0) then
+        tablVale(1) = timeInit
         if (loadEpsiType == 2) then
             ASSERT(nbGradLoad .eq. 9)
-            b_n = to_blas_int(nbCmpEpsi)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, gradInitImpo, b_incx, tablVale(2), b_incy)
+            tablVale(2:2+nbCmpEpsi-1) = gradInitImpo(1:nbCmpEpsi)
         else
             epsiInit(1:6) = epsiPrev(1:6)
-            b_n = to_blas_int(3)
-            b_incx = to_blas_int(1)
-            call dscal(b_n, 1.d0/rac2, epsiInit(4), b_incx)
-            b_n = to_blas_int(nbCmpEpsi)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, epsiInit, b_incx, tablVale(2), b_incy)
+            epsiInit(4:6) = epsiInit(4:6)*1.d0/rac2
+            tablVale(2:2+nbCmpEpsi-1) = epsiInit(1:nbCmpEpsi)
         end if
         sigmInit(1:6) = sigmPrev(1:6)
-        b_n = to_blas_int(3)
-        b_incx = to_blas_int(1)
-        call dscal(b_n, 1.d0/rac2, sigmInit(4), b_incx)
-        b_n = to_blas_int(6)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, sigmInit, b_incx, tablVale(nbCmpEpsi+2), b_incy)
-        tablVale(1+nbCmpEpsi+6+1) = 0.d0
-        tablVale(1+nbCmpEpsi+6+2) = 0.d0
-        b_n = to_blas_int(nbVariTabl)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vim, b_incx, tablVale(1+nbCmpEpsi+6+3), b_incy)
-        tablVale(1) = timeInit
+        sigmInit(4:6) = sigmInit(4:6)*1.d0/rac2
+        tablVale(2+nbCmpEpsi:2+nbCmpEpsi+6-1) = sigmInit(1:6)
+        tablVale(2+nbCmpEpsi+6) = 0.d0
+        tablVale(2+nbCmpEpsi+7) = 0.d0
+        tablVale(2+nbCmpEpsi+8:2+nbCmpEpsi+8+nbVariTabl-1) = vim(1:nbVariTabl)
+
         if (lPrintMatr) then
             dsidep = 0.d0
-            b_n = to_blas_int(36)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, dsidep, b_incx, tablVale(1+6+6+3+nbVari), b_incy)
+            tablVale(2+nbCmpEpsi+8+nbVariTabl:2+nbCmpEpsi+8+nbVariTabl+36-1) = dsidep(1:36)
         end if
-        tablVale(tablNbPara) = 0
+        tablVale(tablNbPara) = 0.d0
         call tbajli(tablName, tablNbPara, tablParaName, [0], tablVale, [c16Dummy], k8b, 0)
     else
-        tablVale(1) = timeInit
+
         vk8(1) = 'EPSI'
         do i = 1, nbCmpEpsi
             tablVale(2) = epsiPrev(i)
