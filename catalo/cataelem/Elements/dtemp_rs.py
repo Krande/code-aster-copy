@@ -26,7 +26,6 @@ import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 import cataelem.Commons.attributes as AT
 
-
 MGEOMER = LocatedComponents(
     phys=PHY.GEOM_R, type="ELNO", diff=True, components=(("EN1", ()), ("EN2", ("X", "Y", "Z")))
 )
@@ -45,34 +44,31 @@ for cmp in ("TEMP", "TEMP_INF", "TEMP_MIL", "TEMP_SUP", "E1", "H1", "SECH"):
 
     MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
-    MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
-
     #     Attention : il faut nommer explicitement TOUS les modes locaux crees dans la boucle
     #     --------------------------------------------------------------------
     DDL_THER.setName("DDL_THER")
     MVECTTR.setName("MVECTTR")
     MMATTTR.setName("MMATTTR")
-    MMATTSR.setName("MMATTSR")
 
-    name = ("D_TEMP_R_" + cmp)[:16]
+    name = ("DTEMP_RS" + cmp)[:16]
 
     class TempClass(Element):
         """Please document this element"""
 
         _name = name
 
-        meshType = MT.SEG3
-        nodes = (SetOfNodes("EN1", (2, 3)), SetOfNodes("EN2", (1,)))
+        meshType = MT.SEG2
+        nodes = (SetOfNodes("EN1", (2,)), SetOfNodes("EN2", (1,)))
         attrs = ((AT.CL_DUAL, "OUI"),)
 
         calculs = (
             OP.THER_BTLA_R(
-                te=2,
+                te=330,
                 para_in=((SP.PDDLMUR, LC.MDDLMUR), (OP.THER_BTLA_R.PLAGRAR, DDL_THER)),
                 para_out=((SP.PVECTTR, MVECTTR),),
             ),
             OP.THER_BU_R(
-                te=2,
+                te=330,
                 para_in=(
                     (SP.PALPHAR, LC.MALPHAR),
                     (OP.THER_BU_R.PDDLIMR, DDL_THER),
@@ -81,17 +77,17 @@ for cmp in ("TEMP", "TEMP_INF", "TEMP_MIL", "TEMP_SUP", "E1", "H1", "SECH"):
                 para_out=((SP.PVECTTR, MVECTTR),),
             ),
             OP.THER_DDLI_F(
-                te=2,
+                te=330,
                 para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER), (SP.PINSTR, LC.MTEMPSR)),
                 para_out=((SP.PVECTTR, MVECTTR),),
             ),
             OP.THER_DDLI_R(
-                te=2,
+                te=330,
                 para_in=((OP.THER_DDLI_R.PDDLIMR, LC.MDDLIMR),),
                 para_out=((SP.PVECTTR, MVECTTR),),
             ),
             OP.THER_DDLM_R(
-                te=2, para_in=((SP.PDDLMUR, LC.MDDLMUR),), para_out=((SP.PMATTTR, MMATTTR),)
+                te=330, para_in=((SP.PDDLMUR, LC.MDDLMUR),), para_out=((SP.PMATTTR, MMATTTR),)
             ),
         )
 
