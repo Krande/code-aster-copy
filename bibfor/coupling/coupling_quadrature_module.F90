@@ -195,10 +195,10 @@ contains
                 FEQuadSl%weights_param(nb_qp) = gausWeightSlav(iGauss)
 !
 ! ------------- Get shape functions and first derivative only (for perf)
-                call mmnonf(ndim, FEFaceSl%nbnodes, FEFaceSl%typemas, &
+                call mmnonf(FEFaceSl%typemas, &
                             gausCoorSlav(1, iGauss), gausCoorSlav(2, iGauss), &
                             shape_func)
-                call mmdonf(ndim, FEFaceSl%nbnodes, FEFaceSl%typemas, &
+                call mmdonf(FEFaceSl%typemas, &
                             gausCoorSlav(1, iGauss), gausCoorSlav(2, iGauss), &
                             shape_dfunc)
 !

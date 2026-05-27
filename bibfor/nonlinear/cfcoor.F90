@@ -82,7 +82,7 @@ subroutine cfcoor(noma, defico, newgeo, posmam, ksi1, &
 !
 ! --- COORDONNEES DU PROJETE
 !
-    call mmcoor(alias, nnomam, ndim, coorma, ksi1, &
+    call mmcoor(alias, nnomam, coorma, ksi1, &
                 ksi2, coordp)
 !
     call jedema()

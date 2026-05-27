@@ -123,7 +123,7 @@ subroutine copnor(noma, ds_contact, posmai, ksi1, &
 !
 ! --- NORMALE EN CE POINT PAR INTERPOLATION A PARTIR DES VALEURS NODALES
 !
-    call mmcoor(alias, nno, ndim, vecnor, ksi1, &
+    call mmcoor(alias, nno, vecnor, ksi1, &
                 ksi2, norm)
 !
 ! --- NORMALISATION DE LA NORMALE

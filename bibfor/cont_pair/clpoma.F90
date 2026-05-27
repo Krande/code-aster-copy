@@ -91,7 +91,7 @@ subroutine clpoma(elem_dime, elem_code, elem_coor, elem_nbnode, elem_weight)
         jacobi = 0.d0
         coptg1 = gauss_coor((elem_dime-1)*(i_gauss-1)+1)
         coptg2 = gauss_coor((elem_dime-1)*(i_gauss-1)+2)
-        call mmdonf(elem_dime, elem_nbnode, elem_code, coptg1, coptg2, &
+        call mmdonf(elem_code, coptg1, coptg2, &
                     dff)
         if ((elem_dime-1) .eq. 2) then
             call subaco(elem_nbnode, dff, elem_coor, cova)

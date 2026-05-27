@@ -122,7 +122,7 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
 !
 ! ----- Evaluate shape function for Lagrange (slave)
 !
-    call shapeFuncLagr(geom%elem_dime, geom%elem_slav_code, coor_qp_sl, &
+    call shapeFuncLagr(geom%elem_slav_code, coor_qp_sl, &
                        shape_func_lagr)
 !
 ! ----- Evaluate Lagr_c and gamma_c at quadrature point

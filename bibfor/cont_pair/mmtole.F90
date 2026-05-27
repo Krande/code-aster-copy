@@ -68,8 +68,7 @@ subroutine mmtole(alias, nno, ndim, coorma, toleou, &
 !
 ! --- CALCUL DES DERIVEES DES FONCTIONS DE FORME
 !
-    call mmdonf(ndim, nno, alias, ksi1, ksi2, &
-                dff)
+    call mmdonf(alias, ksi1, ksi2, dff)
 !
 ! --- RE-CALCUL DES TANGENTES APRES AJUSTEMENT
 !
