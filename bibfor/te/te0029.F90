@@ -54,52 +54,47 @@ subroutine te0029(option, nomte)
 !     CALCUL DE PRESSION SUR LES ELEMENTS PLAQ_MITC
 !         OPTIONS TRAITEES   ==> CHAR_MECA_PRES_R
 !     -----------------------------------------------------------------
-    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, ivectu, imate
-    integer(kind=8) :: i, j, ier, jgeom, jpres, itemps, igau
-    real(kind=8) :: pgl(3, 3), xyzl(3, 4)
-    real(kind=8) :: rho, epais
-    real(kind=8) :: valpar(4), pr
+    integer(kind=8) :: ndim, nno, nnos, npg, jpoids, jvf, jdfde, jgano, jgeom, jmate
+    integer(kind=8) :: i, j, ier, jpres, itemps, ivectu, elas_id
+    real(c_double) :: pgl(3, 3), xyzl(3, 4), valpar(4)
+    real(c_double) :: e, nu, epais, rho, pres, pr
+    character(len=8) :: fami
     character(len=8) :: nompar(4)
     character(len=16) :: elas_keyword
-    character(len=8) :: fami
 
-    real(c_double) :: cst(5), coor(27), kappa, cdofs_f(12)
+    real(c_double) :: cst(5), coor(27), cdofs_f(12)
     ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_f
 
-    integer(c_int) :: ncst, ncd, ne0, ne1, ne2, ne3, nwinit
+    integer(c_int) :: ncst, ncd, ne0, ne1, ne2, ne3
     integer(c_int) :: entities0(1), entities1(1), entities2(1), entities3(1)
-    integer(kind=8) :: elas_id
 
-    integer(kind=8), parameter :: size_init = 30, size_final = 22
-    real(c_double), dimension(size_init) :: F_elem, F_elem0, F_elem1, F_elem2
-    real(c_double), dimension(size_init) :: F_elem3, F_elem4, w_0
-    real(c_double) :: F_elem_f(size_final)
-    real(kind=8) :: signs(size_final)
+    integer(kind=4), parameter :: size_init = 30, size_final = 22
+    real(c_double), dimension(size_init) :: F_elem, F0, F1, F2, F3, F4, w_0
+    real(c_double) :: signs(size_final)
     integer(kind=8) :: reorder(size_final)
-    real(c_double) :: pres
-    real(kind=8) :: e, nu
 
-! DEB ------------------------------------------------------------------
+! --------------------------------------------------------------------
+! - Finite element informations
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+    fami = 'RIGI'
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=jpoids, jvf=jvf, jdfde=jdfde, jgano=jgano)
 ! - Geometry
 !
     call jevech('PGEOMER', 'L', jgeom)
 !
 ! - Material parameters
 !
-    call jevech('PMATERC', 'L', imate)
+    call jevech('PMATERC', 'L', jmate)
 !
-    do igau = 1, npg
 ! ----- Get elastic parameters (only isotropic elasticity)
+! FIXME: for instance E and NU are supposed to be equal for all quadpoints
 !
-        call get_elas_id(zi(imate), elas_id, elas_keyword)
-        call get_elas_para(fami, zi(imate), '+', igau, 1, &
-                           elas_id, elas_keyword, &
-                           e_=e, nu_=nu)
-    end do
-!
+    call get_elas_id(zi(jmate), elas_id, elas_keyword)
+    call get_elas_para(fami, zi(jmate), '+', 1, 1, &
+                       elas_id, elas_keyword, &
+                       e_=e, nu_=nu)
+
     call dxroep(rho, epais)
 !
     if (option .eq. 'CHAR_MECA_PRES_R') then
@@ -135,26 +130,17 @@ subroutine te0029(option, nomte)
     end if
 !
 !
-! - Initializations
+! Initializations
 !
-    cst = 0.d0
-    coor = 0.d0
-    F_elem_f = 0.d0
-    F_elem = 0.d0
-    F_elem0 = 0.d0
-    F_elem1 = 0.d0
-    F_elem2 = 0.d0
-    F_elem3 = 0.d0
-    F_elem4 = 0.d0
     w_0 = 0.d0
 !
-! - Fill material parameters vector
-    kappa = 5.0/6.0
+! Fill material parameters vector
     cst(1) = e
     cst(2) = nu
-    cst(3) = kappa
+    cst(3) = 5.0/6.0
     cst(4) = epais
     cst(5) = pres
+    ncst = size(cst)
 ! Remplissage du vecteur de coordonnées (3 coordonnées par nœud)
     do i = 0, 8
         coor(3*i+1) = zr(jgeom+3*i)
@@ -178,25 +164,27 @@ subroutine te0029(option, nomte)
     cdofs_f(11) = coor(8)
     cdofs_f(12) = coor(9)
 !
-    nwinit = size(w_0)
     ncd = size(cdofs_f)
-    ne0 = 1
-    ne1 = 1
-    ne2 = 1
-    ne3 = 1
-    ncst = size(cst)
+!
+! On définit 4 entities car 4 arêtes dans le quadrangle
     entities0(1) = 0
     entities1(1) = 1
     entities2(1) = 2
     entities3(1) = 3
+    ne0 = 1
+    ne1 = 1
+    ne2 = 1
+    ne3 = 1
 !
-    call BP1_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, F_elem0)
-    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, F_elem1)
-    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities1, ne1, cst, ncst, F_elem2)
-    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities2, ne2, cst, ncst, F_elem3)
-    call BP2_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities3, ne3, cst, ncst, F_elem4)
+    call BP1_qu9_Fortran(w_0, size_init, cdofs_f, ncd, entities0, ne0, cst, ncst, F0)
+    call BP2_qu9_Fortran(w_0, size_init, cdofs_f, ncd, entities0, ne0, cst, ncst, F1)
+    call BP2_qu9_Fortran(w_0, size_init, cdofs_f, ncd, entities1, ne1, cst, ncst, F2)
+    call BP2_qu9_Fortran(w_0, size_init, cdofs_f, ncd, entities2, ne2, cst, ncst, F3)
+    call BP2_qu9_Fortran(w_0, size_init, cdofs_f, ncd, entities3, ne3, cst, ncst, F4)
+
+! Remplissage du vecteur
     do i = 1, size_init
-        F_elem(i) = F_elem0(i)+F_elem1(i)+F_elem2(i)+F_elem3(i)+F_elem4(i)
+        F_elem(i) = F0(i)+F1(i)+F2(i)+F3(i)+F4(i)
     end do
 !
 ! Reorganisation du vecteur
@@ -225,14 +213,11 @@ subroutine te0029(option, nomte)
             1.d0, -1.d0, &
             1.d0, -1.d0 &
             /)
-    do i = 1, size_final
-        F_elem_f(i) = -signs(i)*F_elem(reorder(i))
-    end do
 !
 ! - Set matrix in output field
     call jevech('PVECTUR', 'E', ivectu)
-    do i = 0, size_final-1
-        zr(ivectu+i) = F_elem_f(i+1)
+    do i = 1, size_final
+        zr(ivectu+i-1) = -signs(i)*F_elem(reorder(i))
     end do
 999 continue
 !
