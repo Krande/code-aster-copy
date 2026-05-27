@@ -23,11 +23,11 @@ from ..Language.Syntax import *
 from ..Commons.c_comportement import compat_syntax
 
 
-CALC_ENDO= MACRO(
+CALC_ENDO = MACRO(
     nom="CALC_ENDO",
     op=OPS("code_aster.MacroCommands.calc_endo_ops.calc_endo_ops"),
     compat_syntax=compat_syntax,
-    sd_prod=evol_noli,
+    sd_prod=list,
     fr=tr(
         "Calcul de l'évolution mécanique en quasi-statique,"
         "d'une structure en non linéaire modélisée par un comportement visqueux "
@@ -93,11 +93,12 @@ CALC_ENDO= MACRO(
     ENDO_VISC=FACT(
         statut="o",
         max=1,
-        NB_TAU_RAMPE=SIMP(statut="o", typ="I", min=1),
-        NB_TAU_STAB=SIMP(statut="o", typ="I", min=1),
-        NB_STAB_MAX=SIMP(statut="o", typ="I", min=1),
-        OBSERVATION_VISC=C_OBSERVATION("MECANIQUE"),
-        CRIT_STAB_VISC=SIMP(statut="o", typ="R"),
+        regles=(ENSEMBLE("OBSERVATION_VISC", "CRIT_STAB_VISC"),),
+        LIST_INST_VISC=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
+        OBSERVATION_VISC=SIMP(statut="f", typ="TXM", max="**"),
+        CRIT_STAB_VISC=SIMP(statut="f", typ="R", max="**"),
+        ARCHIVAGE_VISC=C_ARCHIVAGE(),
+        ARRET=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
     ),
     # -------------------------------------------------------------------
     AFFICHAGE=C_AFFICHAGE(),

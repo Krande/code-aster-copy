@@ -35,8 +35,8 @@ cata_msg = {
     ),
     3: _(
         """
- Mot-clé OBSERVATION_VISC manquant dans ENDO_VISC.
- Il est obligatoire de définir une ou plusieurs quantités sur lesquelles faire porter le critère de stabilisation.
+ Erreur pour OBSERVATION_VISC = "%(k1)s".
+ Vérifier la mise en données.
 """
     ),
     4: _(
@@ -53,14 +53,8 @@ cata_msg = {
     ),
     6: _(
         """
- Mot-clé OBSERVATION_VISC dans ENDO_VISC : les cas EVAL_CHAM = "VALE" et EVAL_ELGA = "VALE" ne sont pas prévus.
- Vérifier la mise en données.
-"""
-    ),
-    7: _(
-        """
- Mot-clé OBSERVATION_VISC dans ENDO_VISC : on ne peut définir qu'une composante NOM_CMP par mot-clé facteur.
- Il faut définir autant de mots-clés facteurs que de composantes souhaitées.
+ Le critère de stabilisation n'est pas vérifié au dernier instant de la séquence de chargement.
+ On poursuit tout de même le calcul (ARRET = "NON").
 """
     ),
     8: _(
@@ -69,5 +63,22 @@ cata_msg = {
  La poursuite d'un calcul se fait nécessairement à partir du dernier instant.
 """
     ),
-
+    9: _(
+        """
+ LIST_INST_VISC attend en entrée une liste de trois instants permettant de définir le
+ nombre de TAU pendant la rampe de chargement, pendant une séquence de stabilisation, et
+ le nombre maximal de séquence de stabilisation.
+ Vérifier la mise en données.
+"""
+    ),
+    10: _(
+        """
+ Le nombre d'observations OBSERVATION_VISC doit être égal au nombre de critères de stabilisation CRIT_STAB_VISC.
+"""
+    ),
+    11: _(
+        """
+ Dans le cas où l'utilisateur ne fournit pas de critère de stabilisation, CALC_ENDO ne peut être utilisé qu'avec un critère de convergence de type RESI_REFE_RELA.
+"""
+    ),
 }
