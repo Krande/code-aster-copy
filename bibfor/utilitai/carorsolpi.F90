@@ -57,6 +57,7 @@ subroutine carorsolpi(nutyel, ntyele, IsIntsolpi, ino1, ino2)
                 IsIntsolpi = .TRUE.
                 ino1 = 25
                 ino2 = 23
+                exit
             end if
         end if
     end do
