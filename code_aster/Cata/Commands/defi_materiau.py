@@ -5201,6 +5201,8 @@ DEFI_MATERIAU = MACRO(
         ADHE=SIMP(statut="o", typ="TXM", into=("ELAS", "PARFAITE"), enum=(0, 1)),
         COHESION=SIMP(statut="o", typ="R", val_min=0.0),
         COEF_FROT=SIMP(statut="o", typ="R", val_min=0.0),
+        RIGI_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0),
+        TAU_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0),
         PENA_LAGR_ABSO=SIMP(statut="o", typ="R", val_min=0.0),
     ),
     JOINT_MECA_ENDO=FACT(

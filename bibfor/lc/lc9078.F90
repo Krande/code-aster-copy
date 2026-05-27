@@ -82,7 +82,7 @@ subroutine lc9078(BEHinteg, &
     su = epsm(1:ndim)+deps(1:ndim)
     t = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
 
-    cl = Init(ndim, option, fami, kpg, ksp, jvMaterCode, t, su, vim)
+    cl = Init(ndim, option, fami, kpg, ksp, jvMaterCode, t, su, vim, instap-instam, carcri(RESI_INTE))
     call Integrate(cl, delta, dphi_delta, vi)
     codret = cl%exception
     if (codret .ne. 0) goto 999

@@ -317,6 +317,7 @@ subroutine lcejfr(BEHInteg, fami, kpg, ksp, ndim, &
         sigma(1) = kn*a(1)
     else
         ifouv = 1
+        print*, 'toto'
         sigma(1) = adhe/mu
     end if
 !
@@ -552,20 +553,20 @@ subroutine lcejfr(BEHInteg, fami, kpg, ksp, ndim, &
 ! RIGIDITE ARTIFICIELLE DANS LA MATRICE TANGENTE POUR ASSURER
 ! LA CONVERGENCE
 !
-    rigart = 1.d-8
-!
-!     POUR LE JOINT OUVERT LA PARTIE NORMALE EST CORRIGEE
-    if (ifouv .eq. 1) then
-!       COMPLETEMENT CASSE NORMALE
-        dsidep(1, 1) = kn*rigart
-    end if
-!     POUR LE JOINT SANS ECROUISSAGE LA PARTIE TANGENTIELLE EST DECALEE
-    if (kappa .eq. 0.d0) then
-!     COMPLETEMENT CASSE TANGENTE
-        do i = 2, ndim
-            dsidep(i, i) = dsidep(i, i)+kt*rigart
-        end do
-    end if
+!     rigart = 1.d-8
+! !
+! !     POUR LE JOINT OUVERT LA PARTIE NORMALE EST CORRIGEE
+!     if (ifouv .eq. 1) then
+! !       COMPLETEMENT CASSE NORMALE
+!         dsidep(1, 1) = kn*rigart
+!     end if
+! !     POUR LE JOINT SANS ECROUISSAGE LA PARTIE TANGENTIELLE EST DECALEE
+!     if (kappa .eq. 0.d0) then
+! !     COMPLETEMENT CASSE TANGENTE
+!         do i = 2, ndim
+!             dsidep(i, i) = dsidep(i, i)+kt*rigart
+!         end do
+!     end if
 !
 !
 999 continue
