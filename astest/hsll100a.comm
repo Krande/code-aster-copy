@@ -58,6 +58,14 @@ carel = AFFE_CARA_ELEM(
 # #########################################################
 TemperRefe = 0.0
 
+TEMP_ELEM = CREA_CHAMP(
+    TYPE_CHAM="ELEM_TEMP_R",
+    OPERATION="AFFE",
+    MODELE=modelp,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=TemperRefe),
+)
+
+
 TEMP_0 = CREA_CHAMP(
     TYPE_CHAM="NOEU_TEMP_R",
     OPERATION="AFFE",
