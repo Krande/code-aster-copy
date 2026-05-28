@@ -155,12 +155,12 @@ subroutine parallel_ligrel_list(numeEquZ, base)
             end if
             deallocate (v_recv)
 
-            if (shift .eq. 2 .and. nbLigr .eq. 2) then
+            call jelira('&&TMP.HASHTABLETOT', 'NOMUTI', ival=hashNb)
+            if (shift .eq. 2 .and. (hashNb+shift) .eq. 2) then
                 call wkvect(numeEqua//'.LILT', base//' V I', 2, vi=v_lilt)
                 v_lilt(1) = 1
                 v_lilt(2) = 2
             else
-                call jelira('&&TMP.HASHTABLETOT', 'NOMUTI', ival=hashNb)
                 call wkvect(numeEqua//'.LILT', base//' V I', hashNb+shift, vi=v_lilt)
                 v_lilt(1) = 1
                 call jenuno(jexnum(numeEqua//'.LILI', 1), ligrelName)
