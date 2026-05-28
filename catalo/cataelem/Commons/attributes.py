@@ -581,6 +581,7 @@ TYPMOD2 = Attribute(
         "GRADSIGM",
         "GDVARINO",
         "INTERFAC",
+        "INTSOLPI",
         "PMF",
         "THM",
         "HHO",
@@ -595,6 +596,7 @@ TYPMOD2 = Attribute(
   TYPMOD2= GRADVARI l'element utilise des comportements non locaux (TYPMOD(2)='GRADVARI' pour NMCOMP)
            ELEMJOIN l'element utilise des comportements d'elements de joints (CZM sur des modelisations *_JOINT)
            INTERFAC l'element utilise des comportements d'elements d'interface (CZM sur des modelisations *_INTERFACE)
+           INTSOLPI l'element utilise des comportements d'elements d'interface sol-pieu (SP_* sur une modelisation 3D_SOLPIEUINT)
            PMF      l'element fait appel a des comportements 1D PMF
            THM      thermo-hydro-mechanic
            HHO      Hybrid High-Order elements

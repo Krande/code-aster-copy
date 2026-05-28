@@ -1405,6 +1405,10 @@ XXXXXX = InputParameter(phys=PHY.SIEF_R, container="RESU!SIGM_ELNO!N", comment="
 
 PDEPLGA = OutputParameter(phys=PHY.DEPL_R, type="ELGA", comment="""Déplacements aux sous-points""")
 
+PDEPSGA = OutputParameter(
+    phys=PHY.DEPL_R, type="ELGA", comment="""Saut de déplacements aux points de Gauss"""
+)
+
 PCAFI_R = OutputParameter(phys=PHY.CAFI_R, type="ELEM", comment="""""")
 
 PCARAGE = OutputParameter(phys=PHY.MASS_R, type="ELEM", comment="""""")

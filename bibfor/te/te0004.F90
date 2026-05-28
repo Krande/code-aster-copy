@@ -181,6 +181,13 @@ subroutine te0004(option, nomte)
         call tecach('OOO', 'PHYGRNO', 'E', iret, nval=7, &
                     itab=itabou)
 !
+    else if (option .eq. 'SAUT_ELNO') then
+        fami = 'RIGI'
+        call tecach('OOO', 'PDEPOPG', 'L', iret, nval=7, &
+                    itab=itabin)
+        call tecach('OOO', 'PDEPSNO', 'E', iret, nval=7, &
+                    itab=itabou)
+!
     else if (option .eq. 'SIGM_ELNO') then
         fami = 'RIGI'
         call tecach('OOO', 'PCONTRR', 'L', iret, nval=7, &

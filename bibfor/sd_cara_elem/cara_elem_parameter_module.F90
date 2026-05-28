@@ -172,12 +172,12 @@ module cara_elem_parameter_module
     integer(kind=8), parameter :: ACE_NU_THHMM     =  9
     integer(kind=8), parameter :: ACE_NU_HHO       = 10
 !
-    integer(kind=8), parameter :: ACE_NB_POUTRE    = 13
+    integer(kind=8), parameter :: ACE_NB_POUTRE    = 14
     character(len=16), parameter :: ACE_EL_POUTRE(ACE_NB_POUTRE) =[ &
         'MECA_POU_D_T    ', 'MECA_POU_D_E    ', 'MECA_POU_D_T_GD ', 'MEFS_POU_D_T    ', &
         'MECA_POU_D_TG   ', 'MECA_POHO_HEXA8 ', 'MECA_POHO_HEXA20', 'MET3SEG3        ', &
         'MET6SEG3        ', 'MET3SEG4        ', 'MECA_POU_D_EM   ', 'MECA_POU_D_TGM  ', &
-        'MECA_POU_D_SQUE ']
+        'MECA_POU_D_SQUE ', 'MECA_S8P2       ']
 !
     integer(kind=8), parameter :: ACE_MECA_POU_D_T          =  1
     integer(kind=8), parameter :: ACE_MECA_POU_D_E          =  2
@@ -192,6 +192,7 @@ module cara_elem_parameter_module
     integer(kind=8), parameter :: ACE_MECA_POU_D_EM         = 11
     integer(kind=8), parameter :: ACE_MECA_POU_D_TGM        = 12
     integer(kind=8), parameter :: ACE_MECA_POU_D_SQUE       = 13
+    integer(kind=8), parameter :: ACE_MECA_S8P2             = 14
 !
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8), parameter :: ACE_NB_DISCRET   = 8

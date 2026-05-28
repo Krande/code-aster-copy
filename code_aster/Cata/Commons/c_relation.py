@@ -181,6 +181,8 @@ def C_RELATION(command):
             "ROUSS_VISC",
             "RUPT_FRAG",
             "SANS",
+            "INTERF_POU_CINE",
+            "INTERF_POU_ELAS",
             "VENDOCHAB",
             "VISC_ENDO_LEMA",
             "VISCOCHAB",

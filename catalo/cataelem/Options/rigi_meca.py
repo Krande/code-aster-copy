@@ -157,6 +157,7 @@ RIGI_MECA = Option(
         CondCalcul("+", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
         CondCalcul("+", ((AT.POUTRE, "OUI"), (AT.FSI, "OUI"))),
         CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "U_P_PHI"))),
-        CondCalcul("-", ((AT.TYPMOD2, "ELEMJOIN"), (AT.INTERFACE, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "INTSOLPI"))),
     ),
 )

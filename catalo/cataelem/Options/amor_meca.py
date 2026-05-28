@@ -64,5 +64,9 @@ AMOR_MECA = Option(
         CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "U_PSI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D3D"))),
+        # CondCalcul("-", ((AT.PHENO, "ME"), (AT.TYPMOD2, "INTERFAC"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "ELEMJOIN"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "EJ_HYME"))),
     ),
 )

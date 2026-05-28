@@ -1422,6 +1422,16 @@ phen.add(
 )
 
 phen.add(
+    "3D_INTERF_POU",
+    Modelisation(
+        dim=(3, 3),
+        code="3SP",
+        attrs=((AT.TYPMOD, "3D"), (AT.TYPMOD2, "INTSOLPI"), (AT.INTERFACE, "OUI")),
+        elements=((MT.HEXA27, EL.MECA_S8P2),),
+    ),
+)
+
+phen.add(
     "3D_JOINT",
     Modelisation(
         dim=(3, 3),
