@@ -105,32 +105,32 @@ CARA_ELE = AFFE_CARA_ELEM(
 ### Material
 
 MATERDNL = DEFI_MATERIAU(
-		DIS_ECRO_CINE=_F(
-		    LIMY_DX=limy_dx,
-		    KCIN_DX=kcin_dx,
-		    PUIS_DX=puis_dx,
-		    LIMU_DX=limu_dx,
-		    LIMY_DY=limy_dy,
-		    KCIN_DY=kcin_dy,
-		    PUIS_DY=puis_dy,
-		    LIMU_DY=limu_dy,
-		    LIMY_DZ=limy_dz,
-		    KCIN_DZ=kcin_dz,
-		    PUIS_DZ=puis_dz,
-		    LIMU_DZ=limu_dz,
-		    LIMY_RX=limy_rx,
-		    KCIN_RX=kcin_rx,
-		    PUIS_RX=puis_rx,
-		    LIMU_RX=limu_rx,
-		    LIMY_RY=limy_ry,
-		    KCIN_RY=kcin_ry,
-		    PUIS_RY=puis_ry,
-		    LIMU_RY=limu_ry,
-		    LIMY_RZ=limy_rz,
-		    KCIN_RZ=kcin_rz,
-		    PUIS_RZ=puis_rz,
-		    LIMU_RZ=limu_rz,
-		)
+    DIS_ECRO_CINE=_F(
+        LIMY_DX=limy_dx,
+        KCIN_DX=kcin_dx,
+        PUIS_DX=puis_dx,
+        LIMU_DX=limu_dx,
+        LIMY_DY=limy_dy,
+        KCIN_DY=kcin_dy,
+        PUIS_DY=puis_dy,
+        LIMU_DY=limu_dy,
+        LIMY_DZ=limy_dz,
+        KCIN_DZ=kcin_dz,
+        PUIS_DZ=puis_dz,
+        LIMU_DZ=limu_dz,
+        LIMY_RX=limy_rx,
+        KCIN_RX=kcin_rx,
+        PUIS_RX=puis_rx,
+        LIMU_RX=limu_rx,
+        LIMY_RY=limy_ry,
+        KCIN_RY=kcin_ry,
+        PUIS_RY=puis_ry,
+        LIMU_RY=limu_ry,
+        LIMY_RZ=limy_rz,
+        KCIN_RZ=kcin_rz,
+        PUIS_RZ=puis_rz,
+        LIMU_RZ=limu_rz,
+    )
 )
 
 CHMATDNL = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA="RESSORTS", MATER=MATERDNL))
@@ -155,7 +155,6 @@ L_INST = DEFI_LIST_REEL(DEBUT=t0, INTERVALLE=(_F(JUSQU_A=tf, PAS=dt),))
 
 ### Load multiplicative function
 F_MULT = CALC_FONC_INTERP(FONCTION=F_MULT0, LIST_PARA=L_INST, NOM_PARA="INST")
-
 
 
 ### Solve transient problem
