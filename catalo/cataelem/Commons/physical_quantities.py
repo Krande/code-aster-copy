@@ -1520,26 +1520,6 @@ FACY_R = PhysicalQuantity(
 """,
 )
 
-
-FLAP_R = PhysicalQuantity(
-    type="R",
-    components=("X1", "Y1", "Z1", "X2", "Y2", "Z2", "CODE"),
-    comment="""  FLAP_R Type:R Application de la force de Laplace ( FORCE_ELEC )
-       X1 : coordonnee X d'un point du conducteur 1
-       Y1 : coordonnee Y d'un point du conducteur 1
-       Z1 : coordonnee Z d'un point du conducteur 1
-       X2 : coordonnee X d'un point du conducteur 2
-       Y2 : coordonnee Y d'un point du conducteur 2
-       Z2 : coordonnee Z d'un point du conducteur 2
-       CODE = 10 : composantes de la force Laplace (X1, Y1, Z1 et X2=Y2=Y3=0)
-            = 11 : TRANS
-            = 12 : DIST
-            = 2 : INFI
-            = 3 : FINI
-""",
-)
-
-
 FER1_R = PhysicalQuantity(
     type="R",
     components=(
