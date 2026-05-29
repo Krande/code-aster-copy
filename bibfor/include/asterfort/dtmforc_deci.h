@@ -16,24 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function nltype(inttyp)
-    implicit none
 !
 !
-#include "nldef.h"
-#include "asterfort/assert.h"
-!
-    integer(kind=8) :: inttyp
-    character(len=16) :: nltype
-    character(len=16) :: nltypes(_NL_NB_TYPES)
-
-    data nltypes/ &
-        'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ', &
-        'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ', &
-        'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', 'CHOC_ELAS_TRAC  ', &
-        'DIS_ECRO_CINE   '/
-!
-!
-    ASSERT((inttyp .gt. 0) .and. (inttyp .le. _NL_NB_TYPES))
-    nltype = nltypes(inttyp)
-end function
+interface
+    subroutine dtmforc_deci(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
+                            time  , step   ,depl   , fext)
+        integer(kind=8)               , intent(in)  :: nl_ind
+        character(len=*)      , intent(in)  :: sd_dtm_
+        character(len=*)      , intent(in)  :: sd_nl_
+        integer(kind=8)     , pointer  :: buffdtm  (:)
+        integer(kind=8)     , pointer  :: buffnl   (:)
+        real(kind=8)          , intent(in)  :: time
+        real(kind=8)          , intent(in)  :: step
+        real(kind=8), pointer  :: depl     (:)
+        real(kind=8), pointer :: fext     (:)
+    end subroutine dtmforc_deci
+end interface
