@@ -285,6 +285,7 @@ class MEPLSE2(Element):
                 (OP.TOU_INI_ELEM.PERREUR, LC.CERROR),
                 (OP.TOU_INI_ELEM.PNEUT_F, ELNEUT_F),
                 (SP.PNEU1_R, ENEU1_R),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),
         OP.TOU_INI_ELGA(

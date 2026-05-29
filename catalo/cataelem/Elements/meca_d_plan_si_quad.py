@@ -1273,6 +1273,7 @@ class MEDPQS8(Element):
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),
                 (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
                 (SP.PNEU1_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),
         OP.TOU_INI_ELGA(

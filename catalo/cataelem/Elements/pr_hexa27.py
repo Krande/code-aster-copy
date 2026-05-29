@@ -39,7 +39,11 @@ class PR_HEXA27(Element):
 
     meshType = MT.HEXA27
     elrefe = (ElrefeLoc(MT.H27),)
-    calculs = (OP.TOU_INI_ELEM(te=99, para_out=((SP.PNEU1_R, ENEU1_R),)),)
+    calculs = (
+        OP.TOU_INI_ELEM(
+            te=99, para_out=((SP.PNEU1_R, ENEU1_R), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+        ),
+    )
 
 
 # ------------------------------------------------------------

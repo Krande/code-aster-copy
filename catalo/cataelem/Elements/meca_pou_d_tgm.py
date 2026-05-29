@@ -964,6 +964,7 @@ class MECA_POU_D_TGM(Element):
                 (SP.PCAFI_R, LC.ECAFIEL),
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
                 (OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),
         OP.TOU_INI_ELGA(

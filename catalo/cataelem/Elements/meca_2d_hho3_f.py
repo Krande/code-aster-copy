@@ -195,7 +195,12 @@ class MECA_2D_HHO3_F(Element):
             para_out=((SP.PDCEL_I, LC.EDCEL_I),),
         ),
         OP.TOU_INI_ELEM(
-            te=99, para_out=((SP.PFORC_R, CFORCER), (OP.TOU_INI_ELEM.PPRES_R, CPRES_R))
+            te=99,
+            para_out=(
+                (SP.PFORC_R, CFORCER),
+                (OP.TOU_INI_ELEM.PPRES_R, CPRES_R),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+            ),
         ),
         OP.TOU_INI_ELGA(
             te=99,

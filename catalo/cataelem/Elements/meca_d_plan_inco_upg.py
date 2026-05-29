@@ -843,7 +843,10 @@ class MIPLQU8(Element):
             para_in=((OP.SIMY_ELGA.PCONTRR, ESIGMPG), (SP.PGEOMER, LC.EGEOM2D)),
             para_out=((OP.SIMY_ELGA.PSIEFNOR, ESIGMPG),),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER)),
+        ),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(

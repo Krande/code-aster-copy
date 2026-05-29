@@ -337,7 +337,10 @@ class SEAXTR3(Element):
             ),
             para_out=((SP.PMATTTR, MMATTTR),),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR),)),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER)),
+        ),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(

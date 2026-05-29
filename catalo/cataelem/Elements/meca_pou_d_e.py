@@ -784,6 +784,7 @@ class MECA_POU_D_E(Element):
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
                 (SP.PNEU1_R, ENEU1_R),
                 (OP.TOU_INI_ELEM.PNEUT_F, ELNEUT_F),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),
         OP.TOU_INI_ELGA(

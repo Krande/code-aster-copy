@@ -140,7 +140,9 @@ class MEFL_HEXA20(Element):
                 (SP.PCODRET, LC.ECODRET),
             ),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELEM(
+            te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+        ),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO3D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM3D),)),
         OP.VERI_JACOBIEN(
@@ -280,7 +282,9 @@ class MEFL_FACE3(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PONDECR, LC.EONDEPR)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELEM(
+            te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+        ),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO3D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM3D),)),
     )
