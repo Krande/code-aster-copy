@@ -24,25 +24,36 @@ from ..Language.Syntax import *
 def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
     assert COMMAND in ("DYNA_VIBRA", "DYNA_LINE")
 
+    if COMMAND == "DYNA_VIBRA":
+        tuple_comp = (
+            "DIS_CHOC",
+            "ROTOR_FISS",
+            "FLAMBAGE",
+            "ANTI_SISM",
+            "DIS_VISC",
+            "DIS_ECRO_TRAC",
+            "DIS_ECRO_CINE",
+            "CHOC_ELAS_TRAC",
+            "RELA_EFFO_DEPL",
+            "RELA_EFFO_VITE",
+        )
+    else:
+        tuple_comp = (
+            "DIS_CHOC",
+            "ROTOR_FISS",
+            "FLAMBAGE",
+            "ANTI_SISM",
+            "DIS_VISC",
+            "DIS_ECRO_TRAC",
+            "CHOC_ELAS_TRAC",
+            "RELA_EFFO_DEPL",
+            "RELA_EFFO_VITE",
+        )
+
     mcfact = FACT(
         statut="f",
         max="**",
-        RELATION=SIMP(
-            statut="o",
-            typ="TXM",
-            into=(
-                "DIS_CHOC",
-                "ROTOR_FISS",
-                "FLAMBAGE",
-                "ANTI_SISM",
-                "DIS_VISC",
-                "DIS_ECRO_TRAC",
-                "DIS_ECRO_CINE",
-                "CHOC_ELAS_TRAC",
-                "RELA_EFFO_DEPL",
-                "RELA_EFFO_VITE",
-            ),
-        ),
+        RELATION=SIMP(statut="o", typ="TXM", into=tuple_comp),
         #           C.2.1 Chocs
         b_choc=BLOC(
             condition="""equal_to("RELATION", 'DIS_CHOC')""",
