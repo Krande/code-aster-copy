@@ -50,8 +50,10 @@ CALC_ENDO = MACRO(
         statut="f",
         max="**",
         CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
-        FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE", "SUIV")),
+        FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster)),
+        TYPE_CHARGE=SIMP(
+            statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE", "SUIV", "DIDI")
+        ),
     ),
     # -------------------------------------------------------------------
     CONTACT=SIMP(statut="f", typ=char_contact),
@@ -97,7 +99,7 @@ CALC_ENDO = MACRO(
         LIST_INST_VISC=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
         OBSERVATION_VISC=SIMP(statut="f", typ="TXM", max="**"),
         CRIT_STAB_VISC=SIMP(statut="f", typ="R", max="**"),
-        ARCHIVAGE_VISC=C_ARCHIVAGE(),
+        ARCHIVAGE_VISC=C_ARCHIVAGE(cmd="CALC_ENDO"),
         ARRET=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
     ),
     # -------------------------------------------------------------------

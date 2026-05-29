@@ -23,7 +23,7 @@ from ..Utilities import _
 cata_msg = {
     1: _(
         """
- Des valeurs différentes de temps caractéristiques de viscosité ont été renseignées dans la définition des paramètres matériaux.
+ Plusieurs valeurs différentes de temps caractéristiques de viscosité ont été renseignées dans la définition des paramètres matériaux.
  On a retenu la plus grande de ces valeurs. Vérifier la mise en donnée.
 """
     ),
@@ -57,6 +57,11 @@ cata_msg = {
  On poursuit tout de même le calcul (ARRET = "NON").
 """
     ),
+    7: _(
+        """
+ CALC_ENDO est incompatible avec l'usage de FONC_INST dans AFFE_VARC.
+"""
+    ),
     8: _(
         """
  Dans ETAT_INIT, les mots-clés NUME_ORDRE, INST_INIT et NUME_DIDI sont interdits.
@@ -78,7 +83,8 @@ cata_msg = {
     ),
     11: _(
         """
- Dans le cas où l'utilisateur ne fournit pas de critère de stabilisation, CALC_ENDO ne peut être utilisé qu'avec un critère de convergence de type RESI_REFE_RELA.
+ Dans le cas où l'utilisateur ne fournit pas de critère de stabilisation (OBSERVATION_VISC et CRIT_STAB_VISC non définis),
+ CALC_ENDO ne peut être utilisé qu'avec un critère de convergence de type RESI_REFE_RELA.
 """
     ),
 }

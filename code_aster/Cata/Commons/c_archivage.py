@@ -22,11 +22,20 @@ from ..Language.DataStructure import listr8_sdaster
 from ..Language.Syntax import BLOC, FACT, SIMP, UN_PARMI, NoRepeat
 
 
-def C_ARCHIVAGE():
+def C_ARCHIVAGE(cmd=None):
+
+    if cmd == "CALC_ENDO":
+        status = "f"
+        regle = (UN_PARMI("PAS_ARCH", "LIST_INST", "INST"),)
+
+    else:
+        status = "d"
+        regle = (UN_PARMI("PAS_ARCH", "LIST_INST", "INST", PAS_ARCH=1),)
+
     return FACT(
-        statut="d",
+        statut=status,
         max=1,
-        regles=(UN_PARMI("PAS_ARCH", "LIST_INST", "INST", PAS_ARCH=1),),
+        regles=regle,
         PAS_ARCH=SIMP(statut="f", typ="I"),
         LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
         INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
