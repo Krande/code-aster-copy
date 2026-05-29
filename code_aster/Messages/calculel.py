@@ -183,7 +183,7 @@ Erreur d'utilisation (ou de programmation) :
     30: _(
         """
 Erreur utilisateur :
-  Le programme se sait pas interpoler entre deux champs de type "carte".
+  Le programme ne sait pas interpoler entre deux champs de type "carte".
 
 Risques et conseils :
   * Il faut faire en sorte que les champs soient des champs par éléments de type 'ELEM'.
