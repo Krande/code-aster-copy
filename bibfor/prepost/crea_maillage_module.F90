@@ -189,6 +189,7 @@ module crea_maillage_module
         integer(ip), allocatable :: faces(:)
         integer(ip), allocatable :: edges(:)
         integer(ip), allocatable :: volumes(:)
+        integer(ip) :: global_id
     end type
 !
     type Mmesh
@@ -221,6 +222,7 @@ module crea_maillage_module
         integer(kind=8), pointer :: v_typema(:) => null()
         aster_logical :: debug = ASTER_FALSE
         aster_logical :: isHPC, convert_max = ASTER_TRUE
+        aster_logical :: isGlobNumSet = ASTER_FALSE
         integer(kind=8) :: info = 0
 ! ----- member functions
     contains
@@ -2348,6 +2350,11 @@ contains
         if (this%isHPC) then
             call wkvect(mesh_out//'.NOEX', 'G V I', max(to_aster_int(this%nb_nodes), 1), vi=v_noex)
             call jeecra(mesh_out//'.NOEX', 'LONUTI', to_aster_int(this%nb_nodes))
+            if (this%isGlobNumSet) then
+                call wkvect(mesh_out//'.NUNOLG', 'G V I', max(to_aster_int(this%nb_nodes), 1), &
+                            vi=v_nunogl)
+                call jeecra(mesh_out//'.NUNOLG', 'LONUTI', to_aster_int(this%nb_nodes))
+            end if
         end if
         call codent(to_aster_int(this%dim_mesh), 'G', dimesp)
         call jeecra(cooval, 'DOCU', cval=dimesp)
@@ -2360,6 +2367,9 @@ contains
                 v_coor(3*(node_id-1)+1:3*(node_id-1)+3) = this%nodes(i_node)%coor(1:3)
                 if (this%isHPC) then
                     v_noex(node_id) = to_aster_int(this%nodes(i_node)%owner)
+                    if (this%isGlobNumSet) then
+                        v_nunogl(node_id) = to_aster_int(this%nodes(i_node)%global_id)
+                    end if
                     if (v_noex(node_id) == rank) then
                         nb_no_loc = nb_no_loc+1
                     end if
@@ -2367,8 +2377,8 @@ contains
             end if
         end do
         ASSERT(node_id == this%nb_nodes)
-! ------ Create Global node numbering
-        if (this%isHPC) then
+! ! ------ Create Global node numbering
+        if (this%isHPC .and. .not. this%isGlobNumSet) then
             allocate (v_nuloc(nbproc))
             v_nuloc = 0
             v_nuloc(rank+1) = nb_no_loc
@@ -4713,8 +4723,10 @@ contains
                 do i_node = one_ip, int(n_coor_send, ip)
                     v_nojoin(2*(i_node-1)+1) = int(v_send(4*(i_node-1)+1))
                     v_nojoin(2*(i_node-1)+2) = v_rnume(2*(i_node-1)+1)
-                    ASSERT(v_nunolg(v_nojoin(2*(i_node-1)+1)) == -1)
-                    v_nunolg(v_nojoin(2*(i_node-1)+1)) = v_rnume(2*(i_node-1)+2)
+                    if (.not. this%isGlobNumSet) then
+                        ASSERT(v_nunolg(v_nojoin(2*(i_node-1)+1)) == -1)
+                        v_nunolg(v_nojoin(2*(i_node-1)+1)) = v_rnume(2*(i_node-1)+2)
+                    end if
                 end do
 ! --- Cleaning
                 deallocate (v_send)
