@@ -45,12 +45,6 @@ cata_msg = {
  Il est recommandé d'utiliser FONC_MULT.
 """
     ),
-    5: _(
-        """
- CALC_ENDO n'a détecté aucun chargement ou variable de commande dépendant du temps.
- Vérifier la mise en données.
-"""
-    ),
     6: _(
         """
  Le critère de stabilisation n'est pas vérifié au dernier instant de la séquence de chargement.

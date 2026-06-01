@@ -44,6 +44,7 @@ class CalcEndoLoad:
 
     _charge = _type_charge = _fonc_mult = None
     _has_time_dep = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, args):
         """Initialization of a load
@@ -139,12 +140,111 @@ class CalcEndoLoad:
         return _excit_snl
 
 
+class CalcEndoVarc:
+
+    _varc_on_mesh = None
+    _name = _has_time_dep = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self, _varc_on_mesh):
+        """Initialisation of an external state variable"""
+
+        self._name = ExternalVariableTraits.getExternVarTypeStr(_varc_on_mesh[0].getType())
+        logger.info("Info CALC_ENDO : " + "Variable de commande : " + str(self._name))
+        self._varc_on_mesh = _varc_on_mesh
+
+    def check_time_dependency(self):
+        """Check if the external state variable is time dependent."""
+
+        _field = self._varc_on_mesh[0].getField()
+        _transient = self._varc_on_mesh[0].getTransientResult()
+        assert _field or _transient
+
+        if _field:
+            logger.info("Info CALC_ENDO : " + self._name + " indépendant du temps.")
+
+        if _transient:
+            self._has_time_dep = True
+            logger.info("Info CALC_ENDO : " + self._name + " fonction du temps.")
+
+    def eval(self, _t_init, _t_comp, model, _t_init_ramp, _t_fin):
+        """Create syntax for the next AFFE_VARC
+
+        Args:
+            _t_init (float): initial physical time of current load sequence
+            _t_comp (float): end physical time of current load sequence
+            _model (*Model*): model
+            _t_init_ramp (float): initial time of ramp
+            _t_fin (float): end time of stabilisation sequence
+
+        Returns:
+            _dict_varc : input for AFFE_VARC in AFFE_MATERIAU
+
+        """
+
+        _dict_varc = {}
+        _extevarc = self._varc_on_mesh[0]
+        _meshvarc = self._varc_on_mesh[1]
+
+        _dict_varc["NOM_VARC"] = self._name
+
+        if _meshvarc.getType() == EntityType.GroupOfCellsType:
+            _dict_varc["GROUP_MA"] = _meshvarc.getNames()
+        else:
+            _dict_varc["TOUT"] = "OUI"
+
+        if _extevarc.isSetRefe():
+            _dict_varc["VALE_REF"] = _extevarc.getReferenceValue()
+
+        _field = _extevarc.getField()
+        _evol = _extevarc.getEvolutionParameter()
+
+        if _field:
+            _dict_varc["CHAM_GD"] = _field
+        if _evol:
+            _transient = _evol.getTransientResult()
+
+            ##FONC_INST interdit
+            if _evol.getTimeFormula() or _evol.getTimeFunction():
+                UTMESS("F", "CALCENDO_7")
+
+            _field_init = _transient.interpolateField(
+                self._name, _t_init, left=_evol.getLeftExtension(), right=_evol.getRightExtension()
+            )
+            _field_comp = _transient.interpolateField(
+                self._name, _t_comp, left=_evol.getLeftExtension(), right=_evol.getRightExtension()
+            )
+
+            _ramp_varc = CREA_RESU(
+                OPERATION="AFFE",
+                TYPE_RESU=_transient.getType(),
+                AFFE=(
+                    _F(
+                        NOM_CHAM=_evol.getFieldName(),
+                        CHAM_GD=_field_init,
+                        INST=_t_init_ramp,
+                        MODELE=model,
+                    ),
+                    _F(NOM_CHAM=_evol.getFieldName(), CHAM_GD=_field_comp, INST=0, MODELE=model),
+                    _F(
+                        NOM_CHAM=_evol.getFieldName(),
+                        CHAM_GD=_field_comp,
+                        INST=_t_fin,
+                        MODELE=model,
+                    ),
+                ),
+            )
+            _dict_varc["EVOL"] = _ramp_varc
+
+        return _dict_varc
+
+
 class CalcEndo:
 
     _kwds = None
     _tau = _visc_list_inst = _user_list_inst = None
     _t_init_ramp = _dt_stab = _t_fin = None
-    _loads = _fixed_varc = _user_time_varc = None
+    _loads = _varc = None
     _crit_stab_visc = _stab = _arret = None
     _obs_stab_visc = _other_obs = None
     _arch = _arch_visc = None
@@ -304,7 +404,7 @@ class CalcEndo:
             self._visc_list_inst.setValues(_l_fict_endo)  # bug : issue35770
 
     def sort_loads(self):
-        """Sort loads in two lists : time dependant loads and other loads"""
+        """Sort loads in two : time dependant loads and other loads"""
 
         self._loads = []
         nb_time_dep = 0
@@ -329,35 +429,22 @@ class CalcEndo:
         )
         logger.info("")
 
-        if nb_time_dep == 0 and len(self._user_time_varc) == 0:
-            UTMESS("A", "CALCENDO_5")
-
     def sort_varc(self):
-        """Sort varc in two lists : time dependant varc and other varc"""
+        """Sort external state variables in two : time dependant varc and other varc"""
 
-        self._user_time_varc = []
-        self._fixed_varc = []
+        self._varc = []
         _user_mat = self._kwds["CHAM_MATER"]
 
         if _user_mat.hasExternalStateVariable():
-            for _varc in _user_mat.getExtStateVariablesOnMeshEntities():
-                _name = ExternalVariableTraits.getExternVarTypeStr(_varc[0].getType())
-                logger.info("Info CALC_ENDO : " + "Variable de commande : " + str(_name))
-                _field = _varc[0].getField()
-                _transient = _varc[0].getTransientResult()
-                assert _field or _transient
-
-                if _field:
-                    logger.info("Info CALC_ENDO : " + _name + " indépendant du temps.")
-                    self._fixed_varc.append(_varc)
-
-                if _transient:
-                    logger.info("Info CALC_ENDO : " + _name + " fonction du temps.")
-                    self._user_time_varc.append(_varc)
-
+            logger.info("")
+            for _varc_on_mesh in _user_mat.getExtStateVariablesOnMeshEntities():
+                _calcendo_varc = CalcEndoVarc(_varc_on_mesh)
+                _calcendo_varc.check_time_dependency()
+                self._varc.append(_calcendo_varc)
             logger.info("")
 
         else:
+            logger.info("")
             logger.info("Info CALC_ENDO : " + "Aucune variable de commande détectée.")
             logger.info("")
 
@@ -486,9 +573,11 @@ class CalcEndo:
 
         _l_affe_varc = []
 
-        for _varc in self._fixed_varc + self._user_time_varc:
-            _affe_varc = self.get_affe_varc_syntax(_varc, _t_init, _t_comp)
-            _l_affe_varc.append(_affe_varc)
+        for _endo_varc in self._varc:
+            _affe_varc = _endo_varc.eval(
+                _t_init, _t_comp, self._kwds["MODELE"], self._t_init_ramp, self._t_fin
+            )
+            _l_affe_varc.append(_F(_affe_varc))
         MasquerAlarme("MATERIAL2_61")
         _visc_mat_field = AFFE_MATERIAU(
             MODELE=self._kwds["MODELE"], CHAM_MATER=self._kwds["CHAM_MATER"], AFFE_VARC=_l_affe_varc
@@ -496,82 +585,6 @@ class CalcEndo:
         RetablirAlarme("MATERIAL2_61")
 
         return _visc_mat_field
-
-    def get_affe_varc_syntax(self, _varc, _t_init, _t_comp):
-        """Get syntax for an external state variable
-
-        Args:
-            _varc (list): external state variable given by getExtStateVariablesOnMeshEntities
-            _t_init (float): initial time of current load sequence
-            _t_comp (float): end time of current load sequence
-
-        Returns:
-            _affe_varc : input for AFFE_VARC in AFFE_MATERIAU
-
-        """
-        _dict_varc = {}
-        _extevarc = _varc[0]
-        _meshvarc = _varc[1]
-
-        _name = ExternalVariableTraits.getExternVarTypeStr(_extevarc.getType())
-        _dict_varc["NOM_VARC"] = _name
-
-        if _meshvarc.getType() == EntityType.GroupOfCellsType:
-            _dict_varc["GROUP_MA"] = _meshvarc.getNames()
-        else:
-            _dict_varc["TOUT"] = "OUI"
-
-        if _extevarc.isSetRefe():
-            _dict_varc["VALE_REF"] = _extevarc.getReferenceValue()
-
-        _field = _extevarc.getField()
-        _evol = _extevarc.getEvolutionParameter()
-        if _field:
-            _dict_varc["CHAM_GD"] = _field
-        if _evol:
-            _transient = _evol.getTransientResult()
-
-            ##FONC_INST interdit
-            if _evol.getTimeFormula() or _evol.getTimeFunction():
-                UTMESS("F", "CALCENDO_7")
-
-            _field_init = _transient.interpolateField(
-                _name, _t_init, left=_evol.getLeftExtension(), right=_evol.getRightExtension()
-            )
-            _field_comp = _transient.interpolateField(
-                _name, _t_comp, left=_evol.getLeftExtension(), right=_evol.getRightExtension()
-            )
-
-            _ramp_varc = CREA_RESU(
-                OPERATION="AFFE",
-                TYPE_RESU=_transient.getType(),
-                AFFE=(
-                    _F(
-                        NOM_CHAM=_evol.getFieldName(),
-                        CHAM_GD=_field_init,
-                        INST=self._t_init_ramp,
-                        MODELE=self._kwds["MODELE"],
-                    ),
-                    _F(
-                        NOM_CHAM=_evol.getFieldName(),
-                        CHAM_GD=_field_comp,
-                        INST=0,
-                        MODELE=self._kwds["MODELE"],
-                    ),
-                    _F(
-                        NOM_CHAM=_evol.getFieldName(),
-                        CHAM_GD=_field_comp,
-                        INST=self._t_fin,
-                        MODELE=self._kwds["MODELE"],
-                    ),
-                ),
-            )
-            _dict_varc["EVOL"] = _ramp_varc
-
-        assert _field or _evol
-
-        _affe_varc = _F(_dict_varc)
-        return _affe_varc
 
     def eval_stab_crit(self, _evol_endo):
         """Evaluate user-defined stabilisation criteria at the last timestep of a given result
@@ -840,8 +853,8 @@ def calc_endo_ops(self, **args):
     _calc_endo.check_consistency()
     _calc_endo.create_user_list_inst()
     _calc_endo.create_endo_list_inst()
-    _calc_endo.sort_varc()
     _calc_endo.sort_loads()
+    _calc_endo.sort_varc()
 
     _nume_ordre, _t_init, _depl_init, _sief_init, _vari_init, _strx_init = (
         _calc_endo.set_init_state()
