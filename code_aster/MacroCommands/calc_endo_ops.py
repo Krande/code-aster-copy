@@ -40,19 +40,115 @@ from .Utils.calc_endo_utils import (
 from numpy import isclose, where, array
 
 
+class CalcEndoLoad:
+
+    _charge = _type_charge = _fonc_mult = None
+    _has_time_dep = None
+
+    def __init__(self, args):
+        """Initialization of a load
+
+        Args:
+            args (dict): User's keywords for EXCIT in CALC_ENDO
+        """
+
+        self._charge = args["CHARGE"]
+        self._type_charge = args["TYPE_CHARGE"]
+        if "FONC_MULT" in args:
+            self._fonc_mult = args["FONC_MULT"]
+
+    def check_time_dependency(self):
+        """Check if the load is time dependent.
+        Raise error message if time dependency is calculated by AFFE_CHAR_MECA_F
+        """
+
+        if self._fonc_mult:
+            self._has_time_dep = True
+        elif isinstance(self._charge, MechanicalLoadFunction):
+            _find_function = False
+            for _dependency in self._charge.getDependencies():
+                if isinstance(_dependency, Function):
+                    _param_function = _dependency.Parametres()["NOM_PARA"]
+                    if _param_function == "INST":
+                        UTMESS("F", "CALCENDO_4")
+                    else:
+                        _find_function = True
+            assert _find_function
+
+    def eval(self, _t_init, _t_comp, _nume_ordre, _is_stab_seq, _t_init_ramp):
+        """Create syntax for EXCIT in STAT_NON_LINE for a given load sequence
+
+        Args:
+            _t_init (float): initial physical time of current load sequence
+            _t_comp (float): end physical time of current load sequence
+            _nume_ordre (int): local value of NUME_ORDRE
+            _is_stab_seq (bool): True if stabilisation of current load sequence
+            _t_init_ramp (float): initial time of the ramp
+
+        Returns:
+            _excit_snl (dict): Arguments for EXCIT
+
+        """
+
+        _excit_snl = {}
+        _excit_snl["CHARGE"] = self._charge
+        _excit_snl["TYPE_CHARGE"] = self._type_charge
+
+        ##Chargements autres que "DIDI" et fonction du temps (via FONC_MULT)
+        if self._type_charge != "DIDI" and self._has_time_dep:
+            _ramp_load = DEFI_FONCTION(
+                NOM_PARA="INST",
+                ABSCISSE=(_t_init_ramp, 0),
+                ORDONNEE=(self._fonc_mult(_t_init), self._fonc_mult(_t_comp)),
+                PROL_DROITE="CONSTANT",
+            )
+            _excit_snl["FONC_MULT"] = _ramp_load
+
+        ##Chargement de type "DIDI" et pas de dépendance au temps
+        ##Le chargement est fixé à zero après le premier STAT_NON_LINE
+        elif self._type_charge == "DIDI" and not self._has_time_dep:
+            if _nume_ordre > 0 or _is_stab_seq:
+                _ramp_load = DEFI_FONCTION(
+                    NOM_PARA="INST",
+                    ABSCISSE=(_t_init_ramp, 0),
+                    ORDONNEE=(0, 0),
+                    PROL_DROITE="CONSTANT",
+                )
+                _excit_snl["FONC_MULT"] = _ramp_load
+
+        ##Chargement de type "DIDI" et fonction du temps (via FONC_MULT)
+        elif self._type_charge == "DIDI" and self._has_time_dep:
+            ##Chargement à zero en phase de stabilisation
+            if _is_stab_seq:
+                _ramp_load = DEFI_FONCTION(
+                    NOM_PARA="INST",
+                    ABSCISSE=(_t_init_ramp, 0),
+                    ORDONNEE=(0, 0),
+                    PROL_DROITE="CONSTANT",
+                )
+            ##Delta de chargement pendant la rampe
+            else:
+                _ramp_load = DEFI_FONCTION(
+                    NOM_PARA="INST",
+                    ABSCISSE=(_t_init_ramp, 0),
+                    ORDONNEE=(0, self._fonc_mult(_t_comp) - self._fonc_mult(_t_init)),
+                    PROL_DROITE="CONSTANT",
+                )
+            _excit_snl["FONC_MULT"] = _ramp_load
+
+        return _excit_snl
+
+
 class CalcEndo:
 
     _kwds = None
     _tau = _visc_list_inst = _user_list_inst = None
     _t_init_ramp = _dt_stab = _t_fin = None
-    _fixed_loads = _visc_loads = None
-    _user_time_loads = _user_fixed_didi_loads = _user_time_didi_loads = None
-    _fixed_varc = _user_time_varc = None
+    _loads = _fixed_varc = _user_time_varc = None
     _crit_stab_visc = _stab = _arret = None
     _obs_stab_visc = _other_obs = None
     _arch = _arch_visc = None
     _resu = _resu_visc = _tab_out = None
-    _info_prefix = None
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -95,7 +191,6 @@ class CalcEndo:
         if "ARCHIVAGE_VISC" in self._kwds["ENDO_VISC"]:
             self._arch_visc = self._kwds["ENDO_VISC"]["ARCHIVAGE_VISC"]
 
-        self._info_prefix = "Info CALC_ENDO : "
         if "OBSERVATION" not in args:
             self._kwds["OBSERVATION"] = ()
 
@@ -121,7 +216,7 @@ class CalcEndo:
                         self._tau = _tau
 
         logger.info(
-            self._info_prefix
+            "Info CALC_ENDO : "
             + "On a retenu TAU = "
             + str(self._tau)
             + " pour la création de la liste d'instants."
@@ -159,7 +254,7 @@ class CalcEndo:
             self._user_list_inst = self._user_list_inst[_nume_inst_init:]
 
         logger.info(
-            self._info_prefix
+            "Info CALC_ENDO : "
             + "Une séquence de chargement fictive (rampe et stabilisation) sera calculée pour chacun des instants physiques suivants : "
             + str(self._user_list_inst)
         )
@@ -196,7 +291,7 @@ class CalcEndo:
         self._t_fin = _l_fict_endo[-1]
 
         logger.info(
-            self._info_prefix
+            "Info CALC_ENDO : "
             + "Une séquence de chargement fictive (rampe et stabilisation) sera discrétisée par la liste d'instants suivante : "
             + str(_l_fict_endo)
         )
@@ -211,46 +306,31 @@ class CalcEndo:
     def sort_loads(self):
         """Sort loads in two lists : time dependant loads and other loads"""
 
-        self._fixed_loads = []
-        self._user_time_loads = []
-        self._user_time_didi_loads = []
-        self._user_fixed_didi_loads = []
-
-        for _load in self._kwds["EXCIT"]:
-            ##Dépendance au temps via FONC_MULT
-            if "FONC_MULT" in _load:
-                if _load["TYPE_CHARGE"] == "DIDI":
-                    self._user_time_didi_loads.append(_load)
-                else:
-                    self._user_time_loads.append(_load)
-            ##Dépendance au temps via AFFE_CHAR_MECA_F ?
-            elif isinstance(_load["CHARGE"], MechanicalLoadFunction):
-                _find_function = False
-                for _dependency in _load["CHARGE"].getDependencies():
-                    if isinstance(_dependency, Function):
-                        _param_function = _dependency.Parametres()["NOM_PARA"]
-                        if _param_function == "INST":
-                            UTMESS("F", "CALCENDO_4")
-                        else:
-                            self._fixed_loads.append(_load)
-                            _find_function = True
-                assert _find_function
+        self._loads = []
+        nb_time_dep = 0
+        nb_fixed = 0
+        for _excit in self._kwds["EXCIT"]:
+            _load = CalcEndoLoad(_excit)
+            _load.check_time_dependency()
+            self._loads.append(_load)
+            if _load._has_time_dep:
+                nb_time_dep += 1
             else:
-                if _load["TYPE_CHARGE"] == "DIDI":
-                    self._user_fixed_didi_loads.append(_load)
-                else:
-                    self._fixed_loads.append(_load)
+                nb_fixed += 1
 
         logger.info("")
         logger.info(
-            self._info_prefix
+            "Info CALC_ENDO : "
             + "On a trouvé "
-            + str(len(self._user_time_loads))
+            + str(nb_time_dep)
             + " chargement(s) fonction du temps, et "
-            + str(len(self._fixed_loads))
+            + str(nb_fixed)
             + " chargement(s) indépendant(s) du temps"
         )
         logger.info("")
+
+        if nb_time_dep == 0 and len(self._user_time_varc) == 0:
+            UTMESS("A", "CALCENDO_5")
 
     def sort_varc(self):
         """Sort varc in two lists : time dependant varc and other varc"""
@@ -262,27 +342,24 @@ class CalcEndo:
         if _user_mat.hasExternalStateVariable():
             for _varc in _user_mat.getExtStateVariablesOnMeshEntities():
                 _name = ExternalVariableTraits.getExternVarTypeStr(_varc[0].getType())
-                logger.info(self._info_prefix + "Variable de commande : " + str(_name))
+                logger.info("Info CALC_ENDO : " + "Variable de commande : " + str(_name))
                 _field = _varc[0].getField()
                 _transient = _varc[0].getTransientResult()
                 assert _field or _transient
 
                 if _field:
-                    logger.info(self._info_prefix + _name + " indépendant du temps.")
+                    logger.info("Info CALC_ENDO : " + _name + " indépendant du temps.")
                     self._fixed_varc.append(_varc)
 
                 if _transient:
-                    logger.info(self._info_prefix + _name + " fonction du temps.")
+                    logger.info("Info CALC_ENDO : " + _name + " fonction du temps.")
                     self._user_time_varc.append(_varc)
 
             logger.info("")
 
         else:
-            logger.info(self._info_prefix + "Aucune variable de commande détectée.")
+            logger.info("Info CALC_ENDO : " + "Aucune variable de commande détectée.")
             logger.info("")
-
-        if len(self._user_time_loads) == 0 and len(self._user_time_varc) == 0:
-            UTMESS("A", "CALCENDO_5")
 
     def init_sequence(self, _nume_ordre, _t_init, _t_comp):
         """Initialisation of a new load sequence
@@ -307,14 +384,14 @@ class CalcEndo:
                 _t_init = self._user_list_inst[_nume_ordre]
         self._stab = False
 
-        logger.info(self._info_prefix + "Séquence de chargement : " + str(_nume_ordre))
+        logger.info("Info CALC_ENDO : " + "Séquence de chargement : " + str(_nume_ordre))
         logger.info(
-            self._info_prefix
+            "Info CALC_ENDO : "
             + "Instant physique initial de cette séquence de chargement : "
             + str(_t_init)
         )
         logger.info(
-            self._info_prefix
+            "Info CALC_ENDO : "
             + "Instant physique final de cette séquence de chargement : "
             + str(_t_comp)
         )
@@ -374,66 +451,26 @@ class CalcEndo:
 
         return _nume_ordre, _t_init, _depl_init, _sief_init, _vari_init, _strx_init
 
-    def eval_loads(self, _stab_seq, _t_init, _t_comp, _nume_ordre):
-        """Evaluate time dependant loads for a given load sequence
+    def eval_loads(self, _t_init, _t_comp, _nume_ordre, _is_stab_seq):
+        """Create syntax for EXCIT in STAT_NON_LINE for a given load sequence
 
         Args:
-            _stab_seq (bool): False if ramp, True if stabilisation
-            _t_init (float): initial time of current load sequence
-            _t_comp (float): end time of current load sequence
+            _t_init (float): initial physical time of current load sequence
+            _t_comp (float): end physical time of current load sequence
             _nume_ordre (int): local value of NUME_ORDRE
+            _is_stab_seq (bool): True if stabilisation of current load sequence
+
+        Returns:
+            _visc_excit (list): Arguments for EXCIT in the next STAT_NON_LINE
 
         """
 
-        self._visc_loads = []
-        ##TYPE_CHARGE = "FIXE_CSTE"or "SUIV" + FONC_MULT
-        for _load in self._user_time_loads:
-            _ramp_load = DEFI_FONCTION(
-                NOM_PARA="INST",
-                ABSCISSE=(self._t_init_ramp, 0),
-                ORDONNEE=(_load["FONC_MULT"](_t_init), _load["FONC_MULT"](_t_comp)),
-                PROL_DROITE="CONSTANT",
-            )
+        _visc_excit = []
+        for _load in self._loads:
+            _excit = _load.eval(_t_init, _t_comp, _nume_ordre, _is_stab_seq, self._t_init_ramp)
+            _visc_excit.append(_F(_excit))
 
-            _endo_load = {key: item for key, item in _load.items() if key != "FONC_MULT"}
-            _endo_load["FONC_MULT"] = _ramp_load
-
-            self._visc_loads.append(_endo_load)
-
-        ##TYPE_CHARGE = "DIDI" (no FONC_MULT)
-        for _load in self._user_fixed_didi_loads:
-            _endo_load = {key: item for key, item in _load.items()}
-            if _nume_ordre > 0 or _stab_seq:
-                ##Stabilisation : load set to zero
-                _ramp_load = DEFI_FONCTION(
-                    NOM_PARA="INST",
-                    ABSCISSE=(self._t_init_ramp, 0),
-                    ORDONNEE=(0, 0),
-                    PROL_DROITE="CONSTANT",
-                )
-                _endo_load["FONC_MULT"] = _ramp_load
-            self._visc_loads.append(_endo_load)
-
-        ##TYPE_CHARGE = "DIDI" + FONC_MULT
-        for _load in self._user_time_didi_loads:
-            _endo_load = {key: item for key, item in _load.items() if key != "FONC_MULT"}
-            if _stab_seq:
-                ##Stabilisation : load set to zero
-                _ramp_load = DEFI_FONCTION(
-                    NOM_PARA="INST",
-                    ABSCISSE=(self._t_init_ramp, 0),
-                    ORDONNEE=(0, 0),
-                    PROL_DROITE="CONSTANT",
-                )
-            else:
-                _ramp_load = DEFI_FONCTION(
-                    NOM_PARA="INST",
-                    ABSCISSE=(self._t_init_ramp, 0),
-                    ORDONNEE=(0, _load["FONC_MULT"](_t_comp) - _load["FONC_MULT"](_t_init)),
-                    PROL_DROITE="CONSTANT",
-                )
-            _endo_load["FONC_MULT"] = _ramp_load
-            self._visc_loads.append(_endo_load)
+        return _visc_excit
 
     def eval_varc(self, _t_init, _t_comp):
         """Evaluate external state variables for a given load sequence
@@ -547,7 +584,7 @@ class CalcEndo:
         _current_inst = _evol_endo.getAccessParameters()["INST"][-1]
         logger.info("")
         logger.info(
-            self._info_prefix
+            "Info CALC_ENDO : "
             + "Instant courant de la séquence de stabilisation : "
             + str(_current_inst)
         )
@@ -558,9 +595,9 @@ class CalcEndo:
                 _name_obs = _obs["TITRE"]
                 _v_obs = get_obs_values(_ctrl_resu, _name_obs)
 
-                logger.info(self._info_prefix + _name_obs + " courant : " + str(_v_obs[-1]))
+                logger.info("Info CALC_ENDO : " + _name_obs + " courant : " + str(_v_obs[-1]))
                 logger.info(
-                    self._info_prefix
+                    "Info CALC_ENDO : "
                     + "Variation de "
                     + _name_obs
                     + " courante : "
@@ -574,11 +611,13 @@ class CalcEndo:
             _crit += _v_obs_visc[-1] < self._crit_stab_visc[_num_obs]
 
             logger.info(
-                self._info_prefix + "Evaluation du critère de stabilisation pour " + _name_obs_visc
+                "Info CALC_ENDO : "
+                + "Evaluation du critère de stabilisation pour "
+                + _name_obs_visc
             )
-            logger.info(self._info_prefix + _name_obs_visc + " courant : " + str(_v_obs_visc[-1]))
+            logger.info("Info CALC_ENDO : " + _name_obs_visc + " courant : " + str(_v_obs_visc[-1]))
             logger.info(
-                self._info_prefix
+                "Info CALC_ENDO : "
                 + "Ratio "
                 + _name_obs_visc
                 + " sur seuil de stabilité : "
@@ -588,15 +627,19 @@ class CalcEndo:
         self._stab = _crit == len(self._obs_stab_visc)
         logger.info("")
         if self._stab:
-            logger.info(self._info_prefix + "Le critère de stabilisation global est atteint.")
+            logger.info("Info CALC_ENDO : " + "Le critère de stabilisation global est atteint.")
         else:
-            logger.info(self._info_prefix + "Le critère de stabilisation global n'est pas atteint.")
+            logger.info(
+                "Info CALC_ENDO : " + "Le critère de stabilisation global n'est pas atteint."
+            )
 
         if self._arret == "NON" and _current_inst == self._t_fin:
             self._stab = True
             UTMESS("A", "CALCENDO_6")
 
-    def compute_ramp(self, _depl_init, _sief_init, _vari_init, _strx_init, _visc_mat_field):
+    def compute_ramp(
+        self, _depl_init, _sief_init, _vari_init, _strx_init, _visc_mat_field, _visc_excit
+    ):
         """Non linear computation during the ramp part of the load sequence
 
         Args:
@@ -605,6 +648,7 @@ class CalcEndo:
             _vari_init (*FieldOnCells*): internal variable field initial state
             _strx_init (*FieldOnCells*): initial state for a few structural elements
             _visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
+            _visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
 
         Returns:
             _evol_endo (*evol_noli*): result of the current load sequence (ramp only)
@@ -643,7 +687,7 @@ class CalcEndo:
         _params_snl["OBSERVATION"] = (
             self._kwds["OBSERVATION"] + self._obs_stab_visc + self._other_obs
         )
-        _params_snl["EXCIT"] = self._fixed_loads + self._visc_loads
+        _params_snl["EXCIT"] = _visc_excit
         _params_snl["ARCHIVAGE"] = self._arch_visc
 
         _evol_endo = STAT_NON_LINE(**_params_snl)
@@ -651,12 +695,13 @@ class CalcEndo:
 
         return _evol_endo
 
-    def compute_stab(self, _evol_endo, _visc_mat_field):
+    def compute_stab(self, _evol_endo, _visc_mat_field, _visc_excit):
         """Non linear computation of one stabilisation sequence
 
         Args:
             _evol_endo (*evol_noli*): result of the current load sequence (ramp only)
             _visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
+            _visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
 
         Returns:
             _evol_endo (*evol_noli*): result of the current load sequence (ramp and stab)
@@ -687,7 +732,7 @@ class CalcEndo:
         _params_snl["OBSERVATION"] = (
             self._kwds["OBSERVATION"] + self._obs_stab_visc + self._other_obs
         )
-        _params_snl["EXCIT"] = self._fixed_loads + self._visc_loads
+        _params_snl["EXCIT"] = _visc_excit
         _params_snl["ARCHIVAGE"] = self._arch_visc
 
         _evol_endo = STAT_NON_LINE(reuse=_evol_endo, **_params_snl)
@@ -795,8 +840,8 @@ def calc_endo_ops(self, **args):
     _calc_endo.check_consistency()
     _calc_endo.create_user_list_inst()
     _calc_endo.create_endo_list_inst()
-    _calc_endo.sort_loads()
     _calc_endo.sort_varc()
+    _calc_endo.sort_loads()
 
     _nume_ordre, _t_init, _depl_init, _sief_init, _vari_init, _strx_init = (
         _calc_endo.set_init_state()
@@ -804,18 +849,18 @@ def calc_endo_ops(self, **args):
 
     for _t_comp in _calc_endo._user_list_inst[1:]:
         _nume_ordre, _t_init = _calc_endo.init_sequence(_nume_ordre, _t_init, _t_comp)
-        _calc_endo.eval_loads(False, _t_init, _t_comp, _nume_ordre)
+        _visc_excit = _calc_endo.eval_loads(_t_init, _t_comp, _nume_ordre, False)
         _visc_mat_field = _calc_endo.eval_varc(_t_init, _t_comp)
 
         _evol_endo = _calc_endo.compute_ramp(
-            _depl_init, _sief_init, _vari_init, _strx_init, _visc_mat_field
+            _depl_init, _sief_init, _vari_init, _strx_init, _visc_mat_field, _visc_excit
         )
 
         if not _calc_endo._stab:
-            _calc_endo.eval_loads(True, _t_init, _t_comp, _nume_ordre)
+            _visc_excit = _calc_endo.eval_loads(_t_init, _t_comp, _nume_ordre, True)
 
         while not _calc_endo._stab:
-            _evol_endo = _calc_endo.compute_stab(_evol_endo, _visc_mat_field)
+            _evol_endo = _calc_endo.compute_stab(_evol_endo, _visc_mat_field, _visc_excit)
 
         _t_init, _depl_init, _sief_init, _vari_init, _strx_init = _calc_endo.arch_resu(
             _evol_endo, _t_comp
