@@ -48,7 +48,7 @@ class EltCharacteristicsAssignment(ExecuteCommand):
             if valdefaut is not None:
                 return valdefaut
             else:
-                raise AsException("Erreur de syntaxe dans la commande")
+                raise TypeError("Erreur de syntaxe dans la commande")
 
     def adapt_syntax(self, keywords):
         """Hook to adapt syntax *AFTER* syntax checking.
@@ -99,7 +99,7 @@ class EltCharacteristicsAssignment(ExecuteCommand):
                 if LaForme == "CERCLE":
                     LesCara = force_list(keywords["BARRE"][ioc]["CARA"])
                     LesVale = force_list(keywords["BARRE"][ioc]["VALE"])
-                    if not "EP" in LesCara:
+                    if "EP" not in LesCara:
                         LeRayon = LesVale[LesCara.index("R")]
                         LesCara.append("EP")
                         LesVale.append(LeRayon)
