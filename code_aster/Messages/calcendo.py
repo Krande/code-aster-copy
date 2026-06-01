@@ -30,8 +30,8 @@ cata_msg = {
     2: _(
         """
  Aucune valeur de temps caractéristique de viscosité n'a été détectée dans la définition des paramètres matériaux.
- On utilisera TAU = 1.0
-"""
+ Vérifier la mise en données.
+ """
     ),
     3: _(
         """

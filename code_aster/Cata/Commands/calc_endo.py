@@ -29,9 +29,8 @@ CALC_ENDO = MACRO(
     compat_syntax=compat_syntax,
     sd_prod=list,
     fr=tr(
-        "Calcul de l'évolution mécanique en quasi-statique,"
-        "d'une structure en non linéaire modélisée par un comportement visqueux "
-        "nécessitant des phases de stabilisation"
+        "Calcul de l'évolution mécanique en quasi-statique"
+        "d'une structure en non linéaire nécessitant des phases de stabilisation"
     ),
     reentrant="f:RESULTAT",
     reuse=SIMP(statut="c", typ=CO),

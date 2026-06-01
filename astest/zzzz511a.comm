@@ -652,7 +652,6 @@ TEST_TABLE(
 
 
 # Test de la table d'observation (le max par maille est égal à 1, la moyenne aussi)
-
 TEST_TABLE(
     TABLE=ctrl,
     NOM_PARA="VALE",

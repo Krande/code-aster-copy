@@ -260,17 +260,32 @@ class CalcEndo:
         """
 
         self._kwds = args.copy()
+        if "OBSERVATION" not in args:
+            self._kwds["OBSERVATION"] = ()
+
         self._visc_list_inst = self._kwds["ENDO_VISC"]["LIST_INST_VISC"]
         self._crit_stab_visc = self._kwds["ENDO_VISC"]["CRIT_STAB_VISC"]
         self._arret = self._kwds["ENDO_VISC"]["ARRET"]
+        self._resu_visc = []
+        if "ARCHIVAGE_VISC" in self._kwds["ENDO_VISC"]:
+            self._arch_visc = self._kwds["ENDO_VISC"]["ARCHIVAGE_VISC"]
 
-        ##Initialisation of OBSERVATION for stabilisation criteria
         if self._crit_stab_visc:
             if len(self._kwds["ENDO_VISC"]["CRIT_STAB_VISC"]) != len(
                 self._kwds["ENDO_VISC"]["OBSERVATION_VISC"]
             ):
                 UTMESS("F", "CALCENDO_10")
 
+        self.check_consistency()
+        self.set_observation()
+        self.set_user_list_inst()
+        self.set_endo_list_inst()
+
+    def set_observation(self):
+        """Initialisation of OBSERVATION keyword for STAT_NON_LINE"""
+
+        ##Observations et critères de stabilisation donnés par l'utilisateur
+        if self._crit_stab_visc:
             self._obs_stab_visc = ()
             self._other_obs = ()
             _titre_obs_visc = self._kwds["ENDO_VISC"]["OBSERVATION_VISC"]
@@ -279,20 +294,23 @@ class CalcEndo:
                 if len(_l_obs) != 1:
                     UTMESS("F", "CALCENDO_3", valk=(_titre))
                 self._obs_stab_visc = self._obs_stab_visc + tuple(_l_obs)
-            self._kwds["OBSERVATION"] = tuple(
-                [x for x in args["OBSERVATION"] if x["TITRE"] not in _titre_obs_visc]
+            self._other_obs = tuple(
+                [x for x in self._kwds["OBSERVATION"] if x["TITRE"] not in _titre_obs_visc]
             )
+
+            ##Si l'utilisateur n'a pas donné en entrée une observation appelée VISCELAS ou VISCENDO
+            ##On rajoute les observations par défaut
+            if "VISCELAS" not in _titre_obs_visc and "VISCENDO" not in _titre_obs_visc:
+                _defaut_obs_stab_visc, _defaut_crit_stab_visc, _default_other_obs = (
+                    set_default_observation(self._kwds)
+                )
+                self._obs_stab_visc = self._obs_stab_visc + _defaut_obs_stab_visc
+                self._crit_stab_visc = self._crit_stab_visc + _defaut_crit_stab_visc
+                self._other_obs = self._other_obs + _default_other_obs
         else:
             self._obs_stab_visc, self._crit_stab_visc, self._other_obs = set_default_observation(
                 self._kwds
             )
-
-        self._resu_visc = []
-        if "ARCHIVAGE_VISC" in self._kwds["ENDO_VISC"]:
-            self._arch_visc = self._kwds["ENDO_VISC"]["ARCHIVAGE_VISC"]
-
-        if "OBSERVATION" not in args:
-            self._kwds["OBSERVATION"] = ()
 
     def check_consistency(self):
         """Check consistency of viscosity material parameters."""
@@ -323,11 +341,9 @@ class CalcEndo:
         )
 
         if not self._tau > 0.0:
-            ##TODO : supprimer la valeur par défaut et repasser en message d'erreur ?
-            self._tau = 1.0
-            UTMESS("I", "CALCENDO_2")
+            UTMESS("F", "CALCENDO_2")
 
-    def create_user_list_inst(self):
+    def set_user_list_inst(self):
         """Create list of physical load sequences and list of physical timestep for archivage"""
 
         full_user_list = self._kwds["INCREMENT"]["LIST_INST"].getValues()
@@ -339,11 +355,8 @@ class CalcEndo:
             else:
                 _tol = self._kwds["INCREMENT"]["PRECISION"]
                 _inst_fin = self._kwds["INCREMENT"]["INST_FIN"]
-                _nume_inst_fin = (
-                    where(isclose(array(full_user_list), _inst_fin, rtol=_tol))[0][0] + 1
-                )
-            self._user_list_inst = self._user_list_inst[:_nume_inst_fin]
-
+                _nume_inst_fin = where(isclose(array(full_user_list), _inst_fin, rtol=_tol))[0][0]
+            self._user_list_inst = self._user_list_inst[: _nume_inst_fin + 1]
         if "NUME_INST_INIT" in self._kwds["INCREMENT"] or "INST_INIT" in self._kwds["INCREMENT"]:
             if "NUME_INST_INIT" in self._kwds["INCREMENT"]:
                 _nume_inst_init = self._kwds["INCREMENT"]["NUME_INST_INIT"]
@@ -366,7 +379,7 @@ class CalcEndo:
         if "LIST_INST" in self._kwds["ARCHIVAGE"]:
             self._arch = self._kwds["ARCHIVAGE"]["LIST_INST"].getValues()
 
-    def create_endo_list_inst(self):
+    def set_endo_list_inst(self):
         """Create list of timestep for a load sequence (ramp and stabilisation)"""
 
         _values_visc = self._visc_list_inst.getValues()
@@ -380,8 +393,10 @@ class CalcEndo:
         else:
             _rampe = [self._t_init_ramp, 0.0]
 
-        self._dt_stab = self._tau * _values_visc[1]
-        _nb_stab_max = int(_values_visc[2] / _values_visc[1])
+        self._dt_stab = self._tau * (_values_visc[1] - _values_visc[0])
+        _nb_stab_max = int(
+            (_values_visc[2] - _values_visc[0]) / (_values_visc[1] - _values_visc[0])
+        )
 
         _l_fict_endo = _rampe + [
             _val
@@ -399,9 +414,8 @@ class CalcEndo:
         if isinstance(self._kwds["ENDO_VISC"]["LIST_INST_VISC"], ListOfFloats):
             self._visc_list_inst = set_default_listinst(self._kwds, self._tau, _l_fict_endo)
         elif isinstance(self._kwds["ENDO_VISC"]["LIST_INST_VISC"], TimesList):
-            ##TODO : copier le concept. Pour le moment, on modifie le DEFI_LIST_INST donné en entrée
-            self._visc_list_inst = self._kwds["ENDO_VISC"]["LIST_INST_VISC"]  # .copy()
-            self._visc_list_inst.setValues(_l_fict_endo)  # bug : issue35770
+            self._visc_list_inst = self._kwds["ENDO_VISC"]["LIST_INST_VISC"].copy()
+            self._visc_list_inst.setValues(_l_fict_endo)
 
     def sort_loads(self):
         """Sort loads in two : time dependant loads and other loads"""
@@ -587,7 +601,7 @@ class CalcEndo:
         return _visc_mat_field
 
     def eval_stab_crit(self, _evol_endo):
-        """Evaluate user-defined stabilisation criteria at the last timestep of a given result
+        """Evaluate stabilisation criteria at the last timestep of a given result
 
         Args:
             _evol_endo (*evol_noli*): result of the current load sequence
@@ -603,7 +617,7 @@ class CalcEndo:
         )
         _ctrl_resu = RECU_TABLE(CO=_evol_endo, NOM_TABLE="OBSERVATION")
 
-        for _obs in self._kwds["OBSERVATION"]:
+        for _obs in self._other_obs:
             if ("EVAL_CHAM" in _obs) and (_obs["EVAL_CHAM"] != "VALE"):
                 _name_obs = _obs["TITRE"]
                 _v_obs = get_obs_values(_ctrl_resu, _name_obs)
@@ -697,9 +711,7 @@ class CalcEndo:
         _params_snl["INCREMENT"] = _F(
             LIST_INST=self._visc_list_inst, INST_FIN=0.0, NUME_INST_INIT=0
         )
-        _params_snl["OBSERVATION"] = (
-            self._kwds["OBSERVATION"] + self._obs_stab_visc + self._other_obs
-        )
+        _params_snl["OBSERVATION"] = self._obs_stab_visc + self._other_obs
         _params_snl["EXCIT"] = _visc_excit
         _params_snl["ARCHIVAGE"] = self._arch_visc
 
@@ -712,7 +724,7 @@ class CalcEndo:
         """Non linear computation of one stabilisation sequence
 
         Args:
-            _evol_endo (*evol_noli*): result of the current load sequence (ramp only)
+            _evol_endo (*evol_noli*): result of the current load sequence
             _visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
             _visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
 
@@ -742,9 +754,8 @@ class CalcEndo:
         _params_snl["CHAM_MATER"] = _visc_mat_field
         _params_snl["ETAT_INIT"] = _F(EVOL_NOLI=_evol_endo)
         _params_snl["INCREMENT"] = _F(LIST_INST=self._visc_list_inst, INST_FIN=_next_inst)
-        _params_snl["OBSERVATION"] = (
-            self._kwds["OBSERVATION"] + self._obs_stab_visc + self._other_obs
-        )
+        _params_snl["OBSERVATION"] = self._obs_stab_visc + self._other_obs
+
         _params_snl["EXCIT"] = _visc_excit
         _params_snl["ARCHIVAGE"] = self._arch_visc
 
@@ -820,7 +831,7 @@ class CalcEndo:
             )
 
             if _strx_arch:
-                l_affe += _F(_F(NOM_CHAM="STRX_ELGA", CHAM_GD=_strx_arch, INST=_t_comp, **_d_affe))
+                l_affe += _F(NOM_CHAM="STRX_ELGA", CHAM_GD=_strx_arch, INST=_t_comp, **_d_affe)
 
             self._resu = CREA_RESU(
                 reuse=self._resu,
@@ -845,14 +856,11 @@ def calc_endo_ops(self, **args):
     Returns:
         _calc_endo._resu (*evol_noli*): Non linear result (physical time)
         _calc_endo._tab_out (*Table*): Observation table
-        _calc_endo._resu_visc (list): List of evol_noli for viscous time discretisation. Optionnal.
+        _calc_endo._resu_visc (list): List of evol_noli for fictive time discretisation. Optionnal.
 
     """
 
     _calc_endo = CalcEndo(args)
-    _calc_endo.check_consistency()
-    _calc_endo.create_user_list_inst()
-    _calc_endo.create_endo_list_inst()
     _calc_endo.sort_loads()
     _calc_endo.sort_varc()
 
