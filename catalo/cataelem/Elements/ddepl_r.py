@@ -26,7 +26,6 @@ import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 import cataelem.Commons.attributes as AT
 
-
 MGEOMER = LocatedComponents(
     phys=PHY.GEOM_R, type="ELNO", diff=True, components=(("EN1", ()), ("EN2", ("X", "Y", "Z")))
 )
@@ -188,7 +187,7 @@ for cmp in (
     MMATUUR.setName("MMATUUR")
     MMATUUC.setName("MMATUUC")
 
-    name = "D_DEPL_R_" + cmp
+    name = "DDEPL_R_" + cmp
 
     class TempClass(Element):
         """Please document this element"""

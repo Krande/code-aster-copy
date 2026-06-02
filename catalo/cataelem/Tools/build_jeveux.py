@@ -201,7 +201,7 @@ def imprime_ojb(cel, file, dbgdir):
         NOMCMP.cree_oc(nom=nogd, long=ncmp)
         DESCRIGD.cree_oc(nom=nogd, long=7)
 
-        (nblcom, indcom) = split_comlibr(TOUCOMLIBR, gd.comment)
+        nblcom, indcom = split_comlibr(TOUCOMLIBR, gd.comment)
         DESCRIGD.ecri_co(nom=nogd, indice=6, valeur=nblcom)
         DESCRIGD.ecri_co(nom=nogd, indice=7, valeur=indcom)
 
@@ -277,7 +277,7 @@ def imprime_ojb(cel, file, dbgdir):
 
         DESCOPT.ecri_co(nom=nom, indice=2, valeur=nbin)
         DESCOPT.ecri_co(nom=nom, indice=3, valeur=nbou)
-        (nblcom, indcom) = split_comlibr(TOUCOMLIBR, comlibr)
+        nblcom, indcom = split_comlibr(TOUCOMLIBR, comlibr)
         DESCOPT.ecri_co(nom=nom, indice=4 + nbin + nbou + 1, valeur=nblcom)
         DESCOPT.ecri_co(nom=nom, indice=4 + nbin + nbou + 2, valeur=indcom)
 
@@ -304,7 +304,7 @@ def imprime_ojb(cel, file, dbgdir):
                 LOCALIS.ecri_co(nom=nom, indice=3 * k - 2, valeur="VIDE")
                 LOCALIS.ecri_co(nom=nom, indice=3 * k - 1, valeur="VIDE")
                 LOCALIS.ecri_co(nom=nom, indice=3 * k, valeur="VIDE")
-            (nblcom, indcom) = split_comlibr(TOUCOMLIBR, comlibr)
+            nblcom, indcom = split_comlibr(TOUCOMLIBR, comlibr)
             DESCOPT.ecri_co(nom=nom, indice=6 + nbin + nbou + 2 * (k - 1) + 1, valeur=nblcom)
             DESCOPT.ecri_co(nom=nom, indice=6 + nbin + nbou + 2 * (k - 1) + 2, valeur=indcom)
 
@@ -320,7 +320,7 @@ def imprime_ojb(cel, file, dbgdir):
             DESCOPT.ecri_co(nom=nom, indice=4 + nbin + k, valeur=igd)
             OPTPARA.ecri_co(nom=nom, indice=nbin + k, valeur=para)
             OPTPARA.ecri_co(nom=nom, indice=nbin + nbou + k, valeur=typout)
-            (nblcom, indcom) = split_comlibr(TOUCOMLIBR, comlibr)
+            nblcom, indcom = split_comlibr(TOUCOMLIBR, comlibr)
             DESCOPT.ecri_co(nom=nom, indice=6 + 3 * nbin + nbou + 2 * (k - 1) + 1, valeur=nblcom)
             DESCOPT.ecri_co(nom=nom, indice=6 + 3 * nbin + nbou + 2 * (k - 1) + 2, valeur=indcom)
 
@@ -528,7 +528,7 @@ def imprime_ojb(cel, file, dbgdir):
                         nbpt_l = 0
                         for loca in elref1.mater:
                             globa = elref1.gauss[loca]
-                            (nbpt, ifpg) = elrefe_npg(NOFPG, cata.elrefe[0].elrefe, globa)
+                            nbpt, ifpg = elrefe_npg(NOFPG, cata.elrefe[0].elrefe, globa)
                             nbpt_l = nbpt_l + nbpt
                         nbpt = nbpt_l
                         ifpg = -locIndex[note2 + nofpg1]
@@ -820,7 +820,7 @@ def imprime_ojb(cel, file, dbgdir):
         NOMMODELI = JV.cree_pn(d, nom="&CATA." + txtpad(13, ph) + ".MODL", tsca="K16")
         for mod in list(lmod.keys()):
             modeli = lmod[mod]
-            (d1, d2) = modeli.dim
+            d1, d2 = modeli.dim
             laffe = modeli.elements
             NOMMODELI.ajout_nom(mod)
             MODELI.cree_oc(nom=mod, long=(nbtm + 2))
@@ -888,7 +888,7 @@ def get_liattr(cel, cata):
     for pheno, modeli in cel.getElemModel(cata.name):
         codph = pheno.code
         codmod = modeli.code
-        (d1, d2) = modeli.dim
+        d1, d2 = modeli.dim
         d1 = int(d1)
         d2 = int(d2)
         assert d1 in (-1, 0, 1, 2, 3), d1
@@ -1305,7 +1305,7 @@ def verif_phenmode(cel):
 
     s3 = s1.difference(s2)
     for tyel in s3:
-        if tyel[0:8] in ("D_DEPL_R", "D_TEMP_R", "D_PRES_C"):
+        if tyel[0:7] in ("DDEPL_R", "DTEMP_R", "DPRES_C"):
             continue
         ERR.mess(
             "E", "L'element " + tyel + " doit figurer dans la catalogue PHENOMENE_MODELISATION__ ."

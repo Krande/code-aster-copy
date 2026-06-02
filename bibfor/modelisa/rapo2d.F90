@@ -156,7 +156,7 @@ subroutine rapo2d(numeDofZ, iocc, listRelaZ, loadZ)
     call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=nodeCoor)
 
 ! - Get components
-    nomte = 'D_DEPL_R_'
+    nomte = 'DDEPL_R_'
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', physQuanName), 'L', vk8=cataCmpName)
     call jelira(jexnom('&CATA.GD.NOMCMP', physQuanName), 'LONMAX', cataCmpNameSize)
