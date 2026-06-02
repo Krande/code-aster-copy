@@ -554,10 +554,6 @@ CFORCEC = LocatedComponents(
     phys=PHY.FORC_C, type="ELEM", components=("FX", "FY", "FZ", "MX", "MY", "MZ", "REP")
 )
 
-CFRELEC = LocatedComponents(
-    phys=PHY.FLAP_R, type="ELEM", components=("X1", "Y1", "Z1", "X2", "Y2", "Z2", "CODE")
-)
-
 CFTRC = LocatedComponents(phys=PHY.ADRSJEVN, type="ELEM", components=("I[2]",))
 
 CHARMON = LocatedComponents(phys=PHY.HARMON, type="ELEM", components=("NH",))

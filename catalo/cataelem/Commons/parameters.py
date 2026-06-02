@@ -771,8 +771,6 @@ PFRCO2D = InputParameter(phys=PHY.FORC_R, comment="""""")
 
 PFRCO3D = InputParameter(phys=PHY.FORC_R, comment="""""")
 
-PFRELEC = InputParameter(phys=PHY.FLAP_R, comment="""""")
-
 PFREQR = InputParameter(
     phys=PHY.FREQ_R,
     container="VOLA!&&CCPARA.FREQ",

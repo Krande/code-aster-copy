@@ -1364,6 +1364,7 @@ class MECA_HEXA20(Element):
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
                 (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
                 (SP.PNEU1_R, ENEU1_R),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),
         OP.TOU_INI_ELGA(

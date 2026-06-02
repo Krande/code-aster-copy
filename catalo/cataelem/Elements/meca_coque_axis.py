@@ -550,7 +550,10 @@ class MECXSE3(Element):
             ),
             para_out=((SP.PTEMP_R, ETHERGA),),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),)),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER)),
+        ),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(

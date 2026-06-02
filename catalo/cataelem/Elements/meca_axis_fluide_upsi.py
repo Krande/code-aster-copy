@@ -132,7 +132,9 @@ class MEAXFLQ4PSI(Element):
                 (SP.PCODRET, LC.ECODRET),
             ),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELEM(
+            te=99, para_out=((SP.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+        ),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO2D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM2D),)),
         OP.VERI_JACOBIEN(
@@ -212,7 +214,9 @@ class MEAXFLS2PSI(Element):
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC), (SP.PONDECR, LC.EONDEPR)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELEM(
+            te=99, para_out=((SP.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+        ),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO2D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM2D),)),
     )

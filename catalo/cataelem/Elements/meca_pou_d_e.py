@@ -270,11 +270,6 @@ class MECA_POU_D_E(Element):
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        OP.CHAR_MECA_FRELEC(
-            te=145,
-            para_in=((SP.PFRELEC, LC.CFRELEC), (SP.PGEOMER, NGEOMER)),
-            para_out=((SP.PVECTUR, MVECTUR),),
-        ),
         OP.CHAR_MECA_HYDR_R(
             te=312,
             para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG)),
@@ -784,6 +779,7 @@ class MECA_POU_D_E(Element):
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
                 (SP.PNEU1_R, ENEU1_R),
                 (OP.TOU_INI_ELEM.PNEUT_F, ELNEUT_F),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),
         OP.TOU_INI_ELGA(
