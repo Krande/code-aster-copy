@@ -152,10 +152,12 @@ subroutine parallel_ligrel_list(numeEquZ, base)
                         call jecroc(jexnom('&&TMP.HASHTABLETOT', v_recv(iLigr)))
                     end if
                 end do
+                call jelira('&&TMP.HASHTABLETOT', 'NOMUTI', ival=hashNb)
+            else
+                hashNb = 0
             end if
             deallocate (v_recv)
 
-            call jelira('&&TMP.HASHTABLETOT', 'NOMUTI', ival=hashNb)
             if (shift .eq. 2 .and. (hashNb+shift) .eq. 2) then
                 call wkvect(numeEqua//'.LILT', base//' V I', 2, vi=v_lilt)
                 v_lilt(1) = 1
