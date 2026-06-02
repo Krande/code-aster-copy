@@ -23,7 +23,7 @@ Utilitaires pour CALC_ENDO
 
 from ...Messages import UTMESS
 from ...CodeCommands import CALC_TABLE, FORMULE, DEFI_LIST_INST
-from ...Behaviours import regu_visc_elas, endo_loca_tc, endo_fiss_tc
+from ...Behaviours import regu_visc_elas, endo_loca_tc #, endo_fiss_tc
 
 
 def get_obs_values(_ctrl_resu, _name_obs):
