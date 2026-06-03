@@ -21,7 +21,7 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
 
-CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", IGNORE_ALARM="MODELISA8_15")
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 size = MPI.ASTER_COMM_WORLD.Get_size()
