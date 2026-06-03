@@ -16,12 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+#include "asterf_types.h"
 interface
-    subroutine mmvalp(cellCode, cellNbNode, ksi1, ksi2, valeCell, valePoin)
+    subroutine projOrthoNewton(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
+                               newtIterMaxi, newtToleMaxi, &
+                               ksi1, ksi2, &
+                               tang_1, tang_2, &
+                               projError, lLineSearch_)
         character(len=8), intent(in) :: cellCode
-        integer(kind=8), intent(in) :: cellNbNode
-        real(kind=8), intent(in) :: ksi1, ksi2
-        real(kind=8), intent(in) :: valeCell(*)
-        real(kind=8), intent(out) :: valePoin(3)
-    end subroutine mmvalp
+        integer(kind=8), intent(in) :: cellNbNode, cellDime
+        real(kind=8), intent(in) :: cellCoor(27), poinCoor(3)
+        integer(kind=8), intent(in) :: newtIterMaxi
+        real(kind=8), intent(in) :: newtToleMaxi
+        real(kind=8), intent(out) :: ksi1, ksi2
+        real(kind=8), intent(out) :: tang_1(3), tang_2(3)
+        integer(kind=8), intent(out) :: projError
+        aster_logical, intent(in), optional :: lLineSearch_
+    end subroutine projOrthoNewton
 end interface

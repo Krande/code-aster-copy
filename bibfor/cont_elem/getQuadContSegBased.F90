@@ -134,10 +134,10 @@ subroutine getQuadContSegBased(elem_dime, &
 
             if (present(weight_qp_)) then
 ! ------------- Get shape functions and first derivative only (for perf)
-                call mmnonf(elem_dime, nb_node_slav_, elem_slav_code, &
+                call mmnonf(elem_slav_code, &
                             gausCoorSlav(1, iGauss), gausCoorSlav(2, iGauss), &
                             shape_func)
-                call mmdonf(elem_dime, nb_node_slav_, elem_slav_code, &
+                call mmdonf(elem_slav_code, &
                             gausCoorSlav(1, iGauss), gausCoorSlav(2, iGauss), &
                             shape_dfunc)
 

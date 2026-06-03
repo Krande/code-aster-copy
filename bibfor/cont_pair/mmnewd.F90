@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+!
 subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
                   iter_maxi, tole_maxi, proj_dire, ksi1, ksi2, &
                   tang_1, tang_2, error, dist_, ksi1_init, ksi2_init, beta_)
@@ -129,10 +130,8 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
 !
 ! - Shape functions (and derivates) at current point
 !
-    call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
-                ff)
-    call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
-                dff)
+    call mmnonf(type_elem, ksi1, ksi2, ff)
+    call mmdonf(type_elem, ksi1, ksi2, dff)
 !
 ! - Position vector of current point
 !
@@ -255,10 +254,8 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     else if ((iter .ge. iter_maxi) .and. (test .gt. tole_newt)) then
         ksi1 = ksi1_mini
         ksi2 = ksi2_mini
-        call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
-                    ff)
-        call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
-                    dff)
+        call mmnonf(type_elem, ksi1, ksi2, ff)
+        call mmdonf(type_elem, ksi1, ksi2, dff)
         call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1, &
                     tang_2)
         error = 1

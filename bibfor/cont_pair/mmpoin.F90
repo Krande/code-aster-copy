@@ -149,7 +149,7 @@ subroutine mmpoin(mesh, ds_contact)
 !
 ! ------------- Coordinates of contact point
 !
-                call mmvalp(model_ndim, elem_slav_type, elem_slav_nbnode, 3, &
+                call mmvalp(elem_slav_type, elem_slav_nbnode, &
                             ksi1, ksi2, elem_slav_coor, poin_coor)
                 v_sdappa_poin(3*(i_poin-1)+1) = poin_coor(1)
                 v_sdappa_poin(3*(i_poin-1)+2) = poin_coor(2)

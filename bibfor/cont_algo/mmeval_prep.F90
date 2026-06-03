@@ -110,12 +110,12 @@ subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
 !
 ! - Coordinates of the contact point
 !
-    call mmvalp(model_ndim, elem_slav_type, elem_slav_nbno, 3, ksipc1, &
+    call mmvalp(elem_slav_type, elem_slav_nbno, ksipc1, &
                 ksipc2, elem_slav_coor, poin_slav_coor)
 !
 ! - Coordinates of the projection of contact point
 !
-    call mcopco(mesh, newgeo, model_ndim, elem_mast_nume, ksipr1, &
+    call mcopco(mesh, newgeo, elem_mast_nume, ksipr1, &
                 ksipr2, poin_proj_coor)
 !
 ! - Local basis on master element
@@ -137,7 +137,7 @@ subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
 !
 ! - Interpolate contact pressure (Lagrange) at point
 !
-    call mmvalp_scal(model_ndim, elem_slav_type, elem_slav_nbno, ksipc1, ksipc2, &
+    call mmvalp_scal(elem_slav_type, elem_slav_nbno, ksipc1, ksipc2, &
                      lagr_cont_node, lagr_cont_poin)
 !
 end subroutine

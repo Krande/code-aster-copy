@@ -39,5 +39,8 @@ bool TimesList::setValues( const VectorReal &values ) {
         ++compteur;
     }
 
+    _infor->updateValuePointer();
+    ( *_infor )[7] = values.size();
+
     return true;
 };
