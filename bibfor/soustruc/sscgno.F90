@@ -314,9 +314,7 @@ subroutine sscgno(ma, nbgnin)
             if (n5 .eq. 0) then
                 AS_DEALLOCATE(vk24=lik8)
             end if
-            if (nverif .ne. 0) then
-                AS_DEALLOCATE(vk24=lik8_2)
-            end if
+            AS_DEALLOCATE(vk24=lik8_2)
         end if
         if (n5 .gt. 0) then
             call jenonu(jexnom(grpnoe, lik8(1)), ign1)

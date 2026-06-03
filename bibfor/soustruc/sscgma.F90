@@ -399,9 +399,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             if (lik8_2(1) .ne. lik8(1)) then
                 n5 = 0
             end if
-            if (nverif .ne. 0) then
-                AS_DEALLOCATE(vk24=lik8_2)
-            end if
+            AS_DEALLOCATE(vk24=lik8_2)
             do igm = 1, n5
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 if (igm2 .eq. 0) then
