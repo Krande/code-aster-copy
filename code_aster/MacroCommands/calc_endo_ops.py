@@ -280,6 +280,8 @@ class CalcEndo:
         self.set_observation()
         self.set_user_list_inst()
         self.set_endo_list_inst()
+        self.sort_loads()
+        self.sort_varc()
 
     def set_observation(self):
         """Initialisation of OBSERVATION keyword for STAT_NON_LINE"""
@@ -861,8 +863,6 @@ def calc_endo_ops(self, **args):
     """
 
     _calc_endo = CalcEndo(args)
-    _calc_endo.sort_loads()
-    _calc_endo.sort_varc()
 
     _nume_ordre, _t_init, _depl_init, _sief_init, _vari_init, _strx_init = (
         _calc_endo.set_init_state()
