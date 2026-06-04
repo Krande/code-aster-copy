@@ -293,17 +293,11 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
 
     virtual VectorLong getNodes( const VectorString &names, const bool localNumbering = false,
-                                 const ASTERINTEGER same_rank = PythonBool::None ) const {
-        AS_ASSERT( false );
-        return {};
-    }
+                                 const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     virtual VectorLong getNodes( const std::string name = std::string(),
                                  const bool localNumbering = false,
-                                 const ASTERINTEGER same_rank = PythonBool::None ) const {
-        AS_ASSERT( false );
-        return {};
-    }
+                                 const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
      * @brief Returns the nodes indexes of a group of cells

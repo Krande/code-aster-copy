@@ -65,6 +65,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     aster_logical :: lpmesh
     integer(kind=8), pointer :: vconnex(:) => null()
     integer(kind=8), pointer :: num_noeu_in(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
     type(Mmesh) :: mesh_res
 !
     call jemarq()
@@ -150,6 +151,10 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
         end do
     end if
 !
+    if (lpmesh) then
+        call jeveuo(noma//'.NUNOLG', 'L', vi=nulg)
+    end if
+!
 ! - Trier les noeuds pour les avoir dans le même ordre que le maillage initial
 !
     nbnoou = 0
@@ -162,7 +167,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
             ! remove this node
             mesh_res%nodes(ino)%keep = ASTER_FALSE
         end if
+        if (lpmesh) then
+            mesh_res%nodes(ino)%global_id = nulg(ino)
+        else
+            mesh_res%nodes(ino)%global_id = ino-1
+        end if
     end do
+    mesh_res%isGlobNumSet = ASTER_TRUE
 !
 ! - Remove cells
 !

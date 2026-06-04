@@ -439,6 +439,7 @@ bool AsterToMedWriter::_printMeshFromList( const BaseMesh &toPrint,
     }
     return true;
 };
+
 #ifdef ASTER_HAVE_MPI
 std::set< std::set< std::string > > gatherFamilies( std::set< std::set< std::string > > in ) {
     VectorString grpVec, allGrpVec;
@@ -464,6 +465,7 @@ std::set< std::set< std::string > > gatherFamilies( std::set< std::set< std::str
     return out;
 };
 #endif
+
 void AsterToMedWriter::_createGroups( const BaseMesh &toPrint, MedMeshPtr mesh,
                                       std::vector< med_int > &allEntityFamily,
                                       const VectorLong &indexes, entityType entType, bool local ) {
