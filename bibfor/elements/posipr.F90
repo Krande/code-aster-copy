@@ -185,7 +185,7 @@ subroutine posipr(nomte, efge, sipo)
         sipo(11) = efge(11)/xiy2*rz2
         sipo(12) = -efge(12)/xiz2*ry2
     else
-        ASSERT( .false. )
+        ASSERT(.false.)
     end if
 !
 end subroutine
