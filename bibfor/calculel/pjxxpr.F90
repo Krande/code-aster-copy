@@ -44,6 +44,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exlim5.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -187,6 +188,12 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
             call utmess('F', 'CALCULEL4_62', sk=resu1)
         end if
         call jeveuo('&&PJXXPR.NUME_ORDRE', 'L', jordr)
+    end if
+!
+    if (ligrel .ne. ' ' .and. prolong%prol_vale_r .eq. 'NON') then
+        write (6, *) "ligrel", ligrel
+        call exlim5('VIS_A_VIS', 'GROUP_MA_2', 1, resu2, mo2, ligrel)
+        write (6, *) "ligrel", ligrel
     end if
 !
     noms2 = resu2
