@@ -16,59 +16,50 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ntcra0(sdarchZ)
+subroutine storeSaveLast(sdarchZ, numeStore, timeCurr)
 !
     implicit none
 !
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcrpx.h"
-#include "asterfort/wkvect.h"
-#include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeexin.h"
 !
     character(len=*), intent(in) :: sdarchZ
+    integer(kind=8), intent(in) :: numeStore
+    real(kind=8), intent(in) :: timeCurr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THER_* - Storing management
+! Storing management
 !
-! Create storing objects for transient computation
+! Save current storing
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdarch           : datastructure for storing
+! In  numeStore        : current storing index
+! In  timeCurr         : current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: iocc = 0
-    character(len=16), parameter :: factorKeyword = ' ', stepKeyword = ' '
-    character(len=1), parameter :: jvBase = 'V'
+    integer(kind=8) :: iret
     character(len=19) :: sdarch
-    character(len=24) :: sdarchAinfJv, sdarchAexcJv, sdarchLastJv
-    integer(kind=8), pointer :: sdarchAinf(:) => null()
-    character(len=16), pointer :: sdarchAexc(:) => null()
+    character(len=24) :: sdarchLastJv
     real(kind=8), pointer :: sdarchLast(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     sdarch = sdarchZ
-
-! - Create datastructures
-    sdarchAinfJv = sdarch(1:19)//'.AINF'
-    sdarchAexcJv = sdarch(1:19)//'.AEXC'
     sdarchLastJv = sdarch(1:19)//'.LAST'
-    call wkvect(sdarchAexcJv, 'V V K16', 1, vk16=sdarchAexc)
-    call wkvect(sdarchAinfJv, 'V V I', 4, vi=sdarchAinf)
-    call wkvect(sdarchLastJv, 'V V R', 2, vr=sdarchLast)
-
-! - Get parameters from ARCHIVAGE
-    call nmcrpx(factorKeyword, stepKeyword, iocc, sdarch, jvBase)
-
-! - Save
-    sdarchLast(1) = -1.d0
-    sdarchLast(2) = -1.d0
-!
-    call jedema()
+    call jeexin(sdarchLastJv, iret)
+    if (iret .ne. 0) then
+        call jeveuo(sdarchLastJv, 'E', vr=sdarchLast)
+        if (numeStore .ge. 0) then
+            sdarchLast(1) = numeStore
+            sdarchLast(2) = timeCurr
+        else
+            sdarchLast(1:2) = 1.d0
+        end if
+    end if
 !
 end subroutine
