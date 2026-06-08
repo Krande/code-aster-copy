@@ -136,7 +136,6 @@ subroutine crnustd(numddl)
     lilt = nume_equa//'.LILT'
     call jeveuo(lilt, 'L', vi=v_lilt)
     call jelira(lilt, 'LONMAX', ival=nbLigrTot)
-    mpicou = to_mpi_int(v_gco(1))
 !
     call jeveuo(mesh//'.DIME', 'L', dime)
     call jeveuo(mesh//'.NUNOLG', 'L', vi=v_nulg)
@@ -219,7 +218,6 @@ subroutine crnustd(numddl)
             v_tddl(numero_noeud+1) = v_gddl(2*(ino-1)+2)
         end if
     end do
-!
 ! -- Verif
     do ino = 1, nbno_gl
         ASSERT(v_tddl(ino) >= 0)
