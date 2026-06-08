@@ -216,6 +216,8 @@ def getValReg(testnum, restype="STAT_NON_LINE"):
             1.4999999999999998,
             0.39999999999999997,
             0.6999999999999997,
+            -4.04145188432738,
+            4.04145188432738,
         ]
 
     elif testnum == 1:
@@ -250,6 +252,8 @@ def getValReg(testnum, restype="STAT_NON_LINE"):
             3.1999999999999997,
             1.6999999999999997,
             0.13999999999999985,
+            -4.04145188432738,
+            4.04145188432738,
         ]
 
     return lvalReg
@@ -271,7 +275,8 @@ def checkOptions(idOrie, sectype, restype, postOptions, nomComportement):
             "SIEF_ELGA",
             "SIEF_ELNO",
             "SAUT_ELNO",
-        ], "The postprocessing fields should be in ['FORC_NODA', 'SIEF_ELGA', 'SIEF_ELNO', 'SAUT_ELNO']."
+            "COOR_ELGA",
+        ], "The postprocessing fields should be in ['FORC_NODA', 'SIEF_ELGA', 'SIEF_ELNO', 'SAUT_ELNO', 'COOR_ELGA']."
     assert nomComportement in [
         "INTERF_POU_ELAS",
         "INTERF_POU_CINE",
@@ -899,6 +904,37 @@ def faireTest(
 
             iValCalc += 1
 
+    if "COOR_ELGA" in testOptions:
+
+        # COOR_ELGA
+
+        iRES = l_RES[2]
+        iValCalc = 27
+
+        # coordonnées points de Gauss
+        resu_COGA = CALC_CHAM_ELEM(MODELE=MODELE, GROUP_MA=Grma27, OPTION="COOR_ELGA")
+
+        TAB_COGA = CREA_TABLE(
+            RESU=_F(INTITULE="TABLE", GROUP_MA=Grma27, CHAM_GD=resu_COGA, TOUT_CMP="OUI")
+        )
+
+        stringCoor = "XYZ"
+
+        for i, xi in enumerate([-np.sqrt(1 / 3), np.sqrt(1 / 3)]):
+
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                PRECISION=1e-5,
+                CRITERE="RELATIF",
+                VALE_CALC=l_valCalc[iValCalc],
+                VALE_REFE=xi * LX,
+                NOM_PARA="COOR_" + stringCoor[idOrie],
+                TABLE=TAB_COGA,
+                FILTRE=(_F(NOM_PARA="POINT", VALE_I=i + 1),),
+            )
+
+            iValCalc += 1
+
 
 # ------------------------------------------------------------------------------ #
 
@@ -911,7 +947,7 @@ faireTest(
     nomComportement="INTERF_POU_CINE",
     restype="STAT_NON_LINE",
     dimp=np.array([1.5, 0.4, 0.7]),
-    testOptions=["FORC_NODA", "SIEF_ELGA", "SIEF_ELNO", "SAUT_ELNO"],
+    testOptions=["FORC_NODA", "SIEF_ELGA", "SIEF_ELNO", "SAUT_ELNO", "COOR_ELGA"],
     valRegression=getValReg(0, restype="STAT_NON_LINE"),
 )
 

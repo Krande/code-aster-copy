@@ -99,7 +99,7 @@ class MECA_S8P2(Element):
         ElrefeLoc(MT.H10, gauss=("RIGI=FIS2",), mater=("RIGI",)),
     )
     calculs = (
-        OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
+        # OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
         OP.NSPG_NBVA(
             te=496,
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
