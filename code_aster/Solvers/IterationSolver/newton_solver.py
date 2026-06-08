@@ -22,7 +22,7 @@ import numpy as np
 from ...LinearAlgebra import MatrixScaler
 from ...Objects import DiscreteComputation
 from ...Supervis import ConvergenceError
-from ...Utilities import no_new_attributes, profile
+from ...Utilities import no_new_attributes, profile, logger
 from ..Basics import EventId, EventSource
 from .convergence_manager import ConvergenceManager
 from .iteration_solver import BaseIterationSolver
@@ -238,8 +238,15 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     def _update_contact_geometry(self):
         """Update the pairing for contact"""
         if self.contact:
-            self.contact.update(self.state)
-            self.contact.pairing()
+            if self._converg.get_keyword("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
+                self.contact.update(self.state)
+                self.contact.pairing()
+            else:
+                update_fixed_point = self._converg.isPrediction()
+                if update_fixed_point:
+                    logger.debug("<POINT_FIXE> Contact pairing is performed")
+                    self.contact.update(self.state)
+                    self.contact.pairing()
 
     def notifyObservers(self, matrix_type):
         """Notify observers about the convergence.
