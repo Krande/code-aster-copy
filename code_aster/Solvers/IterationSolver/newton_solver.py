@@ -146,7 +146,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
                 )
             self.current_incr += 1
 
-        if not self._converg.isConverged():
+        if not self._converg.hasConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
         self.oper.finalize()
@@ -242,11 +242,22 @@ class NewtonSolver(BaseIterationSolver, EventSource):
                 self.contact.update(self.state)
                 self.contact.pairing()
             else:
-                update_fixed_point = self._converg.isPrediction()
+                update_fixed_point = self._converg.isPrediction() or self._fixed_point_internal_loop_criterion()
                 if update_fixed_point:
-                    logger.debug("<POINT_FIXE> Contact pairing is performed")
+                    logger.info("<POINT_FIXE> Contact pairing is performed")
                     self.contact.update(self.state)
                     self.contact.pairing()
+
+    def _fixed_point_internal_loop_criterion(self):
+        """Test criterion for end of fixed point iteration (contac)"""
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "AUTOMATIQUE":
+            return self._converg._param.get("RESI_GEOM").hasConverged()
+        elif self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
+            self._converg._param.get("NB_ITER_GEOM").hasConverged()
+        elif self._converg.get_keyword("CONTACT", "REAC_GEOM") == "SANS":
+            return False
+        else:
+            return False
 
     def notifyObservers(self, matrix_type):
         """Notify observers about the convergence.
