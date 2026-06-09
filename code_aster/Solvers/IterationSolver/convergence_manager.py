@@ -34,7 +34,6 @@ class ConvergenceManager(ContextMixin):
 
     _param = _residual_reference = None
     _scaling_reference = None
-    _conv = False
     __setattr__ = no_new_attributes(object.__setattr__)
 
     class UnDefined:
@@ -54,7 +53,6 @@ class ConvergenceManager(ContextMixin):
 
         match = None
         _refe = _value = _minValue = None
-        _conv = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         @classmethod
@@ -74,7 +72,6 @@ class ConvergenceManager(ContextMixin):
             self._refe = reference
             self._value = ConvergenceManager.undef
             self._minValue = ConvergenceManager.undef
-            self._conv = False
 
         def __repr__(self) -> str:
             minV = ""
@@ -163,14 +160,6 @@ class ConvergenceManager(ContextMixin):
             """
             raise NotImplementedError("must be subclassed!")
 
-        def hasConverged(self):
-            """Tell if the current value is converged.
-
-            Returns:
-                bool: *True* if the value is converged, *False* otherwise.
-            """
-            return self._conv
-
         def isFinished(self):
             """Tell if the current parameter should stop the calculation.
 
@@ -206,17 +195,6 @@ class ConvergenceManager(ContextMixin):
             checkMin = not self.minSet() or self._minValue <= self._value
             return checkMin and self._value <= self._refe
 
-        def hasConverged(self):
-            return self.isConverged()
-
-        def isFinished(self):
-            """Tell if the current parameter should stop the calculation.
-
-            Returns:
-                bool: *True* if the calculation should be stopped, *False* otherwise.
-            """
-            return self.isConverged()
-
         def isFinished(self):
             """Tell if the current parameter should stop the calculation.
 
@@ -251,19 +229,9 @@ class ConvergenceManager(ContextMixin):
                 return not self.hasRef()
             checkMin = not self.minSet() or self._minValue <= self._value
             conv = checkMin and self._value <= self._refe
-            # - Should use this for re-pairing
-            # if conv:
-            #     print(f"<DEBUG-TEST> RESI_GEOM: Re-pairing, value=", self._value, flush=True)
-            #     if TEST_CONTACT_WEAKREF:
-            #         self._contact_weakr().update(self._state_weakr())
-            #         self._contact_weakr().pairing()
-            #     else:
-            #         self._contact_weakr.update(self._state_weakr)
-            #         self._contact_weakr.pairing()
-
             return conv
 
-        def hasConverged(self):
+        def isFinished(self):
             return self.isConverged()
 
     class IterationParameter(Parameter):
@@ -287,9 +255,6 @@ class ConvergenceManager(ContextMixin):
             if not self.hasRef() or not self.isSet() or not self.minSet():
                 return True
             return self._minValue <= self._value
-
-        def hasConverged(self):
-            return self.isConverged()
 
         def isPrediction(self):
             """Return True if self._value<1
@@ -351,7 +316,6 @@ class ConvergenceManager(ContextMixin):
                     para = instance._param["RESI_GEOM"]
                 else:
                     instance.setdefault("RESI_GEOM", ConvergenceManager.undef)
-
         return instance
 
     def __init__(self):
@@ -688,14 +652,13 @@ class ConvergenceManager(ContextMixin):
         # # TODO: implement convergence criteria for AU_MOINS_UN
 
         logger.debug("isConverged ? %r", self._param)
-        self._conv = False
         defined = [(name, para) for name, para in self._param.items() if para.isDefined()]
         if not defined:
             logger.debug("no parameter set: not converged")
             return False
 
         for name, para in self._param.items():
-            if name == "RESI_GLOB_RELA" and para.value == ConvergenceManager.undef:
+            if name == "RESI_GLOB_RELA" and para.value is ConvergenceManager.undef:
                 # See special case, continue to next name, para
                 continue
             if not para.isConverged():
@@ -705,17 +668,9 @@ class ConvergenceManager(ContextMixin):
         # Special case
         if self._trigger_check_resi_glob_maxi():
             return self._check_resi_glob_maxi()
-        self._conv = True
+
         return True
 
-    def hasConverged(self):
-        """Tell if the convergence parameters are verified.
-
-        Returns:
-            bool: *True* if converged, *False* otherwise.
-        """
-        return self._conv
-        
     def isPrediction(self):
         """Tell if the current Newton iteration is the prediction
         iteration.
@@ -739,7 +694,7 @@ class ConvergenceManager(ContextMixin):
             if para.isFinished():
                 logger.debug("parameter %s would finish", name)
                 return True
-            if not para.hasConverged():
+            if not para.isConverged():
                 logger.debug("parameter %s is not converged", name)
                 return False
-        return self.hasConverged()
+        return self.isConverged()

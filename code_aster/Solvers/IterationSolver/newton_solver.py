@@ -171,7 +171,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             self.current_incr += 1
             self._update_criterion_fixed_point_contact()
         
-        if not self._converg.hasConverged():
+        if not self._converg.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
         self.oper.finalize()
@@ -278,7 +278,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     def _fixed_point_internal_loop_criterion(self):
         """Test criterion for end of fixed point iteration (contact)"""
         if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "AUTOMATIQUE":
-            return self._converg._param.get("RESI_GEOM").hasConverged()
+            return self._converg._param.get("RESI_GEOM").isConverged()
         elif self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
             return self._get_criterion_fixed_point_contact()
         elif self._converg.get_keyword("CONTACT", "REAC_GEOM") == "SANS":
