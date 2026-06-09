@@ -320,64 +320,6 @@ class ConvergenceManager(ContextMixin):
         def isFinished(self):
             return True
 
-
-    # class ControlledGeometryParameter(Parameter):
-    #     """Type of *Parameter* for a residual.
-
-    #     Arguments:
-    #         name (str): Parameter name.
-    #         reference (float|int): Reference value.
-    #     """
-
-    #     match = re.compile("^NB_ITER_GEOM").search
-
-    #     def __init__(self, reference):
-    #         super().__init__(reference)
-    #         self.minValue = 0.0
-    #         self._value = 0
-
-    #     def __getstate__(self):
-    #         """Method for aster serialization process"""
-    #         return [self.match, self._refe, self._value, self._minValue, self._conv]
-
-    #     def __setstate__(self, state):
-    #         """Method for aster serialization process"""
-    #         assert len(state) == 5, state
-    #         (self.match, self._refe, self._value, self._minValue, self._conv) = state
-
-    #     def isConverged(self):
-    #         """Tell if the current value is converged.
-
-    #         Returns:
-    #             bool: *True* if the value is converged, *False* otherwise.
-    #         """
-    #         #print("je suis ici")
-    #         self._value = self._value + 1 if self._value != ConvergenceManager.undef else 0
-    #         if self._value == self._refe:
-    #             self._value = 0
-    #             self._conv = True
-    #         else:
-    #             #print(f"<DEBUG-TEST> NB_ITER_GEOM Re-pairing, value=", self._value, flush=True)
-    #             self._conv = False
-    #             # - Should use this for re-paiirng
-    #             # if TEST_CONTACT_WEAKREF:
-    #             #     self._contact_weakr().update(self._state_weakr())
-    #             #     self._contact_weakr().pairing()
-    #             # else:
-    #             #     self._contact_weakr.update(self._state_weakr)
-    #             #     self._contact_weakr.pairing()
-    #         #print("je sors ici", self._value)
-    #         return self._conv
-
-    #     def isFinished(self):
-    #         """Tell if the current parameter should stop the calculation.
-
-    #         Returns:
-    #             bool: *True* if the calculation should be stopped, *False* otherwise.
-    #         """
-    #         return self._conv
-
-
     @classmethod
     def builder(cls, context):
         """Default builder for :py:class:`ContextMixin` object.
@@ -409,16 +351,6 @@ class ConvergenceManager(ContextMixin):
                     para = instance._param["RESI_GEOM"]
                 else:
                     instance.setdefault("RESI_GEOM", ConvergenceManager.undef)
-                    # print(instance.get_keyword("CONTACT", "RESI_GEOM"))
-                    # assert(1==0)
-                # if instance.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
-                #     instance.setdefault(
-                #         "NB_ITER_GEOM", instance.get_keyword("CONTACT", "NB_ITER_GEOM")
-                #     )
-                #     para = instance._param["NB_ITER_GEOM"]
-                # else:
-                #     instance.setdefault("RESI_GEOM", instance.get_keyword("CONTACT", "RESI_GEOM"))
-                #     para = instance._param["RESI_GEOM"]
 
         return instance
 
