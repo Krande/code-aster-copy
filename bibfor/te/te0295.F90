@@ -91,6 +91,9 @@ subroutine te0295(option, nomte)
     fami = 'RIGI'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+
+!   Verify that the number of nodes is lower than 60-HEXA20 (catalogue)
+    ASSERT(nno .le. 60)
 !
 ! --- RECUPERATION DES CHAMPS IN
 !
