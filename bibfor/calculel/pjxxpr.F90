@@ -41,6 +41,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -84,7 +85,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 !
     integer(kind=8) :: ibid, ie, iret, jordr, nbordr, i, iordr, tmod(1)
     integer(kind=8) :: iains1, iains2, nbsym, isym, ico, ind, nbmax
-    integer(kind=8) :: iexi, jpara, ier, inume
+    integer(kind=8) :: iexi, jpara, ier, inume, nbocc
     parameter(nbmax=50)
     integer(kind=8) :: ipar, ipar1, ipar2
     aster_logical :: acceno, lxfem, lpjxfem, l_parallel_mesh
@@ -190,10 +191,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
         call jeveuo('&&PJXXPR.NUME_ORDRE', 'L', jordr)
     end if
 !
-    if (ligrel .ne. ' ' .and. prolong%prol_vale_r .eq. 'NON') then
-        write (6, *) "ligrel", ligrel
-        call exlim5('VIS_A_VIS', 'GROUP_MA_2', 1, resu2, mo2, ligrel)
-        write (6, *) "ligrel", ligrel
+    call getfac('VIS_A_VIS', nbocc)
+    if (nbocc .gt. 0) then
+        if (ligrel .ne. ' ' .and. prolong%prol_vale_r .eq. 'NON') then
+            call exlim5('VIS_A_VIS', 'GROUP_MA_2', 'TOUT_2', resu2, mo2, ligrel)
+        end if
     end if
 !
     noms2 = resu2

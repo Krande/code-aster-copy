@@ -19,10 +19,10 @@
 !
 !
 interface
-    subroutine exlim5(motfaz, motcleZ, iocc, nomsd, modelz, ligrel)
+    subroutine exlim5(motfaz, motcleZ, toutZ, nomsd, modelz, ligrel)
         character(len=*) :: motfaz
         character(len=*) :: motcleZ
-        integer(kind=8) :: iocc
+        character(len=*) :: toutZ
         character(len=*) :: nomsd
         character(len=*) :: modelz
         character(len=*) :: ligrel
