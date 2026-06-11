@@ -172,6 +172,11 @@ contains
             fromFace = offset_face
             toFace = offset_face+fbs-1
 !
+            if (hhoFace%l_axis_on_axe) then
+                ! No stabilization for face on AXIS axe
+                cycle
+            end if
+!
 ! ----- Compute face mass matrix
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
@@ -192,12 +197,7 @@ contains
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
-                    if (hhoFace%l_axis_on_axe) then
-                        ! No stabilization for face on AXIS axe
-                        cycle
-                    else
-                        call utmess('F', 'HHO1_4')
-                    end if
+                    call utmess('F', 'HHO1_4')
                 end if
             end if
 !
@@ -505,6 +505,11 @@ contains
             hhoFace = hhoCell%faces(iface)
             invH = 1.d0/hhoFace%diameter
 !
+            if (hhoFace%l_axis_on_axe) then
+                ! No stabilization for face on AXIS axe
+                cycle
+            end if
+!
 ! ----- Compute face mass matrix
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
@@ -525,12 +530,7 @@ contains
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
-                    if (hhoFace%l_axis_on_axe) then
-                        ! No stabilization for face on AXIS axe
-                        cycle
-                    else
-                        call utmess('F', 'HHO1_4')
-                    end if
+                    call utmess('F', 'HHO1_4')
                 end if
             end if
 !
@@ -715,6 +715,11 @@ contains
             fromFace = offset_face
             toFace = offset_face+fbs-1
 !
+            if (hhoFace%l_axis_on_axe) then
+                ! No stabilization for face on AXIS axe
+                cycle
+            end if
+!
 ! ----- Compute face mass matrix
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
@@ -735,12 +740,7 @@ contains
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
-                    if (hhoFace%l_axis_on_axe) then
-                        ! No stabilization for face on AXIS axe
-                        cycle
-                    else
-                        call utmess('F', 'HHO1_4')
-                    end if
+                    call utmess('F', 'HHO1_4')
                 end if
 !
 ! ---- Solve piKF = invM^-1 * piKF

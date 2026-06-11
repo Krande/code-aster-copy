@@ -147,17 +147,6 @@ for form in formu:
     l2_diff = (matM * u_diff).dot(u_diff)
     test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=5e-6)
 
-    # print(f"u_sol: {u_sol.getValues()}")
-    # print(f"pi_hho: {f_hho.getValues()}")
-
-    # _, desc = f_hho.getValuesWithDescription()
-    # print(f"desc: {desc}")
-
-    u_sol.printMedFile(f"/home/C00976/tmp/u_hho_{form}.med")
-    h1_field.printMedFile(f"/home/C00976/tmp/h1_{form}.med")
-    f_elga.printMedFile(f"/home/C00976/tmp/f_elga_{form}.med")
-
-
 test.printSummary()
 
 FIN()
