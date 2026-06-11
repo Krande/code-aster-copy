@@ -99,14 +99,13 @@ module HHO_basis_module
     end type
 ! --------------------------------------------------------------------------------------------------
 ! --------------------------------------------------------------------------------------------------
-    public  :: HHO_basis_cell, HHO_basis_face
+    public  :: HHO_basis_cell, HHO_basis_face, hhoGetMaxDegree
     private :: hhoBasisCellInit, hhoBasisFaceInit, hhoBSCellSize, hhoBSFaceSize
     private :: hhoBVCellSize, hhoBVFaceSize, hhoBMCellSize
     private :: hhoBSCellRange, hhoBVCellRange, hhoBMCellRange, hhoBSFaceRange, hhoBVFaceRange
     private :: hhoBSCellEval, hhoBSFaceEval, hhoBSCellGradEv, hhoBVCellSymGdEv, check_order
     private :: map_pt_cell, map_pt_face, orthonormalization
     private :: hhoBasisCellType, hhoBasisFaceType
-    private :: getMaxDegree
 !
 contains
 !
@@ -149,7 +148,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine getMaxDegree(cell_degree, face_degree)
+    subroutine hhoGetMaxDegree(cell_degree, face_degree)
 !
         implicit none
         integer(kind=8), optional, intent(out) :: cell_degree, face_degree
@@ -253,7 +252,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisIner
         type(HHO_Quadrature) :: hhoQuad
 !
-        call getMaxDegree(max_deg_cell, max_deg_face)
+        call hhoGetMaxDegree(max_deg_cell, max_deg_face)
 !
         call this%hhoMono%initialize(hhoCell%ndim, max_deg_cell)
 !
@@ -357,7 +356,7 @@ contains
         type(HHO_basis_face) :: hhoBasisIner
         type(HHO_Quadrature) :: hhoQuad
 !
-        call getMaxDegree(max_deg_cell, max_deg_face)
+        call hhoGetMaxDegree(max_deg_cell, max_deg_face)
 !
         call this%hhoMono%initialize(hhoFace%ndim, max_deg_face)
 !
@@ -383,6 +382,7 @@ contains
         end do
 !
         if (this%type == BASIS_ORTHO .and. hhoFace%l_axis_on_axe) then
+            ! Use inertial basis since orthonormal are zero (r=0)
             this%type = BASIS_INERTIAL
         end if
 !
