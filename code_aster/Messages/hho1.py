@@ -41,6 +41,12 @@ Vous voulez une quadrature d'ordre %(i1)d ce qui inférieur au minimum autorisé
 Échec de la factorisation LU: la matrice n'est pas factorisable
 """
     ),
+    6: _(
+        """
+Échec de la factorisation de Cholesky: la matrice n'est pas symétrique définie positive.
+Cela vient du fait qu'en modélisation AXIS la matrice de masse est nulle sur l'axe.
+"""
+    ),
     10: _(
         """
 Bases HHO:

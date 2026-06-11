@@ -417,6 +417,12 @@ contains
         hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes_post)
         hhoFace%l_jaco_cst = hhoIsJacobCst(hhoFace%typema, hhoFace%coorno, hhoFace%ndim+1)
 !
+        if (ndim == 1) then
+            if (lteatt("TYPMOD", "AXIS")) then
+                hhoFace%l_axis_on_axe = (hhoFace%barycenter(1) < 1.d-12)
+            end if
+        end if
+!
     end subroutine
 !
 !===================================================================================================

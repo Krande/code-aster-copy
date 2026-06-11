@@ -31,6 +31,7 @@ module HHO_massmat_module
 #include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/lteatt.h"
 #include "blas/dsyr.h"
 #include "MeshTypes_type.h"
 !
@@ -75,7 +76,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMassMatCellScal(this, hhoCell, min_order, max_order)
+    subroutine hhoMassMatCellScal(this, hhoCell, min_order, max_order, hhoQuad_)
 !
         implicit none
 !
@@ -83,6 +84,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         integer(kind=8), intent(in) :: min_order
         integer(kind=8), intent(in) :: max_order
+        type(HHO_quadrature), intent(in), optional :: hhoQuad_
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -126,7 +128,12 @@ contains
         else
 !
 ! ----- get quadrature
-            call hhoQuad%GetQuadCell(hhoCell, 2*max_order)
+            if (present(hhoQuad_)) then
+                hhoQuad = hhoQuad_
+                ASSERT(2*max_order <= hhoQuad%order)
+            else
+                call hhoQuad%GetQuadCell(hhoCell, 2*max_order)
+            end if
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
@@ -160,7 +167,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMassMatFaceScal(this, hhoFace, min_order, max_order)
+    subroutine hhoMassMatFaceScal(this, hhoFace, min_order, max_order, hhoQuad_, weighted_)
 !
         implicit none
 !
@@ -168,6 +175,8 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         integer(kind=8), intent(in) :: min_order
         integer(kind=8), intent(in) :: max_order
+        type(HHO_quadrature), intent(in), optional :: hhoQuad_
+        aster_logical, intent(in), optional :: weighted_
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -183,7 +192,7 @@ contains
         type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer(kind=8) :: dimMat, ipg, i
-        aster_logical :: dbg
+        aster_logical :: dbg, weighted, axis
         blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
 !
@@ -204,7 +213,14 @@ contains
         dbg = ASTER_FALSE
 #endif
 !
-        if (hhoBasisFace%isOrthonormal() .and. .not. dbg) then
+        axis = lteatt("TYPMOD", "AXIS")
+        weighted = axis
+        if (present(weighted_) .and. axis) then
+            weighted = weighted_
+        end if
+!
+        if (hhoBasisFace%isOrthonormal() .and. .not. dbg &
+            .and. (axis .eqv. weighted)) then
             do i = 1, dimMat
                 this%m(i, i) = 1.d0
             end do
@@ -212,7 +228,12 @@ contains
         else
 !
 ! ----- get quadrature
-            call hhoQuad%GetQuadFace(hhoFace, 2*max_order)
+            if (present(hhoQuad_)) then
+                hhoQuad = hhoQuad_
+                ASSERT(2*max_order <= hhoQuad%order)
+            else
+                call hhoQuad%GetQuadFace(hhoFace, 2*max_order, axis=axis .and. weighted)
+            end if
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
@@ -232,7 +253,7 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisFace%isOrthonormal() .and. dbg) then
-                if (hhoFace%measure .ge. 1.d-7) then
+                if (hhoFace%measure .ge. 1.d-7 .and. .not. hhoFace%l_axis_on_axe) then
                     ASSERT(hhoIsIdentityMat(this%m, dimMat))
                 end if
             end if

@@ -32,6 +32,7 @@ module HHO_L2proj_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/dposv.h"
@@ -77,6 +78,7 @@ contains
 !
         type(HHO_massmat_face) :: faceMass
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
+        type(HHO_Quadrature) :: hhoQuadC
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -86,7 +88,7 @@ contains
 !
 ! ----- Compute face mass matrix
 !
-        call faceMass%compute(hhoFace, 0, degree)
+        call faceMass%compute(hhoFace, 0, degree, hhoQuad)
 !
 ! ---- Compute rhs
 !
@@ -106,7 +108,19 @@ contains
 ! ---- Sucess ?
 !
             if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (hhoFace%l_axis_on_axe) then
+                    ! use classic stabilization without r inside integral
+                    call hhoQuadC%getQuadFace(hhoFace, hhoQuad%order, axis=ASTER_FALSE)
+                    call faceMass%compute(hhoFace, 0, degree, hhoQuadC, ASTER_TRUE)
+                    call hhoMakeRhsFaceScal(hhoFace, hhoQuadC, FuncValuesQP, degree, coeff_L2Proj)
+                    call dposv('U', b_n, b_nrhs, faceMass%m, b_lda, &
+                               coeff_L2Proj, b_ldb, info)
+                    if (info .ne. 0) then
+                        call utmess('F', 'HHO1_6')
+                    end if
+                else
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
         end if
 !
@@ -139,6 +153,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_face) :: faceMass
+        type(HHO_Quadrature) :: hhoQuadC
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
 !
 ! --------------------------------------------------------------------------------------------------
@@ -150,7 +165,7 @@ contains
 !
 ! ----- Compute face mass matrix
 !
-        call faceMass%compute(hhoFace, 0, degree)
+        call faceMass%compute(hhoFace, 0, degree, hhoQuad)
 !
 ! ---- Compute rhs
 !
@@ -171,7 +186,19 @@ contains
 ! ---- Sucess ?
 !
             if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (hhoFace%l_axis_on_axe) then
+                    ! use classic stabilization without r inside integral
+                    call hhoQuadC%getQuadFace(hhoFace, hhoQuad%order, axis=ASTER_FALSE)
+                    call faceMass%compute(hhoFace, 0, degree, hhoQuadC, ASTER_TRUE)
+                    call hhoMakeRhsFaceVec(hhoFace, hhoQuadC, FuncValuesQP, degree, coeff_L2Proj)
+                    call dposv('U', b_n, b_nrhs, faceMass%m, b_lda, &
+                               coeff_L2Proj, b_ldb, info)
+                    if (info .ne. 0) then
+                        call utmess('F', 'HHO1_6')
+                    end if
+                else
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
         end if
 !
@@ -214,7 +241,7 @@ contains
 !
 ! ----- Compute Cell mass matrix
 !
-        call cellMass%compute(hhoCell, 0, degree)
+        call cellMass%compute(hhoCell, 0, degree, hhoQuad)
 !
 ! ---- Compute rhs
 !
@@ -273,7 +300,7 @@ contains
 !
 ! ----- Compute cell mass matrix
 !
-        call cellMass%compute(hhoCell, 0, degree)
+        call cellMass%compute(hhoCell, 0, degree, hhoQuad)
 !
 ! ---- Compute rhs
 !
@@ -435,7 +462,8 @@ contains
         real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
         aster_logical :: with_faces
-        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
 ! --------------------------------------------------------------------------------------------------
 !
         ASSERT(hhoCell%l_face_init)
@@ -446,7 +474,7 @@ contains
         with_faces = ASTER_TRUE
         if (present(all)) with_faces = all
 !
-! --- Type of function dor a face
+! --- Type of function for a face
 !
         if (hhoCell%ndim == 3) then
             nbpara = 4
@@ -468,6 +496,7 @@ contains
 !
         ind = 1
         do iFace = 1, hhoCell%nbfaces
+            rhs_face = 0.d0
             if (with_faces) then
                 hhoFace = hhoCell%faces(iFace)
 !
@@ -488,9 +517,7 @@ contains
                                       hhoData%face_degree(), rhs_face)
             end if
             b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, coeff_L2Proj(ind), b_incy)
+            call dcopy(b_n, rhs_face, b_one, coeff_L2Proj(ind), b_one)
             ind = ind+fbs
         end do
 !
@@ -508,9 +535,7 @@ contains
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
         b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, coeff_L2Proj(ind), b_incy)
+        call dcopy(b_n, rhs_cell, b_one, coeff_L2Proj(ind), b_one)
 !
 !
     end subroutine

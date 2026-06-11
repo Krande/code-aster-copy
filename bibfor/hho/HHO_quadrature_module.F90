@@ -704,8 +704,8 @@ contains
             adapt_ = adapt
         end if
 !
-        axis_ = ASTER_FALSE
-        if (present(adapt)) then
+        axis_ = lteatt("TYPMOD", "AXIS")
+        if (axis_ .and. present(axis)) then
             axis_ = axis
         end if
 !
@@ -724,7 +724,7 @@ contains
         end if
 !
         if (split_simpl) then
-            !
+!
             if (present(param)) then
                 param_ = param
             else
@@ -803,8 +803,8 @@ contains
             adapt_ = adapt
         end if
 !
-        axis_ = ASTER_FALSE
-        if (present(adapt)) then
+        axis_ = lteatt("TYPMOD", "AXIS")
+        if (axis_ .and. present(axis)) then
             axis_ = axis
         end if
 !
@@ -823,7 +823,7 @@ contains
         end if
 !
         if (split_simpl) then
-            !
+!
             if (present(param)) then
                 param_ = param
             else

@@ -34,6 +34,7 @@ module HHO_stabilization_module
 #include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "blas/dgemm.h"
 #include "blas/dposv.h"
@@ -191,7 +192,12 @@ contains
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
-                    call utmess('F', 'HHO1_4')
+                    if (hhoFace%l_axis_on_axe) then
+                        ! No stabilization for face on AXIS axe
+                        cycle
+                    else
+                        call utmess('F', 'HHO1_4')
+                    end if
                 end if
             end if
 !
@@ -519,7 +525,12 @@ contains
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
-                    call utmess('F', 'HHO1_4')
+                    if (hhoFace%l_axis_on_axe) then
+                        ! No stabilization for face on AXIS axe
+                        cycle
+                    else
+                        call utmess('F', 'HHO1_4')
+                    end if
                 end if
             end if
 !
@@ -724,7 +735,12 @@ contains
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
-                    call utmess('F', 'HHO1_4')
+                    if (hhoFace%l_axis_on_axe) then
+                        ! No stabilization for face on AXIS axe
+                        cycle
+                    else
+                        call utmess('F', 'HHO1_4')
+                    end if
                 end if
 !
 ! ---- Solve piKF = invM^-1 * piKF

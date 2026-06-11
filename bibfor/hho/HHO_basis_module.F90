@@ -338,7 +338,7 @@ contains
 !
         type(HHO_Face), intent(in)               :: hhoFace
         class(HHO_basis_face), intent(out)       :: this
-        integer(kind=8), optional, intent(in)            :: type
+        integer(kind=8), optional, intent(in)    :: type
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -381,6 +381,10 @@ contains
                 this%rotmat(idim, j) = axes(j, idim)*this%scaling_factor(idim)
             end do
         end do
+!
+        if (this%type == BASIS_ORTHO .and. hhoFace%l_axis_on_axe) then
+            this%type = BASIS_INERTIAL
+        end if
 !
         if (this%type == BASIS_ORTHO) then
 !
@@ -467,9 +471,9 @@ contains
         implicit none
 !
         class(HHO_basis_face), intent(in)       :: this
-        integer(kind=8), intent(in)                     :: min_order
-        integer(kind=8), intent(in)                     :: max_order
-        integer(kind=8)                                 :: size_basis
+        integer(kind=8), intent(in)             :: min_order
+        integer(kind=8), intent(in)             :: max_order
+        integer(kind=8)                         :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -497,10 +501,10 @@ contains
         implicit none
 !
         class(HHO_basis_cell), intent(in)       :: this
-        integer(kind=8), intent(in)                     :: min_order
-        integer(kind=8), intent(in)                     :: max_order
-        integer(kind=8), intent(out)                    :: ifrom
-        integer(kind=8), intent(out)                    :: ito
+        integer(kind=8), intent(in)             :: min_order
+        integer(kind=8), intent(in)             :: max_order
+        integer(kind=8), intent(out)            :: ifrom
+        integer(kind=8), intent(out)            :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
