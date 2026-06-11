@@ -49,6 +49,7 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[3]",)), ("EN2", ()), ("EN3", ("X[21]"))),
 )
 
+PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[5]",))
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
@@ -194,6 +195,16 @@ class THERAXQ9_HHO111(Element):
                 (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
+        ),
+        OP.HHO_CINE_F_THER(
+            te=492,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PINSTPR, LC.MTEMPSR),
+                (OP.HHO_CINE_F_THER.PFONC, PFONC),
+                (OP.HHO_CINE_F_THER.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_CINE_F_THER.PCINE, DDL_THER),),
         ),
         OP.HHO_CINE_R_THER(
             te=492,
@@ -361,6 +372,6 @@ class THERAXT7_HHO111(THERAXQ9_HHO111):
     nodes = (SetOfNodes("EN1", (4, 5, 6)), SetOfNodes("EN2", (1, 2, 3)), SetOfNodes("EN3", (7,)))
     elrefe = (
         ElrefeLoc(
-            MT.TR7, gauss=("RIGI=FPG3", "FPG1=FPG1", "MASS=FPG3"), mater=("RIGI", "FPG1", "MASS")
+            MT.TR7, gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG4"), mater=("RIGI", "FPG1", "MASS")
         ),
     )
