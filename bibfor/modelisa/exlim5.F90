@@ -135,18 +135,20 @@ subroutine exlim5(motfaz, motcleZ, toutZ, nomsd, modelz, ligrel)
 !
 ! --- CREATION DU LIGREL
 !     ---------------------------------
-    call getres(k16b, k16b, oper)
-    if (oper .ne. 'IMPR_RESU') then
-        noojb = nomsd//'.LIGR000000.LIEL'
-        call gnomsd(' ', noojb, 14, 19)
-    else
-        ASSERT(.false.)
+    if (nbmatot .ne. 0) then
+        call getres(k16b, k16b, oper)
+        if (oper .ne. 'IMPR_RESU') then
+            noojb = nomsd//'.LIGR000000.LIEL'
+            call gnomsd(' ', noojb, 14, 19)
+        else
+            ASSERT(.false.)
+        end if
+        ligrel = noojb(1:19)
+        ASSERT(ligrel(1:8) .ne. ' ')
+        call jeveuo(lismaiT, 'L', jma)
+        call exlim1(zi(jma), nbma, modele, base, ligrel)
+        call jedetr(lismaiT)
     end if
-    ligrel = noojb(1:19)
-    ASSERT(ligrel(1:8) .ne. ' ')
-    call jeveuo(lismaiT, 'L', jma)
-    call exlim1(zi(jma), nbma, modele, base, ligrel)
-    call jedetr(lismaiT)
     goto 999
 !
 !
