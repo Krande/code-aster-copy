@@ -20,11 +20,11 @@
 module HHO_basis_module
 !
     use HHO_geometry_module
+    use HHO_matrix_module
     use HHO_measure_module
     use HHO_monogen_module
     use HHO_quadrature_module
     use HHO_type
-    use HHO_matrix_module
     use compensated_ops_module, only: sum, dot_product, matmul, addFMA
 !
     implicit none
@@ -36,6 +36,7 @@ module HHO_basis_module
 #include "asterfort/HHO_basis_module.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/readVector.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
@@ -84,7 +85,7 @@ module HHO_basis_module
         real(kind=8) :: scaling_factor(2) = 0.d0
         real(kind=8) :: rotmat(2, 3) = 0.d0
         real(kind=8) :: coeff_mono(MAX_FACE_COEF) = 0.d0
-        integer(kind=8)      :: coeff_shift(MSIZE_FACE_SCAL+1) = 0
+        integer(kind=8) :: coeff_shift(MSIZE_FACE_SCAL+1) = 0
 ! ----- member function
     contains
         procedure, pass :: initialize => hhoBasisFaceInit
@@ -403,7 +404,7 @@ contains
 ! ------------ If you have this error - add the basis field as an input of your option
                 call jevech('PCHHOBO', 'E', iret)
 !
-                if (this%ndim > 1) then
+                if (this%ndim > 1 .or. lteatt("TYPMOD", "AXIS")) then
 !
                     call hhoQuad%getQuadFace(hhoFace, 2*max_deg_face)
                     call basisOrthoIpg%initialize(MSIZE_FACE_SCAL, hhoQuad%nbQuadPoints, 0.d0)
@@ -1336,7 +1337,7 @@ contains
 !
         ASSERT(nb_basis <= MSIZE_CELL_SCAL)
 !
-        if (ndim == 1) then
+        if (ndim == 1 .and. .not. lteatt("TYPMOD", "AXIS")) then
             ! Coeffficient of Legendre basis
             coeff_shift(1:8) = [1, 2, 4, 7, 11, 16, 22, 29]
             coeff_mono(1:28) = &
