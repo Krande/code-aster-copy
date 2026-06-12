@@ -63,6 +63,7 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc0034.h"
 #include "asterfort/lc0035.h"
 #include "asterfort/lc0036.h"
+#include "asterfort/lc0038.h"
 #include "asterfort/lc0040.h"
 #include "asterfort/lc0042.h"
 #include "asterfort/lc0050.h"
@@ -93,7 +94,14 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc2002.h"
 #include "asterfort/lc2036.h"
 #include "asterfort/lc4047.h"
+#include "asterfort/lc5001.h"
+#include "asterfort/lc5002.h"
+#include "asterfort/lc5003.h"
+#include "asterfort/lc5024.h"
+#include "asterfort/lc5038.h"
 #include "asterfort/lc5076.h"
+#include "asterfort/lc5090.h"
+#include "asterfort/lc5091.h"
 #include "asterfort/lc5152.h"
 #include "asterfort/lc6036.h"
 #include "asterfort/lc6046.h"
@@ -493,6 +501,10 @@ subroutine lc0000(BEHInteg, &
                     typmod, ndsde, &
                     dsidep, codret)
 
+    case (38)
+!     SANS
+        call lc0038(BEHInteg, neps, nsig, nvi, option, sigp, vip, ndsde, dsidep, codret)
+
     case (40)
 !       DRUCKER_PRAGER_NA
         call lc0040(fami, kpg, ksp, ndim, jvMaterCode, &
@@ -755,8 +767,60 @@ subroutine lc0000(BEHInteg, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
+    case (5001)
+        call lc5001(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5002)
+        call lc5002(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5003)
+        call lc5003(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5024)
+        call lc5024(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5038)
+!     SANS
+        call lc5038(BEHInteg, neps, nsig, nvi, option, sigp, vip, ndsde, dsidep, codret)
+
     case (5076)
         call lc5076(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5090)
+        call lc5090(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5091)
+        call lc5091(BEHInteg, &
                     fami, kpg, ksp, ndim, jvMaterCode, &
                     compor, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, &

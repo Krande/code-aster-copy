@@ -17,12 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine teattr(kstop, noattr, vattr, iret_, typel, vattr_missing)
-        character(len=1), intent(in) :: kstop
-        character(len=*), intent(in) :: noattr
-        character(len=*), intent(out):: vattr
-        integer(kind=8), optional, intent(out) :: iret_
-        character(len=*), intent(in), optional :: typel
-        character(len=*), intent(in), optional:: vattr_missing
-    end subroutine teattr
+    subroutine lcasym(materPara, option, sigm, vim, deps, sigp, vip, dsde)
+    use MaterialPara_type
+        type(Material_Para), intent(in) :: materPara
+        character(len=*), intent(in) :: option
+        real(kind=8), intent(in):: sigm, vim(:), deps
+        real(kind=8), intent(out) :: sigp, vip(:), dsde
+    end subroutine lcasym
 end interface

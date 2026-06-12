@@ -830,6 +830,7 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
     calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
     calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVARIPR", std::make_shared< ElementaryTermReal >() );
 
     // Compute
     if ( currModel->existsFiniteElement() ) {

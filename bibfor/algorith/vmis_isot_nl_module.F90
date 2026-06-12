@@ -46,7 +46,7 @@ module vmis_isot_nl_module
     ! Material characteristics
 
     type MATERIAL
-        real(kind=8) :: lambda, deuxmu, troismu, troisk, young
+        real(kind=8) :: lambda, deuxmu, troismu, troisk
         real(kind=8) :: r0, rh, r1, g1, r2, g2, rk, p0, gk
         real(kind=8) :: eps_luders, sig_luders
         real(kind=8) :: c = 0.d0
@@ -136,9 +136,8 @@ contains
                     iok, 2)
         self%mat%lambda = valel(1)*valel(2)/((1+valel(2))*(1-2*valel(2)))
         self%mat%deuxmu = valel(1)/(1+valel(2))
-        self%mat%troismu = 1.5d0*self%mat%deuxmu
         self%mat%troisk = valel(1)/(1.d0-2.d0*valel(2))
-        self%mat%young = valel(1)
+        self%mat%troismu = merge(valel(1), 1.5d0*self%mat%deuxmu, self%uniax)
 
         ! Hardening material parameters (with default values)
         call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_NL', 0, ' ', [0.d0], nbec, nomec, &
@@ -300,7 +299,7 @@ contains
                                        dphi_sig, deps_vi, dphi_vi)
             else if (self%uniax) then
                 call ComputePlasticity1D(self, eps(1), kam, epm(1), state, ka, ep(1), sig(1), &
-                                       deps_sig(1,1))
+                                         deps_sig(1, 1))
             else
                 call ComputePlasticity(self, eps, kam, epm, state, ka, ep, sig, deps_sig, &
                                        vdum1, vdum2, rdum)
@@ -325,11 +324,11 @@ contains
         if (self%vari) then
             vip(1) = ka
             vip(2) = state
-            vip(7:8) = 0
+            vip(3:8) = 0
             vip(3:2+self%ndimsi) = ep/rac2
 
             ! Complément des composantes plastiques par incompressibilité
-            if (self%uniax) vip(4:5) = vip(3)/2
+            if (self%uniax) vip(4:5) = -vip(3)/2
         end if
 
 999     continue
@@ -593,7 +592,7 @@ contains
 ! =====================================================================
 
     subroutine ComputePlasticity1D(self, eps, kam, epm, state, ka, ep, &
-                                 t, deps_t)
+                                   t, deps_t)
 
         implicit none
 
@@ -616,13 +615,13 @@ contains
         real(kind=8)    :: presig
         real(kind=8)    :: mve, dkas, rks, rvs, mvs, dka
         real(kind=8)    :: tel, telq, dep
-        real(kind=8)    :: equ, dka_equ, dv_equ, rk, rv, res, rvx, mh
+        real(kind=8)    :: equ, dka_equ, dv_equ, rv, res, rvx, mh
         real(kind=8)    :: deps_telq, dtelq_ka, deps_ka, dka_mv
         type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
 
 !   Contrainte elastique
-        tel = self%mat%young*(eps-epm)
+        tel = self%mat%troismu*(eps-epm)
         telq = abs(tel)
 
 !   Copie des informations dans self pour utilisation des fonctions du module
@@ -637,7 +636,7 @@ contains
         mvs = -(rks+rvs)
 
         ! Pas de grad_vari en 1D
-        ASSERT(mvs.le.0)
+        ASSERT(mvs .le. 0)
 
 !   Seuil de convergence absolu
         presig = self%mat%sig_luders*self%cvuser
@@ -706,12 +705,12 @@ contains
         end if
 
         state = 1
-        dep = dka*sign(1.d0,tel)
+        dep = dka*sign(1.d0, tel)
 
 800     continue
         ka = kam+dka
         ep = epm+dep
-        t = tel-self%mat%young*dep
+        t = tel-self%mat%troismu*dep
 
 ! ======================================================================
 !                           MATRICES TANGENTES
@@ -733,12 +732,12 @@ contains
 
         ! Regime elastique
         if (state .eq. 0 .or. self%elas) then
-            deps_t = self%mat%young
+            deps_t = self%mat%troismu
 
-        ! Regime plastique
+            ! Regime plastique
         else
             ! Quantites liees a la contrainte elastique
-            deps_telq = self%mat%young*sign(1.d0,tel)
+            deps_telq = self%mat%troismu*sign(1.d0, tel)
 
             ! Variations de kappa
             dka_mv = dka_m_hat(self, kam+dka)-dka_visco(self, dka)
@@ -746,7 +745,7 @@ contains
             deps_ka = dtelq_ka*deps_telq
 
             ! Operateurs tangents
-            deps_t = self%mat%young*(1.d0-sign(1.d0,tel*deps_ka))
+            deps_t = self%mat%troismu*(1.d0-sign(1.d0, tel*deps_ka))
         end if
 
 999     continue

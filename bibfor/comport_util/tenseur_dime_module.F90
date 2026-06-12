@@ -114,7 +114,7 @@ contains
         real(kind=8), dimension(:), intent(in) :: u
         real(kind=8), dimension(size(u))      :: w
 ! ---------------------------------------------------------------------
-        ASSERT(size(u).ge.3)
+        ASSERT(size(u) .ge. 3)
         w = u-sum(u(1:3))*kron(size(u))/3.d0
 
     end function deviator
@@ -128,7 +128,7 @@ contains
         real(kind=8), dimension(:), intent(in) :: u
         real(kind=8)                         :: y
 ! ---------------------------------------------------------------------
-        ASSERT(size(u).ge.3)
+        ASSERT(size(u) .ge. 3)
         y = sum(u(1:3))/RAC3
 
     end function sph_norm

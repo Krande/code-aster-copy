@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-#  Test de la loi VMIS_ISOT_NL en 1D
+#  Test des éléments de barre 2D sur maille quadratique SEG2
 # --------------------------------------------------------------------------------------------------
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
@@ -26,23 +26,22 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 msh = LIRE_MAILLAGE(FORMAT="MED")
 
 mdl = AFFE_MODELE(
-    MAILLAGE=msh, AFFE=_F(GROUP_MA="line", PHENOMENE="MECANIQUE", MODELISATION="BARRE_3D_NL")
+    MAILLAGE=msh, AFFE=_F(GROUP_MA="line", PHENOMENE="MECANIQUE", MODELISATION="BARRE_2D_NL")
 )
 
 cara = (AFFE_CARA_ELEM(MODELE=mdl, BARRE=_F(GROUP_MA="line", SECTION="GENERALE", AIRE=5.0)),)
 
 
-steel = DEFI_MATERIAU(ELAS=_F(E=2.0e5, NU=0.3), ECRO_NL=_F(R0=400, RH=2.0e3))
+steel = DEFI_MATERIAU(ELAS=_F(E=2.0e5, NU=0.3))
 
 
 mat = AFFE_MATERIAU(MAILLAGE=msh, AFFE=_F(GROUP_MA="line", MATER=steel))
 
-eps = 52.5e-3
+eps = 5e-3
 ux = FORMULE(NOM_PARA="X", VALE="(X-2)*eps", eps=eps)
 uy = FORMULE(NOM_PARA="Y", VALE="(Y-1)*eps", eps=eps)
-zero = DEFI_CONSTANTE(VALE=0)
 
-load = AFFE_CHAR_MECA_F(MODELE=mdl, DDL_IMPO=_F(GROUP_MA="line", DX=ux, DY=uy, DZ=zero))
+load = AFFE_CHAR_MECA_F(MODELE=mdl, DDL_IMPO=_F(GROUP_MA="line", DX=ux, DY=uy))
 
 
 ampl = DEFI_FONCTION(
@@ -61,7 +60,7 @@ resu = MECA_NON_LINE(
     CHAM_MATER=mat,
     CARA_ELEM=cara,
     EXCIT=_F(CHARGE=load, FONC_MULT=ampl),
-    COMPORTEMENT=_F(GROUP_MA="line", RELATION="VMIS_ISOT_NL", DEFORMATION="PETIT"),
+    COMPORTEMENT=_F(GROUP_MA="line", RELATION="ELAS", DEFORMATION="PETIT"),
     INCREMENT=_F(LIST_INST=disc),
     NEWTON=_F(PREDICTION="TANGENTE", MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(EFFORT_REFE=5e3, RESI_REFE_RELA=1.0e-3),
@@ -82,8 +81,8 @@ TEST_RESU(
             CRITERE="ABSOLU",
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-6,
-            VALE_CALC=2500,
-            VALE_REFE=2500,
+            VALE_CALC=5000,
+            VALE_REFE=5000,
         ),
     )
 )

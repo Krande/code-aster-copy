@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine teattr(kstop, noattr, vattr, iret_, typel, vattr_missing)
-        character(len=1), intent(in) :: kstop
-        character(len=*), intent(in) :: noattr
-        character(len=*), intent(out):: vattr
-        integer(kind=8), optional, intent(out) :: iret_
-        character(len=*), intent(in), optional :: typel
-        character(len=*), intent(in), optional:: vattr_missing
-    end subroutine teattr
+    subroutine ngmatr(nddl, neps, npg, w, b, dsidep, matsym, matuu, matns)
+#include "asterf_types.h"
+        integer(kind=8),intent(in) :: nddl, neps, npg
+        real(kind=8), intent(in) :: w(neps, npg), b(neps, npg, nddl)
+        real(kind=8), intent(inout):: dsidep(neps,neps,npg)
+        aster_logical, intent(in):: matsym
+        real(kind=8), intent(out), optional:: matuu((nddl*(nddl+1))/2)
+        real(kind=8), intent(out), target, optional :: matns(nddl, nddl)
+    end subroutine ngmatr
 end interface

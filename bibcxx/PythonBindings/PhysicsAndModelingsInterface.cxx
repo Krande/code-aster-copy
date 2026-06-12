@@ -39,6 +39,7 @@ Enumeration physics.
 Enumeration of modelings.
     )" )
         .value( "PlanarBar", PlanarBar )
+        .value( "BARRE_2D_NL", BARRE_2D_NL )
         .value( "DIS_T_2D", DIS_T_2D )
         .value( "DIS_TR_2D", DIS_TR_2D )
         .value( "FLUIDE_2D", FLUIDE_2D )
@@ -143,6 +144,7 @@ Enumeration of modelings.
         .value( "AXIS_THVD", AXIS_THVD )
         .value( "AXIS_THVS", AXIS_THVS )
         .value( "BARRE", BARRE )
+        .value( "BARRE_3D_NL", BARRE_3D_NL )
         .value( "CABLE", CABLE )
         .value( "CABLE_GAINE", CABLE_GAINE )
         .value( "CABLE_POULIE", CABLE_POULIE )

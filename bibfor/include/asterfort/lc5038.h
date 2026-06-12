@@ -15,14 +15,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=C1505
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine teattr(kstop, noattr, vattr, iret_, typel, vattr_missing)
-        character(len=1), intent(in) :: kstop
-        character(len=*), intent(in) :: noattr
-        character(len=*), intent(out):: vattr
-        integer(kind=8), optional, intent(out) :: iret_
-        character(len=*), intent(in), optional :: typel
-        character(len=*), intent(in), optional:: vattr_missing
-    end subroutine teattr
+    subroutine lc5038(BEHInteg, neps, nsig, nvi, option, sigp, vip, ndsde, dsidep, codret)
+        use Behaviour_type
+        implicit none
+
+        type(Behaviour_Integ) :: BEHinteg
+        character(len=16), intent(in) :: option
+        integer(kind=8), intent(in) :: neps, nsig
+        integer(kind=8), intent(in) :: nvi
+        real(kind=8)                 :: sigp(nsig)
+        real(kind=8)                 :: vip(nvi)
+        integer(kind=8), intent(in) :: ndsde
+        real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                            merge(neps, 6, nsig*neps .eq. ndsde))
+        integer(kind=8), intent(out):: codret
+
+    end subroutine
 end interface

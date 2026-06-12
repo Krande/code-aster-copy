@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
 !
 interface
-    subroutine teattr(kstop, noattr, vattr, iret_, typel, vattr_missing)
-        character(len=1), intent(in) :: kstop
-        character(len=*), intent(in) :: noattr
-        character(len=*), intent(out):: vattr
-        integer(kind=8), optional, intent(out) :: iret_
-        character(len=*), intent(in), optional :: typel
-        character(len=*), intent(in), optional:: vattr_missing
-    end subroutine teattr
+    subroutine dfdm1d_xd(dxi_ff, w_ref, geom, ds_ff, w)
+        real(kind=8), intent(in) :: dxi_ff(:)
+        real(kind=8), intent(in) :: w_ref
+        real(kind=8), intent(in) :: geom(:,:)
+        real(kind=8), intent(out):: ds_ff(:)
+        real(kind=8), intent(out):: w
+    end subroutine dfdm1d_xd
 end interface

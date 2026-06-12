@@ -1,4 +1,4 @@
-! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------
 ! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
@@ -14,32 +14,42 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
-! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------
+! aslint: disable=C1505
 
-subroutine te0559(option, nomte)
+subroutine lc0038(BEHInteg, neps, nsig, nvi, option, sigp, vip, ndsde, dsidep, codret)
+    use Behaviour_type
     implicit none
+
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/terefe.h"
-#include "asterfort/tecach.h"
-    character(len=16) :: option, nomte
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 ! --------------------------------------------------------------------------------------------------
-! REALISE LES OPTIONS :
-!     REFE_FORC_NODA pour les éléments de BARRE
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=16), intent(in) :: option
+    integer(kind=8), intent(in) :: neps, nsig
+    integer(kind=8), intent(in) :: nvi
+    real(kind=8)                 :: sigp(nsig)
+    real(kind=8)                 :: vip(nvi)
+    integer(kind=8), intent(in) :: ndsde
+    real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                           merge(neps, 6, nsig*neps .eq. ndsde))
+    integer(kind=8), intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
-! IN OPTION    : K16 :  OPTION DE CALCUL
-! IN NOMTE     : K16 : NOM DU TYPE ELEMENT
+!   RELATION SANS
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8) :: iret, itab(2), jv_vectur, nddl
-    real(kind=8):: forref
+    aster_logical :: lMatr, lSigm, lVari
+    integer(kind=8) :: ndimsi
 ! --------------------------------------------------------------------------------------------------
+    ndimsi = BEHInteg%behavPara%ndimsi
 
-    call terefe('EFFORT_REFE', 'MECA_BARRE', forref)
-    call tecach('OOO', 'PVECTUR', 'E', iret, nval=2, itab=itab)
-    jv_vectur = itab(1)
-    nddl = itab(2)
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
 
-    ! pour éviter d'avoir zéro dans les directions perpendiculaires à la barre
-    zr(jv_vectur:jv_vectur-1+nddl) = forref
+    codret = 0
+    if (lSigm) sigp(1:ndimsi) = 0
+    if (lVari) vip(1:nvi) = 0
+    if (lMatr) dsidep(1:ndimsi, 1:ndimsi) = 0
 
 end subroutine

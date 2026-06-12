@@ -2790,6 +2790,38 @@ phen.add(
 )
 
 phen.add(
+    "BARRE_2D_NL",
+    Modelisation(
+        dim=(1, 2),
+        code="B2D",
+        attrs=(
+            (AT.POUTRE, "OUI"),
+            (AT.TYPMOD, "1D"),
+            (AT.EFGE, "OUI"),
+            (AT.SIGM, "NON"),
+            (AT.STRX, "NON"),
+        ),
+        elements=((MT.SEG2, EL.MEBA2DSE2), (MT.SEG3, EL.MEBA2DSE3)),
+    ),
+)
+
+phen.add(
+    "BARRE_3D_NL",
+    Modelisation(
+        dim=(1, 3),
+        code="B3D",
+        attrs=(
+            (AT.POUTRE, "OUI"),
+            (AT.TYPMOD, "1D"),
+            (AT.EFGE, "OUI"),
+            (AT.SIGM, "NON"),
+            (AT.STRX, "NON"),
+        ),
+        elements=((MT.SEG2, EL.MEBA3DSE2), (MT.SEG3, EL.MEBA3DSE3)),
+    ),
+)
+
+phen.add(
     "CABLE",
     Modelisation(
         dim=(1, 3),

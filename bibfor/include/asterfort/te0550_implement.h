@@ -17,12 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine teattr(kstop, noattr, vattr, iret_, typel, vattr_missing)
-        character(len=1), intent(in) :: kstop
-        character(len=*), intent(in) :: noattr
-        character(len=*), intent(out):: vattr
-        integer(kind=8), optional, intent(out) :: iret_
-        character(len=*), intent(in), optional :: typel
-        character(len=*), intent(in), optional:: vattr_missing
-    end subroutine teattr
+    subroutine te0550_implement(option, fami, nno, npg, ndim_sp, &
+        wref, vff, dxi_ff, aire, geom, pesa, &
+        mate, fext)
+
+    character(len=*) :: option
+    character(len=8) :: fami
+    integer(kind=8), intent(in):: nno, npg, ndim_sp, mate
+    real(kind=8), intent(in):: geom(ndim_sp, nno), wref(npg), vff(nno,npg), dxi_ff(nno,npg)
+    real(kind=8), intent(in):: aire, pesa(0:ndim_sp)
+    real(kind=8), intent(out):: fext(ndim_sp, nno)
+
+    end subroutine te0550_implement
 end interface
