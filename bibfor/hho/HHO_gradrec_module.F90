@@ -128,6 +128,10 @@ contains
             fromFace = toFace+1
             toFace = fromFace+fbs-1
 !
+            if (hhoFace%l_axis_on_axe) then
+                cycle
+            end if
+!
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
             call hhoQuad%GetQuadFace(hhoface, &
@@ -356,6 +360,10 @@ contains
             toFace = fromFace+fbs-1
             b_lda = to_blas_int(dimMassMat)
             b_m = to_blas_int(dimMassMat)
+!
+            if (hhoFace%l_axis_on_axe) then
+                cycle
+            end if
 !
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
@@ -730,6 +738,10 @@ contains
 !
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
+!
+            if (hhoFace%l_axis_on_axe) then
+                cycle
+            end if
 !
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
@@ -1161,6 +1173,10 @@ contains
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
 !
+            if (hhoFace%l_axis_on_axe) then
+                cycle
+            end if
+!
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
             call hhoQuad%GetQuadFace(hhoface, &
@@ -1246,7 +1262,7 @@ contains
 ! ----- Compute lhs =BG**T * gradrec
             call hho_dgemm_TN(1.d0, BG, gradrec, 0.d0, lhs)
         end if
-
+!
         call BG%free()
         call MG%free()
 !

@@ -674,13 +674,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadCell(this, hhoCell, order, axis, split, param, adapt)
+    subroutine hhoGetQuadCell(this, hhoCell, order, split, param, adapt)
 !
         implicit none
 !
         type(HHO_cell), intent(in)            :: hhoCell
         integer(kind=8), intent(in)           :: order
-        aster_logical, intent(in), optional   :: split, param, adapt, axis
+        aster_logical, intent(in), optional   :: split, param, adapt
         class(HHO_quadrature), intent(out)    :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -689,7 +689,6 @@ contains
 !   Get the quadrature rules for the current cell
 !   In hhoCell      : a HHO cell
 !   In order        : quadrature order
-!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this        : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
@@ -705,10 +704,6 @@ contains
         end if
 !
         axis_ = lteatt("TYPMOD", "AXIS")
-        if (axis_ .and. present(axis)) then
-            axis_ = axis
-        end if
-!
         if (axis_ .and. adapt_) then
             this%order = this%order+1
         end if
@@ -773,13 +768,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadFace(this, hhoFace, order, axis, split, param, adapt)
+    subroutine hhoGetQuadFace(this, hhoFace, order, split, param, adapt)
 !
         implicit none
 !
         type(HHO_face), intent(in)          :: hhoFace
         integer(kind=8), intent(in)         :: order
-        aster_logical, intent(in), optional :: adapt, split, param, axis
+        aster_logical, intent(in), optional :: adapt, split, param
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -788,7 +783,6 @@ contains
 !   Get the quadrature rules for the current face
 !   In hhoFace      : a HHO face
 !   In order        : quadrature order
-!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this     : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
@@ -804,8 +798,11 @@ contains
         end if
 !
         axis_ = lteatt("TYPMOD", "AXIS")
-        if (axis_ .and. present(axis)) then
-            axis_ = axis
+        if (axis_) then
+            ! We modifiy quadrature for edges on axe
+            ! Do no multiply by r since it remains an
+            ! edge after revolution
+            axis_ = .not. hhoFace%l_axis_on_axe
         end if
 !
         if (axis_ .and. adapt_) then
@@ -1074,15 +1071,13 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
         integer(kind=8) :: order
-        aster_logical :: axis
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
         call hhoSelectOrder(hhoCell%typema, npg, order)
 !
-        axis = lteatt("TYPMOD", "AXIS")
-        call hhoGetQuadCell(this, hhoCell, order, axis, ASTER_FALSE, adapt=ASTER_FALSE)
+        call hhoGetQuadCell(this, hhoCell, order, split=ASTER_FALSE, adapt=ASTER_FALSE)
 !
     end subroutine
 !
@@ -1109,16 +1104,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: order
-        aster_logical :: axis
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
-        axis = lteatt("TYPMOD", "AXIS")
-        call hhoGetQuadFace(this, hhoFace, order, axis, &
-                            ASTER_FALSE, adapt=ASTER_FALSE)
+        call hhoGetQuadFace(this, hhoFace, order, &
+                            split=ASTER_FALSE, adapt=ASTER_FALSE)
 !
     end subroutine
 !

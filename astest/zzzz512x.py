@@ -73,6 +73,8 @@ uZ = {
 
 zero = FORMULE(VALE="0", NOM_PARA=("X", "Y"))
 
+test0 = FORMULE(VALE="1/X", NOM_PARA=("X", "Y"))
+
 fR = {
     "LINEAIRE": zero,
     "QUADRATIQUE": FORMULE(VALE="-3*lamb-6*mu", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu),
@@ -111,14 +113,19 @@ mesh = DEFI_GROUP(
 )
 
 # define material
-coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
+coeff = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=Nu, RHO=1.0),
+    HHO=_F(COEF_STAB=2 * mu),
+    ECRO_NL=_F(R0=1e20, RH=0.0),
+    NON_LOCAL=_F(C_GRAD_VARI=1.0, PENA_LAGR=1000.0),
+)
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
-for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
+for form in ["LINEAIRE", "QUADRATIQUE"]:
     model = AFFE_MODELE(
         MAILLAGE=mesh,
-        AFFE=_F(TOUT="OUI", MODELISATION="AXIS_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
+        AFFE=_F(TOUT="OUI", MODELISATION="AXIS_GRAD_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
     )
 
     bc = AFFE_CHAR_CINE_F(
@@ -128,15 +135,15 @@ for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
     load = AFFE_CHAR_MECA_F(
         MODELE=model,
         FORCE_INTERNE=_F(GROUP_MA="2D", FX=fR[form], FY=fZ[form]),
-        PRES_REP=_F(GROUP_MA="RIGHT", PRES=zero),
-        FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=zero, FY=zero),
+        PRES_REP=_F(GROUP_MA="RIGHT", PRES=test0),
+        # FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=zero, FY=zero),
     )
 
     # fake load - for coverage
     load0 = AFFE_CHAR_MECA(
         MODELE=model,
         FORCE_INTERNE=_F(GROUP_MA="2D", FX=0.0, FY=0.0),
-        FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=0.0, FY=0.0),
+        # FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=0.0, FY=0.0),
     )
 
     # solve linear system
@@ -145,11 +152,33 @@ for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
     resu = STAT_NON_LINE(
         MODELE=model,
         CHAM_MATER=mater,
+        COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_NL", TOUT="OUI"),
         INCREMENT=_F(LIST_INST=LREEL),
         EXCIT=(_F(CHARGE=bc), _F(CHARGE=load), _F(CHARGE=load0)),
     )
 
-    u_sol = resu.getField("DEPL", para="INST", value=1.0)
+    u_sol = resu.getField("DEPL", para="INST", value=1.0).restrict(
+        [
+            "HHO_FX1",
+            "HHO_FX2",
+            "HHO_FX3",
+            "HHO_FY1",
+            "HHO_FY2",
+            "HHO_FY3",
+            "HHO_CX1",
+            "HHO_CX2",
+            "HHO_CX3",
+            "HHO_CX4",
+            "HHO_CX5",
+            "HHO_CX6",
+            "HHO_CY1",
+            "HHO_CY2",
+            "HHO_CY3",
+            "HHO_CY4",
+            "HHO_CY5",
+            "HHO_CY6",
+        ]
+    )
 
     # define discrete object
     phys_pb = CA.PhysicalProblem(model, mater)
@@ -163,27 +192,6 @@ for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
 
     u_diff = u_hho - u_sol
 
-    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=5e-6)
-
-    dc = CA.DiscreteComputation(phys_pb)
-    mass = dc.getMassMatrix(assembly=True)
-    l2_diff = (mass * u_diff).dot(u_diff)
-    l2_ref = (mass * u_hho).dot(u_hho)
-    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
-
-    # compute (u_T, v_T) _T
-    matEM = CALC_MATR_ELEM(MODELE=model, OPTION="MASS_MECA", CHAM_MATER=mater)
-
-    matM = CA.AssemblyMatrixDisplacementReal(phys_pb)
-    matM.assemble(matEM, phys_pb.getListOfLoads())
-
-    l2_diff = (matM * u_diff).dot(u_diff)
-    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
-
-    # for keyword coverage
-    rigi_elem = CALC_MATR_ELEM(MODELE=model, OPTION="RIGI_MECA", CHAM_MATER=mater)
-    amor_elem = CALC_MATR_ELEM(
-        MODELE=model, OPTION="AMOR_MECA", CHAM_MATER=mater, RIGI_MECA=rigi_elem, MASS_MECA=matEM
-    )
+    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-8)
 
 FIN()

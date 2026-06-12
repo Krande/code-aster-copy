@@ -89,7 +89,7 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj2, proj3, TMP
         integer(kind=8) :: dimMassMat, ifromM2, itoM2, colsM2, i, j
-        integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, cell_offset
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
@@ -163,19 +163,14 @@ contains
         end do
 !
 ! Step 3: project on faces (eqn. 21)
-        offset_face = 1
 !
+        toFace = 0
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
             invH = 1.d0/hhoFace%diameter
-            fromFace = offset_face
-            toFace = offset_face+fbs-1
-!
-            if (hhoFace%l_axis_on_axe) then
-                ! No stabilization for face on AXIS axe
-                cycle
-            end if
+            fromFace = toFace+1
+            toFace = fromFace+fbs-1
 !
 ! ----- Compute face mass matrix
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
@@ -314,14 +309,11 @@ contains
                            1.d0, stab%m, b_ldc)
             end if
 !
-            offset_face = offset_face+fbs
         end do
 !
         if (faceMass%isIdentity) then
             call stab%copySymU()
         end if
-!
-        call proj1%free()
 !
     end subroutine
 !
@@ -505,11 +497,6 @@ contains
             hhoFace = hhoCell%faces(iface)
             invH = 1.d0/hhoFace%diameter
 !
-            if (hhoFace%l_axis_on_axe) then
-                ! No stabilization for face on AXIS axe
-                cycle
-            end if
-!
 ! ----- Compute face mass matrix
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
@@ -686,7 +673,7 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: invM
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat, piKF
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: S_TT
-        integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace
         integer(kind=8) :: cell_offset
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
         blas_int :: b_k, b_ldc, b_m
@@ -704,21 +691,15 @@ contains
         piKF = 0.d0
         S_TT = 0.d0
 !
-!
 ! Step 3: project on faces (eqn. 21)
-        offset_face = 1
+        toFace = 0
 !
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
             invH = 1.d0/hhoFace%diameter
-            fromFace = offset_face
-            toFace = offset_face+fbs-1
-!
-            if (hhoFace%l_axis_on_axe) then
-                ! No stabilization for face on AXIS axe
-                cycle
-            end if
+            fromFace = toFace+1
+            toFace = fromFace+fbs-1
 !
 ! ----- Compute face mass matrix
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
@@ -786,8 +767,6 @@ contains
                            invH, traceMat, b_lda, &
                            1.d0, S_TT, b_ldc)
             end if
-!
-            offset_face = offset_face+fbs
         end do
 !
         stab%m(cell_offset:total_dofs, cell_offset:total_dofs) = S_TT(1:cbs, 1:cbs)

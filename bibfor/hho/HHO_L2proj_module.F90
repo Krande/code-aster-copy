@@ -78,7 +78,6 @@ contains
 !
         type(HHO_massmat_face) :: faceMass
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
-        type(HHO_Quadrature) :: hhoQuadC
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -88,7 +87,7 @@ contains
 !
 ! ----- Compute face mass matrix
 !
-        call faceMass%compute(hhoFace, 0, degree, hhoQuad)
+        call faceMass%compute(hhoFace, 0, degree)
 !
 ! ---- Compute rhs
 !
@@ -108,19 +107,7 @@ contains
 ! ---- Sucess ?
 !
             if (info .ne. 0) then
-                if (hhoFace%l_axis_on_axe) then
-                    ! use classic stabilization without r inside integral
-                    call hhoQuadC%getQuadFace(hhoFace, hhoQuad%order, axis=ASTER_FALSE)
-                    call faceMass%compute(hhoFace, 0, degree, hhoQuadC, ASTER_TRUE)
-                    call hhoMakeRhsFaceScal(hhoFace, hhoQuadC, FuncValuesQP, degree, coeff_L2Proj)
-                    call dposv('U', b_n, b_nrhs, faceMass%m, b_lda, &
-                               coeff_L2Proj, b_ldb, info)
-                    if (info .ne. 0) then
-                        call utmess('F', 'HHO1_6')
-                    end if
-                else
-                    call utmess('F', 'HHO1_4')
-                end if
+                call utmess('F', 'HHO1_4')
             end if
         end if
 !
@@ -153,7 +140,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_face) :: faceMass
-        type(HHO_Quadrature) :: hhoQuadC
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
 !
 ! --------------------------------------------------------------------------------------------------
@@ -165,7 +151,7 @@ contains
 !
 ! ----- Compute face mass matrix
 !
-        call faceMass%compute(hhoFace, 0, degree, hhoQuad)
+        call faceMass%compute(hhoFace, 0, degree)
 !
 ! ---- Compute rhs
 !
@@ -186,19 +172,7 @@ contains
 ! ---- Sucess ?
 !
             if (info .ne. 0) then
-                if (hhoFace%l_axis_on_axe) then
-                    ! use classic stabilization without r inside integral
-                    call hhoQuadC%getQuadFace(hhoFace, hhoQuad%order, axis=ASTER_FALSE)
-                    call faceMass%compute(hhoFace, 0, degree, hhoQuadC, ASTER_TRUE)
-                    call hhoMakeRhsFaceVec(hhoFace, hhoQuadC, FuncValuesQP, degree, coeff_L2Proj)
-                    call dposv('U', b_n, b_nrhs, faceMass%m, b_lda, &
-                               coeff_L2Proj, b_ldb, info)
-                    if (info .ne. 0) then
-                        call utmess('F', 'HHO1_6')
-                    end if
-                else
-                    call utmess('F', 'HHO1_4')
-                end if
+                call utmess('F', 'HHO1_4')
             end if
         end if
 !
@@ -241,7 +215,7 @@ contains
 !
 ! ----- Compute Cell mass matrix
 !
-        call cellMass%compute(hhoCell, 0, degree, hhoQuad)
+        call cellMass%compute(hhoCell, 0, degree)
 !
 ! ---- Compute rhs
 !
@@ -300,7 +274,7 @@ contains
 !
 ! ----- Compute cell mass matrix
 !
-        call cellMass%compute(hhoCell, 0, degree, hhoQuad)
+        call cellMass%compute(hhoCell, 0, degree)
 !
 ! ---- Compute rhs
 !

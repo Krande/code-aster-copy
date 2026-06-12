@@ -364,11 +364,6 @@ contains
             this%type = type
         end if
 !
-        if (this%type == BASIS_ORTHO .and. hhoFace%l_axis_on_axe) then
-            ! Use inertial basis since orthonormal are zero (r=0)
-            this%type = BASIS_INERTIAL
-        end if
-!
         if (this%type == BASIS_CARTESIAN) then
             axes = hhoLocalBasisFace(hhoFace)
         else

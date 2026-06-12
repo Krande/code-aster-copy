@@ -106,7 +106,7 @@ module HHO_type
         integer(kind=8)               :: face_loc = 0
 ! ----- Jacobien is constant
         aster_logical               :: l_jaco_cst = ASTER_FALSE
-! ----- Jacobien is constant
+! ----- For AXIS, the edge is on the axis r=0
         aster_logical               :: l_axis_on_axe = ASTER_FALSE
 ! ----- member function
     contains

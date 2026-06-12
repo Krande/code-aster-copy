@@ -419,6 +419,7 @@ contains
 !
         if (ndim == 1) then
             if (lteatt("TYPMOD", "AXIS")) then
+                ! Special treatment is applied to these edges (quadrature, stabilization, gradient)
                 hhoFace%l_axis_on_axe = (hhoFace%barycenter(1) < 1.d-12)
             end if
         end if
@@ -650,7 +651,6 @@ contains
         integer(kind=8) :: nbnodes, elem_dim
         character(len=8) :: typma
         real(kind=8) :: coor(3, 27)
-        aster_logical :: axis
 !
         coor = 0.d0
 !
@@ -668,8 +668,7 @@ contains
             if (present(npg)) then
                 call hhoQuad%initCell(hhoCell, npg)
             else
-                axis = lteatt("TYPMOD", "AXIS")
-                call hhoQuad%getQuadCell(hhoCell, 2*hhoData%cell_degree(), axis, &
+                call hhoQuad%getQuadCell(hhoCell, 2*hhoData%cell_degree(), &
                                          param=ASTER_TRUE)
             end if
         end if
@@ -749,7 +748,6 @@ contains
         integer(kind=8) :: nbnodes, elem_dim, numnodes(9), enumf, nbnodes_post
         real(kind=8) :: nodes_coor(3, 9)
         character(len=8) :: typma
-        aster_logical :: axis
 !
 ! --- Get HHO informations
 !
@@ -781,8 +779,7 @@ contains
             if (present(npg)) then
                 call hhoQuadFace%initFace(hhoFace, npg)
             else
-                axis = lteatt("TYPMOD", "AXIS")
-                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), axis, &
+                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), &
                                              param=ASTER_TRUE)
             end if
         end if

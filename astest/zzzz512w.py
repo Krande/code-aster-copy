@@ -145,7 +145,11 @@ for form in formu:
     f_hho = hho.projectOnHHOCellSpace(f_elga)
     u_diff = f_hho - u_sol
     l2_diff = (matM * u_diff).dot(u_diff)
-    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=5e-6)
+    delta = 1e-8
+    if form == "CONSTANTE":
+        # not enougth quadrature point
+        delta = 2.0e-5
+    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=delta)
 
 test.printSummary()
 
