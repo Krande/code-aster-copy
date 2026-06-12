@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine ntcrar(resultZ, sddiscZ, sdarchZ, lreuse)
-        character(len=*), intent(in) :: resultZ, sddiscZ, sdarchZ
-        aster_logical, intent(in) :: lReuse
-    end subroutine ntcrar
+    subroutine storeSaveLast(sdarchZ, numeStore, timeCurr)
+        character(len=*), intent(in) :: sdarchZ
+        integer(kind=8), intent(in) :: numeStore
+        real(kind=8), intent(in) :: timeCurr
+    end subroutine storeSaveLast
 end interface
