@@ -214,6 +214,7 @@ def C_RELATION(command):
             "VMIS_ISOT_TRAC",
             "VMIS_JOHN_COOK",
             "UMAT",
+            "CZM_MFRONT",
             "MFRONT",
             # MFront official
             "BETON_AGEING",

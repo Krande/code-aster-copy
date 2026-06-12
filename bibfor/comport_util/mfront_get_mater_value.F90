@@ -76,10 +76,10 @@ subroutine mfront_get_mater_value(extern_addr, BEHInteg, relaComp, fami, kpg, &
 
 ! - Get parameters
 !
-    if (relaComp .eq. 'MFRONT') then
+    if (relaComp .eq. 'MFRONT' .or. relaComp .eq. 'CZM_MFRONT') then
         nbcoef = nprops
         call mat_proto(BEHInteg, &
-                       fami, kpg, ksp, '+', jvMaterCode, relaComp, &
+                       fami, kpg, ksp, '+', jvMaterCode, 'MFRONT', &
                        nbcoef, props)
         ASSERT(nbcoef == nprops)
     else

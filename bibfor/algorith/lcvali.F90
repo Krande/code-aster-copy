@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine lcvali(materPara, &
-                  defoComp, ndim, epsm, deps, &
+                  defoComp, epsm, deps, &
                   instam, instap, codret)
 !
     use MaterialPara_module
@@ -33,8 +33,7 @@ subroutine lcvali(materPara, &
 !
     type(Material_Para), intent(in) :: materPara
     character(len=16), intent(in) :: defoComp
-    integer(kind=8), intent(in) :: ndim
-    real(kind=8), intent(in) :: deps(6), epsm(6)
+    real(kind=8), intent(in) :: deps(:), epsm(:)
     real(kind=8), intent(in) :: instam, instap
     integer(kind=8), intent(inout) :: codret
 !
@@ -46,18 +45,14 @@ subroutine lcvali(materPara, &
     real(kind=8) :: propVale(4)
     integer(kind=8) :: propCode(4)
     integer(kind=8) :: iret1, iret2, iret3, iret
-    integer(kind=8) :: ndimsi
-    real(kind=8) :: eps(6), epsmax, eps2, vepsm
-    real(kind=8) :: veps(6)
-    real(kind=8) :: veps2, dt, tmax, tmin, temp
-    blas_int :: b_incx, b_incy, b_n
+    real(kind=8) :: epsmax, vepsmax
+    real(kind=8) :: dt, tmax, tmin, temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
     iret1 = 0
     iret2 = 0
     iret3 = 0
-    ndimsi = 2*ndim
     if (defoComp .ne. 'SIMO_MIEHE') then
         call rcvalb(materPara%schemePara%fami, &
                     materPara%schemePara%kpg, &
@@ -70,40 +65,13 @@ subroutine lcvali(materPara, &
 
         if (propCode(1) .eq. 0) then
             epsmax = propVale(1)
-            b_n = to_blas_int(ndimsi)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, epsm, b_incx, eps, b_incy)
-            b_n = to_blas_int(ndimsi)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, deps, b_incx, eps, b_incy)
-            b_n = to_blas_int(ndimsi)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            eps2 = sqrt(ddot(b_n, eps, b_incx, eps, b_incy))
-            if (eps2 .gt. epsmax) then
-                iret1 = 4
-            end if
+            if (norm2(epsm+deps) .gt. epsmax) iret1 = 4
         end if
 
         if (propCode(2) .eq. 0) then
-            vepsm = propVale(2)
+            vepsmax = propVale(2)
             dt = instap-instam
-            b_n = to_blas_int(ndimsi)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, deps, b_incx, veps, b_incy)
-            b_n = to_blas_int(ndimsi)
-            b_incx = to_blas_int(1)
-            call dscal(b_n, 1.d0/dt, veps, b_incx)
-            b_n = to_blas_int(ndimsi)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            veps2 = sqrt(ddot(b_n, veps, b_incx, veps, b_incy))
-            if (veps2 .gt. vepsm) then
-                iret2 = 4
-            end if
+            if (norm2(deps/dt) .gt. vepsmax) iret2 = 4
         end if
 
         if (propCode(3) .eq. 0) then

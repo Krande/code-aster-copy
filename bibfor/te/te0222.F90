@@ -185,7 +185,6 @@ subroutine te0222(option, nomte)
 !   Cas des éléments incompressibles
     inco = lteatt('INCO', 'C3')
     if (inco) then
-        typmod(2) = 'INCO'
         call jevech('PDEPLA', 'L', ideplinco)
     else if (lteatt('INCO', 'C2') .or. lteatt('INCO', 'C20') .or. lteatt('INCO', 'C5GV')) then
         call utmess('F', 'RUPTURE1_90')

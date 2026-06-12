@@ -19,14 +19,13 @@
 !
 interface
     subroutine nmco1d(BEHInteg, &
-                      relaComp, typeComp, &
-                      option, epsm, deps, sigm, &
+                      relaComp, &
+                      option, deps, sigm, &
                       vim, sigp, vip, dsidep, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(inout) :: BEHinteg
-        character(len=16) :: relaComp, typeComp
+        character(len=16) :: relaComp
         character(len=16) :: option
-        real(kind=8) :: epsm
         real(kind=8) :: deps
         real(kind=8) :: sigm
         real(kind=8) :: vim(*)

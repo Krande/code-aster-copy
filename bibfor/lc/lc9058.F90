@@ -71,7 +71,7 @@ subroutine lc9058(BEHInteg, &
 !
 ! Behaviour
 !
-! MFRONT for CZM with INTERFAC elements
+! MFRONT for CZM with INTERFAC elements (CZM_MFRONT)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,7 +165,7 @@ subroutine lc9058(BEHInteg, &
                                 ksp, jvMaterCode, props, nprops)
 
 ! - Prepare strains
-    call rcvalb(fami, kpg, ksp, '+', jvMaterCode, ' ', relaComp, 0, ' ', [0.d0], &
+    call rcvalb(fami, kpg, ksp, '+', jvMaterCode, ' ', 'MFRONT', 0, ' ', [0.d0], &
                 1, 'PENA_LAGR', val, cod, 2)
     call mfrontPrepareStrain(lGreenLagr, ndim, &
                              epsm(ndim+1:2*ndim)+val(1)*epsm(1:ndim), &

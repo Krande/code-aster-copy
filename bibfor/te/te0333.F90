@@ -198,7 +198,7 @@ subroutine te0333(option, nomte)
 
 ! ----- Compute non-mechanical strains (epsiVarc) for some external state variables
         call compVarcStrain('+', materPara, allVarcStrain)
-        call getVarcStrain('+', VARC_STRAIN_ALL, allVarcStrain, 6, epsiVarc)
+        call getVarcStrain('+', VARC_STRAIN_ALL, allVarcStrain, epsiVarc)
         epsiVarc(4:6) = epsiVarc(4:6)/sqrt(2.d0)
 
 ! ----- Compute mechanical strains epsiMeca = epsiTota - epsiVarc

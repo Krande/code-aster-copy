@@ -123,7 +123,7 @@ subroutine compMecaChckStrain(iComp, &
     end if
 
 ! - Only mechanical strains with MFront, except META_LEMA_ANI
-    if (lMFront .and. lTotalStrain) then
+    if (lMFront .and. lTotalStrain .and. relaComp .ne. 'CZM_MFRONT') then
         if (relaComp .eq. "META_LEMA_ANI") then
             call utmess('A', 'MGIS1_3')
         else

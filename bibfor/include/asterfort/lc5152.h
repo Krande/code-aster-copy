@@ -18,7 +18,7 @@
 ! aslint: disable=C1505
 !
 interface
-    subroutine lc0152(BEHinteg, &
+    subroutine lc5152(BEHinteg, &
                       fami, kpg, ksp, ndim, imate, &
                       instam, instap, neps, epsm, &
                       deps, nsig, sigm, nvi, vim, option, &

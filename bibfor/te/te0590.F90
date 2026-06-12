@@ -223,7 +223,6 @@ subroutine te0590(option, nomte)
                     matsym, codret)
 
     else if (defoComp .eq. 'SIMO_MIEHE') then
-        typmod(2) = 'INCO'
         call nifism(BEHInteg, &
                     ndim, nnod, nnog, nnop, npg, &
                     iw, zr(ivfd), zr(ivfg), zr(ivfp), idfd, &

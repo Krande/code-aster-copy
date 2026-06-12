@@ -2814,6 +2814,7 @@ phen.add(
         attrs=(
             (AT.POUTRE, "OUI"),
             (AT.TYPMOD, "1D"),
+            (AT.TYPMOD2, "CABLE_GA"),
             (AT.EFGE, "OUI"),
             (AT.SIGM, "NON"),
             (AT.STRX, "NON"),
@@ -5548,7 +5549,7 @@ phen.add(
         dim=(2, 2),
         code="JH1",
         attrs=(
-            (AT.TYPMOD, "D_PLAN"),
+            (AT.TYPMOD, "PLAN"),
             (AT.TYPMOD2, "JHMS"),
             (AT.MECA, "OUI"),
             (AT.THER, "NON"),

@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 subroutine nmco1d(BEHInteg, &
-                  relaComp, relaCpla, &
-                  option, epsm, deps, sigm, &
+                  relaComp, &
+                  option, deps, sigm, &
                   vim, sigp, vip, dsidep, codret)
 !
     use Behaviour_type
@@ -26,7 +26,6 @@ subroutine nmco1d(BEHInteg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/comp1d.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dis.h"
 #include "asterfort/rcvalb.h"
@@ -37,8 +36,8 @@ subroutine nmco1d(BEHInteg, &
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     integer(kind=8) :: codret
-    character(len=16) :: option, relaComp, relaCpla
-    real(kind=8) :: epsm, deps, sigm, vim(*)
+    character(len=16) :: option, relaComp
+    real(kind=8) :: deps, sigm, vim(*)
     real(kind=8) :: sigp, vip(*), dsidep
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,7 +67,7 @@ subroutine nmco1d(BEHInteg, &
     real(kind=8) :: propVale(nbProp)
     integer(kind=8) :: propCode(nbProp)
     character(len=8), parameter :: materPoin = ' '
-    aster_logical :: cine, isot, com1d, elas, cinegc
+    aster_logical :: cine, isot, elas, cinegc
     real(kind=8) :: em, ep, depsth, depsm
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +75,6 @@ subroutine nmco1d(BEHInteg, &
     isot = ASTER_FALSE
     cine = ASTER_FALSE
     cinegc = ASTER_FALSE
-    com1d = ASTER_FALSE
     codret = 0
     sigp = 0.d0
 !
@@ -89,34 +87,29 @@ subroutine nmco1d(BEHInteg, &
     else if (relaComp(1:4) .eq. 'ELAS') then
         elas = ASTER_TRUE
     else
-        com1d = ASTER_TRUE
-        if ((relaCpla .ne. 'DEBORST') .and. (relaComp .ne. 'SANS')) then
-            call utmess('F', 'COMPOR4_32', sk=relaComp)
-        end if
+        call utmess('F', 'COMPOR4_32', sk=relaComp)
     end if
 !
-    if (.not. com1d) then
-        call rcvalb(BEHInteg%materPara%schemePara%fami, &
-                    BEHInteg%materPara%schemePara%kpg, &
-                    BEHInteg%materPara%schemePara%ksp, &
-                    '-', &
-                    BEHInteg%materPara%jvMaterCode, &
-                    ' ', 'ELAS', &
-                    0, ' ', [0.d0], &
-                    nbProp, propName, propVale, &
-                    propCode, 1)
-        em = propVale(1)
-        call rcvalb(BEHInteg%materPara%schemePara%fami, &
-                    BEHInteg%materPara%schemePara%kpg, &
-                    BEHInteg%materPara%schemePara%ksp, &
-                    '+', &
-                    BEHInteg%materPara%jvMaterCode, &
-                    ' ', 'ELAS', &
-                    0, ' ', [0.d0], &
-                    nbProp, propName, propVale, &
-                    propCode, 1)
-        ep = propVale(1)
-    end if
+    call rcvalb(BEHInteg%materPara%schemePara%fami, &
+                BEHInteg%materPara%schemePara%kpg, &
+                BEHInteg%materPara%schemePara%ksp, &
+                '-', &
+                BEHInteg%materPara%jvMaterCode, &
+                ' ', 'ELAS', &
+                0, ' ', [0.d0], &
+                nbProp, propName, propVale, &
+                propCode, 1)
+    em = propVale(1)
+    call rcvalb(BEHInteg%materPara%schemePara%fami, &
+                BEHInteg%materPara%schemePara%kpg, &
+                BEHInteg%materPara%schemePara%ksp, &
+                '+', &
+                BEHInteg%materPara%jvMaterCode, &
+                ' ', 'ELAS', &
+                0, ' ', [0.d0], &
+                nbProp, propName, propVale, &
+                propCode, 1)
+    ep = propVale(1)
 !
     if (isot) then
         call verift(BEHInteg%materPara%schemePara%fami, &
@@ -168,11 +161,5 @@ subroutine nmco1d(BEHInteg, &
             sigp = ep*(sigm/em+deps-depsth)
         end if
 
-    else if (com1d) then
-        call comp1d(BEHInteg, &
-                    option, sigm, &
-                    epsm, deps, vim, vip, &
-                    sigp, dsidep, codret)
-!
     end if
 end subroutine

@@ -18,13 +18,12 @@
 !
 interface
     subroutine lcvali(materPara, &
-                      defoComp, ndim, epsm, deps, &
+                      defoComp, epsm, deps, &
                       instam, instap, codret)
         use MaterialPara_type
         type(Material_Para), intent(in) :: materPara
         character(len=16), intent(in) :: defoComp
-        integer(kind=8), intent(in) :: ndim
-        real(kind=8), intent(in) :: deps(6), epsm(6)
+        real(kind=8), intent(in) :: deps(:), epsm(:)
         real(kind=8), intent(in) :: instam, instap
         integer(kind=8), intent(inout) :: codret
     end subroutine lcvali

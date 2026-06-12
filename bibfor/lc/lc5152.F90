@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,C1505,W1306
 !
-subroutine lc0152(BEHInteg, &
+subroutine lc5152(BEHInteg, &
                   fami, kpg, ksp, ndim, imate, &
                   instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, &

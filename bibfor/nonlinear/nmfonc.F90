@@ -616,6 +616,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
         if (isfonc(list_func_acti, 'HHO')) then
             call utmess('I', 'MECANONLINE14_32')
         end if
+
 !
 ! ----- Post-treatments
 !

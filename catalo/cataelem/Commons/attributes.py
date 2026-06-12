@@ -589,6 +589,7 @@ TYPMOD2 = Attribute(
         "GRADSIGM",
         "INTERFAC",
         "INTSOLPI",
+        "CABLE_GA",
         "PMF",
         "THM",
         "HHO",
