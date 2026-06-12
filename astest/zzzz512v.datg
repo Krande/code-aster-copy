@@ -25,6 +25,9 @@ lam, mu = sp.symbols('lambda mu', real=True)
 # order 4
 P = (1 + r*r*r + z*z*z + r*z)
 Q = z*(z*z*z - r*r*r + 1)
+# order 5
+P = (1 + r*r*r*r + z*z*z*z + r*z)
+Q = z*(z*z*z*z - r*r*r*r + 1)
 
 # Champs admissibles
 ur = r * P

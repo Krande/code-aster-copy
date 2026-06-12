@@ -48,19 +48,19 @@ test = CA.TestCase()
 # define material
 
 u = {
-    "CONSTANTE": FORMULE(VALE="-1", NOM_PARA=("X", "Y")),
-    "LINEAIRE": FORMULE(VALE="(X-5)", NOM_PARA=("X", "Y")),
-    "QUADRATIQUE": FORMULE(VALE="X*X+Y*Y", NOM_PARA=("X", "Y")),
-    "CUBIQUE": FORMULE(VALE="X*X*X+Y*Y*Y-X*X*Y", NOM_PARA=("X", "Y")),
-    "QUARTIQUE": FORMULE(VALE="X*X*X*X+Y*Y*Y*Y-X*X*Y", NOM_PARA=("X", "Y")),
+    "CONSTANTE": FORMULE(VALE="(X-5)", NOM_PARA=("X", "Y")),
+    "LINEAIRE": FORMULE(VALE="X*X+Y*Y", NOM_PARA=("X", "Y")),
+    "QUADRATIQUE": FORMULE(VALE="X*X*X+Y*Y*Y-X*X*Y", NOM_PARA=("X", "Y")),
+    "CUBIQUE": FORMULE(VALE="X*X*X*X+Y*Y*Y*Y-X*X*Y", NOM_PARA=("X", "Y")),
+    "QUARTIQUE": FORMULE(VALE="X*X*X*X*X+Y*Y*Y*Y*Y-X*X*Y", NOM_PARA=("X", "Y")),
 }
 
 f = {
-    "CONSTANTE": FORMULE(VALE="0", NOM_PARA=("X", "Y")),
-    "LINEAIRE": FORMULE(VALE="-1./X", NOM_PARA=("X", "Y")),
-    "QUADRATIQUE": FORMULE(VALE="-6", NOM_PARA=("X", "Y")),
-    "CUBIQUE": FORMULE(VALE="-9*X-2*Y", NOM_PARA=("X", "Y")),
-    "QUARTIQUE": FORMULE(VALE="-16*X*X-12*Y*Y+4*Y", NOM_PARA=("X", "Y")),
+    "CONSTANTE": FORMULE(VALE="-1./X", NOM_PARA=("X", "Y")),
+    "LINEAIRE": FORMULE(VALE="-6", NOM_PARA=("X", "Y")),
+    "QUADRATIQUE": FORMULE(VALE="-9*X-2*Y", NOM_PARA=("X", "Y")),
+    "CUBIQUE": FORMULE(VALE="-16*X*X-12*Y*Y+4*Y", NOM_PARA=("X", "Y")),
+    "QUARTIQUE": FORMULE(VALE="-25*X*X*X-20*Y*Y*Y+4*Y", NOM_PARA=("X", "Y")),
 }
 
 mesh0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)

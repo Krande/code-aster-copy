@@ -13,7 +13,7 @@ r, z = sp.symbols('r z', real=True)
 # T = r**2 + z**2
 
 # Exemple plus riche (ordre plus élevé) :
-T = r**4 + z**4 - r*r*z
+T = r**5 + z**5 - r*r*z
 
 # ----------------------------------------------------------------------
 # Opérateur axisymétrique thermique :
