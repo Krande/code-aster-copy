@@ -389,6 +389,7 @@ contains
         integer(kind=8) :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, colsM2, i, j, idir
         integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace, faces_dofs_comp
         integer(kind=8) :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs
+        integer(kind=8) :: dimM1
         blas_int :: b_n, b_nrhs, b_lda, b_ldb, info
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
@@ -410,6 +411,8 @@ contains
 !
 ! -- Range
         call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromM1, itoM1)
+        dimM1 = hhoBasisCell%BSSize(0, hhoData%cell_degree())
+        ASSERT(dimM1*hhoCell%ndim == cbs)
         call hhoBasisCell%BSRange(1, hhoData%face_degree()+1, ifromM2, itoM2)
         colsM2 = hhoBasisCell%BSSize(1, hhoData%face_degree()+1)
 !
@@ -418,21 +421,21 @@ contains
 !
 ! -- extract M1:
             M1 = 0.d0
-            M1(1:cbs, 1:cbs) = massMat%m(ifromM1:itoM1, ifromM1:itoM1)
+            M1(1:dimM1, 1:dimM1) = massMat%m(ifromM1:itoM1, ifromM1:itoM1)
             info = 0
-            b_n = to_blas_int(cbs)
+            b_n = to_blas_int(dimM1)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             call dpotrf('U', b_n, M1, b_lda, info)
-        end if
 !
 ! -- Sucess ?
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
         end if
 !
 ! -- extract M2:
         M2 = 0.d0
-        M2(1:cbs, 1:colsM2) = massMat%m(ifromM1:itoM1, ifromM2:itoM2)
+        M2(1:dimM1, 1:colsM2) = massMat%m(ifromM1:itoM1, ifromM2:itoM2)
 !
 ! -- Verif size
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= cbs)
@@ -452,13 +455,13 @@ contains
 !
             ifromGrad = (idir-1)*colsM2+1
             itoGrad = ifromGrad+colsM2-1
-            ifromProj = (idir-1)*cbs+1
-            itoProj = ifromProj+cbs-1
+            ifromProj = (idir-1)*dimM1+1
+            itoProj = ifromProj+dimM1-1
 !
-            b_ldc = to_blas_int(cbs)
+            b_ldc = to_blas_int(dimM1)
             b_ldb = to_blas_int(colsM2)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
-            b_m = to_blas_int(cbs)
+            b_m = to_blas_int(dimM1)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(colsM2)
             call dgemm('N', 'N', b_m, b_n, b_k, &
@@ -469,10 +472,10 @@ contains
 ! -- Solve proj1 = M1^-1 * proj1
 ! -- Verif strange bug if info neq 0 in entry
                 info = 0
-                b_n = to_blas_int(cbs)
+                b_n = to_blas_int(dimM1)
                 b_nrhs = to_blas_int(total_dofs)
                 b_lda = to_blas_int(MSIZE_CELL_SCAL)
-                b_ldb = to_blas_int(cbs)
+                b_ldb = to_blas_int(dimM1)
                 call dpotrs('U', b_n, b_nrhs, M1, b_lda, &
                             proj1%m(ifromProj:itoProj, 1:total_dofs), b_ldb, info)
 !
@@ -526,7 +529,7 @@ contains
             MR1(1:fbs_comp, 1:colsM2) = traceMat(1:fbs_comp, ifromM2:itoM2)
 !
             MR2 = 0.d0
-            MR2(1:fbs_comp, 1:cbs) = traceMat(1:fbs_comp, ifromM1:itoM1)
+            MR2(1:fbs_comp, 1:dimM1) = traceMat(1:fbs_comp, ifromM1:itoM1)
 !
             do idir = 1, hhoCell%ndim
 !
@@ -566,7 +569,7 @@ contains
                 end if
 !
 ! ---- Compute proj2 -= I_F
-                fromFace = cbs+(idir-1)*fbs_comp+(iface-1)*fbs+1
+                fromFace = (idir-1)*fbs_comp+(iface-1)*fbs+1
                 toFace = fromFace+fbs_comp-1
                 i = 1
                 do j = fromFace, toFace
@@ -577,15 +580,15 @@ contains
 ! ---- Step 3b: \pi_F^k( v_T - \pi_T^k p_T^k v )
 ! ---- Compute proj3 = MR2 * proj1
 !
-                ifromProj = (idir-1)*cbs+1
-                itoProj = ifromProj+cbs-1
+                ifromProj = (idir-1)*dimM1+1
+                itoProj = ifromProj+dimM1-1
 !
                 b_ldc = to_blas_int(proj3%max_nrows)
-                b_ldb = to_blas_int(cbs)
+                b_ldb = to_blas_int(dimM1)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_m = to_blas_int(fbs_comp)
                 b_n = to_blas_int(total_dofs)
-                b_k = to_blas_int(cbs)
+                b_k = to_blas_int(dimM1)
                 call dgemm('N', 'N', b_m, b_n, b_k, &
                            1.d0, MR2, b_lda, proj1%m(ifromProj:itoProj, 1:total_dofs), b_ldb, &
                            0.d0, proj3%m, b_ldc)

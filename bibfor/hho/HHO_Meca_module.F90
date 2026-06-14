@@ -361,6 +361,7 @@ contains
                 call gradrec_scal%free()
 !               call hhoGradRecSymMat(hhoCell, hhoData, gradrec_sym)
 !               call hhoStabSymVec(hhoCell, hhoData, gradrec_sym, stab)
+!               call gradrec_sym%free()
             else if (hhoData%cell_degree() == (hhoData%face_degree()+1)) then
                 call hdgStabVec(hhoCell, hhoData, stab)
             else
