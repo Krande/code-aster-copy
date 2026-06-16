@@ -731,7 +731,7 @@ class ExecuteMacro(ExecuteCommand):
         ExecuteMacro._last_cleanup_date = time.time()
         timer = ExecutionParameter().timer
         timer.Start(" . cleanup", num=1.9e6)
-        gc.collect()
+        gc.collect(1)
         timer.Stop(" . cleanup")
 
     def exec_(self, keywords):
