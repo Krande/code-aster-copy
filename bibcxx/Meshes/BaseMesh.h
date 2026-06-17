@@ -414,10 +414,14 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Impression du maillage au format MED
      * @param fileName Nom du fichier MED à imprimer
+     * @param local booleen pour demander une impression locale
+     * @param version version de med de l'impression
+     * @param mode mode d'ecriture 'a' ou 'w'
      * @return true
      */
     virtual bool printMedFile( const std::filesystem::path &fileName, bool local = true,
-                               std::array< int, 3 > version = { 0, 0, 0 } ) const;
+                               std::array< int, 3 > version = { 0, 0, 0 },
+                               const std::string &mode = "a" ) const;
 
     /**
      * @brief Get the mapping between local and global numbering of nodes

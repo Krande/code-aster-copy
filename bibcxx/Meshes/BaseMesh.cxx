@@ -164,7 +164,7 @@ const JeveuxVectorLong BaseMesh::getMedCellsTypes() const {
 }
 
 bool BaseMesh::printMedFile( const std::filesystem::path &fileName, bool local,
-                             std::array< int, 3 > version ) const {
+                             std::array< int, 3 > version, const std::string &mode ) const {
     AS_ASSERT( false );
     return false;
 };

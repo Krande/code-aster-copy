@@ -34,9 +34,12 @@ filename2 = "zzzz155e.23"
 
 mesh = CA.ParallelMesh()
 mesh.readMedFile(filename, deterministic=True)
+mesh.printMedFile("test.med", mode="w")
 
 mesh2 = CA.ParallelMesh()
 mesh2.readMedFile(filename2, deterministic=True)
+# overwrite file
+mesh2.printMedFile("test.med", mode="w")
 
 mesh2 = DEFI_GROUP(reuse=mesh2, MAILLAGE=mesh2, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
