@@ -23,8 +23,8 @@ from ..Utilities import _
 cata_msg = {
     1: _(
         """
- Plusieurs valeurs différentes de temps caractéristiques de viscosité ont été renseignées dans la définition des paramètres matériaux.
- On a retenu la plus grande de ces valeurs. Vérifier la mise en donnée.
+ Des valeurs incohérentes de temps caractéristiques de viscosité ont été renseignées dans la définition des paramètres matériaux.
+ Ce temps caractéristique de viscosité doit nécessairement valoir 1.0 ou 0.0, et une des valeurs doit être non nulle. Vérifier la mise en donnée.
 """
     ),
     2: _(

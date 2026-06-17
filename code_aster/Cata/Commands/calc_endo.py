@@ -94,7 +94,7 @@ CALC_ENDO = MACRO(
     ENDO_VISC=FACT(
         statut="o",
         max=1,
-        regles=(ENSEMBLE("OBSERVATION_VISC", "CRIT_STAB_VISC"),),
+        regles=(ENSEMBLE("OBSERVATION", "PREC_STAB"),),
         LIST_INST=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
         OBSERVATION=SIMP(statut="f", typ="TXM", max="**"),
         PREC_STAB=SIMP(statut="f", typ="R", max="**"),

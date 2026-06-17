@@ -113,7 +113,7 @@ beton = DEFI_MATERIAU(
 acier = DEFI_MATERIAU(
     ELAS=_F(E=a_young, NU=a_nu, ALPHA=alpha),
     ECRO_LINE=_F(SY=a_sy, D_SIGM_EPSI=0),
-    VISC_ELAS=_F(TAU=0.1, K=1.0e-6),  # Sans influence, pour tester détection TAU
+    VISC_ELAS=_F(TAU=1.0, K=1.0e-6),  # Sans influence, pour tester détection TAU
 )
 
 

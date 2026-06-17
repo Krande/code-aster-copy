@@ -240,7 +240,6 @@ class CalcEndoVarc:
 
 
 class CalcEndo:
-
     kwds = None
     tau = visc_list_inst = user_list_inst = None
     t_init_ramp = dt_stab = t_fin = None
@@ -303,9 +302,11 @@ class CalcEndo:
             ##Si l'utilisateur n'a pas donné en entrée une observation appelée VISCELAS ou VISCENDO
             ##On rajoute les observations par défaut
             if "VISCELAS" not in titre_obs_visc and "VISCENDO" not in titre_obs_visc:
-                defaut_obs_stab_visc, defaut_crit_stab_visc, default_other_obs = (
-                    set_default_observation(self.kwds)
-                )
+                (
+                    defaut_obs_stab_visc,
+                    defaut_crit_stab_visc,
+                    default_other_obs,
+                ) = set_default_observation(self.kwds)
                 self.obs_stab_visc = self.obs_stab_visc + defaut_obs_stab_visc
                 self.crit_stab_visc = self.crit_stab_visc + defaut_crit_stab_visc
                 self.other_obs = self.other_obs + default_other_obs
@@ -330,9 +331,9 @@ class CalcEndo:
             for ldc in tau_name:
                 if ldc in mater.getMaterialNames():
                     tau = mater.getValueReal(ldc, tau_name[ldc])
+                    if abs(tau - 1.0) > 1e-12 and abs(tau) > 1e-12:
+                        UTMESS("F", "CALCENDO_1")
                     if tau > self.tau:
-                        if self.tau > 0.0:
-                            UTMESS("A", "CALCENDO_1")
                         self.tau = tau
 
         logger.info(
@@ -714,6 +715,15 @@ class CalcEndo:
 
         return evol_endo
 
+    def is_stab(self):
+        """Return current state of stabilisation sequence
+
+        Returns:
+            stab(bool): True if stabilisation is achieved, else False
+        """
+
+        return self.stab
+
     def compute_stab(self, evol_endo, visc_mat_field, visc_excit):
         """Non linear computation of one stabilisation sequence
 
@@ -867,10 +877,10 @@ def calc_endo_ops(self, **args):
             depl_init, sief_init, vari_init, strx_init, visc_mat_field, visc_excit
         )
 
-        if not calc_endo.stab:
+        if not calc_endo.is_stab():
             visc_excit = calc_endo.eval_loads(t_init, t_comp, nume_ordre, True)
 
-        while not calc_endo.stab:
+        while not calc_endo.is_stab():
             evol_endo = calc_endo.compute_stab(evol_endo, visc_mat_field, visc_excit)
 
         t_init, depl_init, sief_init, vari_init, strx_init = calc_endo.arch_resu(evol_endo, t_comp)
