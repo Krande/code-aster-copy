@@ -42,8 +42,8 @@ from numpy import isclose, where, array
 
 class CalcEndoLoad:
 
-    _charge = _type_charge = _fonc_mult = None
-    _has_time_dep = None
+    charge = type_charge = fonc_mult = None
+    has_time_dep = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, args):
@@ -53,202 +53,202 @@ class CalcEndoLoad:
             args (dict): User's keywords for EXCIT in CALC_ENDO
         """
 
-        self._charge = args["CHARGE"]
-        self._type_charge = args["TYPE_CHARGE"]
+        self.charge = args["CHARGE"]
+        self.type_charge = args["TYPE_CHARGE"]
         if "FONC_MULT" in args:
-            self._fonc_mult = args["FONC_MULT"]
+            self.fonc_mult = args["FONC_MULT"]
 
     def check_time_dependency(self):
         """Check if the load is time dependent.
         Raise error message if time dependency is calculated by AFFE_CHAR_MECA_F
         """
 
-        if self._fonc_mult:
-            self._has_time_dep = True
-        elif isinstance(self._charge, MechanicalLoadFunction):
-            _find_function = False
-            for _dependency in self._charge.getDependencies():
-                if isinstance(_dependency, Function):
-                    _param_function = _dependency.Parametres()["NOM_PARA"]
-                    if _param_function == "INST":
+        if self.fonc_mult:
+            self.has_time_dep = True
+        elif isinstance(self.charge, MechanicalLoadFunction):
+            find_function = False
+            for dependency in self.charge.getDependencies():
+                if isinstance(dependency, Function):
+                    param_function = dependency.Parametres()["NOM_PARA"]
+                    if param_function == "INST":
                         UTMESS("F", "CALCENDO_4")
                     else:
-                        _find_function = True
-            assert _find_function
+                        find_function = True
+            assert find_function
 
-    def eval(self, _t_init, _t_comp, _nume_ordre, _is_stab_seq, _t_init_ramp):
+    def eval(self, t_init, t_comp, nume_ordre, is_stab_seq, t_init_ramp):
         """Create syntax for EXCIT in STAT_NON_LINE for a given load sequence
 
         Args:
-            _t_init (float): initial physical time of current load sequence
-            _t_comp (float): end physical time of current load sequence
-            _nume_ordre (int): local value of NUME_ORDRE
-            _is_stab_seq (bool): True if stabilisation of current load sequence
-            _t_init_ramp (float): initial time of the ramp
+            t_init (float): initial physical time of current load sequence
+            t_comp (float): end physical time of current load sequence
+            nume_ordre (int): local value of NUME_ORDRE
+            is_stab_seq (bool): True if stabilisation of current load sequence
+            t_init_ramp (float): initial time of the ramp
 
         Returns:
-            _excit_snl (dict): Arguments for EXCIT
+            excit_snl (dict): Arguments for EXCIT
 
         """
 
-        _excit_snl = {}
-        _excit_snl["CHARGE"] = self._charge
-        _excit_snl["TYPE_CHARGE"] = self._type_charge
+        excit_snl = {}
+        excit_snl["CHARGE"] = self.charge
+        excit_snl["TYPE_CHARGE"] = self.type_charge
 
         ##Chargements autres que "DIDI" et fonction du temps (via FONC_MULT)
-        if self._type_charge != "DIDI" and self._has_time_dep:
-            _ramp_load = DEFI_FONCTION(
+        if self.type_charge != "DIDI" and self.has_time_dep:
+            ramp_load = DEFI_FONCTION(
                 NOM_PARA="INST",
-                ABSCISSE=(_t_init_ramp, 0),
-                ORDONNEE=(self._fonc_mult(_t_init), self._fonc_mult(_t_comp)),
+                ABSCISSE=(t_init_ramp, 0),
+                ORDONNEE=(self.fonc_mult(t_init), self.fonc_mult(t_comp)),
                 PROL_DROITE="CONSTANT",
             )
-            _excit_snl["FONC_MULT"] = _ramp_load
+            excit_snl["FONC_MULT"] = ramp_load
 
         ##Chargement de type "DIDI" et pas de dépendance au temps
         ##Le chargement est fixé à zero après le premier STAT_NON_LINE
-        elif self._type_charge == "DIDI" and not self._has_time_dep:
-            if _nume_ordre > 0 or _is_stab_seq:
-                _ramp_load = DEFI_FONCTION(
+        elif self.type_charge == "DIDI" and not self.has_time_dep:
+            if nume_ordre > 0 or is_stab_seq:
+                ramp_load = DEFI_FONCTION(
                     NOM_PARA="INST",
-                    ABSCISSE=(_t_init_ramp, 0),
+                    ABSCISSE=(t_init_ramp, 0),
                     ORDONNEE=(0, 0),
                     PROL_DROITE="CONSTANT",
                 )
-                _excit_snl["FONC_MULT"] = _ramp_load
+                excit_snl["FONC_MULT"] = ramp_load
 
         ##Chargement de type "DIDI" et fonction du temps (via FONC_MULT)
-        elif self._type_charge == "DIDI" and self._has_time_dep:
+        elif self.type_charge == "DIDI" and self.has_time_dep:
             ##Chargement à zero en phase de stabilisation
-            if _is_stab_seq:
-                _ramp_load = DEFI_FONCTION(
+            if is_stab_seq:
+                ramp_load = DEFI_FONCTION(
                     NOM_PARA="INST",
-                    ABSCISSE=(_t_init_ramp, 0),
+                    ABSCISSE=(t_init_ramp, 0),
                     ORDONNEE=(0, 0),
                     PROL_DROITE="CONSTANT",
                 )
             ##Delta de chargement pendant la rampe
             else:
-                _ramp_load = DEFI_FONCTION(
+                ramp_load = DEFI_FONCTION(
                     NOM_PARA="INST",
-                    ABSCISSE=(_t_init_ramp, 0),
-                    ORDONNEE=(0, self._fonc_mult(_t_comp) - self._fonc_mult(_t_init)),
+                    ABSCISSE=(t_init_ramp, 0),
+                    ORDONNEE=(0, self.fonc_mult(t_comp) - self.fonc_mult(t_init)),
                     PROL_DROITE="CONSTANT",
                 )
-            _excit_snl["FONC_MULT"] = _ramp_load
+            excit_snl["FONC_MULT"] = ramp_load
 
-        return _excit_snl
+        return excit_snl
 
 
 class CalcEndoVarc:
 
-    _varc_on_mesh = None
-    _name = _has_time_dep = None
+    varc_on_mesh = None
+    name = has_time_dep = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, _varc_on_mesh):
+    def __init__(self, varc_on_mesh):
         """Initialisation of an external state variable"""
 
-        self._name = ExternalVariableTraits.getExternVarTypeStr(_varc_on_mesh[0].getType())
-        logger.info("Info CALC_ENDO : " + "Variable de commande : " + str(self._name))
-        self._varc_on_mesh = _varc_on_mesh
+        self.name = ExternalVariableTraits.getExternVarTypeStr(varc_on_mesh[0].getType())
+        logger.info("Info CALC_ENDO : " + "Variable de commande : " + str(self.name))
+        self.varc_on_mesh = varc_on_mesh
 
     def check_time_dependency(self):
         """Check if the external state variable is time dependent."""
 
-        _field = self._varc_on_mesh[0].getField()
-        _transient = self._varc_on_mesh[0].getTransientResult()
-        assert _field or _transient
+        field = self.varc_on_mesh[0].getField()
+        transient = self.varc_on_mesh[0].getTransientResult()
+        assert field or transient
 
-        if _field:
-            logger.info("Info CALC_ENDO : " + self._name + " indépendant du temps.")
+        if field:
+            logger.info("Info CALC_ENDO : " + self.name + " indépendant du temps.")
 
-        if _transient:
-            self._has_time_dep = True
-            logger.info("Info CALC_ENDO : " + self._name + " fonction du temps.")
+        if transient:
+            self.has_time_dep = True
+            logger.info("Info CALC_ENDO : " + self.name + " fonction du temps.")
 
-    def eval(self, _t_init, _t_comp, model, _t_init_ramp, _t_fin):
+    def eval(self, t_init, t_comp, model, t_init_ramp, t_fin):
         """Create syntax for the next AFFE_VARC
 
         Args:
-            _t_init (float): initial physical time of current load sequence
-            _t_comp (float): end physical time of current load sequence
-            _model (*Model*): model
-            _t_init_ramp (float): initial time of ramp
-            _t_fin (float): end time of stabilisation sequence
+            t_init (float): initial physical time of current load sequence
+            t_comp (float): end physical time of current load sequence
+            model (*Model*): model
+            t_init_ramp (float): initial time of ramp
+            t_fin (float): end time of stabilisation sequence
 
         Returns:
-            _dict_varc : input for AFFE_VARC in AFFE_MATERIAU
+            dict_varc : input for AFFE_VARC in AFFE_MATERIAU
 
         """
 
-        _dict_varc = {}
-        _extevarc = self._varc_on_mesh[0]
-        _meshvarc = self._varc_on_mesh[1]
+        dict_varc = {}
+        extevarc = self.varc_on_mesh[0]
+        meshvarc = self.varc_on_mesh[1]
 
-        _dict_varc["NOM_VARC"] = self._name
+        dict_varc["NOM_VARC"] = self.name
 
-        if _meshvarc.getType() == EntityType.GroupOfCellsType:
-            _dict_varc["GROUP_MA"] = _meshvarc.getNames()
+        if meshvarc.getType() == EntityType.GroupOfCellsType:
+            dict_varc["GROUP_MA"] = meshvarc.getNames()
         else:
-            _dict_varc["TOUT"] = "OUI"
+            dict_varc["TOUT"] = "OUI"
 
-        if _extevarc.isSetRefe():
-            _dict_varc["VALE_REF"] = _extevarc.getReferenceValue()
+        if extevarc.isSetRefe():
+            dict_varc["VALE_REF"] = extevarc.getReferenceValue()
 
-        _field = _extevarc.getField()
-        _evol = _extevarc.getEvolutionParameter()
+        field = extevarc.getField()
+        evol = extevarc.getEvolutionParameter()
 
-        if _field:
-            _dict_varc["CHAM_GD"] = _field
-        if _evol:
-            _transient = _evol.getTransientResult()
+        if field:
+            dict_varc["CHAM_GD"] = field
+        if evol:
+            transient = evol.getTransientResult()
 
             ##FONC_INST interdit
-            if _evol.getTimeFormula() or _evol.getTimeFunction():
+            if evol.getTimeFormula() or evol.getTimeFunction():
                 UTMESS("F", "CALCENDO_7")
 
-            _field_init = _transient.interpolateField(
-                self._name, _t_init, left=_evol.getLeftExtension(), right=_evol.getRightExtension()
+            field_init = transient.interpolateField(
+                self.name, t_init, left=evol.getLeftExtension(), right=evol.getRightExtension()
             )
-            _field_comp = _transient.interpolateField(
-                self._name, _t_comp, left=_evol.getLeftExtension(), right=_evol.getRightExtension()
+            field_comp = transient.interpolateField(
+                self.name, t_comp, left=evol.getLeftExtension(), right=evol.getRightExtension()
             )
 
-            _ramp_varc = CREA_RESU(
+            ramp_varc = CREA_RESU(
                 OPERATION="AFFE",
-                TYPE_RESU=_transient.getType(),
+                TYPE_RESU=transient.getType(),
                 AFFE=(
                     _F(
-                        NOM_CHAM=_evol.getFieldName(),
-                        CHAM_GD=_field_init,
-                        INST=_t_init_ramp,
+                        NOM_CHAM=evol.getFieldName(),
+                        CHAM_GD=field_init,
+                        INST=t_init_ramp,
                         MODELE=model,
                     ),
-                    _F(NOM_CHAM=_evol.getFieldName(), CHAM_GD=_field_comp, INST=0, MODELE=model),
+                    _F(NOM_CHAM=evol.getFieldName(), CHAM_GD=field_comp, INST=0, MODELE=model),
                     _F(
-                        NOM_CHAM=_evol.getFieldName(),
-                        CHAM_GD=_field_comp,
-                        INST=_t_fin,
+                        NOM_CHAM=evol.getFieldName(),
+                        CHAM_GD=field_comp,
+                        INST=t_fin,
                         MODELE=model,
                     ),
                 ),
             )
-            _dict_varc["EVOL"] = _ramp_varc
+            dict_varc["EVOL"] = ramp_varc
 
-        return _dict_varc
+        return dict_varc
 
 
 class CalcEndo:
 
-    _kwds = None
-    _tau = _visc_list_inst = _user_list_inst = None
-    _t_init_ramp = _dt_stab = _t_fin = None
-    _loads = _varc = None
-    _crit_stab_visc = _stab = _arret = None
-    _obs_stab_visc = _other_obs = None
-    _arch = _arch_visc = None
-    _resu = _resu_visc = _tab_out = None
+    kwds = None
+    tau = visc_list_inst = user_list_inst = None
+    t_init_ramp = dt_stab = t_fin = None
+    loads = varc = None
+    crit_stab_visc = stab = arret = None
+    obs_stab_visc = other_obs = None
+    arch = arch_visc = None
+    resu = resu_visc = tab_out = None
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -259,20 +259,20 @@ class CalcEndo:
             result (dict): User's keywords.
         """
 
-        self._kwds = args.copy()
+        self.kwds = args.copy()
         if "OBSERVATION" not in args:
-            self._kwds["OBSERVATION"] = ()
+            self.kwds["OBSERVATION"] = ()
 
-        self._visc_list_inst = self._kwds["ENDO_VISC"]["LIST_INST_VISC"]
-        self._crit_stab_visc = self._kwds["ENDO_VISC"]["CRIT_STAB_VISC"]
-        self._arret = self._kwds["ENDO_VISC"]["ARRET"]
-        self._resu_visc = []
-        if "ARCHIVAGE_VISC" in self._kwds["ENDO_VISC"]:
-            self._arch_visc = self._kwds["ENDO_VISC"]["ARCHIVAGE_VISC"]
+        self.visc_list_inst = self.kwds["ENDO_VISC"]["LIST_INST"]
+        self.crit_stab_visc = self.kwds["ENDO_VISC"]["PREC_STAB"]
+        self.arret = self.kwds["ENDO_VISC"]["ARRET"]
+        self.resu_visc = []
+        if "ARCHIVAGE" in self.kwds["ENDO_VISC"]:
+            self.arch_visc = self.kwds["ENDO_VISC"]["ARCHIVAGE"]
 
-        if self._crit_stab_visc:
-            if len(self._kwds["ENDO_VISC"]["CRIT_STAB_VISC"]) != len(
-                self._kwds["ENDO_VISC"]["OBSERVATION_VISC"]
+        if self.crit_stab_visc:
+            if len(self.kwds["ENDO_VISC"]["PREC_STAB"]) != len(
+                self.kwds["ENDO_VISC"]["OBSERVATION"]
             ):
                 UTMESS("F", "CALCENDO_10")
 
@@ -287,149 +287,147 @@ class CalcEndo:
         """Initialisation of OBSERVATION keyword for STAT_NON_LINE"""
 
         ##Observations et critères de stabilisation donnés par l'utilisateur
-        if self._crit_stab_visc:
-            self._obs_stab_visc = ()
-            self._other_obs = ()
-            _titre_obs_visc = self._kwds["ENDO_VISC"]["OBSERVATION_VISC"]
-            for _titre in _titre_obs_visc:
-                _l_obs = [x for x in self._kwds["OBSERVATION"] if _titre == x["TITRE"]]
-                if len(_l_obs) != 1:
-                    UTMESS("F", "CALCENDO_3", valk=(_titre))
-                self._obs_stab_visc = self._obs_stab_visc + tuple(_l_obs)
-            self._other_obs = tuple(
-                [x for x in self._kwds["OBSERVATION"] if x["TITRE"] not in _titre_obs_visc]
+        if self.crit_stab_visc:
+            self.obs_stab_visc = ()
+            self.other_obs = ()
+            titre_obs_visc = self.kwds["ENDO_VISC"]["OBSERVATION"]
+            for titre in titre_obs_visc:
+                l_obs = [x for x in self.kwds["OBSERVATION"] if titre == x["TITRE"]]
+                if len(l_obs) != 1:
+                    UTMESS("F", "CALCENDO_3", valk=(titre))
+                self.obs_stab_visc = self.obs_stab_visc + tuple(l_obs)
+            self.other_obs = tuple(
+                [x for x in self.kwds["OBSERVATION"] if x["TITRE"] not in titre_obs_visc]
             )
 
             ##Si l'utilisateur n'a pas donné en entrée une observation appelée VISCELAS ou VISCENDO
             ##On rajoute les observations par défaut
-            if "VISCELAS" not in _titre_obs_visc and "VISCENDO" not in _titre_obs_visc:
-                _defaut_obs_stab_visc, _defaut_crit_stab_visc, _default_other_obs = (
-                    set_default_observation(self._kwds)
+            if "VISCELAS" not in titre_obs_visc and "VISCENDO" not in titre_obs_visc:
+                defaut_obs_stab_visc, defaut_crit_stab_visc, default_other_obs = (
+                    set_default_observation(self.kwds)
                 )
-                self._obs_stab_visc = self._obs_stab_visc + _defaut_obs_stab_visc
-                self._crit_stab_visc = self._crit_stab_visc + _defaut_crit_stab_visc
-                self._other_obs = self._other_obs + _default_other_obs
+                self.obs_stab_visc = self.obs_stab_visc + defaut_obs_stab_visc
+                self.crit_stab_visc = self.crit_stab_visc + defaut_crit_stab_visc
+                self.other_obs = self.other_obs + default_other_obs
         else:
-            self._obs_stab_visc, self._crit_stab_visc, self._other_obs = set_default_observation(
-                self._kwds
+            self.obs_stab_visc, self.crit_stab_visc, self.other_obs = set_default_observation(
+                self.kwds
             )
 
     def check_consistency(self):
         """Check consistency of viscosity material parameters."""
 
-        _cham_mater = self._kwds["CHAM_MATER"]
+        cham_mater = self.kwds["CHAM_MATER"]
 
-        _tau_name = {
+        tau_name = {
             "ENDO_LOCA_TC": "TAU_REGU_VISC",
             "ENDO_FISS_TC": "TAU_REGU_VISC",
             "VISC_ELAS": "TAU",
         }
-        self._tau = 0.0
+        self.tau = 0.0
 
-        for _mater in _cham_mater.getVectorOfMaterial():
-            for _ldc in _tau_name:
-                if _ldc in _mater.getMaterialNames():
-                    _tau = _mater.getValueReal(_ldc, _tau_name[_ldc])
-                    if _tau > self._tau:
-                        if self._tau > 0.0:
+        for mater in cham_mater.getVectorOfMaterial():
+            for ldc in tau_name:
+                if ldc in mater.getMaterialNames():
+                    tau = mater.getValueReal(ldc, tau_name[ldc])
+                    if tau > self.tau:
+                        if self.tau > 0.0:
                             UTMESS("A", "CALCENDO_1")
-                        self._tau = _tau
+                        self.tau = tau
 
         logger.info(
             "Info CALC_ENDO : "
             + "On a retenu TAU = "
-            + str(self._tau)
+            + str(self.tau)
             + " pour la création de la liste d'instants."
         )
 
-        if not self._tau > 0.0:
+        if not self.tau > 0.0:
             UTMESS("F", "CALCENDO_2")
 
     def set_user_list_inst(self):
         """Create list of physical load sequences and list of physical timestep for archivage"""
 
-        full_user_list = self._kwds["INCREMENT"]["LIST_INST"].getValues()
-        self._user_list_inst = full_user_list
+        full_user_list = self.kwds["INCREMENT"]["LIST_INST"].getValues()
+        self.user_list_inst = full_user_list
 
-        if "NUME_INST_FIN" in self._kwds["INCREMENT"] or "INST_FIN" in self._kwds["INCREMENT"]:
-            if "NUME_INST_FIN" in self._kwds["INCREMENT"]:
-                _nume_inst_fin = self._kwds["INCREMENT"]["NUME_INST_FIN"]
+        if "NUME_INST_FIN" in self.kwds["INCREMENT"] or "INST_FIN" in self.kwds["INCREMENT"]:
+            if "NUME_INST_FIN" in self.kwds["INCREMENT"]:
+                nume_inst_fin = self.kwds["INCREMENT"]["NUME_INST_FIN"]
             else:
-                _tol = self._kwds["INCREMENT"]["PRECISION"]
-                _inst_fin = self._kwds["INCREMENT"]["INST_FIN"]
-                _nume_inst_fin = where(isclose(array(full_user_list), _inst_fin, rtol=_tol))[0][0]
-            self._user_list_inst = self._user_list_inst[: _nume_inst_fin + 1]
-        if "NUME_INST_INIT" in self._kwds["INCREMENT"] or "INST_INIT" in self._kwds["INCREMENT"]:
-            if "NUME_INST_INIT" in self._kwds["INCREMENT"]:
-                _nume_inst_init = self._kwds["INCREMENT"]["NUME_INST_INIT"]
+                tol = self.kwds["INCREMENT"]["PRECISION"]
+                inst_fin = self.kwds["INCREMENT"]["INST_FIN"]
+                nume_inst_fin = where(isclose(array(full_user_list), inst_fin, rtol=tol))[0][0]
+            self.user_list_inst = self.user_list_inst[: nume_inst_fin + 1]
+        if "NUME_INST_INIT" in self.kwds["INCREMENT"] or "INST_INIT" in self.kwds["INCREMENT"]:
+            if "NUME_INST_INIT" in self.kwds["INCREMENT"]:
+                nume_inst_init = self.kwds["INCREMENT"]["NUME_INST_INIT"]
             else:
-                _tol = self._kwds["INCREMENT"]["PRECISION"]
-                _inst_init = self._kwds["INCREMENT"]["INST_INIT"]
-                _nume_inst_init = where(isclose(array(full_user_list), _inst_init, rtol=_tol))[0][0]
-            self._user_list_inst = self._user_list_inst[_nume_inst_init:]
+                tol = self.kwds["INCREMENT"]["PRECISION"]
+                inst_init = self.kwds["INCREMENT"]["INST_INIT"]
+                nume_inst_init = where(isclose(array(full_user_list), inst_init, rtol=tol))[0][0]
+            self.user_list_inst = self.user_list_inst[nume_inst_init:]
 
         logger.info(
             "Info CALC_ENDO : "
             + "Une séquence de chargement fictive (rampe et stabilisation) sera calculée pour chacun des instants physiques suivants : "
-            + str(self._user_list_inst)
+            + str(self.user_list_inst)
         )
 
-        if "PAS_ARCH" in self._kwds["ARCHIVAGE"]:
-            self._arch = self._user_list_inst[:: self._kwds["ARCHIVAGE"]["PAS_ARCH"]]
-        if "INST" in self._kwds["ARCHIVAGE"]:
-            self._arch = self._kwds["ARCHIVAGE"]["INST"]
-        if "LIST_INST" in self._kwds["ARCHIVAGE"]:
-            self._arch = self._kwds["ARCHIVAGE"]["LIST_INST"].getValues()
+        if "PAS_ARCH" in self.kwds["ARCHIVAGE"]:
+            self.arch = self.user_list_inst[:: self.kwds["ARCHIVAGE"]["PAS_ARCH"]]
+        if "INST" in self.kwds["ARCHIVAGE"]:
+            self.arch = self.kwds["ARCHIVAGE"]["INST"]
+        if "LIST_INST" in self.kwds["ARCHIVAGE"]:
+            self.arch = self.kwds["ARCHIVAGE"]["LIST_INST"].getValues()
 
     def set_endo_list_inst(self):
         """Create list of timestep for a load sequence (ramp and stabilisation)"""
 
-        _values_visc = self._visc_list_inst.getValues()
-        if len(_values_visc) != 3:
+        values_visc = self.visc_list_inst.getValues()
+        if len(values_visc) != 3:
             UTMESS("F", "CALCENDO_9")
 
-        self._t_init_ramp = -self._tau * _values_visc[0]
+        self.t_init_ramp = -self.tau * values_visc[0]
 
-        if abs(self._t_init_ramp) > self._tau:
-            _rampe = [self._t_init_ramp, self._t_init_ramp + self._tau, 0.0]
+        if abs(self.t_init_ramp) > self.tau:
+            rampe = [self.t_init_ramp, self.t_init_ramp + self.tau, 0.0]
         else:
-            _rampe = [self._t_init_ramp, 0.0]
+            rampe = [self.t_init_ramp, 0.0]
 
-        self._dt_stab = self._tau * (_values_visc[1] - _values_visc[0])
-        _nb_stab_max = int(
-            (_values_visc[2] - _values_visc[0]) / (_values_visc[1] - _values_visc[0])
-        )
+        self.dt_stab = self.tau * (values_visc[1] - values_visc[0])
+        nb_stab_max = int((values_visc[2] - values_visc[0]) / (values_visc[1] - values_visc[0]))
 
-        _l_fict_endo = _rampe + [
-            _val
-            for _i in range(_nb_stab_max)
-            for _val in [_i * self._dt_stab + self._tau, _i * self._dt_stab + self._dt_stab]
+        l_fict_endo = rampe + [
+            val
+            for i in range(nb_stab_max)
+            for val in [i * self.dt_stab + self.tau, i * self.dt_stab + self.dt_stab]
         ]
-        self._t_fin = _l_fict_endo[-1]
+        self.t_fin = l_fict_endo[-1]
 
         logger.info(
             "Info CALC_ENDO : "
             + "Une séquence de chargement fictive (rampe et stabilisation) sera discrétisée par la liste d'instants suivante : "
-            + str(_l_fict_endo)
+            + str(l_fict_endo)
         )
 
-        if isinstance(self._kwds["ENDO_VISC"]["LIST_INST_VISC"], ListOfFloats):
-            self._visc_list_inst = set_default_listinst(self._kwds, self._tau, _l_fict_endo)
-        elif isinstance(self._kwds["ENDO_VISC"]["LIST_INST_VISC"], TimesList):
-            self._visc_list_inst = self._kwds["ENDO_VISC"]["LIST_INST_VISC"].copy()
-            self._visc_list_inst.setValues(_l_fict_endo)
+        if isinstance(self.kwds["ENDO_VISC"]["LIST_INST"], ListOfFloats):
+            self.visc_list_inst = set_default_listinst(self.kwds, self.tau, l_fict_endo)
+        elif isinstance(self.kwds["ENDO_VISC"]["LIST_INST"], TimesList):
+            self.visc_list_inst = self.kwds["ENDO_VISC"]["LIST_INST"].copy()
+            self.visc_list_inst.setValues(l_fict_endo)
 
     def sort_loads(self):
         """Sort loads in two : time dependant loads and other loads"""
 
-        self._loads = []
+        self.loads = []
         nb_time_dep = 0
         nb_fixed = 0
-        for _excit in self._kwds["EXCIT"]:
-            _load = CalcEndoLoad(_excit)
-            _load.check_time_dependency()
-            self._loads.append(_load)
-            if _load._has_time_dep:
+        for excit in self.kwds["EXCIT"]:
+            load = CalcEndoLoad(excit)
+            load.check_time_dependency()
+            self.loads.append(load)
+            if load.has_time_dep:
                 nb_time_dep += 1
             else:
                 nb_fixed += 1
@@ -448,15 +446,15 @@ class CalcEndo:
     def sort_varc(self):
         """Sort external state variables in two : time dependant varc and other varc"""
 
-        self._varc = []
-        _user_mat = self._kwds["CHAM_MATER"]
+        self.varc = []
+        user_mat = self.kwds["CHAM_MATER"]
 
-        if _user_mat.hasExternalStateVariable():
+        if user_mat.hasExternalStateVariable():
             logger.info("")
-            for _varc_on_mesh in _user_mat.getExtStateVariablesOnMeshEntities():
-                _calcendo_varc = CalcEndoVarc(_varc_on_mesh)
-                _calcendo_varc.check_time_dependency()
-                self._varc.append(_calcendo_varc)
+            for varc_on_mesh in user_mat.getExtStateVariablesOnMeshEntities():
+                calcendo_varc = CalcEndoVarc(varc_on_mesh)
+                calcendo_varc.check_time_dependency()
+                self.varc.append(calcendo_varc)
             logger.info("")
 
         else:
@@ -464,229 +462,225 @@ class CalcEndo:
             logger.info("Info CALC_ENDO : " + "Aucune variable de commande détectée.")
             logger.info("")
 
-    def init_sequence(self, _nume_ordre, _t_init, _t_comp):
+    def init_sequence(self, nume_ordre, t_init, t_comp):
         """Initialisation of a new load sequence
 
         Args:
-            _nume_ordre (int): nume_ordre of last computed load sequence
-            _t_init (float): initial time of last computed load sequence
-            _t_comp (float): end time of new load sequence
+            nume_ordre (int): nume_ordre of last computed load sequence
+            t_init (float): initial time of last computed load sequence
+            t_comp (float): end time of new load sequence
 
         Returns:
-            _nume_ordre (int): nume_ordre of new load sequence
-            _t_init (float): initial time of new load sequence
+            nume_ordre (int): nume_ordre of new load sequence
+            t_init (float): initial time of new load sequence
 
         """
 
-        if _nume_ordre is None:
-            _nume_ordre = 0
-            _t_init = self._user_list_inst[_nume_ordre]
+        if nume_ordre is None:
+            nume_ordre = 0
+            t_init = self.user_list_inst[nume_ordre]
         else:
-            _nume_ordre += 1
-            if _t_init is None:
-                _t_init = self._user_list_inst[_nume_ordre]
-        self._stab = False
+            nume_ordre += 1
+            if t_init is None:
+                t_init = self.user_list_inst[nume_ordre]
+        self.stab = False
 
-        logger.info("Info CALC_ENDO : " + "Séquence de chargement : " + str(_nume_ordre))
+        logger.info("Info CALC_ENDO : " + "Séquence de chargement : " + str(nume_ordre))
         logger.info(
             "Info CALC_ENDO : "
             + "Instant physique initial de cette séquence de chargement : "
-            + str(_t_init)
+            + str(t_init)
         )
         logger.info(
             "Info CALC_ENDO : "
             + "Instant physique final de cette séquence de chargement : "
-            + str(_t_comp)
+            + str(t_comp)
         )
 
-        return _nume_ordre, _t_init
+        return nume_ordre, t_init
 
     def set_init_state(self):
         """Prepare initial state of non linear computation
 
         Returns:
-            _nume_ordre (int): nume_ordre of new load sequence
-            _t_init (float): initial time of new load sequence
-            _depl_init (*FieldOnNodes*): depl field initial state
-            _sief_init (*FieldOnCells*): stress field initial state
-            _vari_init (*FieldOnCells*): internal variable field initial state
-            _strx_init (*FieldOnCells*): initial state for a few structural elements
+            nume_ordre (int): nume_ordre of new load sequence
+            t_init (float): initial time of new load sequence
+            depl_init (*FieldOnNodes*): depl field initial state
+            sief_init (*FieldOnCells*): stress field initial state
+            vari_init (*FieldOnCells*): internal variable field initial state
+            strx_init (*FieldOnCells*): initial state for a few structural elements
 
         """
 
-        _nume_ordre = _t_init = _depl_init = _sief_init = _vari_init = _strx_init = None
+        nume_ordre = t_init = depl_init = sief_init = vari_init = strx_init = None
 
-        if "ETAT_INIT" in self._kwds:
-            if "EVOL_NOLI" in self._kwds["ETAT_INIT"]:
-                self._resu = self._kwds["ETAT_INIT"]["EVOL_NOLI"]
+        if "ETAT_INIT" in self.kwds:
+            if "EVOL_NOLI" in self.kwds["ETAT_INIT"]:
+                self.resu = self.kwds["ETAT_INIT"]["EVOL_NOLI"]
 
                 if (
-                    "NUME_ORDRE" in self._kwds["ETAT_INIT"]
-                    or "INST" in self._kwds["ETAT_INIT"]
-                    or "NUME_DIDI" in self._kwds["ETAT_INIT"]
+                    "NUME_ORDRE" in self.kwds["ETAT_INIT"]
+                    or "INST" in self.kwds["ETAT_INIT"]
+                    or "NUME_DIDI" in self.kwds["ETAT_INIT"]
                 ):
                     UTMESS("F", "CALCENDO_8")
 
                 if (
-                    "NUME_ORDRE" not in self._kwds["ETAT_INIT"]
-                    and "INST" not in self._kwds["ETAT_INIT"]
+                    "NUME_ORDRE" not in self.kwds["ETAT_INIT"]
+                    and "INST" not in self.kwds["ETAT_INIT"]
                 ):
-                    _idx = self._resu.getAccessParameters()["NUME_ORDRE"][-1]
-                    _t_init = self._resu.getAccessParameters()["INST"][-1]
-                    _depl_init = self._resu.getField("DEPL", _idx)
-                    _sief_init = self._resu.getField("SIEF_ELGA", _idx)
-                    _vari_init = self._resu.getField("VARI_ELGA", _idx)
-                    if "STRX_ELGA" in self._resu.getFieldsNames():
-                        _strx_init = self._resu.getField("STRX_ELGA", _idx)
+                    idx = self.resu.getAccessParameters()["NUME_ORDRE"][-1]
+                    t_init = self.resu.getAccessParameters()["INST"][-1]
+                    depl_init = self.resu.getField("DEPL", idx)
+                    sief_init = self.resu.getField("SIEF_ELGA", idx)
+                    vari_init = self.resu.getField("VARI_ELGA", idx)
+                    if "STRX_ELGA" in self.resu.getFieldsNames():
+                        strx_init = self.resu.getField("STRX_ELGA", idx)
                     else:
-                        _strx_init = None
-                    _index_init = where(isclose(array(self._user_list_inst), _t_init))[0][0]
-                    self._user_list_inst = self._user_list_inst[_index_init:]
+                        strx_init = None
+                    index_init = where(isclose(array(self.user_list_inst), t_init))[0][0]
+                    self.user_list_inst = self.user_list_inst[index_init:]
             else:
-                if "DEPL" in self._kwds["ETAT_INIT"]:
-                    _depl_init = self._kwds["ETAT_INIT"]["DEPL"]
-                if "SIGMA" in self._kwds["ETAT_INIT"]:
-                    _sief_init = self._kwds["ETAT_INIT"]["SIGMA"]
-                if "VARI" in self._kwds["ETAT_INIT"]:
-                    _vari_init = self._kwds["ETAT_INIT"]["VARI"]
-                if "STRX" in self._kwds["ETAT_INIT"]:
-                    _strx_init = self._kwds["ETAT_INIT"]["STRX"]
+                if "DEPL" in self.kwds["ETAT_INIT"]:
+                    depl_init = self.kwds["ETAT_INIT"]["DEPL"]
+                if "SIGMA" in self.kwds["ETAT_INIT"]:
+                    sief_init = self.kwds["ETAT_INIT"]["SIGMA"]
+                if "VARI" in self.kwds["ETAT_INIT"]:
+                    vari_init = self.kwds["ETAT_INIT"]["VARI"]
+                if "STRX" in self.kwds["ETAT_INIT"]:
+                    strx_init = self.kwds["ETAT_INIT"]["STRX"]
 
-        return _nume_ordre, _t_init, _depl_init, _sief_init, _vari_init, _strx_init
+        return nume_ordre, t_init, depl_init, sief_init, vari_init, strx_init
 
-    def eval_loads(self, _t_init, _t_comp, _nume_ordre, _is_stab_seq):
+    def eval_loads(self, t_init, t_comp, nume_ordre, is_stab_seq):
         """Create syntax for EXCIT in STAT_NON_LINE for a given load sequence
 
         Args:
-            _t_init (float): initial physical time of current load sequence
-            _t_comp (float): end physical time of current load sequence
-            _nume_ordre (int): local value of NUME_ORDRE
-            _is_stab_seq (bool): True if stabilisation of current load sequence
+            t_init (float): initial physical time of current load sequence
+            t_comp (float): end physical time of current load sequence
+            nume_ordre (int): local value of NUME_ORDRE
+            is_stab_seq (bool): True if stabilisation of current load sequence
 
         Returns:
-            _visc_excit (list): Arguments for EXCIT in the next STAT_NON_LINE
+            visc_excit (list): Arguments for EXCIT in the next STAT_NON_LINE
 
         """
 
-        _visc_excit = []
-        for _load in self._loads:
-            _excit = _load.eval(_t_init, _t_comp, _nume_ordre, _is_stab_seq, self._t_init_ramp)
-            _visc_excit.append(_F(_excit))
+        visc_excit = []
+        for load in self.loads:
+            excit = load.eval(t_init, t_comp, nume_ordre, is_stab_seq, self.t_init_ramp)
+            visc_excit.append(_F(excit))
 
-        return _visc_excit
+        return visc_excit
 
-    def eval_varc(self, _t_init, _t_comp):
+    def eval_varc(self, t_init, t_comp):
         """Evaluate external state variables for a given load sequence
 
         Args:
-            _t_init (float): initial time of current load sequence
-            _t_comp (float): end time of current load sequence
+            t_init (float): initial time of current load sequence
+            t_comp (float): end time of current load sequence
 
         Returns:
-            _visc_mat_field (*MaterialField*): material field with time dependant varc evaluated at _t_init and _t_comp
+            visc_mat_field (*MaterialField*): material field with time dependant varc evaluated at _t_init and _t_comp
 
         """
 
-        _l_affe_varc = []
+        l_affe_varc = []
 
-        for _endo_varc in self._varc:
-            _affe_varc = _endo_varc.eval(
-                _t_init, _t_comp, self._kwds["MODELE"], self._t_init_ramp, self._t_fin
+        for endo_varc in self.varc:
+            affe_varc = endo_varc.eval(
+                t_init, t_comp, self.kwds["MODELE"], self.t_init_ramp, self.t_fin
             )
-            _l_affe_varc.append(_F(_affe_varc))
+            l_affe_varc.append(_F(affe_varc))
         MasquerAlarme("MATERIAL2_61")
-        _visc_mat_field = AFFE_MATERIAU(
-            MODELE=self._kwds["MODELE"], CHAM_MATER=self._kwds["CHAM_MATER"], AFFE_VARC=_l_affe_varc
+        visc_mat_field = AFFE_MATERIAU(
+            MODELE=self.kwds["MODELE"], CHAM_MATER=self.kwds["CHAM_MATER"], AFFE_VARC=l_affe_varc
         )
         RetablirAlarme("MATERIAL2_61")
 
-        return _visc_mat_field
+        return visc_mat_field
 
-    def eval_stab_crit(self, _evol_endo):
+    def eval_stab_crit(self, evol_endo):
         """Evaluate stabilisation criteria at the last timestep of a given result
 
         Args:
-            _evol_endo (*evol_noli*): result of the current load sequence
+            evol_endo (*evol_noli*): result of the current load sequence
 
         """
 
-        _current_inst = _evol_endo.getAccessParameters()["INST"][-1]
+        current_inst = evol_endo.getAccessParameters()["INST"][-1]
         logger.info("")
         logger.info(
             "Info CALC_ENDO : "
             + "Instant courant de la séquence de stabilisation : "
-            + str(_current_inst)
+            + str(current_inst)
         )
-        _ctrl_resu = RECU_TABLE(CO=_evol_endo, NOM_TABLE="OBSERVATION")
+        ctrl_resu = RECU_TABLE(CO=evol_endo, NOM_TABLE="OBSERVATION")
 
-        for _obs in self._other_obs:
-            if ("EVAL_CHAM" in _obs) and (_obs["EVAL_CHAM"] != "VALE"):
-                _name_obs = _obs["TITRE"]
-                _v_obs = get_obs_values(_ctrl_resu, _name_obs)
+        for obs in self.other_obs:
+            if ("EVAL_CHAM" in obs) and (obs["EVAL_CHAM"] != "VALE"):
+                name_obs = obs["TITRE"]
+                v_obs = get_obs_values(ctrl_resu, name_obs)
 
-                logger.info("Info CALC_ENDO : " + _name_obs + " courant : " + str(_v_obs[-1]))
+                logger.info("Info CALC_ENDO : " + name_obs + " courant : " + str(v_obs[-1]))
                 logger.info(
                     "Info CALC_ENDO : "
                     + "Variation de "
-                    + _name_obs
+                    + name_obs
                     + " courante : "
-                    + str(_v_obs[-1] - _v_obs[0])
+                    + str(v_obs[-1] - v_obs[0])
                 )
 
-        _crit = False
-        for _num_obs, _obs_visc in enumerate(self._obs_stab_visc):
-            _name_obs_visc = _obs_visc["TITRE"]
-            _v_obs_visc = get_obs_values(_ctrl_resu, _name_obs_visc)
-            _crit += _v_obs_visc[-1] < self._crit_stab_visc[_num_obs]
+        crit = False
+        for num_obs, obs_visc in enumerate(self.obs_stab_visc):
+            name_obs_visc = obs_visc["TITRE"]
+            v_obs_visc = get_obs_values(ctrl_resu, name_obs_visc)
+            crit += v_obs_visc[-1] < self.crit_stab_visc[num_obs]
 
             logger.info(
-                "Info CALC_ENDO : "
-                + "Evaluation du critère de stabilisation pour "
-                + _name_obs_visc
+                "Info CALC_ENDO : " + "Evaluation du critère de stabilisation pour " + name_obs_visc
             )
-            logger.info("Info CALC_ENDO : " + _name_obs_visc + " courant : " + str(_v_obs_visc[-1]))
+            logger.info("Info CALC_ENDO : " + name_obs_visc + " courant : " + str(v_obs_visc[-1]))
             logger.info(
                 "Info CALC_ENDO : "
                 + "Ratio "
-                + _name_obs_visc
+                + name_obs_visc
                 + " sur seuil de stabilité : "
-                + str(_v_obs_visc[-1] / self._crit_stab_visc[_num_obs])
+                + str(v_obs_visc[-1] / self.crit_stab_visc[num_obs])
             )
 
-        self._stab = _crit == len(self._obs_stab_visc)
+        self.stab = crit == len(self.obs_stab_visc)
         logger.info("")
-        if self._stab:
+        if self.stab:
             logger.info("Info CALC_ENDO : " + "Le critère de stabilisation global est atteint.")
         else:
             logger.info(
                 "Info CALC_ENDO : " + "Le critère de stabilisation global n'est pas atteint."
             )
 
-        if self._arret == "NON" and _current_inst == self._t_fin:
-            self._stab = True
+        if self.arret == "NON" and current_inst == self.t_fin:
+            self.stab = True
             UTMESS("A", "CALCENDO_6")
 
-    def compute_ramp(
-        self, _depl_init, _sief_init, _vari_init, _strx_init, _visc_mat_field, _visc_excit
-    ):
+    def compute_ramp(self, depl_init, sief_init, vari_init, strx_init, visc_mat_field, visc_excit):
         """Non linear computation during the ramp part of the load sequence
 
         Args:
-            _depl_init (*FieldOnNodes*): depl field initial state
-            _sief_init (*FieldOnCells*): stress field initial state
-            _vari_init (*FieldOnCells*): internal variable field initial state
-            _strx_init (*FieldOnCells*): initial state for a few structural elements
-            _visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
-            _visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
+            depl_init (*FieldOnNodes*): depl field initial state
+            sief_init (*FieldOnCells*): stress field initial state
+            vari_init (*FieldOnCells*): internal variable field initial state
+            strx_init (*FieldOnCells*): initial state for a few structural elements
+            visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
+            visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
 
         Returns:
-            _evol_endo (*evol_noli*): result of the current load sequence (ramp only)
+            evol_endo (*evol_noli*): result of the current load sequence (ramp only)
 
         """
 
-        _params_snl = {
+        params_snl = {
             key: item
-            for key, item in self._kwds.items()
+            for key, item in self.kwds.items()
             if key
             not in [
                 "ENDO_VISC",
@@ -700,46 +694,44 @@ class CalcEndo:
             ]
         }
 
-        _params_snl["CHAM_MATER"] = _visc_mat_field
+        params_snl["CHAM_MATER"] = visc_mat_field
 
-        if ("ETAT_INIT" in self._kwds and "EVOL_NOLI" in self._kwds["ETAT_INIT"]) or (
-            _depl_init or _sief_init or _vari_init or _strx_init
+        if ("ETAT_INIT" in self.kwds and "EVOL_NOLI" in self.kwds["ETAT_INIT"]) or (
+            depl_init or sief_init or vari_init or strx_init
         ):
-            l_ETAT_INIT = _F(DEPL=_depl_init, SIGM=_sief_init, VARI=_vari_init, STRX=_strx_init)
+            l_ETAT_INIT = _F(DEPL=depl_init, SIGM=sief_init, VARI=vari_init, STRX=strx_init)
         else:
             l_ETAT_INIT = []
 
-        _params_snl["ETAT_INIT"] = l_ETAT_INIT
-        _params_snl["INCREMENT"] = _F(
-            LIST_INST=self._visc_list_inst, INST_FIN=0.0, NUME_INST_INIT=0
-        )
-        _params_snl["OBSERVATION"] = self._obs_stab_visc + self._other_obs
-        _params_snl["EXCIT"] = _visc_excit
-        _params_snl["ARCHIVAGE"] = self._arch_visc
+        params_snl["ETAT_INIT"] = l_ETAT_INIT
+        params_snl["INCREMENT"] = _F(LIST_INST=self.visc_list_inst, INST_FIN=0.0, NUME_INST_INIT=0)
+        params_snl["OBSERVATION"] = self.obs_stab_visc + self.other_obs
+        params_snl["EXCIT"] = visc_excit
+        params_snl["ARCHIVAGE"] = self.arch_visc
 
-        _evol_endo = STAT_NON_LINE(**_params_snl)
-        self.eval_stab_crit(_evol_endo)
+        evol_endo = STAT_NON_LINE(**params_snl)
+        self.eval_stab_crit(evol_endo)
 
-        return _evol_endo
+        return evol_endo
 
-    def compute_stab(self, _evol_endo, _visc_mat_field, _visc_excit):
+    def compute_stab(self, evol_endo, visc_mat_field, visc_excit):
         """Non linear computation of one stabilisation sequence
 
         Args:
-            _evol_endo (*evol_noli*): result of the current load sequence
-            _visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
-            _visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
+            evol_endo (*evol_noli*): result of the current load sequence
+            visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
+            visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
 
         Returns:
-            _evol_endo (*evol_noli*): result of the current load sequence (ramp and stab)
+            evol_endo (*evol_noli*): result of the current load sequence (ramp and stab)
 
         """
-        _current_inst = _evol_endo.getAccessParameters()["INST"][-1]
-        _next_inst = _current_inst + self._dt_stab
+        current_inst = evol_endo.getAccessParameters()["INST"][-1]
+        next_inst = current_inst + self.dt_stab
 
-        _params_snl = {
+        params_snl = {
             key: item
-            for key, item in self._kwds.items()
+            for key, item in self.kwds.items()
             if key
             not in [
                 "ENDO_VISC",
@@ -753,100 +745,100 @@ class CalcEndo:
             ]
         }
 
-        _params_snl["CHAM_MATER"] = _visc_mat_field
-        _params_snl["ETAT_INIT"] = _F(EVOL_NOLI=_evol_endo)
-        _params_snl["INCREMENT"] = _F(LIST_INST=self._visc_list_inst, INST_FIN=_next_inst)
-        _params_snl["OBSERVATION"] = self._obs_stab_visc + self._other_obs
+        params_snl["CHAM_MATER"] = visc_mat_field
+        params_snl["ETAT_INIT"] = _F(EVOL_NOLI=evol_endo)
+        params_snl["INCREMENT"] = _F(LIST_INST=self.visc_list_inst, INST_FIN=next_inst)
+        params_snl["OBSERVATION"] = self.obs_stab_visc + self.other_obs
 
-        _params_snl["EXCIT"] = _visc_excit
-        _params_snl["ARCHIVAGE"] = self._arch_visc
+        params_snl["EXCIT"] = visc_excit
+        params_snl["ARCHIVAGE"] = self.arch_visc
 
-        _evol_endo = STAT_NON_LINE(reuse=_evol_endo, **_params_snl)
+        evol_endo = STAT_NON_LINE(reuse=evol_endo, **params_snl)
 
-        self.eval_stab_crit(_evol_endo)
+        self.eval_stab_crit(evol_endo)
 
-        return _evol_endo
+        return evol_endo
 
-    def arch_resu(self, _evol_endo, _t_comp):
+    def arch_resu(self, evol_endo, t_comp):
         """Save results for output
 
         Args:
-            _evol_endo (*evol_noli*): result of the current load sequence
-            _t_comp (float): physical time at the end of current load sequence
+            evol_endo (*evol_noli*): result of the current load sequence
+            t_comp (float): physical time at the end of current load sequence
 
         Returns:
-            _t_init (float): reset _t_init to None
-            _depl_arch (*FieldOnNodes*): depl field at the end of load sequence
-            _sief_arch (*FieldOnCells*): stress field at the end of load sequence
-            _vari_arch (*FieldOnCells*): internal variable field at the end of load sequence
-            _strx_arch (*FieldOnCells*): strx field at the end of load sequence
+            t_init (float): reset _t_init to None
+            depl_arch (*FieldOnNodes*): depl field at the end of load sequence
+            sief_arch (*FieldOnCells*): stress field at the end of load sequence
+            vari_arch (*FieldOnCells*): internal variable field at the end of load sequence
+            strx_arch (*FieldOnCells*): strx field at the end of load sequence
 
         """
 
-        _nume = _evol_endo.getAccessParameters()["NUME_ORDRE"][-1]
-        _depl_arch = CREA_CHAMP(
+        nume = evol_endo.getAccessParameters()["NUME_ORDRE"][-1]
+        depl_arch = CREA_CHAMP(
             TYPE_CHAM="NOEU_DEPL_R",
             OPERATION="EXTR",
             NOM_CHAM="DEPL",
-            RESULTAT=_evol_endo,
-            NUME_ORDRE=_nume,
+            RESULTAT=evol_endo,
+            NUME_ORDRE=nume,
         )
-        _sief_arch = CREA_CHAMP(
+        sief_arch = CREA_CHAMP(
             TYPE_CHAM="ELGA_SIEF_R",
             OPERATION="EXTR",
             NOM_CHAM="SIEF_ELGA",
-            RESULTAT=_evol_endo,
-            NUME_ORDRE=_nume,
+            RESULTAT=evol_endo,
+            NUME_ORDRE=nume,
         )
-        _vari_arch = CREA_CHAMP(
+        vari_arch = CREA_CHAMP(
             TYPE_CHAM="ELGA_VARI_R",
             OPERATION="EXTR",
             NOM_CHAM="VARI_ELGA",
-            RESULTAT=_evol_endo,
-            NUME_ORDRE=_nume,
+            RESULTAT=evol_endo,
+            NUME_ORDRE=nume,
         )
 
-        if "STRX_ELGA" in _evol_endo.getFieldsNames():
-            _strx_arch = CREA_CHAMP(
+        if "STRX_ELGA" in evol_endo.getFieldsNames():
+            strx_arch = CREA_CHAMP(
                 TYPE_CHAM="ELGA_STRX_R",
                 OPERATION="EXTR",
                 NOM_CHAM="STRX_ELGA",
-                RESULTAT=_evol_endo,
-                NUME_ORDRE=_nume,
+                RESULTAT=evol_endo,
+                NUME_ORDRE=nume,
             )
         else:
-            _strx_arch = None
+            strx_arch = None
 
-        _ctrl_obs = RECU_TABLE(CO=_evol_endo, NOM_TABLE="OBSERVATION")
-        self._tab_out = concatenate_table(self._tab_out, _ctrl_obs, _t_comp)
+        ctrl_obs = RECU_TABLE(CO=evol_endo, NOM_TABLE="OBSERVATION")
+        self.tab_out = concatenate_table(self.tab_out, ctrl_obs, t_comp)
 
-        _arch_t_comp = (_t_comp == self._user_list_inst[-1]) or (_t_comp in self._arch)
-        if _arch_t_comp:
-            _d_affe = {"MODELE": self._kwds["MODELE"], "CHAM_MATER": self._kwds["CHAM_MATER"]}
-            if "CARA_ELEM" in self._kwds:
-                _d_affe["CARA_ELEM"] = self._kwds["CARA_ELEM"]
+        arch_t_comp = (t_comp == self.user_list_inst[-1]) or (t_comp in self.arch)
+        if arch_t_comp:
+            d_affe = {"MODELE": self.kwds["MODELE"], "CHAM_MATER": self.kwds["CHAM_MATER"]}
+            if "CARA_ELEM" in self.kwds:
+                d_affe["CARA_ELEM"] = self.kwds["CARA_ELEM"]
 
             l_affe = (
-                _F(NOM_CHAM="DEPL", CHAM_GD=_depl_arch, INST=_t_comp, **_d_affe),
-                _F(NOM_CHAM="SIEF_ELGA", CHAM_GD=_sief_arch, INST=_t_comp, **_d_affe),
-                _F(NOM_CHAM="VARI_ELGA", CHAM_GD=_vari_arch, INST=_t_comp, **_d_affe),
+                _F(NOM_CHAM="DEPL", CHAM_GD=depl_arch, INST=t_comp, **d_affe),
+                _F(NOM_CHAM="SIEF_ELGA", CHAM_GD=sief_arch, INST=t_comp, **d_affe),
+                _F(NOM_CHAM="VARI_ELGA", CHAM_GD=vari_arch, INST=t_comp, **d_affe),
             )
 
-            if _strx_arch:
-                l_affe += _F(NOM_CHAM="STRX_ELGA", CHAM_GD=_strx_arch, INST=_t_comp, **_d_affe)
+            if strx_arch:
+                l_affe += _F(NOM_CHAM="STRX_ELGA", CHAM_GD=strx_arch, INST=t_comp, **d_affe)
 
-            self._resu = CREA_RESU(
-                reuse=self._resu,
+            self.resu = CREA_RESU(
+                reuse=self.resu,
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_NOLI",
                 AFFE=l_affe,
-                COMPORTEMENT=self._kwds["COMPORTEMENT"],
+                COMPORTEMENT=self.kwds["COMPORTEMENT"],
             )
 
-        if self._arch_visc:
-            self._resu_visc.append(_evol_endo)
+        if self.arch_visc:
+            self.resu_visc.append(evol_endo)
 
-        return None, _depl_arch, _sief_arch, _vari_arch, _strx_arch
+        return None, depl_arch, sief_arch, vari_arch, strx_arch
 
 
 def calc_endo_ops(self, **args):
@@ -856,38 +848,34 @@ def calc_endo_ops(self, **args):
         **args (dict): User's keywords.
 
     Returns:
-        _calc_endo._resu (*evol_noli*): Non linear result (physical time)
-        _calc_endo._tab_out (*Table*): Observation table
-        _calc_endo._resu_visc (list): List of evol_noli for fictive time discretisation. Optionnal.
+        calc_endo.resu (*evol_noli*): Non linear result (physical time)
+        calc_endo.tab_out (*Table*): Observation table
+        calc_endo.resu_visc (list): List of evol_noli for fictive time discretisation. Optionnal.
 
     """
 
-    _calc_endo = CalcEndo(args)
+    calc_endo = CalcEndo(args)
 
-    _nume_ordre, _t_init, _depl_init, _sief_init, _vari_init, _strx_init = (
-        _calc_endo.set_init_state()
-    )
+    nume_ordre, t_init, depl_init, sief_init, vari_init, strx_init = calc_endo.set_init_state()
 
-    for _t_comp in _calc_endo._user_list_inst[1:]:
-        _nume_ordre, _t_init = _calc_endo.init_sequence(_nume_ordre, _t_init, _t_comp)
-        _visc_excit = _calc_endo.eval_loads(_t_init, _t_comp, _nume_ordre, False)
-        _visc_mat_field = _calc_endo.eval_varc(_t_init, _t_comp)
+    for t_comp in calc_endo.user_list_inst[1:]:
+        nume_ordre, t_init = calc_endo.init_sequence(nume_ordre, t_init, t_comp)
+        visc_excit = calc_endo.eval_loads(t_init, t_comp, nume_ordre, False)
+        visc_mat_field = calc_endo.eval_varc(t_init, t_comp)
 
-        _evol_endo = _calc_endo.compute_ramp(
-            _depl_init, _sief_init, _vari_init, _strx_init, _visc_mat_field, _visc_excit
+        evol_endo = calc_endo.compute_ramp(
+            depl_init, sief_init, vari_init, strx_init, visc_mat_field, visc_excit
         )
 
-        if not _calc_endo._stab:
-            _visc_excit = _calc_endo.eval_loads(_t_init, _t_comp, _nume_ordre, True)
+        if not calc_endo.stab:
+            visc_excit = calc_endo.eval_loads(t_init, t_comp, nume_ordre, True)
 
-        while not _calc_endo._stab:
-            _evol_endo = _calc_endo.compute_stab(_evol_endo, _visc_mat_field, _visc_excit)
+        while not calc_endo.stab:
+            evol_endo = calc_endo.compute_stab(evol_endo, visc_mat_field, visc_excit)
 
-        _t_init, _depl_init, _sief_init, _vari_init, _strx_init = _calc_endo.arch_resu(
-            _evol_endo, _t_comp
-        )
+        t_init, depl_init, sief_init, vari_init, strx_init = calc_endo.arch_resu(evol_endo, t_comp)
 
-    if _calc_endo._arch_visc:
-        return _calc_endo._resu, _calc_endo._tab_out, _calc_endo._resu_visc
+    if calc_endo.arch_visc:
+        return calc_endo.resu, calc_endo.tab_out, calc_endo.resu_visc
     else:
-        return _calc_endo._resu, _calc_endo._tab_out  # , None
+        return calc_endo.resu, calc_endo.tab_out  # , None

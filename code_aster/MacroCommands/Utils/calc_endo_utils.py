@@ -23,68 +23,68 @@ Utilitaires pour CALC_ENDO
 
 from ...Messages import UTMESS
 from ...CodeCommands import CALC_TABLE, FORMULE, DEFI_LIST_INST
-from ...Behaviours import regu_visc_elas, endo_loca_tc #, endo_fiss_tc
+from ...Behaviours import regu_visc_elas, endo_loca_tc  # , endo_fiss_tc
 
 
-def get_obs_values(_ctrl_resu, _name_obs):
+def get_obs_values(ctrl_resu, name_obs):
     """Get values of a given OBSERVATION
 
     Args:
-        _ctrl_resu (*Table*): observation table
-        _name_obs (str): name of the quantity to extract from the table
+        ctrl_resu (*Table*): observation table
+        name_obs (str): name of the quantity to extract from the table
 
     Returns:
-        _ctrl_obs_values (list): list of obervation table values
+        ctrl_obs_values (list): list of obervation table values
     """
 
-    _ctrl_obs = CALC_TABLE(
-        TABLE=_ctrl_resu,
+    ctrl_obs = CALC_TABLE(
+        TABLE=ctrl_resu,
         ACTION=(
-            _F(OPERATION="FILTRE", NOM_PARA="NOM_OBSERVATION", VALE_K=_name_obs),
+            _F(OPERATION="FILTRE", NOM_PARA="NOM_OBSERVATION", VALE_K=name_obs),
             _F(OPERATION="EXTR", NOM_PARA=("INST", "VALE")),
         ),
     )
 
-    _ctrl_obs_values = _ctrl_obs.EXTR_TABLE().values()["VALE"]
+    ctrl_obs_values = ctrl_obs.EXTR_TABLE().values()["VALE"]
 
-    return _ctrl_obs_values
+    return ctrl_obs_values
 
 
-def concatenate_table(_table_out, _obs_table, _t_comp):
+def concatenate_table(table_out, obs_table, t_comp):
     """Create output table for CALC_ENDO
 
     Args:
-        _table_out (*Table*): output table of CALC_ENDO
-        _obs_table (*Table*): observation table
-        _t_comp (float): physical inst for _obs_table
+        table_out (*Table*): output table of CALC_ENDO
+        obs_table (*Table*): observation table
+        t_comp (float): physical inst for _obs_table
 
     Returns:
-        _obs_table (*Table*): output table of CALC_ENDO
+        obs_table (*Table*): output table of CALC_ENDO
     """
 
-    _obs_table = CALC_TABLE(
-        TABLE=_obs_table,
+    obs_table = CALC_TABLE(
+        TABLE=obs_table,
         ACTION=(
             _F(OPERATION="RENOMME", NOM_PARA=("INST", "INST_VISC")),
             _F(OPERATION="SUPPRIME", NOM_PARA=("NUME_ORDRE")),
         ),
     )
 
-    _obs_table = CALC_TABLE(
-        reuse=_obs_table,
-        TABLE=_obs_table,
-        ACTION=_F(OPERATION="AJOUT_COLONNE", NOM_PARA="INST", VALE=_t_comp),
+    obs_table = CALC_TABLE(
+        reuse=obs_table,
+        TABLE=obs_table,
+        ACTION=_F(OPERATION="AJOUT_COLONNE", NOM_PARA="INST", VALE=t_comp),
     )
 
-    if _table_out:
-        _table_out = CALC_TABLE(
-            reuse=_table_out,
-            TABLE=_table_out,
-            ACTION=_F(OPERATION="COMB", TABLE=_obs_table, RESTREINT="NON", NOM_PARA="INST"),
+    if table_out:
+        table_out = CALC_TABLE(
+            reuse=table_out,
+            TABLE=table_out,
+            ACTION=_F(OPERATION="COMB", TABLE=obs_table, RESTREINT="NON", NOM_PARA="INST"),
         )
-        return _table_out
+        return table_out
     else:
-        return _obs_table
+        return obs_table
 
 
 def Get_Vari_By_Name(bhv, vi_name):
@@ -124,159 +124,156 @@ def set_default_observation(kwds):
     crit_stab_visc = []
     other_obs = []
 
-    _cham_mater = kwds["CHAM_MATER"]
-    _mat_by_mesh = _cham_mater.getMaterialsOnMeshEntities()
-    _names_mesh_ent = [x[1].getNames() for x in _mat_by_mesh]
+    cham_mater = kwds["CHAM_MATER"]
+    mat_by_mesh = cham_mater.getMaterialsOnMeshEntities()
+    names_mesh_ent = [x[1].getNames() for x in mat_by_mesh]
 
-    for _compor in kwds["COMPORTEMENT"]:
-        _ldc_name = _compor["RELATION"]
+    for compor in kwds["COMPORTEMENT"]:
+        ldc_name = compor["RELATION"]
 
-        if _compor["REGU_VISC"] == "OUI" or _ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
+        if compor["REGU_VISC"] == "OUI" or ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
 
-            if _ldc_name == "ENDO_LOCA_TC":
-                _ldc = endo_loca_tc
-            elif _ldc_name == "ENDO_FISS_TC":
-                _ldc = endo_fiss_tc
+            if ldc_name == "ENDO_LOCA_TC":
+                ldc = endo_loca_tc
+            elif ldc_name == "ENDO_FISS_TC":
+                ldc = endo_fiss_tc
             else:
                 assert False
 
-            if "GROUP_MA" in _compor:
-                _l_mesh_ent = _compor["GROUP_MA"]
-                _d_mesh_ent = {"GROUP_MA": _l_mesh_ent}
-            elif "TOUT" in _compor:
-                _l_mesh_ent = [_compor["TOUT"]]
-                _d_mesh_ent = {"TOUT": "OUI"}
+            if "GROUP_MA" in compor:
+                l_mesh_ent = compor["GROUP_MA"]
+                d_mesh_ent = {"GROUP_MA": l_mesh_ent}
+            elif "TOUT" in compor:
+                l_mesh_ent = [compor["TOUT"]]
+                d_mesh_ent = {"TOUT": "OUI"}
 
-            for _mesh_ent in _l_mesh_ent:
-                _index_mesh_ent = [
-                    _names_mesh_ent.index(x) for x in _names_mesh_ent if _mesh_ent in x
-                ]
-                assert len(_index_mesh_ent) == 1
-                _mat_on_grp_ma = _mat_by_mesh[_index_mesh_ent[0]][0][0]
+            for mesh_ent in l_mesh_ent:
+                index_mesh_ent = [names_mesh_ent.index(x) for x in names_mesh_ent if mesh_ent in x]
+                assert len(index_mesh_ent) == 1
+                mat_on_grp_ma = mat_by_mesh[index_mesh_ent[0]][0][0]
 
                 if "RESI_REFE_RELA" not in kwds["CONVERGENCE"]:
                     UTMESS("F", "CALCENDO_11")
-                _resi_refe_rela = kwds["CONVERGENCE"]["RESI_REFE_RELA"]
-                _ft = _mat_on_grp_ma.getValueReal(_ldc_name, "FT")
+                resi_refe_rela = kwds["CONVERGENCE"]["RESI_REFE_RELA"]
+                ft = mat_on_grp_ma.getValueReal(ldc_name, "FT")
 
-                if _compor["REGU_VISC"] == "OUI":
+                if compor["REGU_VISC"] == "OUI":
 
-                    _kvisc_elas = _mat_on_grp_ma.getValueReal("VISC_ELAS", "K")
-                    _nbvi_ldc = _ldc.loi.get_nb_vari()
-                    ##ATTENTION : il faudrait s'assurer qu'il n'y a jamais d'autres variables internes insérées entre celles de la LDC et REGU_VISC
-                    _nom_vari_ener_elas = "V%d" % (
-                        _nbvi_ldc + int(Get_Vari_By_Name(regu_visc_elas, "VISCELAS")[1:])
+                    kvisc_elas = mat_on_grp_ma.getValueReal("VISC_ELAS", "K")
+                    nbvi_ldc = ldc.loi.get_nb_vari()
+                    nom_vari_ener_elas = "V%d" % (
+                        nbvi_ldc + int(Get_Vari_By_Name(regu_visc_elas, "VISCELAS")[1:])
                     )
-                    _f_sigm_visc_elas = FORMULE(
-                        NOM_PARA=_nom_vari_ener_elas,
-                        VALE="(2*k*%s)**0.5" % _nom_vari_ener_elas,
-                        k=_kvisc_elas,
+                    f_sigm_visc_elas = FORMULE(
+                        NOM_PARA=nom_vari_ener_elas,
+                        VALE="(2*k*%s)**0.5" % nom_vari_ener_elas,
+                        k=kvisc_elas,
                     )
 
-                    _obs_visc = _F(
-                        TITRE=_mesh_ent + "_VISCELAS",
+                    obs_visc = _F(
+                        TITRE=mesh_ent + "_VISCELAS",
                         PAS_OBSE=1,
                         NOM_CHAM="VARI_ELGA",
-                        NOM_CMP=_nom_vari_ener_elas,
+                        NOM_CMP=nom_vari_ener_elas,
                         EVAL_CMP="FORMULE",
-                        FORMULE=_f_sigm_visc_elas,
+                        FORMULE=f_sigm_visc_elas,
                         EVAL_ELGA="MAX",
                         EVAL_CHAM="MAX",
-                        **_d_mesh_ent,
+                        **d_mesh_ent,
                     )
-                    obs_stab_visc.append(_obs_visc)
-                    crit_stab_visc.append(_resi_refe_rela * _ft)
+                    obs_stab_visc.append(obs_visc)
+                    crit_stab_visc.append(resi_refe_rela * ft)
 
-                if _ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
-                    _vari_endotot = Get_Vari_By_Name(_ldc, "ENDOTOT")
-                    _obs_endomoy = _F(
-                        TITRE=_mesh_ent + "_ENDOTOT",
+                if ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
+                    vari_endotot = Get_Vari_By_Name(ldc, "ENDOTOT")
+                    obs_endomoy = _F(
+                        TITRE=mesh_ent + "_ENDOTOT",
                         PAS_OBSE=1,
                         NOM_CHAM="VARI_ELGA",
-                        NOM_CMP=_vari_endotot,
+                        NOM_CMP=vari_endotot,
                         EVAL_ELGA="MAX",
                         EVAL_CHAM="MOY",
-                        **_d_mesh_ent,
+                        **d_mesh_ent,
                     )
-                    other_obs.append(_obs_endomoy)
+                    other_obs.append(obs_endomoy)
 
-                    _vari_visc = Get_Vari_By_Name(_ldc, "SIGMVISC")
-                    _obs_visc = _F(
-                        TITRE=_mesh_ent + "_VISCENDO",
+                    vari_visc = Get_Vari_By_Name(ldc, "SIGMVISC")
+                    obs_visc = _F(
+                        TITRE=mesh_ent + "_VISCENDO",
                         PAS_OBSE=1,
                         NOM_CHAM="VARI_ELGA",
-                        NOM_CMP=_vari_visc,
+                        NOM_CMP=vari_visc,
                         EVAL_ELGA="MAX",
                         EVAL_CHAM="MAX",
-                        **_d_mesh_ent,
+                        **d_mesh_ent,
                     )
-                    obs_stab_visc.append(_obs_visc)
-                    crit_stab_visc.append(_resi_refe_rela * _ft)
+                    obs_stab_visc.append(obs_visc)
+                    crit_stab_visc.append(resi_refe_rela * ft)
 
     return tuple(obs_stab_visc), crit_stab_visc, tuple(other_obs)
 
 
-def set_default_listinst(_kwds, _tau, _l_fict_endo):
+def set_default_listinst(_kwds, tau, l_fict_endo):
     """Create DEFI_LIST_INST with default parameters
 
     Args:
-        _kwds (*dict*): arguments for CALC_ENDO
-        _tau (float): viscosity time
-        _l_fict_endo (list): list of timesteps for a load sequence
+        kwds (*dict*): arguments for CALC_ENDO
+        tau (float): viscosity time
+        l_fict_endo (list): list of timesteps for a load sequence
 
     Returns:
-        _visc_list_inst (*list_inst*): list_inst used for a load sequence (ramp and stabilisation)
+        visc_list_inst (*list_inst*): list_inst used for a load sequence (ramp and stabilisation)
 
     """
 
-    _l_echec = [_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_PAS=3, SUBD_PAS_MINI=_tau / 3**15)]
-    _l_adaptation = [_F(EVENEMENT="TOUT_INST", MODE_CALCUL_TPLUS="FIXE", PCENT_AUGM=75)]
+    l_echec = [_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_PAS=3, SUBD_PAS_MINI=tau / 3**15)]
+    l_adaptation = [_F(EVENEMENT="TOUT_INST", MODE_CALCUL_TPLUS="FIXE", PCENT_AUGM=75)]
 
-    for _compor in _kwds["COMPORTEMENT"]:
-        _ldc_name = _compor["RELATION"]
-        if _ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
+    for compor in _kwds["COMPORTEMENT"]:
+        ldc_name = compor["RELATION"]
+        if ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
 
-            if _ldc_name == "ENDO_LOCA_TC":
-                _ldc = endo_loca_tc
-            elif _ldc_name == "ENDO_FISS_TC":
-                _ldc = endo_fiss_tc
+            if ldc_name == "ENDO_LOCA_TC":
+                ldc = endo_loca_tc
+            elif ldc_name == "ENDO_FISS_TC":
+                ldc = endo_fiss_tc
 
-            if "GROUP_MA" in _compor:
-                _d_mesh_ent = {"GROUP_MA": _compor["GROUP_MA"]}
-            elif "TOUT" in _compor:
-                _d_mesh_ent = {}
+            if "GROUP_MA" in compor:
+                d_mesh_ent = {"GROUP_MA": compor["GROUP_MA"]}
+            elif "TOUT" in compor:
+                d_mesh_ent = {}
 
-            _nom_vari = Get_Vari_By_Name(_ldc, "HISTTRAC")
+            nom_vari = Get_Vari_By_Name(ldc, "HISTTRAC")
 
-            _l_echec.append(
+            l_echec.append(
                 _F(
                     EVENEMENT="DELTA_GRANDEUR",
                     VALE_REF=1.5 * 0.1,
                     NOM_CHAM="VARI_ELGA",
-                    NOM_CMP=_nom_vari,
+                    NOM_CMP=nom_vari,
                     ACTION="DECOUPE",
                     SUBD_PAS=3,
-                    SUBD_PAS_MINI=_tau / 3**15,
-                    **_d_mesh_ent,
+                    SUBD_PAS_MINI=tau / 3**15,
+                    **d_mesh_ent,
                 )
             )
-            _l_adaptation.append(
+            l_adaptation.append(
                 _F(
                     EVENEMENT="TOUT_INST",
                     MODE_CALCUL_TPLUS="DELTA_GRANDEUR",
                     VALE_REF=0.1,
                     NOM_CHAM="VARI_ELGA",
-                    NOM_CMP=_nom_vari,
-                    **_d_mesh_ent,
+                    NOM_CMP=nom_vari,
+                    **d_mesh_ent,
                 )
             )
 
-    _visc_list_inst = DEFI_LIST_INST(
+    visc_list_inst = DEFI_LIST_INST(
         MODELE=_kwds["MODELE"],
         METHODE="AUTO",
-        DEFI_LIST=_F(VALE=_l_fict_endo),
-        ECHEC=_l_echec,
-        ADAPTATION=_l_adaptation,
+        DEFI_LIST=_F(VALE=l_fict_endo),
+        ECHEC=l_echec,
+        ADAPTATION=l_adaptation,
     )
 
-    return _visc_list_inst
+    return visc_list_inst

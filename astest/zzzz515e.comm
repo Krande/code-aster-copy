@@ -129,7 +129,7 @@ evol_me, tab_obs = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST_VISC=DEFI_LIST_REEL(VALE=(50, 100, 2150))),
+    ENDO_VISC=_F(LIST_INST=DEFI_LIST_REEL(VALE=(50, 100, 2150))),
 )
 
 ##Incrément de chargement appliqué de 0.2 à 0.3 via DIDI, puis constant jusqu'à 0.4
@@ -155,7 +155,7 @@ evol_me, tab_obs = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST_VISC=DEFI_LIST_REEL(VALE=(50, 150, 2050))),
+    ENDO_VISC=_F(LIST_INST=DEFI_LIST_REEL(VALE=(50, 150, 2050))),
 )
 
 ##Incrément de chargement appliqué de 0.4 à 1.0 via DIDI fonction du temps
@@ -186,7 +186,7 @@ evol_me, tab_obs = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST_VISC=DEFI_LIST_REEL(VALE=(50, 150, 2050))),
+    ENDO_VISC=_F(LIST_INST=DEFI_LIST_REEL(VALE=(50, 150, 2050))),
 )
 
 # -----------------------------------------

@@ -320,7 +320,7 @@ evol_me, tab_obs = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST_VISC=inst_visc),
+    ENDO_VISC=_F(LIST_INST=inst_visc),
 )
 
 # -----------------------------------------

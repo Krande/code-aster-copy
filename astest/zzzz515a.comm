@@ -419,10 +419,10 @@ evol_me, tab_obs, l_evol = CALC_ENDO(
         ),
     ),
     ENDO_VISC=_F(
-        LIST_INST_VISC=inst_visc,
-        OBSERVATION_VISC=["VISCENDO", "VISCELAS"],
-        CRIT_STAB_VISC=[r_stab * b_ft] * 2,
-        ARCHIVAGE_VISC=_F(PAS_ARCH=1),
+        LIST_INST=inst_visc,
+        OBSERVATION=["VISCENDO", "VISCELAS"],
+        PREC_STAB=[r_stab * b_ft] * 2,
+        ARCHIVAGE=_F(PAS_ARCH=1),
     ),
 )
 
