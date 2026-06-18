@@ -108,6 +108,8 @@ module HHO_type
         aster_logical               :: l_jaco_cst = ASTER_FALSE
 ! ----- For AXIS, the edge is on the axis r=0
         aster_logical               :: l_axis_on_axe = ASTER_FALSE
+! ----- Axis problem
+        aster_logical                :: l_axis = ASTER_FALSE
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face
@@ -144,6 +146,8 @@ module HHO_type
         aster_logical                :: l_jaco_cst = ASTER_FALSE
 ! ----- Initialize face
         aster_logical                :: l_face_init = ASTER_FALSE
+! ----- Axis problem
+        aster_logical                :: l_axis = ASTER_FALSE
 ! ----- member function
     contains
         procedure, public, pass :: print => print_cell

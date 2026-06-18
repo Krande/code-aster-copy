@@ -43,7 +43,7 @@ module HHO_eval_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoEvalScalCell, hhoEvalScalFace, hhoEvalVecCell, hhoEvalVecFace
-    public :: hhoEvalMatCell, hhoEvalSymMatCell, hhoFuncRScalEvalCellQp, hhoEvalMatCell2
+    public :: hhoEvalMatCell, hhoEvalSymMatCell, hhoFuncRScalEvalCellQp
     public :: hhoEvalVecCell2, hhoEvalScalCell2
     public :: hhoFuncFScalEvalQp, hhoFuncRScalEvalQp, hhoFuncRVecEvalQp, hhoFuncRVecEvalCellQp
 !    private  ::
@@ -285,52 +285,6 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell2(hhoBasisCell, order, pt, coeff) result(eval)
-!
-        implicit none
-!
-        type(HHO_basis_cell), intent(inout) :: hhoBasisCell
-        integer(kind=8), intent(in) :: order
-        real(kind=8), dimension(3), intent(in) :: pt
-        real(kind=8), dimension(:), intent(in) :: coeff
-        real(kind=8) :: eval(3, 3)
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   evaluate a matrix at a point pt
-!   In hhoBasisCell : basis cell
-!   In Order        : polynomial order of the function
-!   In pt           : point where evaluate
-!   In coeff        : polynomial coefficient of the function
-!   In size_coeff   : number of coefficient
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
-        integer(kind=8) :: i, j, size_cmp, deca
-        blas_int :: b_n
-        blas_int, parameter :: b_one = to_blas_int(1)
-!
-        eval = 0.d0
-        size_cmp = hhoBasisCell%BSSize(0, order)
-        b_n = to_blas_int(size_cmp)
-!
-! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
-!
-        deca = 0
-        do i = 1, hhoBasisCell%ndim
-            do j = 1, hhoBasisCell%ndim
-                eval(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
-                deca = deca+size_cmp
-            end do
-        end do
-!
-    end function
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
     function hhoEvalMatCell(ndim, gbs, BSCEval, coeff) result(eval)
 !
         implicit none
@@ -348,11 +302,28 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: i, j, size_cmp, deca
+        aster_logical :: l_axis
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         eval = 0.d0
-        size_cmp = gbs/(ndim*ndim)
+        l_axis = ASTER_FALSE
+        if (ndim == 3) then
+            size_cmp = gbs/(ndim*ndim)
+        else if (ndim == 2) then
+            select case (gbs)
+            case (5, 15, 30, 50, 75, 105)
+                size_cmp = gbs/5
+                l_axis = ASTER_TRUE
+            case (4, 12, 24, 40, 60, 84)
+                size_cmp = gbs/4
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
         b_n = to_blas_int(size_cmp)
 !
         deca = 0
@@ -362,6 +333,10 @@ contains
                 deca = deca+size_cmp
             end do
         end do
+!
+        if (l_axis) then
+            eval(3, 3) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
+        end if
 !
     end function
 !
@@ -391,13 +366,23 @@ contains
 !
         real(kind=8) :: mat(3, 3)
         integer(kind=8) :: i, j, size_cmp, deca
+        aster_logical :: l_axis
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
 !
+        l_axis = ASTER_FALSE
         if (ndim == 3) then
             size_cmp = gbs_sym/6
         else if (ndim == 2) then
-            size_cmp = gbs_sym/3
+            select case (gbs_sym)
+            case (3, 9, 18, 30, 45, 63)
+                size_cmp = gbs_sym/3
+            case (4, 12, 24, 40, 60, 84)
+                size_cmp = gbs_sym/4
+                l_axis = ASTER_TRUE
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -416,6 +401,10 @@ contains
                 deca = deca+size_cmp
             end do
         end do
+!
+        if (l_axis) then
+            mat(3, 3) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
+        end if
 !
         eval(1) = mat(1, 1)
         eval(2) = mat(2, 2)

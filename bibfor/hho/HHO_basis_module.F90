@@ -403,7 +403,7 @@ contains
 ! ------------ If you have this error - add the basis field as an input of your option
                 call jevech('PCHHOBO', 'E', iret)
 !
-                if (this%ndim > 1 .or. lteatt("TYPMOD", "AXIS")) then
+                if (this%ndim > 1 .or. hhoFace%l_axis) then
 !
                     call hhoQuad%getQuadFace(hhoFace, 2*max_deg_face)
                     call basisOrthoIpg%initialize(MSIZE_FACE_SCAL, hhoQuad%nbQuadPoints, 0.d0)

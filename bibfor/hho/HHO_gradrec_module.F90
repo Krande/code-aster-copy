@@ -54,7 +54,7 @@ module HHO_gradrec_module
 !
     public :: hhoGradRecVec, hhoGradRecMat, hhoGradRecFullVec, hhoGradRecFullMat
     public :: hhoGradRecSymFullMat, hhoGradRecSymMat, hhoGradRecFullMatFromVec
-!    private ::
+    private :: hhoGradRecAxisMat, hhoAddGradRecAxisMat
 !
 contains
 !
@@ -241,11 +241,12 @@ contains
         type(HHO_matrix) :: lhs_scal
         integer(kind=8) :: gradrec_scal_row, cbs_comp, fbs_comp, faces_dofs, cbs, fbs, gbs, gbs_sym
         integer(kind=8) :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
-        integer(kind=8) :: total_dofs, iFace, jbeginVec, jendVec
+        integer(kind=8) :: total_dofs, iFace, jbeginVec, jendVec, gbs_axis
 !
         ASSERT(hhoCell%l_face_init)
+        ASSERT(.not. hhoCell%l_axis)
 ! -- number of dofs
-        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
         faces_dofs = total_dofs-cbs
 !
 ! -- init cell basis
@@ -519,17 +520,17 @@ contains
         integer(kind=8) :: cbs_comp, fbs_comp, faces_dofs, cbs, fbs
         integer(kind=8) :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
         integer(kind=8) :: total_dofs, gbs, gbs_comp, gbs_sym, iFace, jbeginVec, jendVec
-        integer(kind=8) :: faces_dofs_comp, total_dofs_comp
+        integer(kind=8) :: faces_dofs_comp, total_dofs_comp, gbs_axis
 !
 ! -- number of dofs
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                           gbs, gbs_sym)
+                           gbs, gbs_sym, gbs_axis)
         faces_dofs = total_dofs-cbs
 !
 ! -- copy the vectorial gradient in the matrix gradient
         cbs_comp = cbs/hhoCell%ndim
         fbs_comp = fbs/hhoCell%ndim
-        gbs_comp = gbs/hhoCell%ndim
+        gbs_comp = (gbs-gbs_axis)/hhoCell%ndim
         faces_dofs_comp = faces_dofs/hhoCell%ndim
         total_dofs_comp = total_dofs/hhoCell%ndim
 !
@@ -563,6 +564,14 @@ contains
             ASSERT(present(lhsvec))
             call lhs%initialize(total_dofs, total_dofs, 0.0)
             call MatScal2Vec(hhoCell, hhoData, lhsvec, lhs)
+        end if
+!
+        if (hhoCell%l_axis) then
+            if (present(lhs)) then
+                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec, lhs)
+            else
+                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec)
+            end if
         end if
 !
     end subroutine
@@ -643,7 +652,7 @@ contains
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
         real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
-        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, gbs_axis
         integer(kind=8):: cbs_comp, fbs_comp, gbs_sym, gbs_comp, max_deg
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
         integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
@@ -664,12 +673,12 @@ contains
         end if
 !
 ! -- number of dofs
-        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
         faces_dofs = total_dofs-cbs
 !
         cbs_comp = cbs/hhoCell%ndim
         fbs_comp = fbs/hhoCell%ndim
-        gbs_comp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        gbs_comp = (gbs-gbs_axis)/(hhoCell%ndim*hhoCell%ndim)
         max_deg = max(hhoData%cell_degree(), hhoData%grad_degree())
 !
 ! -- compute mass matrix of P^k_d(T;R)
@@ -957,7 +966,7 @@ contains
             info = 0
             b_n = to_blas_int(dimMassMat)
             b_nrhs = to_blas_int(nbdimMat*total_dofs)
-            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(massMat%max_nrows)
             b_ldb = to_blas_int(SOL%max_nrows)
             call dposv('U', b_n, b_nrhs, massMat%m, b_lda, &
                        SOL%m, b_ldb, info)
@@ -985,6 +994,15 @@ contains
             call hho_dgemm_TN(1.d0, BG, gradrec, 0.d0, lhs)
 !
         end if
+!
+        if (hhoCell%l_axis) then
+            if (present(lhs)) then
+                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec, lhs)
+            else
+                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec)
+            end if
+        end if
+!
         call BG%free()
 !
     end subroutine
@@ -1034,6 +1052,7 @@ contains
         blas_int, parameter :: b_one = 1
 !
         ASSERT(hhoCell%l_face_init)
+        ASSERT(.not. hhoCell%l_axis)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -1265,6 +1284,147 @@ contains
 !
         call BG%free()
         call MG%free()
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoGradRecAxisMat(hhoCell, hhoData, grad_tt, lhs_tt)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(out) :: grad_tt(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        real(kind=8), intent(out), optional :: lhs_tt(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the axis gradient reconstruction of a vect function in P^k_d(T;R^(dxd)_sym)
+!   In hhoCell      : the current HHO Cell
+!   In hhoData       : information on HHO methods
+!   Out gradrec     : matrix of the symmetric gradient reconstruction
+!   Out, option lhs : matrix (grad_s u, grad_s v) (lhs member for the symmetric laplacian problem)
+!
+! --------------------------------------------------------------------------------------------------
+! ----- Local variables
+        type(HHO_basis_cell) :: hhoBasisCell
+        type(HHO_quadrature) :: hhoQuadCell
+        type(HHO_massmat_cell) :: massMat
+        real(kind=8) :: BSEval(MSIZE_CELL_SCAL)
+        real(kind=8) :: r
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat
+        integer(kind=8):: cbs_comp, gbs_sym, ipg, gbs_axis
+        blas_int :: b_n, b_lda, b_ldb, info, b_m
+        blas_int, parameter :: b_one = 1
+!
+        ASSERT(hhoCell%l_axis)
+! -- init cell basis
+        call hhoBasisCell%initialize(hhoCell)
+!
+! -- number of dofs
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
+        cbs_comp = cbs/hhoCell%ndim
+!
+        grad_tt = 0.d0
+!
+! -- compute mass matrix of P^k_d(T;R)
+        call massMat%compute(hhoCell, 0, hhoData%grad_degree())
+        dimMassMat = massMat%nrows
+        ASSERT(gbs_axis == dimMassMat)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        b_m = to_blas_int(dimMassMat)
+        b_n = to_blas_int(cbs_comp)
+!
+! -- RHS : volumetric part
+! -- get quadrature - to integration vT_r/r which is rational
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*max(hhoData%grad_degree(), hhoData%cell_degree())+1)
+!
+! -- Loop on quadrature point
+        do ipg = 1, hhoQuadCell%nbQuadPoints
+! ----- Eval cell basis function at the quadrature point
+            r = hhoQuadCell%points(1, ipg)
+            call hhoBasisCell%BSEval(hhoQuadCell%points(1:3, ipg), 0, &
+                                     max(hhoData%cell_degree(), hhoData%grad_degree()), BSEval)
+!
+! --------- Compute (vT_r/r, tau)
+
+            call dger(b_m, b_n, hhoQuadCell%weights(ipg)/r, BSEval, b_one, &
+                      BSEval, b_one, &
+                      grad_tt, b_lda)
+!
+        end do
+!
+        if (.not. massMat%isIdentity) then
+!
+! - Verif strange bug if info neq 0 in entry
+            info = 0
+            b_lda = to_blas_int(massMat%max_nrows)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            call dposv('U', b_m, b_n, massMat%m, b_lda, &
+                       grad_tt, b_ldb, info)
+!
+! - Sucess ?
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
+        end if
+!
+        if (present(lhs_tt)) then
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end subroutine
+!
+    !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec, lhs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_matrix), intent(inout) :: gradrec
+        type(HHO_matrix), intent(inout), optional :: lhs
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the axis gradient reconstruction of a vect function in P^k_d(T;R^(dxd)_sym)
+!   In hhoCell      : the current HHO Cell
+!   In hhoData       : information on HHO methods
+!   Out gradrec     : matrix of the symmetric gradient reconstruction
+!   Out, option lhs : matrix (grad_s u, grad_s v) (lhs member for the symmetric laplacian problem)
+!
+! --------------------------------------------------------------------------------------------------
+! ----- Local variables
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs
+        integer(kind=8):: gbs_sym, gbs_axis, faces_dofs, cbs_cmp
+        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: grad_tt, lhs_tt
+!
+        ASSERT(hhoCell%l_axis)
+!
+! -- number of dofs
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
+        faces_dofs = total_dofs-cbs
+        cbs_cmp = cbs/hhoCell%ndim
+!
+        if (present(lhs)) then
+            call hhoGradRecAxisMat(hhoCell, hhoData, grad_tt, lhs_tt)
+            call lhs%addBlock2(lhs_tt, MSIZE_CELL_SCAL, cbs_cmp, cbs_cmp, &
+                               faces_dofs, faces_dofs)
+        else
+            call hhoGradRecAxisMat(hhoCell, hhoData, grad_tt)
+        end if
+!
+        call gradrec%addBlock2(grad_tt, MSIZE_CELL_SCAL, gbs_axis, cbs_cmp, &
+                               gradrec%nrows-gbs_axis, faces_dofs)
 !
     end subroutine
 !

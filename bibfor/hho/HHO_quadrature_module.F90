@@ -703,7 +703,7 @@ contains
             adapt_ = adapt
         end if
 !
-        axis_ = lteatt("TYPMOD", "AXIS")
+        axis_ = hhoCell%l_axis
         if (axis_ .and. adapt_) then
             this%order = this%order+1
         end if
@@ -797,7 +797,7 @@ contains
             adapt_ = adapt
         end if
 !
-        axis_ = lteatt("TYPMOD", "AXIS")
+        axis_ = hhoFace%l_axis
         if (axis_) then
             ! We modifiy quadrature for edges on axe
             ! Do no multiply by r since it remains an

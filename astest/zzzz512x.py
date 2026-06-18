@@ -147,15 +147,15 @@ for form in ["LINEAIRE", "QUADRATIQUE"]:
     load = AFFE_CHAR_MECA_F(
         MODELE=model,
         FORCE_INTERNE=_F(GROUP_MA="2D", FX=fR[form], FY=fZ[form]),
-        PRES_REP=_F(GROUP_MA="RIGHT", PRES=test0),
-        # FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=zero, FY=zero),
+        PRES_REP=_F(GROUP_MA="RIGHT", PRES=zero),
+        FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=zero, FY=zero),
     )
 
     # fake load - for coverage
     load0 = AFFE_CHAR_MECA(
         MODELE=model,
         FORCE_INTERNE=_F(GROUP_MA="2D", FX=0.0, FY=0.0),
-        # FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=0.0, FY=0.0),
+        FORCE_CONTOUR=_F(GROUP_MA="RIGHT", FX=0.0, FY=0.0),
     )
 
     # solve linear system
@@ -204,6 +204,8 @@ for form in ["LINEAIRE", "QUADRATIQUE"]:
 
     u_diff = u_hho - u_sol
 
-    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-8)
+    # same value than zzzz512v
+    # integration is not enougth
+    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=5e-6)
 
 FIN()

@@ -420,6 +420,7 @@ contains
         if (ndim == 1) then
             if (lteatt("TYPMOD", "AXIS")) then
                 ! Special treatment is applied to these edges (quadrature, stabilization, gradient)
+                hhoFace%l_axis = ASTER_TRUE
                 hhoFace%l_axis_on_axe = (hhoFace%barycenter(1) < 1.d-12)
             end if
         end if
@@ -509,6 +510,10 @@ contains
             hhoCell%l_jaco_cst = ASTER_TRUE
         else
             hhoCell%l_jaco_cst = hhoIsJacobCst(hhoCell%typema, hhoCell%coorno, hhoCell%ndim)
+        end if
+!
+        if (hhoCell%ndim == 2) then
+            hhoCell%l_axis = lteatt("TYPMOD", "AXIS")
         end if
 !
         if (l_debug) then

@@ -696,7 +696,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis
         integer(kind=8) :: ipg, ncomp, gbs_curr, gbs_cmp, cbs_cmp, faces_dofs
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), rhs_axis(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight
@@ -711,9 +711,9 @@ contains
 ! ----- init basis
 !
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                           gbs, gbs_sym)
+                           gbs, gbs_sym, gbs_axis)
         faces_dofs = total_dofs-cbs
-        gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        gbs_cmp = (gbs-gbs_axis)/(hhoCell%ndim*hhoCell%ndim)
         cbs_cmp = cbs/hhoCell%ndim
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -747,12 +747,6 @@ contains
             if (hhoCS%l_largestrain) then
                 G_curr = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
 !
-                if (hhoCS%axis) then
-                    call hhoAddAxisGrad(hhoCell%ndim, BSCEval, &
-                                        hhoMecaState%depl_curr(faces_dofs+1:), &
-                                        coorpg, cbs_cmp, G_curr)
-                end if
-!
 ! --------- Eval gradient of the deformation at T- and T+
 !
                 call hhoCalculF(G_curr, F_curr)
@@ -760,24 +754,13 @@ contains
                 call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
 !
                 call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, bT)
-                if (hhoCS%axis) then
-                    call hhoComputeRhsLargeAxis(hhoCell, Pk1_curr, weight, coorpg(1), &
-                                                BSCEval, cbs_cmp, rhs_axis)
-                end if
             else
 !
                 call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
-                if (hhoCS%axis) then
-                    call hhoComputeRhsSmallAxis(hhoCell, Cauchy_curr, weight, coorpg(1), &
-                                                BSCEval, cbs_cmp, rhs_axis)
-                end if
             end if
         end do
 !
         call hho_dgemv_T(1.d0, hhoMecaState%grad, bT, 0.d0, rhs)
-        if (hhoCS%axis) then
-            call daxpy_1(cbs_cmp, 1.d0, rhs_axis, rhs(faces_dofs+1:))
-        end if
 !
 ! --- add stabilization
 !

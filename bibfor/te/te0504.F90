@@ -65,7 +65,7 @@ subroutine te0504(option, nomte)
     type(HHO_matrix) :: gradsym
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer(kind=8) :: cbs, fbs, total_dofs, npg, kpg, gbs, gbs_sym, cbs_cmp
-    integer(kind=8) :: nbsig, jvMaterc, faces_dofs, gbs_cmp, i, j
+    integer(kind=8) :: nbsig, jvMaterc, faces_dofs, gbs_cmp, i, j, gbs_axis
     real(kind=8) :: time, sigma(6), weight, coorpg(3)
     real(kind=8) :: E_coeff(MSIZE_CELL_MAT), Eps(6)
     real(kind=8) :: dmat(6, 6), BSCEval(MSIZE_CELL_SCAL)
@@ -82,9 +82,9 @@ subroutine te0504(option, nomte)
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
 
 ! - Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
     faces_dofs = total_dofs-cbs
-    gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+    gbs_cmp = (gbs-gbs_axis)/(hhoCell%ndim*hhoCell%ndim)
     cbs_cmp = cbs/hhoCell%ndim
     nbsig = nbsigm()
 
@@ -132,16 +132,10 @@ subroutine te0504(option, nomte)
         call initParaPoin(kpg, ksp, materPara)
 
 ! ----- Eval basis function at the quadrature point
-        call hhoBasisCell%BSEval(coorpg(1:3), 0, &
-                                 max(hhoData%grad_degree(), hhoData%cell_degree()), &
-                                 BSCEval)
+        call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 
 ! ----- Eval deformations
         Eps = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_coeff)
-        if (l_axis) then
-            call hhoAddAxisGradSym(hhoCell, BSCEval, depl(faces_dofs+1:), &
-                                   coorpg, cbs_cmp, Eps)
-        end if
 
 ! ----- Compute elasticity matrix
         call dmatmc(materPara, '+', time, &

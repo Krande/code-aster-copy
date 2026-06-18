@@ -58,7 +58,7 @@ subroutine te0448(nomopt, nomte)
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym
-    integer(kind=8) :: npg, faces_dofs, cbs_cmp
+    integer(kind=8) :: npg, faces_dofs, cbs_cmp, gbs_axis
     integer(kind=8) :: ipg, idefo, nsig
     aster_logical :: l_axi
     character(len=8) :: fami
@@ -83,7 +83,7 @@ subroutine te0448(nomopt, nomte)
 !
 ! --- Number of dofs
     call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                       gbs, gbs_sym)
+                       gbs, gbs_sym, gbs_axis)
     cbs_cmp = cbs/hhoCell%ndim
     faces_dofs = total_dofs-cbs
     nsig = nbsigm()
@@ -143,14 +143,9 @@ subroutine te0448(nomopt, nomte)
 !
 ! --------- Eval basis function at the quadrature point
 !
-        call hhoBasisCell%BSEval(coorpg(1:3), 0, max(hhoData%grad_degree(), &
-                                                     hhoData%cell_degree()), BSCEval)
+        call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
         E_curr = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_curr_coeff)
-        if (l_axi) then
-            call hhoAddAxisGradSym(hhoCell, BSCEval, depl_curr(faces_dofs+1:), &
-                                   coorpg, cbs_cmp, E_curr)
-        end if
         zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
     end do
 !
