@@ -107,65 +107,30 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 !
 !      CRITERE DE SELECTION
         call getvtx('CREA_GROUP_NO', 'CRIT_NOEUD', iocc=iocc, scal=selec, nbret=ibid)
-        call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc, &
-                    0, k8b, nb)
+        call getvtx('CREA_GROUP_NO', 'GROUP_MA', iocc=iocc, nbval=0, &
+                    vect=k8b, nbret=nbgma)
+        call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', -nbgma, ialgma)
+        call getvtx('CREA_GROUP_NO', 'GROUP_MA', iocc=iocc, nbval=-nbgma, &
+                    vect=zk24(ialgma), nbret=nb)
+        nbgma = nb
         call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=0, nbret=no)
-        nbgma = -nb
-        call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
-        call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc, &
-                    nbgma, zk24(ialgma), nb)
+        nbgno = -no
         if (no .ne. 0) then
-            nbgno = -no
             if ((nbgno .ne. nbgma) .and. (nbgno .ne. 1)) then
                 call utmess('F', 'MODELISA7_8')
             end if
-!
             call wkvect('&&SSGNGM.NOM_GNO', 'V V K24', nbgno, iangno)
             call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=nbgno, vect=zk24(iangno), &
                         nbret=no)
-!
-            if (nb .ne. nbgma) then
-                ASSERT(l_parallel_mesh)
-                call wkvect('&&SSGNGM.NOM_TMP', 'V V K24', nbgno, vk24=v_gno)
-                call wkvect('&&SSGNGM.MA_TMP', 'V V K24', nbgma, vk24=v_gma)
-                call getvtx('CREA_GROUP_NO', 'GROUP_MA', iocc=iocc, nbval=nbgma, &
-                            vect=zk24(ialgma), nbret=nb)
-                nb = 0
-                do i = 1, nbgma
-                    nomgma = zk24(ialgma-1+i)
-                    call existGrpMa(noma(1:8), nomgma, l_exi_in_grp, l_exi_in_grp_p)
-                    if (l_exi_in_grp) then
-                        nb = nb+1
-                        v_gno(nb) = zk24(iangno-1+i)
-                        v_gma(nb) = nomgma
-                    end if
-                end do
-!
-                nbgma = nb
-                do i = 1, nbgma
-                    zk24(iangno-1+i) = v_gno(i)
-                    zk24(ialgma-1+i) = v_gma(i)
-                end do
-!
-                do i = nbgma+1, nbgno
-                    zk24(iangno-1+i) = ' '
-                    zk24(ialgma-1+i) = ' '
-                end do
-                nbgno = nbgma
-!
-                call jedetr('&&SSGNGM.NOM_TMP')
-                call jedetr('&&SSGNGM.MA_TMP')
-            end if
         else
-            nbgma = nb
             iangno = ialgma
         end if
-        call checkListOfGrpMa(noma, zk24(ialgma), nbgma, ASTER_TRUE)
+        call checkListOfGrpMa(noma, zk24(ialgma), nbgma, ASTER_FALSE)
         ier = 0
         do i = 1, nbgma
             nomgma = zk24(ialgma-1+i)
             call existGrpMa(noma(1:8), nomgma, l_exi_in_grp, l_exi_in_grp_p)
-            if (.not. l_exi_in_grp) then
+            if (.not. l_exi_in_grp_p) then
                 ier = ier+1
                 call utmess('E', 'ELEMENTS_62', sk=nomgma)
             end if
