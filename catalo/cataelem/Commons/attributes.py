@@ -303,6 +303,7 @@ FORMULATION = Attribute(
     value=(
         "HHO_CSTE",
         "HHO_LINE",
+        "HHO_MLINE",
         "HHO_QUAD",
         "HHO_CUBI",
         "HHO_QUAR",

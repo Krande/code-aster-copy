@@ -98,12 +98,18 @@ contains
                             call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, &
                                                     ASTER_FALSE)
                         else
-                            call dismoi('EXI_HHO_CSTE', model, 'MODELE', repk=answer)
+                            call dismoi('EXI_HHO_MLINE', model, 'MODELE', repk=answer)
                             if (answer .eq. 'OUI') then
-                                call hhoData%initialize(0, 0, 0, 0.d0, ASTER_FALSE, &
+                                call hhoData%initialize(1, 2, 1, 0.d0, ASTER_FALSE, &
                                                         ASTER_FALSE)
                             else
-                                ASSERT(ASTER_FALSE)
+                                call dismoi('EXI_HHO_CSTE', model, 'MODELE', repk=answer)
+                                if (answer .eq. 'OUI') then
+                                    call hhoData%initialize(0, 0, 0, 0.d0, ASTER_FALSE, &
+                                                            ASTER_FALSE)
+                                else
+                                    ASSERT(ASTER_FALSE)
+                                end if
                             end if
                         end if
                     end if

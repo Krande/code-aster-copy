@@ -6164,6 +6164,27 @@ phen.add(
 )
 
 phen.add(
+    "AXIS_HHO$1",
+    Modelisation(
+        dim=(2, 2),
+        code="HA5",
+        attrs=(
+            (AT.FORMULATION, "HHO_MLINE"),
+            (AT.AXIS, "OUI"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_AXQ9_HHO121),
+            (MT.TRIA7, EL.MECA_AXT7_HHO121),
+            (MT.SEG3, EL.MECA_2DAX_HHO1_F),
+        ),
+    ),
+)
+
+phen.add(
     "3D_GRAD_HHO#1",
     Modelisation(
         dim=(3, 3),

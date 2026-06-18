@@ -61,6 +61,7 @@ mu = E / 2 / (1 + Nu)
 uR = {
     "CONSTANTE": FORMULE(VALE="X", NOM_PARA=("X", "Y")),
     "LINEAIRE": FORMULE(VALE="X*(1+X+Y)", NOM_PARA=("X", "Y")),
+    "LINEAIRE_MIXTE": FORMULE(VALE="X*(1+X+Y)", NOM_PARA=("X", "Y")),
     "QUADRATIQUE": FORMULE(VALE="X*(1+X*X+Y*Y+X*Y)", NOM_PARA=("X", "Y")),
     "CUBIQUE": FORMULE(VALE="X*(1+X*X*X+Y*Y*Y+X*Y)", NOM_PARA=("X", "Y")),
     "QUARTIQUE": FORMULE(VALE="X*(1+X*X*X*X+Y*Y*Y*Y+X*Y)", NOM_PARA=("X", "Y")),
@@ -68,6 +69,7 @@ uR = {
 uZ = {
     "CONSTANTE": FORMULE(VALE="Y", NOM_PARA=("X", "Y")),
     "LINEAIRE": FORMULE(VALE="Y*(Y+1)", NOM_PARA=("X", "Y")),
+    "LINEAIRE_MIXTE": FORMULE(VALE="Y*(Y+1)", NOM_PARA=("X", "Y")),
     "QUADRATIQUE": FORMULE(VALE="Y*(Y*Y - X*X + 1)", NOM_PARA=("X", "Y")),
     "CUBIQUE": FORMULE(VALE="Y*(Y*Y*Y-X*X*X + 1)", NOM_PARA=("X", "Y")),
     "QUARTIQUE": FORMULE(VALE="Y*(Y*Y*Y*Y-X*X*X*X + 1)", NOM_PARA=("X", "Y")),
@@ -78,6 +80,7 @@ zero = FORMULE(VALE="0", NOM_PARA=("X", "Y"))
 fR = {
     "CONSTANTE": zero,
     "LINEAIRE": FORMULE(VALE="-3*lamb-6*mu", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu),
+    "LINEAIRE_MIXTE": FORMULE(VALE="-3*lamb-6*mu", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu),
     "QUADRATIQUE": FORMULE(
         VALE="-6*lamb*X-3*lamb*Y-16*mu*X-6*mu*Y", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu
     ),
@@ -97,6 +100,7 @@ fR = {
 fZ = {
     "CONSTANTE": zero,
     "LINEAIRE": FORMULE(VALE="-4*lamb-6*mu", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu),
+    "LINEAIRE_MIXTE": FORMULE(VALE="-4*lamb-6*mu", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu),
     "QUADRATIQUE": FORMULE(
         VALE="-3*lamb*X-10*lamb*Y-3*mu*X-12*mu*Y", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu
     ),
@@ -129,7 +133,7 @@ coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
-for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
+for form in ["LINEAIRE", "LINEAIRE_MIXTE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
     model = AFFE_MODELE(
         MAILLAGE=mesh,
         AFFE=_F(TOUT="OUI", MODELISATION="AXIS_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),

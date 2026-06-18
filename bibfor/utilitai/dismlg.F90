@@ -282,6 +282,20 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             repk = 'NON'
                         end if
 
+                    else if (questi .eq. 'EXI_HHO_MLINE') then
+                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
+                            lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
+                            call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
+                            if (formul .eq. 'HHO_MLINE' .or. formul .eq. 'HHO_VLINE') then
+                                repk = 'OUI'
+                                go to 99
+                            else
+                                repk = 'NON'
+                            end if
+                        else
+                            repk = 'NON'
+                        end if
+
                     else if (questi .eq. 'EXI_HHO_CSTE') then
                         if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
                             lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
