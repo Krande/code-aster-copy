@@ -79,7 +79,7 @@ subroutine te0139(option, nomte)
     integer(kind=8) :: ivarix
     integer(kind=8) :: jtab(7)
     aster_logical :: matsym
-    character(len=16), pointer :: compor(:) => null(), mulcom(:) => null()
+    character(len=16), pointer :: jvCompor(:) => null(), mulcom(:) => null()
     character(len=16) :: multComp, defoComp
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer(kind=8) :: codret
@@ -138,11 +138,11 @@ subroutine te0139(option, nomte)
     lgpg = max(jtab(6), 1)*jtab(7)
 
 ! - Properties of behaviour
-    call jevech('PCOMPOR', 'L', vk16=compor)
+    call jevech('PCOMPOR', 'L', vk16=jvCompor)
     call jevech('PCARCRI', 'L', jvCarcri)
     call jevech('PMULCOM', 'L', vk16=mulcom)
     multComp = mulcom(1)
-    defoComp = compor(DEFO)
+    defoComp = jvCompor(DEFO)
 
 ! - Get material parameters
     call jevech('PMATERC', 'L', jvMaterc)
@@ -158,12 +158,12 @@ subroutine te0139(option, nomte)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(typmod, option, &
-                              compor, zr(jvCarcri), &
+                              jvCompor, zr(jvCarcri), &
                               zr(jvInstmr), zr(jvInstpr), &
                               materPara, BEHInteg)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, compor, &
+    call behaviourOption(option, jvCompor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
@@ -215,7 +215,7 @@ subroutine te0139(option, nomte)
     end if
 
 ! - Calcul de la matrice TGTE par PERTURBATION
-    call tgveri_use(option, zr(jvCarcri), compor, iuse)
+    call tgveri_use(option, zr(jvCarcri), jvCompor, iuse)
     if (iuse == 1) then
         allocate (varia(2*3*MT_NNOMAX3D*3*MT_NNOMAX3D))
         allocate (smatr(3*MT_NNOMAX3D*3*MT_NNOMAX3D))
@@ -240,7 +240,7 @@ subroutine te0139(option, nomte)
         call nmplxd(FECell, FEBasis, FEQuad, &
                     nno, npg, ndim, &
                     typmod, option, &
-                    compor, zr(jvCarcri), multComp, &
+                    jvCompor, zr(jvCarcri), multComp, &
                     BEHInteg, &
                     zr(jvInstmr), zr(jvInstpr), &
                     zr(ideplm), zr(ideplp), &
@@ -254,7 +254,7 @@ subroutine te0139(option, nomte)
         call nmplxd(FECell, FEBasis, FEQuad, &
                     nno, npg, ndim, &
                     typmod, option, &
-                    compor, zr(jvCarcri), multComp, &
+                    jvCompor, zr(jvCarcri), multComp, &
                     BEHInteg, &
                     zr(jvInstmr), zr(jvInstpr), &
                     zr(ideplm), zr(ideplp), &
@@ -268,7 +268,7 @@ subroutine te0139(option, nomte)
         call nmgpfi(BEHInteg, &
                     typmod, option, &
                     nno, npg, ndim, zr(jvGeom), &
-                    compor, zr(jvCarcri), multComp, &
+                    jvCompor, zr(jvCarcri), multComp, &
                     zr(jvInstmr), zr(jvInstpr), &
                     zr(ideplm), zr(ideplp), &
                     lgpg, zr(icontm), zr(ivarim), &
@@ -280,7 +280,7 @@ subroutine te0139(option, nomte)
         call nmgrla(FECell, FEBasis, FEQuad, &
                     nno, npg, ndim, &
                     typmod, option, &
-                    compor, zr(jvCarcri), multComp, &
+                    jvCompor, zr(jvCarcri), multComp, &
                     BEHInteg, &
                     zr(jvInstmr), zr(jvInstpr), &
                     zr(ideplm), zr(ideplp), &
@@ -294,7 +294,7 @@ subroutine te0139(option, nomte)
         call nmdlog(FECell, FEBasis, FEQuad, &
                     nno, npg, ndim, &
                     typmod, option, &
-                    compor, zr(jvCarcri), multComp, &
+                    jvCompor, zr(jvCarcri), multComp, &
                     BEHInteg, &
                     zr(jvInstmr), zr(jvInstpr), &
                     zr(ideplm), zr(ideplp), &
@@ -309,7 +309,7 @@ subroutine te0139(option, nomte)
     end if
 
 ! - Calcul eventuel de la matrice TGTE par PERTURBATION
-    call tgveri(option, zr(jvCarcri), compor, nno, zr(jvGeom), &
+    call tgveri(option, zr(jvCarcri), jvCompor, nno, zr(jvGeom), &
                 ndim, ndim*nno, zr(ideplp), sdepl, zr(ivectu), &
                 svect, sz_tens*npg, zr(icontp), scont, npg*lgpg, &
                 zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym, &

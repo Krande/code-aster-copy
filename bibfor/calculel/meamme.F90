@@ -79,7 +79,7 @@ subroutine meamme(modelz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nbFieldInMax = 16, nbFieldOutMax = 2
+    integer(kind=8), parameter :: nbFieldInMax = 100, nbFieldOutMax = 2
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !

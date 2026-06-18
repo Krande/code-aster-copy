@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-subroutine peepot(resu, modele, mate, mateco, cara, &
-                  nh, nbocc)
+! aslint: disable=W1501
+subroutine peepot(resuZ, modelZ, materFieldZ, materCodeZ, caraElemZ, &
+                  numeHarm, nbocc)
 !
     implicit none
 !
@@ -68,8 +68,8 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer(kind=8) :: nh, nbocc
-    character(len=*) :: resu, modele, mate, mateco, cara
+    character(len=*), intent(in):: resuZ, modelZ, materFieldZ, materCodeZ, caraElemZ
+    integer(kind=8), intent(in) :: numeHarm, nbocc
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "ENER_POT"
 !     ------------------------------------------------------------------
@@ -79,7 +79,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
     integer(kind=8) :: iocc, jma, icheml, ier, nbMaiT, nbparr, nbpard, nbpaep, jnmo, ibid
     parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, varpep(nbpaep), inst, valer(3), rundf
-    character(len=1) :: base
+    character(len=1) :: jvBase
     character(len=2) :: codret
     character(len=8) :: k8b, noma, resul, crit, nommai, typarr(nbparr), typard(nbpard), valk(2)
     character(len=8) :: nomgd
@@ -130,7 +130,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
     k8X = 'XXXXXXXX'
     k24X = 'XXXXXXXXXXXXXXXXXXXXXXXX'
 !
-    base = 'V'
+    jvBase = 'V'
     rundf = r8vide()
     exitim = .false.
     inst = 0.d0
@@ -160,13 +160,13 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
     end if
 !
     option = 'ENER_POT'
-    call mecham(option, modele, cara, nh, chgeom, &
+    call mecham(option, modelZ, caraElemZ, numeHarm, chgeom, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 90
     noma = chgeom(1:8)
     mlggma = noma//'.GROUPEMA'
 !
-    call exlim3('ENER_POT', 'V', modele, ligrel)
+    call exlim3('ENER_POT', 'V', modelZ, ligrel)
 !
     knum = '&&PEEPOT.NUME_ORDRE'
     kins = '&&PEEPOT.INSTANT'
@@ -177,8 +177,8 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
         zi(jord) = 1
         call wkvect(kins, 'V V R', nbordr, jins)
         zr(jins) = inst
-        call tbcrsd(resu, 'G')
-        call tbajpa(resu, nbpard, nopard, typard)
+        call tbcrsd(resuZ, 'G')
+        call tbajpa(resuZ, nbpard, nopard, typard)
     else
         call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
@@ -208,8 +208,8 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
                 end do
             end if
         end if
-        call tbcrsd(resu, 'G')
-        call tbajpa(resu, nbparr, noparr, typarr)
+        call tbcrsd(resuZ, 'G')
+        call tbajpa(resuZ, nbparr, noparr, typarr)
     end if
 !-----------------------------------------------------------------------------
 ! MUTUALISATION POUR APPELS GETVTX
@@ -365,7 +365,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
         if (typres .eq. 'FOURIER_ELAS') then
             call rsadpa(resul, 'L', 1, 'NUME_MODE', numord, &
                         0, sjv=jnmo)
-            call meharm(modele, zi(jnmo), chharm)
+            call meharm(modelZ, zi(jnmo), chharm)
         end if
         chtime = ' '
         if (exitim) call mechti(noma, inst, rundf, rundf, chtime)
@@ -393,9 +393,9 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
         end if
 !
         if (typcha(1:7) .eq. 'CHAM_NO') then
-            call vrcins(modele, mate, cara, inst, chvarc, &
+            call vrcins(modelZ, materFieldZ, caraElemZ, inst, chvarc, &
                         codret)
-            call vrcref(modele(1:8), mate(1:8), cara(1:8), chvref(1:19))
+            call vrcref(modelZ(1:8), materFieldZ(1:8), caraElemZ(1:8), chvref(1:19))
             if (nomgd(1:4) .eq. 'DEPL') then
                 optio2 = 'EPOT_ELEM'
                 l_temp = ASTER_FALSE
@@ -417,7 +417,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
         end if
         icheml = 1
         chelem = '&&PEEPOT.CHAM_ELEM'
-        compor = mate(1:8)//'.COMPOR'
+        compor = materFieldZ(1:8)//'.COMPOR'
         ibid = 0
         if (l_temp) then
             chtemp = field_node
@@ -432,10 +432,12 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
             write (ifm, *) '< ', rang, 'peepot> temps initialisation iord=', iord, retfin
             call system_clock(ietdeb, ietrat, ietmax)
         end if
-        call compEnergyPotential(optio2, modele, ligrel, compor, l_temp, &
-                                 chdisp, chtemp, chharm, chgeom, mateco, &
-                                 chcara, chtime, chvarc, chvref, base, &
-                                 chelem, iret)
+        call compEnergyPotential(optio2, modelZ, ligrel, &
+                                 caraElemZ, materCodeZ, compor, l_temp, &
+                                 chdisp, chtemp, &
+                                 chharm, chgeom, &
+                                 chtime, chvarc, chvref, &
+                                 jvBase, chelem, iret)
 30      continue
 !
 !-----------------------------------------------------------------------------
@@ -516,10 +518,10 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
                 if (nr .ne. 0) then
                     valer(2) = varpep(1)
                     valer(3) = varpep(2)
-                    call tbajli(resu, nbparr, noparr, [numord], valer, &
+                    call tbajli(resuZ, nbparr, noparr, [numord], valer, &
                                 [c16b], valk, 0)
                 else
-                    call tbajli(resu, nbpard, nopard, [numord], varpep, &
+                    call tbajli(resuZ, nbpard, nopard, [numord], varpep, &
                                 [c16b], valk, 0)
                 end if
             end if
@@ -541,10 +543,10 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
                         if (nr .ne. 0) then
                             valer(2) = varpep(1)
                             valer(3) = varpep(2)
-                            call tbajli(resu, nbparr, noparr, [numord], valer, &
+                            call tbajli(resuZ, nbparr, noparr, [numord], valer, &
                                         [c16b], valk2, 0)
                         else
-                            call tbajli(resu, nbpard, nopard, [numord], varpep, &
+                            call tbajli(resuZ, nbpard, nopard, [numord], varpep, &
                                         [c16b], valk2, 0)
                         end if
                     end if
@@ -567,10 +569,10 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
                         if (nr .ne. 0) then
                             valer(2) = varpep(1)
                             valer(3) = varpep(2)
-                            call tbajli(resu, nbparr, noparr, [numord], valer, &
+                            call tbajli(resuZ, nbparr, noparr, [numord], valer, &
                                         [c16b], valk, 0)
                         else
-                            call tbajli(resu, nbpard, nopard, [numord], varpep, &
+                            call tbajli(resuZ, nbpard, nopard, [numord], varpep, &
                                         [c16b], valk, 0)
                         end if
                     end if

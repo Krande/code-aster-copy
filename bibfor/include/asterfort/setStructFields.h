@@ -17,18 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine compStress(modelZ, modelLigrelZ, &
-                          materCodeZ, caraElemZ, comporZ, &
-                          chdispZ, chgeom, &
-                          chtime, chharm, &
-                          chvarc, chvref, &
-                          jvBaseZ, chelemz, codret)
-        character(len=*), intent(in) :: modelZ, modelLigrelZ
-        character(len=*), intent(in) :: materCodeZ, caraElemZ, comporZ
-        character(len=*), intent(in) :: chdispZ, chgeom
-        character(len=*), intent(in) :: chtime, chharm
-        character(len=*), intent(in) :: chvarc, chvref
-        character(len=*), intent(in) :: chelemz, jvBaseZ
-        integer(kind=8), intent(out) :: codret
-    end subroutine compStress
+    subroutine setStructFields(caraElemZ, nbFieldInMax, lchin, lpain, nbFieldIn)
+        character(len=*), intent(in) :: caraElemZ
+        integer(kind=8), intent(in) :: nbFieldInMax
+        character(len=*), intent(inout) :: lpain(nbFieldInMax)
+        character(len=*), intent(inout) :: lchin(nbFieldInMax)
+        integer(kind=8), intent(inout) :: nbFieldIn
+    end subroutine setStructFields
 end interface

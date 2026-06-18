@@ -97,6 +97,7 @@ FieldOnCellsPtrBuilder( const FiniteElementDescriptorPtr FEDesc, const std::stri
         CalculPtr calcul = std::make_unique< Calcul >( "INI_STRX" );
         calcul->setModel( carael->getModel() );
         calcul->addElementaryCharacteristicsField( carael );
+        calcul->addOrientationField( carael );
         calcul->addOutputField( "PSTRX_R", cham_elem );
         calcul->compute();
     } else {

@@ -153,7 +153,6 @@ subroutine op0019()
 !   Mémorisation des informations pour ne plus le refaire
     info_concept%nomu = nomu
     info_concept%concept = concep
-    info_concept%commande = cmd
     info_concept%modele = nomo
     info_concept%maillage = noma
     info_concept%IsParaMesh = isParallelMesh(noma)

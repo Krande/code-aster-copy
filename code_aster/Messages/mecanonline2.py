@@ -83,18 +83,16 @@ cata_msg = {
     ),
     94: _(
         """
-  -> Indications supplémentaires : pour la variable de commande :  %(k1)s
-     et la composante :  %(k2)s
-     Valeur maximum : %(r1)f sur la maille : %(k3)s
-     Valeur minimum : %(r2)f sur la maille : %(k4)s
+  -> Pour la variable de commande %(k1)s et la composante %(k2)s
+     Valeur maximale: %(r1)f sur la maille %(i1)d
+     Valeur minimale: %(r2)f sur la maille %(i2)d
 """
     ),
     95: _(
         """
-  -> Indications supplémentaires : pour la variable de commande :  %(k1)s
-     et la composante :  %(k2)s
-     Valeur maximum de la valeur absolue de ( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
-     Valeur minimum de la valeur absolue de ( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
+  -> Pour la variable de commande %(k1)s et la composante %(k2)s
+     Valeur maximale de la valeur absolue de ( %(k2)s - %(k1)s_REF) : %(r1)f sur la maille %(i1)d
+     Valeur minimale de la valeur absolue de ( %(k2)s - %(k1)s_REF) : %(r2)f sur la maille %(i2)d
 """
     ),
     96: _(

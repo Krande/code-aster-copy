@@ -25,6 +25,7 @@
 module MaterialPara_module
 ! ==================================================================================================
     use MaterialPara_type
+    use coorSyst_module, only: hasOrieField
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
@@ -74,7 +75,7 @@ contains
         integer(kind=8), intent(in) :: jvMaterCode
         type(Material_Para), intent(inout) :: materPara
 ! ----- Local
-        integer(kind=8) :: elasID, icodre
+        integer(kind=8) :: elasID, propCode
         character(len=8) :: fami
         character(len=16) :: elasKeyword
 !   ------------------------------------------------------------------------------------------------
@@ -82,8 +83,8 @@ contains
         fami = famiZ
         materPara%schemePara%fami = fami
         materPara%jvMaterCode = jvMaterCode
-        call rccoma(jvMaterCode, 'ELAS', 0, elasKeyword, icodre)
-        if (icodre .eq. 0) then
+        call rccoma(jvMaterCode, 'ELAS', 0, elasKeyword, propCode)
+        if (propCode .eq. 0) then
             call get_elas_id(jvMaterCode, elasID, elasKeyword)
             materPara%lElasIsMeta = (elasKeyword == 'ELAS_META')
             materPara%elasID = elasID
@@ -223,13 +224,9 @@ contains
 ! ----- Locals
         integer(kind=8) :: jvCamass
         real(kind=8) :: anglNautPg(3*nbNode)
-        integer(kind=8) :: iret, jtab(7)
 !   ------------------------------------------------------------------------------------------------
 !
-        call tecach('ONO', 'PCAMASS', 'L', iret, nval=1, itab=jtab)
-        if (iret .eq. 0) then
-            jvCamass = jtab(1)
-        else
+        if (.not. hasOrieField(jvCamass)) then
             call utmess('F', 'JOINT1_3')
         end if
         if (zr(jvCamass) .lt. 0.d0) then
@@ -279,17 +276,16 @@ contains
         integer(kind=8), intent(in) :: ndim, nbNode, jvGeom
         type(LCS_Para), intent(out) :: lcsPara
 ! ----- Locals
-        integer(kind=8) :: jvCamass, iret, iDim
+        integer(kind=8) :: jvCamass, iDim
         real(kind=8) :: coorBary(3), anglNaut(3)
         real(kind=8) :: p(3, 3), xg(3), yg(3), orig(3), dire(3)
         real(kind=8) :: alpha, beta, xu, yu, xnorm
 !   ------------------------------------------------------------------------------------------------
 !
         call compCellBary(ndim, nbNode, jvGeom, coorBary)
-        call tecach('NNO', 'PCAMASS', 'L', iret, iad=jvCamass)
         anglNaut = 0.d0
         lcsPara%lcsType = MATER_LCS_ZERO
-        if (iret .eq. 0) then
+        if (hasOrieField(jvCamass)) then
             if (zr(jvCamass) .gt. 0.d0) then
                 lcsPara%lcsType = MATER_LCS_NAUT
                 anglNaut(1) = zr(jvCamass+1)*r8dgrd()
@@ -387,15 +383,14 @@ contains
         real(kind=8), intent(in) :: coorBary(3)
         type(LCS_Para), intent(out) :: lcsPara
 ! ----- Locals
-        integer(kind=8) :: jvCamass, iret, iDim
-        real(kind=8) ::  anglNaut(3)
+        integer(kind=8) :: jvCamass, iDim
+        real(kind=8) :: anglNaut(3)
         real(kind=8) :: p(3, 3), xg(3), yg(3), orig(3), dire(3)
         real(kind=8) :: alpha, beta, xu, yu, xnorm
 !   ------------------------------------------------------------------------------------------------
 !
-        call tecach('NNO', 'PCAMASS', 'L', iret, iad=jvCamass)
         anglNaut = 0.d0
-        if (iret .eq. 0) then
+        if (hasOrieField(jvCamass)) then
             if (zr(jvCamass) .gt. 0.d0) then
                 lcsPara%lcsType = MATER_LCS_NAUT
                 anglNaut(1) = zr(jvCamass+1)*r8dgrd()

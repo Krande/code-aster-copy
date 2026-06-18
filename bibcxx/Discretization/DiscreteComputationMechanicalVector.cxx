@@ -212,6 +212,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
             }
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
+                calcul->addOrientationField( currElemChara );
             }
 
             calcul->addXFEMField( currModel );
@@ -344,6 +345,7 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
             }
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
+                calcul->addOrientationField( currElemChara );
             }
 
             calcul->addXFEMField( currModel );
@@ -800,6 +802,7 @@ DiscreteComputation::getMechanicalNodalForces( const FieldOnCellsRealPtr stress,
     // Add input fields: elementary characteristics
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
 
     // Add input fields: for XFEM
@@ -1024,6 +1027,7 @@ FieldOnNodesRealPtr DiscreteComputation::getResidualReference(
     calcul->addBehaviourField( currBehaviour );
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
