@@ -122,9 +122,13 @@ subroutine compMecaChckStrain(iComp, &
         call utmess('F', 'COMPOR1_44', nk=2, valk=[defoComp, relaComp])
     end if
 
-! - Only mechanical strains with MFront
-    if (lMFront .and. lTotalStrain .and. relaComp .ne. "META_LEMA_ANI") then
-        call utmess('F', 'MGIS1_1')
+! - Only mechanical strains with MFront, except META_LEMA_ANI
+    if (lMFront .and. lTotalStrain) then
+        if (relaComp .eq. "META_LEMA_ANI") then
+            call utmess('A', 'MGIS1_3')
+        else
+            call utmess('F', 'MGIS1_1')
+        end if
     end if
 
 ! - Loop on elements
