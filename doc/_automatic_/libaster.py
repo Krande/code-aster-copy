@@ -719,13 +719,14 @@ class BaseMesh(DataStructure):
             bool: *False* for a centralized mesh, *True* for a parallel mesh.
         """
 
-    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0], mode="a"):
         """Print the mesh in the MED format
 
         Arguments:
             filename (Path|str): Name of the file
             local (bool=True) : print local values only (relevant for a ParallelMesh only)
             version (list): list of size 3 ([major, minor, release])
+            mode (str): 'a' or 'w' ('w' to overwrite file)
 
         Returns:
             Bool: True if of
@@ -943,13 +944,14 @@ class Mesh(BaseMesh):
             bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         """
 
-    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0], mode="a"):
         """Print the mesh in the MED format
 
         Arguments:
             filename (Path|str): Name of the file
             local (bool=True) : print local values only (relevant for a ParallelMesh only)
             version (list): list of size 3 ([major, minor, release])
+            mode (str): 'a' or 'w' ('w' to overwrite file)
 
         Returns:
             Bool: True if of
@@ -16067,13 +16069,14 @@ class ParallelMesh(BaseMesh):
             bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         """
 
-    def printMedFile(self, fileName, local=True, version=[0, 0, 0]):
+    def printMedFile(self, fileName, local=True, version=[0, 0, 0], mode="a"):
         """Print the mesh in the MED format
 
         Arguments:
             filename (Path|str): Name of the file
             local (bool=True) : print local values only (relevant for a ParallelMesh only)
             version (list): list of size 3 ([major, minor, release])
+            mode (str): 'a' or 'w' ('w' to overwrite file)
 
         Returns:
             Bool: True if of
@@ -18957,7 +18960,7 @@ class AsterToMedWriter:
     def printMesh(self, *args, **kwargs):
         """Overloaded function.
 
-        1. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.Mesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+        1. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.Mesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '', mode: str = 'a') -> bool
 
 
         Print mesh to med file
@@ -18967,21 +18970,10 @@ class AsterToMedWriter:
             path (Path|str): path to med file
             parallelPrint (bool): false by default. If true print in one parallel file (optional)
             mesh_name (str): mesh name (optional)
+            mode (str): 'a' or 'w' ('w' to overwrite file) (optional)
 
 
-        2. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ParallelMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
-
-
-        Print mesh to med file
-
-        Arguments:
-            Mesh: mesh to print
-            path (Path|str): path to med file
-            parallelPrint (bool): false by default. If true print in one parallel file (optional)
-            mesh_name (str): mesh name (optional)
-
-
-        3. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ConnectionMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '') -> bool
+        2. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ParallelMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '', mode: str = 'a') -> bool
 
 
         Print mesh to med file
@@ -18991,15 +18983,30 @@ class AsterToMedWriter:
             path (Path|str): path to med file
             parallelPrint (bool): false by default. If true print in one parallel file (optional)
             mesh_name (str): mesh name (optional)
+            mode (str): 'a' or 'w' ('w' to overwrite file) (optional)
+
+
+        3. printMesh(self: libaster.AsterToMedWriter, mesh: libaster.ConnectionMesh, path: os.PathLike, parallelPrint: bool = False, mesh_name: str = '', mode: str = 'a') -> bool
+
+
+        Print mesh to med file
+
+        Arguments:
+            Mesh: mesh to print
+            path (Path|str): path to med file
+            parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mesh_name (str): mesh name (optional)
+            mode (str): 'a' or 'w' ('w' to overwrite file) (optional)
         """
 
-    def printResult(self, result, path, parallelPrint=False):
+    def printResult(self, result, path, parallelPrint=False, mode="a"):
         """Print result to med file
 
         Arguments:
             result: result to print
             path (Path|str): path to med file
             parallelPrint (bool): false by default. If true print in one parallel file (optional)
+            mode (str): 'a' or 'w' ('w' to overwrite file) (optional)
         """
 
 

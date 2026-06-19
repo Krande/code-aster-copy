@@ -681,10 +681,10 @@ const VectorLong ParallelMesh::getAllMedCellsTypes() const {
 }
 
 bool ParallelMesh::printMedFile( const std::filesystem::path &fileName, bool local,
-                                 std::array< int, 3 > version ) const {
+                                 std::array< int, 3 > version, const std::string &mode ) const {
 #ifdef ASTER_HAVE_MED
     auto aTMWriter = AsterToMedWriter();
-    return aTMWriter.printMesh( *this, fileName, local );
+    return aTMWriter.printMesh( *this, fileName, local, "", mode );
 #else
     return false;
 #endif
