@@ -296,7 +296,7 @@ inst_visc = DEFI_LIST_REEL(
 
 fonction_charge = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=[0, 100], ORDONNEE=[0, 1])
 
-evol_me_1, tab_obs_1 = CALC_ENDO(
+evol_me_1 = CALC_ENDO(
     MODELE=mo_me,
     CHAM_MATER=mate_me,
     CARA_ELEM=cara_me,
@@ -319,11 +319,11 @@ evol_me_1, tab_obs_1 = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST=inst_visc),
+    ENDO_VISC=_F(LIST_INST=inst_visc, TABLE=CO("tab_obs_1")),
     INCREMENT=_F(LIST_INST=inst_me, NUME_INST_FIN=1),
 )
 
-evol_me_2, tab_obs_2 = CALC_ENDO(
+evol_me_2 = CALC_ENDO(
     reuse=evol_me_1,
     ETAT_INIT=_F(EVOL_NOLI=evol_me_1),
     MODELE=mo_me,
@@ -348,11 +348,11 @@ evol_me_2, tab_obs_2 = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST=inst_visc),
+    ENDO_VISC=_F(LIST_INST=inst_visc, TABLE=CO("tab_obs_2")),
     INCREMENT=_F(LIST_INST=inst_me, INST_FIN=50),
 )
 
-evol_me_3, tab_obs_3 = CALC_ENDO(
+evol_me_3 = CALC_ENDO(
     ETAT_INIT=_F(
         SIGM=evol_me_2.getField("SIEF_ELGA", 2),
         DEPL=evol_me_2.getField("DEPL", 2),
@@ -380,11 +380,16 @@ evol_me_3, tab_obs_3 = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST=inst_visc),
+    ENDO_VISC=_F(LIST_INST=inst_visc, TABLE=CO("tab_obs_3")),
     INCREMENT=_F(LIST_INST=inst_me, NUME_INST_INIT=2, INST_FIN=75),
 )
 
-evol_me_4, tab_obs_4 = CALC_ENDO(
+
+inst_visc_4 = DEFI_LIST_REEL(
+    VALE=(duree_rampe, duree_rampe + duree_equil, duree_rampe + duree_equil * nbr_sequ_equil)
+)
+
+evol_me_4 = CALC_ENDO(
     ETAT_INIT=_F(
         SIGM=evol_me_3.getField("SIEF_ELGA", 1),
         DEPL=evol_me_3.getField("DEPL", 1),
@@ -412,7 +417,7 @@ evol_me_4, tab_obs_4 = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST=inst_visc),
+    ENDO_VISC=_F(LIST_INST=inst_visc, TABLE=CO("tab_obs_4")),
     INCREMENT=_F(LIST_INST=inst_me, INST_INIT=75),
 )
 

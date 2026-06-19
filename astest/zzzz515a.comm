@@ -361,7 +361,7 @@ f_sigm_visc = FORMULE(
 )
 
 
-evol_me, tab_obs, l_evol = CALC_ENDO(
+evol_me = CALC_ENDO(
     MODELE=mo_me,
     CHAM_MATER=mate_me,
     CARA_ELEM=cara_me,
@@ -423,6 +423,8 @@ evol_me, tab_obs, l_evol = CALC_ENDO(
         OBSERVATION=["VISCENDO", "VISCELAS"],
         PREC_STAB=[r_stab * b_ft] * 2,
         ARCHIVAGE=_F(PAS_ARCH=1),
+        TABLE=CO("tab_obs"),
+        RESULTAT=CO("d_evol"),
     ),
 )
 
@@ -436,8 +438,8 @@ CALC_CHAMP(
 )
 
 CALC_CHAMP(
-    reuse=l_evol[-1],
-    RESULTAT=l_evol[-1],
+    reuse=d_evol["VISC_4"],
+    RESULTAT=d_evol["VISC_4"],
     DEFORMATION=("EPSI_ELGA", "EPSI_ELNO"),
     VARI_INTERNE=("VARC_ELGA", "VARC_ELNO"),
     GROUP_MA=("massif", "grille", "grille_excentree", "coque"),
@@ -564,7 +566,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=-duree_rampe,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="TEMP",
             GROUP_MA="massif",
@@ -576,7 +578,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=0,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="TEMP",
             GROUP_MA="massif",
@@ -587,8 +589,8 @@ TEST_RESU(
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            INST=l_evol[-1].getAccessParameters()["INST"][-1],
-            RESULTAT=l_evol[-1],
+            INST=d_evol["VISC_4"].getAccessParameters()["INST"][-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="TEMP",
             GROUP_MA="massif",
@@ -600,7 +602,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=-duree_rampe,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="SECH",
             GROUP_MA="massif",
@@ -612,7 +614,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=0,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="SECH",
             GROUP_MA="massif",
@@ -623,8 +625,8 @@ TEST_RESU(
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            INST=l_evol[-1].getAccessParameters()["INST"][-1],
-            RESULTAT=l_evol[-1],
+            INST=d_evol["VISC_4"].getAccessParameters()["INST"][-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="SECH",
             GROUP_MA="massif",
@@ -748,7 +750,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=-duree_rampe,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="EPSI_ELGA",
             NOM_CMP="EPYY",
             GROUP_MA="massif",
@@ -760,7 +762,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=0,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="EPSI_ELGA",
             NOM_CMP="EPYY",
             GROUP_MA="massif",
@@ -771,8 +773,8 @@ TEST_RESU(
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            INST=l_evol[-1].getAccessParameters()["INST"][-1],
-            RESULTAT=l_evol[-1],
+            INST=d_evol["VISC_4"].getAccessParameters()["INST"][-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="EPSI_ELGA",
             NOM_CMP="EPYY",
             GROUP_MA="massif",
@@ -784,7 +786,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=-duree_rampe,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="EPSI_ELGA",
             NOM_CMP="EPYY",
             GROUP_MA="coque",
@@ -797,7 +799,7 @@ TEST_RESU(
         _F(
             REFERENCE="ANALYTIQUE",
             INST=0,
-            RESULTAT=l_evol[-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="EPSI_ELGA",
             NOM_CMP="EPYY",
             GROUP_MA="coque",
@@ -809,8 +811,8 @@ TEST_RESU(
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            INST=l_evol[-1].getAccessParameters()["INST"][-1],
-            RESULTAT=l_evol[-1],
+            INST=d_evol["VISC_4"].getAccessParameters()["INST"][-1],
+            RESULTAT=d_evol["VISC_4"],
             NOM_CHAM="EPSI_ELGA",
             NOM_CMP="EPYY",
             GROUP_MA="coque",
@@ -964,7 +966,7 @@ TEST_TABLE(
 #     NOM_PARA="VALE",
 #     FILTRE=(
 #         _F(NOM_PARA="INST", VALE=100),
-#         _F(NOM_PARA="INST_VISC", VALE=l_evol[-1].getAccessParameters()["INST"][-1]),
+#         _F(NOM_PARA="INST_VISC", VALE=d_evol["VISC_4"].getAccessParameters()["INST"][-1]),
 #         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS"),
 #     ),
 #     VALE_CALC=3.696803968851e-07,
@@ -988,7 +990,7 @@ TEST_TABLE(
 #     NOM_PARA="VALE",
 #     FILTRE=(
 #         _F(NOM_PARA="INST", VALE=100),
-#         _F(NOM_PARA="INST_VISC", VALE=l_evol[-1].getAccessParameters()["INST"][-1]),
+#         _F(NOM_PARA="INST_VISC", VALE=d_evol["VISC_4"].getAccessParameters()["INST"][-1]),
 #         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCENDO"),
 #     ),
 #     VALE_CALC=3.8484846303e-07,

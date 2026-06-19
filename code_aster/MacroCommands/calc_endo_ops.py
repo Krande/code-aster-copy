@@ -19,7 +19,13 @@
 
 from ..Utilities import logger, no_new_attributes
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
-from ..Objects import EntityType, ExternalVariableTraits, ListOfFloats, TimesList
+from ..Objects import (
+    EntityType,
+    ExternalVariableTraits,
+    ListOfFloats,
+    TimesList,
+    NonLinearResultDict,
+)
 from libaster import MechanicalLoadFunction, Function
 
 from ..CodeCommands import (
@@ -318,7 +324,7 @@ class CalcEndo:
         self.visc_list_inst = self.kwds["ENDO_VISC"]["LIST_INST"]
         self.crit_stab_visc = self.kwds["ENDO_VISC"]["PREC_STAB"]
         self.arret = self.kwds["ENDO_VISC"]["ARRET"]
-        self.resu_visc = []
+        self.resu_visc = NonLinearResultDict("resu_visc")
         if "ARCHIVAGE" in self.kwds["ENDO_VISC"]:
             self.arch_visc = self.kwds["ENDO_VISC"]["ARCHIVAGE"]
 
@@ -899,7 +905,12 @@ class CalcEndo:
             )
 
         if self.arch_visc:
-            self.resu_visc.append(evol_endo)
+            if len(self.resu_visc.keys()) > 0:
+                last_nume_arch = sorted(self.resu_visc.keys())[-1]
+                nume_ordre_arch = int(int(last_nume_arch[5:]) + 1)
+            else:
+                nume_ordre_arch = 1
+            self.resu_visc["VISC_" + str(nume_ordre_arch)] = evol_endo
 
         ##Initial state for next STAT_NON_LINE
         state_init.set_init_state(depl_arch, sief_arch, vari_arch, strx_arch)
@@ -939,7 +950,9 @@ def calc_endo_ops(self, **args):
 
         t_init = calc_endo.arch_resu(evol_endo, t_comp, state_init)
 
+    if "TABLE" in args["ENDO_VISC"]:
+        self.register_result(calc_endo.tab_out, args["ENDO_VISC"]["TABLE"])
     if calc_endo.arch_visc:
-        return calc_endo.resu, calc_endo.tab_out, calc_endo.resu_visc
-    else:
-        return calc_endo.resu, calc_endo.tab_out  # , None
+        self.register_result(calc_endo.resu_visc, args["ENDO_VISC"]["RESULTAT"])
+
+    return calc_endo.resu

@@ -296,7 +296,7 @@ inst_visc = DEFI_LIST_REEL(
 
 fonction_charge = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=[0, 100], ORDONNEE=[0, 1])
 
-evol_me, tab_obs = CALC_ENDO(
+evol_me = CALC_ENDO(
     MODELE=mo_me,
     CHAM_MATER=mate_me,
     CARA_ELEM=cara_me,
@@ -320,7 +320,7 @@ evol_me, tab_obs = CALC_ENDO(
         MOMENT_REFE=4900,
         ITER_GLOB_MAXI=10,
     ),
-    ENDO_VISC=_F(LIST_INST=inst_visc),
+    ENDO_VISC=_F(LIST_INST=inst_visc, TABLE=CO("tab_obs")),
 )
 
 # -----------------------------------------

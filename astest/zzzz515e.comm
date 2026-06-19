@@ -113,7 +113,7 @@ charge_me = AFFE_CHAR_MECA(
 
 fonction_charge = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=[0, 1], ORDONNEE=[0, 1])
 
-evol_me, tab_obs = CALC_ENDO(
+evol_me = CALC_ENDO(
     MODELE=mo_me,
     CHAM_MATER=mate_me,
     EXCIT=(_F(CHARGE=charge_me, FONC_MULT=fonction_charge), _F(CHARGE=liaison_me)),
@@ -137,7 +137,7 @@ charge_me_2 = AFFE_CHAR_MECA(
     MODELE=mo_me, DDL_IMPO=_F(GROUP_MA="massif_n", DY=UIMP * (0.4 - 0.2)), DOUBLE_LAGRANGE="NON"
 )
 
-evol_me, tab_obs = CALC_ENDO(
+evol_me = CALC_ENDO(
     reuse=evol_me,
     MODELE=mo_me,
     CHAM_MATER=mate_me,
@@ -165,7 +165,7 @@ charge_me_3 = AFFE_CHAR_MECA(
 
 fonction_charge_3 = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=[0.4, 1], ORDONNEE=[0, 1])
 
-evol_me, tab_obs = CALC_ENDO(
+evol_me = CALC_ENDO(
     reuse=evol_me,
     MODELE=mo_me,
     CHAM_MATER=mate_me,
