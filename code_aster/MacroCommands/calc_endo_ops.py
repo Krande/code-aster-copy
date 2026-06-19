@@ -239,6 +239,59 @@ class CalcEndoVarc:
         return dict_varc
 
 
+class CalcEndoInitState:
+    depl = sief = vari = strx = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self, depl, sief, vari, strx):
+
+        self.set_init_state(depl, sief, vari, strx)
+
+    def set_init_state(self, depl, sief, vari, strx):
+        """
+        Set all fields for init state
+
+        Args :
+            depl_init (*FieldOnNodes*): depl field initial state
+            sief_init (*FieldOnCells*): stress field initial state
+            vari_init (*FieldOnCells*): internal variable field initial state
+            strx_init (*FieldOnCells*): initial state for a few structural elements
+
+        """
+
+        self.depl = depl
+        self.sief = sief
+        self.vari = vari
+        self.strx = strx
+
+    def set_depl(self, depl):
+        """Set depl initial field"""
+        self.depl = depl
+
+    def set_sief(self, sief):
+        """Set sief initial field"""
+        self.sief = sief
+
+    def set_vari(self, vari):
+        """Set vari initial field"""
+        self.vari = vari
+
+    def set_strx(self, strx):
+        """Set strx initial field"""
+        self.strx = strx
+
+    def check_etat_init(self):
+        """Check if ETAT_INIT is necessary in STAT_NON_LINE
+
+        Returns :
+            etat_init (bool): True if ETAT_INIT has to be used in STAT_NON_LINE
+        """
+        l_etat_init = [self.depl, self.sief, self.vari, self.strx]
+        etat_init = sum(x is not None for x in l_etat_init) > 0
+
+        return etat_init
+
+
 class CalcEndo:
     kwds = None
     tau = visc_list_inst = user_list_inst = None
@@ -302,11 +355,9 @@ class CalcEndo:
             ##Si l'utilisateur n'a pas donné en entrée une observation appelée VISCELAS ou VISCENDO
             ##On rajoute les observations par défaut
             if "VISCELAS" not in titre_obs_visc and "VISCENDO" not in titre_obs_visc:
-                (
-                    defaut_obs_stab_visc,
-                    defaut_crit_stab_visc,
-                    default_other_obs,
-                ) = set_default_observation(self.kwds)
+                (defaut_obs_stab_visc, defaut_crit_stab_visc, default_other_obs) = (
+                    set_default_observation(self.kwds)
+                )
                 self.obs_stab_visc = self.obs_stab_visc + defaut_obs_stab_visc
                 self.crit_stab_visc = self.crit_stab_visc + defaut_crit_stab_visc
                 self.other_obs = self.other_obs + default_other_obs
@@ -506,14 +557,13 @@ class CalcEndo:
         Returns:
             nume_ordre (int): nume_ordre of new load sequence
             t_init (float): initial time of new load sequence
-            depl_init (*FieldOnNodes*): depl field initial state
-            sief_init (*FieldOnCells*): stress field initial state
-            vari_init (*FieldOnCells*): internal variable field initial state
-            strx_init (*FieldOnCells*): initial state for a few structural elements
+            init_state (*CalcEndoInitState*): initial state
 
         """
 
         nume_ordre = t_init = depl_init = sief_init = vari_init = strx_init = None
+
+        init_state = CalcEndoInitState(depl_init, sief_init, vari_init, strx_init)
 
         if "ETAT_INIT" in self.kwds:
             if "EVOL_NOLI" in self.kwds["ETAT_INIT"]:
@@ -539,19 +589,24 @@ class CalcEndo:
                         strx_init = self.resu.getField("STRX_ELGA", idx)
                     else:
                         strx_init = None
+                    init_state.set_init_state(depl_init, sief_init, vari_init, strx_init)
                     index_init = where(isclose(array(self.user_list_inst), t_init))[0][0]
                     self.user_list_inst = self.user_list_inst[index_init:]
             else:
                 if "DEPL" in self.kwds["ETAT_INIT"]:
                     depl_init = self.kwds["ETAT_INIT"]["DEPL"]
+                    init_state.set_depl(depl_init)
                 if "SIGMA" in self.kwds["ETAT_INIT"]:
                     sief_init = self.kwds["ETAT_INIT"]["SIGMA"]
+                    init_state.set_sief(sief_init)
                 if "VARI" in self.kwds["ETAT_INIT"]:
                     vari_init = self.kwds["ETAT_INIT"]["VARI"]
+                    init_state.set_vari(vari_init)
                 if "STRX" in self.kwds["ETAT_INIT"]:
                     strx_init = self.kwds["ETAT_INIT"]["STRX"]
+                    init_state.set_strx(strx_init)
 
-        return nume_ordre, t_init, depl_init, sief_init, vari_init, strx_init
+        return nume_ordre, t_init, init_state
 
     def eval_loads(self, t_init, t_comp, nume_ordre, is_stab_seq):
         """Create syntax for EXCIT in STAT_NON_LINE for a given load sequence
@@ -663,14 +718,11 @@ class CalcEndo:
             self.stab = True
             UTMESS("A", "CALCENDO_6")
 
-    def compute_ramp(self, depl_init, sief_init, vari_init, strx_init, visc_mat_field, visc_excit):
+    def compute_ramp(self, state_init, visc_mat_field, visc_excit):
         """Non linear computation during the ramp part of the load sequence
 
         Args:
-            depl_init (*FieldOnNodes*): depl field initial state
-            sief_init (*FieldOnCells*): stress field initial state
-            vari_init (*FieldOnCells*): internal variable field initial state
-            strx_init (*FieldOnCells*): initial state for a few structural elements
+            state_init (*CalcEndoInitState*): initial state for ramp non linear computation
             visc_mat_field (*MaterialField*) : material field with time dependant varc evaluated for load sequence
             visc_excit (list): Arguments for EXCIT in STAT_NON_LINE
 
@@ -698,9 +750,14 @@ class CalcEndo:
         params_snl["CHAM_MATER"] = visc_mat_field
 
         if ("ETAT_INIT" in self.kwds and "EVOL_NOLI" in self.kwds["ETAT_INIT"]) or (
-            depl_init or sief_init or vari_init or strx_init
+            state_init.check_etat_init()
         ):
-            l_ETAT_INIT = _F(DEPL=depl_init, SIGM=sief_init, VARI=vari_init, STRX=strx_init)
+            l_ETAT_INIT = _F(
+                DEPL=state_init.depl,
+                SIGM=state_init.sief,
+                VARI=state_init.vari,
+                STRX=state_init.strx,
+            )
         else:
             l_ETAT_INIT = []
 
@@ -769,20 +826,16 @@ class CalcEndo:
 
         return evol_endo
 
-    def arch_resu(self, evol_endo, t_comp):
+    def arch_resu(self, evol_endo, t_comp, state_init):
         """Save results for output
 
         Args:
             evol_endo (*evol_noli*): result of the current load sequence
             t_comp (float): physical time at the end of current load sequence
+            state_init (CalcEndoInitState): Initial state for next STAT_NON_LINE
 
         Returns:
             t_init (float): reset _t_init to None
-            depl_arch (*FieldOnNodes*): depl field at the end of load sequence
-            sief_arch (*FieldOnCells*): stress field at the end of load sequence
-            vari_arch (*FieldOnCells*): internal variable field at the end of load sequence
-            strx_arch (*FieldOnCells*): strx field at the end of load sequence
-
         """
 
         nume = evol_endo.getAccessParameters()["NUME_ORDRE"][-1]
@@ -848,7 +901,10 @@ class CalcEndo:
         if self.arch_visc:
             self.resu_visc.append(evol_endo)
 
-        return None, depl_arch, sief_arch, vari_arch, strx_arch
+        ##Initial state for next STAT_NON_LINE
+        state_init.set_init_state(depl_arch, sief_arch, vari_arch, strx_arch)
+
+        return None
 
 
 def calc_endo_ops(self, **args):
@@ -866,16 +922,14 @@ def calc_endo_ops(self, **args):
 
     calc_endo = CalcEndo(args)
 
-    nume_ordre, t_init, depl_init, sief_init, vari_init, strx_init = calc_endo.set_init_state()
+    nume_ordre, t_init, state_init = calc_endo.set_init_state()
 
     for t_comp in calc_endo.user_list_inst[1:]:
         nume_ordre, t_init = calc_endo.init_sequence(nume_ordre, t_init, t_comp)
         visc_excit = calc_endo.eval_loads(t_init, t_comp, nume_ordre, False)
         visc_mat_field = calc_endo.eval_varc(t_init, t_comp)
 
-        evol_endo = calc_endo.compute_ramp(
-            depl_init, sief_init, vari_init, strx_init, visc_mat_field, visc_excit
-        )
+        evol_endo = calc_endo.compute_ramp(state_init, visc_mat_field, visc_excit)
 
         if not calc_endo.is_stab():
             visc_excit = calc_endo.eval_loads(t_init, t_comp, nume_ordre, True)
@@ -883,7 +937,7 @@ def calc_endo_ops(self, **args):
         while not calc_endo.is_stab():
             evol_endo = calc_endo.compute_stab(evol_endo, visc_mat_field, visc_excit)
 
-        t_init, depl_init, sief_init, vari_init, strx_init = calc_endo.arch_resu(evol_endo, t_comp)
+        t_init = calc_endo.arch_resu(evol_endo, t_comp, state_init)
 
     if calc_endo.arch_visc:
         return calc_endo.resu, calc_endo.tab_out, calc_endo.resu_visc
