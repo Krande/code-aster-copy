@@ -93,6 +93,7 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc2002.h"
 #include "asterfort/lc2036.h"
 #include "asterfort/lc4047.h"
+#include "asterfort/lc5076.h"
 #include "asterfort/lc5152.h"
 #include "asterfort/lc6036.h"
 #include "asterfort/lc6046.h"
@@ -754,6 +755,13 @@ subroutine lc0000(BEHInteg, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
+    case (5076)
+        call lc5076(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
 
     case (5152)
 !     CABLE_GAINE
