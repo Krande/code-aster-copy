@@ -523,9 +523,6 @@ contains
 ! ------------- Compute normal component
                 call cplEvalMatrHBn(matHB, normalSl, stress_n)
 !
-! -------- Bug for the moment - FIXME - so stress_n = 0.d0 to recover penalization
-                stress_n = 0.d0
-!
                 do idim = 1, ndim
                     iRow = iRow+1
 !
