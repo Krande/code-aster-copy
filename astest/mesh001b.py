@@ -533,6 +533,8 @@ field_r = CREA_CHAMP(
     AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY"), VALE=(1.0, 2.0)),
 )
 
+field_rs = field_r.toSimpleFieldOnNodes()
+field_r2 = field_rs.toFieldOnNodes()
 
 # test ghosts
 square = CA.ParallelMesh.buildSquare(refine=2, deterministic=True, ghost=2)

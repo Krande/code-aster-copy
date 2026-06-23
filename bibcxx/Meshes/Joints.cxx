@@ -139,6 +139,7 @@ const JeveuxVectorLong &Joints::getOppositeDomains() const {
 bool Joints::build() {
     _send->build();
     _recv->build();
+    buildGroup();
 
     return true;
 }
