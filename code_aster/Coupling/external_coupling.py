@@ -384,7 +384,7 @@ class SaturneCoupling(ExternalCoupling):
         else:
             fieldType = "CELLS"
 
-        self._fields_in = [("fluid_pressure", ["FX", "FY", "FZ"], fieldType)]
+        self._fields_in = [("boundary_stress", ["FX", "FY", "FZ"], fieldType)]
         self._fields_out = [
             ("mesh_displacement", ["DX", "DY", "DZ"], node_typ),
             ("mesh_velocity", ["DX", "DY", "DZ"], node_typ),
@@ -510,5 +510,5 @@ class SaturneCoupling(ExternalCoupling):
             *LoadResult*: surface forces load.
         """
 
-        fluid = self._medcpl.get_field("fluid_pressure")
+        fluid = self._medcpl.get_field("boundary_stress")
         return self._medcpl.import_fluidforces(fluid, model, time)
