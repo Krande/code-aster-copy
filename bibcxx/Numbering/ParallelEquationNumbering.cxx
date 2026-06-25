@@ -428,6 +428,8 @@ ParallelEquationNumbering::getDOFsWithDescription( const VectorString &cmps,
     VectorLong nodes;
     if ( groupNames.size() == 0 ) {
         nodes = _mesh->getNodes( std::string(), local, same_rank );
+        // pour les MPC
+        nodes.push_back( -1 );
     } else {
         nodes = _mesh->getNodes( groupNames, local, same_rank );
     }
