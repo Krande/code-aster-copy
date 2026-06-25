@@ -228,6 +228,8 @@ class SecantLineSearch(BaseLineSearch):
         rho1 = 1.0
         f0 = self.compute_f(rho0, solution)
         fcvg = abs(self._get("RESI_LINE_RELA") * f0)
+        if fcvg <= self._tiny:
+            return solution
 
         # Best values and updates during line search
         best_options = (-1, rho1, np.finfo("float64").max)
