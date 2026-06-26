@@ -30,7 +30,6 @@ subroutine te0050(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/pmfmats.h"
-#include "asterfort/rcangm.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"

@@ -26,11 +26,12 @@ subroutine mmproj(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
 #include "asterf_types.h"
 #include "asterfort/mmnewd.h"
 #include "asterfort/projOrthoNewton.h"
+#include "MeshTypes_type.h"
 #include "asterfort/mmtole.h"
     character(len=8) :: cellCode
     integer(kind=8) :: cellDime
     integer(kind=8) :: cellNbNode
-    real(kind=8) :: cellCoor(27)
+    real(kind=8) :: cellCoor(3, MT_NNOMAX2D)
     real(kind=8) :: poinCoor(3)
     aster_logical :: dirapp
     real(kind=8) :: dir(3)

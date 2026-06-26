@@ -16,10 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+#include "MeshTypes_type.h"
 interface
     subroutine mmnonf(cellCode, ksi1, ksi2, ff)
         character(len=8), intent(in) :: cellCode
         real(kind=8), intent(in) :: ksi1, ksi2
-        real(kind=8), intent(out) :: ff(9)
+        real(kind=8), intent(out) :: ff(MT_NNOMAX2D)
     end subroutine mmnonf
 end interface

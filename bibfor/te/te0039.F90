@@ -23,7 +23,6 @@ subroutine te0039(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/dikpkt.h"
@@ -32,10 +31,8 @@ subroutine te0039(option, nomte)
 #include "asterfort/dis_elas_para_klfl.h"
 #include "asterfort/discret_sief.h"
 #include "asterfort/infdis.h"
-#include "asterfort/infted.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
-#include "asterfort/rcvala.h"
 #include "asterfort/terefe.h"
 #include "asterfort/ut2vgl.h"
 #include "asterfort/ut2vlg.h"

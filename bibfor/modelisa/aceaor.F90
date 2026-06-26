@@ -54,12 +54,10 @@ subroutine aceaor(nbocc, infoconcept)
 #include "asterfort/longeleori.h"
 #include "asterfort/nocart.h"
 #include "asterfort/tbcarapou.h"
-#include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
-#include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8), parameter :: nbval = 6

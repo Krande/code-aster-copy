@@ -33,6 +33,7 @@ subroutine ethdst(materPara, &
 #include "asterfort/epthmc.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/sigtmc.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     type(Material_Para), intent(inout) :: materPara
@@ -68,7 +69,7 @@ subroutine ethdst(materPara, &
     integer(kind=8) :: ino, isig, kpg, nbEpsi
     real(kind=8) :: epsiTher(162), sigmTher(162)
     real(kind=8) :: rayon
-    real(kind=8) :: enerTherKpg, dfdx(27), dfdy(27), dfdz(27)
+    real(kind=8) :: enerTherKpg, dfdx(MT_NNOMAX3D), dfdy(MT_NNOMAX3D), dfdz(MT_NNOMAX3D)
     real(kind=8) :: jacobKpg
 !
 ! --------------------------------------------------------------------------------------------------

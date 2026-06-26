@@ -43,7 +43,6 @@ subroutine appcpr(kptsc)
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
 #include "asterfort/utmess.h"
-#include "asterfort/PCHPDDMDumpAuxiliaryMat.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/isParallelMatrix.h"

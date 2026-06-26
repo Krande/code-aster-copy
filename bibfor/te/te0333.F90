@@ -70,7 +70,7 @@ subroutine te0333(option, nomte)
     type(FE_Cell) :: FECell
     type(FE_Quadrature) :: FEQuad
     type(FE_basis) :: FEBasis
-    real(kind=8) :: BGSEval(3, MAX_BS), coorpg(3)
+    real(kind=8) :: BGSEval(3, MAX_BS_CG), coorpg(3)
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: relaComp, comporFlua, comporPlas
     type(All_Varc_Strain) :: allVarcStrain

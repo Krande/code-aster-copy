@@ -37,7 +37,6 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
 #include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
-#include "asterfort/get_elas_id.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/reeref.h"
@@ -47,6 +46,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: ndim, igeom, jvMaterCode, nnop, npg
     integer(kind=8) :: nfh, ddlc, nfe, idecpg
@@ -98,7 +98,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
     real(kind=8) :: notime
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)
     real(kind=8) :: dfdi(nnop, ndim)
-    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3)
+    real(kind=8) :: fk(MT_NNOMAX, 3, 3), dkdgl(MT_NNOMAX, 3, 3, 3)
     real(kind=8) :: grad(3, 3)
     real(kind=8) :: s, sigmTher, d(6, 6)
     real(kind=8) :: ka, mu

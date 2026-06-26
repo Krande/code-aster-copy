@@ -42,7 +42,7 @@ module coupling_nitsche_module
 #include "asterfort/coupling_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
-#include "FE_basis_module.h"
+#include "FE_module.h"
 #include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------

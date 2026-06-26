@@ -26,7 +26,6 @@ subroutine te0033(option, nomte)
 #include "asterc/r8dgrd.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/cosiro.h"
 #include "asterfort/dkqedg.h"

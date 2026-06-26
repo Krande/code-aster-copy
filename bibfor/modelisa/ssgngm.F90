@@ -23,7 +23,6 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 #include "asterfort/utlisi.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gmgnre.h"
 #include "asterfort/jedema.h"

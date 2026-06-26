@@ -29,7 +29,6 @@ subroutine te0592(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/niinit.h"
 #include "asterfort/nirmtd.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 !
     character(len=16) :: option, nomte

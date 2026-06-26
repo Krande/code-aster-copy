@@ -49,7 +49,6 @@ subroutine acearg(nbocc, infdonn, infcarte, zjdlm)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/in_liste_entier.h"
-#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -60,7 +59,6 @@ subroutine acearg(nbocc, infdonn, infcarte, zjdlm)
 #include "asterfort/nocart.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !&<
 ! --------------------------------------------------------------------------------------------------

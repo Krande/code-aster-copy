@@ -30,7 +30,6 @@ subroutine te0081(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/tecach.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte

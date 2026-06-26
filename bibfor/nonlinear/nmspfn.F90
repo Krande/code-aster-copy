@@ -27,16 +27,11 @@ subroutine nmspfn(ndim, nno, nddl, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmspci.h"
 #include "asterfort/ffpoutimo.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/utmess.h"
 #include "asterfort/lonelesp.h"
 #include "blas/ddot.h"
 !

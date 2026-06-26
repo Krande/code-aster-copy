@@ -24,7 +24,6 @@ subroutine tuload(option, nbNode, nbDof, nbFourier)
 !
     implicit none
 !
-#include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevecd.h"

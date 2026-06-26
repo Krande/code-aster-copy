@@ -21,7 +21,6 @@ subroutine rapo3d(numeDofZ, iocc, listRelaZ, loadZ)
 !
     implicit none
 !
-#include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"

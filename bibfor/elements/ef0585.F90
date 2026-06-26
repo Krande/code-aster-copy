@@ -21,7 +21,6 @@ subroutine ef0585(nomte)
     use pipeElem_module
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/pipeElem_type.h"
 #include "asterfort/tuefgeElno.h"
 !

@@ -30,11 +30,8 @@ subroutine carc_read_pt(prepMapCarcri)
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
-#include "asterfort/comp_read_mesh.h"
 #include "asterfort/compGetMecaPart.h"
 #include "asterfort/compGetRelation.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exicp.h"
 #include "asterfort/getBehaviourAlgo.h"
 #include "asterfort/getBehaviourPara.h"
 #include "asterfort/getExternalBehaviourParaPt.h"
@@ -43,7 +40,6 @@ subroutine carc_read_pt(prepMapCarcri)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
     type(BehaviourPrep_MapCarcri), intent(inout) :: prepMapCarcri

@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "MeshTypes_type.h"
 !
 interface
     subroutine mmfonf(cellDime, cellNbNode, cellCode, ksi1, ksi2, &
@@ -22,6 +23,6 @@ interface
         integer(kind=8), intent(in) :: cellDime, cellNbNode
         character(len=8), intent(in) :: cellCode
         real(kind=8), intent(in) :: ksi1, ksi2
-        real(kind=8), intent(out) :: ff(9), dff(2, 9), ddff(3, 9)
+        real(kind=8), intent(out) :: ff(MT_NNOMAX2D), dff(2, MT_NNOMAX2D), ddff(3, MT_NNOMAX2D)
     end subroutine mmfonf
 end interface

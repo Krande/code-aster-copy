@@ -40,7 +40,6 @@ subroutine pmsta1(sigmPrev, sigmCurr, epsiIncr, &
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-#include "blas/dscal.h"
 !
     real(kind=8), intent(in) :: sigmPrev(6), sigmCurr(6), epsiIncr(9)
     integer(kind=8), intent(in)  :: nbVari, nbVariTabl

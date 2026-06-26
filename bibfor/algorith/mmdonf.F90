@@ -20,12 +20,12 @@ subroutine mmdonf(cellCode, ksi1, ksi2, dff)
 !
     implicit none
 !
-#include "asterfort/assert.h"
+#include "MeshTypes_type.h"
 #include "asterfort/elrfdf.h"
 !
     character(len=8), intent(in) :: cellCode
     real(kind=8), intent(in) :: ksi1, ksi2
-    real(kind=8), intent(out) :: dff(2, 9)
+    real(kind=8), intent(out) :: dff(2, MT_NNOMAX2D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine mmdonf(cellCode, ksi1, ksi2, dff)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: ksi(2), d2f(3, 9)
+    real(kind=8) :: ksi(2), d2f(3, MT_NNOMAX2D)
 !
 ! --------------------------------------------------------------------------------------------------
 !

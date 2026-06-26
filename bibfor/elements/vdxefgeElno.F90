@@ -36,12 +36,12 @@ subroutine vdxefgeElno(nomte, nodeCoor, &
 #include "asterfort/moytem.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/trndgl.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vdefge.h"
 #include "asterfort/vdesga.h"
 #include "asterfort/vdxtemp.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: nomte
@@ -78,7 +78,7 @@ subroutine vdxefgeElno(nomte, nodeCoor, &
     real(kind=8) :: hsf(3, 9), hsj1fx(3, 9), wgt
     real(kind=8) :: btdf(3, 42), btild(5, 42)
     real(kind=8) :: disp(42), rotf(9)
-    real(kind=8) :: sigmElno(6, 27)
+    real(kind=8) :: sigmElno(6, MT_NNOMAX3D)
     real(kind=8) :: alpha, epais
     real(kind=8) :: ksi3, ksi3s2, hic, zmin
     aster_logical :: hasTemp, hasTempRefe

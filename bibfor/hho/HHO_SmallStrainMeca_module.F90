@@ -45,7 +45,6 @@ module HHO_SmallStrainMeca_module
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmcomp.h"
 #include "blas/daxpy.h"
-#include "blas/dsyr.h"
 #include "blas/dger.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -110,7 +109,7 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
         type(HHO_matrix) :: AT
         integer(kind=8) :: cbs, fbs, faces_dofs, total_dofs, gbs, kpg, gbs_cmp, gbs_sym, cbs_cmp
-        integer(kind=8) :: cod(MAX_QP_CELL), gbs_axis
+        integer(kind=8) :: cod(MSIZE_QP_CELL), gbs_axis
         aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
 !

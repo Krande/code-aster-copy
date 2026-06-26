@@ -25,7 +25,6 @@ subroutine lc0029(fami, kpg, ksp, ndim, imate, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/nmvple.h"
 #include "asterfort/Behaviour_type.h"
 !

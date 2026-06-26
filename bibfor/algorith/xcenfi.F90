@@ -32,6 +32,7 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, &
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
+#include "MeshTypes_type.h"
     integer(kind=8) :: ndim, ndime, nno, nn(4), exit(2)
     integer(kind=8), intent(in), optional :: num(8)
     character(len=8) :: elrefp
@@ -55,8 +56,8 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, &
 !       CENFI   : COORDONNES DU PT MILIEU AU CENTRE DE LA FISSURE
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: epsmax, rbid, crit, maxi, x(81), dekker(4*ndime)
-    real(kind=8) :: dff(3, 27), gradls(ndime)
+    real(kind=8) :: epsmax, rbid, crit, maxi, x(3*MT_NNOMAX3D), dekker(4*ndime)
+    real(kind=8) :: dff(3, MT_NNOMAX), gradls(ndime)
     real(kind=8) :: ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
     integer(kind=8) :: ibid, itemax, i, n(3), j
     integer(kind=8) :: pi1, pi2, pi3, pi4, m12, m13, m24, m34

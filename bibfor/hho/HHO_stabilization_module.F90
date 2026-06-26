@@ -34,7 +34,6 @@ module HHO_stabilization_module
 #include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "blas/dgemm.h"
 #include "blas/dposv.h"

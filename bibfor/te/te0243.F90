@@ -59,8 +59,8 @@ subroutine te0243(option, nomte)
     character(len=32) :: phenom
     real(kind=8) :: tpg, dtpg(3), diff, fluglo(3), Kglo(3, 3)
     real(kind=8) :: sechpg, dsechpg(3)
-    real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS), dfluxglo(3), resi_p(MAX_BS)
-    real(kind=8) :: BGSEval(3, MAX_BS), BSEval(MAX_BS), eps, tempi_save, delta
+    real(kind=8) :: resi(MAX_BS_CG), rigi(MAX_BS_CG, MAX_BS_CG), dfluxglo(3), resi_p(MAX_BS_CG)
+    real(kind=8) :: BGSEval(3, MAX_BS_CG), BSEval(MAX_BS_CG), eps, tempi_save, delta
     real(kind=8), pointer :: flux(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
 

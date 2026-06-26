@@ -29,7 +29,6 @@ subroutine te0116(option, nomte)
 #include "asterfort/getAnnealingParaOnCell.h"
 #include "asterfort/getAnnealingTempTrigger.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "jeveux.h"
 !

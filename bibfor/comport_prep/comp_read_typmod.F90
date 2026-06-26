@@ -28,7 +28,6 @@ subroutine comp_read_typmod(mesh, modelCell, &
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/comp_mfront_modelem.h"
-#include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getMFrontPlaneStress.h"
 #include "asterfort/jenuno.h"

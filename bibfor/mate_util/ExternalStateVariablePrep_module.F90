@@ -32,7 +32,6 @@ module ExternalStateVariablePrep_module
 ! ==================================================================================================
     private
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jeveuo.h"

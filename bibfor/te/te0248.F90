@@ -24,7 +24,6 @@ subroutine te0248(option, nomte)
     use MaterialPara_type
     implicit none
 !
-#include "asterc/r8nnem.h"
 #include "asterf_types.h"
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"

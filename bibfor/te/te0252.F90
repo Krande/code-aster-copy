@@ -53,7 +53,7 @@ subroutine te0252(option, nomte)
     integer(kind=8) :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
-    real(kind=8) :: resi(MAX_BS)
+    real(kind=8) :: resi(MAX_BS_CG)
     real(kind=8) :: chal(1)
     integer(kind=8) :: kp, imate
     integer(kind=8) :: ifon(6), nbDof

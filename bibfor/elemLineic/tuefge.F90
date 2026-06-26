@@ -25,14 +25,9 @@ subroutine tuefge(nbNode, nbFourier)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pipeElem_type.h"
-#include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
-#include "asterfort/utmess.h"
-#include "blas/daxpy.h"
 #include "jeveux.h"
 !
     integer(kind=8), intent(in) :: nbNode, nbFourier

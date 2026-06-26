@@ -40,7 +40,6 @@ subroutine pminit(tablName, tablNbPara, tablType, &
 #include "asterfort/codent.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dmat3d.h"
-#include "asterfort/eulnau.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fozero.h"
 #include "asterfort/getvid.h"

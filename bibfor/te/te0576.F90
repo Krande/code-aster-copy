@@ -38,6 +38,7 @@ subroutine te0576(option, nomte)
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
+#include "FE_module.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -72,7 +73,7 @@ subroutine te0576(option, nomte)
     real(kind=8) :: f(3, 3)
     real(kind=8) :: sigmKpgPrev(nbSigx), sigmKpgCurr(nbSigx)
     real(kind=8) :: integ1, integ2, integ
-    real(kind=8) :: epsiDumm(6), dfdbid(27*3)
+    real(kind=8) :: epsiDumm(6), dfdbid(MAX_BV_CG)
     character(len=16) :: relaName, defoComp
     aster_logical :: largeStrain
     type(Material_Para) :: materPara

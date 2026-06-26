@@ -37,6 +37,7 @@ subroutine nifipd(BEHInteg, &
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmcomp.h"
+#include "MeshTypes_type.h"
 #include "asterfort/nmepsi.h"
 #include "blas/ddot.h"
 !
@@ -107,7 +108,7 @@ subroutine nifipd(BEHInteg, &
     integer(kind=8) :: os, kk
     integer(kind=8) :: vuiana, vgra, vpsa
     integer(kind=8) :: cod(27)
-    real(kind=8) :: deplm(3*27), depld(3*27)
+    real(kind=8) :: deplm(3*MT_NNOMAX3D), depld(3*MT_NNOMAX3D)
     real(kind=8) :: r, w, dff1(nnod, ndim)
     real(kind=8) :: presm(27), presd(27)
     real(kind=8) :: gonfm(27), gonfd(27)

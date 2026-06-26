@@ -26,7 +26,6 @@ subroutine te0360(option, nomte)
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/eiangl.h"
 #include "asterfort/eimatb.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"

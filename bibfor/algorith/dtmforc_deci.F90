@@ -42,13 +42,10 @@ subroutine dtmforc_deci(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 #include "asterfort/gloloc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/locglo.h"
-#include "asterfort/rk5adp.h"
 #include "asterfort/nlget.h"
 #include "asterfort/tophys.h"
 #include "asterfort/tophys_ms.h"
 #include "asterfort/togene.h"
-#include "asterfort/utmess.h"
-#include "asterfort/disc_isotr.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !

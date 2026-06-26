@@ -26,11 +26,9 @@ subroutine nmco1d(BEHInteg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp1d.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dis.h"
-#include "asterfort/nmmaba.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"

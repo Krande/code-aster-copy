@@ -29,7 +29,6 @@ subroutine getExternalBehaviourPara(mesh, modelCell, &
 #include "asterc/mgis_load_library.h"
 #include "asterc/umat_get_function.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/comp_meca_l.h"

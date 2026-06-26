@@ -26,7 +26,6 @@ subroutine dilata(ds_thm, phi, tbiot, alphfi)
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"
-#include "asterfort/utmess.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     real(kind=8), intent(in) :: phi

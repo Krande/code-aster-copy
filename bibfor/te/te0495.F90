@@ -74,7 +74,7 @@ subroutine te0495(option, nomte)
     real(kind=8), dimension(MSIZE_CELL_MAT) :: E_0r_coeff, E_1r_coeff
     real(kind=8) :: tau, etamin, etamax, time_prev, time_pilo
     real(kind=8) :: coorpg(3), E_prev(6), E_pilo(6), E_1(6), E_0(6), E_incr(6)
-    real(kind=8) :: copilo(5, MAX_QP_CELL), sigma(6)
+    real(kind=8) :: copilo(5, MSIZE_QP_CELL), sigma(6)
     real(kind=8) :: G_prev(3, 3), G_incr(3, 3), G_1(3, 3), G_0(3, 3)
     real(kind=8) :: F_prev(3, 3), F_incr(3, 3), F_1(3, 3), F_0(3, 3)
     integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis

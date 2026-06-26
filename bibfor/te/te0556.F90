@@ -30,18 +30,12 @@ subroutine te0556(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/dxqfor.h"
-#include "asterfort/dxqpgl.h"
 #include "asterfort/dxroep.h"
-#include "asterfort/dxtfor.h"
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
-#include "asterfort/utpvlg.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
 !

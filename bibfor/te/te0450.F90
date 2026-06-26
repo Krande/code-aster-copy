@@ -60,7 +60,7 @@ subroutine te0450(option, nomte)
     integer(kind=8) :: faces_dofs
     aster_logical :: l_largestrains
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), refe_rhs(MSIZE_TDOFS_VEC)
-    real(kind=8) :: stress(6*MAX_QP_CELL), sigm_refe, val_refe(3)
+    real(kind=8) :: stress(6*MSIZE_QP_CELL), sigm_refe, val_refe(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -43,7 +43,6 @@ subroutine pj4dco(typeSelect, &
 #include "asterfort/pj3dfb.h"
 #include "asterfort/pj4dap.h"
 #include "asterfort/pjxxut.h"
-#include "asterfort/pjloin.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"

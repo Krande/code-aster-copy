@@ -76,7 +76,7 @@ subroutine te0425(option, nomte)
     real(kind=8), dimension(MSIZE_CELL_MAT) :: E_0_coeff, E_pilo_coeff
     real(kind=8) :: tau, etamin, etamax, coorpg(3)
     real(kind=8) :: E_prev(nmax), E_cste(nmax), E_pilo(nmax), E_0(nmax), E_incr(nmax)
-    real(kind=8) :: copilo(5, MAX_QP_CELL), sigma(nmax)
+    real(kind=8) :: copilo(5, MSIZE_QP_CELL), sigma(nmax)
     real(kind=8) :: G_prev(3, 3), G_incr(3, 3), G_pilo(3, 3), G_0(3, 3)
     real(kind=8) :: F_prev(3, 3), F_incr(3, 3), F_pilo(3, 3), F_0(3, 3)
     real(kind=8) :: GV_prev(3), GV_incr(3), GV_0(3), GV_pilo(3), GV_cste(3)

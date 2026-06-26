@@ -38,6 +38,7 @@ subroutine mmpoin(mesh, ds_contact)
 #include "asterfort/jerazo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeexin.h"
+#include "MeshTypes_type.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
@@ -71,7 +72,7 @@ subroutine mmpoin(mesh, ds_contact)
     integer(kind=8) :: elem_slav_indx, elem_slav_nume, node_slav_nume
     integer(kind=8) :: jdecme
     integer(kind=8) :: type_inte
-    real(kind=8) :: poin_coor(3), elem_slav_coor(27)
+    real(kind=8) :: poin_coor(3), elem_slav_coor(3, MT_NNOMAX2D)
     real(kind=8) :: ksi1, ksi2
     character(len=8) :: elem_slav_type, elem_slav_name
     character(len=16) :: poin_name

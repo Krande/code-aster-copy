@@ -38,6 +38,7 @@ module contact_module
 #include "asterfort/reerel.h"
 #include "contact_module.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -373,9 +374,9 @@ contains
         integer(kind=8), intent(in) :: elem_nbnode
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(2)
-        real(kind=8), intent(out), optional :: shape_(9)
-        real(kind=8), intent(out), optional :: dshape_(2, 9)
-        real(kind=8), intent(out), optional :: ddshape_(3, 9)
+        real(kind=8), intent(out), optional :: shape_(MT_NNOMAX2D)
+        real(kind=8), intent(out), optional :: dshape_(2, MT_NNOMAX2D)
+        real(kind=8), intent(out), optional :: ddshape_(3, MT_NNOMAX2D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -407,8 +408,8 @@ contains
 !
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(3)
-        real(kind=8), intent(out), optional :: shape_(27)
-        real(kind=8), intent(out), optional :: dshape_(3, 27)
+        real(kind=8), intent(out), optional :: shape_(MT_NNOMAX3D)
+        real(kind=8), intent(out), optional :: dshape_(3, MT_NNOMAX3D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -437,8 +438,8 @@ contains
         implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dshape(3, 27)
-        real(kind=8), intent(out) :: gradFunc(3, 27)
+        real(kind=8), intent(in) :: dshape(3, MT_NNOMAX3D)
+        real(kind=8), intent(out) :: gradFunc(3, MT_NNOMAX3D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -505,7 +506,7 @@ contains
 !
         character(len=8) :: elem_code_lagr
         integer(kind=8) :: elem_nbnode_lagr
-        real(kind=8) :: ff(9)
+        real(kind=8) :: ff(MT_NNOMAX2D)
 !
         if (elem_code == "SE2") then
             elem_code_lagr = "SE2"
@@ -564,7 +565,7 @@ contains
         implicit none
 !
         integer(kind=8), intent(in) :: nb_node
-        real(kind=8), intent(in) :: nodes_coor(3, 9)
+        real(kind=8), intent(in) :: nodes_coor(3, MT_NNOMAX2D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -665,7 +666,7 @@ contains
         implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dfunc_ma(2, 9)
+        real(kind=8), intent(in) :: dfunc_ma(2, MT_NNOMAX2D)
         real(kind=8) :: evalDtestM(3, MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------

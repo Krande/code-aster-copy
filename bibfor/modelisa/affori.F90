@@ -44,7 +44,6 @@ subroutine affori(typ, nomt, cara, val, jad, jin, &
 #include "asterfort/carorsolpi.h"
 #include "asterfort/longeleori.h"
 #include "asterfort/utmess.h"
-#include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1331,7 +1331,7 @@ contains
         integer(kind=8) :: i, j, k, ipg, npg, i_ortho
         real(kind=8) :: rp(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL), rc(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: ra(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        real(kind=8) :: ri(MSIZE_CELL_SCAL), w_bpg(MAX_QP)
+        real(kind=8) :: ri(MSIZE_CELL_SCAL), w_bpg(MSIZE_QP)
         real(kind=8) :: alpha
 !
         ASSERT(nb_basis <= MSIZE_CELL_SCAL)

@@ -47,6 +47,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalfev_wrap.h"
+#include "MeshTypes_type.h"
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
 !
@@ -94,12 +95,12 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
     real(kind=8) :: dtdm(3, 4)
     real(kind=8) :: rbid
     real(kind=8) :: tthe, r, rp, ppg
-    real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
-    real(kind=8) :: dfdm(3, 4), dfdx(27), dfdy(27), dfdz(27)
+    real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(MT_NNOMAX3D), tref
+    real(kind=8) :: dfdm(3, 4), dfdx(MT_NNOMAX3D), dfdy(MT_NNOMAX3D), dfdz(MT_NNOMAX3D)
     real(kind=8) :: dtx, dty, dtz
     real(kind=8) :: energi(2), sigl(6), prod, prod2, rac2, sr(3, 3), tcla, divt
-    real(kind=8) :: tfor, sigse(6*27)
-    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu2
+    real(kind=8) :: tfor, sigse(6*MT_NNOMAX3D)
+    real(kind=8) :: fk(MT_NNOMAX3D, 3, 3), dkdgl(MT_NNOMAX3D, 3, 3, 3), ka, mu2
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4)
     aster_logical :: cp, axi, l_temp_noeu

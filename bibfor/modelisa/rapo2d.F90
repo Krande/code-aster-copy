@@ -20,7 +20,6 @@ subroutine rapo2d(numeDofZ, iocc, listRelaZ, loadZ)
 !
     implicit none
 !
-#include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
 #include "asterfort/as_allocate.h"

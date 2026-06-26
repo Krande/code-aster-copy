@@ -32,9 +32,9 @@ module HHO_L2proj_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+#include "MeshTypes_type.h"
 #include "blas/dposv.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ contains
 !
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
-        real(kind=8), intent(in) :: FuncValuesQP(MAX_QP_FACE)
+        real(kind=8), intent(in) :: FuncValuesQP(MSIZE_QP_FACE)
         integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_FACE_SCAL)
 !
@@ -123,7 +123,7 @@ contains
 !
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
-        real(kind=8), intent(in) :: FuncValuesQP(3, MAX_QP_FACE)
+        real(kind=8), intent(in) :: FuncValuesQP(3, MSIZE_QP_FACE)
         integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_FACE_VEC)
 !
@@ -188,7 +188,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
-        real(kind=8), intent(in) :: FuncValuesQP(MAX_QP_CELL)
+        real(kind=8), intent(in) :: FuncValuesQP(MSIZE_QP_CELL)
         integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_CELL_SCAL)
 !
@@ -251,7 +251,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
-        real(kind=8), intent(in) :: FuncValuesQP(3, MAX_QP_CELL)
+        real(kind=8), intent(in) :: FuncValuesQP(3, MSIZE_QP_CELL)
         integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_CELL_VEC)
 !
@@ -331,7 +331,7 @@ contains
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer(kind=8) :: cbs, fbs, total_dofs, iFace, ind, nbpara
-        real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
+        real(kind=8) :: FuncValuesCellQP(MSIZE_QP_CELL), FuncValuesFaceQP(MSIZE_QP_FACE)
         aster_logical :: with_faces
 ! --------------------------------------------------------------------------------------------------
 !
@@ -433,7 +433,7 @@ contains
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer(kind=8) :: cbs, fbs, total_dofs, iFace, ind, nbpara, idim
-        real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
+        real(kind=8) :: FuncValuesCellQP(3, MSIZE_QP_CELL), FuncValuesFaceQP(3, MSIZE_QP_FACE)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
         aster_logical :: with_faces
         blas_int :: b_n
@@ -482,7 +482,7 @@ contains
 !
                 do idim = 1, hhoCell%ndim
                     call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar, valpar, &
-                                            hhoCell%ndim, FuncValuesFaceQP(idim, 1:MAX_QP_FACE))
+                                            hhoCell%ndim, FuncValuesFaceQP(idim, 1:MSIZE_QP_FACE))
                 end do
 !
 ! -------------- Compute L2 projection
@@ -503,7 +503,7 @@ contains
 !
         do idim = 1, hhoCell%ndim
             call hhoFuncFScalEvalQp(hhoQuadCell, func(idim), nbpara, nompar, valpar, &
-                                    hhoCell%ndim, FuncValuesCellQP(idim, 1:MAX_QP_CELL))
+                                    hhoCell%ndim, FuncValuesCellQP(idim, 1:MSIZE_QP_CELL))
         end do
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
@@ -540,8 +540,8 @@ contains
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer(kind=8) :: cbs, fbs, total_dofs, iFace, ind, ino
-        real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
-        real(kind=8) :: FieldValuesNodes(27)
+        real(kind=8) :: FuncValuesCellQP(MSIZE_QP_CELL), FuncValuesFaceQP(MSIZE_QP_FACE)
+        real(kind=8) :: FieldValuesNodes(MT_NNOMAX3D)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)

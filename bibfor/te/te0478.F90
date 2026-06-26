@@ -23,7 +23,6 @@ subroutine te0478(option, nomte)
 !
     character(len=16), intent(in) :: option, nomte
 !
-#include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elrefe_info.h"
@@ -31,7 +30,6 @@ subroutine te0478(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmfinfo.h"
-#include "asterfort/poutre_modloc.h"
 #include "asterfort/ppga1d.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utpvlg.h"

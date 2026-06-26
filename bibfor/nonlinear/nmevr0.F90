@@ -22,7 +22,6 @@ subroutine nmevr0(sddisc)
 !
 #include "asterf_types.h"
 #include "asterfort/dieven.h"
-#include "asterfort/getFailAction.h"
 #include "asterfort/utdidt.h"
 #include "event_def.h"
 !

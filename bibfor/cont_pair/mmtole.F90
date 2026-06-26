@@ -23,11 +23,12 @@ subroutine mmtole(alias, nno, ndim, coorma, toleou, &
     implicit none
 #include "asterfort/cfadju.h"
 #include "asterfort/mmdonf.h"
+#include "MeshTypes_type.h"
 #include "asterfort/mmtang.h"
     character(len=8) :: alias
     integer(kind=8) :: nno
     integer(kind=8) :: ndim
-    real(kind=8) :: coorma(27)
+    real(kind=8) :: coorma(3, MT_NNOMAX2D)
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: toleou
@@ -56,7 +57,7 @@ subroutine mmtole(alias, nno, ndim, coorma, toleou, &
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: dff(2, 9)
+    real(kind=8) :: dff(2, MT_NNOMAX2D)
 !
 ! ----------------------------------------------------------------------
 !

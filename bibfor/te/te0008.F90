@@ -30,6 +30,7 @@ subroutine te0008(option, nomte)
 #include "MeshTypes_type.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+#include "FE_module.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -48,7 +49,7 @@ subroutine te0008(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: sigref, sigtmp(6*MT_NNOMAX)
-    real(kind=8) :: nharm, bsigm(3*MT_NNOMAX), geo(3*MT_NNOMAX), ftemp(3*MT_NNOMAX)
+    real(kind=8) :: nharm, bsigm(MAX_BV_CG), geo(3*MT_NNOMAX), ftemp(MAX_BV_CG)
     integer(kind=8) :: nbsig, ndim, nno, npg
     integer(kind=8) :: ipoids, ivf, idfde
     integer(kind=8) :: igeom, ivectu
@@ -64,7 +65,7 @@ subroutine te0008(option, nomte)
 ! - Initializations
     nharm = 0.d0
     nbinco = nno*ndim
-    ASSERT(nbinco .le. 3*MT_NNOMAX)
+    ASSERT(nbinco .le. MAX_BV_CG)
     nbsig = nbsigm()
     ASSERT(nbsig .le. 6)
 !

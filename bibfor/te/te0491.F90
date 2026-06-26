@@ -39,7 +39,6 @@ subroutine te0491(option, nomte)
 #include "asterfort/epsvmc.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/rcfonc.h"

@@ -31,7 +31,6 @@ subroutine te0597(option, nomte)
 #include "asterfort/niinit.h"
 #include "asterfort/nurmtd.h"
 #include "asterfort/teattr.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte

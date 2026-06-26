@@ -39,7 +39,6 @@ subroutine op0033()
 #include "asterfort/lcdetf.h"
 #include "asterfort/matinv.h"
 #include "asterfort/mgauss.h"
-#include "asterfort/nmadat.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmfinp.h"
