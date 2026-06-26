@@ -158,44 +158,6 @@ cata_msg = {
  convergence atteinte = %(r1)f
 """
     ),
-    59: _(
-        """
- La définition des paramètres du comportement %(k1)s n'a pas été trouvée
- dans le champ de matériau %(k2)s
-"""
-    ),
-    60: _(
-        """
- Homogénéité du champ de matériaux pour WEIBULL
- Nombre des relations de comportement WEIBULL trouvées =  %(i1)d.
- Les calculs sont valables pour un seul comportement WEIBULL.
- On choisit la première relation du type WEIBULL %(k1)s.
-"""
-    ),
-    61: _(
-        """
- paramètres de la RC WEIBULL_FO
- exposant de la loi      = %(r1)f
- volume de référence     = %(r2)f
- contrainte de référence conventionnelle = %(r3)f
-"""
-    ),
-    62: _(
-        """
- paramètres de la RC WEIBULL
- exposant de la loi      = %(r1)f
- volume de référence     = %(r2)f
- contrainte de référence = %(r3)f
-"""
-    ),
-    63: _(
-        """
-    Seuls les instants ou numéros d'ordre donnés en entrée de POST_ELEM option
-    WEIBULL sont pris en compte dans le calcul du maximum des contraintes sur
-    l'historique.
-    Pour prendre en compte tout l'historique, utiliser TOUT_ORDRE = "OUI".
-"""
-    ),
     72: _(
         """
  trop de mailles dans le GROUP_MA

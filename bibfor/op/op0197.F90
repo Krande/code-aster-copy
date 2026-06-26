@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+!
 subroutine op0197()
     implicit none
 !     RECA_WEIBULL        ---------
@@ -428,15 +429,14 @@ subroutine op0197()
             write (ifm, *) '*******************'
             write (ifm, *) '**** RESULTAT NO ', iresu
             write (ifm, *) '*******************'
-            write (ifm, *)&
-     &    'ETAPE 1 > CALCUL DES SIGMA WEIBULL : APPEL PEWEIB'
+            write (ifm, *) 'ETAPE 1 > CALCUL DES SIGMA WEIBULL : APPEL PEWEIB'
         end if
 !
 !        --- CALCUL DES SIGMA_WEIBULL
 !
         cara = '        '
-        call peweib(zk16(itabw-1+iresu), zk8(imod-1+iresu), chcop1, mateco, cara, chcop1, &
-                    0, 1, iresu, nomcmd)
+        ! call peweib(zk16(itabw-1+iresu), zk8(imod-1+iresu), chcop1, mateco, cara, chcop1, &
+        !             0, 1, iresu, nomcmd)
         call jedetr('&&TE0331')
         call jedetr('&&OP0197.CHARGES')
 !

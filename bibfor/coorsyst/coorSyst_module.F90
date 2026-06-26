@@ -26,7 +26,7 @@ module coorSyst_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    public :: setOrieFields, hasOrieField
+    public :: setOrieFields, hasOrieField, getOrieField
 ! ==================================================================================================
     private
 #include "asterf_types.h"
@@ -45,29 +45,66 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine setOrieFields(nbFieldInMax, lpain, lchin, &
-                             nbFieldIn, caraElemZ)
+                             nbFieldIn, caraElemZ_, &
+                             caorienZ_, cacoqueZ_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         integer(kind=8), intent(in) :: nbFieldInMax
         character(len=*), intent(inout) :: lpain(nbFieldInMax)
         character(len=*), intent(inout) :: lchin(nbFieldInMax)
         integer(kind=8), intent(inout) :: nbFieldIn
-        character(len=*), optional, intent(in) :: caraElemZ
+        character(len=*), optional, intent(in) :: caraElemZ_
+        character(len=*), optional, intent(in) :: caorienZ_, cacoqueZ_
 ! ----- Local
         character(len=8) :: caraElem
         integer(kind=8) :: nbFieldAdd
 !   ------------------------------------------------------------------------------------------------
 !
-        caraElem = caraElemZ
+        caraElem = caraElemZ_
         nbFieldAdd = 3
         ASSERT(nbFieldIn+nbFieldAdd .le. nbFieldInMax)
         lpain(nbFieldIn+1) = 'PCAORIE'
-        lchin(nbFieldIn+1) = caraElem(1:8)//'.CARORIEN'
+        if (present(caorienZ_)) then
+            lchin(nbFieldIn+1) = caorienZ_
+        else
+            lchin(nbFieldIn+1) = caraElem(1:8)//'.CARORIEN'
+        end if
         lpain(nbFieldIn+2) = 'PCACOQU'
-        lchin(nbFieldIn+2) = caraElem(1:8)//'.CARCOQUE'
+        if (present(cacoqueZ_)) then
+            lchin(nbFieldIn+2) = cacoqueZ_
+        else
+            lchin(nbFieldIn+2) = caraElem(1:8)//'.CARCOQUE'
+        end if
         lpain(nbFieldIn+3) = 'PCAMASS'
         lchin(nbFieldIn+3) = caraElem(1:8)//'.CARMASSI'
         nbFieldIn = nbFieldIn+nbFieldAdd
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getOrieField
+!
+! Get orientation fields
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getOrieField(caraElemZ, paraNameZ, fieldName)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: caraElemZ, paraNameZ
+        character(len=24), intent(out) :: fieldName
+!   ------------------------------------------------------------------------------------------------
+!
+        fieldName = " "
+        if (paraNameZ .eq. 'CARORIEN') then
+            fieldName = caraElemZ(1:8)//'.CARORIEN'
+        elseif (paraNameZ .eq. 'CARCOQUE') then
+            fieldName = caraElemZ(1:8)//'.CARCOQUE'
+        elseif (paraNameZ .eq. 'CARMASSI') then
+            fieldName = caraElemZ(1:8)//'.CARMASSI'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

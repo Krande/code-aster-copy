@@ -569,8 +569,9 @@ Commande CALC_FERRAILLAGE :
     ),
     88: _(
         """
- Commande CALC_FERRAILLAGE : ATTENTION un champ de ferraillage existe déjà au numéro d'ordre %(i1)d du résultat %(k1)s
-   Ce champ de ferraillage sera écrasé !
+Commande CALC_FERRAILLAGE.
+Un champ de ferraillage existe déjà au numéro d'ordre %(i1)d.
+Ce champ de ferraillage sera écrasé !
 """
     ),
     89: _(

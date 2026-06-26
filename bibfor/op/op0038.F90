@@ -58,13 +58,13 @@ subroutine op0038()
     character(len=8) :: lpaout(nbFieldOut), lpain(nbFieldInMax)
     character(len=19) :: lchout(nbFieldOut), lchin(nbFieldInMax)
     character(len=1), parameter :: jvBase = 'G'
-    integer(kind=8) :: ierd, iret, nh, nbRet, nbFieldIn
+    integer(kind=8) :: ierd, iret, numeHarm, nbRet, nbFieldIn
     real(kind=8) :: time, rundf
     character(len=2) :: chdret
     character(len=8) :: model, caraElem, temp, mesh, kmpic, chmate
     character(len=16) :: type, oper, option, phenom
     character(len=19) :: chelem, press, ligrel
-    character(len=24) :: chgeom, chcara(18), chharm, materCode
+    character(len=24) :: chgeom, chharm, materCode
     character(len=24) :: chtemp, chtime, chpres
     character(len=24), parameter :: chflug = '&&OP0038.FLUXGAUSS'
     character(len=24), parameter :: chvarc = '&&OP0038.CHVARC'
@@ -113,9 +113,9 @@ subroutine op0038()
     end if
     call getvr8(' ', 'INST', scal=time, nbret=nbRet)
     exitim = nbRet .ne. 0
-    call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=nbRet)
+    call getvis(' ', 'MODE_FOURIER', scal=numeHarm, nbret=nbRet)
     if (nbRet .eq. 0) then
-        nh = 0
+        numeHarm = 0
     end if
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
@@ -123,8 +123,10 @@ subroutine op0038()
     call exlima(' ', 0, jvBase, model, ligrel)
 
 ! - Prepare input field
-    call mecham(option, model, caraElem, nh, chgeom, &
-                chcara, chharm, iret)
+    call mecham(option, model, numeHarm, &
+                chgeom, chharm, iret)
+
+! - Create field for time
     chtime = ' '
     if (exitim) then
         call mechti(mesh, time, rundf, rundf, chtime)

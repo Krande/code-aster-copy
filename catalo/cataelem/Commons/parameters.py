@@ -72,13 +72,7 @@ PCACABL = InputParameter(
 )
 
 PCACOQU = InputParameter(
-    phys=PHY.CACOQU_R,
-    container="CARA!.CARCOQUE",
-    comment=""" PCACOQU :  PROPRIETES COQUES
-    Champ de caracteristiques pour les coques. Concept CARA_ELEM
-        PCACOQU : CARACTERISTIQUE DE COQUE,
-    NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM
-""",
+    phys=PHY.CACOQU_R, container="ORIE!.CARCOQUE", comment="""Parameters for shells and plates."""
 )
 
 PCADISA = InputParameter(phys=PHY.CADISA_R, comment="""""")
@@ -150,19 +144,13 @@ PCALCI = InputParameter(
 
 PCAMASS = InputParameter(
     phys=PHY.CAMA_R,
-    container="CARA!.CARMASSI",
-    comment=""" CARACTERISTIQUES ANGLE_MASSIF (ELEMENTS ANISOTROPES)
-  PCAMASS : CARACTERISTIQUE DE MASSIF,
-           NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM
-  PCAMASS : CARACTERISTIQUE DE MASSIF
- PCAMASS : CARACTERISTIQUE DE MASSIF
+    container="ORIE!.CARMASSI",
+    comment="""Parameters for anistoropic material.
 """,
 )
 
 PCAORIE = InputParameter(
-    phys=PHY.CAORIE_R,
-    container="CARA!.CARORIEN",
-    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+    phys=PHY.CAORIE_R, container="ORIE!.CARORIEN", comment="""Parameters for beams and pipes."""
 )
 
 

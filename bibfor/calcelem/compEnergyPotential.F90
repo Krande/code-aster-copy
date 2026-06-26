@@ -16,12 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine compEnergyPotential(optionZ, modelZ, ligrelZ, &
-                               caraElemZ, materCodeZ, comporZ, l_temp, &
-                               chdispZ, chtempZ, &
-                               chharmZ, chgeomZ, &
+subroutine compEnergyPotential(optionZ, &
+                               modelZ, materCodeZ, caraElemZ, comporZ, &
+                               chdispZ, chharmZ, chgeomZ, &
                                chtimeZ, chvarcZ, chvrefZ, &
-                               jvBaseZ, chelemZ, codret)
+                               l_temp, chtempZ, &
+                               ligrelZ, jvBaseZ, epotElemZ, &
+                               codret)
 !
     use coorSyst_module, only: setOrieFields
     implicit none
@@ -33,13 +34,13 @@ subroutine compEnergyPotential(optionZ, modelZ, ligrelZ, &
 #include "asterfort/setStructFields.h"
 #include "asterfort/utmess.h"
 !
-    character(len=*), intent(in) :: optionZ, modelZ, ligrelZ
-    character(len=*), intent(in) :: caraElemZ, materCodeZ, comporZ
-    aster_logical, intent(in) :: l_temp
-    character(len=*), intent(in) :: chdispZ, chtempZ
-    character(len=*), intent(in) :: chharmZ, chgeomZ, chtimeZ
+    character(len=*), intent(in) :: optionZ
+    character(len=*), intent(in) :: modelZ, materCodeZ, caraElemZ, comporZ
+    character(len=*), intent(in) :: chdispZ, chharmZ, chgeomZ, chtimeZ
     character(len=*), intent(in) :: chvarcZ, chvrefZ
-    character(len=*), intent(in) :: chelemZ, jvBaseZ
+    aster_logical, intent(in) :: l_temp
+    character(len=*), intent(in) :: chtempZ
+    character(len=*), intent(in) :: ligrelZ, jvBaseZ, epotElemZ
     integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,15 +54,17 @@ subroutine compEnergyPotential(optionZ, modelZ, ligrelZ, &
     integer(kind=8), parameter :: nbFieldInMax = 100, nbFieldOut = 1
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOut)
     character(len=24) :: lchin(nbFieldInMax), lchout(nbFieldOut)
+!
+    integer(kind=8) :: nbFieldIn
     character(len=1) :: jvBase
     character(len=8) :: model, caraElem
     character(len=24) :: chdisp, chelem, chtemp
-    integer(kind=8) :: nbFieldIn, iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
     chdisp = chdispZ
-    chelem = chelemZ
+    chelem = epotElemZ
     chtemp = chtempZ
     jvBase = jvBaseZ
     model = modelZ
@@ -71,10 +74,6 @@ subroutine compEnergyPotential(optionZ, modelZ, ligrelZ, &
     lpaout = ' '
     lchout = ' '
     codret = 0
-
-! - Add output field
-    lchout(1) = chelem
-    lpaout(1) = 'PENERDR'
 
 ! - Add input fields
     if (l_temp) then
@@ -106,6 +105,10 @@ subroutine compEnergyPotential(optionZ, modelZ, ligrelZ, &
 ! - Add fields for orientation
     call setOrieFields(nbFieldInMax, lpain, lchin, &
                        nbFieldIn, caraElem)
+
+! - Set output field
+    lchout(1) = chelem
+    lpaout(1) = 'PENERDR'
 
 ! - Computation (with preparation for COMPLEX fields)
     call meceuc('C', optionZ, caraElem, ligrelZ, &

@@ -40,7 +40,7 @@ subroutine te0035(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
     integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer(kind=8) :: i, jgeom, jcaco, jvecg, idefi, ncomp, ig
+    integer(kind=8) :: i, jgeom, jvecg, idefi, ncomp, ig
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: epsini(32)
     real(kind=8) :: bsigmEner(24), sigt(32)
@@ -52,7 +52,6 @@ subroutine te0035(option, nomte)
                      jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
-    call jevech('PCACOQU', 'L', jcaco)
     call jevech('PVECTUR', 'E', jvecg)
 
     ncomp = 6
