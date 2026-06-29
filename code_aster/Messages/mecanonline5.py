@@ -284,6 +284,12 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
   Le pilotage est incompatible avec la méthode NEWTON_KRYLOV.
 """
     ),
+    49: _(
+        """
+La recherche linéaire est ignorée pour cette itération : le résidu est orthogonal
+à la direction de descente. On conserve le pas de Newton (rho = 1).
+"""
+    ),
     50: _(
         """
  Pilotage.
