@@ -146,9 +146,9 @@ def coupled_fluid(cpl, UNITE_MA):
 
             # export
             if self._use_CFEMDEC:
-                self._medcpl.set_field("fluid_pressure", force_noeu)
+                self._medcpl.set_field("boundary_stress", force_noeu)
             else:
-                self._medcpl.set_field("fluid_pressure", force_elem)
+                self._medcpl.set_field("boundary_stress", force_elem)
 
             # test convergence:
             has_cvg = False

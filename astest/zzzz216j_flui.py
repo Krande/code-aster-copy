@@ -145,7 +145,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             # export
 
-            self._medcpl.set_field("fluid_pressure", force_elem)
+            self._medcpl.set_field("boundary_stress", force_elem)
 
             # test convergence:
             has_cvg = False

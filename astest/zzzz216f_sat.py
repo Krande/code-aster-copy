@@ -53,7 +53,7 @@ class FakeSaturne(ExternalCoupling):
         else:
             fieldType = "CELLS"
 
-        self._fields_out = [("fluid_pressure", ["FX", "FY", "FZ"], fieldType)]
+        self._fields_out = [("boundary_stress", ["FX", "FY", "FZ"], fieldType)]
         self._fields_in = [
             ("mesh_displacement", ["DX", "DY", "DZ"], node_typ),
             ("mesh_velocity", ["DX", "DY", "DZ"], node_typ),
