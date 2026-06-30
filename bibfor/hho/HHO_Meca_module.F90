@@ -26,8 +26,9 @@ module HHO_Meca_module
     use HHO_compor_module
     use HHO_Dirichlet_module
     use HHO_eval_module
-    use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
-    use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat
+    use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec, &
+                                  hhoGradRecSymFullMatFromVec, hhoGradRecVec, &
+                                  hhoGradRecFullMat, hhoGradRecSymFullMat
     use HHO_init_module
     use HHO_LargeStrainMeca_module
     use HHO_matrix_module
@@ -183,18 +184,18 @@ contains
 !
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !
-        if (l_largestrains) then
-!
 ! -------- Reload gradient
-            call gradfullvec%initialize(gbs, total_dofs)
-            call gradfullvec%read('PCHHOGT', ASTER_FALSE)
-            call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
-            call gradfullvec%free()
-        else
 !
-! -------- Compute symetric gradient
-            call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull)
+        call gradfullvec%initialize(gbs, total_dofs)
+        call gradfullvec%read('PCHHOGT', ASTER_FALSE)
+!
+        if (l_largestrains) then
+            call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
+        else
+            call hhoGradRecSymFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
         end if
+!
+        call gradfullvec%free()
 !
 ! -------- Reload stabilization
         if (present(stab)) then

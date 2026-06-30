@@ -38,7 +38,6 @@ module HHO_gradrec_module
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/utmess.h"
-#include "blas/daxpy.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dger.h"
@@ -54,6 +53,7 @@ module HHO_gradrec_module
 !
     public :: hhoGradRecVec, hhoGradRecMat, hhoGradRecFullVec, hhoGradRecFullMat
     public :: hhoGradRecSymFullMat, hhoGradRecSymMat, hhoGradRecFullMatFromVec
+    public :: hhoGradRecSymFullMatFromVec
     private :: hhoGradRecAxisMat, hhoAddGradRecAxisMat
 !
 contains
@@ -580,6 +580,201 @@ contains
 !
 !===================================================================================================
 !
+    subroutine hhoGradRecSymFullMatFromVec(hhoCell, hhoData, gradrecvec, gradrec, lhsvec, lhs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_matrix), intent(in) :: gradrecvec
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), optional, intent(in) :: lhsvec
+        type(HHO_matrix), optional, intent(out) :: lhs
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the full symmetric gradient reconstruction of a vectorial function in
+!        P^k_d(T;R^(dxd)_sym)
+!   In hhoCell      : the current HHO Cell
+!   In hhoDta       : information on HHO methods
+!   In gradrecvec   : matrix of the gradient reconstruction (for vector)
+!   Out gradrec     : matrix of the gradient reconstruction (for matrix)
+!   Out, option lhsvec : matrix (grad u, grad v) (lhs member for laplacian problem) (for vector)
+!   Out, option lhs : matrix (grad u, grad v) (lhs member for laplacian problem) (for matrix)
+!
+! --------------------------------------------------------------------------------------------------
+! ----- Local variables
+        integer(kind=8) :: cbs_comp, fbs_comp, faces_dofs, cbs, fbs
+        integer(kind=8) :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
+        integer(kind=8) :: total_dofs, gbs, gbs_comp, gbs_sym, iFace, jbeginVec, jendVec
+        integer(kind=8) :: faces_dofs_comp, total_dofs_comp, gbs_axis
+        integer(kind=8) :: iBeginVec, iEndVec, dim_x1, dim_x2, dim_xx(3, 2)
+        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
+!
+! -- number of dofs
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                           gbs, gbs_sym, gbs_axis)
+        faces_dofs = total_dofs-cbs
+!
+! -- copy the vectorial gradient in the matrix gradient
+        cbs_comp = cbs/hhoCell%ndim
+        fbs_comp = fbs/hhoCell%ndim
+        gbs_comp = (gbs-gbs_axis)/(hhoCell%ndim*hhoCell%ndim)
+        faces_dofs_comp = faces_dofs/hhoCell%ndim
+        total_dofs_comp = total_dofs/hhoCell%ndim
+!
+! -- BE CAREFULL : the componant of the gradient are stored in
+!        [XX, YY, ZZ, XY/rac2, XZ/rac2, YZ/rac2]
+!
+        call gradrec%initialize(gbs_sym, total_dofs, 0.0)
+!
+! ------ Loop on diagonal terms
+        do idim = 1, hhoCell%ndim
+! ----- copy volumetric part
+            ibeginGrad = (idim-1)*gbs_comp+1
+            iendGrad = ibeginGrad+gbs_comp-1
+            jbeginCell = faces_dofs+(idim-1)*cbs_comp+1
+            jendCell = jbeginCell+cbs_comp-1
+            iBeginVec = (idim-1)*gbs_comp+1
+            iEndVec = iBeginVec+gbs_comp-1
+!
+            gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                = gradrecvec%m(iBeginVec:iEndVec, faces_dofs_comp+1:total_dofs_comp)
+!
+! ----- copy faces part
+            do iFace = 1, hhoCell%nbfaces
+                jbeginFace = (iFace-1)*fbs+(idim-1)*fbs_comp+1
+                jendFace = jbeginFace+fbs_comp-1
+                jbeginVec = (iFace-1)*fbs_comp+1
+                jendVec = jbeginVec+fbs_comp-1
+!
+                gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                    = gradrecvec%m(iBeginVec:iEndVec, jbeginVec:jendVec)
+            end do
+!
+        end do
+!
+! ------ Loop on diagonal terms
+        if (hhoCell%ndim == 3) then
+!
+            dim_xx(1, 1:2) = [1, 2]
+            dim_xx(2, 1:2) = [1, 3]
+            dim_xx(3, 1:2) = [2, 3]
+!
+            do idim = 1, 3
+                dim_x1 = dim_xx(idim, 1)
+                dim_x2 = dim_xx(idim, 2)
+! ----- copy volumetric part
+                ibeginGrad = (3+idim-1)*gbs_comp+1
+                iendGrad = ibeginGrad+gbs_comp-1
+                jbeginCell = faces_dofs+(dim_x1-1)*cbs_comp+1
+                jendCell = jbeginCell+cbs_comp-1
+                iBeginVec = (dim_x2-1)*gbs_comp+1
+                iEndVec = iBeginVec+gbs_comp-1
+!
+                gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                    = gradrecvec%m(iBeginVec:iEndVec, faces_dofs_comp+1:total_dofs_comp)*un_rac2
+!
+                jbeginCell = faces_dofs+(dim_x2-1)*cbs_comp+1
+                jendCell = jbeginCell+cbs_comp-1
+                iBeginVec = (dim_x1-1)*gbs_comp+1
+                iEndVec = iBeginVec+gbs_comp-1
+!
+                gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                    = gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                      +gradrecvec%m(iBeginVec:iEndVec, faces_dofs_comp+1:total_dofs_comp)*un_rac2
+!
+! ----- copy faces part
+                do iFace = 1, hhoCell%nbfaces
+                    jbeginFace = (iFace-1)*fbs+(dim_x1-1)*fbs_comp+1
+                    jendFace = jbeginFace+fbs_comp-1
+                    jbeginVec = (iFace-1)*fbs_comp+1
+                    jendVec = jbeginVec+fbs_comp-1
+                    iBeginVec = (dim_x2-1)*gbs_comp+1
+                    iEndVec = iBeginVec+gbs_comp-1
+!
+                    gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                        = gradrecvec%m(iBeginVec:iEndVec, jbeginVec:jendVec)*un_rac2
+!
+                    jbeginFace = (iFace-1)*fbs+(dim_x2-1)*fbs_comp+1
+                    jendFace = jbeginFace+fbs_comp-1
+                    iBeginVec = (dim_x1-1)*gbs_comp+1
+                    iEndVec = iBeginVec+gbs_comp-1
+!
+                    gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                        = gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                          +gradrecvec%m(iBeginVec:iEndVec, jbeginVec:jendVec)*un_rac2
+                end do
+
+            end do
+
+        else
+! ----- copy volumetric part
+            ibeginGrad = 2*gbs_comp+1
+            iendGrad = ibeginGrad+gbs_comp-1
+            jbeginCell = faces_dofs+1
+            jendCell = jbeginCell+cbs_comp-1
+            iBeginVec = gbs_comp+1
+            iEndVec = iBeginVec+gbs_comp-1
+!
+            gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                = gradrecvec%m(iBeginVec:iEndVec, faces_dofs_comp+1:total_dofs_comp)*un_rac2
+!
+            jbeginCell = faces_dofs+cbs_comp+1
+            jendCell = jbeginCell+cbs_comp-1
+            iBeginVec = 1
+            iEndVec = iBeginVec+gbs_comp-1
+!
+            gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                = gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                  +gradrecvec%m(iBeginVec:iEndVec, faces_dofs_comp+1:total_dofs_comp)*un_rac2
+!
+! ----- copy faces part
+            do iFace = 1, hhoCell%nbfaces
+                jbeginFace = (iFace-1)*fbs+1
+                jendFace = jbeginFace+fbs_comp-1
+                jbeginVec = (iFace-1)*fbs_comp+1
+                jendVec = jbeginVec+fbs_comp-1
+                iBeginVec = gbs_comp+1
+                iEndVec = iBeginVec+gbs_comp-1
+!
+                gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                    = gradrecvec%m(iBeginVec:iEndVec, jbeginVec:jendVec)*un_rac2
+!
+                jbeginFace = (iFace-1)*fbs+fbs_comp+1
+                jendFace = jbeginFace+fbs_comp-1
+                iBeginVec = 1
+                iEndVec = iBeginVec+gbs_comp-1
+!
+                gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                    = gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                      +gradrecvec%m(iBeginVec:iEndVec, jbeginVec:jendVec)*un_rac2
+            end do
+
+        end if
+!
+        if (present(lhs)) then
+            ASSERT(present(lhsvec))
+            ASSERT(ASTER_FALSE)
+            !! not implemented !! more complicated than gradfull
+            call lhs%initialize(total_dofs, total_dofs, 0.0)
+        end if
+!
+        if (hhoCell%l_axis) then
+            if (present(lhs)) then
+                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec, lhs)
+            else
+                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec)
+            end if
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine hhoGradRecFullMat(hhoCell, hhoData, gradrec, lhs)
 !
         implicit none
@@ -617,6 +812,7 @@ contains
 !
     end subroutine
 !
+!
 !===================================================================================================
 !
 !===================================================================================================
@@ -635,375 +831,26 @@ contains
 !
 !   Compute the full symmetric gradient reconstruction of a vect function in P^k_d(T;R^(dxd)_sym)
 !   In hhoCell      : the current HHO Cell
-!   In hhoData       : information on HHO methods
-!   Out gradrec     : matrix of the symmetric gradient reconstruction
-!   Out, option lhs : matrix (grad_s u, grad_s v) (lhs member for the symmetric laplacian problem)
+!   In hhoDta       : information on HHO methods
+!   Out gradrec     : matrix of the gradient reconstruction
+!   Out, option lhs : matrix (grad u, grad v) (lhs member for laplacian problem)
 !
 ! --------------------------------------------------------------------------------------------------
 ! ----- Local variables
-        type(HHO_Face) :: hhoFace
-        type(HHO_basis_cell) :: hhoBasisCell
-        type(HHO_basis_face) :: hhoBasisFace
-        type(HHO_quadrature) :: hhoQuad, hhoQuadCell
-        type(HHO_massmat_cell) :: massMat
-        type(HHO_matrix) :: BG, SOL
-        real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCSGradEval
-        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
-        real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
-        real(kind=8), parameter :: un_rac2 = 1.d0/sqrt(2.d0)
-        real(kind=8) :: coeff, normal(3)
-        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, gbs_axis
-        integer(kind=8):: cbs_comp, fbs_comp, gbs_sym, gbs_comp, max_deg
-        integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
-        integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
-        blas_int :: b_n, b_nrhs, b_lda, b_ldb, info, b_m
-        blas_int, parameter :: b_one = 1
+        type(HHO_matrix) :: lhs_scal, gradrec_scal
 !
-        ASSERT(hhoCell%l_face_init)
-! -- init cell basis
-        call hhoBasisCell%initialize(hhoCell)
-!
-! -- number of independant direction of the gradient
-        if (hhoCell%ndim == 2) then
-            nbdimMat = 3
-        else if (hhoCell%ndim == 3) then
-            nbdimMat = 6
+! -- computation of the gradient reconstruction of a scalar function
+        if (present(lhs)) then
+            call hhoGradRecFullVec(hhoCell, hhoData, gradrec_scal, lhs_scal)
+            call hhoGradRecSymFullMatFromVec(hhoCell, hhoData, gradrec_scal, gradrec, &
+                                             lhsvec=lhs_scal, lhs=lhs)
+            call gradrec_scal%free()
+            call lhs_scal%free()
         else
-            ASSERT(ASTER_FALSE)
+            call hhoGradRecFullVec(hhoCell, hhoData, gradrec_scal)
+            call hhoGradRecSymFullMatFromVec(hhoCell, hhoData, gradrec_scal, gradrec)
+            call gradrec_scal%free()
         end if
-!
-! -- number of dofs
-        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
-        faces_dofs = total_dofs-cbs
-!
-        cbs_comp = cbs/hhoCell%ndim
-        fbs_comp = fbs/hhoCell%ndim
-        gbs_comp = (gbs-gbs_axis)/(hhoCell%ndim*hhoCell%ndim)
-        max_deg = max(hhoData%cell_degree(), hhoData%grad_degree())
-!
-! -- compute mass matrix of P^k_d(T;R)
-        call massMat%compute(hhoCell, 0, hhoData%grad_degree())
-        dimMassMat = massMat%nrows
-        b_n = to_blas_int(dimMassMat)
-!
-        call gradrec%initialize(gbs_sym, total_dofs, 0.d0)
-!
-! -- RHS : volumetric part
-! -- get quadrature
-        call hhoQuadCell%GetQuadCell(hhoCell, hhoData%grad_degree()+(hhoData%cell_degree()-1))
-!
-! -- Loop on quadrature point
-        do ipg = 1, hhoQuadCell%nbQuadPoints
-! ----- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoQuadCell%points(1:3, ipg), 0, hhoData%grad_degree(), &
-                                     BSGEval)
-!
-! ----- Eval symmetric derivative of cell basis function at the quadrature point
-            call hhoBasisCell%BVEvalSymGrad(hhoQuadCell%points(1:3, ipg), 0, &
-                                            hhoData%cell_degree(), BVCSGradEval)
-!
-! ------ Loop on diagonal terms
-            do idim = 1, hhoCell%ndim
-                ibeginBG = (idim-1)*dimMassMat+1
-                iendBG = ibeginBG+dimMassMat-1
-!
-                do j = 1, cbs
-                    coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(idim, j)
-                    call daxpy(b_n, coeff, BSGEval, b_one, &
-                               gradrec%m(ibeginBG:iendBG, faces_dofs+j), b_one)
-                end do
-            end do
-!
-! ------ Loop on extra-diagonal terms
-            if (hhoCell%ndim == 3) then
-                do idim = 1, hhoCell%ndim
-                    ibeginBG = (3+idim-1)*dimMassMat+1
-                    iendBG = ibeginBG+dimMassMat-1
-!
-                    do j = 1, cbs
-                        coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(3+idim, j)
-                        call daxpy(b_n, coeff, BSGEval, b_one, &
-                                   gradrec%m(ibeginBG:iendBG, faces_dofs+j), b_one)
-                    end do
-                end do
-            else if (hhoCell%ndim == 2) then
-                ibeginBG = (3-1)*dimMassMat+1
-                iendBG = ibeginBG+dimMassMat-1
-!
-                do j = 1, cbs
-                    coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(4, j)
-                    call daxpy(b_n, coeff, BSGEval, b_one, &
-                               gradrec%m(ibeginBG:iendBG, faces_dofs+j), b_one)
-                end do
-            else
-                ASSERT(ASTER_FALSE)
-            end if
-!
-        end do
-!
-! -- Loop on the faces
-        b_lda = to_blas_int(dimMassMat)
-        b_m = to_blas_int(dimMassMat)
-!
-        do iface = 1, hhoCell%nbfaces
-            hhoFace = hhoCell%faces(iface)
-!
-            if (hhoFace%l_axis_on_axe) then
-                cycle
-            end if
-!
-            call hhoBasisFace%initialize(hhoFace)
-! ----- get quadrature
-            call hhoQuad%GetQuadFace(hhoface, &
-                                     hhoData%grad_degree()+max(hhoData%face_degree(), hhoData%ce&
-                                     &ll_degree())+1, &
-                                     param=ASTER_TRUE)
-!
-! ----- Loop on quadrature point
-            do ipg = 1, hhoQuad%nbQuadPoints
-! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, max_deg, BSCEval)
-!
-! --------- Eval grad cell basis function at the quadrature point
-                call dcopy_1(gbs_comp, BSCEval, BSGEval)
-
-!
-! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), 0, hhoData%face_degree(), &
-                                         BSFEval)
-!
-                normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
-!
-! ----- copy by dimension
-! ----- diagonal composants
-                do idim = 1, hhoCell%ndim
-                    ibeginBG = (idim-1)*dimMassMat+1
-                    iendBG = ibeginBG+dimMassMat-1
-                    jbegCell = faces_dofs+(idim-1)*cbs_comp+1
-                    jendCell = jbegCell+cbs_comp-1
-                    jbegFace = (iface-1)*fbs+(idim-1)*fbs_comp+1
-                    jendFace = jbegFace+fbs_comp-1
-!
-! ------------  Compute -(vT, tau *normal)
-                    b_lda = to_blas_int(dimMassMat)
-                    b_m = to_blas_int(dimMassMat)
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(idim), BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-! ------------  Compute (vF, tau *normal)
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(idim), BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-                end do
-!
-                if (hhoCell%ndim == 2) then
-! ------ extra diagonal composants term 12
-                    ibeginBG = 2*dimMassMat+1
-                    iendBG = ibeginBG+dimMassMat-1
-!
-! ------------  Compute -(vT, tau *normal)
-                    jbegCell = faces_dofs+1
-                    jendCell = jbegCell+cbs_comp-1
-                    b_lda = to_blas_int(dimMassMat)
-                    b_m = to_blas_int(dimMassMat)
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-                    jbegCell = jbegCell+cbs_comp
-                    jendCell = jbegCell+cbs_comp-1
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-! ------------  Compute (vF, tau *normal)
-                    jbegFace = (iface-1)*fbs+1
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-!
-                    jbegFace = jbegFace+fbs_comp
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-!
-                else if (hhoCell%ndim == 3) then
-! ------ hors diagonal composants term 12
-                    ibeginBG = 3*dimMassMat+1
-                    iendBG = ibeginBG+dimMassMat-1
-!
-! ------------  Compute -(vT, tau *normal)
-                    jbegCell = faces_dofs+1
-                    jendCell = jbegCell+cbs_comp-1
-                    b_lda = to_blas_int(dimMassMat)
-                    b_m = to_blas_int(dimMassMat)
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-                    jbegCell = jbegCell+cbs_comp
-                    jendCell = jbegCell+cbs_comp-1
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-! ------------  Compute (vF, tau *normal)
-                    jbegFace = (iface-1)*fbs+1
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-!
-                    jbegFace = jbegFace+fbs_comp
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-! ------ extra diagonal composants term 13
-                    ibeginBG = 4*dimMassMat+1
-                    iendBG = ibeginBG+dimMassMat-1
-!
-! ------------  Compute -(vT, tau *normal)
-                    jbegCell = faces_dofs+1
-                    jendCell = jbegCell+cbs_comp-1
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-                    jbegCell = faces_dofs+2*cbs_comp+1
-                    jendCell = jbegCell+cbs_comp-1
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-! ------------  Compute (vF, tau *normal)
-                    jbegFace = (iface-1)*fbs+1
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-!
-                    jbegFace = (iface-1)*fbs+1+2*fbs_comp
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-! ------ extra diagonal composants term 23
-                    ibeginBG = 5*dimMassMat+1
-                    iendBG = ibeginBG+dimMassMat-1
-!
-! ------------  Compute -(vT, tau *normal)
-                    jbegCell = faces_dofs+cbs_comp+1
-                    jendCell = jbegCell+cbs_comp-1
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-                    jbegCell = faces_dofs+2*cbs_comp+1
-                    jendCell = jbegCell+cbs_comp-1
-                    b_n = to_blas_int(cbs_comp)
-                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
-                              BSCEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
-!
-! ------------  Compute (vF, tau *normal)
-                    jbegFace = (iface-1)*fbs+1+fbs_comp
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-!
-                    jbegFace = (iface-1)*fbs+1+2*fbs_comp
-                    jendFace = jbegFace+fbs_comp-1
-                    b_n = to_blas_int(fbs_comp)
-                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)*un_rac2, BSGEval, b_one, &
-                              BSFEval, b_one, &
-                              gradrec%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
-!
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-!
-            end do
-!
-        end do
-!
-        if (present(lhs)) then
-            call BG%initialize(gbs_sym, total_dofs)
-            call BG%copy(gradrec)
-        end if
-!
-        if (.not. massMat%isIdentity) then
-! - Solve the system gradrec =(MG)^-1 * BG
-            call SOL%initialize(dimMassMat, nbdimMat*total_dofs)
-            do idim = 1, nbdimMat
-                ibeginBG = (idim-1)*dimMassMat+1
-                iendBG = ibeginBG+dimMassMat-1
-                ibeginSOL = (idim-1)*total_dofs+1
-                iendSOL = ibeginSOL+total_dofs-1
-                SOL%m(1:dimMassMat, ibeginSOL:iendSOL) = gradrec%m(ibeginBG:iendBG, 1:total_dofs)
-            end do
-!
-! - Verif strange bug if info neq 0 in entry
-            info = 0
-            b_n = to_blas_int(dimMassMat)
-            b_nrhs = to_blas_int(nbdimMat*total_dofs)
-            b_lda = to_blas_int(massMat%max_nrows)
-            b_ldb = to_blas_int(SOL%max_nrows)
-            call dposv('U', b_n, b_nrhs, massMat%m, b_lda, &
-                       SOL%m, b_ldb, info)
-!
-! - Sucess ?
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
-            end if
-!
-! -- decompress solution
-            do idim = 1, nbdimMat
-                ibeginBG = (idim-1)*dimMassMat+1
-                iendBG = ibeginBG+dimMassMat-1
-                ibeginSOL = (idim-1)*total_dofs+1
-                iendSOL = ibeginSOL+total_dofs-1
-                gradrec%m(ibeginBG:iendBG, 1:total_dofs) = SOL%m(1:dimMassMat, ibeginSOL:iendSOL)
-            end do
-            call SOL%free()
-        end if
-!
-        if (present(lhs)) then
-            call lhs%initialize(total_dofs, total_dofs, 0.0)
-!
-! ----- Compute lhs =BG**T * gradrec
-            call hho_dgemm_TN(1.d0, BG, gradrec, 0.d0, lhs)
-!
-        end if
-!
-        if (hhoCell%l_axis) then
-            if (present(lhs)) then
-                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec, lhs)
-            else
-                call hhoAddGradRecAxisMat(hhoCell, hhoData, gradrec)
-            end if
-        end if
-!
-        call BG%free()
 !
     end subroutine
 !
@@ -1379,7 +1226,6 @@ contains
 !
     end subroutine
 !
-    !
 !===================================================================================================
 !
 !===================================================================================================

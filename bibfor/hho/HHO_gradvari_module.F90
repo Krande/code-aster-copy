@@ -31,12 +31,9 @@ module HHO_GV_module
     use HHO_quadrature_module
     use HHO_size_module
     use HHO_SmallStrainMeca_module
-    use HHO_stabilization_module, only: hhoStabVec, hdgStabVec, hhoStabSymVec
     use HHO_Ther_module
     use HHO_type
     use HHO_utils_module
-    use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat
-    use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
     use HHO_algebra_module
     use HHO_matrix_module
     use FE_algebra_module
