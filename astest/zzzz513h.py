@@ -44,14 +44,35 @@ test = CA.TestCase()
 ###################################################################################
 #
 #   Analytical solution
-#   -laplacian(u) = f
-#   u = sin(Pi*x)*sin(Pi*y)
-#   f = 2.0*Pi*Pi*sin(Pi*x)*sin(Pi*y)
+#   Linear elasticity - axisymmetric
 #
 #   Weak form: (grad u, grad v) = (f,v)
 #   HHO unknowns : huT = (uT, udT)
 #
 ####################################################################################
+
+
+def diameter_cell(coor, nodes):
+    nb_nodes = len(nodes)
+    pts = np.array([coor.getNode(node).getValues() for node in nodes])
+
+    return max(
+        np.linalg.norm(pts[i] - pts[j]) for i in range(nb_nodes) for j in range(i + 1, nb_nodes)
+    )
+
+
+def diameter(mesh):
+    mesh_lin = mesh.convertToLinear()
+    nbCells = mesh_lin.getNumberOfCells()
+    coor = mesh_lin.getCoordinates()
+    connec = mesh_lin.getConnectivity()
+
+    diam = -1.0
+    for c_id in range(nbCells):
+        diam = max(diam, diameter_cell(coor, connec[c_id]))
+
+    return diam
+
 
 # number of refinement
 nb_reff = 6
@@ -63,12 +84,22 @@ lamb = E * Nu / (1 + Nu) / (1 - 2 * Nu)
 mu = E / 2 / (1 + Nu)
 
 # define analytical solution
-u_R = FORMULE(VALE="X*(1+X*X+Y*Y+X*Y)", NOM_PARA=("X", "Y"))
-u_Z = FORMULE(VALE="Y*(Y*Y - X*X + 1)", NOM_PARA=("X", "Y"))
+u_R = FORMULE(VALE="sin(pi*X)*sin(pi*Y)", NOM_PARA=("X", "Y"))
+u_Z = FORMULE(VALE="cos(pi*X)*cos(pi*Y)", NOM_PARA=("X", "Y"))
 
 # define load function
-f_R = FORMULE(VALE="-6*lamb*X-3*lamb*Y-16*mu*X-6*mu*Y", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu)
-f_Z = FORMULE(VALE="-3*lamb*X-10*lamb*Y-3*mu*X-12*mu*Y", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu)
+f_R = FORMULE(
+    VALE="((2*pi*pi*mu*X*X*sin(pi*X) - pi*X*(lamb + 2*mu)*cos(pi*X) + (lamb + 2*mu)*sin(pi*X))*sin(pi*Y))/(X*X)",
+    NOM_PARA=("X", "Y"),
+    lamb=lamb,
+    mu=mu,
+)
+f_Z = FORMULE(
+    VALE="(pi*(-lamb*sin(pi*X) + 2*pi*mu*X*cos(pi*X))*cos(pi*Y))/X",
+    NOM_PARA=("X", "Y"),
+    lamb=lamb,
+    mu=mu,
+)
 
 # error save
 error = {}
@@ -81,23 +112,17 @@ mesh0_tri = CREA_MAILLAGE(MAILLAGE=mesh0_quad, MODI_MAILLE=_F(TOUT="OUI", OPTION
 # convert for hho-cells
 mesh0_hho = CREA_MAILLAGE(MAILLAGE=mesh0_tri, MODI_HHO=_F(TOUT="OUI"))
 
-mesh0_hho = MODI_MAILLAGE(reuse=mesh0_hho, MAILLAGE=mesh0_hho, TRANSLATION=(0.0, 0.0, 0.0))
-
-# size of a triangle
-h0 = sqrt(2) / 2
 
 for order in ("LINEAIRE", "QUADRATIQUE"):
     error[order] = {"h": [], "L2": [], "H1": []}
     mesh = mesh0_hho
-    h = h0
     for i_reff in range(nb_reff):
         ## DEFINE PROBLEM
         # create mesh - refine previous mesh
         mesh = mesh.refine(1)
-        h = h / 2
-
+        h = diameter(mesh)
         # size of a cell
-        error[order]["h"].append(sqrt(2) / ((i_reff + 1) ** 2))
+        error[order]["h"].append(h)
 
         # define material
         coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
@@ -159,12 +184,22 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         # compute difference
         u_diff = u_hho - u_proj
 
-        # Compute mass matrix M = (vT, wT) - RHO_CP == 1 in DEFI_MATERIAU
-        mass = disc_comp.getMassMatrix(assembly=True)
+        # to compute norm
+        # define material
+        coeff_fake = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=0.0))
+
+        # apply material on mesh
+        mater_fake = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff_fake))
+
+        phys_pb2 = CA.PhysicalProblem(model, mater_fake)
+        phys_pb2.computeDOFNumbering()
+        disc_comp2 = CA.DiscreteComputation(phys_pb2)
+        norm_L2 = disc_comp2.getMassMatrix(assembly=True)
+        norm_H1 = disc_comp2.getLinearStiffnessMatrix(assembly=True)
 
         # compute L2 and H1-errors
-        error[order]["L2"].append(sqrt((mass * u_diff).dot(u_diff)))
-        error[order]["H1"].append(sqrt((rigidity * u_diff).dot(u_diff)))
+        error[order]["L2"].append(sqrt((norm_L2 * u_diff).dot(u_diff)))
+        error[order]["H1"].append(sqrt((norm_H1 * u_diff).dot(u_diff)))
 
 # compute convergence order
 for order in ("LINEAIRE", "QUADRATIQUE"):
@@ -184,12 +219,12 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
     # test convergence order
     test.assertAlmostEqual(
         conv_order[order]["L2"][0],
-        {"LINEAIRE": 2.557250804161512, "QUADRATIQUE": 3.6302387606834627}[order],
+        {"LINEAIRE": 2.7720701120307485, "QUADRATIQUE": 3.9217827600395987}[order],
         delta=1e-4,
     )
     test.assertAlmostEqual(
         conv_order[order]["H1"][0],
-        {"LINEAIRE": 1.7774731009795006, "QUADRATIQUE": 2.4256114116254652}[order],
+        {"LINEAIRE": 1.9743230517504569, "QUADRATIQUE": 3.004882101947452}[order],
         delta=1e-4,
     )
 
@@ -199,70 +234,79 @@ if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
     # disable floating point exceptions from matplotlib
     with CA.disable_fpe():
 
-        ylim = {"L2": [1e-10, 0.1], "H1": [1e-7, 1.0]}
+        ylim = {"L2": [1e-8, 5e-2], "H1": [1e-5, 8e1]}
         the_conv = {
-            "LINEAIRE": {"L2": {"o": 3, "c": 2e-2}, "H1": {"o": 2, "c": 0.2}},
-            "QUADRATIQUE": {"L2": {"o": 4, "c": 1e-3}, "H1": {"o": 3, "c": 0.02}},
+            "LINEAIRE": {"L2": 3, "H1": 2},
+            "QUADRATIQUE": {"L2": 4, "H1": 3},
+            "CUBIQUE": {"L2": 5, "H1": 4},
         }
+
+        def compute_slope(h, y):
+            xlog = np.log(h)
+            ylog = np.log(y)
+            A = np.vstack([xlog, np.ones(len(xlog))]).T
+            m, _ = np.linalg.lstsq(A, ylog, rcond=None)[0]
+            return m
+
+        def reference_curve(h, y0, p):
+            h = np.asarray(h, dtype=float)
+            h0 = h[0]
+            return y0 * (h / h0) ** p
+
         # plot the data
         for norm in ("L2", "H1"):
-            plt.plot(1, 1, 1)
 
-            plt.xscale("log")
-            plt.yscale("log")
+            fig, ax = plt.subplots()
 
-            # set the limits
-            plt.xlim([0.02, 2])
-            plt.ylim(ylim[norm])
-            plt.xlabel("mesh-size")
-            plt.ylabel("%s-error" % norm)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            ax.set_xlim([7e-3, 0.5])
+            ax.set_ylim(ylim[norm])
 
-            plt.plot(
-                error["LINEAIRE"]["h"],
-                error["LINEAIRE"][norm],
-                marker="o",
+            ax.set_xlabel(r"$h$")
+            ax.set_ylabel(rf"$\|u - u_h\|_{{{norm}}}$")
+
+            # ----- LINEAIRE -----
+            h = np.asarray(error["LINEAIRE"]["h"], dtype=float)
+            y = np.asarray(error["LINEAIRE"][norm], dtype=float)
+
+            slope = compute_slope(h, y)
+            p_th = the_conv["LINEAIRE"][norm]
+
+            ax.plot(h, y, "o-", color="tab:blue", label=rf"$k=1$ (slope $\approx {slope:.2f}$)")
+
+            ax.plot(
+                h,
+                reference_curve(h, y[0], p_th),
+                "--",
                 color="tab:blue",
-                label="k=1, computed",
-            )
-            m, c = conv_order["LINEAIRE"][norm]
-            plt.plot(
-                error["LINEAIRE"]["h"],
-                [
-                    the_conv["LINEAIRE"][norm]["c"] * h ** the_conv["LINEAIRE"][norm]["o"]
-                    for h in error["LINEAIRE"]["h"]
-                ],
-                "k--",
-                label="k=1, theorical",
-                color="tab:blue",
+                label=rf"$\mathcal{{O}}(h^{{{p_th}}})$",
             )
 
-            plt.plot(
-                error["QUADRATIQUE"]["h"],
-                error["QUADRATIQUE"][norm],
-                marker="o",
+            # ----- QUADRATIQUE -----
+            h = np.asarray(error["QUADRATIQUE"]["h"], dtype=float)
+            y = np.asarray(error["QUADRATIQUE"][norm], dtype=float)
+
+            slope = compute_slope(h, y)
+            p_th = the_conv["QUADRATIQUE"][norm]
+
+            ax.plot(h, y, "s-", color="tab:orange", label=rf"$k=2$ (slope $\approx {slope:.2f}$)")
+
+            ax.plot(
+                h,
+                reference_curve(h, y[0], p_th),
+                "--",
                 color="tab:orange",
-                label="k=2, computed",
-            )
-            m, c = conv_order["QUADRATIQUE"][norm]
-            plt.plot(
-                error["QUADRATIQUE"]["h"],
-                [
-                    the_conv["QUADRATIQUE"][norm]["c"] * h ** the_conv["QUADRATIQUE"][norm]["o"]
-                    for h in error["LINEAIRE"]["h"]
-                ],
-                "k--",
-                label="k=2, theorical",
-                color="tab:orange",
+                label=rf"$\mathcal{{O}}(h^{{{p_th}}})$",
             )
 
-            plt.legend()
-            plt.title("%s convergence error for HHO" % norm)
-            plt.show()
+            ax.legend(loc="lower right")
+            fig.tight_layout()
 
-            # save plot
-            # savedir = "/tmp/" or os.getcwd()
-            # plt.savefig(os.path.join(savedir, "%s_error.png" % norm))
-            plt.clf()
+            # --- EXPORT PGF ---
+            fig.savefig(f"convergence_{norm}.pgf")
+            fig.savefig(f"convergence_{norm}.pdf")
+            plt.close(fig)
 
 # close
 CA.close()
