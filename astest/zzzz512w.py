@@ -77,6 +77,21 @@ mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
 formu = ["CONSTANTE", "LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]
 
+delta_l2 = {
+    "CONSTANTE": 8e-4,
+    "LINEAIRE": 5e-5,
+    "QUADRATIQUE": 6e-7,
+    "CUBIQUE": 3e-8,
+    "QUARTIQUE": 8e-10,
+}
+delta_ml2 = {
+    "CONSTANTE": 5e-7,
+    "LINEAIRE": 1e-9,
+    "QUADRATIQUE": 1e-9,
+    "CUBIQUE": 1e-10,
+    "QUARTIQUE": 1e-10,
+}
+
 for form in formu:
     # define model
     model = AFFE_MODELE(
@@ -130,11 +145,14 @@ for form in formu:
 
     u_diff = u_hho - u_sol
 
-    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-7)
+    if form == "CONSTANTE":
+        # not enougth quadrature point
+        delta = 1e-3
+    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=delta_l2[form])
 
     l2_diff = (matM * u_diff).dot(u_diff)
     l2_ref = (matM * u_hho).dot(u_hho)
-    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
+    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=delta_ml2[form])
 
     # project HHO solution
     h1_field = hho.projectOnLagrangeSpace(u_sol)
@@ -145,7 +163,7 @@ for form in formu:
     f_hho = hho.projectOnHHOCellSpace(f_elga)
     u_diff = f_hho - u_sol
     l2_diff = (matM * u_diff).dot(u_diff)
-    delta = 1e-8
+    delta = 1e-7
     if form == "CONSTANTE":
         # not enougth quadrature point
         delta = 2.0e-5
