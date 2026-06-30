@@ -185,17 +185,8 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         u_diff = u_hho - u_proj
 
         # to compute norm
-        # define material
-        coeff_fake = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=0.0))
-
-        # apply material on mesh
-        mater_fake = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff_fake))
-
-        phys_pb2 = CA.PhysicalProblem(model, mater_fake)
-        phys_pb2.computeDOFNumbering()
-        disc_comp2 = CA.DiscreteComputation(phys_pb2)
-        norm_L2 = disc_comp2.getMassMatrix(assembly=True)
-        norm_H1 = disc_comp2.getLinearStiffnessMatrix(assembly=True)
+        norm_L2 = disc_comp.getMassMatrix(assembly=True)
+        norm_H1 = rigidity
 
         # compute L2 and H1-errors
         error[order]["L2"].append(sqrt((norm_L2 * u_diff).dot(u_diff)))
@@ -219,12 +210,12 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
     # test convergence order
     test.assertAlmostEqual(
         conv_order[order]["L2"][0],
-        {"LINEAIRE": 2.7720701120307485, "QUADRATIQUE": 3.9217827600395987}[order],
+        {"LINEAIRE": 2.7141075455980594, "QUADRATIQUE": 3.918285655874547}[order],
         delta=1e-4,
     )
     test.assertAlmostEqual(
         conv_order[order]["H1"][0],
-        {"LINEAIRE": 1.9743230517504569, "QUADRATIQUE": 3.004882101947452}[order],
+        {"LINEAIRE": 1.9407444513567884, "QUADRATIQUE": 2.9844370844900094}[order],
         delta=1e-4,
     )
 

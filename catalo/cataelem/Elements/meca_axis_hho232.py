@@ -35,7 +35,7 @@ DDL_MECA = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_FX[4]", "HHO_FY[4]")),
+        ("EN1", ("HHO_FX[3]", "HHO_FY[3]")),
         ("EN2", ()),
         ("EN3", ("HHO_CX[10]", "HHO_CY[10]")),
     ),
@@ -144,7 +144,6 @@ EFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="RIGI", compo
 
 NREACR = LocatedComponents(phys=PHY.REAC_R, type="ELNO", components=("DX", "DY"))
 
-
 EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y"))
 
 
@@ -218,15 +217,16 @@ ECOEQPG = LocatedComponents(
 
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
-CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[520]",))
 
-CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[351]",))
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[264]",))
+
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[253]",))
 
 CHHOBS = LocatedComponents(
     phys=PHY.N3600R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("X[10]",)), ("EN2", ()), ("EN3", ("X[120]"))),
+    components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
 )
 
 
@@ -245,7 +245,7 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 # ------------------------------------------------------------
 
 
-class MECA_DPQ9_HHO333(Element):
+class MECA_AXQ9_HHO232(Element):
     """Please document this element"""
 
     meshType = MT.QUAD9
@@ -257,7 +257,7 @@ class MECA_DPQ9_HHO333(Element):
     elrefe = (
         ElrefeLoc(
             MT.QU9,
-            gauss=("RIGI=FPG16", "FPG1=FPG1", "MTGA=FPG16", "MASS=FPG16"),
+            gauss=("RIGI=FPG9", "FPG1=FPG1", "MTGA=FPG9", "MASS=FPG16"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
     )
@@ -347,20 +347,6 @@ class MECA_DPQ9_HHO333(Element):
                 (OP.CHAR_MECA_TEMP_R.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
-        ),
-        OP.SIEF_ELGA(
-            te=504,
-            para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
-                (SP.PDEPLAR, DDL_MECA),
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PMATERC, LC.CMATERC),
-                (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
-                (OP.SIEF_ELGA.PCHHOGT, CHHOGT),
-                (OP.SIEF_ELGA.PCHHOBS, CHHOBS),
-            ),
-            para_out=((SP.PCONTRC, LC.EGIG2DC), (OP.SIEF_ELGA.PCONTRR, LC.EGIG2DR)),
         ),
         OP.COOR_ELGA(
             te=479,
@@ -671,6 +657,20 @@ class MECA_DPQ9_HHO333(Element):
                 (SP.PCOPRED, LC.ECODRET),
             ),
         ),
+        OP.SIEF_ELGA(
+            te=504,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PDEPLAR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.SIEF_ELGA.PCHHOGT, CHHOGT),
+                (OP.SIEF_ELGA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PCONTRC, LC.EGIG2DC), (OP.SIEF_ELGA.PCONTRR, LC.EGIG2DR)),
+        ),
         OP.SIEF_ELNO(
             te=4,
             para_in=((OP.SIEF_ELNO.PCONTRR, ECONTPG), (OP.SIEF_ELNO.PVARCPR, LC.ZVARCPG)),
@@ -752,7 +752,7 @@ class MECA_DPQ9_HHO333(Element):
 # ------------------------------------------------------------
 
 
-class MECA_DPT7_HHO333(MECA_DPQ9_HHO333):
+class MECA_AXT7_HHO232(MECA_AXQ9_HHO232):
     """Please document this element"""
 
     meshType = MT.TRIA7
@@ -760,7 +760,7 @@ class MECA_DPT7_HHO333(MECA_DPQ9_HHO333):
     elrefe = (
         ElrefeLoc(
             MT.TR7,
-            gauss=("RIGI=FPG12", "FPG1=FPG1", "MTGA=FPG12", "MASS=FPG12"),
+            gauss=("RIGI=FPG7", "FPG1=FPG1", "MTGA=FPG7", "MASS=FPG13"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
     )

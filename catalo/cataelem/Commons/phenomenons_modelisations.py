@@ -6084,7 +6084,7 @@ phen.add(
         dim=(2, 2),
         code="HA1",
         attrs=(
-            (AT.FORMULATION, "HHO_LINE"),
+            (AT.FORMULATION, "HHO_MLINE"),
             (AT.AXIS, "OUI"),
             (AT.TYPMOD2, "HHO"),
             (AT.TYPMOD, "AXIS"),
@@ -6092,8 +6092,8 @@ phen.add(
             (AT.NBSIGM, "4"),
         ),
         elements=(
-            (MT.QUAD9, EL.MECA_AXQ9_HHO111),
-            (MT.TRIA7, EL.MECA_AXT7_HHO111),
+            (MT.QUAD9, EL.MECA_AXQ9_HHO121),
+            (MT.TRIA7, EL.MECA_AXT7_HHO121),
             (MT.SEG3, EL.MECA_2DAX_HHO1_F),
         ),
     ),
@@ -6106,7 +6106,7 @@ phen.add(
         dim=(2, 2),
         code="HA2",
         attrs=(
-            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.FORMULATION, "HHO_MQUAD"),
             (AT.AXIS, "OUI"),
             (AT.TYPMOD2, "HHO"),
             (AT.TYPMOD, "AXIS"),
@@ -6114,8 +6114,8 @@ phen.add(
             (AT.NBSIGM, "4"),
         ),
         elements=(
-            (MT.QUAD9, EL.MECA_AXQ9_HHO222),
-            (MT.TRIA7, EL.MECA_AXT7_HHO222),
+            (MT.QUAD9, EL.MECA_AXQ9_HHO232),
+            (MT.TRIA7, EL.MECA_AXT7_HHO232),
             (MT.SEG3, EL.MECA_2DAX_HHO2_F),
         ),
     ),
@@ -6127,7 +6127,7 @@ phen.add(
         dim=(2, 2),
         code="HA3",
         attrs=(
-            (AT.FORMULATION, "HHO_CUBI"),
+            (AT.FORMULATION, "HHO_MCUBI"),
             (AT.AXIS, "OUI"),
             (AT.TYPMOD2, "HHO"),
             (AT.TYPMOD, "AXIS"),
@@ -6135,8 +6135,8 @@ phen.add(
             (AT.NBSIGM, "4"),
         ),
         elements=(
-            (MT.QUAD9, EL.MECA_AXQ9_HHO333),
-            (MT.TRIA7, EL.MECA_AXT7_HHO333),
+            (MT.QUAD9, EL.MECA_AXQ9_HHO343),
+            (MT.TRIA7, EL.MECA_AXT7_HHO343),
             (MT.SEG3, EL.MECA_2DAX_HHO3_F),
         ),
     ),
@@ -6148,7 +6148,7 @@ phen.add(
         dim=(2, 2),
         code="HA3",
         attrs=(
-            (AT.FORMULATION, "HHO_QUAR"),
+            (AT.FORMULATION, "HHO_MQUAR"),
             (AT.AXIS, "OUI"),
             (AT.TYPMOD2, "HHO"),
             (AT.TYPMOD, "AXIS"),
@@ -6156,8 +6156,8 @@ phen.add(
             (AT.NBSIGM, "4"),
         ),
         elements=(
-            (MT.QUAD9, EL.MECA_AXQ9_HHO444),
-            (MT.TRIA7, EL.MECA_AXT7_HHO444),
+            (MT.QUAD9, EL.MECA_AXQ9_HHO454),
+            (MT.TRIA7, EL.MECA_AXT7_HHO454),
             (MT.SEG3, EL.MECA_2DAX_HHO4_F),
         ),
     ),

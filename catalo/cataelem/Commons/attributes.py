@@ -305,8 +305,11 @@ FORMULATION = Attribute(
         "HHO_LINE",
         "HHO_MLINE",
         "HHO_QUAD",
+        "HHO_MQUAD",
         "HHO_CUBI",
+        "HHO_MCUBI",
         "HHO_QUAR",
+        "HHO_MQUAR",
         "U_P_PHI",
         "U_P",
         "U_PSI",
@@ -318,9 +321,13 @@ FORMULATION = Attribute(
     comment="""
   FORMULATION =  'HHO_CSTE'  : formulation constante for HHO (0/0/0)
   FORMULATION =  'HHO_LINE'  : formulation linear for HHO (1/1/1)
+  FORMULATION =  'HHO_MLINE'  : formulation linear for HHO (1/2/1)
   FORMULATION =  'HHO_QUAD'  : formulation quadratic for HHO (2/2/2)
+  FORMULATION =  'HHO_MQUAD'  : formulation quadratic for HHO (2/3/2)
   FORMULATION =  'HHO_CUBI'  : formulation cubic for HHO (3/3/3)
+  FORMULATION =  'HHO_MCUBI'  : formulation cubic for HHO (3/4/3)
   FORMULATION =  'HHO_QUAR'  : formulation order 4 for HHO (4/4/4)
+  FORMULATION =  'HHO_MQUAR'  : formulation order 4 for HHO (4/5/4)
   FORMULATION =  'U_P_PHI' : formulation displacement/pressure/disp potential
   FORMULATION =  'U_P'    : formulation displacement/pressure
   FORMULATION =  'U_PSI'  : formulation displacement/speed potential

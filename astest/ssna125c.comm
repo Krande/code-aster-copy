@@ -64,6 +64,21 @@ reslin = CALC_CHAMP(
     RESULTAT=reslin,
 )
 
+resnlin = STAT_NON_LINE(
+    CHAM_MATER=fieldmat,
+    EXCIT=(_F(CHARGE=cine), _F(CHARGE=load)),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=500),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))),
+    MODELE=model0,
+)
+
+resnlin = CALC_CHAMP(
+    reuse=resnlin,
+    CRITERES=("SIEQ_NOEU", "SIEQ_ELGA"),
+    CONTRAINTE=("SIGM_ELGA", "SIGM_NOEU"),
+    DEFORMATION=("EPSI_ELGA"),
+    RESULTAT=resnlin,
+)
 
 # COORDONNEES DES POINTS DE GAUSS
 
@@ -98,7 +113,6 @@ tab = CREA_TABLE(
 
 IMPR_TABLE(TABLE=tab, UNITE=81, FORMAT="TABLEAU")
 
-
 TEST_RESU(
     RESU=(
         _F(
@@ -108,7 +122,7 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MAX",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-446.4286808739182,
+            VALE_CALC=-449.08014952004044,
             VALE_REFE=-449.54954955,
             PRECISION=0.01,
         ),
@@ -119,7 +133,34 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MIN",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-455.74693513859825,
+            VALE_CALC=-449.8110044164871,
+            VALE_REFE=-449.54954955,
+            PRECISION=0.02,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=resnlin,
+            INST=1.0,
+            NOM_CHAM="SIEQ_ELGA",
+            NOM_CMP="TRSIG",
+            TYPE_TEST="MAX",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=-449.08014952004044,
+            VALE_REFE=-449.54954955,
+            PRECISION=0.01,
+        ),
+        _F(
+            RESULTAT=resnlin,
+            INST=1.0,
+            NOM_CHAM="SIEQ_ELGA",
+            NOM_CMP="TRSIG",
+            TYPE_TEST="MIN",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=-449.8110044164871,
             VALE_REFE=-449.54954955,
             PRECISION=0.02,
         ),

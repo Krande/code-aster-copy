@@ -37,7 +37,7 @@ DDL_MECA = LocatedComponents(
     components=(
         ("EN1", ("HHO_FX[4]", "HHO_FY[4]")),
         ("EN2", ()),
-        ("EN3", ("HHO_CX[10]", "HHO_CY[10]")),
+        ("EN3", ("HHO_CX[15]", "HHO_CY[15]")),
     ),
 )
 
@@ -218,9 +218,9 @@ ECOEQPG = LocatedComponents(
 
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
-CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[520]",))
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[620]",))
 
-CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[351]",))
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[496]",))
 
 CHHOBS = LocatedComponents(
     phys=PHY.N3600R,
@@ -245,7 +245,7 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 # ------------------------------------------------------------
 
 
-class MECA_DPQ9_HHO333(Element):
+class MECA_AXQ9_HHO343(Element):
     """Please document this element"""
 
     meshType = MT.QUAD9
@@ -257,7 +257,7 @@ class MECA_DPQ9_HHO333(Element):
     elrefe = (
         ElrefeLoc(
             MT.QU9,
-            gauss=("RIGI=FPG16", "FPG1=FPG1", "MTGA=FPG16", "MASS=FPG16"),
+            gauss=("RIGI=FPG16", "FPG1=FPG1", "MTGA=FPG16", "MASS=FPG25"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
     )
@@ -752,7 +752,7 @@ class MECA_DPQ9_HHO333(Element):
 # ------------------------------------------------------------
 
 
-class MECA_DPT7_HHO333(MECA_DPQ9_HHO333):
+class MECA_AXT7_HHO343(MECA_AXQ9_HHO343):
     """Please document this element"""
 
     meshType = MT.TRIA7
@@ -760,7 +760,7 @@ class MECA_DPT7_HHO333(MECA_DPQ9_HHO333):
     elrefe = (
         ElrefeLoc(
             MT.TR7,
-            gauss=("RIGI=FPG12", "FPG1=FPG1", "MTGA=FPG12", "MASS=FPG12"),
+            gauss=("RIGI=FPG13", "FPG1=FPG1", "MTGA=FPG13", "MASS=FPG19"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
     )
