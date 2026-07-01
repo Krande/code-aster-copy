@@ -62,7 +62,11 @@ class Features:
         """
         found = self._models.get(element)
         if not found:
-            if element[0:8] not in ("DDEPL_R", "DTEMP_R", "DPRES_C"):
+            if not (
+                element.startswith("DDEPL_R")
+                or element.startswith("DTEMP_R")
+                or element.startswith("DPRES_C")
+            ):
                 print(f"ERROR: Element not found: {element}")
             return []
         return self._models[element]
