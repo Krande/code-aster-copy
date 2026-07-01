@@ -58,8 +58,8 @@ module HHO_SmallStrainMeca_module
 !
     public :: hhoSmallStrainLCMeca, tranfoMatToSym, hhoMatrElasMeca
     public :: hhoComputeRhsSmall, hhoComputeLhsSmall, hhoAssembleLhsSmall
-    public :: hhoComputeCgphi, tranfoSymToMat
-    private :: tranfoTensToSym, hhoComputeLhsSmallAxis
+    public :: hhoComputeCgphi, tranfoSymToMat, tranfoTensToSym
+    private :: hhoComputeLhsSmallAxis
 !
 contains
 !

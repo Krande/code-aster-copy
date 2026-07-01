@@ -64,14 +64,13 @@ subroutine te0504(option, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_matrix) :: gradsym
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer(kind=8) :: cbs, fbs, total_dofs, npg, kpg, gbs, gbs_sym, cbs_cmp
-    integer(kind=8) :: nbsig, jvMaterc, faces_dofs, gbs_cmp, i, j, gbs_axis
+    integer(kind=8) :: cbs, fbs, total_dofs, npg, kpg, gbs, gbs_sym
+    integer(kind=8) :: nbsig, jvMaterc, i, j, gbs_axis
     real(kind=8) :: time, sigma(6), weight, coorpg(3)
     real(kind=8) :: E_coeff(MSIZE_CELL_MAT), Eps(6)
-    real(kind=8) :: dmat(6, 6), BSCEval(MSIZE_CELL_SCAL)
+    real(kind=8) :: dmat(6, 6), BSCEval(MSIZE_CELL_SCAL), dmat3d(6, 6)
     real(kind=8) :: sigmVarc(6*MAX_QP_CELL), sief(6*MAX_QP_CELL)
-    real(kind=8) :: depl(MSIZE_TDOFS_VEC)
-    aster_logical :: l_axis
+    real(kind=8) :: depl(MSIZE_TDOFS_VEC), sigm_mat(6)
     type(Material_Para) :: materPara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -83,14 +82,10 @@ subroutine te0504(option, nomte)
 
 ! - Number of dofs
     call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
-    faces_dofs = total_dofs-cbs
-    gbs_cmp = (gbs-gbs_axis)/(hhoCell%ndim*hhoCell%ndim)
-    cbs_cmp = cbs/hhoCell%ndim
     nbsig = nbsigm()
 
 ! - Type of finite element
     call hhoBasisCell%initialize(hhoCell)
-    l_axis = lteatt('AXIS', 'OUI')
 
 ! - Compute Operators
     if (hhoData%precompute()) then
@@ -139,18 +134,20 @@ subroutine te0504(option, nomte)
 
 ! ----- Compute elasticity matrix
         call dmatmc(materPara, '+', time, &
-                    nbsig, dmat(1:nbsig, 1:nbsig))
-
+                    nbsig, dmat)
+        call tranfoTensToSym(nbsig, dmat, dmat3d)
+!
 ! ----- Compute SIGM_ELGA
         sigma = 0.d0
         do i = 1, nbsig
             do j = 1, nbsig
-                sigma(i) = sigma(i)+Eps(j)*dmat(i, j)
+                sigma(i) = sigma(i)+Eps(j)*dmat3d(i, j)
             end do
         end do
-
+        call tranfoSymToMat(hhoCell%ndim, sigma, sigm_mat)
+!
 ! ----- Compute SIEF_ELGA
-        sief((kpg-1)*nbsig+1:kpg*nbsig) = sigma(1:nbsig)+sigmVarc((kpg-1)*nbsig+1:kpg*nbsig)
+        sief((kpg-1)*nbsig+1:kpg*nbsig) = sigm_mat(1:nbsig)-sigmVarc((kpg-1)*nbsig+1:kpg*nbsig)
     end do
 
 ! - Set output vector

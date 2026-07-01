@@ -24,6 +24,8 @@ mesh0 = LIRE_MAILLAGE(UNITE=20)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
+
 
 mesh = MODI_MAILLAGE(
     reuse=mesh,
@@ -137,6 +139,15 @@ TEST_RESU(
             VALE_REFE=-449.54954955,
             PRECISION=0.02,
         ),
+        _F(
+            RESULTAT=reslin,
+            INST=1.0,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIXY",
+            GROUP_NO="LEFT",
+            TYPE_TEST="SOMM_ABS",
+            VALE_CALC=8932.039591221434,
+        ),
     )
 )
 
@@ -163,6 +174,15 @@ TEST_RESU(
             VALE_CALC=-449.8110044164871,
             VALE_REFE=-449.54954955,
             PRECISION=0.02,
+        ),
+        _F(
+            RESULTAT=resnlin,
+            INST=1.0,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIXY",
+            GROUP_NO="LEFT",
+            TYPE_TEST="SOMM_ABS",
+            VALE_CALC=8932.039591221434,
         ),
     )
 )
