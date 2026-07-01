@@ -53,6 +53,29 @@ test = CA.TestCase()
 #
 ####################################################################################
 
+
+def diameter_cell(coor, nodes):
+    nb_nodes = len(nodes)
+    pts = np.array([coor.getNode(node).getValues() for node in nodes])
+
+    return max(
+        np.linalg.norm(pts[i] - pts[j]) for i in range(nb_nodes) for j in range(i + 1, nb_nodes)
+    )
+
+
+def diameter(mesh):
+    mesh_lin = mesh.convertToLinear()
+    nbCells = mesh_lin.getNumberOfCells()
+    coor = mesh_lin.getCoordinates()
+    connec = mesh_lin.getConnectivity()
+
+    diam = -1.0
+    for c_id in range(nbCells):
+        diam = max(diam, diameter_cell(coor, connec[c_id]))
+
+    return diam
+
+
 # number of refinement
 nb_reff = 6
 
@@ -88,23 +111,13 @@ mesh0_tri = CREA_MAILLAGE(MAILLAGE=mesh0_quad, MODI_MAILLE=_F(TOUT="OUI", OPTION
 # convert for hho-cells
 mesh0_hho = CREA_MAILLAGE(MAILLAGE=mesh0_tri, MODI_HHO=_F(TOUT="OUI"))
 
-mesh0_hho = MODI_MAILLAGE(reuse=mesh0_hho, MAILLAGE=mesh0_hho, TRANSLATION=(0.0, 0.0, 0.0))
-
-# size of a triangle
-h0 = sqrt(2) / 2
-
 for order in ("LINEAIRE", "QUADRATIQUE"):
     error[order] = {"h": [], "L2": [], "H1": []}
     mesh = mesh0_hho
-    h = h0
     for i_reff in range(nb_reff):
         ## DEFINE PROBLEM
         # create mesh - refine previous mesh
         mesh = mesh.refine(1)
-        h = h / 2
-
-        # size of a cell
-        error[order]["h"].append(sqrt(2) / ((i_reff + 1) ** 2))
 
         # define material
         coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
@@ -172,6 +185,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         mass = disc_comp.getMassMatrix(assembly=True)
 
         # compute L2 and H1-errors
+        error[order]["h"].append(diameter(mesh))
         error[order]["L2"].append(sqrt((mass * u_diff).dot(u_diff)))
         error[order]["H1"].append(sqrt((rigidity * u_diff).dot(u_diff)))
 
@@ -193,12 +207,12 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
     # test convergence order
     test.assertAlmostEqual(
         conv_order[order]["L2"][0],
-        {"LINEAIRE": 2.542124715254818, "QUADRATIQUE": 3.7129816021234685}[order],
+        {"LINEAIRE": 2.7188706153832713, "QUADRATIQUE": 3.9300875165659875}[order],
         delta=1e-4,
     )
     test.assertAlmostEqual(
         conv_order[order]["H1"][0],
-        {"LINEAIRE": 1.7786783065329288, "QUADRATIQUE": 2.815479414968362}[order],
+        {"LINEAIRE": 1.8901992494377016, "QUADRATIQUE": 2.9764630230205915}[order],
         delta=1e-4,
     )
 

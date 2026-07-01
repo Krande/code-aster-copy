@@ -120,9 +120,6 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         ## DEFINE PROBLEM
         # create mesh - refine previous mesh
         mesh = mesh.refine(1)
-        h = diameter(mesh)
-        # size of a cell
-        error[order]["h"].append(h)
 
         # define material
         coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
@@ -189,6 +186,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         norm_H1 = rigidity
 
         # compute L2 and H1-errors
+        error[order]["h"].append(diameter(mesh))
         error[order]["L2"].append(sqrt((norm_L2 * u_diff).dot(u_diff)))
         error[order]["H1"].append(sqrt((norm_H1 * u_diff).dot(u_diff)))
 
