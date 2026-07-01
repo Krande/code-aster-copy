@@ -161,7 +161,7 @@ contains
         implicit none
 !
         type(HHO_Data), intent(in) :: hhoData
-        type(HHO_Cell), intent(inout) :: hhoCell
+        type(HHO_Cell), intent(in) :: hhoCell
         aster_logical, intent(in) :: l_largestrains
         type(HHO_matrix), intent(out) :: gradfull
         type(HHO_matrix), intent(out), optional :: stab

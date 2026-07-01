@@ -36,7 +36,7 @@ model0 = AFFE_MODELE(
     MAILLAGE=mesh,
 )
 
-mater = DEFI_MATERIAU(ELAS=_F(E=100000.0, NU=0.3))
+mater = DEFI_MATERIAU(ELAS=_F(E=100000.0, NU=0.4999))
 
 fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MODELE=model0)
 
@@ -99,11 +99,6 @@ tab = CREA_TABLE(
 
 IMPR_TABLE(TABLE=tab, UNITE=81, FORMAT="TABLEAU")
 
-# import os
-
-# os.system(
-#     "cp fort.81 /home/C00976/Documents/Redaction/Article_HHO_AXIS/result/SSNA125/RESU/resu_sigm.csv"
-# )
 
 TEST_RESU(
     RESU=(
@@ -114,7 +109,7 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MAX",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-447.6333149146486,
+            VALE_CALC=-448.8045124756027,
             VALE_REFE=-449.54954955,
             PRECISION=0.01,
         ),
@@ -125,7 +120,7 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MIN",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-452.2835967149929,
+            VALE_CALC=-450.4619223702466,
             VALE_REFE=-449.54954955,
             PRECISION=0.01,
         ),

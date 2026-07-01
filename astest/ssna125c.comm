@@ -37,7 +37,7 @@ model0 = AFFE_MODELE(
     AFFE=_F(MODELISATION="AXIS_HHO", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
 )
 
-mater = DEFI_MATERIAU(ELAS=_F(E=100000.0, NU=0.3))
+mater = DEFI_MATERIAU(ELAS=_F(E=100000.0, NU=0.4999))
 
 fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MODELE=model0)
 
@@ -124,7 +124,7 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MAX",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-449.08014952004044,
+            VALE_CALC=-448.7612821173534,
             VALE_REFE=-449.54954955,
             PRECISION=0.01,
         ),
@@ -135,7 +135,7 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MIN",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-449.8110044164871,
+            VALE_CALC=-449.87703841091025,
             VALE_REFE=-449.54954955,
             PRECISION=0.02,
         ),
@@ -146,7 +146,7 @@ TEST_RESU(
             NOM_CMP="SIXY",
             GROUP_NO="LEFT",
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=8932.039591221434,
+            VALE_CALC=8931.647360780857,
         ),
     )
 )
@@ -160,7 +160,7 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MAX",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-449.08014952004044,
+            VALE_CALC=-448.7612821173709,
             VALE_REFE=-449.54954955,
             PRECISION=0.01,
         ),
@@ -171,7 +171,7 @@ TEST_RESU(
             NOM_CMP="TRSIG",
             TYPE_TEST="MIN",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-449.8110044164871,
+            VALE_CALC=-449.87703841090763,
             VALE_REFE=-449.54954955,
             PRECISION=0.02,
         ),
@@ -182,7 +182,7 @@ TEST_RESU(
             NOM_CMP="SIXY",
             GROUP_NO="LEFT",
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=8932.039591221434,
+            VALE_CALC=8931.647360780857,
         ),
     )
 )
