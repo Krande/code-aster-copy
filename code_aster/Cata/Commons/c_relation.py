@@ -39,6 +39,8 @@ def C_RELATION(command):
     else:
         return (
             "ELAS",
+            "ELAS_ISOT_INCR",
+            "ELAS_ISOT_ENER",
             "ELAS_VMIS_LINE",
             "ELAS_VMIS_TRAC",
             "ELAS_VMIS_PUIS",

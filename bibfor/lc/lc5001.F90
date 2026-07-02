@@ -25,7 +25,6 @@ subroutine lc5001(BEHInteg, &
                   dsidep, codret)
 
     use Behaviour_type
-    use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate
     implicit none
 
 #include "asterf_types.h"

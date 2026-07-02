@@ -78,6 +78,8 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc0077.h"
 #include "asterfort/lc0078.h"
 #include "asterfort/lc0079.h"
+#include "asterfort/lc0101.h"
+#include "asterfort/lc0102.h"
 #include "asterfort/lc0120.h"
 #include "asterfort/lc0137.h"
 #include "asterfort/lc0145.h"
@@ -102,6 +104,8 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc5076.h"
 #include "asterfort/lc5090.h"
 #include "asterfort/lc5091.h"
+#include "asterfort/lc5101.h"
+#include "asterfort/lc5102.h"
 #include "asterfort/lc5152.h"
 #include "asterfort/lc6036.h"
 #include "asterfort/lc6046.h"
@@ -616,6 +620,22 @@ subroutine lc0000(BEHInteg, &
                     sigp, vip, typmod, &
                     ndsde, dsidep, codret)
 
+    case (101)
+        call lc0101(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (102)
+        call lc0102(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
     case (120)
 !     BETON_DOUBLE_DP
         call lc0120(BEHInteg, &
@@ -821,6 +841,22 @@ subroutine lc0000(BEHInteg, &
 
     case (5091)
         call lc5091(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5101)
+        call lc5101(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5102)
+        call lc5102(BEHInteg, &
                     fami, kpg, ksp, ndim, jvMaterCode, &
                     compor, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, &
