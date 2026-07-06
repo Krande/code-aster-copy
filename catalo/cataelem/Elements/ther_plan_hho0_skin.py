@@ -227,3 +227,5 @@ class THER_2D_HHO0_F(Element):
 
 class THER_AX_HHO0_F(THER_2D_HHO0_F):
     """Thermics - Skin element HHO_CSTE - AXIS - SEG"""
+
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2",), mater=("RIGI",)),)
