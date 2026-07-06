@@ -41,7 +41,7 @@ cata_msg = {
     ),
     4: _(
         """
- CALC_ENDO ne sait pas traiter un chargement AFFE_CHAR_MECA_F fonction du temps.
+ CALC_ENDO ne sait pas traiter un chargement AFFE_CHAR_MECA_F ou AFFE_CHAR_CINE_F fonction du temps.
  Il est recommandé d'utiliser FONC_MULT.
 """
     ),

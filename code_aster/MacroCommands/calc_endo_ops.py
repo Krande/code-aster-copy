@@ -26,7 +26,7 @@ from ..Objects import (
     TimesList,
     NonLinearResultDict,
 )
-from libaster import MechanicalLoadFunction, Function
+from libaster import MechanicalLoadFunction, MechanicalDirichletBC, Function, Formula, Function2D
 
 from ..CodeCommands import (
     DEFI_FONCTION,
@@ -68,19 +68,28 @@ class CalcEndoLoad:
         """Check if the load is time dependent.
         Raise error message if time dependency is calculated by AFFE_CHAR_MECA_F
         """
-
         if self.fonc_mult:
             self.has_time_dep = True
-        elif isinstance(self.charge, MechanicalLoadFunction):
-            find_function = False
+        elif isinstance(self.charge, MechanicalLoadFunction) or isinstance(
+            self.charge, MechanicalDirichletBC
+        ):
             for dependency in self.charge.getDependencies():
                 if isinstance(dependency, Function):
                     param_function = dependency.Parametres()["NOM_PARA"]
                     if param_function == "INST":
                         UTMESS("F", "CALCENDO_4")
-                    else:
-                        find_function = True
-            assert find_function
+                if isinstance(dependency, Formula):
+                    param_function = dependency.Parametres()["NOM_PARA"]
+                    if "INST" in param_function:
+                        UTMESS("F", "CALCENDO_4")
+                if isinstance(dependency, Function2D):
+                    param_nappe = dependency.Parametres()
+                    for param_function in param_nappe:
+                        if (
+                            "INST" in param_function["NOM_PARA"]
+                            or "INST" in param_function["NOM_PARA_FONC"]
+                        ):
+                            UTMESS("F", "CALCENDO_4")
 
     def eval(self, t_init, t_comp, nume_ordre, is_stab_seq, t_init_ramp):
         """Create syntax for EXCIT in STAT_NON_LINE for a given load sequence
@@ -232,12 +241,7 @@ class CalcEndoVarc:
                         MODELE=model,
                     ),
                     _F(NOM_CHAM=evol.getFieldName(), CHAM_GD=field_comp, INST=0, MODELE=model),
-                    _F(
-                        NOM_CHAM=evol.getFieldName(),
-                        CHAM_GD=field_comp,
-                        INST=t_fin,
-                        MODELE=model,
-                    ),
+                    _F(NOM_CHAM=evol.getFieldName(), CHAM_GD=field_comp, INST=t_fin, MODELE=model),
                 ),
             )
             dict_varc["EVOL"] = ramp_varc
