@@ -112,7 +112,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         """Update fixed-point-specific arguments for the contact"""
         if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
             self._fixed_point_contact_iter += 1
-            
+
     def _get_criterion_fixed_point_contact(self):
         """Get criterion to reset the pairing when relying on a fixed-point for the contact"""
         if self._nb_iter_geom is not None:
@@ -170,7 +170,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
             self.current_incr += 1
             self._update_criterion_fixed_point_contact()
-        
+
         if not self._converg.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
@@ -267,7 +267,9 @@ class NewtonSolver(BaseIterationSolver, EventSource):
                 self.contact.update(self.state)
                 self.contact.pairing()
             else:
-                update_fixed_point = self._converg.isPrediction() or self._fixed_point_internal_loop_criterion()
+                update_fixed_point = (
+                    self._converg.isPrediction() or self._fixed_point_internal_loop_criterion()
+                )
                 if update_fixed_point:
                     logger.info("<POINT_FIXE> Contact pairing is performed")
                     self.contact.update(self.state)
