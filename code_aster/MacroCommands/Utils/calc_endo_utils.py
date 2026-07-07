@@ -24,6 +24,7 @@ Utilitaires pour CALC_ENDO
 from ...Messages import UTMESS
 from ...CodeCommands import CALC_TABLE, FORMULE, DEFI_LIST_INST
 from ...Behaviours import regu_visc_elas, endo_loca_tc  # , endo_fiss_tc
+from ...Utilities import logger
 
 
 def get_obs_values(ctrl_resu, name_obs):
@@ -127,6 +128,7 @@ def set_default_observation(kwds):
     cham_mater = kwds["CHAM_MATER"]
     mat_by_mesh = cham_mater.getMaterialsOnMeshEntities()
     names_mesh_ent = [x[1].getNames() for x in mat_by_mesh]
+    num_obs = 0
 
     for compor in kwds["COMPORTEMENT"]:
         ldc_name = compor["RELATION"]
@@ -146,69 +148,95 @@ def set_default_observation(kwds):
             elif "TOUT" in compor:
                 l_mesh_ent = [compor["TOUT"]]
                 d_mesh_ent = {"TOUT": "OUI"}
+            l_ft = []
 
             for mesh_ent in l_mesh_ent:
                 index_mesh_ent = [names_mesh_ent.index(x) for x in names_mesh_ent if mesh_ent in x]
                 assert len(index_mesh_ent) == 1
                 mat_on_grp_ma = mat_by_mesh[index_mesh_ent[0]][0][0]
-
-                if "RESI_REFE_RELA" not in kwds["CONVERGENCE"]:
-                    UTMESS("F", "CALCENDO_11")
-                resi_refe_rela = kwds["CONVERGENCE"]["RESI_REFE_RELA"]
                 ft = mat_on_grp_ma.getValueReal(ldc_name, "FT")
+                l_ft.append(ft)
 
-                if compor["REGU_VISC"] == "OUI":
+            ft_min = min(l_ft)
 
-                    kvisc_elas = mat_on_grp_ma.getValueReal("VISC_ELAS", "K")
-                    nbvi_ldc = ldc.loi.get_nb_vari()
-                    nom_vari_ener_elas = "V%d" % (
-                        nbvi_ldc + int(Get_Vari_By_Name(regu_visc_elas, "VISCELAS")[1:])
-                    )
-                    f_sigm_visc_elas = FORMULE(
-                        NOM_PARA=nom_vari_ener_elas,
-                        VALE="(2*k*%s)**0.5" % nom_vari_ener_elas,
-                        k=kvisc_elas,
-                    )
+            if "RESI_REFE_RELA" not in kwds["CONVERGENCE"]:
+                UTMESS("F", "CALCENDO_11")
+            resi_refe_rela = kwds["CONVERGENCE"]["RESI_REFE_RELA"]
 
-                    obs_visc = _F(
-                        TITRE=mesh_ent + "_VISCELAS",
-                        PAS_OBSE=1,
-                        NOM_CHAM="VARI_ELGA",
-                        NOM_CMP=nom_vari_ener_elas,
-                        EVAL_CMP="FORMULE",
-                        FORMULE=f_sigm_visc_elas,
-                        EVAL_ELGA="MAX",
-                        EVAL_CHAM="MAX",
-                        **d_mesh_ent,
-                    )
-                    obs_stab_visc.append(obs_visc)
-                    crit_stab_visc.append(resi_refe_rela * ft)
+            if compor["REGU_VISC"] == "OUI":
 
-                if ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
-                    vari_endotot = Get_Vari_By_Name(ldc, "ENDOTOT")
-                    obs_endomoy = _F(
-                        TITRE=mesh_ent + "_ENDOTOT",
-                        PAS_OBSE=1,
-                        NOM_CHAM="VARI_ELGA",
-                        NOM_CMP=vari_endotot,
-                        EVAL_ELGA="MAX",
-                        EVAL_CHAM="MOY",
-                        **d_mesh_ent,
-                    )
-                    other_obs.append(obs_endomoy)
+                kvisc_elas = mat_on_grp_ma.getValueReal("VISC_ELAS", "K")
+                nbvi_ldc = ldc.loi.get_nb_vari()
+                nom_vari_ener_elas = "V%d" % (
+                    nbvi_ldc + int(Get_Vari_By_Name(regu_visc_elas, "VISCELAS")[1:])
+                )
+                f_sigm_visc_elas = FORMULE(
+                    NOM_PARA=nom_vari_ener_elas,
+                    VALE="(2*k*%s)**0.5" % nom_vari_ener_elas,
+                    k=kvisc_elas,
+                )
 
-                    vari_visc = Get_Vari_By_Name(ldc, "SIGMVISC")
-                    obs_visc = _F(
-                        TITRE=mesh_ent + "_VISCENDO",
-                        PAS_OBSE=1,
-                        NOM_CHAM="VARI_ELGA",
-                        NOM_CMP=vari_visc,
-                        EVAL_ELGA="MAX",
-                        EVAL_CHAM="MAX",
-                        **d_mesh_ent,
-                    )
-                    obs_stab_visc.append(obs_visc)
-                    crit_stab_visc.append(resi_refe_rela * ft)
+                obs_visc = _F(
+                    TITRE="VISCELAS_" + str(num_obs),
+                    PAS_OBSE=1,
+                    NOM_CHAM="VARI_ELGA",
+                    NOM_CMP=nom_vari_ener_elas,
+                    EVAL_CMP="FORMULE",
+                    FORMULE=f_sigm_visc_elas,
+                    EVAL_ELGA="MAX",
+                    EVAL_CHAM="MAX",
+                    **d_mesh_ent,
+                )
+                obs_stab_visc.append(obs_visc)
+                crit_stab_visc.append(resi_refe_rela * ft_min)
+
+                logger.info(
+                    "L'observation VISCELAS_"
+                    + str(num_obs)
+                    + " porte sur le groupe de mailles "
+                    + str(l_mesh_ent)
+                )
+
+            if ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
+                vari_endotot = Get_Vari_By_Name(ldc, "ENDOTOT")
+                obs_endomoy = _F(
+                    TITRE="ENDOTOT_" + str(num_obs),
+                    PAS_OBSE=1,
+                    NOM_CHAM="VARI_ELGA",
+                    NOM_CMP=vari_endotot,
+                    EVAL_ELGA="MAX",
+                    EVAL_CHAM="MOY",
+                    **d_mesh_ent,
+                )
+                other_obs.append(obs_endomoy)
+
+                vari_visc = Get_Vari_By_Name(ldc, "SIGMVISC")
+                obs_visc = _F(
+                    TITRE="VISCENDO_" + str(num_obs),
+                    PAS_OBSE=1,
+                    NOM_CHAM="VARI_ELGA",
+                    NOM_CMP=vari_visc,
+                    EVAL_ELGA="MAX",
+                    EVAL_CHAM="MAX",
+                    **d_mesh_ent,
+                )
+                obs_stab_visc.append(obs_visc)
+                crit_stab_visc.append(resi_refe_rela * ft_min)
+
+                logger.info(
+                    "L'observation ENDOTOT_"
+                    + str(num_obs)
+                    + " porte sur le groupe de mailles "
+                    + str(l_mesh_ent)
+                )
+                logger.info(
+                    "L'observation VISCENDO_"
+                    + str(num_obs)
+                    + " porte sur le groupe de mailles "
+                    + str(l_mesh_ent)
+                )
+
+                num_obs += num_obs
 
     return tuple(obs_stab_visc), crit_stab_visc, tuple(other_obs)
 

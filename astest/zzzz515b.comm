@@ -17,7 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI", IGNORE_ALARM=("MECANONLINE5_32",))
+DEBUT(
+    CODE="OUI",
+    DEBUG=_F(SDVERI="OUI"),
+    IMPR_MACRO="OUI",
+    IGNORE_ALARM=("MECANONLINE5_32", "MECANONLINE5_57"),
+)
 
 # Test de CALC_ENDO avec mélange de modélisation et avec options par défaut
 # Identique à zzzz515a, mais on utilise la définition par défaut des observations et du paramétrage de DEFI_LIST_INST
@@ -611,7 +616,7 @@ TEST_TABLE(
     FILTRE=(
         _F(NOM_PARA="INST", VALE=25),
         _F(NOM_PARA="INST_VISC", VALE=0),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
     ),
     VALE_CALC=5.58483e-03,
 )
@@ -623,7 +628,7 @@ TEST_TABLE(
     FILTRE=(
         _F(NOM_PARA="INST", VALE=50),
         _F(NOM_PARA="INST_VISC", VALE=-duree_rampe),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
     ),
     VALE_CALC=5.58483e-03,
 )
@@ -634,7 +639,7 @@ TEST_TABLE(
     FILTRE=(
         _F(NOM_PARA="INST", VALE=50),
         _F(NOM_PARA="INST_VISC", VALE=0),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
     ),
     VALE_CALC=7.15600e-03,
 )
@@ -646,7 +651,7 @@ TEST_TABLE(
     FILTRE=(
         _F(NOM_PARA="INST", VALE=75),
         _F(NOM_PARA="INST_VISC", VALE=-duree_rampe),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
     ),
     VALE_CALC=7.15600e-03,
 )
@@ -657,7 +662,7 @@ TEST_TABLE(
     FILTRE=(
         _F(NOM_PARA="INST", VALE=75),
         _F(NOM_PARA="INST_VISC", VALE=0),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
     ),
     VALE_CALC=8.00086e-03,
 )
@@ -669,7 +674,7 @@ TEST_TABLE(
     FILTRE=(
         _F(NOM_PARA="INST", VALE=100),
         _F(NOM_PARA="INST_VISC", VALE=-duree_rampe),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
     ),
     VALE_CALC=8.00086e-03,
 )
@@ -681,7 +686,7 @@ TEST_TABLE(
         _F(NOM_PARA="INST", VALE=100),
         _F(NOM_PARA="INST_VISC", VALE=0),
         _F(NOM_PARA="NUME_REUSE", VALE=1),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
     ),
     VALE_CALC=8.09232e-03,
 )
@@ -692,7 +697,7 @@ TEST_TABLE(
 #     FILTRE=(
 #         _F(NOM_PARA="INST", VALE=100),
 #         _F(NOM_PARA="INST_VISC", VALE=10),
-#         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCELAS"),
+#         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS_0"),
 #     ),
 #     VALE_CALC=3.69636e-07,
 # )
@@ -705,7 +710,7 @@ TEST_TABLE(
         _F(NOM_PARA="INST", VALE=100),
         _F(NOM_PARA="INST_VISC", VALE=0),
         _F(NOM_PARA="NUME_REUSE", VALE=1),
-        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCENDO"),
+        _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCENDO_0"),
     ),
     VALE_CALC=1.95848784,
 )
@@ -716,7 +721,7 @@ TEST_TABLE(
 #     FILTRE=(
 #         _F(NOM_PARA="INST", VALE=100),
 #         _F(NOM_PARA="INST_VISC", VALE=10),
-#         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="massif_VISCENDO"),
+#         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCENDO_0"),
 #     ),
 #     VALE_CALC=3.22996e-06,
 # )
