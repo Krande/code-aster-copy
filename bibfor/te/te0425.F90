@@ -82,7 +82,7 @@ subroutine te0425(option, nomte)
     real(kind=8) :: GV_prev(3), GV_incr(3), GV_0(3), GV_pilo(3), GV_cste(3)
     real(kind=8) :: var_prev, var_incr, var_0, var_pilo, var_cste
     real(kind=8) :: lag_prev, lag_incr, lag_0, lag_pilo, lag_cste
-    integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym
+    integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mkb_gbs_axis
     integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, total_dofs
     integer(kind=8) :: ipg, npg, k, neps, nmk, gv_faces_dofs, gv_cell_offset
     integer(kind=8) :: iborne, ictau, itype, jvMaterc
@@ -104,7 +104,7 @@ subroutine te0425(option, nomte)
 
 ! - Number of dofs
     call hhoMecaNLDofs(hhoCell, hhoDataMk, mk_cbs, mk_fbs, mk_total_dofs, &
-                       mk_gbs, mk_gbs_sym)
+                       mk_gbs, mk_gbs_sym, mkb_gbs_axis)
     call hhoTherNLDofs(hhoCell, hhoDataGv, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
     total_dofs = mk_total_dofs+gv_total_dofs
     gv_faces_dofs = gv_total_dofs-gv_cbs

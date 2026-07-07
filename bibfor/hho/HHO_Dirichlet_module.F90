@@ -1216,9 +1216,10 @@ contains
 !
 ! -------------- Compute L2 projection
 !
-            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
-                                   rhs_face)
+            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesQP, &
+                                   hhoData%face_degree(), rhs_face)
             call dcopy_1(fbs, rhs_face, rhs_cine(ind))
+!
             ind = ind+fbs
         end do
 !

@@ -228,3 +228,5 @@ class MECA_2D_HHO4_F(Element):
 # ------------------------------------------------------------
 class MECA_2DAX_HHO4_F(MECA_2D_HHO4_F):
     """Please document this element"""
+
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG6",), mater=("RIGI",)),)

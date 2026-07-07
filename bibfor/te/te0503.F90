@@ -64,7 +64,7 @@ subroutine te0503(option, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_matrix) :: gradsym
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer(kind=8) :: cbs, fbs, total_dofs, npg, kpg, gbs, gbs_sym, cbs_cmp
+    integer(kind=8) :: cbs, fbs, total_dofs, npg, kpg, gbs, gbs_sym, cbs_cmp, gbs_axis
     integer(kind=8) :: nbsig, indxVarcStrain, jvMaterc, jvInstr, faces_dofs, gbs_cmp, iret
     real(kind=8) :: time, Cauchy_curr(6), weight, coorpg(3)
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), BSCEval(MSIZE_CELL_SCAL)
@@ -81,9 +81,9 @@ subroutine te0503(option, nomte)
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
 
 ! - Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
     faces_dofs = total_dofs-cbs
-    gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+    gbs_cmp = (gbs-gbs_axis)/(hhoCell%ndim*hhoCell%ndim)
     cbs_cmp = cbs/hhoCell%ndim
     nbsig = nbsigm()
 
@@ -148,15 +148,9 @@ subroutine te0503(option, nomte)
         call tranfoMatToSym(hhoCell%ndim, sigmVarc((kpg-1)*nbsig+1:kpg*nbsig), Cauchy_curr)
 
 ! ----- Eval basis function at the quadrature point
-        call hhoBasisCell%BSEval(coorpg(1:3), 0, &
-                                 max(hhoData%grad_degree(), hhoData%cell_degree()), &
-                                 BSCEval)
+        call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
         call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
-        if (l_axis) then
-            call hhoComputeRhsSmallAxis(hhoCell, Cauchy_curr, weight, coorpg(1), &
-                                        BSCEval, cbs_cmp, rhs(faces_dofs+1:))
-        end if
     end do
     call hho_dgemv_T(1.d0, gradsym, bT, 1.d0, rhs)
 

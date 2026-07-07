@@ -32,6 +32,7 @@ module HHO_L2proj_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/dposv.h"
@@ -435,7 +436,8 @@ contains
         real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
         aster_logical :: with_faces
-        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
 ! --------------------------------------------------------------------------------------------------
 !
         ASSERT(hhoCell%l_face_init)
@@ -446,7 +448,7 @@ contains
         with_faces = ASTER_TRUE
         if (present(all)) with_faces = all
 !
-! --- Type of function dor a face
+! --- Type of function for a face
 !
         if (hhoCell%ndim == 3) then
             nbpara = 4
@@ -468,6 +470,7 @@ contains
 !
         ind = 1
         do iFace = 1, hhoCell%nbfaces
+            rhs_face = 0.d0
             if (with_faces) then
                 hhoFace = hhoCell%faces(iFace)
 !
@@ -488,9 +491,7 @@ contains
                                       hhoData%face_degree(), rhs_face)
             end if
             b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, coeff_L2Proj(ind), b_incy)
+            call dcopy(b_n, rhs_face, b_one, coeff_L2Proj(ind), b_one)
             ind = ind+fbs
         end do
 !
@@ -508,9 +509,7 @@ contains
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
         b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, coeff_L2Proj(ind), b_incy)
+        call dcopy(b_n, rhs_cell, b_one, coeff_L2Proj(ind), b_one)
 !
 !
     end subroutine
@@ -544,7 +543,8 @@ contains
         real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
         real(kind=8) :: FieldValuesNodes(27)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
-        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -577,9 +577,7 @@ contains
             call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
                                    rhs_face)
             b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, coeff_L2Proj(ind), b_incy)
+            call dcopy(b_n, rhs_face, b_one, coeff_L2Proj(ind), b_one)
             ind = ind+fbs
         end do
 !
@@ -594,9 +592,7 @@ contains
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                rhs_cell)
         b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, coeff_L2Proj(ind), b_incy)
+        call dcopy(b_n, rhs_cell, b_one, coeff_L2Proj(ind), b_one)
 !
     end subroutine
 !

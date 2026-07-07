@@ -218,9 +218,9 @@ ECOEQPG = LocatedComponents(
 
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
-CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[680]",))
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[520]",))
 
-CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[595]",))
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[351]",))
 
 CHHOBS = LocatedComponents(
     phys=PHY.N3600R,

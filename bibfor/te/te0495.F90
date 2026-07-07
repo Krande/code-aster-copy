@@ -77,7 +77,7 @@ subroutine te0495(option, nomte)
     real(kind=8) :: copilo(5, MAX_QP_CELL), sigma(6)
     real(kind=8) :: G_prev(3, 3), G_incr(3, 3), G_1(3, 3), G_0(3, 3)
     real(kind=8) :: F_prev(3, 3), F_incr(3, 3), F_1(3, 3), F_0(3, 3)
-    integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym
+    integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis
     integer(kind=8) :: kpg, npg, k
     integer(kind=8) :: iborne, ictau, itype
     character(len=16) :: pilo
@@ -96,7 +96,7 @@ subroutine te0495(option, nomte)
     call hhoInfoInitCell(hhoCell, hhoData)
 
 ! - Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym, gbs_axis)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 
 ! - Initialize quadrature for the rigidity

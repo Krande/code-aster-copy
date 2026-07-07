@@ -164,7 +164,7 @@ class MECA_2D_HHO1_F(Element):
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.COOR_ELGA(
-            te=478,
+            te=479,
             para_in=((SP.PGEOMER, LC.EGEOM2D),),
             para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),),
         ),
@@ -244,6 +244,7 @@ class MECA_2DGV_HHO1_F(MECA_2D_HHO1_F):
 
 # ------------------------------------------------------------
 class MECA_2DAX_HHO1_F(MECA_2D_HHO1_F):
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG3",), mater=("RIGI",)),)
     """Please document this element"""
 
 
@@ -251,4 +252,5 @@ class MECA_2DAX_HHO1_F(MECA_2D_HHO1_F):
 class MECA_AXGV_HHO1_F(MECA_2D_HHO1_F):
     """Please document this element"""
 
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG3",), mater=("RIGI",)),)
     calculs = (OP.HHO_COND_MECA(te=-1),)

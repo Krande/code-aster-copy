@@ -31,6 +31,7 @@ module HHO_massmat_module
 #include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/lteatt.h"
 #include "blas/dsyr.h"
 #include "MeshTypes_type.h"
 !
@@ -75,7 +76,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMassMatCellScal(this, hhoCell, min_order, max_order)
+    subroutine hhoMassMatCellScal(this, hhoCell, min_order, max_order, hhoQuad_)
 !
         implicit none
 !
@@ -83,6 +84,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         integer(kind=8), intent(in) :: min_order
         integer(kind=8), intent(in) :: max_order
+        type(HHO_quadrature), intent(in), optional :: hhoQuad_
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -126,7 +128,12 @@ contains
         else
 !
 ! ----- get quadrature
-            call hhoQuad%GetQuadCell(hhoCell, 2*max_order)
+            if (present(hhoQuad_)) then
+                hhoQuad = hhoQuad_
+                ASSERT(2*max_order <= hhoQuad%order)
+            else
+                call hhoQuad%GetQuadCell(hhoCell, 2*max_order)
+            end if
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
@@ -160,7 +167,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMassMatFaceScal(this, hhoFace, min_order, max_order)
+    subroutine hhoMassMatFaceScal(this, hhoFace, min_order, max_order, hhoQuad_)
 !
         implicit none
 !
@@ -168,6 +175,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         integer(kind=8), intent(in) :: min_order
         integer(kind=8), intent(in) :: max_order
+        type(HHO_quadrature), intent(in), optional :: hhoQuad_
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -212,7 +220,12 @@ contains
         else
 !
 ! ----- get quadrature
-            call hhoQuad%GetQuadFace(hhoFace, 2*max_order)
+            if (present(hhoQuad_)) then
+                hhoQuad = hhoQuad_
+                ASSERT(2*max_order <= hhoQuad%order)
+            else
+                call hhoQuad%GetQuadFace(hhoFace, 2*max_order)
+            end if
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints

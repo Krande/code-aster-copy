@@ -42,9 +42,9 @@ PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[5]",))
 
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
-CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[680]",))
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[520]",))
 
-CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[595]",))
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[351]",))
 
 CHHOBS = LocatedComponents(
     phys=PHY.N3600R,
