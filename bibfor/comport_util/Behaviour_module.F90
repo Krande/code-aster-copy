@@ -426,9 +426,6 @@ contains
         if (BEHInteg%behavPara%lImplex) then
             lawOffset = lawOffset+2000
         end if
-        if (typmod(2) .eq. 'GDVARINO') then
-            lawOffset = lawOffset+3000
-        end if
         if (typmod(2) .eq. 'GRADSIGM') then
             lawOffset = lawOffset+4000
         end if

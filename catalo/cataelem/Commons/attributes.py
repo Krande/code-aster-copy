@@ -587,7 +587,6 @@ TYPMOD2 = Attribute(
         "ELEMJOIN",
         "GRADVARI",
         "GRADSIGM",
-        "GDVARINO",
         "INTERFAC",
         "INTSOLPI",
         "PMF",

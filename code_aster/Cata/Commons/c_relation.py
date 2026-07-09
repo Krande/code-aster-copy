@@ -84,7 +84,6 @@ def C_RELATION(command):
             "ELAS_MEMBRANE_NH",
             "ELAS_MEMBRANE_SV",
             "ENDO_PORO_BETON",
-            "ENDO_CARRE",
             "ENDO_FISS_EXP",
             "ENDO_HETEROGENE",
             "ENDO_ISOT_BETON",

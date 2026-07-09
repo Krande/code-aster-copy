@@ -60,7 +60,6 @@ enum Modelings {
     GRAD_HHO_3D,
     GRAD_INCO_3D,
     GRAD_VARI_3D,
-    GVNO_3D,
     HH2D_3D,
     HH2MD_3D,
     HH2MS_3D,
@@ -117,7 +116,6 @@ enum Modelings {
     AXIS_GRAD_INCO,
     AXIS_GRAD_HHO,
     AXIS_GRAD_VARI,
-    AXIS_GVNO,
     AXIS_HH2D,
     AXIS_HH2MD,
     AXIS_HH2MS,
@@ -178,7 +176,6 @@ enum Modelings {
     D_PLAN_GRAD_INCO,
     D_PLAN_GRAD_SIGM,
     D_PLAN_GRAD_VARI,
-    D_PLAN_GVNO,
     D_PLAN_HH2D,
     D_PLAN_HH2MD,
     D_PLAN_HH2MS,
@@ -245,14 +242,14 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 201;
+const int nbModelings = 198;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 189;
+const int nbModelingsMechanics = 186;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;
