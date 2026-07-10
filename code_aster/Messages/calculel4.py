@@ -312,6 +312,17 @@ Conseils :
   ont-ils été calculés ?
 """
     ),
+    76: _(
+        """
+PROJ_CHAM :
+ Le champ %(k1)s présent dans la structure de données RESULTAT %(k2)s ne peut pas être 
+ projeté.
+
+ En effet, les champs de type ELGA ne peuvent pas être projetés dans le cadre
+ de la projection d'un résultat (mot-clé RESULTAT), mais seulement en temps que
+ champ isolé (mot-clé CHAM_GD), avec la méthode 'ECLA_PG'. 
+"""
+    ),
     78: _(
         """
 Erreur utilisateur dans CREA_CHAMP :
