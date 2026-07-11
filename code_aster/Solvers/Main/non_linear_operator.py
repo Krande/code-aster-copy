@@ -168,6 +168,7 @@ class NonLinearOperator(ContextMixin, EventSource):
                 # if stepper is None ?! should be happen
                 # init_index = reuse.getLastIndex()
                 self._store.setFirstStorageIndex(init_index + 1)
+                self.state._observ.setReuseIndex(init_index)
         return self._store
 
     @property
@@ -226,6 +227,7 @@ class NonLinearOperator(ContextMixin, EventSource):
         self._step_idx = 0
         self.setInitialState()
         self._storeState(self.state)
+        self.notifyObservers()
 
     def _register_hooks(self):
         if self.problem_type & PBT.AllMechanics:
@@ -446,15 +448,18 @@ class NonLinearOperator(ContextMixin, EventSource):
                     state.revert()
                     continue
                 self.post_hooks()
-                self.notifyObservers()
                 state.commit()
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
                 self._step_idx += 1
                 last_stored = self._storeState(state)
+                self.notifyObservers()
         # ensure that last step was stored
         if not last_stored:
             self._storeState(state, ignore_policy=True)
+        table = state._observ.getTable()
+        if table:
+            self.result.setTable("OBSERVATION", table)
 
     def post_hooks(self):
         """Call post hooks"""
