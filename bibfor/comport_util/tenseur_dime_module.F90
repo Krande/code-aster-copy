@@ -24,14 +24,17 @@ module tenseur_dime_module
 
     implicit none
     private
-    public:: rs, kron, voigt, proten, identity, sph_norm, deviator, prod_vect
+    public:: rs, kron, voigt, proten, identity, sph_norm, deviator, prod_vect, matrix_to_voigt
+    public:: NDIM_TO_NDIMSI
 
 #include "asterfort/assert.h"
 
     real(kind=8), parameter, dimension(6)::KRONECKER = [1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0]
     real(kind=8), parameter, dimension(6)::RACINE_2 = [1.d0, 1.d0, 1.d0, &
                                                        sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)]
+    real(kind=8), parameter             ::RAC2 = sqrt(2.d0)
     real(kind=8), parameter             ::RAC3 = sqrt(3.d0)
+    integer(kind=8), parameter, dimension(3):: NDIM_TO_NDIMSI = [1, 4, 6]
 
 contains
 
@@ -86,6 +89,33 @@ contains
         rac2 = RACINE_2(1:ndimsi)
 
     end function voigt
+
+! =====================================================================
+!  Passe la matrice symétrique mat en vecteur avec notation de voigt
+! =====================================================================
+
+    function matrix_to_voigt(mat, ndimsi) result(vect)
+
+        implicit none
+
+        real(kind=8), intent(in):: mat(:, :)
+        integer(kind=8), intent(in)::ndimsi
+        real(kind=8):: vect(ndimsi)
+! ---------------------------------------------------------------------
+        ASSERT(ndimsi .eq. 1 .or. ndimsi .eq. 4 .or. ndimsi .eq. 6)
+        vect(1) = mat(1, 1)
+        if (ndimsi .eq. 4 .or. ndimsi .eq. 6) then
+            vect(2) = mat(2, 2)
+            vect(3) = mat(3, 3)
+            vect(4) = mat(1, 2)
+        end if
+        if (ndimsi .eq. 6) then
+            vect(5) = mat(1, 3)
+            vect(6) = mat(2, 3)
+        end if
+        vect = vect*voigt(ndimsi)
+
+    end function matrix_to_voigt
 
 ! =====================================================================
 !  matrice identite de taille n

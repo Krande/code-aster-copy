@@ -595,6 +595,7 @@ class MECA3DH27_HHO222(Element):
                 (OP.PILO_PRED_DEFO.PVARIMR, LC.ZVARIPG),
                 (OP.PILO_PRED_DEFO.PCHHOGT, CHHOGT),
                 (OP.PILO_PRED_DEFO.PCHHOBS, CHHOBS),
+                (SP.PCDTAU, LC.CCDTAU),
             ),
             para_out=((OP.PILO_PRED_DEFO.PCOPILO, LC.ECOPILO),),
         ),

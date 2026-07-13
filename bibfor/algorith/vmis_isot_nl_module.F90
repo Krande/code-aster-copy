@@ -26,6 +26,7 @@ module vmis_isot_nl_module
     use tenseur_dime_module, only: &
         proten, &
         kron, &
+        deviator, &
         voigt, &
         identity
 
@@ -37,6 +38,7 @@ module vmis_isot_nl_module
 #include "asterc/r8gaem.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
+#include "asterfort/pinorm.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zerop2.h"
@@ -46,7 +48,7 @@ module vmis_isot_nl_module
     ! Material characteristics
 
     type MATERIAL
-        real(kind=8) :: lambda, deuxmu, troismu, troisk
+        real(kind=8) :: lambda, deuxmu, troismu_yng, troisk
         real(kind=8) :: r0, rh, r1, g1, r2, g2, rk, p0, gk
         real(kind=8) :: eps_luders, sig_luders
         real(kind=8) :: c = 0.d0
@@ -137,7 +139,7 @@ contains
         self%mat%lambda = valel(1)*valel(2)/((1+valel(2))*(1-2*valel(2)))
         self%mat%deuxmu = valel(1)/(1+valel(2))
         self%mat%troisk = valel(1)/(1.d0-2.d0*valel(2))
-        self%mat%troismu = merge(valel(1), 1.5d0*self%mat%deuxmu, self%uniax)
+        self%mat%troismu_yng = merge(valel(1), 1.5d0*self%mat%deuxmu, self%uniax)
 
         ! Hardening material parameters (with default values)
         call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_NL', 0, ' ', [0.d0], nbec, nomec, &
@@ -387,7 +389,7 @@ contains
         self%telq = telq
 
 !   Bornes pour kappa et valeurs correspondantes pour la fonction MV
-        dkas = telq/self%mat%troismu
+        dkas = telq/self%mat%troismu_yng
         mve = f_m_hat(self, kam)
         rks = f_ecro(self, kam+dkas)
         rvs = f_visco(self, dkas)
@@ -558,7 +560,7 @@ contains
 
             ! Quantites liees a la contrainte elastique
             n = teld/telq
-            deps_telq = self%mat%troismu*n
+            deps_telq = self%mat%troismu_yng*n
             deps_n = (self%mat%deuxmu*pdev-proten(n, deps_telq))/telq
 
             ! Variations de kappa
@@ -569,10 +571,10 @@ contains
 
             ! Operateurs tangents
             deps_t = self%mat%lambda*proten(kr, kr)+self%mat%deuxmu*identity(self%ndimsi) &
-                     -self%mat%troismu*dka*deps_n &
-                     -self%mat%troismu*proten(n, deps_ka)
+                     -self%mat%troismu_yng*dka*deps_n &
+                     -self%mat%troismu_yng*proten(n, deps_ka)
 
-            dphi_t = -self%mat%troismu*n*dphi_ka
+            dphi_t = -self%mat%troismu_yng*n*dphi_ka
 
             ! Regime singulier (dphi_t et deps_ka sont nulles)
         else if (state .eq. 2) then
@@ -621,7 +623,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 
 !   Contrainte elastique
-        tel = self%mat%troismu*(eps-epm)
+        tel = self%mat%troismu_yng*(eps-epm)
         telq = abs(tel)
 
 !   Copie des informations dans self pour utilisation des fonctions du module
@@ -629,7 +631,7 @@ contains
         self%telq = telq
 
 !   Bornes pour kappa et valeurs correspondantes pour la fonction MV
-        dkas = telq/self%mat%troismu
+        dkas = telq/self%mat%troismu_yng
         mve = f_m_hat(self, kam)
         rks = f_ecro(self, kam+dkas)
         rvs = f_visco(self, dkas)
@@ -710,7 +712,7 @@ contains
 800     continue
         ka = kam+dka
         ep = epm+dep
-        t = tel-self%mat%troismu*dep
+        t = tel-self%mat%troismu_yng*dep
 
 ! ======================================================================
 !                           MATRICES TANGENTES
@@ -732,12 +734,12 @@ contains
 
         ! Regime elastique
         if (state .eq. 0 .or. self%elas) then
-            deps_t = self%mat%troismu
+            deps_t = self%mat%troismu_yng
 
             ! Regime plastique
         else
             ! Quantites liees a la contrainte elastique
-            deps_telq = self%mat%troismu*sign(1.d0, tel)
+            deps_telq = self%mat%troismu_yng*sign(1.d0, tel)
 
             ! Variations de kappa
             dka_mv = dka_m_hat(self, kam+dka)-dka_visco(self, dka)
@@ -745,7 +747,7 @@ contains
             deps_ka = dtelq_ka*deps_telq
 
             ! Operateurs tangents
-            deps_t = self%mat%troismu*(1.d0-sign(1.d0, tel*deps_ka))
+            deps_t = self%mat%troismu_yng*(1.d0-sign(1.d0, tel*deps_ka))
         end if
 
 999     continue
@@ -756,64 +758,52 @@ contains
 !  PATH FOLLOWING
 ! =====================================================================
 
-    subroutine PathFollowing(self, dka, vim, eps0, eps1, nsol, sol, sgn)
+    subroutine PathFollowing(self, dtau, vim, eps0, eps1, copilo)
 
         implicit none
         type(CONSTITUTIVE_LAW), intent(inout):: self
-        real(kind=8), intent(in) :: dka, vim(:), eps0(:), eps1(:)
-        integer(kind=8), intent(out)     :: nsol, sgn(2)
-        real(kind=8), intent(out):: sol(2)
+        real(kind=8), intent(in) :: dtau, vim(:), eps0(:), eps1(:)
+        real(kind=8), intent(out) :: copilo(:)
 ! ---------------------------------------------------------------------
-! dka           target increment of hardening variable
+! dtau          target path-following increment
 ! vim           internal variables at t-
 ! eps0          constant strain
 ! eps1          path-following strain
-! nsol          number of solutions eta (-1, 0, 1 or 2)
-!                   if -1 -> point does not contribute to path-following
-! sol           solutions eta
-! sgn           for each solution, -1 if decreasing function, +1 otherwise
+! copilo        path-following coefficients
 ! ---------------------------------------------------------------------
-
+        real(kind=8), parameter:: rac2_3 = sqrt(2.d0/3.d0)
+! ---------------------------------------------------------------------
         real(kind=8)    :: kr(self%ndimsi), rac2(self%ndimsi)
-        real(kind=8)    :: kam, ka, epm(self%ndimsi)
-        real(kind=8):: s0(self%ndimsi), s1(self%ndimsi), rk, gk, p0, p1, p2
+        real(kind=8)    :: kam, ka, dka, epm(self%ndimsi)
+        real(kind=8):: s0(self%ndimsi), s1(self%ndimsi), rk, gk
 ! ---------------------------------------------------------------------
 
         ! Initialisation
         kr = kron(self%ndimsi)
         rac2 = voigt(self%ndimsi)
 
+        ! Normalisation: 5% plasticity increment corresponds to dtau=1
+        dka = dtau*5.d-2
+
         ! unpack internal variables
         kam = vim(1)
         epm = vim(3:2+self%ndimsi)*rac2
 
-        ! elastic stresses
-        s0 = self%mat%deuxmu*(eps0-epm)
-        s0 = s0-sum(s0(1:3))/3.d0*kr
-        s1 = self%mat%deuxmu*eps1
-        s1 = s1-sum(s1(1:3))/3.d0*kr
+        ! elastic stresses: telq = norm(s0+eta*s1)
+        s0 = self%mat%troismu_yng*(eps0-epm)
+        s1 = self%mat%troismu_yng*eps1
+        if (self%ndimsi .ne. 1) then
+            s0 = rac2_3*deviator(s0)
+            s1 = rac2_3*deviator(s1)
+        end if
 
         ! target threshold
         ka = kam+dka
         rk = f_ecro_loca(self, max(self%mat%eps_luders, ka))
-        gk = 2.d0/3.d0*(self%mat%troismu*dka+rk)**2
+        gk = self%mat%troismu_yng*dka+rk
 
-        ! Strain function : p2*eta**2 + p1*eta + p0
-        p2 = dot_product(s1, s1)
-        p1 = 2*dot_product(s0, s1)
-        p0 = dot_product(s0, s0)-gk
-
-        ! Solution of the local path following equation (if any)
-        if (abs(p2) .lt. abs(p0)/r8gaem()) then
-            nsol = merge(-1, 0, p0 .le. 0)
-        else
-            call zerop2(p1/p2, p0/p2, sol, nsol)
-            if (nsol .eq. 1) nsol = 0
-            if (nsol .eq. 2) then
-                sgn(1) = 1
-                sgn(2) = -1
-            end if
-        end if
+        ! Path-following coefficients through norm2(eta*s1+s0) = gk
+        call pinorm(s1, s0, gk, dtau, copilo)
 
     end subroutine PathFollowing
 
@@ -918,7 +908,7 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8), intent(in)::ka
-        res = self%telq-self%mat%troismu*(ka-self%kam)-f_ecro(self, ka)
+        res = self%telq-self%mat%troismu_yng*(ka-self%kam)-f_ecro(self, ka)
     end function f_m_hat
 
     function dka_m_hat(self, ka) result(res)
@@ -926,7 +916,7 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8), intent(in)::ka
-        res = -self%mat%troismu-dka_ecro(self, ka)
+        res = -self%mat%troismu_yng-dka_ecro(self, ka)
     end function dka_m_hat
 
     function dtelq_m_hat(self, ka) result(res)

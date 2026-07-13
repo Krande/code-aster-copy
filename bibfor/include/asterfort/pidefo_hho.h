@@ -15,32 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
-                      wref, vff, dfde, mate, geom,&
-                      vim, ddepl, deplm, ddepl0, ddepl1,&
-                      dtau, typmod, compor, copilo)
-        integer(kind=8) :: lgpg
-        integer(kind=8) :: npg
-        integer(kind=8) :: nddl
-        integer(kind=8) :: nno
+    subroutine pidefo_hho(compor, &
+                      ndim, kpg, fm, &
+                      epsm, epsp, epsd, dtau, copilo)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         integer(kind=8) :: ndim
-        real(kind=8) :: wref(npg)
-        real(kind=8) :: vff(nno, npg)
-        real(kind=8) :: dfde(2, nno, npg)
-        integer(kind=8) :: mate
-        real(kind=8) :: geom(nddl)
-        real(kind=8) :: vim(lgpg, npg)
-        real(kind=8) :: ddepl(nddl)
-        real(kind=8) :: deplm(nddl)
-        real(kind=8) :: ddepl0(nddl)
-        real(kind=8) :: ddepl1(nddl)
+        integer(kind=8) :: kpg
+        real(kind=8) :: fm(3, 3)
+        real(kind=8) :: epsm(6)
+        real(kind=8) :: epsp(6)
+        real(kind=8) :: epsd(6)
         real(kind=8) :: dtau
-        real(kind=8) :: copilo(5, npg)
-        character(len=8) :: typmod(2)
-        character(len=16) :: compor
-    end subroutine pipef3
+        real(kind=8) :: copilo(:,:)
+    end subroutine pidefo_hho
 end interface

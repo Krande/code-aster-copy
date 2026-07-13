@@ -190,6 +190,19 @@ class EIPLQU8(Element):
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
             para_out=((SP.PDCEL_I, LC.EDCEL_I),),
         ),
+        OP.PILO_PRED_DEFO(
+            te=349,
+            para_in=(
+                (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
+                (SP.PDDEPLR, DDL_MECA),
+                (SP.PDEPL0R, DDL_MECA),
+                (SP.PDEPL1R, DDL_MECA),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PCDTAU, LC.CCDTAU),
+            ),
+            para_out=((OP.PILO_PRED_DEFO.PCOPILO, ECOPILO),),
+        ),
         OP.PILO_PRED_ELAS(
             te=359,
             para_in=(

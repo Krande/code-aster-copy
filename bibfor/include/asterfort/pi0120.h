@@ -16,24 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-!
-!
 interface
-    subroutine pipefi(npg, lgpg, mate, geom, vim,&
-                      ddepl, deplm, ddepl0, ddepl1, dtau,&
-                      typmod, compor, copilo)
-        integer(kind=8) :: lgpg
-        integer(kind=8) :: npg
-        integer(kind=8) :: mate
-        real(kind=8) :: geom(2, 4)
-        real(kind=8) :: vim(lgpg, npg)
-        real(kind=8) :: ddepl(2, 4)
-        real(kind=8) :: deplm(2, 4)
-        real(kind=8) :: ddepl0(2, 4)
-        real(kind=8) :: ddepl1(2, 4)
-        real(kind=8) :: dtau
-        real(kind=8) :: copilo(5, npg)
-        character(len=8) :: typmod(2)
-        character(len=16) :: compor
-    end subroutine pipefi
+    subroutine pi0120(BEHInteg, typmod, ndim, epsm, epsd_cste, epsd_pilo, &
+                    sigm, vim, dtau, etamin, etamax, copilo)
+
+        use Behaviour_type
+
+    type(Behaviour_Integ), intent(in) :: BEHInteg
+    character(len=8), intent(in) :: typmod(2)
+    integer(kind=8) :: ndim
+    real(kind=8) :: epsm(:)
+    real(kind=8) :: epsd_cste(:)
+    real(kind=8) :: epsd_pilo(:)
+    real(kind=8) :: sigm(:)
+    real(kind=8) :: vim(:)
+    real(kind=8) :: dtau
+    real(kind=8) :: etamin
+    real(kind=8) :: etamax
+    real(kind=8), intent(out) :: copilo(:)
+    end subroutine
 end interface

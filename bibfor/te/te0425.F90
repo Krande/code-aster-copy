@@ -39,7 +39,8 @@ subroutine te0425(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
-#include "asterfort/pil000.h"
+#include "asterfort/pi0000.h"
+#include "asterfort/pidefo_hho.h"
 #include "asterfort/readVector.h"
 #include "jeveux.h"
 !
@@ -82,6 +83,7 @@ subroutine te0425(option, nomte)
     real(kind=8) :: GV_prev(3), GV_incr(3), GV_0(3), GV_pilo(3), GV_cste(3)
     real(kind=8) :: var_prev, var_incr, var_0, var_pilo, var_cste
     real(kind=8) :: lag_prev, lag_incr, lag_0, lag_pilo, lag_cste
+    integer(kind=8) :: ndimsi
     integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mkb_gbs_axis
     integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, total_dofs
     integer(kind=8) :: ipg, npg, k, neps, nmk, gv_faces_dofs, gv_cell_offset
@@ -136,11 +138,10 @@ subroutine te0425(option, nomte)
     call jevech('PTYPEPI', 'L', itype)
 !
     pilo = zk16(itype)
+    call jevech('PCDTAU', 'L', ictau)
+    tau = zr(ictau)
     if (pilo .eq. 'PRED_ELAS') then
-        call jevech('PCDTAU', 'L', ictau)
         call jevech('PBORNPI', 'L', iborne)
-!
-        tau = zr(ictau)
         etamin = zr(iborne+1)
         etamax = zr(iborne)
     end if
@@ -230,16 +231,25 @@ subroutine te0425(option, nomte)
 !
 ! --- PILOTAGE PAR L'INCREMENT DE DEFORMATION
 !
-        if (pilo == "PRED_ELAS") then
+        ndimsi = 2*hhoCell%ndim
+        if (option == "PILO_PRED_ELAS") then
             sigma(1:neps) = hhoCS%sig_prev((ipg-1)*neps+1:ipg*neps)
-            do k = 4, 2*hhoCell%ndim
+            do k = 4, ndimsi
                 sigma(k) = sigma(k)*rac2
             end do
+            call pi0000(hhoCS%BEHInteg, hhoCS%compor, hhoCS%typmod, hhoCell%ndim, &
+                        E_prev(1:ndimsi), E_cste(1:ndimsi), E_pilo(1:ndimsi), &
+                        sigma(1:ndimsi), hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
+                        tau, etamin, etamax, copilo(:, ipg))
+
+        else if (option == "PILO_PRED_DEFO") then
+            call pidefo_hho(hhoCS%compor, &
+                            hhoCell%ndim, ipg, F_prev, &
+                            E_prev, E_cste, E_pilo, tau, copilo)
+
+        else
+            ASSERT(ASTER_FALSE)
         end if
-        call pil000(pilo, hhoCS%compor(RELA_NAME), neps, tau, zi(jvMaterc), &
-                    hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
-                    E_prev, E_cste, E_pilo, &
-                    hhoCS%typmod, etamin, etamax, copilo(1:5, ipg))
     end do
 !
     call jevech('PCOPILO', 'E', vr=v_copilo)

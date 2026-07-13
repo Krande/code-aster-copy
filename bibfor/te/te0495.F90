@@ -43,8 +43,8 @@ subroutine te0495(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
-#include "asterfort/pidefo.h"
-#include "asterfort/pielas.h"
+#include "asterfort/pidefo_hho.h"
+#include "asterfort/pi0000.h"
 #include "asterfort/readVector.h"
 #include "jeveux.h"
 !
@@ -120,10 +120,10 @@ subroutine te0495(option, nomte)
     call jevech('PTYPEPI', 'L', itype)
 !
     pilo = zk16(itype)
+    call jevech('PCDTAU', 'L', ictau)
+    tau = zr(ictau)
     if (pilo .eq. 'PRED_ELAS') then
-        call jevech('PCDTAU', 'L', ictau)
         call jevech('PBORNPI', 'L', iborne)
-        tau = zr(ictau)
         etamin = zr(iborne+1)
         etamax = zr(iborne)
     end if
@@ -174,21 +174,21 @@ subroutine te0495(option, nomte)
         end if
 
         if (pilo .eq. 'DEFORMATION') then
-            call pidefo(hhoCS%compor, &
-                        hhoCell%ndim, npg, kpg, F_prev, &
-                        E_prev, E_pilo, E_1, copilo)
+            call pidefo_hho(hhoCS%compor, &
+                            hhoCell%ndim, kpg, F_prev, &
+                            E_prev, E_pilo, E_1, tau, copilo)
 
         else if (pilo .eq. 'PRED_ELAS') then
             sigma(1:hhoCS%nbsigm) = hhoCS%sig_prev((kpg-1)*hhoCS%nbsigm+1:kpg*hhoCS%nbsigm)
             do k = 4, hhoCS%nbsigm
                 sigma(k) = sigma(k)*rac2
             end do
-            call pielas(hhoCS%BEHInteg, &
-                        hhoCS%typmod, hhoCS%compor(RELA_NAME), &
-                        hhoCell%ndim, npg, kpg, &
-                        hhoCS%lgpg, hhoCS%vari_prev, &
-                        E_prev, E_pilo, E_1, sigma, etamin, etamax, &
-                        tau, copilo)
+            call pi0000(hhoCS%BEHInteg, hhoCS%compor, hhoCS%typmod, hhoCell%ndim, &
+                        E_prev(1:hhoCS%nbsigm), E_pilo(1:hhoCS%nbsigm), E_1(1:hhoCS%nbsigm), &
+                        sigma(1:hhoCS%nbsigm), &
+                        hhoCS%vari_prev((kpg-1)*hhoCS%lgpg+1:kpg*hhoCS%lgpg), &
+                        tau, etamin, etamax, copilo(:, kpg))
+
         else
             ASSERT(ASTER_FALSE)
         end if

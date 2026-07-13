@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
+
 subroutine te0543(option, nomte)
 !
     use Behaviour_type
@@ -30,7 +30,8 @@ subroutine te0543(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/pipepe.h"
+#include "asterfort/te0543_implement.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -40,110 +41,74 @@ subroutine te0543(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 !  CALCUL DES COEFFICIENTS A0 ET A1 POUR LE PILOTAGE PAR CRITERE ELASTIQUE
-!  OU PAR INCREMENT DE DEFORMATION POUR LES ELEMENTS A VARIABLES LOCALES
+!  POUR LES ELEMENTS A VARIABLES LOCALES 2D et 3D
 !
 ! --------------------------------------------------------------------------------------------------
-!
     character(len=8), parameter :: fami = 'RIGI'
+! --------------------------------------------------------------------------------------------------
     character(len=8) :: typmod(2)
     character(len=16), pointer :: compor(:) => null()
-    character(len=16) :: relaComp, pilo
-    integer(kind=8) :: ndim, nno, npg, lgpg, jtab(7), itype
-    integer(kind=8) :: ipoids, ivf, idfde, jvGeom, jvMaterc, jvCarcri
-    integer(kind=8) :: icontm, ivarim, icopil, iborne, ictau
-    integer(kind=8) :: ideplm, iddepl, idepl0, idepl1, iret
+    integer(kind=8) :: ndim, nno, npg, lgpg, jtab(7)
+    integer(kind=8) :: jv_poids, jv_vff, jv_dfde, jv_geom, jv_materc, jv_carcri
+    integer(kind=8) :: jv_contm, jv_varim, jv_copil, jv_borne, jv_ctau, jv_typilo
+    integer(kind=8) :: jv_deplm, jv_ddepl, jv_depl0, jv_depl1, iret
     real(kind=8) :: instam, instap
     type(Material_Para) :: materPara
     type(Behaviour_Integ) :: BEHInteg
-!
 ! --------------------------------------------------------------------------------------------------
 !
+! - Type of modelling
+    call teattr('S', 'TYPMOD', typmod(1))
+    call teattr('C', 'TYPMOD2', typmod(2), vattr_missing=' ')
 
-! - TYPE DE MODELISATION
-    typmod = ' '
-    if (lteatt('DIM_TOPO_MODELI', '3')) then
-        typmod(1) = '3D'
-    else if (lteatt('AXIS', 'OUI')) then
-        typmod(1) = 'AXIS'
-    else if (lteatt('C_PLAN', 'OUI')) then
-        typmod(1) = 'C_PLAN'
-    else if (lteatt('D_PLAN', 'OUI')) then
-        typmod(1) = 'D_PLAN'
-    end if
+! - Get parameters of element
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg, jpoids=jv_poids, &
+                     jvf=jv_vff, jdfde=jv_dfde)
 
-! - FONCTIONS DE FORMES ET POINTS DE GAUSS
-    call elrefe_info(fami=fami, &
-                     ndim=ndim, nno=nno, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    ASSERT(nno .le. MT_NNOMAX)
-    ASSERT(npg .le. 27)
+! - Common parameters
+    call jevech('PGEOMER', 'L', jv_geom)
+    call jevech('PDEPLMR', 'L', jv_deplm)
+    call jevech('PCONTMR', 'L', jv_contm)
+    call jevech('PVARIMR', 'L', jv_varim)
+    call jevech('PDDEPLR', 'L', jv_ddepl)
+    call jevech('PDEPL0R', 'L', jv_depl0)
+    call jevech('PDEPL1R', 'L', jv_depl1)
+    call jevech('PMATERC', 'L', jv_materc)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    call jevech('PCARCRI', 'L', jv_carcri)
+    call jevech('PCDTAU', 'L', jv_ctau)
+    call jevech('PBORNPI', 'L', jv_borne)
+    call jevech('PCOPILO', 'E', jv_copil)
 
-! - PARAMETRES EN ENTREE
-    call jevech('PGEOMER', 'L', jvGeom)
-    call jevech('PDEPLMR', 'L', ideplm)
-    call jevech('PCONTMR', 'L', icontm)
-    call jevech('PVARIMR', 'L', ivarim)
-    call jevech('PDDEPLR', 'L', iddepl)
-    call jevech('PDEPL0R', 'L', idepl0)
-    call jevech('PDEPL1R', 'L', idepl1)
-
-! - Continuation method: no time !
-    instam = r8vide()
-    instap = r8vide()
-
-! - Get material parameters
-    call jevech('PMATERC', 'L', jvMaterc)
+! Number of internal variables
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    lgpg = max(jtab(6), 1)*jtab(7)
 
 ! - Initializations of material parameters on current cell
-    call initParaCell(fami, zi(jvMaterc), materPara)
+    call initParaCell(fami, zi(jv_materc), materPara)
 
 ! - No definition of local coordinate system
     call initLCSNone(materPara)
 
-! - Get fields for non-linear behaviour
-    call jevech('PCOMPOR', 'L', vk16=compor)
-    call jevech('PCARCRI', 'L', jvCarcri)
-
-! - Properties of behaviour
-    relaComp = compor(RELA_NAME)
-
-! - Continuation method: no time !
+! - Set main parameters for behaviour (on cell)
     instam = r8vide()
     instap = r8vide()
-
-! - Type of continuation
-    call jevech('PTYPEPI', 'L', itype)
-    pilo = zk16(itype)
-    if (pilo .eq. 'PRED_ELAS') then
-        call jevech('PCDTAU', 'L', ictau)
-        call jevech('PBORNPI', 'L', iborne)
-    end if
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6), 1)*jtab(7)
-
-! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(typmod, option, &
-                              compor, zr(jvCarcri), &
+                              compor, zr(jv_carcri), &
                               instam, instap, &
                               materPara, BEHInteg)
 
-! - Prepare external state variables (geometry)
-    if (relaComp .eq. 'BETON_DOUBLE_DP') then
-        call behaviourPrepESVAGeom(nno, npg, ndim, &
-                                   ipoids, ivf, idfde, &
-                                   zr(jvGeom), BEHInteg)
-    end if
-
-! - Output field
-    call jevech('PCOPILO', 'E', icopil)
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
+                               jv_poids, jv_vff, jv_dfde, &
+                               zr(jv_geom), BEHInteg)
 
 ! - Main subroutine to compute coefficients
-    call pipepe(BEHInteg, &
-                typmod, compor, &
-                pilo, ndim, nno, npg, &
-                ipoids, ivf, idfde, zr(jvGeom), &
-                lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
-                zr(iddepl), zr(idepl0), zr(idepl1), zr(icopil), &
-                iborne, ictau)
-!
+    call te0543_implement(BEHInteg, &
+                          typmod, compor, &
+                          ndim, nno, npg, &
+                          jv_poids, jv_vff, jv_dfde, zr(jv_geom), &
+                          lgpg, zr(jv_deplm), zr(jv_contm), zr(jv_varim), &
+                          zr(jv_ddepl), zr(jv_depl0), zr(jv_depl1), &
+                          zr(jv_borne), zr(jv_ctau), zr(jv_copil))
+
 end subroutine

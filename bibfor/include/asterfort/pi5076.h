@@ -15,30 +15,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
+
 interface
-    subroutine pielas(BEHinteg, &
-                      typmod, relaComp, &
-                      ndim, npg, kpg, &
-                      lgpg, vim, epsm, &
-                      epsp, epsd, sigma, etamin, etamax, &
-                      tau, copilo)
+    subroutine pi5076(BEHInteg, typmod, ndim, epsm, epsd_cste, epsd_pilo, &
+                    sigm, vim, dtau, etamin, etamax, copilo)
+
         use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
-        character(len=8), intent(in) :: typmod(2)
-        character(len=16), intent(in):: relaComp
-        integer(kind=8) :: lgpg
-        integer(kind=8) :: npg
-        integer(kind=8) :: ndim
-        integer(kind=8) :: kpg
-        real(kind=8) :: vim(lgpg, npg)
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: epsp(6)
-        real(kind=8) :: epsd(6)
-        real(kind=8) :: sigma(6)
-        real(kind=8) :: etamin
-        real(kind=8) :: etamax
-        real(kind=8) :: tau
-        real(kind=8) :: copilo(5, npg)
-    end subroutine pielas
+
+    type(Behaviour_Integ), intent(in) :: BEHInteg
+    character(len=8), intent(in) :: typmod(2)
+    integer(kind=8) :: ndim
+    real(kind=8) :: epsm(:)
+    real(kind=8) :: epsd_cste(:)
+    real(kind=8) :: epsd_pilo(:)
+    real(kind=8) :: sigm(:)
+    real(kind=8) :: vim(:)
+    real(kind=8) :: dtau
+    real(kind=8) :: etamin
+    real(kind=8) :: etamax
+    real(kind=8), intent(out) :: copilo(:)
+    end subroutine
 end interface
