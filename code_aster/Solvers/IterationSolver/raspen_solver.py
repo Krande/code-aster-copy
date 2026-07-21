@@ -778,7 +778,7 @@ class _RASPENSolver:
         """
         Destroys all RASPEN objects
         """
-        self.J.destroy()        
+        self.J.destroy()
         self.glbSnes.destroy()
         self.Res.destroy()
         self.glbSol.destroy()
@@ -791,13 +791,12 @@ class _RASPENSolver:
 
         if self.withCoarsePb:
             self.Jloc0.destroy()
-        
+
         if self.withSubPrecond:
             self.Jp.destroy()
             self.JpCtx.sksp.destroy()
             if self.JpCtx.Precond:
                 self.JpCtx.Precond.destroy()
-            
 
 
 class JacCtx:
@@ -1664,9 +1663,7 @@ class GalerkinCoarseGridCorrection:
         timings = {}
 
         start = time()
-        assert (
-            S or L
-        ), "To build prolongation, at least either large \
+        assert S or L, "To build prolongation, at least either large \
                          or small eigen pairs should be selected"
 
         nloc = self.DDPart.getLocalSize()
