@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2026 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ module czm_frot_mix_module
         real(kind=8) :: r
         real(kind=8), dimension(:), allocatable:: phi, deltap, deltav
         real(kind=8) :: dt
-        integer(kind=8) :: statep
+        real(kind=8) :: statep
         real(kind=8)  :: cvuser
         type(MATERIAL):: mat
     end type CONSTITUTIVE_LAW
@@ -348,7 +348,7 @@ contains
             end if
         else
             ! d(delta(i))/d(phi(1)), for i=2 to ndim
-            if (delta_nl .eq. 0.d0) then
+            if (delta_nl .le. 0.d0) then
                 do i = 2, self%ndim
                     dphi_delta(i, 1) = self%mat%frot*nel(i) &
                                        *alpha_t*alpha_n/(self%r*alpha_t+alpha_v)

@@ -106,8 +106,8 @@ class MFPLQU8(Element):
     )
     attrs = ((AT.TYPE_VOISIN, "A2"),)
     elrefe = (
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG3",), mater=("RIGI",)),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG3",)),
+        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2",), mater=("RIGI",)),
+        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
     calculs = (
         OP.AMOR_MECA(
