@@ -779,7 +779,6 @@ class _RASPENSolver:
         Destroys all RASPEN objects
         """
         self.J.destroy()        
-        self.glbSnes.getKSP().destroy()
         self.glbSnes.destroy()
         self.Res.destroy()
         self.glbSol.destroy()
@@ -795,10 +794,9 @@ class _RASPENSolver:
         
         if self.withSubPrecond:
             self.Jp.destroy()
-            self.JpCtx.subJ.destroy()
             self.JpCtx.sksp.destroy()
-            self.JpCtx.jSet.destroy()
-            self.JpCtx.Precond = None
+            if self.JpCtx.Precond:
+                self.JpCtx.Precond.destroy()
             
 
 
