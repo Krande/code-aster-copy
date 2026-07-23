@@ -1663,7 +1663,9 @@ class GalerkinCoarseGridCorrection:
         timings = {}
 
         start = time()
-        assert S or L, "To build prolongation, at least either large \
+        assert (
+            S or L
+        ), "To build prolongation, at least either large \
                          or small eigen pairs should be selected"
 
         nloc = self.DDPart.getLocalSize()
