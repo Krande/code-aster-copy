@@ -692,24 +692,6 @@ phen.add(
 )
 
 phen.add(
-    "3D_GVNO",
-    Modelisation(
-        dim=(3, 3),
-        code="3GN",
-        attrs=((AT.NBSIGM, "6"), (AT.TYPMOD, "3D"), (AT.TYPMOD2, "GDVARINO")),
-        elements=(
-            (MT.HEXA20, EL.MNVG_HEXA20),
-            (MT.PENTA15, EL.MNVG_PENTA15),
-            (MT.PYRAM13, EL.MNVG_PYRAM13),
-            (MT.TETRA10, EL.MNVG_TETRA10),
-            (MT.QUAD8, EL.MECA_FACE8),
-            (MT.TRIA6, EL.MECA_FACE6),
-            (MT.SEG3, EL.MECA_ARETE3),
-        ),
-    ),
-)
-
-phen.add(
     "3D_HH2D",
     Modelisation(
         dim=(3, 3),
@@ -2032,16 +2014,6 @@ phen.add(
             (AT.TYPMOD2, "GRADVARI"),
         ),
         elements=((MT.SEG3, EL.MEAXSE3), (MT.TRIA6, EL.GVI_AX_TR6), (MT.QUAD8, EL.GVI_AX_QU8)),
-    ),
-)
-
-phen.add(
-    "AXIS_GVNO",
-    Modelisation(
-        dim=(2, 2),
-        code="AGN",
-        attrs=((AT.AXIS, "OUI"), (AT.NBSIGM, "4"), (AT.TYPMOD, "AXIS"), (AT.TYPMOD2, "GDVARINO")),
-        elements=((MT.SEG3, EL.MEAXSE3), (MT.TRIA6, EL.MNAXTR6), (MT.QUAD8, EL.MNAXQS8)),
     ),
 )
 
@@ -4440,21 +4412,6 @@ phen.add(
             (AT.TYPMOD2, "GRADVARI"),
         ),
         elements=((MT.SEG3, EL.MEPLSE3), (MT.TRIA6, EL.GVI_DP_TR6), (MT.QUAD8, EL.GVI_DP_QU8)),
-    ),
-)
-
-phen.add(
-    "D_PLAN_GVNO",
-    Modelisation(
-        dim=(2, 2),
-        code="DGN",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "GDVARINO"),
-        ),
-        elements=((MT.SEG3, EL.MEPLSE3), (MT.TRIA6, EL.MNDPTR6), (MT.QUAD8, EL.MNDPQS8)),
     ),
 )
 

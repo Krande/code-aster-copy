@@ -93,7 +93,6 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc2001.h"
 #include "asterfort/lc2002.h"
 #include "asterfort/lc2036.h"
-#include "asterfort/lc3053.h"
 #include "asterfort/lc4047.h"
 #include "asterfort/lc6036.h"
 #include "asterfort/lc6046.h"
@@ -747,20 +746,6 @@ subroutine lc0000(BEHInteg, &
                     option, sigp, vip, &
                     typmod, ndsde, &
                     dsidep, codret)
-!
-! --------------------------------------------------------------------------------------------------
-! - With GDVARINO
-! --------------------------------------------------------------------------------------------------
-!
-    case (3053)
-!     ENDO_CARRE
-        call lc3053(BEHInteg, &
-                    fami, kpg, ksp, ndim, jvMaterCode, &
-                    instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, &
-                    sigp, vip, typmod, &
-                    ndsde, dsidep, codret)
-
 !
 ! --------------------------------------------------------------------------------------------------
 ! - With GRADSIGM

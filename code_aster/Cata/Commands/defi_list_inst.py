@@ -81,45 +81,6 @@ bloc_deco = BLOC(
     b_deco_auto=bloc_auto,
 )
 
-# Bloc pour extrapolation du nombre d'iterations de Newton
-bloc_supp = BLOC(
-    fr=tr("Action d'extrapolation du nombre d'iterations de Newton"),
-    condition="""equal_to("ACTION", 'ITER_SUPPL')""",
-    PCENT_ITER_PLUS=SIMP(
-        fr=tr("Pourcentage d'itérations autorisées en plus"),
-        statut="f",
-        typ="I",
-        val_min=20,
-        max=1,
-        defaut=50,
-    ),
-    SUBD_METHODE=SIMP(
-        fr=tr("Méthode de subdivision des pas de temps en cas de divergence"),
-        statut="f",
-        typ="TXM",
-        max=1,
-        into=("MANUEL", "AUTO"),
-        defaut="MANUEL",
-    ),
-    b_deco_manu=bloc_manu,
-    b_deco_auto=bloc_auto,
-)
-
-# Bloc pour adaptation du coefficient de penalisation
-bloc_pene = BLOC(
-    fr=tr("Action d' adaptation du coefficient de penalisation"),
-    condition="""equal_to("ACTION", 'ADAPT_COEF_PENA')""",
-    COEF_MAXI=SIMP(
-        fr=tr("Coefficient multiplicateur maximum du coefficient de penalisation"),
-        statut="f",
-        typ="R",
-        val_min=1.0,
-        max=1,
-        defaut=1e12,
-    ),
-)
-
-
 DEFI_LIST_INST = OPER(
     nom="DEFI_LIST_INST",
     op=28,
@@ -201,11 +162,10 @@ DEFI_LIST_INST = OPER(
                 statut="f",
                 max=1,
                 typ="TXM",
-                into=("ARRET", "DECOUPE", "ITER_SUPPL"),
+                into=("ARRET", "DECOUPE"),
                 defaut="DECOUPE",
             ),
             b_deco=bloc_deco,
-            b_supp=bloc_supp,
         ),
         b_edelta=BLOC(
             fr=tr("Event: l'increment d'une composante d'un champ depasse le seuil"),
@@ -241,10 +201,9 @@ DEFI_LIST_INST = OPER(
                 statut="f",
                 max=1,
                 typ="TXM",
-                into=("ARRET", "ADAPT_COEF_PENA"),
-                defaut="ADAPT_COEF_PENA",
+                into=("ARRET",),
+                defaut="ARRET",
             ),
-            b_pene=bloc_pene,
         ),
         b_dive_resi=BLOC(
             fr=tr("Event: divergence du residu"),

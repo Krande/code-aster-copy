@@ -35,8 +35,9 @@ subroutine te0562(option, nomte)
 !
 ! Elementary computation
 !
-! Elements: 3D_GVNO
-!           D_PLAN_GVNO
+! Elements: 3D_GRAD_VARI, 3D_GRAD_INCO
+!           D_PLAN_GRAD_VARI, D_PLAN_GRAD_INCO
+!           AXIS_GRAD_VARI, AXIS_GRAD_INCO
 !
 ! Options: MASS_MECA
 !
@@ -52,14 +53,9 @@ subroutine te0562(option, nomte)
     integer(kind=8) :: nnoQ, npg, imatuu, ndim, nnos, jv_ganoQ, icodr1(1)
     integer(kind=8) :: jv_poids, jv_vfQ, jv_dfdeQ, jvGeom, jvMaterc
     integer(kind=8) :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
-    character(len=8) :: typmod(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-! - Type of modelling
-    call teattr('S', 'TYPMOD', typmod(1))
-    call teattr('S', 'TYPMOD2', typmod(2))
 
 ! - Get parameters of element
     call elrefv(fami, ndim, &
