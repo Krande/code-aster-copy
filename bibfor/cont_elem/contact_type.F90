@@ -36,6 +36,9 @@ module contact_type
 ! --------------------------------------------------------------------------------------------------
 !
     type ContactParameters
+    !! Reso Geom parameters
+        integer(kind=8)                             :: reso_geom = 0
+
     !! Contact parameters
         integer(kind=8)                             :: algo_cont = 0
         integer(kind=8)                             :: type_cont = 0

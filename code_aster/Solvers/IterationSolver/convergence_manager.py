@@ -203,6 +203,37 @@ class ConvergenceManager(ContextMixin):
             """
             return self.isConverged()
 
+    class ResiGeomParameter(Parameter):
+        """Type of *Parameter* for a residual.
+
+        Arguments:
+            name (str): Parameter name.
+            reference (float|int): Reference value.
+        """
+
+        match = re.compile("^RESI_GEOM").search
+
+        def __init__(self, reference):
+            super().__init__(reference)
+            self.minValue = 0.0
+
+        def isConverged(self):
+            """Tell if the current value is converged.
+
+            Returns:
+                bool: *True* if the value is converged, *False* otherwise.
+            """
+            if not self.hasRef():
+                return True
+            if not self.isSet():
+                return not self.hasRef()
+            checkMin = not self.minSet() or self._minValue <= self._value
+            conv = checkMin and self._value <= self._refe
+            return conv
+
+        def isFinished(self):
+            return self.isConverged()
+
     class IterationParameter(Parameter):
         """Type of *Parameter* for a number of iteration.
 
@@ -277,7 +308,13 @@ class ConvergenceManager(ContextMixin):
                 value = instance.get_keyword("CONVERGENCE", crit)
                 instance.setdefault(crit, value)
         if instance.get_keyword("CONTACT"):
-            instance.setdefault("RESI_GEOM", instance.get_keyword("CONTACT", "RESI_GEOM"))
+            if instance.get_keyword("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
+                instance.setdefault("RESI_GEOM", instance.get_keyword("CONTACT", "RESI_GEOM"))
+            elif instance.get_keyword("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
+                if instance.get_keyword("CONTACT", "REAC_GEOM") == "AUTOMATIQUE":
+                    instance.setdefault("RESI_GEOM", instance.get_keyword("CONTACT", "RESI_GEOM"))
+                else:
+                    instance.setdefault("RESI_GEOM", ConvergenceManager.undef)
         return instance
 
     def __init__(self):

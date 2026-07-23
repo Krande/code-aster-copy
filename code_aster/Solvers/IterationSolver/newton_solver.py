@@ -22,7 +22,7 @@ import numpy as np
 from ...LinearAlgebra import MatrixScaler
 from ...Objects import DiscreteComputation
 from ...Supervis import ConvergenceError
-from ...Utilities import no_new_attributes, profile
+from ...Utilities import no_new_attributes, profile, logger
 from ..Basics import EventId, EventSource
 from .convergence_manager import ConvergenceManager
 from .iteration_solver import BaseIterationSolver
@@ -41,6 +41,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     _eventid = EventId.IterationSolver
     _data = _converg = _line_search = None
     _use_scaling = None
+    _fixed_point_contact_iter = _nb_iter_geom = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
@@ -101,6 +102,25 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             # make unavailable the current tangent matrix
             self.current_matrix = None
 
+    def _init_fixed_point_contact(self):
+        """Initialize fixed-point-specific arguments for the contact"""
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
+            self._fixed_point_contact_iter = 0
+            self._nb_iter_geom = self._converg.get_keyword("CONTACT", "NB_ITER_GEOM")
+
+    def _update_criterion_fixed_point_contact(self):
+        """Update fixed-point-specific arguments for the contact"""
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
+            self._fixed_point_contact_iter += 1
+
+    def _get_criterion_fixed_point_contact(self):
+        """Get criterion to reset the pairing when relying on a fixed-point for the contact"""
+        if self._nb_iter_geom is not None:
+            if self._fixed_point_contact_iter < self._nb_iter_geom:
+                return False
+            return True
+        return False
+
     @profile
     def solve(self, current_matrix, callback=None):
         """Solve a step.
@@ -111,6 +131,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         self.current_matrix = current_matrix
 
         iter_glob = self._converg.setdefault("ITER_GLOB_MAXI")
+        self._init_fixed_point_contact()
 
         self.oper.initialize()
         while not self._converg.isFinished():
@@ -144,7 +165,9 @@ class NewtonSolver(BaseIterationSolver, EventSource):
                         matrix_type,
                     ]
                 )
+
             self.current_incr += 1
+            self._update_criterion_fixed_point_contact()
 
         if not self._converg.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
@@ -238,8 +261,29 @@ class NewtonSolver(BaseIterationSolver, EventSource):
     def _update_contact_geometry(self):
         """Update the pairing for contact"""
         if self.contact:
-            self.contact.update(self.state)
-            self.contact.pairing()
+            if self._converg.get_keyword("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
+                self.contact.update(self.state)
+                self.contact.pairing()
+            else:
+                update_fixed_point = (
+                    self._converg.isPrediction() or self._fixed_point_internal_loop_criterion()
+                )
+                if update_fixed_point:
+                    logger.info("<POINT_FIXE> Contact pairing is performed")
+                    self.contact.update(self.state)
+                    self.contact.pairing()
+                    if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
+                        self._fixed_point_contact_iter = 0
+
+    def _fixed_point_internal_loop_criterion(self):
+        """Test criterion for end of fixed point iteration (contact)"""
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "AUTOMATIQUE":
+            return self._converg._param.get("RESI_GEOM").isConverged()
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
+            return self._get_criterion_fixed_point_contact()
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "SANS":
+            return False
+        return False
 
     def notifyObservers(self, matrix_type):
         """Notify observers about the convergence.
