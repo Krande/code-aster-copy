@@ -118,10 +118,8 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         if self._nb_iter_geom is not None:
             if self._fixed_point_contact_iter < self._nb_iter_geom:
                 return False
-            else:
-                return True
-        else:
-            return False
+            return True
+        return False
 
     @profile
     def solve(self, current_matrix, callback=None):
@@ -281,12 +279,11 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         """Test criterion for end of fixed point iteration (contact)"""
         if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "AUTOMATIQUE":
             return self._converg._param.get("RESI_GEOM").isConverged()
-        elif self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "CONTROLE":
             return self._get_criterion_fixed_point_contact()
-        elif self._converg.get_keyword("CONTACT", "REAC_GEOM") == "SANS":
+        if self._converg.get_keyword("CONTACT", "REAC_GEOM") == "SANS":
             return False
-        else:
-            return False
+        return False
 
     def notifyObservers(self, matrix_type):
         """Notify observers about the convergence.

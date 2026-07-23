@@ -313,7 +313,6 @@ class ConvergenceManager(ContextMixin):
             elif instance.get_keyword("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
                 if instance.get_keyword("CONTACT", "REAC_GEOM") == "AUTOMATIQUE":
                     instance.setdefault("RESI_GEOM", instance.get_keyword("CONTACT", "RESI_GEOM"))
-                    para = instance._param["RESI_GEOM"]
                 else:
                     instance.setdefault("RESI_GEOM", ConvergenceManager.undef)
         return instance
