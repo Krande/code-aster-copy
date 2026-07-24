@@ -431,14 +431,20 @@ class NonLinearOperator(ContextMixin, EventSource):
                 with storeLastIfFailed(self, state):
                     self.stepper.failed(exc)
             else:
-                with storeLastIfFailed(self, state):
-                    isok = self.stepper.check_event(state)
+                try:
+                    isok = False
+                    with storeLastIfFailed(self, state):
+                        isok = self.stepper.check_event(state)
+                except ConvergenceError as exc:
+                    # exception for DELTA_GRANDEUR + ARCHIVAGE
+                    if exc.id_message == "ADAPTATION_14":
+                        isok = True
+                    else:
+                        raise
                 if not isok:
                     # + reset current_matrix to None (REAC_INCR)
                     state.revert()
                     continue
-                if self.stepper.getForceStore():
-                    self._storeState(state.getState(-1), ignore_policy=True)
                 self.post_hooks()
                 self.notifyObservers()
                 state.commit()
@@ -497,7 +503,7 @@ class storeLastIfFailed(AbstractContextManager):
         self._state = state
 
     def __enter__(self):
-        return self._solver
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if isinstance(exc_val, (ConvergenceError, IntegrationError, SolverError)):
