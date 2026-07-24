@@ -2,6 +2,10 @@
 set -e
 
 TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "no-tag")
+# get the last tag (excluding names)
+if [ "${TAG}" != "no-tag" ]; then
+    TAG=$(git tag --points-at $(git rev-list -n 1 "${TAG}") | egrep -v '^[a-z]+$' | sort -n | tail -1)
+fi
 REVISION=$(git rev-parse HEAD)
 DISTANCE=$(git rev-list "${TAG}"..HEAD --count 2>/dev/null || echo "0")
 DATE=$(git show -s --format=%cd --date=format:%d/%m/%Y HEAD)
