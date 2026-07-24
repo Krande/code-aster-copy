@@ -139,6 +139,8 @@ subroutine dflldb(sdlist)
                 call dflld2(sdlist, iFail)
             else if (action_type .eq. FAIL_ACT_CONTINUE) then
                 call utmess('I', 'DISCRETISATION3_36')
+            else if (action_type .eq. FAIL_ACT_ARCHI) then
+                call utmess('I', 'DISCRETISATION3_37')
             else
                 ASSERT(.false.)
             end if

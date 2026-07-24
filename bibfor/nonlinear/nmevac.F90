@@ -63,6 +63,7 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
 !     1 - ON REFAIT LE PAS DE TEMPS
 !     2 - ON CONTINUE LA BOUCLE DE NEWTON (ITERATIONS EN PLUS)
 !     3 - L'ACTION A ECHOUE
+!     5 - ON ARRETE LE CALCUL ET ON ARCHIVE LE DERNIER PAS DE TEMPS
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,6 +96,8 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
         trydec = ASTER_TRUE
     else if (actionType .eq. FAIL_ACT_CONTINUE) then
         retact = 0
+    else if (actionType .eq. FAIL_ACT_ARCHI) then
+        retact = 5
     else
         ASSERT(ASTER_FALSE)
     end if

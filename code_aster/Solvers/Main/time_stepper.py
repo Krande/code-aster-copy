@@ -471,6 +471,8 @@ class TimeStepper(Observer, EventSource):
                     assert fail["SUBD_METHODE"] == "AUTO"
                     # TODO not supported yet
                     act = TimeStepper.AutoSplit(event, minStep=fail["SUBD_PAS_MINI"])
+            elif fail["ACTION"] == "ARCHIVAGE":
+                act = TimeStepper.Archive(event)
             else:  # not supported yet, ignored
                 # raise KeyError(rf"ACTION=\"{fail['ACTION']}\" is not yet supported")
                 continue
@@ -835,6 +837,29 @@ class TimeStepper(Observer, EventSource):
             stp.setFinal(step, current=step)
             logger.info(MessageLog.GetText("I", "ADAPTATION_13"))
             return True
+
+    class Archive(Action):
+        """This action finalizes the calculation without error.
+
+        It aims to store the previous converged state and the current one
+        (keyword value: ARCHIVAGE)."""
+
+        def call(self, **context):
+            """Execute the action.
+
+            Arguments:
+                context (dict): Context of the event.
+
+            Returns:
+                bool: always *True*.
+            """
+            stp = context.get("timeStepper")
+            step = stp.getCurrent()
+            stp.setFinal(step, current=step)
+
+            args = {"valk": [self._event._fieldName, self._event._cmp]}
+            logger.info(MessageLog.GetText("I", "ADAPTATION_14", **args))
+            raise ConvergenceError("ADAPTATION_14", args["valk"])
 
     class Split(Action):
         """This action adds intermediate timesteps (keyword value: DECOUPE).

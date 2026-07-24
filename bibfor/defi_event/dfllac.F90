@@ -82,6 +82,8 @@ subroutine dfllac(factorKeyword, i_fail, dtmin, &
                     subd_auto, subd_inst, subd_duree)
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_CONTINUE)) then
 !
+    else if (action_typek .eq. failActionKeyword(FAIL_ACT_ARCHI)) then
+!
     else
         ASSERT(ASTER_FALSE)
     end if

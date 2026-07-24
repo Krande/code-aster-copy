@@ -187,7 +187,7 @@ DEFI_LIST_INST = OPER(
                 statut="f",
                 max=1,
                 typ="TXM",
-                into=("ARRET", "DECOUPE"),
+                into=("ARRET", "DECOUPE", "ARCHIVAGE"),
                 defaut="DECOUPE",
             ),
             b_deco=bloc_deco,
