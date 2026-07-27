@@ -201,6 +201,7 @@ class MEEI_HEXA20(Element):
             te=349,
             para_in=(
                 (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PDDEPLR, DDL_MECA),
                 (SP.PDEPL0R, DDL_MECA),
                 (SP.PDEPL1R, DDL_MECA),

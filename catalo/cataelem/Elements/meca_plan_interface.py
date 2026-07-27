@@ -193,6 +193,7 @@ class EIPLQU8(Element):
         OP.PILO_PRED_DEFO(
             te=349,
             para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
                 (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
                 (SP.PDDEPLR, DDL_MECA),
                 (SP.PDEPL0R, DDL_MECA),
