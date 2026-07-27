@@ -25,7 +25,6 @@ subroutine te0119(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte

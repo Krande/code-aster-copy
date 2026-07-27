@@ -26,7 +26,6 @@ subroutine vdxnlr(BEHInteg, &
     use MaterialPara_type
     implicit none
 !
-#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"

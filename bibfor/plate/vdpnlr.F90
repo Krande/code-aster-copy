@@ -27,7 +27,6 @@ subroutine vdpnlr(BEHInteg, &
     use MaterialPara_type
     implicit none
 !
-#include "asterc/r8vide.h"
 #include "asterfort/antisy.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/btdbma.h"

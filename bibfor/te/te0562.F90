@@ -26,7 +26,6 @@ subroutine te0562(option, nomte)
 #include "asterfort/elrefv.h"
 #include "asterfort/jevech.h"
 #include "asterfort/massup.h"
-#include "asterfort/teattr.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte

@@ -55,10 +55,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 #include "asterfort/cescel.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/typele.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
 #include "jeveux.h"
 !
     type(CalcG_field), intent(in)    :: cgField

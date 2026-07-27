@@ -47,6 +47,7 @@ subroutine nmgpfi(BEHInteg, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
@@ -108,7 +109,7 @@ subroutine nmgpfi(BEHInteg, &
     integer(kind=8) :: lij(3, 3), ia, ja, na, ib, jb, nb, kpg, kk, os, ija
     integer(kind=8) :: nddl, ndu, vu(3, 27), ivf, iw, idff
     integer(kind=8) :: cod(npg)
-    real(kind=8) :: geomPrev(3*27), geomCurr(3*27), r, w, dff(nno, 4)
+    real(kind=8) :: geomPrev(3*MT_NNOMAX3D), geomCurr(3*MT_NNOMAX3D), r, w, dff(nno, 4)
     real(kind=8) :: jacoPrev, jacoIncr, jacoCurr, fPrev(3, 3), fIncr(3, 3), coef
     real(kind=8) :: sigmPrevComp(6), tauCurr(6), dsidep(6, 3, 3)
     real(kind=8) :: rbid, tbid(6), t1, t2

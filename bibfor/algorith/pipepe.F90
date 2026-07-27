@@ -38,6 +38,7 @@ subroutine pipepe(BEHInteg, &
 #include "asterfort/pipdef.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
@@ -87,7 +88,7 @@ subroutine pipepe(BEHInteg, &
     integer(kind=8) :: kpg, k, ndimsi
     real(kind=8) :: fm(3, 3), epsm(6), epsp(6), epsd(6)
     real(kind=8) :: etamin, etamax, tau, sigma(6)
-    real(kind=8) :: dfdi(27, 3)
+    real(kind=8) :: dfdi(MT_NNOMAX, 3)
     character(len=16) :: relaComp
     blas_int :: b_incx, b_incy, b_n
 !

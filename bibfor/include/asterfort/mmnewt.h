@@ -18,6 +18,7 @@
 !
 #include "asterf_types.h"
 interface
+#include "MeshTypes_type.h"
     subroutine mmnewt(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
                       newtIterMaxi, newtToleMaxi, &
                       ksi1, ksi2, &
@@ -25,7 +26,7 @@ interface
                       projError, lLineSearch_, lPrintDbg_, lCurvature_)
         character(len=8), intent(in) :: cellCode
         integer(kind=8), intent(in) :: cellNbNode, cellDime
-        real(kind=8), intent(in) :: cellCoor(27)
+        real(kind=8), intent(in) :: cellCoor(3,MT_NNOMAX2D)
         real(kind=8), intent(in) :: poinCoor(3)
         integer(kind=8), intent(in) :: newtIterMaxi
         real(kind=8), intent(in) :: newtToleMaxi

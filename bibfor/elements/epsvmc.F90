@@ -35,7 +35,6 @@ subroutine epsvmc(nno, ndim, nbEpsi, npg, &
 #include "asterfort/eps2mc.h"
 #include "asterfort/epslmc.h"
 #include "asterfort/epthmc.h"
-#include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "jeveux.h"
 !

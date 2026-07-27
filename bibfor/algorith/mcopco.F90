@@ -27,6 +27,7 @@ subroutine mcopco(mesh, newgeo, cellNume, ksi1, &
 #include "asterfort/jexnum.h"
 #include "asterfort/mmelty.h"
 #include "asterfort/mmvalp.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     character(len=8), intent(in) :: mesh
@@ -55,7 +56,7 @@ subroutine mcopco(mesh, newgeo, cellNume, ksi1, &
 !
     integer(kind=8) ::  jdes
     integer(kind=8) :: cellNbNode, iNode, nodeNume(9)
-    real(kind=8) :: valeCell(27)
+    real(kind=8) :: valeCell(3, MT_NNOMAX2D)
     character(len=8) :: cellCode
     real(kind=8), pointer :: vale(:) => null()
 !
@@ -78,9 +79,9 @@ subroutine mcopco(mesh, newgeo, cellNume, ksi1, &
 
 ! - COORDONNEES DES NOEUDS DE LA MAILLE
     do iNode = 1, cellNbNode
-        valeCell(3*(iNode-1)+1) = vale(1+3*(nodeNume(iNode)-1))
-        valeCell(3*(iNode-1)+2) = vale(1+3*(nodeNume(iNode)-1)+1)
-        valeCell(3*(iNode-1)+3) = vale(1+3*(nodeNume(iNode)-1)+2)
+        valeCell(1, iNode) = vale(1+3*(nodeNume(iNode)-1))
+        valeCell(2, iNode) = vale(1+3*(nodeNume(iNode)-1)+1)
+        valeCell(3, iNode) = vale(1+3*(nodeNume(iNode)-1)+2)
     end do
 
 ! - CALCUL DES COORDONNEES

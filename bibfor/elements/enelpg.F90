@@ -35,7 +35,6 @@ subroutine enelpg(materPara, time, &
 #include "asterfort/nrsmt1.h"
 #include "asterfort/nrsmtb.h"
 #include "asterfort/nrsmtt.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"

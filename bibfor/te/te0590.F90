@@ -39,6 +39,7 @@ subroutine te0590(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tgveri_use.h"
 #include "asterfort/tgverm.h"
+#include "MeshTypes_type.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
@@ -80,7 +81,7 @@ subroutine te0590(option, nomte)
 !     POUR TGVERI
     real(kind=8) :: sdepl(135), svect(135), scont(6*27)
     real(kind=8) :: epsilo, epsilp, epsilg
-    real(kind=8) :: tab_out(27*3*27*3)
+    real(kind=8) :: tab_out(3*MT_NNOMAX3D*3*MT_NNOMAX3D)
     real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     character(len=16), pointer :: compor(:) => null()
     integer(kind=8) :: na, os, nb, ib, kk

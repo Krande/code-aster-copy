@@ -30,7 +30,6 @@ subroutine te0588(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elref1.h"
-#include "asterfort/getElemOrientation.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"

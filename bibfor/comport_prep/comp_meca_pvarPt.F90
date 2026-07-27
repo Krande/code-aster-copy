@@ -22,7 +22,6 @@ subroutine comp_meca_pvarPt(comporList, comporInfo)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/comp_meca_exc2.h"
 #include "asterfort/comp_meca_l.h"

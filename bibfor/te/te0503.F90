@@ -69,7 +69,7 @@ subroutine te0503(option, nomte)
     real(kind=8) :: time, Cauchy_curr(6), weight, coorpg(3)
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_CELL_MAT) :: bT
-    real(kind=8) :: sigmVarc(6*MAX_QP_CELL)
+    real(kind=8) :: sigmVarc(6*MSIZE_QP_CELL)
     aster_logical :: l_axis
     type(Material_Para) :: materPara
 !

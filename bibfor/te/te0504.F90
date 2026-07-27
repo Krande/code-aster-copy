@@ -38,7 +38,6 @@ subroutine te0504(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/readVector.h"
 #include "asterfort/sigtmc.h"
@@ -69,7 +68,7 @@ subroutine te0504(option, nomte)
     real(kind=8) :: time, sigma(6), weight, coorpg(3)
     real(kind=8) :: E_coeff(MSIZE_CELL_MAT), Eps(6)
     real(kind=8) :: dmat(6, 6), BSCEval(MSIZE_CELL_SCAL), dmat3d(6, 6)
-    real(kind=8) :: sigmVarc(6*MAX_QP_CELL), sief(6*MAX_QP_CELL)
+    real(kind=8) :: sigmVarc(6*MSIZE_QP_CELL), sief(6*MSIZE_QP_CELL)
     real(kind=8) :: depl(MSIZE_TDOFS_VEC), sigm_mat(6)
     type(Material_Para) :: materPara
 !

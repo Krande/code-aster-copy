@@ -42,7 +42,6 @@ subroutine lcmmat(materPara, &
 #include "asterfort/lcmmsg.h"
 #include "asterfort/matrot.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"

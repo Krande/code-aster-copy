@@ -21,12 +21,13 @@ subroutine mmvalp(cellCode, cellNbNode, ksi1, ksi2, valeCell, valePoin)
     implicit none
 !
 #include "asterfort/assert.h"
+#include "MeshTypes_type.h"
 #include "asterfort/mmnonf.h"
 !
     character(len=8), intent(in) :: cellCode
     integer(kind=8), intent(in) :: cellNbNode
     real(kind=8), intent(in) :: ksi1, ksi2
-    real(kind=8), intent(in) :: valeCell(*)
+    real(kind=8), intent(in) :: valeCell(3, MT_NNOMAX2D)
     real(kind=8), intent(out) :: valePoin(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,7 +48,7 @@ subroutine mmvalp(cellCode, cellNbNode, ksi1, ksi2, valeCell, valePoin)
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8), parameter :: nbCmp = 3
-    real(kind=8) :: shape_func(9)
+    real(kind=8) :: shape_func(MT_NNOMAX2D)
     integer(kind=8) :: iNode, iCmp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,7 +62,7 @@ subroutine mmvalp(cellCode, cellNbNode, ksi1, ksi2, valeCell, valePoin)
 ! - Compute
     do iCmp = 1, nbCmp
         do iNode = 1, cellNbNode
-            valePoin(iCmp) = shape_func(iNode)*valeCell((iNode-1)*nbCmp+iCmp)+ &
+            valePoin(iCmp) = shape_func(iNode)*valeCell(iCmp, iNode)+ &
                              valePoin(iCmp)
         end do
     end do

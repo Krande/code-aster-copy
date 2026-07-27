@@ -33,11 +33,9 @@ subroutine nmspfm(BEHinteg, typmod, ndim, nno, nddl, nddlsym, &
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
-#include "asterfort/poutre_modloc.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmspci.h"
 #include "asterfort/ffpoutimo.h"
@@ -51,7 +49,6 @@ subroutine nmspfm(BEHinteg, typmod, ndim, nno, nddl, nddlsym, &
 #include "asterfort/lcspelas.h"
 #include "MultiFiber_type.h"
 #include "blas/ddot.h"
-#include "blas/daxpy.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
     integer(kind=8) :: nddlsym

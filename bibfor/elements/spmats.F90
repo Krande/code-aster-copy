@@ -36,7 +36,6 @@ subroutine spmats(imater, matint, matpou)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/jevech.h"
 #include "asterfort/rcmats.h"
 #include "asterfort/rccome.h"
 !

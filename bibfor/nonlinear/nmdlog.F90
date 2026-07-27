@@ -49,6 +49,7 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, &
 #include "asterfort/prelog.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+#include "MeshTypes_type.h"
 #include "FE_module.h"
 !
     type(FE_Cell), intent(in) :: FECell
@@ -118,10 +119,10 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, &
     integer(kind=8) :: iw, idff, iret
     real(kind=8) :: dtde(6, 6)
     real(kind=8) :: epslPrev(6)
-    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), dispCurr(3*27)
+    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), dispCurr(3*MT_NNOMAX3D)
     real(kind=8) :: tlogPrev(6), tlogCurr(6), epslIncr(6)
     real(kind=8) :: gn(3, 3), lamb(3), logl(3)
-    real(kind=8) :: gPrev(3, 3), gCurr(3, 3), coorpg(3), BGSEval(3, MAX_BS)
+    real(kind=8) :: gPrev(3, 3), gCurr(3, 3), coorpg(3), BGSEval(3, MAX_BS_CG)
     real(kind=8) :: dsidep(6, 6), pk2Curr(6), pk2Prev(6)
     blas_int :: b_incx, b_incy, b_n
 !

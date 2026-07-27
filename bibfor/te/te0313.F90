@@ -34,9 +34,7 @@ subroutine te0313(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/poeihm.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
 #include "asterfort/thmGetElemModel.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte

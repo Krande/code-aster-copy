@@ -40,6 +40,7 @@ subroutine nifism(BEHInteg, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmmalu.h"
+#include "MeshTypes_type.h"
 #include "asterfort/rcvala.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
@@ -115,7 +116,8 @@ subroutine nifism(BEHInteg, &
     integer(kind=8) :: k2ret(1), lij(3, 3), os, kk
     integer(kind=8) :: viaja
     integer(kind=8) :: cod(27)
-    real(kind=8) :: geomm(3*27), geomp(3*27), deplm(3*27), depld(3*27)
+    real(kind=8) :: geomm(3*MT_NNOMAX3D), geomp(3*MT_NNOMAX3D)
+    real(kind=8) :: deplm(3*MT_NNOMAX3D), depld(3*MT_NNOMAX3D)
     real(kind=8) :: r, w, wm, wp, dffd(nnod, 4), dff2(nnog, 3)
     real(kind=8) :: presm(27), presd(27)
     real(kind=8) :: gonfm(27), gonfd(27)

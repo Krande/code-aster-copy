@@ -25,13 +25,13 @@ subroutine projOrthoNewton(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/mmnewt.h"
+#include "MeshTypes_type.h"
 #include "asterfort/elrfno.h"
 !
     character(len=8), intent(in) :: cellCode
     integer(kind=8), intent(in) :: cellNbNode, cellDime
-    real(kind=8), intent(in) :: cellCoor(27), poinCoor(3)
+    real(kind=8), intent(in) :: cellCoor(3, MT_NNOMAX2D), poinCoor(3)
     integer(kind=8), intent(in) :: newtIterMaxi
     real(kind=8), intent(in) :: newtToleMaxi
     real(kind=8), intent(out) :: ksi1, ksi2
@@ -64,9 +64,8 @@ subroutine projOrthoNewton(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: cellLineNbNode, nbNode, nbNodeS, projErrorLocal
+    integer(kind=8) :: nbNode, nbNodeS, projErrorLocal
     aster_logical :: lLineSearch, lPrintDbg, lReproject, lCurvature
-    character(len=8) :: cellLineCode
 !
 ! --------------------------------------------------------------------------------------------------
 !

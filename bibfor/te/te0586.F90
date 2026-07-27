@@ -23,7 +23,6 @@ subroutine te0586(option, nomte)
     use MaterialPara_type
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pipeElem_type.h"
 #include "asterfort/tufull.h"

@@ -25,7 +25,6 @@ subroutine te0409(option, nomte)
     implicit none
 !
 #include "asterc/r8dgrd.h"
-#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -59,7 +58,6 @@ subroutine te0409(option, nomte)
 #include "asterfort/pmrvec.h"
 #include "asterfort/q4gbc.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/rccoma.h"
 #include "asterfort/t3gbc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"

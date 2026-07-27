@@ -31,6 +31,7 @@ module HHO_eval_module
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/fointe.h"
+#include "MeshTypes_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
@@ -495,7 +496,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: funcnoEF(*)
-        real(kind=8), intent(out) :: FuncValuesQP(MAX_QP_FACE)
+        real(kind=8), intent(out) :: FuncValuesQP(MSIZE_QP_FACE)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -510,7 +511,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: npg, ipg, ino
-        real(kind=8) :: ff(9)
+        real(kind=8) :: ff(MT_NNOMAX2D)
         character(len=8) :: typma
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
@@ -518,7 +519,7 @@ contains
         call cellNameL2S(hhoFace%typema, typma)
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
-        ASSERT(npg <= MAX_QP_FACE)
+        ASSERT(npg <= MSIZE_QP_FACE)
         ASSERT(hhoQuad%l_point_param)
 !
         ff = 0.d0
@@ -547,7 +548,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: funcnoEF(*)
-        real(kind=8), intent(out) :: FuncValuesQP(3, MAX_QP_FACE)
+        real(kind=8), intent(out) :: FuncValuesQP(3, MSIZE_QP_FACE)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -563,7 +564,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: npg, ino, idim, celldim, ipg
-        real(kind=8) :: ff(9)
+        real(kind=8) :: ff(MT_NNOMAX2D)
         character(len=8) :: typma
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
@@ -571,7 +572,7 @@ contains
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         celldim = hhoFace%ndim+1
-        ASSERT(npg <= MAX_QP_FACE)
+        ASSERT(npg <= MSIZE_QP_FACE)
         ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoFace%typema, typma)
 !
@@ -604,7 +605,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: funcnoEF(*)
-        real(kind=8), intent(out) :: FuncValuesQP(3, MAX_QP_CELL)
+        real(kind=8), intent(out) :: FuncValuesQP(3, MSIZE_QP_CELL)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -620,14 +621,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: npg, ino, idim, ipg
-        real(kind=8) :: ff(27)
+        real(kind=8) :: ff(MT_NNOMAX3D)
         character(len=8) :: typma
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
-        ASSERT(npg <= MAX_QP_CELL)
+        ASSERT(npg <= MSIZE_QP_CELL)
         ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoCell%typema, typma)
 !
@@ -660,7 +661,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: funcnoEF(*)
-        real(kind=8), intent(out) :: FuncValuesQP(MAX_QP_CELL)
+        real(kind=8), intent(out) :: FuncValuesQP(MSIZE_QP_CELL)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -676,14 +677,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: npg, ino, ipg
-        real(kind=8) :: ff(27)
+        real(kind=8) :: ff(MT_NNOMAX3D)
         character(len=8) :: typma
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
-        ASSERT(npg <= MAX_QP_CELL)
+        ASSERT(npg <= MSIZE_QP_CELL)
         ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoCell%typema, typma)
 !

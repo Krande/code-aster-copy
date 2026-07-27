@@ -47,6 +47,7 @@ subroutine nufilg(BEHInteg, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
+#include "MeshTypes_type.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     aster_logical :: matsym
@@ -54,7 +55,7 @@ subroutine nufilg(BEHInteg, &
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     integer(kind=8) :: ndim, nnod, nnop, npg, iw, idffd, lgpg
-    integer(kind=8) :: vu(3, 27), vp(27)
+    integer(kind=8) :: vu(3, MT_NNOMAX), vp(MT_NNOMAX)
     integer(kind=8) :: codret
     real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg)
     real(kind=8) :: instm, instp
@@ -115,9 +116,9 @@ subroutine nufilg(BEHInteg, &
     integer(kind=8) :: lij(3, 3), os, kk
     integer(kind=8) :: viaja, vibjb, vuiana, vpsa, iret
     integer(kind=8) :: cod(npg)
-    real(kind=8) :: geomm(3*27), geomp(3*27), deplm(3*27), deplp(3*27)
+    real(kind=8) :: geomm(3*MT_NNOMAX), geomp(3*MT_NNOMAX), deplm(3*MT_NNOMAX), deplp(3*MT_NNOMAX)
     real(kind=8) :: r, w, wp, dffd(nnod, 4)
-    real(kind=8) :: presm(27), presd(27)
+    real(kind=8) :: presm(MT_NNOMAX), presd(MT_NNOMAX)
     character(len=16) :: relaComp
     real(kind=8) :: pm, pd, pp
     real(kind=8) :: fPrev(3, 3), jm, ftm(3, 3), corm, epslPrev(6)

@@ -55,6 +55,7 @@ subroutine nmplgs(BEHInteg, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 #include "blas/dspev.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
@@ -130,7 +131,7 @@ subroutine nmplgs(BEHInteg, &
     integer(kind=8) :: ndimsi, nddl, gg, cod(npg), n, i, m, j, kl, pq, os, kk, vivois
     integer(kind=8) :: iu(3, 27), ie(6, 8), kvois, ll
     integer(kind=8) :: nfin, vrarr(nno2), nn, nnn, vivonu, kvoinu, nini, nunu
-    real(kind=8) :: lc(1), c, deplm(3*27), depld(3*27), dfdi1(27, 3), nono
+    real(kind=8) :: lc(1), c, deplm(3*MT_NNOMAX3D), depld(3*MT_NNOMAX3D), dfdi1(27, 3), nono
     real(kind=8) :: r, wg, epsgm(6, 2), epsgd(6, 2), gepsm(6, 3), geps(6, 3)
     real(kind=8) :: f(3, 3)
     real(kind=8) :: b(6, 3, 27), de(6), sigma(6), dsidep(6, 6, 2), t1, t2

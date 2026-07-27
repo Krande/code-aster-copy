@@ -28,17 +28,14 @@ subroutine oriintpou(mesh, listCellNume, nbCell, norien, vxorie)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
 !
     character(len=8), intent(in) :: mesh
     integer(kind=8), intent(in) :: nbCell
@@ -61,7 +58,7 @@ subroutine oriintpou(mesh, listCellNume, nbCell, norien, vxorie)
     integer(kind=8) :: iCell, cellNume
     integer(kind=8) :: jcoor, p1, p2, ifm, niv
     integer(kind=8) :: jdesm1
-    integer(kind=8), parameter :: nbnds = 27
+    integer(kind=8), parameter :: nbnds = MT_NNOMAX3D
     aster_logical :: hasVolume, hasVoluNotHexaBiQ, onlyHexaBiQuad
     character(len=8), pointer :: ori5(:) => null()
     integer(kind=8), pointer :: typmail(:) => null()

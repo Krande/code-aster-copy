@@ -50,6 +50,7 @@ subroutine xxnmpl(BEHInteg, &
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=8), intent(in) :: typmod(2)
@@ -110,7 +111,7 @@ subroutine xxnmpl(BEHInteg, &
     real(kind=8) :: rbid33(3, 3)
     real(kind=8) :: dfdi(nnop, ndim)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe*ndim)), r
-    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
+    real(kind=8) :: fk(MT_NNOMAX, 3, 3), dkdgl(MT_NNOMAX, 3, 3, 3), ka, mu
     aster_logical :: axi, cplan
     real(kind=8), parameter :: rac2 = 1.4142135623731d0
 !

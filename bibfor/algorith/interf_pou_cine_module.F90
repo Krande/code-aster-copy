@@ -30,7 +30,6 @@ module interf_pou_cine_module
     public:: CONSTITUTIVE_LAW, Init, Integrate
 
 #include "asterf_types.h"
-#include "asterc/r8gaem.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/Behaviour_type.h"

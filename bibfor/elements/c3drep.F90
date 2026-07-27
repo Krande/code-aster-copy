@@ -22,11 +22,12 @@ subroutine c3drep(nomte, epais, alpha, beta, coord, &
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/vdrep2.h"
+#include "MeshTypes_type.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
     integer(kind=8) :: numnoe
     character(len=16) :: nomte
-    real(kind=8) :: epais, alpha, beta, coord(3, 9), pgl(3, 3)
+    real(kind=8) :: epais, alpha, beta, coord(3, MT_NNOMAX2D), pgl(3, 3)
 !     ------------------------------------------------------------------
 !
 !         CETTE ROUTINE REALISE LA MEME TACHE QUE COQREP MAIS POUR LES

@@ -36,7 +36,6 @@ subroutine te0367(option, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/spmats.h"
 #include "asterfort/rccome.h"
-#include "asterfort/tecach.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte

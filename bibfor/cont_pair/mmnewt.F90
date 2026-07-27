@@ -30,11 +30,13 @@ subroutine mmnewt(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
 #include "asterfort/assert.h"
 #include "asterfort/mmfonf.h"
 #include "asterfort/mmreli.h"
+#include "MeshTypes_type.h"
+#include "MeshTypes_type.h"
 #include "asterfort/mmtang.h"
 !
     character(len=8), intent(in) :: cellCode
     integer(kind=8), intent(in) :: cellNbNode, cellDime
-    real(kind=8), intent(in) :: cellCoor(27)
+    real(kind=8), intent(in) :: cellCoor(3, MT_NNOMAX2D)
     real(kind=8), intent(in) :: poinCoor(3)
     integer(kind=8), intent(in) :: newtIterMaxi
     real(kind=8), intent(in) :: newtToleMaxi
@@ -70,7 +72,7 @@ subroutine mmnewt(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
 !
     real(kind=8), parameter :: zero = 0.d0
     integer(kind=8) :: ino, idim, iter
-    real(kind=8) :: ff(9), dff(2, 9), ddff(3, 9)
+    real(kind=8) :: ff(MT_NNOMAX2D), dff(2, MT_NNOMAX2D), ddff(3, MT_NNOMAX2D)
     real(kind=8) :: vect_posi(3)
     real(kind=8) :: matrix(2, 2), par11(3), par12(3), par22(3)
     real(kind=8) :: residu(2)
@@ -129,7 +131,7 @@ subroutine mmnewt(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
 ! - Position vector of current point
     do idim = 1, 3
         do ino = 1, cellNbNode
-            vect_posi(idim) = cellCoor(3*(ino-1)+idim)*ff(ino)+vect_posi(idim)
+            vect_posi(idim) = cellCoor(idim, ino)*ff(ino)+vect_posi(idim)
         end do
     end do
 
@@ -156,10 +158,10 @@ subroutine mmnewt(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
     if (lCurvature) then
         do idim = 1, cellDime
             do ino = 1, cellNbNode
-                par11(idim) = cellCoor(3*(ino-1)+idim)*ddff(1, ino)+par11(idim)
+                par11(idim) = cellCoor(idim, ino)*ddff(1, ino)+par11(idim)
                 if (cellDime .eq. 3) then
-                    par22(idim) = cellCoor(3*(ino-1)+idim)*ddff(2, ino)+par22(idim)
-                    par12(idim) = cellCoor(3*(ino-1)+idim)*ddff(3, ino)+par12(idim)
+                    par22(idim) = cellCoor(idim, ino)*ddff(2, ino)+par22(idim)
+                    par12(idim) = cellCoor(idim, ino)*ddff(3, ino)+par12(idim)
                 end if
             end do
         end do
@@ -250,9 +252,7 @@ subroutine mmnewt(cellCode, cellNbNode, cellDime, cellCoor, poinCoor, &
         write (6, *) 'MAILLE             ', cellCode, cellNbNode
         do ino = 1, cellNbNode
             write (6, *) '  NOEUD ', ino
-            write (6, *) '   (X,Y,Z)', cellCoor(3*(ino-1)+1), &
-                cellCoor(3*(ino-1)+2), &
-                cellCoor(3*(ino-1)+3)
+            write (6, *) '   (X,Y,Z)', cellCoor(1:3, ino)
         end do
         write (6, *) 'KSI   : ', ksi1, ksi2
         write (6, *) 'ALPHA : ', alpha

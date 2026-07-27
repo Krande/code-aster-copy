@@ -45,6 +45,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: ndim, igeom, jvMaterCode, nnop, npg, idepl
     integer(kind=8) :: nfh, ddlc, nfe, idecpg
@@ -97,7 +98,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
     real(kind=8) :: notime
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)
     real(kind=8) :: dfdi(nnop, ndim)
-    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3)
+    real(kind=8) :: fk(MT_NNOMAX, 3, 3), dkdgl(MT_NNOMAX, 3, 3, 3)
     real(kind=8) :: grad(3, 3)
     real(kind=8) :: s, sigmTher, d(4, 4)
     real(kind=8) :: r

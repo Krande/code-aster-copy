@@ -24,7 +24,6 @@ subroutine te0431(option, nomte)
     use MaterialPara_type
     implicit none
 !
-#include "asterc/r8nnem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -37,7 +36,6 @@ subroutine te0431(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/nmco1d.h"
 #include "asterfort/nmgrib.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"

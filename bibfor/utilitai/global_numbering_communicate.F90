@@ -47,7 +47,6 @@ subroutine global_numbering_communicate(nume_equa)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/nbec.h"

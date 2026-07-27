@@ -35,6 +35,7 @@ subroutine mmmreg(mesh, ds_contact, v_disp_cumu, nb_dof, &
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
+#include "MeshTypes_type.h"
 #include "asterfort/mmnonf.h"
 !
 !
@@ -71,7 +72,7 @@ subroutine mmmreg(mesh, ds_contact, v_disp_cumu, nb_dof, &
     real(kind=8) :: ksipc1, ksipc2, ksipr1, ksipr2
     integer(kind=8) :: ztabf
     real(kind=8) :: disp_mast(3), disp_slav(3)
-    real(kind=8) :: tau1(3), tau2(3), ff(9)
+    real(kind=8) :: tau1(3), tau2(3), ff(MT_NNOMAX2D)
     character(len=8) :: elem_slav_type, elem_mast_type
     aster_logical :: l_veri
     character(len=24) :: sdcont_tabfin

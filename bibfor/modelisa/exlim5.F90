@@ -26,7 +26,6 @@ subroutine exlim5(motfaz, motcleZ, toutZ, nomsd, modelz, ligrel)
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/gnoms2.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"

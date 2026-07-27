@@ -32,7 +32,6 @@ subroutine rcmats(imater, nbmats, nomats)
     implicit none
 
 #include "jeveux.h"
-#include "asterfort/jevech.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

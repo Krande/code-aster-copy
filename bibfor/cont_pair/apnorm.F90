@@ -23,13 +23,14 @@ subroutine apnorm(elem_nbnode, elem_code, elem_dime, elem_coor, &
 !
 #include "asterfort/mmtang.h"
 #include "asterfort/mmnorm.h"
+#include "MeshTypes_type.h"
 #include "asterfort/mmdonf.h"
 !
 !
     integer(kind=8), intent(in) :: elem_nbnode
     character(len=8), intent(in) :: elem_code
     integer(kind=8), intent(in) :: elem_dime
-    real(kind=8), intent(in) :: elem_coor(3, 9)
+    real(kind=8), intent(in) :: elem_coor(3, MT_NNOMAX2D)
     real(kind=8), intent(in) :: ksi1
     real(kind=8), intent(in) :: ksi2
     real(kind=8), intent(out) :: elem_norm(3)
@@ -54,7 +55,7 @@ subroutine apnorm(elem_nbnode, elem_code, elem_dime, elem_coor, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: tau1(3), tau2(3)
-    real(kind=8) :: dff(2, 9), noor
+    real(kind=8) :: dff(2, MT_NNOMAX2D), noor
 !
 ! --------------------------------------------------------------------------------------------------
 !

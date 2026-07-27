@@ -33,7 +33,6 @@ module HHO_quadrature_module
 #include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/reereg.h"
 #include "asterfort/utmess.h"
@@ -50,9 +49,9 @@ module HHO_quadrature_module
     type HHO_Quadrature
         integer(kind=8)                     :: order = 0
         integer(kind=8)                     :: nbQuadPoints = 0
-        real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
-        real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
-        real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
+        real(kind=8), dimension(3, MSIZE_QP)  :: points = 0.d0
+        real(kind=8), dimension(MSIZE_QP)     :: weights = 0.d0
+        real(kind=8), dimension(3, MSIZE_QP)  :: points_param = 0.d0
         aster_logical                       :: l_point_param = ASTER_TRUE
 ! ----- member functions
     contains
@@ -165,7 +164,7 @@ contains
         call elraga('SE2', rules(this%order), dimp, nbpg, xpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(nbpg <= MAX_QP)
+        ASSERT(nbpg <= MSIZE_QP)
         this%nbQuadPoints = nbpg
 !
         do ipg = 1, nbpg
@@ -217,7 +216,7 @@ contains
         call elraga('QU4', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(nbpg <= MAX_QP)
+        ASSERT(nbpg <= MSIZE_QP)
         this%nbQuadPoints = nbpg
 !
         do ipg = 1, nbpg
@@ -272,7 +271,7 @@ contains
         call elraga('HE8', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(nbpg <= MAX_QP)
+        ASSERT(nbpg <= MSIZE_QP)
         this%nbQuadPoints = nbpg
 !
         do ipg = 1, nbpg
@@ -328,7 +327,7 @@ contains
         call elraga('TR3', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(nbpg <= MAX_QP)
+        ASSERT(nbpg <= MSIZE_QP)
         this%nbQuadPoints = nbpg
         jaco = 2.d0*measure
 !
@@ -397,7 +396,7 @@ contains
         call elraga('TR3', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(n_simp*nbpg <= MAX_QP)
+        ASSERT(n_simp*nbpg <= MSIZE_QP)
         this%nbQuadPoints = 0
         this%l_point_param = param
 !
@@ -468,7 +467,7 @@ contains
         call elraga('TE4', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(nbpg <= MAX_QP)
+        ASSERT(nbpg <= MSIZE_QP)
         this%nbQuadPoints = nbpg
         jaco = 6.d0*measure
 !
@@ -533,7 +532,7 @@ contains
         call elraga('TE4', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(n_simp*nbpg <= MAX_QP)
+        ASSERT(n_simp*nbpg <= MSIZE_QP)
         this%nbQuadPoints = 0
         this%l_point_param = param
 !
@@ -600,7 +599,7 @@ contains
         call elraga('PY5', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(nbpg <= MAX_QP)
+        ASSERT(nbpg <= MSIZE_QP)
         this%nbQuadPoints = nbpg
 !
         do ipg = 1, nbpg
@@ -655,7 +654,7 @@ contains
         call elraga('PE6', rules(this%order), dimp, nbpg, coorpg, poidpg)
 !
 ! ----- fill hhoQuad
-        ASSERT(nbpg <= MAX_QP)
+        ASSERT(nbpg <= MSIZE_QP)
         this%nbQuadPoints = nbpg
 !
         do ipg = 1, nbpg
@@ -760,7 +759,7 @@ contains
             end do
         end if
 !
-        ASSERT(this%nbQuadPoints <= MAX_QP)
+        ASSERT(this%nbQuadPoints <= MSIZE_QP)
 !
     end subroutine
 !
@@ -853,7 +852,7 @@ contains
             end do
         end if
 !
-        ASSERT(this%nbQuadPoints <= MAX_QP)
+        ASSERT(this%nbQuadPoints <= MSIZE_QP)
 !
     end subroutine
 !
@@ -1072,7 +1071,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
         integer(kind=8) :: order
 !
-        ASSERT(npg .le. MAX_QP)
+        ASSERT(npg .le. MSIZE_QP)
         this%nbQuadPoints = npg
 !
         call hhoSelectOrder(hhoCell%typema, npg, order)
@@ -1105,7 +1104,7 @@ contains
 !
         integer(kind=8) :: order
 !
-        ASSERT(npg .le. MAX_QP)
+        ASSERT(npg .le. MSIZE_QP)
         this%nbQuadPoints = npg
 !
         call hhoSelectOrder(hhoFace%typema, npg, order)

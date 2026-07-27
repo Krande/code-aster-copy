@@ -41,10 +41,12 @@ subroutine nifilg(BEHInteg, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmmalu.h"
+#include "MeshTypes_type.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
+#include "MeshTypes_type.h"
 #include "blas/dscal.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
@@ -116,7 +118,8 @@ subroutine nifilg(BEHInteg, &
     integer(kind=8) :: lij(3, 3), os, kk
     integer(kind=8) :: viaja, vibjb, vuiana, vgra, vpsa, iret
     integer(kind=8) :: cod(npg)
-    real(kind=8) :: geomm(3*27), geomp(3*27), deplm(3*27), deplp(3*27)
+    real(kind=8) :: geomm(3*MT_NNOMAX3D), geomp(3*MT_NNOMAX3D)
+    real(kind=8) ::  deplm(3*MT_NNOMAX3D), deplp(3*MT_NNOMAX3D)
     real(kind=8) :: r, w, wp, dffd(nnod, 4)
     real(kind=8) :: presm(27), presd(27)
     real(kind=8) :: gonfm(27), gonfd(27)

@@ -18,10 +18,11 @@
 !
 interface
     subroutine mmvalp(cellCode, cellNbNode, ksi1, ksi2, valeCell, valePoin)
+#include "MeshTypes_type.h"
         character(len=8), intent(in) :: cellCode
         integer(kind=8), intent(in) :: cellNbNode
         real(kind=8), intent(in) :: ksi1, ksi2
-        real(kind=8), intent(in) :: valeCell(*)
+        real(kind=8), intent(in) :: valeCell(3, MT_NNOMAX2D)
         real(kind=8), intent(out) :: valePoin(3)
     end subroutine mmvalp
 end interface

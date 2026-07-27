@@ -25,7 +25,6 @@ subroutine getExternalBehaviourParaPtAdr(relaMeca, defoComp, &
 #include "asterc/mgis_debug.h"
 #include "asterc/mgis_load_library.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/comp_meca_l.h"

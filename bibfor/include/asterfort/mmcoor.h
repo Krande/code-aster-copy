@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
+#include "MeshTypes_type.h"
     subroutine mmcoor(cellCode, cellNbNode, cellCoor, &
                       ksi1, ksi2, coorpt)
         character(len=8), intent(in) :: cellCode
         integer(kind=8), intent(in)::  cellNbNode
         real(kind=8), intent(in) :: ksi1, ksi2
-        real(kind=8), intent(in) :: cellCoor(27)
+        real(kind=8), intent(in) :: cellCoor(3,MT_NNOMAX2D)
         real(kind=8), intent(out) :: coorpt(3)
     end subroutine mmcoor
 end interface

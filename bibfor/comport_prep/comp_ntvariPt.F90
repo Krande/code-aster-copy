@@ -23,7 +23,6 @@ subroutine comp_ntvariPt(comporList, comporInfo, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/compGetMecaPart.h"
 #include "asterfort/getExternalBehaviourParaPtAdr.h"

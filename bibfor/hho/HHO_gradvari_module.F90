@@ -169,7 +169,7 @@ contains
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
         integer(kind=8) :: mk_faces_dofs
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs, gv_cell_offset
-        integer(kind=8) :: cod(MAX_QP_CELL), kpg, mk_gbs_tot, mk_gbs_axis
+        integer(kind=8) :: cod(MSIZE_QP_CELL), kpg, mk_gbs_tot, mk_gbs_axis
         aster_logical :: l_lhs, l_rhs, forc_noda
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)

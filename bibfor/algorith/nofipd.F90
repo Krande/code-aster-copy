@@ -40,6 +40,7 @@ subroutine nofipd(BEHInteg, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/tanbul.h"
+#include "MeshTypes_type.h"
 #include "asterfort/uthk.h"
 #include "blas/ddot.h"
 !
@@ -48,7 +49,7 @@ subroutine nofipd(BEHInteg, &
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     integer(kind=8) :: ndim, nnod, nnop, nnog, npg, iw, idffd, lgpg
-    integer(kind=8) :: vu(3, 27), vp(27), vpi(3, 27)
+    integer(kind=8) :: vu(3, MT_NNOMAX), vp(MT_NNOMAX), vpi(3, MT_NNOMAX)
     integer(kind=8) :: codret
     real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg), vffg(nnog, npg)
     real(kind=8) :: instm, instp
@@ -113,10 +114,10 @@ subroutine nofipd(BEHInteg, &
     integer(kind=8) :: vuiana, vpiana, vpsa
     integer(kind=8) :: cod(npg)
     character(len=16) :: relaComp
-    real(kind=8) :: deplm(3*27), depld(3*27)
+    real(kind=8) :: deplm(3*MT_NNOMAX), depld(3*MT_NNOMAX)
     real(kind=8) :: r, w, dff1(nnod, ndim)
-    real(kind=8) :: presm(27), presd(27)
-    real(kind=8) :: gpresm(3*27), gpresd(3*27)
+    real(kind=8) :: presm(MT_NNOMAX), presd(MT_NNOMAX)
+    real(kind=8) :: gpresm(3*MT_NNOMAX), gpresd(3*MT_NNOMAX)
     real(kind=8) :: pm, pd, gpm(ndim), gpd(ndim), pim(ndim), pid(ndim)
     real(kind=8) :: fm(3, 3), epsm(6), deps(6)
     real(kind=8) :: sigma(6), sigmPrep(6), sigtr

@@ -22,7 +22,6 @@ subroutine dmatcp(materPara, poum, time, &
     use MaterialPara_type
     implicit none
 !
-#include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/matrHookePlaneStress.h"
 #include "asterfort/separ_RI_elas_cp.h"

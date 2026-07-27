@@ -32,9 +32,10 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, &
 #include "asterfort/nbsigm.h"
 #include "blas/dscal.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: ndim, nno1, nno2, nno3, npg, iw, idff1
-    integer(kind=8) :: vu(3, 27), vg(27), vp(27)
+    integer(kind=8) :: vu(3, MT_NNOMAX), vg(MT_NNOMAX), vp(MT_NNOMAX)
     integer(kind=8) :: ivf1, jvGeom
     real(kind=8) :: vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: matr(*)

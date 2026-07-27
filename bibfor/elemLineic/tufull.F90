@@ -28,7 +28,6 @@ subroutine tufull(materPara, option, nbFourier, nbDof)
     use pipeElem_type
     implicit none
 !
-#include "asterc/r8nnem.h"
 #include "asterc/r8pi.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"

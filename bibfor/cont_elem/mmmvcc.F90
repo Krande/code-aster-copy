@@ -24,11 +24,12 @@ subroutine mmmvcc(phase, l_pena_cont, &
     implicit none
 !
 #include "asterf_types.h"
+#include "MeshTypes_type.h"
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: l_pena_cont
     integer(kind=8), intent(in) :: nnl
-    real(kind=8), intent(in) :: wpg, ffl(9), jacobi
+    real(kind=8), intent(in) :: wpg, ffl(MT_NNOMAX2D), jacobi
     real(kind=8), intent(in) :: jeu, dlagrc, coefac
     real(kind=8), intent(out) :: vectcc(9)
 !
@@ -60,6 +61,7 @@ subroutine mmmvcc(phase, l_pena_cont, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    print *, "VCC: ", dlagrc, jacobi, coefac, jeu
     if (phase .eq. 'SANS') then
         do inoc = 1, nnl
             vectcc(inoc) = vectcc(inoc)- &

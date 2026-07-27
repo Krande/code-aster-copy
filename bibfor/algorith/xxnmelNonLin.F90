@@ -35,13 +35,11 @@ subroutine xxnmelNonLin(BEHInteg, &
     use MaterialPara_type
     implicit none
 !
-#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iimatu.h"
 #include "asterfort/indent.h"
@@ -54,6 +52,7 @@ subroutine xxnmelNonLin(BEHInteg, &
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=8), intent(in) :: typmod(2)
@@ -116,7 +115,7 @@ subroutine xxnmelNonLin(BEHInteg, &
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: def(6, ndim*(1+nfh+ndim), nnop)
     real(kind=8) :: r
-    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
+    real(kind=8) :: fk(MT_NNOMAX, 3, 3), dkdgl(MT_NNOMAX, 3, 3, 3), ka, mu
     aster_logical :: axi, cplan
     real(kind=8):: vim(lgpg), zero6(6)
     real(kind=8), parameter :: rac2 = 1.4142135623731d0

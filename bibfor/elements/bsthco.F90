@@ -35,6 +35,7 @@ subroutine bsthco(nomte, bsigth, indith)
 #include "asterfort/promat.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "MeshTypes_type.h"
 #include "asterfort/vectan.h"
 #include "asterfort/verifm.h"
 #include "asterfort/vexpan.h"
@@ -55,9 +56,9 @@ subroutine bsthco(nomte, bsigth, indith)
     parameter(npge=3)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
-    real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
+    real(kind=8) :: hsfm(3, MT_NNOMAX2D), hss(2, 9), hsj1m(3, MT_NNOMAX2D), hsj1s(2, 9)
     real(kind=8) :: btdm(4, 3, 42), btds(4, 2, 42)
-    real(kind=8) :: hsf(3, 9), hsj1fx(3, 9), wgt
+    real(kind=8) :: hsf(3, MT_NNOMAX2D), hsj1fx(3, MT_NNOMAX2D), wgt
     real(kind=8) :: btdf(3, 42), btild(5, 42)
     real(kind=8) :: epsth(5), sigmth(5), bsigt1(42)
     real(kind=8) :: ksi3s2, kappa, matc(5, 5)

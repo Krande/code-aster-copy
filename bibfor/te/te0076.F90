@@ -50,7 +50,7 @@ subroutine te0076(option, nomte)
     integer(kind=8) :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) ::   time
-    real(kind=8) :: rigi(MAX_BS, MAX_BS)
+    real(kind=8) :: rigi(MAX_BS_CG, MAX_BS_CG)
     real(kind=8) ::  valQPK(3, 3, MAX_QP)
 ! ----------------------------------------------------------------------
     call FECell%init()

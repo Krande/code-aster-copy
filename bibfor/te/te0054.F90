@@ -25,12 +25,10 @@ subroutine te0054(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/nmsfin.h"
 #include "asterfort/nmsfon.h"
 #include "asterfort/teattr.h"

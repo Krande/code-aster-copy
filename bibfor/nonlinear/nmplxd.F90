@@ -110,8 +110,8 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, &
     aster_logical :: lVect, lMatr, lSigm
     integer(kind=8) :: kpg, i_tens, ipoids, ivf, idfde
     integer(kind=8) :: cod(MAX_QP)
-    real(kind=8) :: BGSEval(3, MAX_BS)
-    real(kind=8) :: def(6, MAX_BS, 3)
+    real(kind=8) :: BGSEval(3, MAX_BS_CG)
+    real(kind=8) :: def(6, MAX_BS_CG, 3)
     real(kind=8) :: coorpg(3)
     real(kind=8) :: eps(6), deps(6)
     real(kind=8) :: dsidep(6, 6), sigmPost(6), sigmPrep(6)

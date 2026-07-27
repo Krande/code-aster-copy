@@ -36,8 +36,6 @@ subroutine vdxsig(nomte, nodeCoor, &
 #include "asterfort/moytem.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/trndgl.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vdefge.h"
 #include "asterfort/vdesga.h"
 #include "asterfort/vdxtemp.h"
 #include "asterfort/vectan.h"

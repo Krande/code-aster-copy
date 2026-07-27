@@ -21,12 +21,13 @@ subroutine mmcoor(cellCode, cellNbNode, cellCoor, &
 !
     implicit none
 !
+#include "MeshTypes_type.h"
 #include "asterfort/mmnonf.h"
 !
     character(len=8), intent(in) :: cellCode
     integer(kind=8), intent(in)::  cellNbNode
     real(kind=8), intent(in) :: ksi1, ksi2
-    real(kind=8), intent(in) :: cellCoor(27)
+    real(kind=8), intent(in) :: cellCoor(3, MT_NNOMAX2D)
     real(kind=8), intent(out) :: coorpt(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,7 +49,7 @@ subroutine mmcoor(cellCode, cellNbNode, cellCoor, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: iDime, iNode
-    real(kind=8) :: ff(9)
+    real(kind=8) :: ff(MT_NNOMAX2D)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +61,7 @@ subroutine mmcoor(cellCode, cellNbNode, cellCoor, &
 ! - COORDONNEES DU POINT
     do iDime = 1, 3
         do iNode = 1, cellNbNode
-            coorpt(iDime) = ff(iNode)*cellCoor(3*(iNode-1)+iDime)+coorpt(iDime)
+            coorpt(iDime) = ff(iNode)*cellCoor(iDime, iNode)+coorpt(iDime)
         end do
     end do
 !

@@ -22,6 +22,7 @@ subroutine mmvalp_scal(cellCode, cellNbNode, ksi1, ksi2, &
     implicit none
 !
 #include "asterfort/assert.h"
+#include "MeshTypes_type.h"
 #include "asterfort/mmnonf.h"
 !
     character(len=8), intent(in) :: cellCode
@@ -48,7 +49,7 @@ subroutine mmvalp_scal(cellCode, cellNbNode, ksi1, ksi2, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: shape_func(9)
+    real(kind=8) :: shape_func(MT_NNOMAX2D)
     integer(kind=8) :: i_node
 !
 ! --------------------------------------------------------------------------------------------------

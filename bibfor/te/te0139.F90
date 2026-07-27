@@ -43,6 +43,7 @@ subroutine te0139(option, nomte)
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "FE_module.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -84,8 +85,8 @@ subroutine te0139(option, nomte)
     integer(kind=8) :: codret
     integer(kind=8) :: jv_codret
 !     POUR TGVERI
-    real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27)
-    real(kind=8) :: epsilo, disp_curr(MAX_BV)
+    real(kind=8) :: sdepl(3*MT_NNOMAX3D), svect(3*MT_NNOMAX3D), scont(6*MT_NNOMAX3D)
+    real(kind=8) :: epsilo, disp_curr(MAX_BV_CG)
     real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     blas_int :: b_incx, b_incy, b_n
     type(Behaviour_Integ) :: BEHInteg
@@ -216,8 +217,8 @@ subroutine te0139(option, nomte)
 ! - Calcul de la matrice TGTE par PERTURBATION
     call tgveri_use(option, zr(jvCarcri), compor, iuse)
     if (iuse == 1) then
-        allocate (varia(2*3*27*3*27))
-        allocate (smatr(3*27*3*27))
+        allocate (varia(2*3*MT_NNOMAX3D*3*MT_NNOMAX3D))
+        allocate (smatr(3*MT_NNOMAX3D*3*MT_NNOMAX3D))
     end if
 
 ! - Update displacements

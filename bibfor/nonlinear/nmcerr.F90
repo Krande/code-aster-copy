@@ -24,12 +24,10 @@ subroutine nmcerr(sddisc, iterGlobMaxi, iterGlobElas, pasMiniElas, resiGlobMaxi,
 !
 #include "asterc/r8vide.h"
 #include "asterf_types.h"
-#include "asterfort/ceil.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmecrr.h"
-#include "asterfort/utdidt.h"
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !

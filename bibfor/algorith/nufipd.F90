@@ -45,6 +45,7 @@ subroutine nufipd(BEHInteg, &
 #include "asterfort/nmepsi.h"
 #include "asterfort/tanbul.h"
 #include "blas/ddot.h"
+#include "MeshTypes_type.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=8), intent(in) :: typmod(2)
@@ -52,7 +53,7 @@ subroutine nufipd(BEHInteg, &
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     aster_logical :: mini
     integer(kind=8) :: ndim, nnod, nnop, npg, iw, idffd, lgpg
-    integer(kind=8) :: vu(3, 27), vp(27)
+    integer(kind=8) :: vu(3, MT_NNOMAX), vp(MT_NNOMAX)
     integer(kind=8) :: codret
     real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg)
     real(kind=8) :: instm, instp
@@ -114,9 +115,9 @@ subroutine nufipd(BEHInteg, &
     integer(kind=8) :: vuiana, vpsa
     integer(kind=8) :: cod(npg)
     character(len=16) :: relaComp
-    real(kind=8) :: deplm(3*27), depld(3*27)
+    real(kind=8) :: deplm(3*MT_NNOMAX), depld(3*MT_NNOMAX)
     real(kind=8) :: r, w, dff1(nnod, ndim)
-    real(kind=8) :: presm(27), presd(27)
+    real(kind=8) :: presm(MT_NNOMAX), presd(MT_NNOMAX)
     real(kind=8) :: pm, pd
     real(kind=8) :: fm(3, 3), epsm(6), deps(6)
     real(kind=8) :: sigma(6), sigmPrep(6), sigtr

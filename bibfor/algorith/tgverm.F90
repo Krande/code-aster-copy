@@ -39,13 +39,14 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     aster_logical :: matsym
     character(len=16) :: option
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     integer(kind=8) :: iret, nno1, nno2, nno3, ndim
-    integer(kind=8) :: vu(3, 27), vg(27), vp(27)
+    integer(kind=8) :: vu(3, MT_NNOMAX), vg(MT_NNOMAX), vp(MT_NNOMAX)
     real(kind=8) :: sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
     real(kind=8) :: varip(*), svari(*), smatr(*), varia(*)

@@ -48,7 +48,6 @@ module HHO_LargeStrainMeca_module
 #include "asterfort/pk2topk1.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
-#include "blas/dsyr.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,7 +111,7 @@ contains
         type(HHO_matrix) :: AT
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
         integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, kpg, gbs_cmp, gbs_sym
-        integer(kind=8) :: cod(MAX_QP_CELL), nbsig, cbs_cmp, gbs_axis
+        integer(kind=8) :: cod(MSIZE_QP_CELL), nbsig, cbs_cmp, gbs_axis
         aster_logical :: l_gdeflog, l_green_lagr, l_lhs, l_rhs
 !
 ! --------------------------------------------------------------------------------------------------

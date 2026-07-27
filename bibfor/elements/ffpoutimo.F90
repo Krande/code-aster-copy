@@ -22,12 +22,8 @@ subroutine ffpoutimo(x, xl, mate, materi, ff)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jevech.h"
 #include "asterfort/matela.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/poutre_modloc.h"
-#include "asterfort/get_value_mode_local.h"
 !
     real(kind=8), intent(in)       :: x(3), xl
     integer(kind=8), intent(in)    :: mate

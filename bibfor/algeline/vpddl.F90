@@ -21,7 +21,6 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine, &
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"

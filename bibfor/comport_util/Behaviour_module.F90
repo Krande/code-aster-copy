@@ -63,7 +63,6 @@ module Behaviour_module
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/ElasticityMaterial_type.h"
-#include "asterfort/get_elas_id.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jevech.h"
 #include "asterfort/leverettIsotMeca.h"

@@ -32,8 +32,6 @@ subroutine xsigth(ndim, lonch, time, nbsig, sigth)
 #include "asterfort/epstmc.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
-#include "asterfort/get_elas_id.h"
-#include "asterfort/tecach.h"
 #include "jeveux.h"
 !
     integer(kind=8) :: ndim, nbsig, lonch(10)

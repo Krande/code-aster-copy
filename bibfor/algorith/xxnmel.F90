@@ -42,10 +42,10 @@ subroutine xxnmel(typmod, materPara, &
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalfev_wrap.h"
-#include "asterfort/xcinem.h"
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     character(len=8), intent(in) :: typmod(2)
     type(Material_Para), intent(inout) :: materPara
@@ -104,7 +104,7 @@ subroutine xxnmel(typmod, materPara, &
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: def(6, ndim*(1+nfh+ndim), nnop)
     real(kind=8) :: r
-    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
+    real(kind=8) :: fk(MT_NNOMAX, 3, 3), dkdgl(MT_NNOMAX, 3, 3, 3), ka, mu
     integer(kind=8) :: nbsig
     real(kind=8) :: d(36), instan
     aster_logical :: axi, cplan
