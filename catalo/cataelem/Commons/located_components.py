@@ -160,23 +160,6 @@ CCAMA2D = LocatedComponents(
     phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
 )
 
-# Field for RESI_REFE_RELA/EFFORT
-CRESEFF = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT",))
-
-# Field for RESI_REFE_RELA/EFFORT+MOMENT
-CRESEFM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT", "MOMENT"))
-
-# Field for RESI_REFE_RELA/THM
-CRESTHM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "FHYDR[2]", "FTHERM"))
-
-# Field for RESI_REFE_RELA/THM_DIL
-CRESTHD = LocatedComponents(
-    phys=PHY.PREC_R, type="ELEM", components=("SIGM", "EPSI", "FHYDR[2]", "FTHERM", "LAG_GV")
-)
-
-# Field for RESI_REFE_RELA/STRESS
-CRESSIG = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM"))
-
 # For energy (isoparametric elements)
 CENEISO = LocatedComponents(phys=PHY.ENER_R, type="ELEM", components=("TOTALE",))
 
@@ -219,6 +202,27 @@ CHECHPF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H",))
 
 # Field for normal exchange in thermic (coefficient/real)
 CHECHPR = LocatedComponents(phys=PHY.COEH_R, type="ELEM", components=("H",))
+
+# Field for RESI_REFE_RELA COMPONENT NAMES (ALL COMPONENTS, CONSISTENT WITH CRESIREF)
+CRESICMP = LocatedComponents(phys=PHY.RESICMP, type="ELEM", components=("X[11]",))
+
+# Field for RESI_REFE_RELA VALUES (ALL COMPONENTS)
+CRESIREF = LocatedComponents(
+    phys=PHY.RESIREF,
+    type="ELEM",
+    components=(
+        "SIGM",
+        "EPSI",
+        "FLUXTHER",
+        "FLUXHYD[2]",
+        "EFFORT",
+        "MOMENT",
+        "VARI",
+        "DEPL",
+        "LAGR",
+        "PI",
+    ),
+)
 
 # Field for normal exchange in thermic (temperature/function)
 CTEMPEF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))

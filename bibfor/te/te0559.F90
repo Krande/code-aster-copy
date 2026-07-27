@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------------------------------------
 
 subroutine te0559(option, nomte)
+    use resi_refe_module, only: RESI_REFE
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/terefe.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
@@ -32,9 +32,11 @@ subroutine te0559(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8) :: iret, itab(2), jv_vectur, nddl
     real(kind=8):: forref
+    type(RESI_REFE):: refe
 ! --------------------------------------------------------------------------------------------------
-
-    call terefe('EFFORT_REFE', 'MECA_BARRE', forref)
+    call refe%Init(nomte)
+    forref = refe%GetRef('EFFORT')
+    call refe%Check()
     call tecach('OOO', 'PVECTUR', 'E', iret, nval=2, itab=itab)
     jv_vectur = itab(1)
     nddl = itab(2)

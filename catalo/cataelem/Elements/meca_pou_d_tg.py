@@ -561,7 +561,9 @@ class MECA_POU_D_TG(Element):
             ),
         ),
         OP.REFE_FORC_NODA(
-            te=347, para_in=((SP.PREFCO, LC.CRESEFM),), para_out=((SP.PVECTUR, MVECTUR),)
+            te=347,
+            para_in=((SP.PRESIREF, LC.CRESIREF), (SP.PRESICMP, LC.CRESICMP)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(
             te=135,

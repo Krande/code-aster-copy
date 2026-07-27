@@ -586,7 +586,8 @@ class MECA_DPQ9_HHO111(Element):
             para_in=(
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PREFCO, LC.CRESSIG),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
                 (OP.REFE_FORC_NODA.PCHHOGT, CHHOGT),
                 (OP.REFE_FORC_NODA.PCHHOST, CHHOST),
                 (OP.REFE_FORC_NODA.PCHHOBS, CHHOBS),

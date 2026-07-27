@@ -19,6 +19,7 @@
 subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoids, igeom, &
                   imate, ipesa, ivectu, jvSief, vff, dff, alpha, beta)
 !
+    use resi_refe_module, only: RESI_REFE
     implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -28,7 +29,6 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
 #include "asterfort/mbrigi.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/terefe.h"
 #include "asterfort/verift.h"
 !
     character(len=16) :: option
@@ -81,6 +81,7 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
     character(len=8) :: nompar(4)
     real(kind=8) :: valpar(4)
     real(kind=8) :: xgau, ygau, zgau, epsinif(3)
+    type(RESI_REFE):: refe
 
 !
 ! - CALCUL DE LA MATRICE "B" :
@@ -180,10 +181,9 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
 !
     else if (option .eq. 'REFE_FORC_NODA') then
 !
-        call terefe('EPSI_REFE', 'MEMBRANE', epsref)
-        if (epsref .eq. r8vide()) then
-            ASSERT(.false.)
-        end if
+        call refe%Init('MEMBRANE')
+        epsref = refe%GetRef('EPSI')
+        call refe%Check()
 !
         call mbrigi(fami, kpg, imate, rig)
 !

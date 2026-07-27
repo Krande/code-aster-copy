@@ -766,7 +766,11 @@ class MEDKQU4(Element):
         ),
         OP.REFE_FORC_NODA(
             te=31,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PREFCO, LC.CRESEFM)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(

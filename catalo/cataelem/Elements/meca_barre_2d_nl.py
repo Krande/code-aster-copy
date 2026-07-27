@@ -547,7 +547,9 @@ class MEBA2DSE2(Element):
             ),
         ),
         OP.REFE_FORC_NODA(
-            te=559, para_in=((SP.PREFCO, LC.CRESEFF),), para_out=((SP.PVECTUR, MVECTUR),)
+            te=559,
+            para_in=((SP.PRESIREF, LC.CRESIREF), (SP.PRESICMP, LC.CRESICMP)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
         # OP.REPERE_LOCAL(
         #     te=135,

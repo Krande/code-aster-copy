@@ -23,6 +23,8 @@ subroutine te0005(option, nomte)
     use dil_type
     use MaterialPara_module
     use MaterialPara_type
+    use resi_refe_module, only: RESI_REFE
+
     implicit none
 !
 #include "asterf_types.h"
@@ -32,7 +34,6 @@ subroutine te0005(option, nomte)
 #include "asterfort/dilele.h"
 #include "asterfort/dilini.h"
 #include "asterfort/fnodil.h"
-#include "asterfort/terefe.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -68,6 +69,7 @@ subroutine te0005(option, nomte)
     type(dil_modelisation) :: ds_dil
     type(Material_Para) :: materPara
     type(Behaviour_Integ) :: BEHInteg
+    type(RESI_REFE):: refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -137,9 +139,11 @@ subroutine te0005(option, nomte)
 
         allocate (sref(dimdef))
 
-        call terefe('SIGM_REFE', 'MECA_DIL', sigref)
-        call terefe('LAGR_REFE', 'MECA_DIL', lagref)
-        call terefe('EPSI_REFE', 'MECA_DIL', epsref)
+        call refe%Init(nomte)
+        sigref = refe%GetRef('SIGM')
+        lagref = refe%GetRef('LAGR')
+        epsref = refe%GetRef('EPSI')
+        call refe%Check()
 
         if (ndim .eq. 2) then
             sref(1:dimdef) = [sigref, sigref, sigref, sigref, lagref, &

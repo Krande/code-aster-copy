@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0008(option, nomte)
-!
+    use resi_refe_module, only: RESI_REFE
     implicit none
 !
 #include "asterfort/assert.h"
@@ -26,7 +26,6 @@ subroutine te0008(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
 #include "MeshTypes_type.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -56,7 +55,7 @@ subroutine te0008(option, nomte)
     integer(kind=8) :: jvDisp, jvSief, jvCompor
     integer(kind=8) :: i, j, nbinco, iretCompor, iretDisp
     blas_int :: b_incx, b_incy, b_n
-!
+    type(RESI_REFE):: refe
 ! --------------------------------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, jpoids=ipoids, &
@@ -105,7 +104,9 @@ subroutine te0008(option, nomte)
         call dcopy(b_n, bsigm, b_incx, zr(ivectu), b_incy)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
-        call terefe('SIGM_REFE', 'MECA_ISO', sigref)
+        call refe%Init(nomte)
+        sigref = refe%GetRef('SIGM')
+        call refe%Check()
         sigtmp = 0.d0
         ftemp = 0.d0
         do i = 1, nbsig*npg

@@ -82,9 +82,6 @@ EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", comp
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EPSI",))
-
-
 ECONTPC = LocatedComponents(phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("SIXX",))
 
 
@@ -458,7 +455,8 @@ class MEGMTR3(Element):
                 (SP.PCACOQU, CCACOQU),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PREFCO, EREFCO),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

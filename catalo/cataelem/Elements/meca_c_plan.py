@@ -1007,7 +1007,11 @@ class MECPQU4(Element):
         ),
         OP.REFE_FORC_NODA(
             te=8,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PREFCO, LC.CRESSIG)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(

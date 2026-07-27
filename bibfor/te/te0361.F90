@@ -20,6 +20,7 @@ subroutine te0361(option, nomte)
 !
     use MaterialPara_module
     use MaterialPara_type
+    use resi_refe_module, only: RESI_REFE
     implicit none
 !
 #include "asterf_types.h"
@@ -30,7 +31,6 @@ subroutine te0361(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/ngforc.h"
-#include "asterfort/terefe.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -60,6 +60,7 @@ subroutine te0361(option, nomte)
     real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :)
     real(kind=8), allocatable:: sref(:)
     type(Material_Para) :: materPara
+    type(RESI_REFE):: refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,8 +97,10 @@ subroutine te0361(option, nomte)
         call ngforc(wg, b, ni2ldc, zr(jv_sief), zr(jv_vectu))
 
     elseif (option .eq. 'REFE_FORC_NODA') then
-        call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref)
-        call terefe('DEPL_REFE', 'MECA_INTERFACE', depref)
+        call refe%Init(nomte)
+        sigref = refe%GetRef('SIGM')
+        depref = refe%GetRef('DEPL')
+        call refe%Check()
         sref(1:ndim) = sigref/ndim
         sref(ndim+1:neps) = depref
         call ngforc(wg, abs(b), ni2ldc, transpose(spread(sref, 1, npg)), zr(jv_vectu))

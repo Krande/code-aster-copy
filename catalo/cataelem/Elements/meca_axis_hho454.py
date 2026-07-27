@@ -580,7 +580,8 @@ class MECA_AXQ9_HHO454(Element):
             para_in=(
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PREFCO, LC.CRESSIG),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
                 (OP.REFE_FORC_NODA.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

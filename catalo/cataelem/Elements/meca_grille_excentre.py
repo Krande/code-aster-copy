@@ -80,8 +80,6 @@ ENBSP_I = LocatedComponents(phys=PHY.NBSP_I, type="ELEM", components=("COQ_NCOU"
 
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="MATER", components=("X1",))
 
-EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EPSI",))
-
 ECONTPC = LocatedComponents(phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("SIXX",))
 
 ECONTNC = LocatedComponents(phys=PHY.SIEF_C, type="ELNO", components=("SIXX",))
@@ -446,7 +444,8 @@ class MEGCTR3(Element):
                 (SP.PCACOQU, CCACOQU),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PREFCO, EREFCO),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

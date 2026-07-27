@@ -177,7 +177,9 @@ class MEPOULI(Element):
             ),
         ),
         OP.REFE_FORC_NODA(
-            te=169, para_in=((SP.PREFCO, LC.CRESEFF),), para_out=((SP.PVECTUR, MVECTUR),)
+            te=169,
+            para_in=((SP.PRESIREF, LC.CRESIREF), (SP.PRESICMP, LC.CRESICMP)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_HYST(
             te=50,

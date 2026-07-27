@@ -27,6 +27,7 @@ subroutine te0450(option, nomte)
     use HHO_size_module
     use HHO_type
     use HHO_utils_module
+    use resi_refe_module, only: RESI_REFE
     implicit none
 !
 #include "asterf_types.h"
@@ -34,7 +35,6 @@ subroutine te0450(option, nomte)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/terefe.h"
 #include "asterfort/writeVector.h"
 #include "jeveux.h"
 !
@@ -61,6 +61,7 @@ subroutine te0450(option, nomte)
     aster_logical :: l_largestrains
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), refe_rhs(MSIZE_TDOFS_VEC)
     real(kind=8) :: stress(6*MSIZE_QP_CELL), sigm_refe, val_refe(3)
+    type(RESI_REFE):: refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,7 +99,10 @@ subroutine te0450(option, nomte)
                               hhoCS, hhoCS%sig_prev, rhs)
 
     elseif (option == "REFE_FORC_NODA") then
-        call terefe('SIGM_REFE', 'MECA_ISO', sigm_refe)
+        call refe%Init(nomte)
+        sigm_refe = refe%GetRef('SIGM')
+        call refe%Check()
+
         stress = 0.d0
         refe_rhs = 0.d0
         do isig = 1, hhoCS%nbsigm

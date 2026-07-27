@@ -22,6 +22,7 @@ subroutine te0031(option, nomte)
     use Behaviour_type
     use MaterialPara_module
     use MaterialPara_type
+    use resi_refe_module, only: RESI_REFE
     implicit none
 !
 #include "asterf_types.h"
@@ -52,7 +53,6 @@ subroutine te0031(option, nomte)
 #include "asterfort/q4grig.h"
 #include "asterfort/t3grig.h"
 #include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpslg2.h"
@@ -112,6 +112,7 @@ subroutine te0031(option, nomte)
     character(len=16), pointer :: compor(:) => null()
     type(Material_Para) :: materPara
     type(Behaviour_Integ) :: BEHInteg
+    type(RESI_REFE):: refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -379,8 +380,10 @@ subroutine te0031(option, nomte)
         end do
 !
     else if (option .eq. 'REFE_FORC_NODA') then
-        call terefe('EFFORT_REFE', 'MECA_COQUE', foref)
-        call terefe('MOMENT_REFE', 'MECA_COQUE', moref)
+        call refe%Init(nomte)
+        foref = refe%GetRef('EFFORT')
+        moref = refe%GetRef('MOMENT')
+        call refe%Check()
 !
         ind = 8
         do i = 1, nno

@@ -73,9 +73,6 @@ ECOPILO = LocatedComponents(
 )
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "DEPL"))
-
-
 ECONTPG = LocatedComponents(
     phys=PHY.SIEF_R, type="ELGA", location="RIGI", components=("SIGN", "SITX", "CONT_X", "CONT_Y")
 )
@@ -252,7 +249,12 @@ class EIPLQU8(Element):
         ),
         OP.REFE_FORC_NODA(
             te=361,
-            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER), (SP.PREFCO, EREFCO)),
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_ELAS(

@@ -17,6 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine te0430(option, nomte)
+    use resi_refe_module, only: RESI_REFE
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,7 +32,6 @@ subroutine te0430(option, nomte)
 #include "asterfort/nmgrib.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
-#include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/verift.h"
@@ -62,6 +62,7 @@ subroutine te0430(option, nomte)
     character(len=8) :: nompar(4)
     real(kind=8) :: valpar(4)
     real(kind=8) :: xgau, ygau, zgau, exx
+    type(RESI_REFE):: refe
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
@@ -222,10 +223,9 @@ subroutine te0430(option, nomte)
 !
         else if (option .eq. 'REFE_FORC_NODA') then
 !
-            call terefe('EPSI_REFE', 'GRILLE', epsref)
-            if (epsref .eq. r8vide()) then
-                ASSERT(.false.)
-            end if
+            call refe%Init(nomte)
+            epsref = refe%GetRef('EPSI')
+            call refe%Check()
 !
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate), &

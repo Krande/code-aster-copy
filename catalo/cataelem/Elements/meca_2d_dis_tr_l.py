@@ -364,7 +364,8 @@ class MECA_2D_DIS_TR_L(Element):
             para_in=(
                 (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
                 (SP.PCINFDI, LC.CCINFDI),
-                (SP.PREFCO, LC.CRESEFM),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
                 (SP.PMATERC, LC.CMATERC),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

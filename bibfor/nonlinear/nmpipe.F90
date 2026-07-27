@@ -171,7 +171,7 @@ subroutine nmpipe(model, ligrpi, cartyp, careta, ds_material, &
     lpain(14) = 'PCARCRI'
     lchin(14) = ds_constitutive%carcri(1:19)
     lpain(15) = 'PCAGNBA'
-    lchin(15) = carele(1:8)//'.CARGENBA'
+    lchin(15) = caraElem(1:8)//'.CARGENBA'
     nbFieldIn = 15
 
 ! - Add fields for orientation

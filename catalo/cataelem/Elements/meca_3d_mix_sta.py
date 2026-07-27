@@ -80,8 +80,6 @@ ECONTNO = LocatedComponents(
     ),
 )
 
-EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "LAG_GV"))
-
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MVECTDR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NDEPLAR)
@@ -458,7 +456,11 @@ class MEMS_HEXA8(Element):
         ),
         OP.REFE_FORC_NODA(
             te=54,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PREFCO, EREFCO)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(
