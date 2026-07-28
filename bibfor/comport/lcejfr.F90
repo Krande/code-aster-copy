@@ -396,11 +396,12 @@ subroutine lcejfr(BEHInteg, fami, kpg, ksp, ndim, &
     end do
     vip(5) = max(nint(vim(5)), ifouv)
 !
-    vip(6) = vim(6)
+    vip(6) = 0.d0
     do i = 2, ndim
         vip(6) = vip(6)+sigma(i)**2
-        vip(6) = sqrt(vip(6))
     end do
+    vip(6) = sqrt(vip(6))
+!
     vip(7) = a(1)+oset
     do i = 2, ndim
         vip(i+6) = a(i)
