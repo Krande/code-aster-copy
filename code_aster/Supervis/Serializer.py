@@ -263,6 +263,7 @@ class Serializer:
                         names.append(name)
                 except EOFError:
                     pass
+                PicklingHelper.reset()
 
         not_read = set(objList).difference(names)
         if not_read:
@@ -393,6 +394,10 @@ class PicklingHelper:
         else:
             logger.debug("+ returning %s '%s' from cache", class_.__name__, objName)
         return cls.memods[objName]
+
+    @classmethod
+    def reset(cls):
+        cls.memods = {}
 
 
 def subtypes(cls):
