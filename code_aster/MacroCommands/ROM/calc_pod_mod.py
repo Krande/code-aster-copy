@@ -22,6 +22,7 @@ import numpy as np
 from ...Utilities import PETSc, SLEPc
 from mpi4py import MPI
 
+TOL_NUM = 1e-12
 comm = MPI.COMM_WORLD
 global_size = comm.Get_size()
 
@@ -143,7 +144,7 @@ def computeProjectionErrors(Phi, snapshots):
         norm_u = np.linalg.norm(u)
         abs_error = np.subtract(u, u_proj)
 
-        if norm_u > 1e-12:
+        if norm_u > TOL_NUM:
             rel_error = np.linalg.norm(abs_error) / norm_u
         else:
             rel_error = 0.0
@@ -179,7 +180,7 @@ def computeProjectionErrors_petsc(Phi_petsc, snapshots_petsc):
         # - compute errors
         norm_u = u_vec.norm(PETSc.NormType.NORM_2)
         abs_error = abs_error_vec.norm(PETSc.NormType.NORM_2)
-        if norm_u > 1e-12:
+        if norm_u > TOL_NUM:
             rel_error = abs_error / norm_u
         else:
             rel_error = 0.0
@@ -218,7 +219,7 @@ class PODAnalysisBase(abc.ABC):
         self._criterionModes = None
         self._crit_tolerance = tolerance
         self._crit_nbModes = nbModes
-        self._tol_num = 1e-12
+        self._tol_num = TOL_NUM
         ## - Prepare the operators for POD Analysis
         self.setInfosSnapshots()
         self.setCompressionMethod(method)
