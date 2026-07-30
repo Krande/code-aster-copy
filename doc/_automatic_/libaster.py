@@ -10534,6 +10534,9 @@ class MechanicalLoadReal(DataStructure):
     def hasLoadField(self, arg0):
         pass
 
+    def setFiniteElementDescriptor(self, arg0):
+        pass
+
     def setPairingField(self, pairs):
         """Set pairing intersection.
 
@@ -10589,6 +10592,9 @@ class MechanicalLoadFunction(DataStructure):
     def hasLoadField(self, arg0):
         pass
 
+    def setFiniteElementDescriptor(self, arg0):
+        pass
+
     def updateValuePointers(self):
         pass
 
@@ -10635,6 +10641,9 @@ class MechanicalLoadComplex(DataStructure):
         """
 
     def hasLoadField(self, arg0):
+        pass
+
+    def setFiniteElementDescriptor(self, arg0):
         pass
 
     def updateValuePointers(self):

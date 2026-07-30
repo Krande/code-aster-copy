@@ -177,6 +177,8 @@ class MechanicalLoadDescription : public DataStructure {
      */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
 
+    void setFiniteElementDescriptor( const FiniteElementDescriptorPtr fed ) { _FEDesc = fed; };
+
     BaseMeshPtr getMesh() const { return _model->getMesh(); }
 
     ModelPtr getModel() const { return _model; }

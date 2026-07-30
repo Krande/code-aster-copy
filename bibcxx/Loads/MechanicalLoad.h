@@ -131,6 +131,13 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
     };
 
     /**
+     * @brief Set the finite element descriptor
+     */
+    void setFiniteElementDescriptor( const FiniteElementDescriptorPtr fed ) const {
+        _mecaLoadDesc->setFiniteElementDescriptor( fed );
+    };
+
+    /**
      * @brief Get the model
      */
     ModelPtr getModel() const { return _mecaLoadDesc->getModel(); };
