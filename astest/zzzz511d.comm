@@ -229,6 +229,7 @@ epsa = CREA_CHAMP(
             NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
             VALE=(0, EIMP, 0, 0, 0, 0),
         ),
+        _F(GROUP_MA="barre", NOM_CMP="EPXX", VALE=EIMP),
     ),
 )
 
@@ -433,8 +434,8 @@ TEST_RESU(
             NOM_CMP="N",
             GROUP_MA="barre",
             POINT=1,
-            VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP),
-            VALE_CALC=200.00000000000006,
+            VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP - EIMP),
+            VALE_CALC=100.00000000000006,
             CRITERE="RELATIF",
         ),
         _F(

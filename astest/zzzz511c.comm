@@ -21,11 +21,11 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
 # Test ayant pour vocation de tester la complétude de certaines fonctionnalités pour le GC
-# Elements finis couverts : 3D, DKT, GRILLE_MEMBRANE, BARRE, DIS_T_N
+# Elements finis couverts : 3D, DKT, GRILLE_MEMBRANE, BARRE_3D_NL, DIS_T_N
 # Fonctionnalités examinées :
 #  1) Affectation d'une température ELNO
 #  2) Affectation d'un séchage ELNO
-#  3) Affectation d'une déformation anélastique ELNO non nulle sur les éléments 3D
+#  3) Affectation d'une déformation anélastique ELNO non nulle sur les éléments 3D et BARRE_3D_NL
 #  4) STAT_NON_LINE pour s'assurer de la prédiction -> convergence en 1 itération
 #  5) CALC_CHAMP / VARC_ELGA
 
@@ -37,7 +37,7 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 UIMP = 2.0e-3  # déplacement d'allongement imposé (comme L=1 mm, la déformation vaut aussi uimp)
 TIMP = 100  # élévation de température (linéaire entre 0 et 1 s)
 CIMP = 50  # concentration en eau imposée (linéaire entre 0 et 50)
-EIMP = 5.0e-4  # déformation anélastique imposée dans la direction yy
+EIMP = 5.0e-4  # déformation anélastique imposée dans la direction y
 
 YOUNG = 2.0e5  # Module de young, raideur du ressort et raideur des barres (section = 1 mm2)
 NU = 0.3
@@ -226,6 +226,7 @@ epsa = CREA_CHAMP(
             NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
             VALE=(0, EIMP, 0, 0, 0, 0),
         ),
+        _F(GROUP_MA="barre", NOM_CMP=("EPXX"), VALE=(EIMP)),
     ),
 )
 
@@ -429,8 +430,8 @@ TEST_RESU(
             NOM_CMP="N",
             GROUP_MA="barre",
             POINT=1,
-            VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP),
-            VALE_CALC=200.00000000000006,
+            VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP - EIMP),
+            VALE_CALC=100.0,
             CRITERE="RELATIF",
         ),
         _F(
