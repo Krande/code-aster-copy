@@ -37,6 +37,7 @@ subroutine te0431(option, nomte)
 #include "asterfort/nmco1d.h"
 #include "asterfort/nmgrib.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
@@ -71,7 +72,7 @@ subroutine te0431(option, nomte)
     integer(kind=8) :: ivectu, icontp, ivarip, ivarix, icontx
     real(kind=8) :: dff(2, 8), b(6, 8), p(3, 6), jac
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
-    real(kind=8) :: epsm, deps, sigm, sig, tmp, rig
+    real(kind=8) :: deps, sigm, sig, tmp, rig
     integer(kind=8) :: iinstm, iinstp
     aster_logical :: lexc, lNonLine, lLine
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -80,11 +81,16 @@ subroutine te0431(option, nomte)
     type(Behaviour_Integ) :: BEHInteg
     type(Material_Para) :: materPara
     character(len=16), pointer :: compor(:) => null()
-    character(len=8), parameter :: typmod(2) = (/"COMP1D  ", "        "/)
+    character(len=8) :: typmod(2)
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! - Type of modelling
+    call teattr('S', 'TYPMOD', typmod(1))
+    call teattr('C', 'TYPMOD2', typmod(2), iret)
+    if (iret .eq. 1) typmod(2) = ' '
+
     lexc = (lteatt('MODELI', 'GRC'))
     lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA') .or. &
                (option(1:10) .eq. 'RIGI_MECA_')
@@ -232,11 +238,9 @@ subroutine te0431(option, nomte)
             sigm = zr(icontm+kpg-1)
 
 ! --------- CALCUL DE LA DEFORMATION DEPS11
-            epsm = 0.d0
             deps = 0.d0
             do i = 1, nno
                 do j = 1, nddl
-                    epsm = epsm+b(j, i)*zr(ideplm+(i-1)*nddl+j-1)
                     deps = deps+b(j, i)*zr(ideplp+(i-1)*nddl+j-1)
                 end do
             end do
@@ -246,8 +250,8 @@ subroutine te0431(option, nomte)
 
 ! --------- Integrator
             call nmco1d(BEHInteg, &
-                        relaComp, relaCpla, &
-                        option, epsm, deps, sigm, &
+                        relaComp, &
+                        option, deps, sigm, &
                         zr(ivarim+(kpg-1)*lgpg), sig, &
                         zr(ivarip+(kpg-1)*lgpg), rig, cod(kpg))
 

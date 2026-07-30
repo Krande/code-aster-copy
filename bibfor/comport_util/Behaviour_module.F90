@@ -405,6 +405,22 @@ contains
         character(len=8), intent(in) :: typmod(2)
         type(Behaviour_Integ), intent(inout) :: BEHInteg
 ! ----- Locals
+        character(len=8), parameter:: &
+            allowedTypmod1(*) = [character(len=8):: '1D', 'PLAN', 'C_PLAN', 'D_PLAN', 'AXIS', '3D']
+        character(len=8), parameter:: &
+            allowedTypmod2(*) = [character(len=8):: ' ', 'GRADVARI', 'HHO', 'THM', 'GRADSIGM', &
+                                                                         'EJ_HYME', 'ELEMJOIN', &
+                                                                         'INTERFAC', 'INTSOLPI', &
+                                                                         'CABLE_GA', 'JHMS']
+        character(len=8), parameter:: featNdimsiEnabled(*) = &
+                                      [character(len=8):: ' ', 'GRADVARI', 'HHO', 'THM']
+        character(len=8), parameter:: featEpsComEnabled(*) = &
+                                      [character(len=8):: ' ', 'GRADVARI', 'HHO', 'THM']
+        character(len=8), parameter:: featDeborstEnabled(*) = [character(len=8):: ' ', 'HHO']
+        character(len=8), parameter:: featCtrlEpsEnabled(*) = [character(len=8):: ' ', 'HHO', 'THM']
+        character(len=8), parameter:: featReguViscEnabled(*) = &
+                                      [character(len=8):: ' ', 'GRADVARI', 'HHO']
+!   ------------------------------------------------------------------------------------------------
         integer(kind=8) :: lawOffset
 !   ------------------------------------------------------------------------------------------------
 !
@@ -412,14 +428,60 @@ contains
             WRITE (6, *) '<DEBUG>  Paramètres du modèle'
         end if
 
-        BEHInteg%behavPara%lStandardFE = typmod(2) .eq. ' ' .or. typmod(2) .eq. 'HHO'
+        ! Exclusions
+        ! if (.not. any(typmod(1) == allowedTypmod1)) write(6,*) 'typmod1 =',typmod(1)
+        ! if (.not. any(typmod(2) == allowedTypmod2)) write(6,*) 'typmod2 =',typmod(2)
+        ASSERT(any(typmod(1) == allowedTypmod1))
+        ASSERT(any(typmod(2) == allowedTypmod2))
+
+        ! Type of element
         BEHInteg%behavPara%lTHM = typmod(2) .eq. 'THM'
-        BEHInteg%behavPara%lCZM = typmod(2) .eq. 'ELEMJOIN'
         BEHInteg%behavPara%lGradVari = typmod(2) .eq. 'GRADVARI' .or. typmod(2) .eq. 'HHO_GRAD'
+
         BEHInteg%behavPara%lAxis = typmod(1) .eq. 'AXIS'
-        BEHInteg%behavPara%lThreeDim = typmod(1) (1:2) .eq. '3D'
         BEHInteg%behavPara%lPlaneStrain = typmod(1) (1:6) .eq. 'D_PLAN'
         BEHInteg%behavPara%lPlaneStress = typmod(1) (1:6) .eq. 'C_PLAN'
+        BEHInteg%BehavPara%lTwoDim = any(typmod(1) == ['PLAN  ', 'C_PLAN', 'D_PLAN', 'AXIS  '])
+        BEHInteg%BehavPara%lOneDim = typmod(1) .eq. '1D'
+        BEHInteg%behavPara%lThreeDim = typmod(1) (1:2) .eq. '3D'
+
+        ! Allowed features
+        BEHInteg%behavPara%lNdimsiEnabled = any(typmod(2) == featNdimsiEnabled)
+        BEHInteg%behavPara%lEpsComEnabled = any(typmod(2) == featEpsComEnabled)
+        BEHInteg%behavPara%lDeborstEnabled = any(typmod(2) == featDeborstEnabled)
+        BEHInteg%behavPara%lCtrlEpsEnabled = any(typmod(2) == featCtrlEpsEnabled)
+        BEHInteg%behavPara%lReguViscEnabled = any(typmod(2) == featReguViscEnabled)
+
+        ASSERT(.not. BEHInteg%behavPara%lDeborstEnabled .or. BEHInteg%behavPara%lNdimsiEnabled)
+        ASSERT(.not. BEHInteg%behavPara%lEpsComEnabled .or. BEHInteg%behavPara%lNdimsiEnabled)
+        ASSERT(.not. BEHInteg%behavPara%lCtrlEpsEnabled .or. BEHInteg%behavPara%lNdimsiEnabled)
+        ASSERT(.not. BEHInteg%behavPara%lReguViscEnabled .or. BEHInteg%behavPara%lNdimsiEnabled)
+
+        ASSERT(.not. BEHInteg%behavPara%lStrainMeca .or. BEHInteg%behavPara%lEpsComEnabled)
+        ASSERT(.not. BEHInteg%behavPara%lTHM .or. BEHInteg%behavPara%lEpsComEnabled)
+        ASSERT(.not. BEHInteg%behavPara%lReguVisc .or. BEHInteg%behavPara%lReguViscEnabled)
+
+        if (BEHInteg%behavPara%lFiniteStrain) then
+            ASSERT(.not. BEHInteg%behavPara%lTHM)
+            ASSERT(.not. BEHInteg%behavPara%lReguVisc)
+            ASSERT(.not. BEHInteg%behavPara%lStrainMeca .or. ca_nbcvrc_ .eq. 0)
+        end if
+
+        ! Default size of strain and stress tensors
+        if (BEHInteg%behavPara%lNdimsiEnabled) then
+            if (BEHInteg%behavPara%lThreeDim) then
+                BEHInteg%behavPara%ndimsi = 6
+            else if (BEHInteg%behavPara%lTwoDim) then
+                BEHInteg%behavPara%ndimsi = 4
+            else if (BEHInteg%BehavPara%lOneDim) then
+                BEHInteg%behavPara%ndimsi = 1
+            else
+                write (6, *) 'PROBLEME: typmod  -> ', typmod(1:2)
+                ASSERT(ASTER_FALSE)
+            end if
+        else
+            BEHInteg%behavPara%ndimsi = 0
+        end if
 
         lawOffset = 0
         if (BEHInteg%behavPara%lImplex) then
@@ -427,6 +489,9 @@ contains
         end if
         if (typmod(2) .eq. 'GRADSIGM') then
             lawOffset = lawOffset+4000
+        end if
+        if (typmod(1) .eq. '1D') then
+            lawOffset = lawOffset+5000
         end if
         if (typmod(2) .eq. 'GRADVARI') then
             lawOffset = lawOffset+6000
@@ -452,40 +517,34 @@ contains
 !    -> If defoLDC = 'MECANIQUE', prepare mechanical strain
 !    -> If defoLDC = 'TOTALE' or 'OLD', keep total strain
 !
-! In  neps             : number of components of strains
+! In  BEHInteg         : main object for managing the integration of behavior laws
 ! IO  epsm             : In : total strains at beginning of current step time
 !                        Out : mechanical strains at beginning of current step time
 ! IO  deps             : In : increment of total strains during current step time
 !                        Out : increment of mechanical strains during current step time
-! In  BEHInteg         : main object for managing the integration of behavior laws
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine behaviourPrepStrain(neps, epsm, deps, BEHInteg)
+    subroutine behaviourPrepStrain(BEHInteg, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer(kind=8), intent(in) :: neps
-        real(kind=8), intent(inout) :: epsm(neps), deps(neps)
         type(Behaviour_Integ), intent(inout) :: BEHInteg
+        real(kind=8), intent(inout) :: epsm(:), deps(:)
 ! ----- Local
-        aster_logical :: lFiniteStrain, lPtot, lStrainMeca, lStrainAll
+        aster_logical :: lPtot, lStrainMeca
 !   ------------------------------------------------------------------------------------------------
 !
         if (ca_nbcvrc_ .ne. 0) then
             lStrainMeca = BEHInteg%behavPara%lStrainMeca
-            lStrainAll = BEHInteg%behavPara%lStrainAll
-            lFiniteStrain = BEHInteg%behavPara%lFiniteStrain
             lPtot = BEHInteg%allVarcStrain%list(VARC_STRAIN_PTOT)%exist
             if (lStrainMeca .or. lPtot) then
                 if (LDC_PREP_DEBUG .eq. 1) then
                     WRITE (6, *) '<DEBUG>  Présence de VARC avec nouveau système ou PTOT'
                 end if
-                ASSERT(.not. lFiniteStrain)
 ! ------------- Compute non-mechanic strains for some external state variables
-                call computeStrainESVA(BEHInteg%allVarcStrain, &
-                                       BEHInteg%behavESVA, neps)
+                call computeStrainESVA(BEHInteg%allVarcStrain, BEHInteg%behavESVA)
 
 ! ------------- Subtract to get mechanical strain epsm and deps become mechanical strains
-                call computeStrainMeca(BEHInteg, neps, epsm, deps)
+                call computeStrainMeca(BEHInteg, epsm, deps)
             end if
         else
             if (LDC_PREP_DEBUG .eq. 1) then
@@ -1179,10 +1238,7 @@ contains
 !
         if (ca_nbcvrc_ .ne. 0) then
             ndimsi = size(sig)
-            ASSERT(ndimsi .le. 6)
-            ASSERT(size(dsidep, 1) .ge. ndimsi)
-            ASSERT(size(dsidep, 2) .ge. ndimsi)
-            sig = sig-matmul(dsidep(1:ndimsi, 1:ndimsi), behavESVA%depsi_varc(1:ndimsi))
+            sig = sig-matmul(dsidep, behavESVA%depsi_varc(1:ndimsi))
             if (LDC_PREP_DEBUG .eq. 1) then
                 WRITE (6, *) '<DEBUG>  Prediction stress: ', sig
             end if
@@ -1416,12 +1472,11 @@ contains
 ! In  neps             : number of components of strains
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine computeStrainESVA(allVarcStrain, behavESVA, neps)
+    subroutine computeStrainESVA(allVarcStrain, behavESVA)
 !   -----------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(All_Varc_Strain), intent(in) :: allVarcStrain
         type(BehaviourESVA), intent(inout) :: behavESVA
-        integer(kind=8), intent(in) :: neps
 ! ----- Local
         aster_logical :: hasAnelastiStrains
 !   ------------------------------------------------------------------------------------------------
@@ -1434,15 +1489,15 @@ contains
         behavESVA%epsi_varc = 0.d0
         hasAnelastiStrains = ASTER_FALSE
 
-        call getVarcStrain('-', VARC_STRAIN_ALL, allVarcStrain, neps, behavESVA%epsi_varc)
-        call getVarcStrain('T', VARC_STRAIN_ALL, allVarcStrain, neps, behavESVA%depsi_varc)
+        call getVarcStrain('-', VARC_STRAIN_ALL, allVarcStrain, behavESVA%epsi_varc)
+        call getVarcStrain('T', VARC_STRAIN_ALL, allVarcStrain, behavESVA%depsi_varc)
 
 ! ----- DEBUG
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  Strains from external state variables - Prev: ', &
-                neps, behavESVA%epsi_varc(1:neps)
+                behavESVA%epsi_varc
             WRITE (6, *) '<DEBUG>  Strains from external state variables - Incr: ', &
-                neps, behavESVA%depsi_varc(1:neps)
+                behavESVA%depsi_varc
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -1454,70 +1509,32 @@ contains
 ! Prepare strains (substracting "thermic" strains to total strains to get mechanical part)
 !
 ! In  BEHInteg         : main object for managing the integration of behavior laws
-! In  neps             : number of components of strains
 ! IO  epsm             : In : total strains at beginning of current step time
 !                        Out : mechanical strains at beginning of current step time
 ! IO  deps             : In : increment of total strains during current step time
 !                        Out : increment of mechanical strains during current step time
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine computeStrainMeca(BEHInteg, neps, epsm, deps)
+    subroutine computeStrainMeca(BEHInteg, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(Behaviour_Integ), intent(in) :: BEHInteg
-        integer(kind=8), intent(in) :: neps
-        real(kind=8), intent(inout) :: epsm(neps), deps(neps)
+        real(kind=8), intent(inout) :: epsm(:), deps(:)
 ! ----- Local
-        real(kind=8) :: stran(12), dstran(12)
-        integer(kind=8) :: nepu
-        aster_logical :: lGradVari, lCZM, lEpsa
+        integer(kind=8):: ndimsi
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG> Calcul des déformations mécaniques'
         end if
-        lCZM = BEHInteg%behavPara%lCZM
-        lGradVari = BEHInteg%behavPara%lGradVari
-        lEpsa = BEHInteg%allVarcStrain%list(VARC_STRAIN_EPSA)%exist
-        dstran = 0.d0
-        stran = 0.d0
-        if ((neps .eq. 6) .or. (neps .eq. 4)) then
-            dstran(1:neps) = deps(1:neps)-BEHInteg%behavESVA%depsi_varc(1:neps)
-            stran(1:neps) = epsm(1:neps)-BEHInteg%behavESVA%epsi_varc(1:neps)
-        else if ((neps .eq. 3) .and. lCZM) then
-! --------- No thermic strains for cohesive elements
-            dstran(1:neps) = deps(1:neps)
-            stran(1:neps) = epsm(1:neps)
-        else if ((neps .eq. 12) .and. .not. lEpsa) then
-! --------- For ENDO_HETEROGENE
-            dstran(1:neps) = deps(1:neps)
-            dstran(1:3) = dstran(1:3)-BEHInteg%behavESVA%depsi_varc(1:3)
-        else if (lGradVari) then
-! --------- For GRAD_VARI et GRAD_INCO
-            ASSERT(neps .eq. 11 .or. neps .eq. 8)
-            if (neps .eq. 11) then
-                nepu = 6
-            else if (neps .eq. 8) then
-                nepu = 4
-            end if
-            dstran(1:nepu) = deps(1:nepu)-BEHInteg%behavESVA%depsi_varc(1:nepu)
-            stran(1:nepu) = epsm(1:nepu)-BEHInteg%behavESVA%epsi_varc(1:nepu)
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+        ASSERT(BEHInteg%behavPara%lEpsComEnabled)
 
-! ----- epsm and deps become mechanical strains
-        if (lGradVari) then
-            epsm(1:nepu) = stran(1:nepu)
-            deps(1:nepu) = dstran(1:nepu)
-        else
-            epsm(1:neps) = stran(1:neps)
-            deps(1:neps) = dstran(1:neps)
-        end if
+        ndimsi = BEHInteg%behavPara%ndimsi
+        epsm(1:ndimsi) = epsm(1:ndimsi)-BEHInteg%behavESVA%epsi_varc(1:ndimsi)
+        deps(1:ndimsi) = deps(1:ndimsi)-BEHInteg%behavESVA%depsi_varc(1:ndimsi)
 
         if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Prepare strains for integration: ', &
-                neps, epsm(1:neps), deps(1:neps)
+            WRITE (6, *) '<DEBUG>  Prepare strains for integration: ', epsm, deps
         end if
 !   ------------------------------------------------------------------------------------------------
     end subroutine

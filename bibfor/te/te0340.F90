@@ -32,6 +32,7 @@ subroutine te0340(option, nomte)
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
@@ -57,7 +58,7 @@ subroutine te0340(option, nomte)
     character(len=8), parameter :: fami = "RIGI"
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: comporKit(COMPOR_SIZE)
-    character(len=8), parameter :: typmod(2) = (/'1D', '  '/)
+    character(len=8):: typmod(2)
     character(len=8) :: lielrf(10)
     integer(kind=8) :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
     integer(kind=8) :: iw, ivf1, idf1, jvGeom, jvMaterc
@@ -85,7 +86,11 @@ subroutine te0340(option, nomte)
     icontp = 1
     ivarip = 1
 
-! - FONCTIONS DE FORME
+    ! - Type of modelling
+    call teattr('S', 'TYPMOD', typmod(1))
+    call teattr('S', 'TYPMOD2', typmod(2))
+
+    ! - FONCTIONS DE FORME
     call elref2(nomte, 2, lielrf, ntrou)
     call elrefe_info(elrefe=lielrf(1), fami='RIGI', jvf=ivf1, jdfde=idf1)
     call elrefe_info(elrefe=lielrf(1), fami='NOEU', nno=nno1, npg=npgn, jdfde=idf1n)

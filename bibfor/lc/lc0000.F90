@@ -63,6 +63,7 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc0034.h"
 #include "asterfort/lc0035.h"
 #include "asterfort/lc0036.h"
+#include "asterfort/lc0038.h"
 #include "asterfort/lc0040.h"
 #include "asterfort/lc0042.h"
 #include "asterfort/lc0050.h"
@@ -77,10 +78,11 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc0077.h"
 #include "asterfort/lc0078.h"
 #include "asterfort/lc0079.h"
+#include "asterfort/lc0101.h"
+#include "asterfort/lc0102.h"
 #include "asterfort/lc0120.h"
 #include "asterfort/lc0137.h"
 #include "asterfort/lc0145.h"
-#include "asterfort/lc0152.h"
 #include "asterfort/lc0165.h"
 #include "asterfort/lc0166.h"
 #include "asterfort/lc0167.h"
@@ -94,6 +96,17 @@ subroutine lc0000(BEHInteg, &
 #include "asterfort/lc2002.h"
 #include "asterfort/lc2036.h"
 #include "asterfort/lc4047.h"
+#include "asterfort/lc5001.h"
+#include "asterfort/lc5002.h"
+#include "asterfort/lc5003.h"
+#include "asterfort/lc5024.h"
+#include "asterfort/lc5038.h"
+#include "asterfort/lc5076.h"
+#include "asterfort/lc5090.h"
+#include "asterfort/lc5091.h"
+#include "asterfort/lc5101.h"
+#include "asterfort/lc5102.h"
+#include "asterfort/lc5152.h"
 #include "asterfort/lc6036.h"
 #include "asterfort/lc6046.h"
 #include "asterfort/lc6057.h"
@@ -203,10 +216,10 @@ subroutine lc0000(BEHInteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 9 .and. nsig .le. 6))
 
-! - Size of tensors (for common)
-    ndt = 2*ndim
+! - Size of tensors
+    ndimsi = BEHInteg%behavPara%ndimsi
+    ndt = ndimsi
     ndi = ndim
 
 ! - Detect external state variables
@@ -219,7 +232,7 @@ subroutine lc0000(BEHInteg, &
 ! - Default: mechanical strains are total strains (no external state variables)
     epsm = epsm_tot
     deps = deps_tot
-    call behaviourPrepStrain(neps, epsm, deps, BEHInteg)
+    call behaviourPrepStrain(BEHInteg, epsm, deps)
 
 ! - Prepare external state variables for external solvers (UMAT/MFRONT)
     if (BEHInteg%behavPara%lExteSolver) then
@@ -243,10 +256,9 @@ subroutine lc0000(BEHInteg, &
     ASSERT(nvi .ge. 1)
 
 ! - What is the stress at t- for the constitutive law ?
-    sigm(1:nsig) = sigm_all(1:nsig)
+    sigm = sigm_all
     if (BEHInteg%behavPara%lReguVisc) then
-        ASSERT(nsig .ge. 2*ndim)
-        sigm(1:2*ndim) = sigm(1:2*ndim)-vim(idx_regu_visc:idx_regu_visc-1+2*ndim)*r2(1:2*ndim)
+        sigm(1:ndimsi) = sigm(1:ndimsi)-vim(idx_regu_visc:idx_regu_visc-1+ndimsi)*r2(1:ndimsi)
     end if
 
 ! - Initializations of output variables
@@ -493,6 +505,10 @@ subroutine lc0000(BEHInteg, &
                     typmod, ndsde, &
                     dsidep, codret)
 
+    case (38)
+!     SANS
+        call lc0038(BEHInteg, neps, nsig, nvi, option, sigp, vip, ndsde, dsidep, codret)
+
     case (40)
 !       DRUCKER_PRAGER_NA
         call lc0040(fami, kpg, ksp, ndim, jvMaterCode, &
@@ -604,6 +620,22 @@ subroutine lc0000(BEHInteg, &
                     sigp, vip, typmod, &
                     ndsde, dsidep, codret)
 
+    case (101)
+        call lc0101(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (102)
+        call lc0102(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
     case (120)
 !     BETON_DOUBLE_DP
         call lc0120(BEHInteg, &
@@ -630,15 +662,6 @@ subroutine lc0000(BEHInteg, &
                     deps, sigm, nvi, vim, option, &
                     sigp, vip, typmod, &
                     dsidep, codret)
-
-    case (152)
-!     CABLE_GAINE
-        call lc0152(BEHInteg, &
-                    fami, kpg, ksp, ndim, jvMaterCode, &
-                    instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, &
-                    sigp, vip, &
-                    ndsde, dsidep, codret)
 
     case (165)
 !     FLUA_PORO_BETON
@@ -759,6 +782,96 @@ subroutine lc0000(BEHInteg, &
                     sigp, vip, typmod, &
                     dsidep, codret)
 !
+! --------------------------------------------------------------------------------------------------
+! - 1D constitutive law (5000+numldc)
+! --------------------------------------------------------------------------------------------------
+!
+!
+    case (5001)
+        call lc5001(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5002)
+        call lc5002(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5003)
+        call lc5003(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5024)
+        call lc5024(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5038)
+!     SANS
+        call lc5038(BEHInteg, neps, nsig, nvi, option, sigp, vip, ndsde, dsidep, codret)
+
+    case (5076)
+        call lc5076(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5090)
+        call lc5090(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5091)
+        call lc5091(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5101)
+        call lc5101(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5102)
+        call lc5102(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, typmod, &
+                    ndsde, dsidep, codret)
+
+    case (5152)
+!     CABLE_GAINE
+        call lc5152(BEHInteg, &
+                    fami, kpg, ksp, ndim, jvMaterCode, &
+                    instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, &
+                    sigp, vip, &
+                    ndsde, dsidep, codret)
+
 ! --------------------------------------------------------------------------------------------------
 ! - With GRADVARI
 ! --------------------------------------------------------------------------------------------------
@@ -1037,11 +1150,7 @@ subroutine lc0000(BEHInteg, &
 
 ! - Viscous regularisation
     if (BEHInteg%behavPara%lReguVisc .and. codret .ne. LDC_ERROR_NCVG) then
-        ndimsi = 2*ndim
-        ASSERT(.not. BEHInteg%behavPara%lFiniteStrain)
-        ASSERT(BEHInteg%behavPara%lStandardFE .or. BEHInteg%behavPara%lGradVari)
-        ASSERT(neps .ge. ndimsi)
-        ASSERT(nsig .ge. ndimsi)
+
         call lcvisc(fami, kpg, ksp, ndim, jvMaterCode, &
                     BEHInteg%behavPara%lSigm, BEHInteg%behavPara%lMatr, BEHInteg%behavPara%lVari, &
                     instam, instap, deps(1:ndimsi), &

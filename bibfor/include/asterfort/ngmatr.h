@@ -17,20 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp1d(BEHinteg, &
-                      option, sigx, &
-                      epsx, depx, vim, vip, &
-                      sigxp, etan, codret)
-        use Behaviour_type
-        type(Behaviour_Integ), intent(inout) :: BEHinteg
-        character(len=16) :: option
-        real(kind=8) :: sigx
-        real(kind=8) :: epsx
-        real(kind=8) :: depx
-        real(kind=8) :: vim(*)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: sigxp
-        real(kind=8) :: etan
-        integer(kind=8) :: codret
-    end subroutine comp1d
+    subroutine ngmatr(nddl, neps, npg, w, b, dsidep, matsym, matuu, matns)
+#include "asterf_types.h"
+        integer(kind=8),intent(in) :: nddl, neps, npg
+        real(kind=8), intent(in) :: w(neps, npg), b(neps, npg, nddl)
+        real(kind=8), intent(inout):: dsidep(neps,neps,npg)
+        aster_logical, intent(in):: matsym
+        real(kind=8), intent(out), optional:: matuu((nddl*(nddl+1))/2)
+        real(kind=8), intent(out), target, optional :: matns(nddl, nddl)
+    end subroutine ngmatr
 end interface

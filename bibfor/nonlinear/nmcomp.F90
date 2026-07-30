@@ -96,9 +96,8 @@ subroutine nmcomp(BEHInteg, &
 ! In  l_epsi_varc      : flag to compute non-mechanical strains (from external state variables)
 !
 ! --------------------------------------------------------------------------------------------------
-!
     aster_logical :: conv_cp, l_epsi_varc, lMatr, lVari, lSigm, lMatrPred, lPred, invert
-    aster_logical :: lStrainMeca, l_czm, l_deborst
+    aster_logical :: lStrainMeca, l_deborst
     integer(kind=8) :: icp, numlc, nvi_all, nvi, k, l, ndimsi
     integer(kind=8) :: codret_vali, codret_ldc, codret_cp
     real(kind=8):: prec
@@ -112,7 +111,6 @@ subroutine nmcomp(BEHInteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 9 .and. nsig .le. 6))
     l_epsi_varc = ASTER_TRUE
     if (present(l_epsi_varc_)) then
         l_epsi_varc = l_epsi_varc_
@@ -127,16 +125,25 @@ subroutine nmcomp(BEHInteg, &
     epsm = epsm_inp
     deps = deps_inp
 
+    ! Size controls
+    ndimsi = BEHInteg%behavPara%ndimsi
+    if (BEHInteg%behavPara%lNdimsiEnabled) then
+        ASSERT(ndimsi .le. 6)
+        ASSERT(ndimsi .le. neps)
+        ASSERT(ndimsi .le. nsig)
+    end if
+    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 9 .and. nsig .le. 6))
+
 ! - Parameters of behaviour of the current integration point
     numlc = BEHInteg%behavPara%numlc
     l_deborst = compor(PLANESTRESS) (1:7) .eq. 'DEBORST'
+    ASSERT(.not. l_deborst .or. BEHInteg%behavPara%lDeborstEnabled)
     if (l_deborst) then
         read (compor(NVAR), '(I16)') nvi_all
     else
         nvi_all = BEHInteg%behavPara%nvi
     end if
     lStrainMeca = BEHInteg%behavPara%lStrainMeca
-    l_czm = typmod(2) .eq. 'ELEMJOIN' .or. typmod(2) .eq. 'INTERFAC'
     defoComp = compor(DEFO)
 
 ! - Option (operators) to compute
@@ -172,7 +179,7 @@ subroutine nmcomp(BEHInteg, &
 ! ----- Prepare input strains for the behaviour law
         epsm_meca = epsm
         deps_meca = 0
-        call behaviourPrepStrain(neps, epsm_meca, deps_meca, BEHInteg)
+        call behaviourPrepStrain(BEHInteg, epsm_meca, deps_meca)
         deps = -deps_meca
     end if
 
@@ -199,8 +206,6 @@ subroutine nmcomp(BEHInteg, &
 ! --------------------------------------------------------------------------------------------------
     else
         ASSERT(ndim .eq. 2)
-        ASSERT(nsig .ge. 2*ndim)
-        ASSERT(neps .ge. 2*ndim)
         ASSERT(compor(DEFO) .eq. 'PETIT')
 
 !------ Modification des parametres
@@ -261,7 +266,7 @@ subroutine nmcomp(BEHInteg, &
                 if (typ_crit .eq. 'ABSOLU') then
                     conv_cp = abs(sigp(3)) .le. prec
                 else
-                    conv_cp = abs(sigp(3)) .le. prec*maxval(abs(sigp(1:2*ndim)))
+                    conv_cp = abs(sigp(3)) .le. prec*maxval(abs(sigp(1:ndimsi)))
                 end if
                 if (conv_cp) exit
 
@@ -304,7 +309,7 @@ subroutine nmcomp(BEHInteg, &
             if (typ_crit .eq. 'ABSOLU') then
                 codret_cp = merge(0, 1, abs(sigp(3)) .le. prec)
             else
-                codret_cp = merge(0, 1, abs(sigp(3)) .le. prec*maxval(abs(sigp(1:2*ndim))))
+                codret_cp = merge(0, 1, abs(sigp(3)) .le. prec*maxval(abs(sigp(1:ndimsi))))
             end if
         end if
 
@@ -344,21 +349,15 @@ subroutine nmcomp(BEHInteg, &
 
 ! - Prediction: contribution of the thermal stress to the Taylor expansion if needed
     if (lStrainMeca .and. lPred) then
-        if (.not. l_czm) then
-            ndimsi = 2*ndim
-            ASSERT(typmod(2) .eq. ' ' .or. typmod(2) .eq. 'GRADVARI' .or. typmod(2) .eq. 'HHO')
-            ASSERT(nsig .ge. ndimsi)
-            ASSERT(size(dsidep, 1) .ge. ndimsi)
-            ASSERT(size(dsidep, 2) .ge. ndimsi)
-            ASSERT(lSigm .and. lMatr)
-            call behaviourPredictionStress(BEHInteg%behavESVA, dsidep, sigp(1:ndimsi))
-        end if
+        ASSERT(lSigm .and. lMatr)
+        call behaviourPredictionStress(BEHInteg%behavESVA, dsidep(1:ndimsi, 1:ndimsi), &
+                                       sigp(1:ndimsi))
     end if
 
 ! - Examen du domaine de validité
-    if (BEHInteg%behavPara%lChckBounds) then
+    if (BEHInteg%behavPara%lCtrlEpsEnabled) then
         call lcvali(BEHInteg%materPara, &
-                    defoComp, ndim, epsm, deps, &
+                    defoComp, epsm(1:ndimsi), deps(1:ndimsi), &
                     instam, instap, codret_vali)
     end if
 
@@ -385,7 +384,6 @@ subroutine nmcomp(BEHInteg, &
 ! Tout est satisfaisant
     else if (codret_ldc .eq. LDC_ERROR_NONE .and. codret_cp .eq. 0 .and. codret_vali .eq. 0) then
         codret = LDC_ERROR_NONE
-
     else
         ASSERT(ASTER_FALSE)
     end if

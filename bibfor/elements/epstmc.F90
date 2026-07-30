@@ -87,7 +87,7 @@ subroutine epstmc(materPara, &
 ! - Return values if required
     if (present(epsiVarc_)) then
         epsiVarc_ = 0.d0
-        call getVarcStrain(poum, indxVarcStrain, allVarcStrain, 6, epsiVarcLoca)
+        call getVarcStrain(poum, indxVarcStrain, allVarcStrain, epsiVarcLoca)
 
 ! ----- Non-isotropic elasticity: rotate strains
         if (materPara%elasID .eq. ELAS_ISOT) then

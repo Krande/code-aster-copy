@@ -69,15 +69,21 @@ module Behaviour_type
         aster_logical :: lImplex = ASTER_FALSE
 ! ----- Offset for index of behaviour
         integer(kind=8) :: lawIndexOffset = 0
+! ----- Automatic mechanism for the size of stress and strain tensors (ndimsi)
+        aster_logical :: lNdimsiEnabled = ASTER_FALSE
+        aster_logical :: lEpsComEnabled = ASTER_FALSE
+        aster_logical :: lDeborstEnabled = ASTER_FALSE
+        aster_logical :: lCtrlEpsEnabled = ASTER_FALSE
+        aster_logical :: lReguViscEnabled = ASTER_FALSE
 ! ----- Flags for standard FE
-        aster_logical :: lStandardFE = ASTER_FALSE
         aster_logical :: lAxis = ASTER_FALSE
         aster_logical :: lThreeDim = ASTER_FALSE
         aster_logical :: lPlaneStress = ASTER_FALSE
         aster_logical :: lPlaneStrain = ASTER_FALSE
+        aster_logical :: lTwoDim = ASTER_FALSE
+        aster_logical :: lOneDim = ASTER_FALSE
 ! ----- Flags for other modeliazations
         aster_logical :: lGradVari = ASTER_FALSE
-        aster_logical :: lCZM = ASTER_FALSE
         aster_logical :: lTHM = ASTER_FALSE
 ! ----- Flags for external solves
         aster_logical :: lExteSolver = ASTER_FALSE
@@ -87,6 +93,8 @@ module Behaviour_type
         integer(kind=8) :: numlc = 0
 ! ----- Number of internal state variable
         integer(kind=8) :: nvi = 0
+! ----- Default size of strain and stress tensors
+        integer(kind=8) :: ndimsi = 0
 ! ----- Flag to check bounds
         aster_logical :: lChckBounds = ASTER_FALSE
 ! ----- Cut level

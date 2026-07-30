@@ -60,7 +60,7 @@ subroutine te0543(option, nomte)
 !
 
 ! - TYPE DE MODELISATION
-    typmod = " "
+    typmod = ' '
     if (lteatt('DIM_TOPO_MODELI', '3')) then
         typmod(1) = '3D'
     else if (lteatt('AXIS', 'OUI')) then
@@ -70,7 +70,6 @@ subroutine te0543(option, nomte)
     else if (lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
     end if
-    typmod(2) = 'DEPLA'
 
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elrefe_info(fami=fami, &

@@ -61,14 +61,12 @@ subroutine lc0076(BEHInteg, &
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: lMatr, lSigm, lVari
     integer(kind=8) :: ndimsi
-    real(kind=8) :: sig(2*ndim), dsde(2*ndim, 2*ndim), vi(nvi), eps(2*ndim)
+    real(kind=8) :: vi(nvi)
+    real(kind=8) :: sig(BEHInteg%behavPara%ndimsi), eps(BEHInteg%behavPara%ndimsi)
+    real(kind=8) :: dsde(BEHInteg%behavPara%ndimsi, BEHInteg%behavPara%ndimsi)
     type(CONSTITUTIVE_LAW):: cl
 ! --------------------------------------------------------------------------------------------------
-
-    ASSERT(nsig .ge. 2*ndim)
-    ASSERT(neps .ge. 2*ndim)
-
-    ndimsi = 2*ndim
+    ndimsi = BEHInteg%behavPara%ndimsi
     sig = 0
     vi = 0
     dsde = 0

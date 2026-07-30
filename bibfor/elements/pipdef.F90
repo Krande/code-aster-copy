@@ -83,45 +83,41 @@ subroutine pipdef(typmod, compor, &
     grand = compor(DEFO) .ne. 'PETIT'
     ndimsi = 2*ndim
 !
-    if (typmod(2) .eq. 'DEPLA') then
 ! ----- CALCUL DE EPSM (LINEAIRE) OU EM (GREEN)  = EPS(UM)
-        call nmgeom(ndim, nno, axi, grand, geom, &
-                    kpg, ipoids, ivf, idfde, deplm, &
-                    .true._1, poids, dfdi, fm, epsm, &
-                    r)
+    call nmgeom(ndim, nno, axi, grand, geom, &
+                kpg, ipoids, ivf, idfde, deplm, &
+                .true._1, poids, dfdi, fm, epsm, &
+                r)
 
 ! ----- REACTUALISATION DE LA GEOMETRIE SI GRANDES DEFS
-        if (grand) then
-            b_n = to_blas_int(ndim*nno)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, deplm, b_incx, geom, b_incy)
-        end if
-
-! ----- CALCUL DE DEPS = EPS(DU)
-        call nmgeom(ndim, nno, axi, .false._1, geom, &
-                    kpg, ipoids, ivf, idfde, ddepl, &
-                    .true._1, poids, dfdi, t9bid, deps, &
-                    r)
-
-! ----- CALCUL DE EPSP (= DEPS + EPS(DU0) )
-        call nmgeom(ndim, nno, axi, .false._1, geom, &
-                    kpg, ipoids, ivf, idfde, depl0, &
-                    .true._1, poids, dfdi, t9bid, epsp, &
-                    r)
-        b_n = to_blas_int(ndimsi)
+    if (grand) then
+        b_n = to_blas_int(ndim*nno)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, deps, b_incx, epsp, b_incy)
+        call daxpy(b_n, 1.d0, deplm, b_incx, geom, b_incy)
+    end if
+
+! ----- CALCUL DE DEPS = EPS(DU)
+    call nmgeom(ndim, nno, axi, .false._1, geom, &
+                kpg, ipoids, ivf, idfde, ddepl, &
+                .true._1, poids, dfdi, t9bid, deps, &
+                r)
+
+! ----- CALCUL DE EPSP (= DEPS + EPS(DU0) )
+    call nmgeom(ndim, nno, axi, .false._1, geom, &
+                kpg, ipoids, ivf, idfde, depl0, &
+                .true._1, poids, dfdi, t9bid, epsp, &
+                r)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, deps, b_incx, epsp, b_incy)
 
 ! ----- CALCUL DE EPSD (DEPS = EPSP + ETA EPSD)
-        call nmgeom(ndim, nno, axi, .false._1, geom, &
-                    kpg, ipoids, ivf, idfde, depl1, &
-                    .true._1, poids, dfdi, t9bid, epsd, &
-                    r)
+    call nmgeom(ndim, nno, axi, .false._1, geom, &
+                kpg, ipoids, ivf, idfde, depl1, &
+                .true._1, poids, dfdi, t9bid, epsd, &
+                r)
 
-    else
-        ASSERT(ASTER_FALSE)
-    end if
 !
 end subroutine

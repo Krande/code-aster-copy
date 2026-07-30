@@ -67,7 +67,7 @@ contains
         integer(kind=8), intent(in)            ::ndimsi
         real(kind=8), dimension(ndimsi):: kr
 ! ---------------------------------------------------------------------
-        ASSERT(ndimsi .eq. 4 .or. ndimsi .eq. 6)
+        ASSERT(ndimsi .eq. 1 .or. ndimsi .eq. 4 .or. ndimsi .eq. 6)
         kr = KRONECKER(1:ndimsi)
 
     end function kron
@@ -82,7 +82,7 @@ contains
         integer(kind=8), intent(in)            ::ndimsi
         real(kind=8), dimension(ndimsi):: rac2
 ! ---------------------------------------------------------------------
-        ASSERT(ndimsi .eq. 4 .or. ndimsi .eq. 6)
+        ASSERT(ndimsi .eq. 1 .or. ndimsi .eq. 4 .or. ndimsi .eq. 6)
         rac2 = RACINE_2(1:ndimsi)
 
     end function voigt
@@ -114,6 +114,7 @@ contains
         real(kind=8), dimension(:), intent(in) :: u
         real(kind=8), dimension(size(u))      :: w
 ! ---------------------------------------------------------------------
+        ASSERT(size(u) .ge. 3)
         w = u-sum(u(1:3))*kron(size(u))/3.d0
 
     end function deviator
@@ -127,6 +128,7 @@ contains
         real(kind=8), dimension(:), intent(in) :: u
         real(kind=8)                         :: y
 ! ---------------------------------------------------------------------
+        ASSERT(size(u) .ge. 3)
         y = sum(u(1:3))/RAC3
 
     end function sph_norm

@@ -44,6 +44,7 @@ extern const char *const PhysicNames[nbPhysics];
  */
 enum Modelings {
     PlanarBar,
+    BARRE_2D_NL,
     DIS_T_2D,
     DIS_TR_2D,
     FLUIDE_2D,
@@ -153,6 +154,7 @@ enum Modelings {
     AXIS_THVD,
     AXIS_THVS,
     BARRE,
+    BARRE_3D_NL,
     CABLE,
     CABLE_GAINE,
     CABLE_POULIE,
@@ -242,14 +244,14 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 198;
+const int nbModelings = 200;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 186;
+const int nbModelingsMechanics = 188;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;

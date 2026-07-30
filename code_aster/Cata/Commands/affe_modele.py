@@ -107,6 +107,8 @@ AFFE_MODELE = OPER(
                     "AXIS_INTERFACE",
                     "AXIS_INTERFACE_S",
                     "BARRE",
+                    "BARRE_2D_NL",
+                    "BARRE_3D_NL",
                     "CABLE_GAINE",
                     "2D_BARRE",
                     "C_PLAN",

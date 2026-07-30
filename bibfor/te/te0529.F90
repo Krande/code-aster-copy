@@ -103,19 +103,19 @@ subroutine te0529(option, nomte)
                     VARC_STRAIN_ALL, allVarcStrain)
 
 ! ----- Get TEMP strains
-        call getVarcStrain('+', VARC_STRAIN_TEMP, allVarcStrain, 6, epsiTher)
+        call getVarcStrain('+', VARC_STRAIN_TEMP, allVarcStrain, epsiTher)
 
 ! ----- Get SECH strains
-        call getVarcStrain('+', VARC_STRAIN_SECH, allVarcStrain, 6, epsiSech)
+        call getVarcStrain('+', VARC_STRAIN_SECH, allVarcStrain, epsiSech)
 
 ! ----- Get HYDR strains
-        call getVarcStrain('+', VARC_STRAIN_HYDR, allVarcStrain, 6, epsiHydr)
+        call getVarcStrain('+', VARC_STRAIN_HYDR, allVarcStrain, epsiHydr)
 
 ! ----- Get PTOT strains
-        call getVarcStrain('+', VARC_STRAIN_PTOT, allVarcStrain, 6, epsiPtot)
+        call getVarcStrain('+', VARC_STRAIN_PTOT, allVarcStrain, epsiPtot)
 
 ! ----- Get EPSA strains
-        ! call getVarcStrain('+', VARC_STRAIN_EPSA, allVarcStrain, 6, epsiEpsa)
+        ! call getVarcStrain('+', VARC_STRAIN_EPSA, allVarcStrain, epsiEpsa)
         epsiVarc(1+nbEpsi*(kpg-1)) = epsiTher(1)
         epsiVarc(2+nbEpsi*(kpg-1)) = epsiTher(2)
         epsiVarc(3+nbEpsi*(kpg-1)) = epsiTher(3)

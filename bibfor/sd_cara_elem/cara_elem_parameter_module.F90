@@ -234,9 +234,10 @@ module cara_elem_parameter_module
         'MECABL2         ', 'MEPOULI         ' ]
 !
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8), parameter :: ACE_NB_BARRE     = 3
+    integer(kind=8), parameter :: ACE_NB_BARRE     = 7
     character(len=16),parameter :: ACE_EL_BARRE(ACE_NB_BARRE) =[ &
-        'MECA_BARRE      ', 'MECA_2D_BARRE   ', 'MECGSEG3        ' ]
+        'MECA_BARRE      ', 'MECA_2D_BARRE   ', 'MECGSEG3        ', &
+        'MEBA2DSE2       ', 'MEBA2DSE3       ', 'MEBA3DSE2       ', 'MEBA3DSE3       ' ]
 !
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8), parameter :: ACE_NB_GRILLE    = 6

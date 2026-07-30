@@ -270,18 +270,16 @@ contains
 ! In  poum             : '-'  '+' or 'T' (previous, current and both)
 ! In  indxVarcStrain   : index of external state variable
 ! In  allVarcStrain    : all external state variables for anelastic strains
-! In  nbEpsi           : number of components for inelastic strains
 ! Out epsiVarc         : anelastic strains from all external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getVarcStrain(poum, indxVarcStrain, allVarcStrain, nbEpsi, epsiVarc)
+    subroutine getVarcStrain(poum, indxVarcStrain, allVarcStrain, epsiVarc)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: poum
         integer(kind=8), intent(in) :: indxVarcStrain
         type(All_Varc_Strain), intent(in) :: allVarcStrain
-        integer(kind=8), intent(in) :: nbEpsi
-        real(kind=8), intent(out) :: epsiVarc(nbEpsi)
+        real(kind=8), intent(out) :: epsiVarc(6)
 ! ----- Local
         integer(kind=8) :: iVarcStrain
 !   ------------------------------------------------------------------------------------------------

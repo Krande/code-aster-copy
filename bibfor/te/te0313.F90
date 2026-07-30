@@ -33,6 +33,7 @@ subroutine te0313(option, nomte)
 #include "asterfort/fneihm.h"
 #include "asterfort/jevech.h"
 #include "asterfort/poeihm.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/thmGetElemModel.h"
 #include "jeveux.h"
@@ -72,7 +73,7 @@ subroutine te0313(option, nomte)
     integer(kind=8) :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
     real(kind=8) :: r(22)
     character(len=3) :: intgType
-    character(len=8), parameter :: typmod(2) = (/' ', ' '/)
+    character(len=8) :: typmod(2)
     type(THM_DS) :: ds_thm
     integer(kind=8) :: li
     aster_logical :: axi
@@ -83,6 +84,10 @@ subroutine te0313(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
+! - Modelisation
+    call teattr('S', 'TYPMOD', typmod(1))
+    call teattr('S', 'TYPMOD2', typmod(2))
 
 ! - Get model of finite element
     call thmGetElemModel(ds_thm)

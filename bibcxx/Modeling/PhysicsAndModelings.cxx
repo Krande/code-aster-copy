@@ -26,6 +26,7 @@
 const char *const PhysicNames[nbPhysics] = { "MECANIQUE", "THERMIQUE", "ACOUSTIQUE" };
 const char *const ModelingNames[nbModelings] = {
     "2D_BARRE",
+    "BARRE_2D_NL",
     "2D_DIS_T",
     "2D_DIS_TR",
     "2D_FLUIDE",
@@ -135,6 +136,7 @@ const char *const ModelingNames[nbModelings] = {
     "AXIS_THVD",
     "AXIS_THVS",
     "BARRE",
+    "BARRE_3D_NL",
     "CABLE",
     "CABLE_GAINE",
     "CABLE_POULIE",
@@ -226,6 +228,7 @@ const char *const ModelingNames[nbModelings] = {
 };
 
 const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
+                                                             BARRE_2D_NL,
                                                              DIS_T_2D,
                                                              DIS_TR_2D,
                                                              FLUIDE_2D,
@@ -329,6 +332,7 @@ const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
                                                              AXIS_THVD,
                                                              AXIS_THVS,
                                                              BARRE,
+                                                             BARRE_3D_NL,
                                                              CABLE,
                                                              CABLE_GAINE,
                                                              CABLE_POULIE,
