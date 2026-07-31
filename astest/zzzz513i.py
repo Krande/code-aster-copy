@@ -165,7 +165,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         diriBCs = disc_comp.getDirichletBC()
 
         # define linear solver - MUMPS
-        mySolver = CA.MumpsSolver()
+        mySolver = CA.PetscSolver(PRE_COND="LDLT_SP", RESI_RELA=1e-14)
 
         # factorize and solve
         mySolver.factorize(rigidity)
