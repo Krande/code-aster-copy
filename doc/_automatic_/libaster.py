@@ -10483,16 +10483,20 @@ class AcousticDirichletBC(DirichletBC):
 # class MechanicalLoadReal in libaster
 
 
-class MechanicalLoadReal(DataStructure):
+class MechanicalLoadReal(DSWithCppPickling, DataStructure):
     pass
 
     # Method resolution order:
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -10500,7 +10504,12 @@ class MechanicalLoadReal(DataStructure):
         1. __init__(self: libaster.MechanicalLoadReal, arg0: Model) -> None
 
         2. __init__(self: libaster.MechanicalLoadReal, arg0: str, arg1: Model) -> None
+
+        3. __init__(self: libaster.MechanicalLoadReal, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getFiniteElementDescriptor(self):
         pass
@@ -10534,9 +10543,6 @@ class MechanicalLoadReal(DataStructure):
     def hasLoadField(self, arg0):
         pass
 
-    def setFiniteElementDescriptor(self, arg0):
-        pass
-
     def setPairingField(self, pairs):
         """Set pairing intersection.
 
@@ -10551,16 +10557,20 @@ class MechanicalLoadReal(DataStructure):
 # class MechanicalLoadFunction in libaster
 
 
-class MechanicalLoadFunction(DataStructure):
+class MechanicalLoadFunction(DSWithCppPickling, DataStructure):
     pass
 
     # Method resolution order:
     #     MechanicalLoadFunction
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -10568,7 +10578,12 @@ class MechanicalLoadFunction(DataStructure):
         1. __init__(self: libaster.MechanicalLoadFunction, arg0: Model) -> None
 
         2. __init__(self: libaster.MechanicalLoadFunction, arg0: str, arg1: Model) -> None
+
+        3. __init__(self: libaster.MechanicalLoadFunction, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getFiniteElementDescriptor(self):
         pass
@@ -10590,9 +10605,6 @@ class MechanicalLoadFunction(DataStructure):
         """
 
     def hasLoadField(self, arg0):
-        pass
-
-    def setFiniteElementDescriptor(self, arg0):
         pass
 
     def updateValuePointers(self):
@@ -10602,16 +10614,20 @@ class MechanicalLoadFunction(DataStructure):
 # class MechanicalLoadComplex in libaster
 
 
-class MechanicalLoadComplex(DataStructure):
+class MechanicalLoadComplex(DSWithCppPickling, DataStructure):
     pass
 
     # Method resolution order:
     #     MechanicalLoadComplex
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -10619,7 +10635,12 @@ class MechanicalLoadComplex(DataStructure):
         1. __init__(self: libaster.MechanicalLoadComplex, arg0: Model) -> None
 
         2. __init__(self: libaster.MechanicalLoadComplex, arg0: str, arg1: Model) -> None
+
+        3. __init__(self: libaster.MechanicalLoadComplex, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getFiniteElementDescriptor(self):
         pass
@@ -10641,9 +10662,6 @@ class MechanicalLoadComplex(DataStructure):
         """
 
     def hasLoadField(self, arg0):
-        pass
-
-    def setFiniteElementDescriptor(self, arg0):
         pass
 
     def updateValuePointers(self):
@@ -10768,6 +10786,7 @@ class NodalForceReal(MechanicalLoadReal):
     # Method resolution order:
     #     NodalForceReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -10798,6 +10817,7 @@ class NodalStructuralForceReal(MechanicalLoadReal):
     # Method resolution order:
     #     NodalStructuralForceReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -10828,6 +10848,7 @@ class ForceOnFaceReal(MechanicalLoadReal):
     # Method resolution order:
     #     ForceOnFaceReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -10858,6 +10879,7 @@ class ForceOnEdgeReal(MechanicalLoadReal):
     # Method resolution order:
     #     ForceOnEdgeReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -10888,6 +10910,7 @@ class StructuralForceOnEdgeReal(MechanicalLoadReal):
     # Method resolution order:
     #     StructuralForceOnEdgeReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -10918,6 +10941,7 @@ class LineicForceReal(MechanicalLoadReal):
     # Method resolution order:
     #     LineicForceReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -10948,6 +10972,7 @@ class InternalForceReal(MechanicalLoadReal):
     # Method resolution order:
     #     InternalForceReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -10978,6 +11003,7 @@ class StructuralForceOnBeamReal(MechanicalLoadReal):
     # Method resolution order:
     #     StructuralForceOnBeamReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11008,6 +11034,7 @@ class LocalForceOnBeamReal(MechanicalLoadReal):
     # Method resolution order:
     #     LocalForceOnBeamReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11038,6 +11065,7 @@ class StructuralForceOnShellReal(MechanicalLoadReal):
     # Method resolution order:
     #     StructuralForceOnShellReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11068,6 +11096,7 @@ class LocalForceOnShellReal(MechanicalLoadReal):
     # Method resolution order:
     #     LocalForceOnShellReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11098,6 +11127,7 @@ class PressureOnShellReal(MechanicalLoadReal):
     # Method resolution order:
     #     PressureOnShellReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11128,6 +11158,7 @@ class PressureOnPipeReal(MechanicalLoadReal):
     # Method resolution order:
     #     PressureOnPipeReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11158,6 +11189,7 @@ class ImposedDisplacementReal(MechanicalLoadReal):
     # Method resolution order:
     #     ImposedDisplacementReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11188,6 +11220,7 @@ class ImposedPressureReal(MechanicalLoadReal):
     # Method resolution order:
     #     ImposedPressureReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11218,6 +11251,7 @@ class DistributedPressureReal(MechanicalLoadReal):
     # Method resolution order:
     #     DistributedPressureReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11248,6 +11282,7 @@ class NormalSpeedOnFaceReal(MechanicalLoadReal):
     # Method resolution order:
     #     NormalSpeedOnFaceReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11278,6 +11313,7 @@ class WavePressureOnFaceReal(MechanicalLoadReal):
     # Method resolution order:
     #     WavePressureOnFaceReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11308,6 +11344,7 @@ class DistributedHeatFluxReal(MechanicalLoadReal):
     # Method resolution order:
     #     DistributedHeatFluxReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11338,6 +11375,7 @@ class DistributedHydraulicFluxReal(MechanicalLoadReal):
     # Method resolution order:
     #     DistributedHydraulicFluxReal
     #     MechanicalLoadReal
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
