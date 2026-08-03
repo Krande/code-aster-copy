@@ -55,6 +55,7 @@ LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1000.0, 1000.0))
 
 NORME = FORMULE(VALE="sqrt(DX*DX+DY*DY+DZ*DZ)", NOM_PARA=["DX", "DY", "DZ"])
+MULT = FORMULE(VALE="V1*V2", NOM_PARA=["V1", "V2"])
 
 common_keywords = _F(
     MODELE=model,
@@ -73,7 +74,17 @@ common_keywords = _F(
             EVAL_ELGA="MAX",
             INST=0.5,
         ),
+        _F(NOM_CMP="V1", NOM_CHAM="VARI_ELGA", GROUP_MA="OBSERV", POINT=(1, 2)),
+        _F(
+            NOM_CMP=("V1", "V2"),
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="OBSERV",
+            POINT=(1, 2),
+            EVAL_CMP="FORMULE",
+            FORMULE=MULT,
+        ),
         _F(NOM_CMP="V1", NOM_CHAM="VARI_ELGA", TOUT="OUI", POINT=1, EVAL_CHAM="MAX"),
+        _F(NOM_CMP="V1", NOM_CHAM="VARI_ELGA", TOUT="OUI", POINT=(1, 2), EVAL_CHAM="MAX"),
         _F(NOM_CMP="SIZZ", NOM_CHAM="SIEF_ELGA", MAILLE=("150", "151"), POINT=2, PAS_OBSE=2),
         _F(
             NOM_CMP=("SIXX", "SIYY", "SIZZ"),
