@@ -89,6 +89,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatr
 
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
     calcul->addFourierModeField( modeFourier );
     calcul->addTimeField( "PINSTR", time_curr );
@@ -168,6 +169,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getGeometricStiffnessMa
 
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
 
     calcul->addFourierModeField( modeFourier );
@@ -236,6 +238,7 @@ DiscreteComputation::getFluidStructureStiffnessMatrix( const ASTERINTEGER &modeF
 
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
     calcul->addFourierModeField( modeFourier );
 
@@ -304,6 +307,7 @@ DiscreteComputation::getMechanicalMassMatrix( const bool diagonal,
 
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
 
     calcul->addXFEMField( currModel );
@@ -375,6 +379,7 @@ DiscreteComputation::getFluidStructureMassMatrix( const FieldOnCellsRealPtr varc
 
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
 
     // Add output elementary terms
@@ -441,6 +446,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalDampingMat
 
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
 
     if ( massMatrix ) {
@@ -544,6 +550,7 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::getHystereticStiffne
 
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addOrientationField( currElemChara );
     }
 
     std::vector< ElementaryTermRealPtr > resuElemRigi;
@@ -984,6 +991,7 @@ DiscreteComputation::getRotationalStiffnessMatrix( const VectorString &groupOfCe
         }
         if ( currElemChara ) {
             calcul->addElementaryCharacteristicsField( currElemChara );
+            calcul->addOrientationField( currElemChara );
         }
 
         if ( gyro ) {
@@ -1053,6 +1061,7 @@ DiscreteComputation::getGyroscopicStiffnessMatrix( const VectorString &groupOfCe
         }
         if ( currElemChara ) {
             calcul->addElementaryCharacteristicsField( currElemChara );
+            calcul->addOrientationField( currElemChara );
         }
 
         if ( gyro ) {
@@ -1123,6 +1132,7 @@ DiscreteComputation::getGyroscopicDampingMatrix( const VectorString &groupOfCell
 
         if ( currElemChara ) {
             calcul->addElementaryCharacteristicsField( currElemChara );
+            calcul->addOrientationField( currElemChara );
         }
 
         if ( gyro ) {

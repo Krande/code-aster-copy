@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
+! aslint: disable=W1504, W0413
 !
 subroutine nmresi(mesh, list_func_acti, ds_material, &
                   nume_dof, sdnume, &
@@ -118,13 +118,13 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     integer(kind=8) :: ifm, niv
     integer(kind=8), pointer :: v_ccid(:) => null()
     integer(kind=8) :: nb_equa, i_equa, rank
-    character(len=24) :: mate, varc_refe
+    character(len=24) :: materField, varcRefe
     aster_logical :: l_stat, l_load_cine, l_cont_cont, l_cont_lac, l_rom, l_macr
     aster_logical :: l_resi_refe, l_varc_init, l_resi_comp, l_rela
     aster_logical :: l_no_disp, l_pilo, l_disp
     aster_logical :: l_parallel_mesh
     character(len=19) :: profch
-    character(len=19) :: varc_prev, disp_prev
+    character(len=19) :: varcPrev, disp_prev
     character(len=19) :: cndiri, cnbudi, cnfext, cnfexp
     character(len=19) :: cnrefe, cnfinp, cndirp, cnbudp, cnrefp
     character(len=19) :: cndfdo, cnequi, cndipi, cnsstr, cndfdp
@@ -159,7 +159,7 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
 ! - Initialisations
 !
     profch = ' '
-    varc_prev = ' '
+    varcPrev = ' '
     disp_prev = ' '
     cndiri = ' '
     cnbudi = ' '
@@ -169,8 +169,8 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     cnequi = ' '
     cndipi = ' '
     cnsstr = ' '
-    mate = ds_material%mater
-    varc_refe = ds_material%varc_refe
+    materField = ds_material%mater
+    varcRefe = ds_material%varc_refe
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=nb_equa)
     r_rela_vale = 0.d0
     r_refe_vale = 0.d0
@@ -213,7 +213,7 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
 ! - Get hat variables
 !
     call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
-    call nmchex(hval_incr, 'VALINC', 'COMMOI', varc_prev)
+    call nmchex(hval_incr, 'VALINC', 'COMMOI', varcPrev)
     call nmchex(hval_veasse, 'VEASSE', 'CNDIPI', cndipi)
     call nmchex(hval_veasse, 'VEASSE', 'CNDIRI', cndiri)
     call nmchex(hval_veasse, 'VEASSE', 'CNBUDI', cnbudi)
@@ -431,12 +431,12 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
             if (r_char_vale .gt. resi_glob_rela) then
                 r_varc_vale = r_varc_vale/r_char_vale
                 if (r_varc_vale .gt. resi_glob_rela) then
-                    call nmvcmx(mate, mesh, varc_refe, varc_prev)
+                    call nmvcmx(materField, varcRefe, varcPrev)
                 end if
             end if
         else
             if (r_varc_vale .gt. resi_glob_maxi) then
-                call nmvcmx(mate, mesh, varc_refe, varc_prev)
+                call nmvcmx(materField, varcRefe, varcPrev)
             end if
         end if
     end if

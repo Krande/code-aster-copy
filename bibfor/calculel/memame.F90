@@ -64,7 +64,7 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nbFieldInMax = 33, nbFieldOutMax = 2
+    integer(kind=8), parameter :: nbFieldInMax = 100, nbFieldOutMax = 2
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
