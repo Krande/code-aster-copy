@@ -93,7 +93,7 @@ class Observation(ContextMixin, Observer):
             """Where to extract"""
 
             nodes = cells = components = variNames = None
-            eval_elga = point = sub_point = None
+            eval_elga = points = sub_points = None
             __setattr__ = no_new_attributes(object.__setattr__)
 
             def __init__(self, mesh, **kwargs):
@@ -144,11 +144,8 @@ class Observation(ContextMixin, Observer):
                     if eval_elga == "VALE":
                         points = kwargs["POINT"]
                         sub_points = kwargs.get("SOUS_POINT", [1])
-                        if len(points) > 1 and len(sous_points) > 1:
-                            raise NotImplementedError("Only one point and one sub_point allowed")
-                        assert len(points) == 1 and len(sub_points) == 1
-                        self.point = points[0] - 1
-                        self.sub_point = sub_points[0] - 1
+                        self.points = [point - 1 for point in points]
+                        self.sub_points = [sub_point - 1 for sub_point in sub_points]
                     else:
                         self.eval_elga = eval_elga
 
@@ -161,7 +158,7 @@ class Observation(ContextMixin, Observer):
                     values = np.array(values)
                     nodes = np.array(nodes)
                     components = np.array(components)
-                    return values, nodes, components, None
+                    return values, nodes, components, None, None, None
 
                 elif self.cells is not None:
                     logger.debug("** extract observation on field on elem", field, flush=True)
@@ -179,6 +176,8 @@ class Observation(ContextMixin, Observer):
                     values = np.array(values)
                     cells = np.array(cells)
                     components = np.array(components)
+                    points = np.array(points)
+                    sub_points = np.array(sub_points)
                     variNames = None
 
                     # filter with NOM_VARI
@@ -202,22 +201,29 @@ class Observation(ContextMixin, Observer):
                         cells = cells[idx]
                         components = components[idx]
                         variNames = variNames[idx]
+                        points = points[idx]
+                        sub_points = sub_points[idx]
 
                     # filter for ELGA
-                    if self.eval_elga or self.point:
-                        if self.point:
-                            idx_point = np.argwhere(np.array(points) == self.point)[:, 0]
-                            idx_sub_point = np.argwhere(np.array(sub_points) == self.sub_point)[
-                                :, 0
-                            ]
-                            idx = np.intersect1d(idx_point, idx_sub_point, assume_unique=True)
+                    if self.eval_elga or self.points is not None:
+                        idx = []
+                        if self.points is not None:
+                            for point in self.points:
+                                for sub_point in self.sub_points:
+                                    idx_point = np.argwhere(np.array(points) == point)[:, 0]
+                                    idx_sub_point = np.argwhere(np.array(sub_points) == sub_point)[
+                                        :, 0
+                                    ]
+                                    idx.extend(
+                                        np.intersect1d(idx_point, idx_sub_point, assume_unique=True)
+                                    )
                             if not len(idx):
                                 raise Exception(
-                                    f"OBSERVATION: no values for point {self.point+1} and sub-point {self.sub_point+1}"
+                                    f"OBSERVATION: no values for points {self.points} and sub-points {self.sub_points}"
                                 )
+                            idx.sort()
                         else:
                             argmax_or_argmin = np.argmax if self.eval_elga == "MAX" else np.argmin
-                            idx = []
                             for cell in list(dict.fromkeys(cells)):
                                 idx_cell = np.argwhere(cells == cell)[:, 0]
                                 for component in self.components:
@@ -234,13 +240,19 @@ class Observation(ContextMixin, Observer):
                                             argmax_or_argmin(values[idx_cell_component])
                                         ]
                                     )
-                            idx = np.array(idx)
+                        idx = np.array(idx)
                         values = values[idx]
                         cells = cells[idx]
                         components = components[idx]
                         if self.variNames is not None:
                             variNames = variNames[idx]
-                    return values, cells, components, variNames
+                        if self.points is not None:
+                            points = points[idx]
+                            sub_points = sub_points[idx]
+                        else:
+                            points = None
+                            sub_points = None
+                    return values, cells, components, variNames, points, sub_points
 
         class Operation:
             """Operations to apply on an extraction"""
@@ -273,23 +285,45 @@ class Observation(ContextMixin, Observer):
                 else:
                     self.variNames = kwargs["NOM_VARI"]
 
-            def apply(self, values, nodes_or_cells, components, variNames):
+            def apply(self, values, nodes_or_cells, components, variNames, points, sub_points):
                 # apply FORMULE
                 if self.formule:
                     variables = self.formule.getVariables()
                     new_values = []
                     new_nodes_or_cells = []
+                    new_points = []
+                    new_sub_points = []
                     for node_or_cell in list(dict.fromkeys(nodes_or_cells)):
                         idx = np.argwhere(nodes_or_cells == node_or_cell)[:, 0]
-                        idx2 = np.searchsorted(components[idx], variables)
-                        new_values.append(self.formule.evaluate(values[idx][idx2])[0])
-                        new_nodes_or_cells.append(node_or_cell)
+                        if points is not None:
+                            for point in list(dict.fromkeys(points)):
+                                idx_point = np.argwhere(points == point)[:, 0]
+                                idx_point = np.intersect1d(idx, idx_point, assume_unique=True)
+                                for sub_point in list(dict.fromkeys(sub_points)):
+                                    idx_sub_point = np.argwhere(sub_points == sub_point)[:, 0]
+                                    idx_sub_point = np.intersect1d(
+                                        idx_point, idx_sub_point, assume_unique=True
+                                    )
+                                    idx2 = np.searchsorted(components[idx_sub_point], variables)
+                                    new_values.append(
+                                        self.formule.evaluate(values[idx_sub_point][idx2])[0]
+                                    )
+                                    new_nodes_or_cells.append(node_or_cell)
+                                    new_points.append(point)
+                                    new_sub_points.append(sub_point)
+                        else:
+                            idx2 = np.searchsorted(components[idx], variables)
+                            new_values.append(self.formule.evaluate(values[idx][idx2])[0])
+                            new_nodes_or_cells.append(node_or_cell)
 
                     values = np.array(new_values)
                     nodes_or_cells = np.array(new_nodes_or_cells)
                     components = np.array([None] * len(values))
                     if variNames:
                         variNames = np.array([None] * len(values))
+                    if points is not None:
+                        points = np.array(new_points)
+                        sub_points = np.array(new_sub_points)
 
                 # apply EVAL_CHAM
                 if self.evaluate:
@@ -319,11 +353,13 @@ class Observation(ContextMixin, Observer):
                             components = np.array(new_components)
                     values = np.array(new_values)
                     nodes_or_cells = None
+                    points = None
+                    sub_points = None
 
                 if variNames is not None:
                     components = None
 
-                return values, nodes_or_cells, components, variNames
+                return values, nodes_or_cells, components, variNames, points, sub_points
 
         def _init_row(self, i_obs, **kwargs):
             """common values for an observation"""
@@ -336,10 +372,7 @@ class Observation(ContextMixin, Observer):
             for key in ("NOM_CHAM", "EVAL_CHAM"):
                 self._row[key] = kwargs[key]
             if "EVAL_ELGA" in kwargs:
-                if kwargs["EVAL_ELGA"] == "VALE":
-                    self._row["POINT"] = kwargs["POINT"][0]
-                    self._row["SOUS_POINT"] = kwargs.get("SOUS_POINT", [1])[0]
-                else:
+                if kwargs["EVAL_ELGA"] != "VALE":
                     self._row["EVAL_ELGA"] = kwargs["EVAL_ELGA"]
             if "FORMULE" in kwargs:
                 self._row["EVAL_CMP"] = kwargs["FORMULE"].getName()
@@ -471,11 +504,13 @@ class Observation(ContextMixin, Observer):
                 ):
                     field = self.state.asdict()[observable.field_name]
                     behav = self.problem.getBehaviourProperty()
-                    values, nodes_or_cells, components, variNames = observable.location.extract(
-                        field, behav
+                    (values, nodes_or_cells, components, variNames, points, sub_points) = (
+                        observable.location.extract(field, behav)
                     )
-                    values, nodes_or_cells, components, variNames = observable.operation.apply(
-                        values, nodes_or_cells, components, variNames
+                    (values, nodes_or_cells, components, variNames, points, sub_points) = (
+                        observable.operation.apply(
+                            values, nodes_or_cells, components, variNames, points, sub_points
+                        )
                     )
                     nodes = cells = None
                     if observable.location.nodes:
@@ -499,6 +534,9 @@ class Observation(ContextMixin, Observer):
                             row["NOM_CMP"] = components[i]
                         if variNames is not None:
                             row["NOM_VARI"] = variNames[i]
+                        if points is not None:
+                            row["POINT"] = points[i] + 1
+                            row["SOUS_POINT"] = sub_points[i] + 1
                         self._rows.append(row)
         else:
             raise TypeError(f"unsupported event: eid={event.eid!r}")
