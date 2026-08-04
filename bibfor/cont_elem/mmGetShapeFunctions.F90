@@ -102,7 +102,6 @@ subroutine mmGetShapeFunctions(laxis, typmae, typmam, &
                 typmae, slav_coor_init, &
                 ffe, dffe, &
                 jacobi, l_axis_warn)
-    print *, jacobi, l_axis_warn
     if (l_axis_warn) then
         call utmess('A', 'CONTACT2_14')
     end if

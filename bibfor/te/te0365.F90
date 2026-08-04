@@ -254,10 +254,6 @@ subroutine te0365(option, nomte)
 ! - Copy
 !
     call writeVector('PVECTCR', nddl, vcont)
-    print *, vectce(1:nddl)
-    print *, vectcm(1:nddl)
-    print *, vectcc(1:9)
-    print *, vcont(1:nddl)
     if (leltf) then
         call writeVector('PVECTFR', nddl, vfric)
     end if

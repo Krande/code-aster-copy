@@ -61,7 +61,6 @@ subroutine mmmvcc(phase, l_pena_cont, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    print *, "VCC: ", dlagrc, jacobi, coefac, jeu
     if (phase .eq. 'SANS') then
         do inoc = 1, nnl
             vectcc(inoc) = vectcc(inoc)- &

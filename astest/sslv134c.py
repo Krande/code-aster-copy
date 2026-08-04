@@ -301,9 +301,6 @@ Gr_fond = mesh.GroupOnGeom(fond, "FRONT", SMESH.NODE)
 
 # TRAITEMENT DU CAS DE LA PLAQUE/TUBE COMPLET
 if not isSym:
-
-    print("hello : traitement symétrie")
-
     [
         plaque_sym,
         tore_sym,
