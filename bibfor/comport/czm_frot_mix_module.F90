@@ -203,7 +203,7 @@ contains
         integer(kind=8) :: i, j
         real(kind=8) :: tel(self%ndim), nel(self%ndim), id(self%ndim, self%ndim)
         real(kind=8) :: fslip, fopen, teln, telq
-        real(kind=8) :: dka, delta_nl, dka_0, delta_nl_0
+        real(kind=8) :: dka, delta_nl
         real(kind=8) :: alpha_n, alpha_t, alpha_v
         integer(kind=8) :: state
 !--------------------------------------------------------------------------------------------------
@@ -309,16 +309,12 @@ contains
             vi(7) = 1
         end if
 
-        ! Viscous stress estimation
-        if (self%mat%frot .ge. 0.d0) then
-            delta_nl_0 = max(self%phi(1)*alpha_n-self%mat%cohe/self%mat%frot, 0.) &
-                         /(self%r*alpha_n)
-        else
-            delta_nl_0 = 0.d0
-        end if
-        dka_0 = max(telq+self%mat%frot*(self%phi(1)-self%r*delta_nl_0) &
-                    *alpha_n-self%mat%cohe, 0.)/(self%r*alpha_t)
-        vi(11) = self%r*sqrt(((delta_nl-delta_nl_0)*alpha_n)**2+((dka-dka_0)*alpha_t)**2)
+        ! Viscous stress
+        vi(11) = self%mat%k*self%mat%tau &
+                 *sqrt(dot_product( &
+                       vi(8:7+self%ndim)-self%deltav(1:self%ndim), &
+                       vi(8:7+self%ndim)-self%deltav(1:self%ndim)) &
+                       )/self%dt
 
 ! ======================================================================
 !  COMPUTATION OF THE TANGENT MATRIX
