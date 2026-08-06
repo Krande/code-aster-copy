@@ -95,12 +95,6 @@ cata_msg = {
      Valeur minimale de la valeur absolue de ( %(k2)s - %(k1)s_REF) : %(r2)f sur la maille %(i2)d
 """
     ),
-    96: _(
-        """
- Le résidu RESI_COMP_RELA est inutilisable au premier instant de calcul (pas de référence)
- On bascule automatiquement en RESI_GLOB_RELA.
-"""
-    ),
     97: _(
         """
   -> A l'état initial (avant le premier instant de calcul) les variables
