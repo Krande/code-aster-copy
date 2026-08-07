@@ -29,10 +29,6 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-
-CCACOQU = LocatedComponents(phys=PHY.CACOQU_R, type="ELEM", components=("EP",))
-
-
 CCOEFHF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H_INF", "H_SUP"))
 
 
@@ -72,7 +68,7 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 
 # ------------------------------------------------------------
-class THCPSE3(Element):
+class THCASE3(Element):
     """Please document this element"""
 
     meshType = MT.SEG3
@@ -114,7 +110,7 @@ class THCPSE3(Element):
         OP.MASS_THER(
             te=102,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLTH1),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -124,7 +120,7 @@ class THCPSE3(Element):
         OP.RIGI_THER(
             te=101,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLTH1),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),

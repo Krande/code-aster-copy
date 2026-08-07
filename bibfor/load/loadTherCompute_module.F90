@@ -1327,7 +1327,7 @@ contains
                                 ligrelToUse)
 
 ! --------- Generate new RESU_ELEM name
-            newnom = resuElemZ(10:16)
+            newnom = resuElemZ(12:16)
             call gcnco2(newnom)
             resuElemZ(10:16) = newnom(2:8)
             lchout(1) = resuElemZ
@@ -1338,7 +1338,6 @@ contains
                         nbFieldIn, lchin, lpain, &
                         nbFieldOut, lchout, lpaout, &
                         jvBase, 'OUI')
-
             if (.not. l_stat) then
                 call multResuElem(lchout(1), theta)
             end if

@@ -238,15 +238,16 @@ subroutine ctdata(mesnoe, mesmai, nkcha, fieldDisc, toucmp, &
             lpain(1) = 'PGEOMER'
             nbFieldIn = 1
 
-! --------- Add fields for structural elements
-            call setStructFields(caraElem, nbFieldInMax, lchin, lpain, nbFieldIn)
+            if (hasCaraElem) then
+! ------------- Add fields for structural elements
+                call setStructFields(caraElem, nbFieldInMax, lchin, lpain, nbFieldIn)
 
-! --------- Add fields for orientation
-            call setOrieFields(nbFieldInMax, lpain, lchin, &
-                               nbFieldIn, caraElem)
+! ------------- Add fields for orientation
+                call setOrieFields(nbFieldInMax, lpain, lchin, &
+                                   nbFieldIn, caraElem)
+            end if
 
-! --------- Add output field
-
+! --------- Add output fields
             if (hasCaraElem) then
                 lchout(1) = '&&CTDATA.PGCOOR'
                 lpaout(1) = 'PCOORPG'

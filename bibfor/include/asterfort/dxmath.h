@@ -17,21 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dxmath(famiZ, epais, df, dm, dmf, &
-                      pgl, multic, indith, t2iu, t2ui, &
-                      t1ve, npg)
+    subroutine dxmath(plateCara, plateOrie, &
+                      famiZ, npg, &
+                      df, dm, dmf, &
+                      indith)
+        use plate_type
+        type(plateCara_Para), intent(in) :: plateCara
+        type(plateOrie_Para), intent(in) :: plateOrie
         character(len=*), intent(in) :: famiZ
-        character(len=4) :: fami
-        real(kind=8) :: epais
-        real(kind=8) :: df(3, 3)
-        real(kind=8) :: dm(3, 3)
-        real(kind=8) :: dmf(3, 3)
-        real(kind=8) :: pgl(3, 3)
-        integer(kind=8) :: multic
-        integer(kind=8) :: indith
-        real(kind=8) :: t2iu(4)
-        real(kind=8) :: t2ui(4)
-        real(kind=8) :: t1ve(9)
-        integer(kind=8) :: npg
+        integer(kind=8), intent(in) :: npg
+        real(kind=8), intent(out) :: df(3, 3), dm(3, 3), dmf(3, 3)
+        integer(kind=8), intent(out) :: indith
     end subroutine dxmath
 end interface

@@ -74,7 +74,8 @@ subroutine nttcmv(model, materCode, caraElem, listLoad, nume_dof, &
     character(len=19) :: merigi
     character(len=24) :: ligrmo, mediri
     character(len=19) ::  tlimat(3)
-    character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl, timeMapMatr
+    character(len=24) :: vediri, vechtp, vadirp, vachtp, timeMapMatr
+    character(len=24), parameter :: metrnl = "&&METRNL"
     character(len=19) :: resuElem
     real(kind=8) :: time_curr
     character(len=24), pointer :: resuElemRelr(:) => null()
@@ -86,7 +87,6 @@ subroutine nttcmv(model, materCode, caraElem, listLoad, nume_dof, &
     data nomcmp/'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ', &
         'R       ', 'RHO     '/
     data mediri/'&&MEDIRI           .RELR'/
-    data metrnl/'&&METNTH           .RELR'/
     data vediri/'&&VETDIR           .RELR'/
     data vechtp/'&&VETCHA           .RELR'/
 !
@@ -171,20 +171,17 @@ subroutine nttcmv(model, materCode, caraElem, listLoad, nume_dof, &
 ! ======================================================================
 !
     if (reasmt) then
-!
+
 ! --- (RE)CALCUL DE LA MATRICE DES DIRICHLET POUR L'ASSEMBLER
-!
         call medith('V', 'ZERO', model, listLoad, mediri)
-!
+
 ! ----- Elementary matrix for transport (volumic and surfacic terms)
-!
         creas = 'M'
         call mertth(model, loadNameJv, loadInfoJv, &
                     caraElem, materCode, &
                     timeMapMatr, timeMapMove, vtemp, vtempm, merigi)
-!
+
 ! ----- Elementary matrix for boundary conditions
-!
         call metnth(model, loadNameJv, loadInfoJv, &
                     caraElem, materCode, &
                     timeMap, vtempm, metrnl)
@@ -201,7 +198,7 @@ subroutine nttcmv(model, materCode, caraElem, listLoad, nume_dof, &
         if (iret .gt. 0) then
             call jeveuo(metrnl(1:19)//'.RELR', 'L', vk24=resuElemRelr)
             resuElem = resuElemRelr(1) (1:19)
-            if (resuElem(1:8) .ne. '        ') then
+            if (resuElem .ne. ' ') then
                 nbmat = nbmat+1
                 tlimat(nbmat) = metrnl(1:19)
             end if
@@ -211,7 +208,7 @@ subroutine nttcmv(model, materCode, caraElem, listLoad, nume_dof, &
         if (iret .gt. 0) then
             call jeveuo(mediri(1:8)//'           .RELR', 'L', vk24=resuElemRelr)
             resuElem = resuElemRelr(1) (1:19)
-            if (resuElem(1:8) .ne. '        ') then
+            if (resuElem .ne. ' ') then
                 nbmat = nbmat+1
                 tlimat(nbmat) = mediri(1:19)
             end if

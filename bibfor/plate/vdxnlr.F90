@@ -16,14 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdxnlr(BEHInteg, &
-                  option, nomte, xi, rig, nb1, &
-                  codret)
+subroutine vdxnlr(plateCara, plateOrie, &
+                  BEHInteg, &
+                  option, nomte, nodeCoor, &
+                  matrTang, codret)
 !
-    use Behaviour_type
     use Behaviour_module
+    use Behaviour_type
     use MaterialPara_module
     use MaterialPara_type
+    use plate_type
     implicit none
 !
 #include "asterf_types.h"
@@ -56,27 +58,28 @@ subroutine vdxnlr(BEHInteg, &
 #include "blas/dscal.h"
 #include "jeveux.h"
 !
+    type(plateCara_Para), intent(in) :: plateCara
+    type(plateOrie_Para), intent(in) :: plateOrie
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=16), intent(in) :: option, nomte
-    real(kind=8) :: xi(3, 9)
-    real(kind=8) :: rig(51, 51)
-    integer(kind=8) :: nb1
+    real(kind=8), intent(in) :: nodeCoor(3, 9)
+    real(kind=8), intent(out) :: matrTang(51, 51)
     integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer(kind=8), parameter :: npge = 3
     character(len=16), parameter :: multComp = " "
-    integer(kind=8) :: jnbspi
-    integer(kind=8) :: nb2, nddle, npge, npgsr, npgsn, itab(8)
+    integer(kind=8) :: nb1, nb2, nddle, npgsr, npgsn, itab(8)
     integer(kind=8) :: cod, ksp
-    real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), vecpt(9, 3, 3)
-    real(kind=8) :: vectg(2, 3), vectt(3, 3)
+    real(kind=8) :: vectBase(9, 3, 3)
+    real(kind=8) :: vectTangKpg(2, 3), vectBaseKpg(3, 3)
     real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
     real(kind=8) :: btdm(4, 3, 42), btds(4, 2, 42)
     real(kind=8) :: hsf(3, 9), hsj1fx(3, 9), wgt
     real(kind=8) :: btdf(3, 42), btild(5, 42), wmatcb(5, 42), ktildi(42, 42)
     real(kind=8) :: ktild(42, 42)
-    real(kind=8) :: ctor, epais, kappa
+    real(kind=8) :: ctor, eptot, kappa
     integer(kind=8), parameter :: nbProp = 2
     character(len=16), parameter :: propName(nbProp) = (/'E ', 'NU'/)
     integer(kind=8) :: propCode(nbProp)
@@ -86,15 +89,14 @@ subroutine vdxnlr(BEHInteg, &
     real(kind=8) :: epsi(5), depsi(5), eps2d(4), deps2d(4)
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6)
-    real(kind=8) :: matc(5, 5), valpar
-    integer(kind=8) :: i, ib, jvCarcri, icontm, icontp, icou
+    real(kind=8) :: matrElas(5, 5), tempMoye
+    integer(kind=8) :: i, ib, jvCarcri, icontm, icontp, iLayer
     integer(kind=8) :: ideplm, ideplp, iinstm, iinstp, inte, intsn
     integer(kind=8) :: intsr, iret, ivarim, ivarip, ivarix, ivectu, j
-    integer(kind=8) :: jvCacoqu, jcrf, k1, k2, kpgs, kwgt, lgpg
-    integer(kind=8) :: lzi, lzr, nbcou, nbvari, nddlet, ndimv
-    real(kind=8) :: coef, crf, gxz, gyz, hic
+    integer(kind=8) :: jcrf, k1, k2, kpgs, kwgt, lgpg
+    integer(kind=8) :: lzi, lzr, nbLayer, nbvari, nddlet, ndimv
+    real(kind=8) :: coef, crf, gxz, gyz, hLayer
     real(kind=8) :: x(1), zic, zmin
-    parameter(npge=3)
     real(kind=8) :: ksi3s2
     aster_logical :: lVect, lMatr, lVari, lSigm
     blas_int :: b_incx, b_incy, b_n
@@ -107,41 +109,24 @@ subroutine vdxnlr(BEHInteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-!
-    call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1 = zi(lzi-1+1)
-    nb2 = zi(lzi-1+2)
-    npgsr = zi(lzi-1+3)
-    npgsn = zi(lzi-1+4)
-!
-    nddle = 5*nb1+2
-    ktild = 0.d0
-    effint = 0.d0
-!
-    call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 
 ! - Get shell parameters
-    call jevech('PNBSP_I', 'L', jnbspi)
-    nbcou = zi(jnbspi-1+1)
-    if (nbcou .le. 0) then
-        call utmess('F', 'PLATE1_10')
-    end if
-    call jevech('PCACOQU', 'L', jvCacoqu)
-    epais = zr(jvCacoqu)
-    kappa = zr(jvCacoqu+3)
-    ctor = zr(jvCacoqu+4)
-    zmin = -epais/2.d0
-    hic = epais/nbcou
+    nbLayer = plateCara%nbLayer
+    ASSERT(nbLayer .gt. 0)
+    eptot = plateCara%thick
+    kappa = plateCara%shearCoef
+    ctor = plateCara%coefRigiDRZ
+    zmin = -eptot/2.d0
+    hLayer = eptot/nbLayer
 
+! - Geometry
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PNBSP_I', 'L', jnbspi)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMP', 'L', ivarix)
-    call jevech('PCACOQU', 'L', jvCacoqu)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
@@ -168,6 +153,15 @@ subroutine vdxnlr(BEHInteg, &
         call utmess('F', 'PLATE1_12', sk=BEHInteg%materPara%elasKeyword)
     end if
 
+! - Access to static objects of COQUE_3D
+    call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    npgsr = zi(lzi-1+3)
+    npgsn = zi(lzi-1+4)
+    nddle = 5*nb1+2
+    call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
+
 ! - Get output fields
     if (option .eq. 'RAPH_MECA') then
         call jevech('PCACO3D', 'L', jcrf)
@@ -190,61 +184,58 @@ subroutine vdxnlr(BEHInteg, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
+
+! - Change coordinates of displacements/rotations
+    call trndgl(nb2, plateOrie%vectNorm, plateOrie%vectTang, zr(ideplm), &
+                deplm, rotfcm)
+    call trndgl(nb2, plateOrie%vectNorm, plateOrie%vectTang, zr(ideplp), &
+                deplp, rotfcp)
 !
-    call vectan(nb1, nb2, xi, zr(lzr), vecta, &
-                vectn, vectpt)
-!
-!===============================================================
-!     CALCULS DES 2 DDL INTERNES
-!
-    call trndgl(nb2, vectn, vectpt, zr(ideplm), deplm, &
-                rotfcm)
-!
-    call trndgl(nb2, vectn, vectpt, zr(ideplp), deplp, &
-                rotfcp)
-!
+    ktild = 0.d0
+    effint = 0.d0
     kwgt = 0
     kpgs = 0
-    do icou = 1, nbcou
+    do iLayer = 1, nbLayer
         do inte = 1, npge
             if (inte .eq. 1) then
-                zic = zmin+(icou-1)*hic
+                zic = zmin+(iLayer-1)*hLayer
                 coef = 1.d0/3.d0
             else if (inte .eq. 2) then
-                zic = zmin+hic/2.d0+(icou-1)*hic
+                zic = zmin+hLayer/2.d0+(iLayer-1)*hLayer
                 coef = 4.d0/3.d0
             else
-                zic = zmin+hic+(icou-1)*hic
+                zic = zmin+hLayer+(iLayer-1)*hLayer
                 coef = 1.d0/3.d0
             end if
-            ksi3s2 = zic/hic
-!
-!     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
-!
+            ksi3s2 = zic/hLayer
+
             do intsr = 1, npgsr
-                call mahsms(0, nb1, xi, ksi3s2, intsr, &
-                            zr(lzr), hic, vectn, vectg, vectt, &
+                call mahsms(plateOrie, &
+                            0, nb1, &
+                            nodeCoor, ksi3s2, intsr, &
+                            zr(lzr), hLayer, &
+                            vectBaseKpg, vectTangKpg, &
                             hsfm, hss)
-!
-                call hsj1ms(hic, vectg, vectt, hsfm, hss, &
+                call hsj1ms(hLayer, vectTangKpg, vectBaseKpg, hsfm, hss, &
                             hsj1m, hsj1s)
-!
                 call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
-                            hic, vectpt, hsj1m, hsj1s, btdm, &
+                            hLayer, plateOrie%vectTang, hsj1m, hsj1s, btdm, &
                             btds)
             end do
-!
+
             do intsn = 1, npgsn
 !
 !     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
 !                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
 !
-                call mahsf(1, nb1, xi, ksi3s2, intsn, &
-                           zr(lzr), hic, vectn, vectg, vectt, &
+                call mahsf(plateOrie, &
+                           1, nb1, &
+                           nodeCoor, ksi3s2, intsn, &
+                           zr(lzr), hLayer, &
+                           vectBaseKpg, vectTangKpg, &
                            hsf)
-!
-                call hsj1f(intsn, zr(lzr), hic, vectg, vectt, &
+                call hsj1f(intsn, zr(lzr), hLayer, vectTangKpg, vectBaseKpg, &
                            hsf, kwgt, hsj1fx, wgt)
 !
 !     PRODUIT DU POIDS DES PTS DE GAUSS DANS L'EPAISSEUR ET DE WGT
@@ -252,7 +243,7 @@ subroutine vdxnlr(BEHInteg, &
                 wgt = coef*wgt
 !
                 call btdfn(1, nb1, nb2, ksi3s2, intsn, &
-                           zr(lzr), hic, vectpt, hsj1fx, btdf)
+                           zr(lzr), hLayer, plateOrie%vectTang, hsj1fx, btdf)
 !
 !     CALCUL DE BTDMN, BTDSN
 !     ET
@@ -281,8 +272,8 @@ subroutine vdxnlr(BEHInteg, &
                 gxz = epsi(4)+depsi(4)
                 gyz = epsi(5)+depsi(5)
 !
-                k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
-                k2 = lgpg*(intsn-1)+(npge*(icou-1)+inte-1)*nbvari
+                k1 = 6*((intsn-1)*npge*nbLayer+(iLayer-1)*npge+inte-1)
+                k2 = lgpg*(intsn-1)+(npge*(iLayer-1)+inte-1)*nbvari
                 do i = 1, 3
                     sign(i) = zr(icontm-1+k1+i)
                 end do
@@ -291,7 +282,7 @@ subroutine vdxnlr(BEHInteg, &
                 cisail = 0.d0
 
 ! ------------- Index of "sub"-point
-                ksp = (icou-1)*npge+inte
+                ksp = (iLayer-1)*npge+inte
 
 ! ------------- Set main parameters for behaviour (on point)
                 call behaviourSetParaPoin(intsn, ksp, BEHInteg)
@@ -327,12 +318,9 @@ subroutine vdxnlr(BEHInteg, &
                         end if
                         if (cod .eq. 1) goto 999
                     end if
-!
                 else if (BEHInteg%materPara%elasID .eq. ELAS_ORTH) then
-                    call moytpg('RIGI', intsn, 3, '+', valpar, &
-                                iret)
-                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
-                                vectt)
+                    call moytpg('RIGI', intsn, 3, '+', tempMoye, iret)
+                    call matrc2(plateOrie, vectBaseKpg, tempMoye, kappa, matrElas)
                 end if
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
@@ -363,32 +351,33 @@ subroutine vdxnlr(BEHInteg, &
                         dtild(5, 3) = 0.d0
                         dtild(5, 4) = 0.d0
                         dtild(5, 5) = cisail*kappa/2.d0
+
                     else if (BEHInteg%materPara%elasID .eq. ELAS_ORTH) then
-                        dtild(1, 1) = matc(1, 1)
-                        dtild(1, 2) = matc(1, 2)
-                        dtild(1, 3) = matc(1, 3)
+                        dtild(1, 1) = matrElas(1, 1)
+                        dtild(1, 2) = matrElas(1, 2)
+                        dtild(1, 3) = matrElas(1, 3)
                         dtild(1, 4) = 0.d0
                         dtild(1, 5) = 0.d0
-                        dtild(2, 1) = matc(2, 1)
-                        dtild(2, 2) = matc(2, 2)
-                        dtild(2, 3) = matc(2, 3)
+                        dtild(2, 1) = matrElas(2, 1)
+                        dtild(2, 2) = matrElas(2, 2)
+                        dtild(2, 3) = matrElas(2, 3)
                         dtild(2, 4) = 0.d0
                         dtild(2, 5) = 0.d0
-                        dtild(3, 1) = matc(3, 1)
-                        dtild(3, 2) = matc(3, 2)
-                        dtild(3, 3) = matc(3, 3)
+                        dtild(3, 1) = matrElas(3, 1)
+                        dtild(3, 2) = matrElas(3, 2)
+                        dtild(3, 3) = matrElas(3, 3)
                         dtild(3, 4) = 0.d0
                         dtild(3, 5) = 0.d0
                         dtild(4, 1) = 0.d0
                         dtild(4, 2) = 0.d0
                         dtild(4, 3) = 0.d0
-                        dtild(4, 4) = matc(4, 4)
-                        dtild(4, 5) = matc(4, 5)
+                        dtild(4, 4) = matrElas(4, 4)
+                        dtild(4, 5) = matrElas(4, 5)
                         dtild(5, 1) = 0.d0
                         dtild(5, 2) = 0.d0
                         dtild(5, 3) = 0.d0
-                        dtild(5, 4) = matc(5, 4)
-                        dtild(5, 5) = matc(5, 5)
+                        dtild(5, 4) = matrElas(5, 4)
+                        dtild(5, 5) = matrElas(5, 5)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
@@ -425,18 +414,18 @@ subroutine vdxnlr(BEHInteg, &
                         sgmtd(5) = cisail*kappa*gyz/2.d0
 !
                     else if (BEHInteg%materPara%elasID .eq. ELAS_ORTH) then
-                        zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(1, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(1, 3)
-                        zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matc(2, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(2, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(2, 3)
+                        zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matrElas(1, 1)+ &
+                                            (epsi(2)+depsi(2))*matrElas(1, 2)+ &
+                                            (epsi(3)+depsi(3))*matrElas(1, 3)
+                        zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matrElas(2, 1)+ &
+                                            (epsi(2)+depsi(2))*matrElas(2, 2)+ &
+                                            (epsi(3)+depsi(3))*matrElas(2, 3)
                         zr(icontp-1+k1+3) = 0.d0
-                        zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matc(3, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(3, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(3, 3)
-                        zr(icontp-1+k1+5) = matc(4, 4)*gxz+matc(4, 5)*gyz
-                        zr(icontp-1+k1+6) = matc(5, 4)*gxz+matc(5, 5)*gyz
+                        zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matrElas(3, 1)+ &
+                                            (epsi(2)+depsi(2))*matrElas(3, 2)+ &
+                                            (epsi(3)+depsi(3))*matrElas(3, 3)
+                        zr(icontp-1+k1+5) = matrElas(4, 4)*gxz+matrElas(4, 5)*gyz
+                        zr(icontp-1+k1+6) = matrElas(5, 4)*gxz+matrElas(5, 5)*gyz
 !
 !    CALCULS DES EFFORTS INTERIEURS
                         sgmtd(1) = zr(icontp-1+k1+1)
@@ -457,7 +446,7 @@ subroutine vdxnlr(BEHInteg, &
 !
         nddlet = 6*nb1+3
         call matrkb(nb1, 42, 51, nddlet, ktild, &
-                    ctor, rig, crf)
+                    ctor, matrTang, crf)
         zr(jcrf) = crf
 !
 !     AJOUTER DES 3 TRANSLATIONS FICTIVES ASSOCIEES AU NOEUD INTERNE
@@ -484,19 +473,14 @@ subroutine vdxnlr(BEHInteg, &
         end do
         i = nb2
         vecll(6*nb1+3) = crf*(rotfcm(nb2)+rotfcp(nb2))
-!     TRANFORMATION DANS REPERE GLOBAL PUIS STOCKAGE
+
+! ----- Fuse tangents and normal in same object
         do ib = 1, nb2
-            do i = 1, 2
-                do j = 1, 3
-                    vecpt(ib, i, j) = vectpt(ib, i, j)
-                end do
-            end do
-            vecpt(ib, 3, 1) = vectn(ib, 1)
-            vecpt(ib, 3, 2) = vectn(ib, 2)
-            vecpt(ib, 3, 3) = vectn(ib, 3)
+            vectBase(ib, 1:2, 1:3) = plateOrie%vectTang(ib, 1:2, 1:3)
+            vectBase(ib, 3, 1:3) = plateOrie%vectNorm(ib, 1:3)
         end do
-!
-        call trnflg(nb2, vecpt, vecll, zr(ivectu))
+
+        call trnflg(nb2, vectBase, vecll, zr(ivectu))
     end if
 !
 999 continue

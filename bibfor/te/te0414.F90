@@ -22,6 +22,8 @@ subroutine te0414(option, nomte)
     use Behaviour_type
     use MaterialPara_module
     use MaterialPara_type
+    use plate_type
+    use plateGeom_module, only: getCara, compCoorSystCO3D
     implicit none
 !
 #include "asterf_types.h"
@@ -57,8 +59,8 @@ subroutine te0414(option, nomte)
     character(len=8), parameter :: fami = "MASS"
     character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
     integer(kind=8) :: nb1, jcret, codret
-    real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
-    integer(kind=8) :: ibid, ideplm, ideplp, jvMaterc, jvCarcri
+    real(kind=8) :: matrTangLoca(51, 51), plg(9, 3, 3)
+    integer(kind=8) ::  ideplm, ideplp, jvMaterc, jvCarcri
     integer(kind=8) :: jvGeom, jmatr, lzr, nb2, nddlet, lzi
     integer(kind=8) :: jvInstmr, jvInstpr
     character(len=16), pointer :: compor(:) => null()
@@ -66,15 +68,31 @@ subroutine te0414(option, nomte)
     aster_logical :: lVect, lMatr, lVari, lSigm
     type(Behaviour_Integ) :: BEHInteg
     type(Material_Para) :: materPara
+    type(plateCara_Para) :: plateCara
+    type(plateOrie_Para) :: plateOrie
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
+! - Get plate parameters
+    call getCara(plateCara, plateOrie)
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Compute global<=>local transformation
+    call compCoorSystCO3D(nomte, jvGeom, &
+                          plateCara, plateOrie)
+
+! - Access to static objects of COQUE_3D
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
+    nb1 = zi(lzi-1+1)
     nb2 = zi(lzi-1+2)
+    call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 
 ! - Get input fields
-    call cosiro(nomte, 'PCONTMR', 'L', 'UI', 'G', ibid, 'S')
-    call jevech('PGEOMER', 'L', jvGeom)
+    call cosiro(plateCara, plateOrie, &
+                'PCONTMR', 'L', 'UI', 'G')
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PINSTMR', 'L', jvInstmr)
@@ -128,23 +146,25 @@ subroutine te0414(option, nomte)
 ! - Compute
     if (defoComp .eq. 'GROT_GDEP') then
         if (relaComp .eq. 'ELAS ') then
-            call vdgnlr(materPara, &
+            call vdgnlr(plateCara, plateOrie, &
+                        materPara, &
                         lMatr, lVect, lSigm, lVari, relaComp, nomte)
             codret = 0
         else
-            call vdpnlr(BEHInteg, option, nomte, codret)
+            call vdpnlr(plateCara, plateOrie, &
+                        BEHInteg, option, nomte, codret)
         end if
     else if (defoComp(1:5) .eq. 'PETIT') then
-        call vdxnlr(BEHInteg, &
-                    option, nomte, zr(jvGeom), matloc, nb1, &
-                    codret)
+        call vdxnlr(plateCara, plateOrie, &
+                    BEHInteg, &
+                    option, nomte, zr(jvGeom), &
+                    matrTangLoca, codret)
         if (lMatr) then
 ! -----    MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
-            call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
             call matpgl(nb2, zr(lzr), plg)
 ! -----    OPERATION DE TRANFORMATION DE MATLOC DANS LE REPERE GLOBAL ET STOCKAGE DANS ZR
             nddlet = 6*nb1+3
-            call tranlg(nb1, 51, nddlet, plg, matloc, zr(jmatr))
+            call tranlg(nb1, 51, nddlet, plg, matrTangLoca, zr(jmatr))
         end if
     else
         call utmess('F', 'PLATE1_14', sk=defoComp)
@@ -155,7 +175,8 @@ subroutine te0414(option, nomte)
     end if
 !
     if (lSigm) then
-        call cosiro(nomte, 'PCONTPR', 'E', 'IU', 'G', ibid, 'R')
+        call cosiro(plateCara, plateOrie, &
+                    'PCONTPR', 'E', 'IU', 'G')
     end if
 !
 end subroutine

@@ -16,13 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dktnli(BEHInteg, option, typmod, &
+subroutine dktnli(plateCara, plateOrie, &
+                  BEHInteg, option, typmod, &
                   instm, instp, &
-                  xyzl, pgl, uml, dul, &
+                  xyzl, uml, dul, &
                   btsig, ktan, codret)
 !
     use Behaviour_type
     use Behaviour_module
+    use plate_type
     implicit none
 !
 #include "asterf_types.h"
@@ -52,12 +54,13 @@ subroutine dktnli(BEHInteg, option, typmod, &
 #include "asterfort/utctab.h"
 #include "jeveux.h"
 !
+    type(plateCara_Para), intent(in) :: plateCara
+    type(plateOrie_Para), intent(in) :: plateOrie
     type(Behaviour_Integ), intent(inout) :: BEHInteg
     character(len=16), intent(in) :: option
     character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(in) :: instm, instp
     real(kind=8), intent(in) :: xyzl(3, 4), uml(6, 4), dul(6, 4)
-    real(kind=8), intent(in) :: pgl(3, 3)
     real(kind=8), intent(out) :: ktan(576), btsig(6, 4)
     integer(kind=8), intent(out) :: codret
 !
@@ -164,7 +167,7 @@ subroutine dktnli(BEHInteg, option, typmod, &
     real(kind=8), parameter :: deux = 2.d0, rac2 = sqrt(2.d0)
     integer(kind=8) :: ndim, nbNode, npg, ipoids, icoopg
     integer(kind=8) :: jtab(7), codkpg, i, ksp
-    integer(kind=8) :: jvCacoqu, jvCarcri, icontm, icontp, icou, icpg, igauh
+    integer(kind=8) :: jvCarcri, icontm, icontp, icou, icpg, igauh
     integer(kind=8) :: ino, kpg, iret, isp, ivarim, ivarip, ivarix, ivpg
     integer(kind=8) :: j, k, nbsp, nbVari
     real(kind=8) :: qsi, eta, cara(25), jacob(5)
@@ -176,7 +179,6 @@ subroutine dktnli(BEHInteg, option, typmod, &
     real(kind=8) :: d1iel(2, 2)
     real(kind=8) :: depfel(3*nbNodeMaxi)
     real(kind=8) :: hft2el(2, 6)
-    real(kind=8) :: t2iuel(4), t2uiel(4), t1veel(9)
     aster_logical :: coupmfel, l_matr_symm
     integer(kind=8) :: multicel
     integer(kind=8) :: lg_varip
@@ -212,6 +214,18 @@ subroutine dktnli(BEHInteg, option, typmod, &
         ASSERT(ASTER_FALSE)
     end if
 
+! - Get plate parameters
+    h = plateCara%thick
+    distn = plateCara%offset
+    ctor = plateCara%coefRigiDRZ
+    if (lTria) then
+        call gtria3(xyzl, cara)
+    else if (lQuad) then
+        call gquad4(xyzl, cara)
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+
 ! - Get input fields
     call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
     nbsp = jtab(7)
@@ -219,7 +233,6 @@ subroutine dktnli(BEHInteg, option, typmod, &
     ASSERT(npg .eq. jtab(3))
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PCARCRI', 'L', jvCarcri)
-    call jevech('PCACOQU', 'L', jvCacoqu)
     l_matr_symm = .true.
     if (nint(zr(jvCarcri-1+CARCRI_MATRSYME)) .gt. 0) then
         l_matr_symm = .false.
@@ -232,19 +245,6 @@ subroutine dktnli(BEHInteg, option, typmod, &
     leul = defoComp .eq. 'GROT_GDEP'
     read (compor(NVAR), '(I16)') nbVari
     ASSERT((.not. defoComp .eq. 'GROT_GDEP') .or. (.not. typeComp .eq. 'COMP_ELAS'))
-
-! - Geometric parameters
-    h = zr(jvCacoqu)
-    distn = zr(jvCacoqu+4)
-    if (lTria) then
-        call gtria3(xyzl, cara)
-        ctor = zr(jvCacoqu+3)
-    else if (lQuad) then
-        call gquad4(xyzl, cara)
-        ctor = zr(jvCacoqu+3)
-    else
-        ASSERT(ASTER_FALSE)
-    end if
 
 ! - Output fields
     if (lSigm) then
@@ -287,9 +287,10 @@ subroutine dktnli(BEHInteg, option, typmod, &
     c = -6.d0*zmax*zmin/quotient
 
 ! - Hooke matrix for shear
-    call dxmate(fami, dfel, dmel, dmfel, dcel, &
-                dciel, dmcel, dfcel, nbNode, pgl, &
-                multicel, coupmfel, t2iuel, t2uiel, t1veel)
+    call dxmate(plateCara, plateOrie, &
+                fami, dfel, dmel, dmfel, dcel, &
+                dciel, dmcel, dfcel, &
+                multicel, coupmfel)
     do ino = 1, nbNode
         depfel(1+3*(ino-1)) = uf(1, ino)+duf(1, ino)
         depfel(2+3*(ino-1)) = uf(2, ino)+duf(2, ino)
@@ -426,13 +427,14 @@ subroutine dktnli(BEHInteg, option, typmod, &
                         codret = codkpg
                     end if
                 end if
-!
+
 ! ------------- Get stresses
                 if (lSigm) then
                     zr(icontp+icpg+3) = zr(icontp+icpg+3)/rac2
                     zr(icontp+icpg+4) = d1iel(1, 1)*vt(1)+d1iel(1, 2)*vt(2)
                     zr(icontp+icpg+5) = d1iel(2, 1)*vt(1)+d1iel(2, 2)*vt(2)
                 end if
+
 ! ------------- Compute vector
                 if (lVect) then
                     coehsd = coef*hic/deux

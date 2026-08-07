@@ -55,11 +55,11 @@ subroutine pecapo(tablOutZ, modelZ, numeHarm)
 !
     character(len=16), parameter :: factorKeyword = 'CARA_POUTRE'
     integer(kind=8), parameter :: nbtors = 1, nbgauc = 1, nbcisa = 8, nbrt = 1
-    character(len=8), parameter :: ptors(nbtors) = (/'JX'/)
-    character(len=8), parameter :: pgauc(nbgauc) = (/'JG'/)
-    character(len=8), parameter :: pcisa(nbcisa) = (/'AY  ', 'AZ  ', 'EY  ', 'EZ  ', &
-                                                     'PCTY', 'PCTZ', 'KY  ', 'KZ  '/)
-    character(len=8), parameter :: prt(nbrt) = (/'RT'/)
+    character(len=24), parameter :: ptors(nbtors) = (/'JX'/)
+    character(len=24), parameter :: pgauc(nbgauc) = (/'JG'/)
+    character(len=24), parameter :: pcisa(nbcisa) = (/'AY  ', 'AZ  ', 'EY  ', 'EZ  ', &
+                                                      'PCTY', 'PCTZ', 'KY  ', 'KZ  '/)
+    character(len=24), parameter :: prt(nbrt) = (/'RT'/)
     character(len=16) :: option
     integer(kind=8) :: iret, nt, ibid, nopt, ntab, nct, ilign, ncty, nctz, ngm
     integer(kind=8) :: ngi, ngri, idgrmi, nrt
@@ -399,11 +399,11 @@ subroutine pecapo(tablOutZ, modelZ, numeHarm)
 !         NOUVEAUX AY ET AZ POUR LE MAILLAGE
             valpar(1) = 1.d0/kyeq
             valpar(2) = 1.d0/kzeq
-            call tbajli(tablOutZ, 2, pcisa(1), [ibid], valpar(1), &
+            call tbajli(tablOutZ, 2, pcisa(1:2), [ibid], valpar(1), &
                         [c16b], k8b, ilignm)
             valpar(7) = ky
             valpar(8) = kz
-            call tbajli(tablOutZ, 2, pcisa(7), [ibid], valpar(7), &
+            call tbajli(tablOutZ, 2, pcisa(7:8), [ibid], valpar(7), &
                         [c16b], k8b, ilignm)
         end if
 !
@@ -427,6 +427,7 @@ subroutine pecapo(tablOutZ, modelZ, numeHarm)
 !     ----------------------------------------------
         call pecap3(chgeom, temper, iomega)
 !
+
         call tbajli(tablOutZ, nbgauc, pgauc, [ibid], [iomega], &
                     [c16b], k8b, ilign)
     end if

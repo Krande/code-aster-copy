@@ -15,105 +15,106 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0028(option, nomte)
 !
-    use FE_topo_module
-    use FE_quadrature_module
-    use FE_basis_module
     use Behaviour_module, only: behaviourOption
-!
     use c_interface_plaq_mitc_j
+    use FE_basis_module
+    use FE_quadrature_module
+    use FE_topo_module
     use iso_c_binding
-
+    use plate_type
+    use plateGeom_module, only: getCara, compCoorSystNone
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/jevech.h"
-#include "FE_module.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
-#include "asterfort/dxroep.h"
+#include "asterfort/jevech.h"
 #include "asterfort/writeMatrix.h"
+#include "FE_module.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
-! --------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 ! Elementary computation
 !
 ! Elements: PLAQ_MITC
 !
 ! Options: FULL_MECA_*, RIGI_MECA_*, RAPH_MECA
 !
-! --------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  option           : name of option to compute
 ! In  nomte            : type of finite element
 !
-! --------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: ndim, nno, nnos, npg, jpoids, jvf, jdfde, jgeom, jmate
+    integer(kind=8) :: ndim, nno, nnos, npg, jpoids, jvf, jdfde, jvGeom, jvMaterc
     integer(kind=8) :: i, j, k, elas_id, igau
-    real(c_double) :: e, nu, epais, rho, e_, nu_, tiny
-    parameter(tiny=1.d-8)
-    character(len=8) :: fami
+    real(c_double) :: e, nu, epais, rho, e_, nu_
+    real(c_double) :: tiny
+    character(len=8), parameter :: fami = 'RIGI'
     character(len=16) :: elas_keyword
-
     real(c_double) :: cst(4), coor(27), cdofs_f(12)
     ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_j
-
     integer(c_int) :: ncst, ncd, ne0, ne1, ne2, ne3
     integer(c_int) :: entities0(1), entities1(1), entities2(1), entities3(1)
-!
     integer(kind=4), parameter :: size_init = 30, size_final = 22
     real(c_double) :: w_0(size_init), signs(size_final)
     integer(kind=8) :: reorder(size_final)
     real(c_double), dimension(size_init, size_init) :: M_elem
     real(c_double), dimension(size_final, size_final) :: M_cond, M_final
     real(c_double), dimension(size_init*size_init) :: M0, M1, M2, M3, M4
-!
     real(c_double) :: AA(22, 22), BB(4, 4), CC(22, 4), DD(4, 4), CDinv(22, 4)
-! ---------------------------------------------------------------------
+    type(plateCara_Para) :: plateCara
+    type(plateOrie_Para) :: plateOrie
 !
-! - Finite element informations
-!
-    fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=jpoids, jvf=jvf, jdfde=jdfde)
-!
-! - Initializations
+! --------------------------------------------------------------------------------------------------
 !
     w_0 = 0.d0
-!
+    tiny = 1.d-8
+
+! - Get plate parameters
+    call getCara(plateCara, plateOrie)
+
+! - No global<=>local transformation
+    call compCoorSystNone(plateOrie)
+
+! - Finite element informations
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=jpoids, jvf=jvf, jdfde=jdfde)
+
 ! - Geometry
-!
-    call jevech('PGEOMER', 'L', jgeom)
-!
+    call jevech('PGEOMER', 'L', jvGeom)
+
 ! - Material parameters
-!
-    call jevech('PMATERC', 'L', jmate)
+    call jevech('PMATERC', 'L', jvMaterc)
 
 ! ----- Get elastic parameters (only isotropic elasticity)
 ! FIXME: for instance E and NU are supposed to be equal for all quadpoints
 !
-    call get_elas_id(zi(jmate), elas_id, elas_keyword)
-    call get_elas_para(fami, zi(jmate), '+', 1, 1, &
+    call get_elas_id(zi(jvMaterc), elas_id, elas_keyword)
+    call get_elas_para(fami, zi(jvMaterc), '+', 1, 1, &
                        elas_id, elas_keyword, &
                        e_=e, nu_=nu)
 
     do igau = 2, npg
-        call get_elas_id(zi(jmate), elas_id, elas_keyword)
-        call get_elas_para(fami, zi(jmate), '+', igau, 1, &
+        call get_elas_id(zi(jvMaterc), elas_id, elas_keyword)
+        call get_elas_para(fami, zi(jvMaterc), '+', igau, 1, &
                            elas_id, elas_keyword, &
                            e_=e_, nu_=nu_)
         ASSERT(abs(e-e_) .le. tiny .and. abs(nu-nu_) .le. tiny)
     end do
 
-    call dxroep(rho, epais)
+    call dxroep(plateCara, rho, epais)
 
 ! Fill material parameters vector
     cst(1) = e
@@ -124,9 +125,9 @@ subroutine te0028(option, nomte)
 !
 ! Remplissage du vecteur de coordonnées (3 coordonnées par nœud)
     do i = 0, 8
-        coor(3*i+1) = zr(jgeom+3*i)
-        coor(3*i+2) = zr(jgeom+3*i+1)
-        coor(3*i+3) = zr(jgeom+3*i+2)
+        coor(3*i+1) = zr(jvGeom+3*i)
+        coor(3*i+2) = zr(jvGeom+3*i+1)
+        coor(3*i+3) = zr(jvGeom+3*i+2)
     end do
 
 ! Remplissage des coordonées (N1, N4, N2, N3)
@@ -230,5 +231,5 @@ subroutine te0028(option, nomte)
     end do
 !
     call writeMatrix('PMATUUR', size(M_final, dim=1), size(M_final, dim=2), ASTER_TRUE, M_final)
-
+!
 end subroutine

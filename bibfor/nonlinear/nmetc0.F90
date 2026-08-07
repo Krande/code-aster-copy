@@ -96,6 +96,7 @@ subroutine nmetc0(model, caraElem, compor, ds_inout)
 
 ! - Initial fields: special multifibers field
     if (l_strx) then
+        nbFieldIn = 0
 ! ----- Add fields for orientation
         call setOrieFields(nbFieldInMax, lpain, lchin, &
                            nbFieldIn, caraElem)

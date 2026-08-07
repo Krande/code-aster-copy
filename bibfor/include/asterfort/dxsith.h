@@ -17,9 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dxsith(nomte, materPara, sigma)
+    subroutine dxsith(plateCara, &
+                      materPara, sigma)
         use MaterialPara_type
-        character(len=16), intent(in) :: nomte
+        use plate_type
+        type(plateCara_Para), intent(in) :: plateCara
         type(Material_Para), intent(inout) :: materPara
         real(kind=8), intent(out) :: sigma(*)
     end subroutine dxsith

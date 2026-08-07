@@ -23,6 +23,7 @@
 ! ==================================================================================================
 module coorSyst_module
 ! ==================================================================================================
+    use plate_type
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
@@ -96,11 +97,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         fieldName = " "
-        if (paraNameZ .eq. 'CARORIEN') then
+        if (paraNameZ .eq. '.CARORIEN') then
             fieldName = caraElemZ(1:8)//'.CARORIEN'
-        elseif (paraNameZ .eq. 'CARCOQUE') then
+        elseif (paraNameZ .eq. '.CARCOQUE') then
             fieldName = caraElemZ(1:8)//'.CARCOQUE'
-        elseif (paraNameZ .eq. 'CARMASSI') then
+        elseif (paraNameZ .eq. '.CARMASSI') then
             fieldName = caraElemZ(1:8)//'.CARMASSI'
         else
             ASSERT(ASTER_FALSE)

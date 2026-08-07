@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0413
 !
 ! ==================================================================================================
 !
@@ -26,16 +25,17 @@
 module plateMaterial_module
 ! ==================================================================================================
     use MaterialPara_type
+    use plate_type
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    public :: getMultiLayerNbLayer
-    private :: chckMultiLayer
+    public :: chckMultiLayer
 ! ==================================================================================================
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
@@ -51,84 +51,58 @@ contains
 ! Check properties of multi-layered plates
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine chckMultiLayer(materPara, nbLayer)
+    subroutine chckMultiLayer(materPara, plateCara)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(Material_Para), intent(in) :: materPara
-        integer(kind=8), intent(in) :: nbLayer
+        type(plateCara_Para), intent(in) :: plateCara
 ! ----- Local
         character(len=16), parameter :: elasKeyword = 'ELAS_COQMU'
         character(len=8), parameter :: fami = 'FPG1'
         character(len=1), parameter :: poum = '+'
         integer(kind=8), parameter :: kpg = 1, ksp = 1
         real(kind=8), parameter :: r8bid = 0.d0
-        integer(kind=8) :: iLayer, jvCacoqu, iret, jvNbspIn
-        real(kind=8) :: epTotaSum, epTota, epLayer(1)
+        integer(kind=8) :: nbLayer, iLayer, iret, jvNbspIn
+        real(kind=8) :: epTotaSum, epTota, epLayer
         character(len=3) :: iLayerStr
-        character(len=2) :: iValeStr
-        character(len=16) :: propName
+        integer(kind=8), parameter :: nbProp = 1
+        character(len=16) :: propName(1)
         integer(kind=8) :: propCode(1)
+        real(kind=8) :: propVale(1)
 !   ------------------------------------------------------------------------------------------------
 !
         call tecach('NNO', 'PNBSP_I', 'L', iret, iad=jvNbspIn)
         ASSERT(iret .eq. 0)
         iLayer = 0
         epTotaSum = 0.d0
-        epLayer(1) = 0.d0
-        call jevech('PCACOQU', 'L', jvCacoqu)
-        epTota = zr(jvCacoqu)
+        epTota = plateCara%thick
+        nbLayer = plateCara%nbLayer
+        ASSERT(materPara%elasID .eq. ELAS_COMPOSITE)
+
 5       continue
         iLayer = iLayer+1
+
+! ----- Get thickness of current layer
         call codent(iLayer, 'G', iLayerStr)
-        call codent(1, 'G', iValeStr)
-        propName = 'C'//iLayerStr//'_V'//iValeStr
+        propName(1) = 'C'//iLayerStr//'_V1'
         call rcvalb(fami, kpg, ksp, poum, &
                     materPara%jvMaterCode, ' ', elasKeyword, &
                     0, ' ', [r8bid], &
-                    1, propName, epLayer, propCode(1), 0)
+                    nbProp, propName, propVale, &
+                    propCode, 0)
         if (propCode(1) .eq. 0) then
-            epTotaSum = epTotaSum+epLayer(1)
+            epLayer = propVale(1)
+            epTotaSum = epTotaSum+epLayer
             goto 5
         end if
-        if (epTotaSum .ne. 0.d0) then
-            if ((iLayer-1) .ne. nbLayer) then
-                call utmess('F', 'PLATE1_51', ni=2, vali=[iLayer-1, nbLayer])
-            end if
-            if (abs(epTota-epTotaSum)/epTota .gt. 1.d-2) then
-                call utmess('F', 'PLATE1_52', nr=2, valr=[epTotaSum, epTota])
-            end if
+
+! ----- Check total thickness
+        if ((iLayer-1) .ne. nbLayer) then
+            call utmess('F', 'PLATE1_51', ni=2, vali=[iLayer-1, nbLayer])
         end if
-!
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! getMultiLayerNbLayer
-!
-! Get number of layers
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine getMultiLayerNbLayer(materPara, lDKTG, nbLayer)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        type(Material_Para), intent(in) :: materPara
-        aster_logical, intent(in) :: lDKTG
-        integer(kind=8), intent(out) :: nbLayer
-! ----- Local
-        integer(kind=8) :: jvNbsp
-!   ------------------------------------------------------------------------------------------------
-!
-        nbLayer = 0
-        if (lDKTG) then
-            nbLayer = 1
-        else
-            call jevech('PNBSP_I', 'L', jvNbsp)
-            nbLayer = zi(jvNbsp-1+1)
-            if (nbLayer .le. 0) then
-                call utmess('F', 'ELEMENTS_46')
-            end if
+        if (abs(epTota-epTotaSum)/epTota .gt. 1.d-2) then
+            call utmess('F', 'PLATE1_52', nr=2, valr=[epTotaSum, epTota])
         end if
-        call chckMultiLayer(materPara, nbLayer)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

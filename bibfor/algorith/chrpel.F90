@@ -672,7 +672,7 @@ subroutine chrpel(fieldOutZ, repereZ, fieldNameZ, iOccField, fieldDimeZ, &
         lchout(1) = chams1
         call copisd('CHAM_ELEM_S', 'V', canbsp, lchout(1))
 !
-        if (physQuanName .eq. 'C') then
+        if (physQuanScal .eq. 'C') then
             chr = '&&CHRPEL.CHR'
             chi = '&&CHRPEL.CHI'
             ch1 = '&&CHRPEL.CH1'
@@ -693,11 +693,13 @@ subroutine chrpel(fieldOutZ, repereZ, fieldNameZ, iOccField, fieldDimeZ, &
             call detrsd('CHAMP', chi)
             call detrsd('CHAMP', ch1)
             call detrsd('CHAMP', ch2)
-        else
+        elseif (physQuanScal .eq. 'R') then
             call calcul('S', option, ligrelCalc, &
                         nbFieldIn, lchin, lpain, &
                         nbFieldOut, lchout, lpaout, &
                         'V', 'OUI')
+        else
+            ASSERT(ASTER_FALSE)
         end if
         call detrsd('CHAM_ELEM_S', lchout(1))
         call copisd('CHAMP_GD', 'G', lchout(1), fieldOutZ)
@@ -706,5 +708,5 @@ subroutine chrpel(fieldOutZ, repereZ, fieldNameZ, iOccField, fieldDimeZ, &
     call detrsd('CHAM_ELEM_S', canbsp)
 !
     call jedema()
-    !
+!
 end subroutine chrpel

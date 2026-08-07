@@ -257,6 +257,7 @@ subroutine peingl(tablOutZ, &
     evol = .false.
     factorKeyword = factorKeywordZ
     option = factorKeywordZ
+    caraElem = caraElemZ
     work = zero
     valr = zero
     call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=modelLigrel)
@@ -348,7 +349,7 @@ subroutine peingl(tablOutZ, &
     mesh = chgeom(1:8)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
 !
-    call exlim3(option, 'V', modelZ, ligrel)
+    call exlim3(factorKeyword, 'V', modelZ, ligrel)
 
 ! - Create output table
     call tbcrsd(tablOutZ, 'G')

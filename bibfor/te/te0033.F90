@@ -20,7 +20,9 @@ subroutine te0033(option, nomte)
 !
     use MaterialPara_module
     use MaterialPara_type
-    use plateMaterial_module
+    use plate_type
+    use plateGeom_module, only: getCara, compCoorSystPara, compCoorSystPlate
+    use plateMaterial_module, only: chckMultiLayer
     implicit none
 !
 #include "asterc/r8dgrd.h"
@@ -37,12 +39,10 @@ subroutine te0033(option, nomte)
 #include "asterfort/dstedg.h"
 #include "asterfort/dstsie.h"
 #include "asterfort/dxefro.h"
-#include "asterfort/dxqpgl.h"
 #include "asterfort/dxsiro.h"
 #include "asterfort/dxsit2.h"
 #include "asterfort/dxsit3.h"
 #include "asterfort/dxsith.h"
-#include "asterfort/dxtpgl.h"
 #include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -58,32 +58,32 @@ subroutine te0033(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     CALCUL DE CONTRAINTES, DEFORMATIONS, EFFORTS ET DEFORMATIONS
-!     GENERALISES POUR LES ELEMENTS DKT, DKTG, DST, DKQ, DSQ ET Q4G
-!     POUR UN MATERIAU ISOTROPE OU MULTICOUCHE
-!         OPTIONS TRAITEES  ==>  SIEF_ELGA
-!                                EPSI_ELGA
-!                                DEGE_ELGA
-!                                DEGE_ELNO
+! Elementary computation
+!
+! Elements: DKT/DKTG/DST/Q4G/Q4GG
+!
+! Options: SIEF_ELGA/EPSI_ELGA/DEGE_ELNO/DEGE/ELGA
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: ndim, nno, npg
-    integer(kind=8) :: ipoids, ivf, idfdx
-    integer(kind=8) :: jvCacoqu, jvDisp, jeffg, jvGeom, jvMaterc, jsigm
-    integer(kind=8) :: np, multic, nbLayer
-    real(kind=8) :: alpha, beta
-    real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: ndim, nno, npg, nbLayer
+    integer(kind=8) :: jvDisp, jeffg, jvGeom, jvMaterc, jsigm
+    integer(kind=8) :: multic
+    real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: depl(24)
     real(kind=8) :: effgt(32), effpg(32)
-    real(kind=8) :: t2iu(4), t2ui(4), c, s
-    aster_logical :: lDKTG
     character(len=8) :: fami
+    aster_logical :: lComposite
     type(Material_Para) :: materPara
+    type(plateCara_Para) :: plateCara
+    type(plateOrie_Para) :: plateOrie
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    r8bid = 0.d0
 !
     if (option(6:9) .eq. 'ELNO') then
         fami = 'NOEU'
@@ -91,17 +91,11 @@ subroutine te0033(option, nomte)
         fami = 'RIGI'
     end if
     call elrefe_info(fami=fami, &
-                     ndim=ndim, nno=nno, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfdx)
+                     ndim=ndim, nno=nno, npg=npg)
 !
-    if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. option .ne. 'DEGE_ELNO' &
-        .and. option .ne. 'DEGE_ELGA') then
+    if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. &
+        option .ne. 'DEGE_ELNO' .and. option .ne. 'DEGE_ELGA') then
         ASSERT(ASTER_FALSE)
-    end if
-!
-    lDKTG = ASTER_FALSE
-    if ((nomte .eq. 'MEDKTG3') .or. (nomte .eq. 'MEDKQG4')) then
-        lDKTG = ASTER_TRUE
     end if
 !
     effgt = 0.d0
@@ -109,80 +103,89 @@ subroutine te0033(option, nomte)
 ! - Geometry
     call jevech('PGEOMER', 'L', jvGeom)
 
+! - Displacements
+    call jevech('PDEPLAR', 'L', jvDisp)
+
 ! - Material parameters
+    lComposite = ASTER_FALSE
     if (option .eq. 'SIEF_ELGA' .or. option .eq. 'EPSI_ELGA') then
 ! ----- Get material parameters
         call jevech('PMATERC', 'L', jvMaterc)
 
 ! ----- Initializations of material parameters on current cell
         call initParaCell(fami, zi(jvMaterc), materPara)
+        lComposite = materPara%elasID .eq. ELAS_COMPOSITE
 
 ! ----- Set local coordinate system from user
         call getUserLCS(ndim, nno, jvGeom, materPara%lcsPara)
+
     end if
+
+! - Get plate parameters
+    call getCara(plateCara, plateOrie)
 
 ! - For multi-layers
-    nbLayer = 0
     if (option .eq. 'SIEF_ELGA' .or. option .eq. 'EPSI_ELGA') then
-        call getMultiLayerNbLayer(materPara, lDKTG, nbLayer)
+        if (lComposite) then
+            call chckMultiLayer(materPara, plateCara)
+        end if
     end if
-!
-    if (option(8:9) .eq. 'GA') then
-        np = npg
-    else if (option(8:9) .eq. 'NO') then
-        np = nno
-    end if
+    nbLayer = plateCara%nbLayer
+    ASSERT(nbLayer .ge. 1)
 
-! - Management of local coordinate system (intrinsec, for plate)
-    if (nno .eq. 3) then
-        call dxtpgl(zr(jvGeom), pgl)
-    else if (nno .eq. 4) then
-        call dxqpgl(zr(jvGeom), pgl)
-    end if
+! - Calculate the transformation: global coordinate system/intrinsic coordinate system
+    call compCoorSystPara(plateCara, zr(jvGeom), pgl)
+
+! - Compute coordinate system for plate
+    call compCoorSystPlate(pgl, plateCara, plateOrie)
+
+! - Change coordinates of geometry and displacements
     call utpvgl(nno, 3, pgl, zr(jvGeom), xyzl)
-    call jevech('PCACOQU', 'L', jvCacoqu)
-    alpha = zr(jvCacoqu+1)*r8dgrd()
-    beta = zr(jvCacoqu+2)*r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
-!
-    call jevech('PDEPLAR', 'L', jvDisp)
     call utpvgl(nno, 6, pgl, zr(jvDisp), depl)
 !
     if (option(1:9) .eq. 'SIEF_ELGA') then
         call jevech('PCONTRR', 'E', jsigm)
-        ASSERT(nbLayer .ge. 1)
         if (nomte .eq. 'MEDKTR3') then
-            call dktsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dktsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEDSTR3') then
-            call dstsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dstsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEDKQU4') then
-            call dkqsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dkqsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEDSQU4') then
-            call dsqsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dsqsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEQ4QU4') then
-            call q4gsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call q4gsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MET3TR3') then
-            call t3gsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call t3gsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else
             ASSERT(ASTER_FALSE)
         end if
-!
+
         if (materPara%elasID .eq. ELAS_ISOT .or. &
             materPara%elasID .eq. ELAS_ORTH .or. &
             materPara%elasID .eq. ELAS_ISTR) then
-            call dxsith(nomte, materPara, zr(jsigm))
+            call dxsith(plateCara, &
+                        materPara, zr(jsigm))
 
         else if (materPara%elasID .eq. ELAS_COMPOSITE) then
-            call dxsit2(nomte, pgl, zr(jsigm))
+            call dxsit2(plateCara, plateOrie, &
+                        zr(jsigm))
 
         elseif (materPara%elasID .eq. ELAS_SHELL) then
-            call dxsit3(nomte, zi(jvMaterc), pgl, zr(jsigm))
+            call dxsit3(plateCara, plateOrie, &
+                        zi(jvMaterc), zr(jsigm))
 
         else
             call utmess('F', 'PLATE1_1', nk=2, valk=[option, materPara%elasKeyword])
@@ -190,67 +193,97 @@ subroutine te0033(option, nomte)
 
     else if (option(1:9) .eq. 'EPSI_ELGA') then
         call jevech('PDEFOPG', 'E', jsigm)
-        ASSERT(nbLayer .ge. 1)
         if (nomte .eq. 'MEDKTR3') then
-            call dktsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dktsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEDSTR3') then
-            call dstsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dstsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEDKQU4') then
-            call dkqsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dkqsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEDSQU4') then
-            call dsqsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call dsqsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MEQ4QU4') then
-            call q4gsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call q4gsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         else if (nomte .eq. 'MET3TR3') then
-            call t3gsie(option, fami, xyzl, pgl, depl, &
-                        nbLayer, zr(jsigm))
+            call t3gsie(plateCara, plateOrie, &
+                        option, fami, xyzl, depl, &
+                        zr(jsigm))
         end if
-        call dxsiro(np*nbLayer*3, t2iu, zr(jsigm), zr(jsigm))
+        call dxsiro(npg*plateCara%nbLayer*3, plateOrie%t2iu, zr(jsigm), zr(jsigm))
 
     else if (option(1:9) .eq. 'DEGE_ELNO') then
         call jevech('PDEFOGR', 'E', jeffg)
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, option, pgl, depl, effgt, multic)
+            call dktedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effgt, multic)
         else if (nomte .eq. 'MEDSTR3') then
-            call dstedg(xyzl, option, pgl, depl, effgt)
+            call dstedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effgt)
         else if (nomte .eq. 'MEDKQU4' .or. nomte .eq. 'MEDKQG4') then
-            call dkqedg(xyzl, option, pgl, depl, effgt)
+            call dkqedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effgt)
         else if (nomte .eq. 'MEDSQU4') then
-            call dsqedg(xyzl, option, pgl, depl, effgt)
+            call dsqedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effgt)
         else if (nomte .eq. 'MEQ4QU4' .or. nomte .eq. 'MEQ4GG4') then
-            call q4gedg(xyzl, option, pgl, depl, effgt)
+            call q4gedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effgt)
         else if (nomte .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
-            call t3gedg(xyzl, option, pgl, depl, effgt)
+            call t3gedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effgt)
         end if
-        call dxefro(np, t2iu, effgt, zr(jeffg))
+        call dxefro(nno, plateOrie%t2iu, effgt, zr(jeffg))
 
     else if (option(1:9) .eq. 'DEGE_ELGA') then
         call jevech('PDEFOPG', 'E', jeffg)
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, option, pgl, depl, effpg, multic)
+            call dktedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effpg, multic)
         else if (nomte .eq. 'MEDSTR3') then
-            call dstedg(xyzl, option, pgl, depl, effpg)
+            call dstedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effpg)
         else if (nomte .eq. 'MEDKQU4' .or. nomte .eq. 'MEDKQG4') then
-            call dkqedg(xyzl, option, pgl, depl, effpg)
+            call dkqedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effpg)
         else if (nomte .eq. 'MEDSQU4') then
-            call dsqedg(xyzl, option, pgl, depl, effpg)
+            call dsqedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effpg)
         else if (nomte .eq. 'MEQ4QU4' .or. nomte .eq. 'MEQ4GG4') then
-            call q4gedg(xyzl, option, pgl, depl, effpg)
+            call q4gedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effpg)
         else if (nomte .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
-            call t3gedg(xyzl, option, pgl, depl, effpg)
+            call t3gedg(plateCara, plateOrie, &
+                        xyzl, option, depl, &
+                        effpg)
         end if
-        call dxefro(np, t2iu, effpg, zr(jeffg))
+        call dxefro(npg, plateOrie%t2iu, effpg, zr(jeffg))
 
     end if
 !
     if (option .eq. 'SIEF_ELGA') then
-        call cosiro(nomte, 'PCONTRR', 'E', 'IU', 'G', &
-                    jsigm, 'S')
+        call cosiro(plateCara, plateOrie, &
+                    'PCONTRR', 'E', 'IU', 'G', &
+                    jsigm)
     end if
 !
 end subroutine

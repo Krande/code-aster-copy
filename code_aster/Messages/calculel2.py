@@ -411,9 +411,8 @@ Conseil :
     ),
     81: _(
         """
-Erreur utilisateur :
-  Calcul de la déformation thermique d'un élément de grille.
-  On ne trouve pas de température sur le maille %(k1)s.
+Calcul de la déformation thermique d'un élément de grille.
+On ne trouve pas de température pour la maille %(i1)d.
 """
     ),
     82: _(

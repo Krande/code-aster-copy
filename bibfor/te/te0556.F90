@@ -18,116 +18,105 @@
 !
 subroutine te0556(option, nomte)
 !
-    use FE_topo_module
-    use FE_quadrature_module
-    use FE_basis_module
     use Behaviour_module, only: behaviourOption
-!
     use c_interface_tria_mitc_f
+    use FE_basis_module
+    use FE_quadrature_module
+    use FE_topo_module
     use iso_c_binding
-
+    use plate_type
+    use plateGeom_module, only: getCara, compCoorSystPara, compCoorSystNone
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/dxroep.h"
-#include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jevech.h"
-#include "asterfort/utpvgl.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
-!
+#include "asterfort/jevech.h"
+#include "asterfort/utpvgl.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
-
-!     IN  OPTION : NOM DE L'OPTION A CALCULER
-!     IN  NOMTE  : NOM DU TYPE_ELEMENT
-!     -----------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCUL DE PRESSION SUR LES ELEMENTS PLAQ_MITC
 !         OPTIONS TRAITEES   ==> CHAR_MECA_PRES_R
-!     -----------------------------------------------------------------
-    integer(kind=8) :: ndim, nno, nnos, npg, jpoids, jvf, jdfde, jgano, jgeom, jmate
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8), parameter :: nbPara = 4
+    character(len=8), parameter :: paraName(4) = (/'X   ', 'Y   ', &
+                                                   'Z   ', 'INST'/)
+    real(c_double) :: paraVale(4)
+    integer(kind=8) :: ndim, nno, nnos, npg, jpoids, jvf, jdfde, jgano, jvGeom, jvMaterc
     integer(kind=8) :: i, j, ier, jpres, itemps, ivectu, elas_id
-    real(c_double) :: pgl(3, 3), xyzl(3, 4), valpar(4)
     real(c_double) :: e, nu, epais, rho, pres, pr
-    character(len=4) :: fami
-    character(len=8) :: nompar(4)
+    character(len=8), parameter :: fami = 'RIGI'
     character(len=16) :: elas_keyword
-
     real(c_double) :: cst(5), coor(18), cdofs_f(9)
     ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_f
-
     integer(c_int) :: ncst, ncd, ne0, ne1, ne2
     integer(c_int) :: entities0(1), entities1(1), entities2(1)
-
     integer(kind=4), parameter :: size_init = 21, size_final = 15
     real(c_double), dimension(size_init) :: F_elem, F0, F1, F2, F3, w_0
     real(c_double) :: signs(size_final)
     integer(kind=8) :: reorder(size_final)
-
-! --------------------------------------------------------------------
-! - Finite element informations
+    type(plateCara_Para) :: plateCara
+    type(plateOrie_Para) :: plateOrie
 !
-    fami = 'RIGI'
+! --------------------------------------------------------------------------------------------------
+!
+    w_0 = 0.d0
+
+! - Get plate parameters
+    call getCara(plateCara, plateOrie)
+
+! - No global<=>local transformation
+    call compCoorSystNone(plateOrie)
+
+! - Finite element informations
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=jpoids, jvf=jvf, jdfde=jdfde, jgano=jgano)
+
 ! - Geometry
-!
-    call jevech('PGEOMER', 'L', jgeom)
-!
+    call jevech('PGEOMER', 'L', jvGeom)
+
 ! - Material parameters
-!
-    call jevech('PMATERC', 'L', jmate)
+    call jevech('PMATERC', 'L', jvMaterc)
 
 ! ----- Get elastic parameters (only isotropic elasticity)
 ! FIXME: for instance E and NU are supposed to be equal for all quadpoints
 !
-    call get_elas_id(zi(jmate), elas_id, elas_keyword)
-    call get_elas_para(fami, zi(jmate), '+', 1, 1, &
+    call get_elas_id(zi(jvMaterc), elas_id, elas_keyword)
+    call get_elas_para(fami, zi(jvMaterc), '+', 1, 1, &
                        elas_id, elas_keyword, &
                        e_=e, nu_=nu)
 
-    call dxroep(rho, epais)
+    call dxroep(plateCara, rho, epais)
 !
     if (option .eq. 'CHAR_MECA_PRES_R') then
-!              ------------------------------
         call jevech('PPRESSR', 'L', jpres)
-        call dxtpgl(zr(jgeom), pgl)
-        call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
         pres = zr(jpres)
-!
-! --- CAS DES CHARGEMENTS DE FORME FONCTION
-!
+
     else if (option .eq. 'CHAR_MECA_PRES_F') then
-!              ------------------------------
         call jevech('PPRESSF', 'L', jpres)
         if (zk8(jpres) .eq. '&FOZERO') goto 999
         call jevech('PINSTR', 'L', itemps)
-        valpar(4) = zr(itemps)
-        nompar(4) = 'INST'
-        nompar(1) = 'X'
-        nompar(2) = 'Y'
-        nompar(3) = 'Z'
+        paraVale(4) = zr(itemps)
         pres = 0.d0
         do j = 0, nno-1
-            valpar(1) = zr(jgeom+3*j)
-            valpar(2) = zr(jgeom+3*j+1)
-            valpar(3) = zr(jgeom+3*j+2)
-            call fointe('FM', zk8(jpres), 4, nompar, valpar, &
-                        pr, ier)
+            paraVale(1) = zr(jvGeom+3*j)
+            paraVale(2) = zr(jvGeom+3*j+1)
+            paraVale(3) = zr(jvGeom+3*j+2)
+            call fointe('FM', zk8(jpres), nbPara, paraName, paraVale, pr, ier)
             pres = pres+pr
         end do
         pres = pres/nno
-
     end if
-    !
-!
-! Initializations
-!
-    w_0 = 0.d0
-!
+
 ! Fill material parameters vector
     cst(1) = e
     cst(2) = nu
@@ -135,13 +124,14 @@ subroutine te0556(option, nomte)
     cst(4) = epais
     cst(5) = pres
     ncst = size(cst)
+
 ! Remplissage du vecteur de coordonnées (3 coordonnées par nœud)
     do i = 0, 5
-        coor(3*i+1) = zr(jgeom+3*i)
-        coor(3*i+2) = zr(jgeom+3*i+1)
-        coor(3*i+3) = zr(jgeom+3*i+2)
+        coor(3*i+1) = zr(jvGeom+3*i)
+        coor(3*i+2) = zr(jvGeom+3*i+1)
+        coor(3*i+3) = zr(jvGeom+3*i+2)
     end do
-!
+
 ! Remplissage des coordonées (pas de permut ici)
     cdofs_f(1) = coor(1)
     cdofs_f(2) = coor(2)
@@ -192,7 +182,7 @@ subroutine te0556(option, nomte)
             1.d0, -1.d0, &
             1.d0, -1.d0 &
             /)
-!
+
 ! - Set matrix in output field
     call jevech('PVECTUR', 'E', ivectu)
     do i = 1, size_final

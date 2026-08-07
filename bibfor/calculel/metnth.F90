@@ -52,7 +52,7 @@ subroutine metnth(model, loadNameJv, loadInfoJv, &
     character(len=*), intent(in) :: materCodeZ
     character(len=24), intent(in) :: timeMap
     character(len=24), intent(in) :: tempPrev
-    character(len=19), intent(inout) :: matrElem
+    character(len=24), intent(in) :: matrElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,6 +120,8 @@ subroutine metnth(model, loadNameJv, loadInfoJv, &
                        nbFieldIn, caraElem)
 
 ! - Generate new RESU_ELEM name
+    call jedetr(matrElem(1:19)//'.RELR')
+    call memare('V', matrElem, model, option)
     resuElem = matrElem(1:8)//'.ME000'
 
 ! - Set output field
@@ -149,6 +151,7 @@ subroutine metnth(model, loadNameJv, loadInfoJv, &
             nbFieldIn = 5
 
 ! --------- Compute
+            call codent(iLoad, 'D0', lchout(1) (12:14))
             call calcul('S', option, modelLigrel, &
                         6, lchin, lpain, &
                         1, lchout, lpaout, &

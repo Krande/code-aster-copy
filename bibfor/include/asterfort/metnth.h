@@ -26,6 +26,6 @@ interface
         character(len=*), intent(in) :: materCodeZ
         character(len=24), intent(in) :: timeMap
         character(len=24), intent(in) :: tempPrev
-        character(len=19), intent(inout) :: matrElem
+        character(len=24), intent(in) :: matrElem
     end subroutine metnth
 end interface

@@ -69,10 +69,10 @@ contains
         integer(kind=8) :: numeStore, iStore, iret
         character(len=19) :: resultIn, resultOut
         character(len=8) :: paraType
-        integer(kind=8) :: jvResultIn, jvResultOut
+        integer(kind=8) :: jvParaIn, jvParaOut
         aster_logical :: copyField
         character(len=19) :: comporToCopy, comporToSave
-        character(len=24) :: fieldIn, fieldOut
+        character(len=24) :: paraIn, paraOut
         character(len=16) :: paraName
         character(len=16), pointer :: listParaName(:) => null()
 !   ------------------------------------------------------------------------------------------------
@@ -98,9 +98,9 @@ contains
             do iParaTotal = 1, nbParaTotal
                 paraName = listParaName(iParaTotal)
                 call rsadpa(resultIn, 'L', 1, paraName, numeStore, &
-                            1, sjv=jvResultIn, styp=paraType, istop=0)
+                            1, sjv=jvParaIn, styp=paraType, istop=0)
                 call rsadpa(resultOut, 'E', 1, paraName, numeStore, &
-                            1, sjv=jvResultOut, styp=paraType)
+                            1, sjv=jvParaOut, styp=paraType)
                 if (copyField) then
                     call rsexch(' ', resultIn, 'COMPORTEMENT', numeStore, comporToCopy, iret)
                     if (iret .eq. 0) then
@@ -109,29 +109,29 @@ contains
                     end if
                 end if
                 if (paraType(1:1) .eq. 'I') then
-                    zi(jvResultOut) = zi(jvResultIn)
+                    zi(jvParaOut) = zi(jvParaIn)
                 else if (paraType(1:1) .eq. 'R') then
-                    zr(jvResultOut) = zr(jvResultIn)
+                    zr(jvParaOut) = zr(jvParaIn)
                 else if (paraType(1:1) .eq. 'C') then
-                    zc(jvResultOut) = zc(jvResultIn)
+                    zc(jvParaOut) = zc(jvParaIn)
                 else if (paraType(1:3) .eq. 'K80') then
-                    zk80(jvResultOut) = zk80(jvResultIn)
+                    zk80(jvParaOut) = zk80(jvParaIn)
                 else if (paraType(1:3) .eq. 'K32') then
-                    zk32(jvResultOut) = zk32(jvResultIn)
+                    zk32(jvParaOut) = zk32(jvParaIn)
                 else if (paraType(1:3) .eq. 'K24') then
-                    zk24(jvResultOut) = zk24(jvResultIn)
+                    zk24(jvParaOut) = zk24(jvParaIn)
                     if (copyField) then
-                        fieldIn = zk24(jvResultIn)
-                        if (paraName .eq. 'EXCIT' .and. fieldIn(1:2) .ne. '  ') then
-                            fieldOut = resultOut(1:8)//fieldIn(9:)
-                            call copisd('LISTE_CHARGES', 'G', fieldIn, fieldOut)
-                            zk24(jvResultOut) = fieldOut
+                        paraIn = zk24(jvParaIn)
+                        if (paraName .eq. 'EXCIT' .and. paraIn(1:2) .ne. '  ') then
+                            paraOut = resultOut(1:8)//paraIn(9:)
+                            call copisd('LISTE_CHARGES', 'G', paraIn(1:19), paraOut(1:19))
+                            zk24(jvParaOut) = paraOut
                         end if
                     end if
                 else if (paraType(1:3) .eq. 'K16') then
-                    zk16(jvResultOut) = zk16(jvResultIn)
+                    zk16(jvParaOut) = zk16(jvParaIn)
                 else if (paraType(1:2) .eq. 'K8') then
-                    zk8(jvResultOut) = zk8(jvResultIn)
+                    zk8(jvParaOut) = zk8(jvParaIn)
                 end if
             end do
         end do

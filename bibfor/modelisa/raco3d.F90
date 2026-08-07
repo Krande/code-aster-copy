@@ -111,14 +111,14 @@ subroutine raco3d(iocc, listRelaZ, loadZ)
 
 ! - RECUPERER LA LISTE DES MAILLES
     call getelem(mesh, factorKeyword, iocc, 'F', lismaco, &
-                 nbmaco, 'COQUE')
+                 nbmaco, '_COQUE')
 
     call getelem(mesh, factorKeyword, iocc, 'F', lismavo, &
-                 nbmavo, 'MASSIF')
+                 nbmavo, '_MASSIF')
 
 ! - RECUPERER LA LISTE DES NOEUDS DU BORD DE LA COQUE
     call getnode(mesh, factorKeyword, iocc, 'V', lisnoco, &
-                 nbnocot, ' ', 'COQUE')
+                 nbnocot, ' ', '_COQUE')
     call jeveuo(lisnoco, 'L', jlisnoco)
     !
     AS_ALLOCATE(vi=list_total_no_co, size=nbnocot)

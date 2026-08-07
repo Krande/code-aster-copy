@@ -30,9 +30,6 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCACOQU = LocatedComponents(phys=PHY.CACOQU_R, type="ELEM", components=("EP",))
-
-
 CCOEFHF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H",))
 
 
@@ -84,7 +81,7 @@ class THCOSE2(Element):
         OP.CHAR_THER_EVOL(
             te=110,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLTH1),
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PCOEFHR, CCOEFHR),
                 (SP.PGEOMER, NGEOMER),

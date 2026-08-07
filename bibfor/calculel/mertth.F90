@@ -135,7 +135,7 @@ subroutine mertth(model, loadNameJv, loadInfoJv, &
                        nbFieldIn, caraElem)
 
 ! - Generate new RESU_ELEM name
-    resuElem = matrElem(1:8)//'.ME000'
+    resuElem = matrElem(1:8)//'.ME001'
 
 ! - Set output field
     lpaout(1) = 'PMATTTR'
@@ -162,13 +162,11 @@ subroutine mertth(model, loadNameJv, loadInfoJv, &
 ! ----- Standard input fields
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom(1:19)
-        lpain(2) = 'PINSTR'
-        lchin(2) = timeMapMatr(1:19)
-        lpain(3) = 'PTEMPEI'
-        lchin(3) = tempIter(1:19)
-        lpain(4) = 'PDEPLAR'
-        lchin(4) = '&&DEPPLU'
-        nbFieldIn = 4
+        lpain(2) = 'PTEMPEI'
+        lchin(2) = tempIter(1:19)
+        lpain(3) = 'PDEPLAR'
+        lchin(3) = '&&DEPPLU'
+        nbFieldIn = 3
 
 ! ----- Set output field
         lpaout(1) = 'PMATTTR'

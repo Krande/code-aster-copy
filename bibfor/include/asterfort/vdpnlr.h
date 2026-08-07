@@ -17,10 +17,15 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vdpnlr(BEHinteg, &
-                      option, nomte, codret)
+    subroutine vdpnlr(plateCara, plateOrie, &
+                      BEHInteg, &
+                      option, nomte, &
+                      codret)
         use Behaviour_type
-        type(Behaviour_Integ), intent(inout) :: BEHinteg
+        use plate_type
+        type(plateCara_Para), intent(in) :: plateCara
+        type(plateOrie_Para), intent(in) :: plateOrie
+        type(Behaviour_Integ), intent(inout) :: BEHInteg
         character(len=16) :: option, nomte
         integer(kind=8) :: codret
     end subroutine vdpnlr

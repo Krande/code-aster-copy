@@ -58,7 +58,7 @@ subroutine op0107()
 !
     integer(kind=8) :: numeHarm, iret, jordr, n1, n2, nbFactorKeyword, nbordr, nc, np, nr, ier
     real(kind=8) :: prec
-    character(len=8) :: model, caraElem, deform, result, crit, mesh
+    character(len=8) :: model, caraElem, deform, result, crit, mesh, k8b
     character(len=16) :: concep, nomcmd
     character(len=19) :: tablOut, knum, tabtyp(3)
     character(len=24) :: materField, materCode, chdef
@@ -67,6 +67,7 @@ subroutine op0107()
 !
     call jemarq()
     call infmaj()
+    k8b = " "
 
 ! - Get output table
     call getres(tablOut, concep, nomcmd)
@@ -200,8 +201,8 @@ subroutine op0107()
         call medomp(result, model, materField, materCode, caraElem, numeHarm)
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
         ASSERT(.not. isParallelMesh(mesh))
-        ! call peweib(tablOut, model, materField, materCode, caraElem, k8b, &
-        !             numeHarm, nbFactorKeyword, 0, nomcmd)
+        call peweib(tablOut, model, materField, materCode, caraElem, k8b, &
+                    numeHarm, nbFactorKeyword, 0, nomcmd)
     end if
 !
     call getfac('RICE_TRACEY', nbFactorKeyword)
