@@ -316,7 +316,7 @@ Il n'y a aucun degré de liberté de déplacement sur le modèle.
     55: _(
         """
   Vous utilisez l'indicateur de convergence RESI_REFE_RELA et une modélisation %(k1)s.
-  Vous devez renseigner la valeur de référence %(k2)s_REFE dans CONVERGENCE_REFE.
+  Vous devez renseigner la valeur de référence %(k2)s dans CONVERGENCE_REFE.
 """
     ),
     56: _(
@@ -328,7 +328,7 @@ Il n'y a aucun degré de liberté de déplacement sur le modèle.
     57: _(
         """
   Vous utilisez l'indicateur de convergence RESI_REFE_RELA et une modélisation %(k1)s.
-  La valeur de référence %(k2)s_REFE dans CONVERGENCE_REFE n'est pas utilisée.
+  La valeur de référence %(k2)s dans CONVERGENCE_REFE n'est pas utilisée.
 """
     ),
     59: _(
