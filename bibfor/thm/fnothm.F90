@@ -110,7 +110,7 @@ subroutine fnothm(ds_thm, &
     integer(kind=8) :: kpi, i, n
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), poids, poids2
     integer(kind=8) :: addeme, addete, addep1, addep2, adde2nd
-    real(kind=8) :: r_bar(dimdef)
+    real(kind=8) :: r_bar(1:dimdef+1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
