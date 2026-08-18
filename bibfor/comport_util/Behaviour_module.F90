@@ -706,7 +706,7 @@ contains
     end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! behaviourPrepESVAGeom
+! behaviourPrepESVAGeomHHO
 !
 ! Prepare external state variables - Geometry
 !

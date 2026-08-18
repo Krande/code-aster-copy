@@ -77,11 +77,8 @@ subroutine nmrefe(model, compor, materCode, caraElem, nume_dof, &
     character(len=19) :: vectElem, vectAsse, dispPrev
     character(len=19) :: modelLigrel
     character(len=19), parameter :: resuElem = '&&NMREFE.VEREFE'
-    character(len=19), parameter :: chrefe = '&&NMREFE.SIGERE'
     character(len=24) :: chgeom
-    integer(kind=8) :: i_refe, nb_refe, nbFieldIn, ier
-    character(len=8), pointer :: list_cmp(:) => null()
-    real(kind=8), pointer :: list_vale(:) => null()
+    integer(kind=8) :: nbFieldIn, ier
     aster_logical :: lXFEM
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,19 +98,6 @@ subroutine nmrefe(model, compor, materCode, caraElem, nume_dof, &
     call nmchex(hatVeelem, 'VEELEM', 'CNREFE', vectElem)
     call nmchex(hatVeasse, 'VEASSE', 'CNREFE', vectAsse)
 
-! - Get parameters from convergence datastructure
-    nb_refe = ds_conv%nb_refe
-    AS_ALLOCATE(vk8=list_cmp, size=nb_refe)
-    AS_ALLOCATE(vr=list_vale, size=nb_refe)
-    do i_refe = 1, nb_refe
-        list_cmp(i_refe) = ds_conv%list_refe(i_refe)%cmp_name
-        list_vale(i_refe) = ds_conv%list_refe(i_refe)%user_para
-    end do
-
-! - Create field for reference values
-    call mecact('V', chrefe, 'MODELE', modelLigrel, 'PREC_R', &
-                ncmp=nb_refe, lnomcmp=list_cmp, vr=list_vale)
-
 ! - Get geometry field
     call megeom(model, chgeom)
 
@@ -124,15 +108,17 @@ subroutine nmrefe(model, compor, materCode, caraElem, nume_dof, &
 ! - Add input fields
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom(1:19)
-    lpain(2) = 'PREFCO'
-    lchin(2) = chrefe
-    lpain(3) = 'PCOMPOR'
-    lchin(3) = compor(1:19)
-    lpain(4) = 'PMATERC'
-    lchin(4) = materCode(1:19)
-    lpain(5) = 'PDEPLMR'
-    lchin(5) = dispPrev
-    nbFieldIn = 5
+    lpain(2) = 'PRESICMP'
+    lchin(2) = ds_conv%cresicmp
+    lpain(3) = 'PRESIREF'
+    lchin(3) = ds_conv%cresiref
+    lpain(4) = 'PCOMPOR'
+    lchin(4) = compor(1:19)
+    lpain(5) = 'PMATERC'
+    lchin(5) = materCode(1:19)
+    lpain(6) = 'PDEPLMR'
+    lchin(6) = dispPrev
+    nbFieldIn = 6
 
 ! - Add fields for structural elements
     call setStructFields(caraElem, nbFieldInMax, lchin, lpain, nbFieldIn)
@@ -166,8 +152,5 @@ subroutine nmrefe(model, compor, materCode, caraElem, nume_dof, &
 ! - Assembly
     call assmiv('V', vectAsse, 1, vectElem, [1.d0], &
                 nume_dof, 1)
-!
-    AS_DEALLOCATE(vk8=list_cmp)
-    AS_DEALLOCATE(vr=list_vale)
 !
 end subroutine

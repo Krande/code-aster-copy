@@ -405,7 +405,9 @@ class MECA_2D_BARRE(Element):
             ),
         ),
         OP.REFE_FORC_NODA(
-            te=156, para_in=((SP.PREFCO, LC.CRESEFF),), para_out=((SP.PVECTUR, MVECTUR),)
+            te=156,
+            para_in=((SP.PRESIREF, LC.CRESIREF), (SP.PRESICMP, LC.CRESICMP)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA(
             te=153,

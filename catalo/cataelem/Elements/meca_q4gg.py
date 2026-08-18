@@ -586,7 +586,7 @@ class MEQ4GG4(Element):
         ),
         OP.REFE_FORC_NODA(
             te=446,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PREFCO, LC.CRESEFM)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRESIREF, LC.CRESIREF), (SP.PRESICMP, LC.CRESICMP)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(

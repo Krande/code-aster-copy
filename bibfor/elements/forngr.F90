@@ -19,6 +19,7 @@
 ! => real zero (init by calcul.F90)
 !
 subroutine forngr(option, nomte)
+    use resi_refe_module, only: RESI_REFE
     implicit none
 #include "jeveux.h"
 #include "asterfort/btsig.h"
@@ -34,7 +35,6 @@ subroutine forngr(option, nomte)
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
@@ -115,6 +115,7 @@ subroutine forngr(option, nomte)
 !    POUR_RESI_REFE_RELA
     real(kind=8) :: sigtmp(5), ftemp(51), effint(51)
     character(len=16) :: kmess(2)
+    type(RESI_REFE):: refe
 !
 !---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 !
@@ -178,7 +179,9 @@ subroutine forngr(option, nomte)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
 !
-        call terefe('SIGM_REFE', 'MECA_COQUE3D', sigref)
+        call refe%Init(nomte)
+        sigref = refe%GetRef('SIGM')
+        call refe%Check()
 !
     end if
 !

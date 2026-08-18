@@ -253,7 +253,11 @@ class MESSHELL_SB9(Element):
         ),
         OP.REFE_FORC_NODA(
             te=125,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PREFCO, LC.CRESSIG)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_GEOM(

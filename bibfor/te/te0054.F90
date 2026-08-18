@@ -22,6 +22,7 @@ subroutine te0054(option, nomte)
     use Behaviour_type
     use MaterialPara_module
     use MaterialPara_type
+    use resi_refe_module, only: RESI_REFE
     implicit none
 !
 #include "asterf_types.h"
@@ -33,7 +34,6 @@ subroutine te0054(option, nomte)
 #include "asterfort/nmsfon.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -65,10 +65,11 @@ subroutine te0054(option, nomte)
     integer(kind=8) :: codret
     real(kind=8) :: sigref, lagref
     real(kind=8), allocatable:: sref(:)
-    aster_logical :: lMatr, lVect, lSigm, lVari, refe
+    aster_logical :: lMatr, lVect, lSigm, lVari, lrefe
     character(len=16), pointer :: compor(:) => null()
     type(Material_Para) :: materPara
     type(Behaviour_Integ) :: BEHInteg
+    type(RESI_REFE):: refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +83,7 @@ subroutine te0054(option, nomte)
     call teattr('S', 'TYPMOD', typmod(1))
     typmod(2) = ' '
     axi = typmod(1) .eq. 'AXIS'
-    refe = ASTER_FALSE
+    lrefe = ASTER_FALSE
 
 ! - Get parameters of element
     call elref1(elrefe)
@@ -164,17 +165,20 @@ subroutine te0054(option, nomte)
     end if
 
     if (option .eq. "FORC_NODA") then
-        call nmsfon(refe, ndim, nno, npg, nddl, &
+        call nmsfon(lrefe, ndim, nno, npg, nddl, &
                     zr(jvGeom), zr(jv_vf), jv_dfde, &
                     jv_poids, zr(icont), zr(ivectu))
 
     else if (option .eq. "REFE_FORC_NODA") then
-        refe = ASTER_TRUE
-        call terefe('SIGM_REFE', 'MECA_MIXSTA', sigref)
-        call terefe('LAGR_REFE', 'MECA_MIXSTA', lagref)
+        lrefe = ASTER_TRUE
+        call refe%Init(nomte)
+        sigref = refe%GetRef('SIGM')
+        lagref = refe%GetRef('LAGR')
+        call refe%Check()
+
         sref(1:2*ndim) = sigref
         sref(2*ndim+1:4*ndim) = lagref
-        call nmsfon(refe, ndim, nno, npg, nddl, &
+        call nmsfon(lrefe, ndim, nno, npg, nddl, &
                     zr(jvGeom), zr(jv_vf), jv_dfde, &
                     jv_poids, transpose(spread(sref, 1, npg)), zr(ivectu))
 
@@ -194,7 +198,7 @@ subroutine te0054(option, nomte)
 
     end if
 
-    if (refe) then
+    if (lrefe) then
         deallocate (sref)
     end if
 

@@ -17,6 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0446(option, nomte)
+    use resi_refe_module, only: RESI_REFE
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,7 +32,6 @@ subroutine te0446(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "blas/dcopy.h"
@@ -61,6 +61,7 @@ subroutine te0446(option, nomte)
     real(kind=8) :: foref, moref
     aster_logical :: reactu
     blas_int :: b_incx, b_incy, b_n
+    type(RESI_REFE):: refe
 !
     if (option .eq. 'FORC_NODA') then
 !
@@ -162,8 +163,10 @@ subroutine te0446(option, nomte)
 !
         call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-        call terefe('EFFORT_REFE', 'MECA_COQUE', foref)
-        call terefe('MOMENT_REFE', 'MECA_COQUE', moref)
+        call refe%Init(nomte)
+        foref = refe%GetRef('EFFORT')
+        moref = refe%GetRef('MOMENT')
+        call refe%Check()
 !
         ind = 8
         do i = 1, nno

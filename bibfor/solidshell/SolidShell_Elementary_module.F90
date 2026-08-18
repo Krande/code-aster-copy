@@ -27,6 +27,7 @@ module SolidShell_Elementary_module
     use Behaviour_module
     use MaterialPara_module
     use MaterialPara_type
+    use resi_refe_module, only: RESI_REFE
     use SolidShell_Debug_module
     use SolidShell_Elementary_Hexa_module
     use SolidShell_Geometry_Hexa_module
@@ -54,7 +55,6 @@ module SolidShell_Elementary_module
 #include "asterfort/jevech.h"
 #include "asterfort/SolidShell_type.h"
 #include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 ! ==================================================================================================
@@ -792,6 +792,7 @@ contains
         type(SSH_ELEM_PROP) :: elemProp
         real(kind=8) :: refeForcNoda(SSH_NBDOF_MAX), sigmRefe
         integer(kind=8) :: jvVect, iDof
+        type(RESI_REFE):: refe
 !   ------------------------------------------------------------------------------------------------
 !
         refeForcNoda = 0.d0
@@ -805,7 +806,9 @@ contains
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! ----- Get reference stress
-        call terefe('SIGM_REFE', 'MECA_ISO', sigmRefe)
+        call refe%Init('SolidShell')
+        sigmRefe = refe%GetRef('SIGM')
+        call refe%Check()
 
 ! ----- Compute reference force
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then

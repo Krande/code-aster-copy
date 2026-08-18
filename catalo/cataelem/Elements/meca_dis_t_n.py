@@ -407,7 +407,8 @@ class MECA_DIS_T_N(Element):
             para_in=(
                 (SP.PCINFDI, LC.CCINFDI),
                 (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (SP.PREFCO, LC.CRESEFF),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

@@ -18,6 +18,7 @@
 ! aslint: disable=W0413
 ! => real zero (init by calcul.F90)
 subroutine fornpd(option, nomte)
+    use resi_refe_module, only: RESI_REFE
     implicit none
 #include "jeveux.h"
 #include "asterfort/btdfn.h"
@@ -33,7 +34,6 @@ subroutine fornpd(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/tecach.h"
-#include "asterfort/terefe.h"
 #include "asterfort/trndgl.h"
 #include "asterfort/trnflg.h"
 #include "asterfort/utmess.h"
@@ -69,6 +69,7 @@ subroutine fornpd(option, nomte)
 !
     character(len=16) :: kmess(2)
     blas_int :: b_incx, b_incy, b_n
+    type(RESI_REFE):: refe
 !
     parameter(npge=3)
 ! DEB
@@ -106,7 +107,9 @@ subroutine fornpd(option, nomte)
             call utmess('F', 'ELEMENTS_4')
         end if
     else if (option .eq. 'REFE_FORC_NODA') then
-        call terefe('SIGM_REFE', 'MECA_COQUE3D', sigref)
+        call refe%Init(nomte)
+        sigref = refe%GetRef('SIGM')
+        call refe%Check()
     end if
 !
     if (option .eq. "FORC_NODA") then

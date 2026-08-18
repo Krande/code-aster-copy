@@ -69,9 +69,6 @@ EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", comp
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "FHYDR1"))
-
-
 ECONTNC = LocatedComponents(phys=PHY.SIEF_C, type="ELNO", components=("SIGN", "SITX", "FH11X"))
 
 
@@ -216,7 +213,7 @@ class EJHYME_PLQU8(Element):
         ),
         OP.REFE_FORC_NODA(
             te=323,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRESIREF, LC.CRESIREF), (SP.PRESICMP, LC.CRESICMP)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_ELAS(

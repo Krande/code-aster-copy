@@ -20,6 +20,7 @@ subroutine te0593(option, nomte)
 !
     use Behaviour_module, only: behaviourOption
     use Behaviour_type
+    use resi_refe_module, only: RESI_REFE
     implicit none
 !
 #include "asterfort/assert.h"
@@ -31,7 +32,6 @@ subroutine te0593(option, nomte)
 #include "asterfort/niinit.h"
 #include "asterfort/nirfgd.h"
 #include "asterfort/nirfpd.h"
-#include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
@@ -60,6 +60,7 @@ subroutine te0593(option, nomte)
     real(kind=8) :: sigref, epsref
     character(len=8) :: lielrf(10), typmod(2)
     character(len=16), pointer :: compor(:) => null()
+    type(RESI_REFE):: refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,8 +91,10 @@ subroutine te0593(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
     call jevech('PCOMPOR', 'L', vk16=compor)
-    call terefe('SIGM_REFE', 'MECA_INCO', sigref)
-    call terefe('EPSI_REFE', 'MECA_INCO', epsref)
+    call refe%Init(nomte)
+    sigref = refe%GetRef('SIGM')
+    epsref = refe%GetRef('EPSI')
+    call refe%Check()
 !
 ! - CALCUL DE REFE_FORC_NODA
     if (compor(DEFO) (1:6) .eq. 'PETIT ') then

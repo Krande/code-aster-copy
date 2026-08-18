@@ -25,7 +25,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-
 # Elementary characteristics for pipes: radius and thickness
 CCAGEPO = LocatedComponents(phys=PHY.CAGEPO_R, type="ELEM", components=("R1", "EP1"))
 
@@ -515,7 +514,8 @@ class MET3SEG3(Element):
                 (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (OP.REFE_FORC_NODA.PNBSP_I, ENBSP_I),
-                (SP.PREFCO, LC.CRESSIG),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

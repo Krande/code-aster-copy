@@ -105,9 +105,6 @@ ECOPILO = LocatedComponents(
 )
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "VARI", "LAG_GV"))
-
-
 ESIGMPC = LocatedComponents(
     phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("SIXX", "SIYY", "SIZZ", "SIXY")
 )
@@ -457,17 +454,15 @@ class MVAXTR6(Element):
             para_out=((SP.PDCEL_I, LC.EDCEL_I),),
         ),
         OP.PILO_PRED_DEFO(
-            te=518,
+            te=526,
             para_in=(
-                (SP.PCDTAU, LC.CCDTAU),
                 (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
                 (SP.PDDEPLR, DDL_MECA),
                 (SP.PDEPL0R, DDL_MECA),
                 (SP.PDEPL1R, DDL_MECA),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PCARCRI, LC.CCARCRI),
-                (SP.PTYPEPI, LC.CTYPEPI),
+                (SP.PCDTAU, LC.CCDTAU),
             ),
             para_out=((OP.PILO_PRED_DEFO.PCOPILO, ECOPILO),),
         ),
@@ -522,7 +517,8 @@ class MVAXTR6(Element):
                 (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PREFCO, EREFCO),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

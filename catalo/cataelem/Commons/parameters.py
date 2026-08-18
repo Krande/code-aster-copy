@@ -1031,9 +1031,15 @@ PRAYONF = InputParameter(phys=PHY.RAYO_F, comment="""""")
 
 PRAYONR = InputParameter(phys=PHY.RAYO_R, comment="""""")
 
-PREFCO = InputParameter(
-    phys=PHY.PREC_R,
-    comment="""  PREFCO :  REFERENCE DE CONTRAINTE
+PRESICMP = InputParameter(
+    phys=PHY.RESICMP,
+    comment="""  PRESICMP : VALEURS DES GRANDEURS DE REFERENCE POUR LE RESIDU
+""",
+)
+
+PRESIREF = InputParameter(
+    phys=PHY.RESIREF,
+    comment="""  PRESIREF : NOMS DES GRANDEURS DE REFERENCE POUR LE RESIDU
 """,
 )
 

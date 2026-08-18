@@ -766,7 +766,9 @@ class MECA_POU_D_EM(Element):
             ),
         ),
         OP.REFE_FORC_NODA(
-            te=517, para_in=((SP.PREFCO, LC.CRESEFM),), para_out=((SP.PVECTUR, MVECTUR),)
+            te=517,
+            para_in=((SP.PRESIREF, LC.CRESIREF), (SP.PRESICMP, LC.CRESICMP)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(
             te=135,

@@ -1015,19 +1015,15 @@ class MECA_HEXS20(Element):
             para_out=((SP.PCOURAN, LC.ECOURAN),),
         ),
         OP.PILO_PRED_DEFO(
-            te=543,
+            te=544,
             para_in=(
                 (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
-                (OP.PILO_PRED_DEFO.PCONTMR, LC.EGIG3DR),
                 (SP.PDDEPLR, DDL_MECA),
                 (SP.PDEPL0R, DDL_MECA),
-                (SP.PCARCRI, LC.CCARCRI),
                 (SP.PDEPL1R, DDL_MECA),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PTYPEPI, LC.CTYPEPI),
-                (OP.PILO_PRED_DEFO.PVARIMR, LC.ZVARIPG),
+                (SP.PCDTAU, LC.CCDTAU),
             ),
             para_out=((OP.PILO_PRED_DEFO.PCOPILO, LC.ECOPILO),),
         ),
@@ -1045,7 +1041,6 @@ class MECA_HEXS20(Element):
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTYPEPI, LC.CTYPEPI),
                 (OP.PILO_PRED_ELAS.PVARIMR, LC.ZVARIPG),
             ),
             para_out=((OP.PILO_PRED_ELAS.PCOPILO, LC.ECOPILO),),
@@ -1137,7 +1132,11 @@ class MECA_HEXS20(Element):
         ),
         OP.REFE_FORC_NODA(
             te=8,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PREFCO, LC.CRESSIG)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(

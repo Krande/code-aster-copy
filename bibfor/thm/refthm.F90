@@ -27,6 +27,7 @@ subroutine refthm(ds_thm, &
                   nddl_2nd, b, r, vectu)
 !
     use THM_type
+    use resi_refe_module, only: RESI_REFE
     implicit none
 !
 #include "asterf_types.h"
@@ -35,7 +36,6 @@ subroutine refthm(ds_thm, &
 #include "asterfort/assert.h"
 #include "asterfort/fnothm.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/terefe.h"
 #include "blas/daxpy.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
@@ -55,6 +55,7 @@ subroutine refthm(ds_thm, &
     real(kind=8), intent(out) :: b(dimdef, dimuel)
     real(kind=8), intent(out) :: r(1:dimdef+1)
     real(kind=8), intent(out) :: vectu(dimuel)
+    type(RESI_REFE):: refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,34 +128,37 @@ subroutine refthm(ds_thm, &
 !
 ! - Check which *_REFE exist
 !
+    call refe%Init(type_elem)
+
     if (ds_thm%ds_elem%l_dof_meca) then
-        call terefe('SIGM_REFE', type_elem, vale_refe)
+        vale_refe = refe%GetRef('SIGM')
         indx_vale_refe = 1
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_pre1) then
-        call terefe('FLUX_HYD1_REFE', type_elem, vale_refe)
+        vale_refe = refe%GetRef('FLUXHYD1')
         indx_vale_refe = 2
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_pre2) then
-        call terefe('FLUX_HYD2_REFE', type_elem, vale_refe)
+        vale_refe = refe%GetRef('FLUXHYD2')
         indx_vale_refe = 3
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_ther) then
-        call terefe('FLUX_THER_REFE', type_elem, vale_refe)
+        vale_refe = refe%GetRef('FLUXTHER')
         indx_vale_refe = 4
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
     if (ds_thm%ds_elem%l_dof_2nd) then
-        call terefe('LAGR_REFE', type_elem, vale_refe)
+        vale_refe = refe%GetRef('LAGR')
         indx_vale_refe = 5
         list_vale_refe(indx_vale_refe) = vale_refe
-        call terefe('EPSI_REFE', type_elem, vale_refe)
+        vale_refe = refe%GetRef('EPSI')
         indx_vale_refe = 6
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
+    call refe%Check()
 !
 ! - Compute
 !

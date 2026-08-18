@@ -594,6 +594,7 @@ class MECA3DH27_HHO111(Element):
                 (OP.PILO_PRED_DEFO.PVARIMR, LC.ZVARIPG),
                 (OP.PILO_PRED_DEFO.PCHHOGT, CHHOGT),
                 (OP.PILO_PRED_DEFO.PCHHOBS, CHHOBS),
+                (SP.PCDTAU, LC.CCDTAU),
             ),
             para_out=((OP.PILO_PRED_DEFO.PCOPILO, LC.ECOPILO),),
         ),
@@ -653,7 +654,8 @@ class MECA3DH27_HHO111(Element):
             para_in=(
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PREFCO, LC.CRESSIG),
+                (SP.PRESIREF, LC.CRESIREF),
+                (SP.PRESICMP, LC.CRESICMP),
                 (OP.REFE_FORC_NODA.PCHHOGT, CHHOGT),
                 (OP.REFE_FORC_NODA.PCHHOST, CHHOST),
                 (OP.REFE_FORC_NODA.PCHHOBS, CHHOBS),

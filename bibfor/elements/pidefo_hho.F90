@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidefo(compor, &
-                  ndim, npg, kpg, fm, &
-                  epsm, epsp, epsd, copilo)
+subroutine pidefo_hho(compor, &
+                  ndim, kpg, fm, &
+                  epsm, epsp, epsd, dtau, copilo)
 !
     implicit none
 !
@@ -31,10 +31,11 @@ subroutine pidefo(compor, &
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
-    integer(kind=8) :: ndim, kpg, npg
+    integer(kind=8) :: ndim, kpg
     real(kind=8) :: epsm(6), epsp(6), epsd(6)
     real(kind=8) :: fm(3, 3)
-    real(kind=8) :: copilo(5, npg)
+    real(kind=8) :: dtau
+    real(kind=8) :: copilo(:,:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +45,6 @@ subroutine pidefo(compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  NPG    : NOMBRE DE POINTS DE GAUSS
 ! IN  KPG    : NUMERO DU POINT DE GAUSS
 ! IN  FM     : GRADIENT DE LA TRANSFORMATION AU TEMPS MOINS
 ! IN  EPSM   : DEFORMATIONS AU TEMPS MOINS
