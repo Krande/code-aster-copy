@@ -35,7 +35,7 @@ from ...CodeCommands import (
 )
 
 
-def calc_endo_ops(
+def calc_endo_pilo_ops(
     self,
     MODELE,
     CHAM_MATER,
