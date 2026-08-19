@@ -67,8 +67,8 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 # --------------------------------------------------------------------
 from code_aster.MacroCommands.ROM.calc_pod_mod import *
 
-arr_depl = extractSnapshotsFromResult(stnl, "DEPL")
-arr_sief_noe = extractSnapshotsFromResult(stnl, "SIEF_NOEU")
+arr_depl = extractSnapshotsFromResult(stnl, "DEPL", format="numpy")
+arr_sief_noe = extractSnapshotsFromResult(stnl, "SIEF_NOEU", format="numpy")
 
 nDOF = 192
 nELGA_SIEF = 384

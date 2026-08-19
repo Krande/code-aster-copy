@@ -75,20 +75,23 @@ n_cut = 3
 arr_depl_A = arr_depl[:, :n_cut]
 arr_depl_B = arr_depl[:, n_cut:]
 
+arrPetsc_depl_A = transferSnapshotsToPETSC(arr_depl_A)
+arrPetsc_depl_B = transferSnapshotsToPETSC(arr_depl_B)
+
 # - Compute the ROB using the snapshot method
-POD_An_A = PODAnalysis(arr_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An_A = PODAnalysis(arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
 Phi_A, singval_A = POD_An_A.computePODBasis(option=2)
 
-test.assertEqual(Phi_A.shape[0], nDOF)
-test.assertEqual(Phi_A.shape[1], 2)
+test.assertEqual(Phi_A.getSize()[0], nDOF)
+test.assertEqual(Phi_A.getSize()[1], 2)
 
-POD_An_B = PODAnalysis(arr_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An_B = PODAnalysis(arrPetsc_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
 Phi_B = POD_An_B.computePODBasisIncremental(Phi_A, method="HPOD")
 
-test.assertEqual(Phi_B.shape[0], nDOF)
-test.assertEqual(Phi_B.shape[1], 5)
+test.assertEqual(Phi_B.getSize()[0], nDOF, msg="Test incremental POD with HPOD - number of DOFs")
+test.assertEqual(Phi_B.getSize()[1], 5, msg="Test incremental POD with HPOD - number of modes")
 
 Phi_B2 = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HAPOD")
-test.assertEqual(Phi_B2.shape[0], nDOF)
-test.assertEqual(Phi_B2.shape[1], 2)
+test.assertEqual(Phi_B2.getSize()[0], nDOF, msg="Test incremental POD with HAPOD - number of DOFs")
+test.assertEqual(Phi_B2.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes")
 FIN()

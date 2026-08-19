@@ -67,28 +67,36 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 # --------------------------------------------------------------------
 from code_aster.MacroCommands.ROM.calc_pod_mod import *
 
-arr_depl = extractSnapshotsFromResult(stnl, "DEPL", format="numpy")
+# arr_depl = extractSnapshotsFromResult(stnl, "DEPL", format="numpy")
 
 nDOF = 192
 n_cut = 3
+indices_A = [1, 2, 3]
+indices_B = [4, 5, 6, 7, 8, 9, 10]
 
-arr_depl_A = arr_depl[:, :n_cut]
-arr_depl_B = arr_depl[:, n_cut:]
+# arr_depl_A = arr_depl[:, :n_cut]
+# arr_depl_B = arr_depl[:, n_cut:]
 
+arrPetsc_depl_A = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_A, format="petsc")
+arrPetsc_depl_B = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_B, format="petsc")
+
+
+print(arrPetsc_depl_A.getSize())
+print(arrPetsc_depl_B.getSize())
 # - Compute the ROB using the snapshot method
-POD_An_A = PODAnalysis(arr_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An_A = PODAnalysis(arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
 Phi_A, singval_A = POD_An_A.computePODBasis(option=2)
 
-test.assertEqual(Phi_A.shape[0], nDOF)
-test.assertEqual(Phi_A.shape[1], 2)
+test.assertEqual(Phi_A.getSize()[0], nDOF)
+test.assertEqual(Phi_A.getSize()[1], 2)
 
-POD_An_B = PODAnalysis(arr_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
-Phi_B = POD_An_B.computePODBasisIncremental(Phi_A, method="HPOD")
+POD_An_B = PODAnalysis(arrPetsc_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
+# Phi_B = POD_An_B.computePODBasisIncremental(Phi_A, method="HPOD")
 
-test.assertEqual(Phi_B.shape[0], nDOF)
-test.assertEqual(Phi_B.shape[1], 5)
+# test.assertEqual(Phi_B.getSize()[0], nDOF)
+# test.assertEqual(Phi_B.getSize()[1], 5)
 
-Phi_B2 = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HAPOD")
-test.assertEqual(Phi_B2.shape[0], nDOF)
-test.assertEqual(Phi_B2.shape[1], 2)
+Phi_B2 = POD_An_B.computePODBasisIncremental(arrPetsc_depl_A, singval_A, method="HAPOD")
+test.assertEqual(Phi_B2.getSize()[0], nDOF, msg="Test incremental POD with HAPOD - number of DOFs")
+test.assertEqual(Phi_B2.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes")
 FIN()

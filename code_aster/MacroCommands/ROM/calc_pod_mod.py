@@ -22,12 +22,10 @@ import numpy as np
 from ...Utilities import PETSc, SLEPc
 from mpi4py import MPI
 
+# GENERAL PARAMETERS FOR THE MODULE
 TOL_NUM = 1e-12
 comm = MPI.COMM_WORLD
 global_size = comm.Get_size()
-
-if global_size > 1:
-    assert 1 == 0
 
 
 # FUNCTIONNALITIES TO EXTRACT SNAPSHOT MATRIX FROM RESULT
@@ -38,7 +36,7 @@ def findIndexCHAM(lst, s):
         return None
 
 
-def extractSnapshotsFromResult(result, chamName, indexSteps=None):
+def extractSnapshotsFromResult(result, chamName, indexSteps=None, format="numpy"):
     """
     Extraction of snapshots from a SD RESULTAT.
 
@@ -50,12 +48,17 @@ def extractSnapshotsFromResult(result, chamName, indexSteps=None):
         Name of the field in the result (example: DEPL or SIEF_ELGA)
     indexSteps : list or None
         List of the indices of the snapshots we seek to keep
+    format : str
+        Format of the snapshots (should be numpy or petsc vectors)
 
     Returns
     -------
     snapshots : numpy.ndarray
         Snapshot array. Each column contains a given snapshot (size = number of dofs * number of snapshots).
     """
+    AVALAIBLE_FORMAT = ["numpy", "petsc"]
+    assert format in AVALAIBLE_FORMAT
+
     # - Checks for the extraction procedure
     fieldsNames = result.getFieldsNames()
     if not fieldsNames:
@@ -76,46 +79,59 @@ def extractSnapshotsFromResult(result, chamName, indexSteps=None):
         else:
             indStepsList = indexSteps
     # - Extraction of the snapshots
-    snapshots = []
+    if format == "numpy":
+        snapshots = []
 
-    for idx in indStepsList:
-        if idx not in result.getIndexes():
-            raise ValueError(
-                f"Error in extraction procedure: Timestep index {idx} is not available in RESULTAT"
+        for idx in indStepsList:
+            if idx not in result.getIndexes():
+                raise ValueError(
+                    f"Error in extraction procedure: Timestep index {idx} is not available in RESULTAT"
+                )
+            cham = result.getField(chamName, idx)
+            values = cham.getValues()
+            snapshots.append(np.array(values))
+
+        return np.column_stack(snapshots)
+    elif format == "petsc":
+        neqg = result.getEquationNumberings()[0].getNumberOfDOFs(local=False)
+        ndindices = len(indStepsList)  # result.getNumberOfIndexes()
+        snapshotsT = PETSc.Mat().createDense([ndindices, neqg], comm=comm)
+
+        row = 0
+        for idx in indStepsList:
+            if idx not in result.getIndexes():
+                raise ValueError(
+                    f"Error in extraction procedure: Timestep index {idx} is not available in RESULTAT"
+                )
+            cham = result.getField(chamName, idx)
+            vec = cham.toPetsc()
+            i_start, i_end = vec.getOwnershipRange()
+            vec_array = vec.getArray(readonly=True)
+            snapshotsT.setValues(
+                row,
+                np.arange(i_start, i_end, dtype="int32"),
+                vec_array,
+                addv=PETSc.InsertMode.INSERT_VALUES,
             )
-        cham = result.getField(chamName, idx)
-        values = cham.getValues()
-        snapshots.append(np.array(values))
-
-    return np.column_stack(snapshots)
+            row += 1
+        snapshotsT.assemble()
+        return snapshotsT.transpose()
+    else:
+        raise ValueError(
+            f"Snapshot extraction: parameter '{format}' is not valid. Choose format in {AVALAIBLE_FORMAT}."
+        )
 
 
 def transferSnapshotsToPETSC(snapshots):
     if global_size == 1:
-        snapshots_petsc = PETSc.Mat().createDense(
-            snapshots.shape, array=snapshots, comm=PETSc.COMM_SELF
-        )
+        snapshots_petsc = PETSc.Mat().createDense(snapshots.shape, array=snapshots, comm=comm)
         snapshots_petsc.assemble()
     else:
         raise ValueError("MPI version not implemented yet")
-        # mat_petsc = PETSc.Mat().create(comm)
-        # mat_petsc.setSizes(((None, numpy_matrix.shape[0]), (None, numpy_matrix.shape[1])))
-        # mat_petsc.setType('dense')
-        # mat_petsc.setUp()
-
-        # # each process should properly copy its part
-        # rstart, rend = mat_petsc.getOwnershipRange()
-        # local_view = mat_petsc.getDenseArray()
-        # if rend > rstart:
-        #     local_view[:, :] = numpy_matrix[rstart:rend, :]
-        # mat_petsc.restoreDenseArray(local_view)
-        # mat_petsc.assemble()
     return snapshots_petsc
 
 
 # POST-TREATMENT FUNCTIONNALITIES
-
-
 def computeProjectionErrors(Phi, snapshots):
     """Compute the projection errors on snaphots knowing a reduced order basis
 
@@ -161,10 +177,6 @@ def computeProjectionErrors_petsc(Phi_petsc, snapshots_petsc):
     n_dim, n_snapshots = snapshots_petsc.getSize()
     # - Create temporay vectors
     u_proj_vec, projected_coords_vec = Phi_petsc.createVecs()
-    # # - PETSC matrix to store the differences for error computations
-    # abs_errors_mat = PETSc.Mat().createDense([n_dim, n_snapshots], comm=comm)
-    # abs_errors_mat.setUp()
-    # - List to store
     abs_errors_list = []
     rel_errors_list = []
 
@@ -195,11 +207,11 @@ def computeProjectionErrors_petsc(Phi_petsc, snapshots_petsc):
 
 
 # CLASS DEFINITION FOR A POD ANALYSIS
-POD_VALID_METHOD = ["SVD", "snapshot", "GS-classical", "GS-modified"]
+POD_METHOD = ["SVD", "snapshot", "GS-classical", "GS-modified"]
 POD_METHOD_WITHOUT_CRIT = ["GS-classical", "GS-modified"]
-assert all(item in POD_VALID_METHOD for item in POD_METHOD_WITHOUT_CRIT)
+assert all(item in POD_METHOD for item in POD_METHOD_WITHOUT_CRIT)
 POD_CRITERION_METHOD = ["energy", "nbModes"]
-INCR_POD_VALID_METHOD = ["HPOD", "HAPOD"]
+INCR_POD_METHOD = ["HPOD", "HAPOD"]
 GS_METHOD = ["classical", "modified"]
 
 
@@ -210,8 +222,27 @@ class PODAnalysisBase(abc.ABC):
     This class is designed to build a base from a set of snapshots.
     """
 
+    _METHOD_ATTRS = (
+        "_methodCompress",  # Method used to compress the data
+        "_criterionModes",  # Method used to choose the number of modes
+    )
+
+    _HYPERPARAM_ATTRS = (
+        "_crit_tolerance",  # Tolerance for the POD basis construction (SVD, POD, etc)
+        "_crit_nbModes",  # Number of modes for the POD basis construction (SVD, POD, etc)
+        "_tol_num",  # Numerical tolerance for the POD basis construction (SVD, POD, etc)
+    )
+    _STATES_ATTRS = (
+        "_snapshots",  # Matrix of snapshots
+        "_numberOfDOFs",  # Number of degrees of freedom of the problem
+        "_numberOfSnapshots",  # Number of snapshots
+        "_corrOperator",  # Correlation operator
+    )
+
+    __slots__ = _METHOD_ATTRS + _HYPERPARAM_ATTRS + _STATES_ATTRS
+
     def __init__(
-        self, snapshots, method="SVD", criterion="energy", tolerance=None, nbModes=None, CorrOp=None
+        self, snapshots, method="SVD", criterion="energy", tolerance=None, nbModes=None, corrOp=None
     ):
         self._snapshots = snapshots  # Each column is a snapshot
         ## - Initialisation parameters
@@ -220,16 +251,57 @@ class PODAnalysisBase(abc.ABC):
         self._crit_tolerance = tolerance
         self._crit_nbModes = nbModes
         self._tol_num = TOL_NUM
+        self._numberOfDOFs = None
+        self._numberOfSnapshots = None
+        self._corrOperator = None
         ## - Prepare the operators for POD Analysis
         self.setInfosSnapshots()
         self.setCompressionMethod(method)
-        self.setCorrelationOperator(CorrOperator=CorrOp)
+        self.setCorrelationOperator(corrOperator=corrOp)
         self.setCriterionModes(criterion)
         ## - Tests
         self.correctionSnapshots()
+        self.validate_method_attrs()
+        self.validate_hyperparam_attrs()
+        self.validate_method_state()
         self.runCompatibilityTests()
         assert self._methodCompress is not None
         assert self._criterionModes is not None
+
+    def validate_method_attrs(self):
+        """Check the attributes associated to the numerical method (compression method and mode selection criterion)."""
+        if self._methodCompress not in POD_METHOD:
+            raise ValueError(
+                f"PODAnalysisBase: method '{self._methodCompress}' is not valid. Choose method in {POD_METHOD}."
+            )
+        if self._criterionModes not in POD_CRITERION_METHOD:
+            raise ValueError(
+                f"PODAnalysisBase: criterion '{self._criterionModes}' is not valid. Choose method in {self._criterionModes}."
+            )
+
+    def validate_hyperparam_attrs(self):
+        """Check the attributes associated to the numerical hyperparameters (tolerances, etc)"""
+        if self._crit_tolerance is not None and (
+            not isinstance(self._crit_tolerance, float) or self._crit_tolerance <= 0
+        ):
+            raise TypeError(
+                "Tolerance for basis construction (tolerance) should be a float and positive"
+            )
+        if self._crit_nbModes is not None and (
+            not isinstance(self._crit_nbModes, int) or self._crit_nbModes <= 0
+        ):
+            raise TypeError(
+                "Number of modes for basis construction (nbModes) should be an int and positive"
+            )
+        if not isinstance(self._tol_num, float) or self._tol_num <= 0:
+            raise TypeError(
+                "Numerical tolerance for basis construction (TOL_NUM) should be an float and positive"
+            )
+
+    @abc.abstractmethod
+    def validate_method_state(self):
+        """Check the attributes associated to the state (anything linked to matrices and vectors)"""
+        pass
 
     def runCompatibilityTests(self):
         """Testing compatibility between options (for arguments)"""
@@ -242,21 +314,11 @@ class PODAnalysisBase(abc.ABC):
 
     def setCompressionMethod(self, method):
         """Set method for the compression method"""
-        if method in POD_VALID_METHOD:
-            self._methodCompress = method
-        else:
-            raise ValueError(
-                f"PODAnalysis: Method '{method}' is not valid. Choose method in {POD_VALID_METHOD}."
-            )
+        self._methodCompress = method
 
     def setCriterionModes(self, criterion):
         """Set method for the criterion for selecting modes"""
-        if criterion in POD_CRITERION_METHOD:
-            self._criterionModes = criterion
-        else:
-            raise ValueError(
-                f"PODAnalysis: Method '{criterion}' is not valid. Choose method in {POD_CRITERION_METHOD}."
-            )
+        self._criterionModes = criterion
 
     def getCompressionMethod(self, method):
         """Get method for the criterion for selecting modes"""
@@ -284,7 +346,7 @@ class PODAnalysisBase(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def setCorrelationOperator(self, CorrOperator=None):
+    def setCorrelationOperator(self, corrOperator=None):
         pass
 
     @abc.abstractmethod
@@ -292,6 +354,29 @@ class PODAnalysisBase(abc.ABC):
         pass
 
     def selectModes(self, Phi, singval, tolerance=None, nbModes=None):
+        """Selects modes and singular values based on a given criterion.
+
+        The selection is performed according to the `_criterionModes` attribute,
+        which can be 'energy' (using `tolerance`) or 'nbModes'.
+
+        Arguments
+        ----------
+        Phi : numpy.ndarray
+            The full matrix of POD modes.
+        singval : numpy.ndarray
+            The array of all singular values.
+        tolerance : float, optional
+            Tolerance for the 'energy' criterion. Defaults to None.
+        nbModes : int, optional
+            Number of modes for the 'nbModes' criterion. Defaults to None.
+
+        Returns
+        -------
+        Phi_v : numpy.ndarray
+            The truncated matrix of POD modes (reduced order basis).
+        singval_v : numpy.ndarray
+            The truncated array of singular values.
+        """
         ## - Test
         if tolerance is None and nbModes is None:
             raise ValueError(
@@ -420,23 +505,35 @@ class PODAnalysisBase(abc.ABC):
 
 
 class PODAnalysisNumpy(PODAnalysisBase):
+
+    def __init__(self, *args, **kwargs):
+        "Initialization of PODAnalysisNumpy"
+        super().__init__(*args, **kwargs)
+
+    def validate_method_state(self):
+        """Check the attributes associated to the state (anything linked to matrices and vectors)"""
+        if not isinstance(self._corrOperator, (np.ndarray, scipy.sparse.csr_matrix)):
+            raise TypeError("The correlation operator should be a CSR matrix or a numpy matrix")
+        if not isinstance(self._snapshots, np.ndarray):
+            raise TypeError("The snapshots should be strored in a numpy matrix")
+
     def setInfosSnapshots(self):
         """Store information about the size of the snapshot matrix"""
         self._numberOfDOFs = self._snapshots.shape[0]
         self._numberOfSnapshots = self._snapshots.shape[1]
 
-    def setCorrelationOperator(self, CorrOperator=None):
+    def setCorrelationOperator(self, corrOperator=None):
         """Set method for the correlation operator
-        
-       Arguments
-        ----------
-        CorrOperator : scipy.sparse.csr_matrix or None
-            Correlation operator when using the method of snapshots
+
+        Arguments
+         ----------
+         corrOperator : scipy.sparse.csr_matrix or None
+             Correlation operator when using the method of snapshots
         """
-        if CorrOperator is None:
-            self._CorrOperator = scipy.sparse.identity(self._numberOfDOFs, format="csr")
+        if corrOperator is None:
+            self._corrOperator = scipy.sparse.identity(self._numberOfDOFs, format="csr")
         else:
-            self._CorrOperator = CorrOperator
+            self._corrOperator = corrOperator
 
     def correctionSnapshots(self):
         """Correct the snapshots by removing null values"""
@@ -466,7 +563,7 @@ class PODAnalysisNumpy(PODAnalysisBase):
         method : str
             Name of the incremental approach to use
         """
-        assert method in INCR_POD_VALID_METHOD
+        assert method in INCR_POD_METHOD
         if method == "HPOD":
             matS = self._snapshots
             projS = np.zeros(np.shape(matS))
@@ -482,7 +579,7 @@ class PODAnalysisNumpy(PODAnalysisBase):
             return self.POD(mS, option=1)
         else:
             raise ValueError(
-                f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_VALID_METHOD}."
+                f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_METHOD}."
             )
 
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
@@ -617,7 +714,7 @@ class PODAnalysisNumpy(PODAnalysisBase):
             Singular values
         """
         ## - Compute correlation matrix
-        corrMatrix = matS.T @ self._CorrOperator @ matS
+        corrMatrix = matS.T @ self._corrOperator @ matS
         ## - Solve eigenproblem
         eigenvalues, eigenvectors = np.linalg.eigh(corrMatrix)
         ## - Order eigenvalues and compute basis
@@ -636,43 +733,135 @@ class PODAnalysisNumpy(PODAnalysisBase):
             eigenvalues[:n]
         )
 
+
+# def extractColumnsPetscMat(matA, comm, select_condition):#indices):
+#     """Extracts columns from a PETSc matrix based on a condition.
+
+#     Arguments
+#     ----------
+#     matA : PETSc.Mat
+#         The source PETSc matrix.
+#     comm : MPI.Comm
+#         The MPI communicator.
+#     select_condition : callable
+#         Function returning True for columns to keep.
+#     """
+#     i_start, i_end = matA.getOwnershipRange()
+#     is_rows = PETSc.IS().createStride(i_end - i_start, i_start, 1, comm=comm)
+#     i_start, i_end = matA.getOwnershipRangeColumn()
+#     cols = []
+#     for i in range(i_start, i_end):
+#         #if i in indices:
+#         if select_condition(i):
+#             cols.append(i)
+#     is_cols = PETSc.IS().createGeneral(cols, comm=comm)
+#     matB = matA.createSubMatrix(is_rows, is_cols)
+#     return matB
+
+
 class PODAnalysisPetsc(PODAnalysisBase):
 
     def __init__(self, *args, **kwargs):
-        "Initialization of MatrixScaler"
+        "Initialization of PODAnalysisPetsc"
         super().__init__(*args, **kwargs)
-        # - Add communicator to handle the parallel version
-        self._comm = self._snapshots.getComm()
+
+    def validate_method_state(self):
+        """Check the attributes associated to the state (anything linked to matrices and vectors)"""
+        if not isinstance(self._corrOperator, PETSc.Mat):
+            raise TypeError("The correlation operator should be a CSR matrix or a numpy matrix")
+        if not isinstance(self._snapshots, PETSc.Mat):
+            raise TypeError("The snapshots should be strored in a numpy matrix")
 
     def setInfosSnapshots(self):
         """Store information about the size of the snapshot matrix"""
         self._numberOfDOFs, self._numberOfSnapshots = self._snapshots.getSize()
+        # - Add communicator to handle the parallel version
+        self._comm = self._snapshots.getComm()
 
-    def setCorrelationOperator(self, CorrOperator=None):
+    def _extractColumnsPetscMat(self, matA, select_condition):  # indices):
+        """Extracts columns from a PETSc matrix based on a condition.
+
+        Arguments
+        ----------
+        matA : PETSc.Mat
+            The source PETSc matrix.
+        select_condition : callable
+            Function returning True for columns to keep.
+        """
+        i_start, i_end = matA.getOwnershipRange()
+        is_rows = PETSc.IS().createStride(i_end - i_start, i_start, 1, comm=self._comm)
+        i_start, i_end = matA.getOwnershipRangeColumn()
+        cols = []
+        for i in range(i_start, i_end):
+            if select_condition(i):
+                cols.append(i)
+        is_cols = PETSc.IS().createGeneral(cols, comm=self._comm)
+        matB = matA.createSubMatrix(is_rows, is_cols)
+        return matB
+
+    def _restrictBasisAfterProcedure(self, n_rows, vectors, n):
+        """Assembles a list of PETSc vectors into a single PETSc matrix.
+
+        This internal method creates a matrix where each column corresponds to one of
+        the input vectors. It builds a temporary transposed matrix row-by-row before
+        returning the final correctly oriented matrix.
+
+        Arguments
+        ----------
+        n_rows : int
+            Total number of rows for the final basis matrix (global vector size).
+        vectors : list of PETSc.Vec
+            A list of the PETSc vectors that will form the columns of the matrix.
+        n : int
+            The number of vectors in the list (and columns in the final matrix).
+
+        Returns
+        -------
+        PETSc.Mat
+            The assembled basis matrix, where each column is an input vector.
+        """
+        ## - Set transpose of the basis matrix
+        Phi_petscT = PETSc.Mat().createDense([n, n_rows], comm=self._comm)
+        Phi_petscT.setUp()
+        row = 0
+        for i in range(n):
+            vec = vectors[i]
+            i_start, i_end = vec.getOwnershipRange()
+            vec_array = vec.getArray(readonly=True)
+            Phi_petscT.setValues(
+                row,
+                np.arange(i_start, i_end, dtype="int32"),
+                vec_array,
+                addv=PETSc.InsertMode.INSERT_VALUES,
+            )
+            row += 1
+        Phi_petscT.assemble()
+
+        return Phi_petscT.transpose()
+
+    def setCorrelationOperator(self, corrOperator=None):
         """Set method for the correlation operator
 
         Arguments
         ----------
-        CorrOperator : PETSc.Mat or None
+        corrOperator : PETSc.Mat or None
             Correlation operator when using the method of snapshots
         """
-        if CorrOperator is None:
+        if corrOperator is None:
             I = PETSc.Mat().create(self._comm)
-            I.setSizes(((None, self._numberOfDOFs), (None, self._numberOfDOFs)))
+            loc_row, _ = self._snapshots.getLocalSize()
+            I.setSizes(((loc_row, self._numberOfDOFs), (loc_row, self._numberOfDOFs)))
             I.setType("aij")
             I.setPreallocationNNZ(1)
-            # diag_vec = PETSc.Vec().create(self._comm)
-            # diag_vec.setSizes((None, self._numberOfDOFs))
-            # diag_vec.setUp()
             diag_vec = I.createVecLeft()
             diag_vec.set(1.0)
 
             I.setDiagonal(diag_vec)
             diag_vec.destroy()
             I.assemble()
-            self._CorrOperator = I
+            self._corrOperator = I
         else:
-            self._CorrOperator = CorrOperator
+            self._corrOperator = corrOperator
 
     def correctionSnapshots(self):
         """Correct the snapshots by removing null values"""
@@ -684,9 +873,9 @@ class PODAnalysisPetsc(PODAnalysisBase):
                 indices_to_keep.append(j)
 
         if len(indices_to_keep) < self._numberOfSnapshots:
-            is_rows = PETSc.IS().createStride(M, 0, 1)
-            is_cols = PETSc.IS().createGeneral(indices_to_keep)
-            self._snapshots = self._snapshots.createSubMatrix(is_rows, is_cols)
+            self._snapshots = self._extractColumnsPetscMat(
+                self._snapshots, lambda i: i in indices_to_keep
+            )
 
     def correctionModesAfterSelection(self, Phi, nbModes_v):
         """Construction of a reduced basis by selecting
@@ -699,10 +888,8 @@ class PODAnalysisPetsc(PODAnalysisBase):
         nbModes_v : int
             number of modes to keep (the first ones)
         """
-        num_rows = Phi.getSize()[0]
-        is_rows = PETSc.IS().createStride(num_rows, 0, 1)
-        is_cols = PETSc.IS().createStride(nbModes_v, 0, 1)
-        Phi_v = Phi.createSubMatrix(is_rows, is_cols)
+        Phi_v = self._extractColumnsPetscMat(Phi, lambda i: i < nbModes_v)
+
         return Phi_v
 
     def _stack_matrices_horizontally(self, mat_a, mat_b):
@@ -713,18 +900,39 @@ class PODAnalysisPetsc(PODAnalysisBase):
         mat_a : PETSc.Mat
         mat_b : PETSc.Mat
         """
-        M, N1 = mat_a.getSize()
-        _, N2 = mat_b.getSize()
+        ## - Get sizes and check for compatibility
+        M1, N1 = mat_a.getSize()
+        M2, N2 = mat_b.getSize()
 
-        new_mat = PETSc.Mat().createDense([M, N1 + N2], comm=mat_a.getComm())
+        if M1 != M2:
+            raise ValueError(f"Matrices must have the same number of rows. Got {M1} and {M2}.")
 
-        col_vec = mat_a.createVecLeft()
-        for j in range(N1):
-            mat_a.getColumnVector(j, col_vec)
-            new_mat.setColumnVector(j, col_vec)
-        for j in range(N2):
-            mat_b.getColumnVector(j, col_vec)
-            new_mat.setColumnVector(N1 + j, col_vec)
+        M = M1
+        N_new = N1 + N2
+
+        new_mat = PETSc.Mat().createDense([M, N1 + N2], comm=self._comm)
+        new_mat.setUp()
+
+        i_start, i_end = mat_a.getOwnershipRange()
+        local_rows_indices = np.arange(i_start, i_end, dtype="int32")
+        i_start, i_end = mat_a.getOwnershipRangeColumn()
+        local_cols_indices = np.arange(i_start, i_end, dtype="int32")
+        values = mat_a.getValues(local_rows_indices, local_cols_indices)
+        new_mat.setValues(
+            local_rows_indices, local_cols_indices, values, addv=PETSc.InsertMode.INSERT_VALUES
+        )
+
+        i_start, i_end = mat_b.getOwnershipRange()
+        local_rows_indices = np.arange(i_start, i_end, dtype="int32")
+        i_start, i_end = mat_b.getOwnershipRangeColumn()
+        local_cols_indices = np.arange(i_start, i_end, dtype="int32")
+        values = mat_b.getValues(local_rows_indices, local_cols_indices)
+        local_cols_indices_new = np.arange(N1 + i_start, N1 + i_end, dtype="int32")
+        new_mat.setValues(
+            local_rows_indices, local_cols_indices_new, values, addv=PETSc.InsertMode.INSERT_VALUES
+        )
+
+        new_mat.assemble()
 
         return new_mat
 
@@ -739,7 +947,8 @@ class PODAnalysisPetsc(PODAnalysisBase):
         method : str
             Name of the incremental approach to use
         """
-        assert method in INCR_POD_VALID_METHOD
+        assert method in INCR_POD_METHOD
+        row_indices = np.arange(self._numberOfDOFs, dtype="int32")
 
         if method == "HPOD":
             matS = self._snapshots
@@ -748,14 +957,22 @@ class PODAnalysisPetsc(PODAnalysisBase):
             projS = matS.duplicate(copy=False)
             projS.zeroEntries()
 
-            # Temporary vectors
+            ## - Temporary vectors
             col_s = matS.createVecLeft()
             col_proj = matS.createVecLeft()
 
             for i in range(N):
                 matS.getColumnVector(i, col_s)
                 col_proj = self.computeGSprojection(Phi, col_s, "modified")
-                projS.setColumnVector(i, col_proj)
+                # projS.setColumnVector(i, col_proj)
+                projS.setValues(
+                    row_indices,
+                    np.array([i], dtype="int32"),
+                    col_proj,
+                    addv=PETSc.InsertMode.INSERT_VALUES,
+                )
+
+            projS.assemble()
 
             Phi_new = self.POD(projS, option=1)
             return self._stack_matrices_horizontally(Phi, Phi_new)
@@ -764,18 +981,21 @@ class PODAnalysisPetsc(PODAnalysisBase):
             assert singval is not None
             mPhi = Phi.duplicate(copy=True)
 
-            col_vec = mPhi.createVecLeft()
+            vectors = []
             for j in range(len(singval)):
-                mPhi.getColumnVector(j, col_vec)
+                col_vec = Phi.createVecLeft()
+                Phi.getColumnVector(j, col_vec)
                 col_vec.scale(singval[j])
-                mPhi.setColumnVector(j, col_vec)
+                vectors.append(col_vec)
+
+            mPhi = self._restrictBasisAfterProcedure(mPhi.getSize()[0], vectors, len(vectors))
 
             mS = self._stack_matrices_horizontally(mPhi, self._snapshots)
             return self.POD(mS, option=1)
 
         else:
             raise ValueError(
-                f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_VALID_METHOD}."
+                f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_METHOD}."
             )
 
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
@@ -806,28 +1026,41 @@ class PODAnalysisPetsc(PODAnalysisBase):
         s_new_norm = snapshot_new.norm()
 
         s_new_proj = self.computeGSprojection(Phi, snapshot_new, methodGS)
+
         s_new_perp_norm = s_new_proj.norm()
 
+        print("test", s_new_perp_norm, tole * s_new_norm)
+
         if s_new_perp_norm > tole * s_new_norm:
-            M, N = Phi.getSize()
-            Phi_new = PETSc.Mat().createDense([M, N + 1], comm=Phi.getComm())
+            _, N = Phi.getSize()
+            Phi_new = PETSc.Mat().createDense([self._numberOfDOFs, N + 1], comm=self._comm)
 
-            # Copy old columns
-            col_vec = Phi.createVecLeft()
-            for j in range(N):
-                Phi.getColumnVector(j, col_vec)
-                Phi_new.setColumnVector(j, col_vec)
+            i_start, i_end = Phi.getOwnershipRange()
+            local_rows_indices = np.arange(i_start, i_end, dtype="int32")
+            i_start, i_end = Phi.getOwnershipRangeColumn()
+            local_cols_indices = np.arange(i_start, i_end, dtype="int32")
+            values = Phi.getValues(local_rows_indices, local_cols_indices)
+            Phi_new.setValues(
+                local_rows_indices, local_cols_indices, values, addv=PETSc.InsertMode.INSERT_VALUES
+            )
 
-            # Add new column
+            ## - Add new column
             s_new_proj.scale(1.0 / s_new_perp_norm)
-            Phi_new.setColumnVector(N, s_new_proj)
+            s_new_proj_array = s_new_proj.getArray(readonly=True)
 
-            # Update the singular values
+            Phi_new.setValues(
+                local_rows_indices,
+                np.array([N], dtype="int32"),
+                s_new_proj_array,  # s_new_proj,
+                addv=PETSc.InsertMode.INSERT_VALUES,
+            )
+            Phi_new.assemble()
+            ## - Update the singular values
             singval_new = np.hstack([singval, s_new_perp_norm])
 
             return Phi_new, singval_new
         else:
-            # If nothing is needed, return basis and singular values unchanged
+            ## - If nothing is needed, return basis and singular values unchanged
             return Phi, singval
 
     def GSMethod(self, matS, tole, methodGS):
@@ -849,20 +1082,76 @@ class PODAnalysisPetsc(PODAnalysisBase):
         singval : numpy.ndarray
             Singular values
         """
+        ## - Set first column for GS process
         col_vec = matS.createVecLeft()
         matS.getColumnVector(0, col_vec)
         s_0_norm = col_vec.norm()
 
         singval = np.array([s_0_norm])
-        Phi = PETSc.Mat().createDense([M, 1], comm=self._comm)
+        Phi = PETSc.Mat().createDense([self._numberOfDOFs, 1], comm=self._comm)
         if s_0_norm > self._tol_num:
             col_vec.scale(1.0 / s_0_norm)
-        Phi.setColumnVector(0, col_vec)
+        col_vec_array = col_vec.getArray(readonly=True)
 
-        for i in range(1, n_snap):
+        i_start, i_end = Phi.getOwnershipRange()
+        local_rows_indices = np.arange(i_start, i_end, dtype="int32")
+        Phi.setValues(
+            local_rows_indices,
+            np.array([0], dtype="int32"),
+            col_vec_array,
+            addv=PETSc.InsertMode.INSERT_VALUES,
+        )
+        Phi.assemble()
+
+        ## - Loop to add vectors in an incremental way
+        for i in range(1, matS.getSize()[1]):
             matS.getColumnVector(i, col_vec)
             Phi, singval = self.updateGStype(Phi, singval, col_vec, tole, methodGS)
+
         return Phi, singval
+
+    def GSMethodUsingBV(self, matS, tole, methodGS):
+        """Compression method using a Gram-Schmidt process using a BV datastructure
+        https://slepc.upv.es/release/slepc4py/reference/slepc4py.SLEPc.BV.html
+
+        Arguments
+        ----------
+        matS : PETSc.Mat
+            Matrix of snapshots on which the POD operator should be applied
+        tole : float
+            Tolerance used for the test when adding new snapshot
+        methodGS : str
+            Should be "classical" or "modified" = GS method applied
+
+        Returns
+        -------
+        Phi : PETSc.Mat
+            Reduced order basis
+        singval : numpy.ndarray
+            Singular values
+        """
+        M, N = matS.getSize()
+
+        bv = SLEPc.BV().create(self._comm)
+        bv.createFromMat(matS)
+
+        if methodGS == "classical":
+            orthog_method = SLEPc.BV.OrthogType.CGS
+        elif methodGS == "modified":
+            orthog_method = SLEPc.BV.OrthogType.MGS
+        else:
+            raise ValueError("methodGS should be classical or modified")
+
+        bv.setOrthogonalization(
+            block=SLEPc.BV.OrthogBlockType.GS,
+            otype=orthog_method,
+            refine=SLEPc.BV.OrthogRefineType.IFNEEDED,
+        )
+
+        bv.setMatrix(self._corrOperator)
+
+        R_mat = PETSc.Mat().createDense([N, N], comm=self._comm)
+        bv.orthogonalize(R_mat)
 
     def computeGSprojection(self, Phi, s_new, methodGS):
         """Compute a Gram-Schmidt projection
@@ -904,7 +1193,7 @@ class PODAnalysisPetsc(PODAnalysisBase):
                     s_proj.axpy(-alpha, phi_k)
         return s_proj
 
-    def SVDMethod(self, matS, verbose=True):
+    def SVDMethod(self, matS, verbose=False):
         """Compression method using SVD on the snapshot matrix
 
         Arguments
@@ -918,24 +1207,20 @@ class PODAnalysisPetsc(PODAnalysisBase):
         singval : numpy.ndarray
             Singular values
         """
-        tol = 1e-12
-        comm = matS.getComm()
-        Print = PETSC.Sys.Print
+        Print = PETSc.Sys.Print
 
-        # - Creation and configuration of the SVD solver
-        svd = SLEPc.SVD().create(comm=comm)
+        ## - Creation and configuration of the SVD solver
+        svd = SLEPc.SVD().create(comm=self._comm)
         svd.setOperator(matS)
-        S.setType(S.Type.TRLANCZOS)
+        svd.setType(SLEPc.SVD.Type.TRLANCZOS)
 
-        # - Ask to compute all the needed singular values
-        _, n_cols = matS.getSize()
-        svd.setDimensions(nsv=n_cols)
-        S.setFromOptions()
-        # - Resolution
+        svd.setFromOptions()
+        ## - Resolution
+
         svd.solve()
 
         n_conv = svd.getConverged()
-        if verbose and comm.rank == 0:
+        if verbose:
             Print("******************************")
             Print("*** SLEPc SVD Solution Results ***")
             Print("******************************\n")
@@ -949,14 +1234,14 @@ class PODAnalysisPetsc(PODAnalysisBase):
             Print(f"Stopping condition: tol={tol:.4g}, maxit={maxit}")
             Print(f"Number of converged singular triplets: {n_conv}\n")
 
-        # - Construction of the outputs
+        ## - Construction of the outputs
         singular_values = []
         singular_vectors = []
 
         if n_conv > 0:
-            u_tmp, v_tmp = matS.createVecs()
+            v_tmp, u_tmp = matS.createVecs()
 
-            if verbose and comm.rank == 0:
+            if verbose:
                 Print("    sigma       residual norm ")
                 Print("-------------  ---------------")
 
@@ -965,29 +1250,23 @@ class PODAnalysisPetsc(PODAnalysisBase):
                 singular_values.append(sigma_i)
                 singular_vectors.append(u_tmp.copy())
 
-                if verbose and comm.rank == 0:
+                if verbose:
                     error = svd.computeError(i)
                     Print(f"   {sigma_i:6f}     {error:12g}")
 
-            if verbose and comm.rank == 0:
+            if verbose:
                 Print()
 
             u_tmp.destroy()
             v_tmp.destroy()
 
         sigma = np.array(singular_values)
-        zero_indices = np.where(sigma < tol)[0]
+        zero_indices = np.where(sigma < self._tol_num)[0]
         n = zero_indices[0] if zero_indices.size > 0 else len(sigma)
 
-        n_rows, _ = matS_petsc.getSize()
-        Phi_petsc = PETSc.Mat().createDense([n_rows, n], comm=comm)
-        Phi_petsc.setUp()
+        Phi_petsc = self._restrictBasisAfterProcedure(matS.getSize()[0], singular_vectors, n)
 
-        for i in range(n):
-            Phi_petsc.setColumnVector(i, singular_vectors[i])
-        Phi_petsc.assemble()
-
-        # - Clean vectors
+        ## - Clean vectors
         for vec in singular_vectors:
             vec.destroy()
         svd.destroy()
@@ -1009,19 +1288,21 @@ class PODAnalysisPetsc(PODAnalysisBase):
         singval : numpy.ndarray
             Singular values
         """
-        # - Compute correlation matrix
-        corrMatrix = self._CorrOperator.ptap(matS)
+        ## - Compute correlation matrix
+        corrMatrix = self._corrOperator.ptap(matS)
         # - Solve eigenproblem using SLEPc
-        eps = SLEPc.EPS().create(comm=matS.getComm())
+        eps = SLEPc.EPS().create(comm=self._comm)
         eps.setOperators(corrMatrix)
         eps.setProblemType(SLEPc.EPS.ProblemType.HEP)
-        # - Extract eigenvalues and compute basis
+        eps.solve()
+
+        ## - Extract eigenvalues and compute basis
         nconv = eps.getConverged()
         eigenvalues = []
         basis_vectors = []
-        
+
         _, v = corrMatrix.createVecs()
-        phi_i = matS.createVecRight()
+        phi_i = matS.createVecLeft()
         for i in range(nconv):
             k = eps.getEigenvalue(i)
 
@@ -1030,16 +1311,16 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
             eigenvalues.append(k.real)
 
-            # - Get eigenvector and compute the mode
+            ## - Get eigenvector and compute the mode
             eps.getEigenvector(i, v)
             sing_val = np.sqrt(k.real)
 
             matS.mult(v, phi_i)
-            phi_i.scale(1.0/sing_val)
+            phi_i.scale(1.0 / sing_val)
 
             basis_vectors.append(phi_i.copy())
-            
-        # - Assembly of the final bais  matrix from all the vectors computed before
+
+        ## - Assembly of the final bais  matrix from all the vectors computed before
         n_modes = len(basis_vectors)
 
         if n_modes == 0:
@@ -1047,13 +1328,13 @@ class PODAnalysisPetsc(PODAnalysisBase):
             Phi.assemble()
             return Phi, np.array([])
         else:
-            Phi = PETSc.Mat().createDense([matS.getSize()[0], n_modes], comm=matS.getComm())
-            Phi.setUp()
-            for i, vec in enumerate(basis_vectors):
-                Phi.setValues(range(matS.getSize()[0]), [i], vec.getArray(readonly=True), PETSc.InsertMode.INSERT_VALUES)
-            Phi.assemble()
+            Phi_petsc = self._restrictBasisAfterProcedure(
+                matS.getSize()[0], basis_vectors, len(basis_vectors)
+            )
+
             singular_values = np.sqrt(np.array(eigenvalues))
-            return Phi, singular_values
+            return Phi_petsc, singular_values
+
 
 class PODAnalysis:
     def __init__(self, snapshots, **kwargs):
@@ -1070,899 +1351,3 @@ class PODAnalysis:
     def __getattr__(self, name):
         """Delegates all method calls to the implementation object."""
         return getattr(self._impl, name)
-
-
-# class PODAnalysis:
-#     """
-#     Class for building a base incrementally using POD.
-
-#     This class is designed to build a base from a set of snapshots.
-#     """
-
-#     def __init__(
-#         self, snapshots, method="SVD", criterion="energy", tolerance=None, nbModes=None, CorrOp=None
-#     ):
-#         """
-#         Initializes a PODAnalysis.
-
-#         Arguments
-#         ----------
-#         snapshots : numpy.ndarray
-#             Snapshot array. Each column contains a given snapshot (size = number of dofs * number of snapshots).
-#         method : str
-#             Data compression method used.
-#         criterion : str
-#             Criteria for selecting the number of modes used (energy or nbModes)
-#         tolerance : str or NoneType
-#             POD compression tolerance for an energy criterion (criterion=energy).
-#         nbModes : str or NoneType
-#             Number of modes used for a criterion where the number of modes is provided (criterion=nbModes).
-#         CorrOp : numpy.ndarray or NoneType
-#             Correlation operator, provided in matrix form for a snapshot approach (method=snapshot).
-#         """
-#         self._snapshots = snapshots  # Each column is a snapshot
-#         ## - Initialisation parameterss
-#         self._methodCompress = None
-#         self._criterionModes = None
-#         self._crit_tolerance = tolerance
-#         self._crit_nbModes = nbModes
-#         ## - Prepare the operators for POD Analysis
-#         self.setInfosSnapshots()
-#         self.setCompressionMethod(method)
-#         self.setCorrelationOperator(CorrOperator=CorrOp)
-#         self.setCriterionModes(criterion)
-#         ## - Tests
-#         self._correctionSnapshots()
-#         self._runCompatibilityTests()
-#         assert self._methodCompress is not None
-#         assert self._criterionModes is not None
-
-#     def _runCompatibilityTests(self):
-#         """Testing compatibility between options (for arguments)"""
-#         if self._methodCompress in ["GS-classical", "GS-modified"] and self._crit_tolerance is None:
-#             raise ValueError("If method is of GS type, user should provide a tolerance")
-#         if self._criterionModes == "energy" and self._crit_tolerance is None:
-#             raise ValueError("If criterion = energy, user should provide a tolerance")
-#         if self._criterionModes == "nbModes" and self._crit_nbModes is None:
-#             raise ValueError("If criterion = nbModes, user should provide a number of modes")
-
-#     def setInfosSnapshots(self):
-#         """Store information about the size of the snapshot matrix"""
-#         self._numberOfDOFs = self._snapshots.shape[0]
-#         self._numberOfSnapshots = self._snapshots.shape[1]
-
-#     def setCorrelationOperator(self, CorrOperator=None):
-#         """Set method for the correlation operator"""
-#         if CorrOperator is None:
-#             self._CorrOperator = scipy.sparse.identity(self._numberOfDOFs, format="csr")
-#         else:
-#             self._CorrOperator = CorrOperator
-
-#     def setCompressionMethod(self, method):
-#         """Set method for the compression method"""
-#         if method in POD_VALID_METHOD:
-#             self._methodCompress = method
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{method}' is not valid. Choose method in {POD_VALID_METHOD}."
-#             )
-
-#     def setCriterionModes(self, criterion):
-#         """Set method for the criterion for selecting modes"""
-#         if criterion in POD_CRITERION_METHOD:
-#             self._criterionModes = criterion
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{criterion}' is not valid. Choose method in {POD_CRITERION_METHOD}."
-#             )
-
-#     def _correctionSnapshots(self):
-#         """Correct the snapshots by removing null values"""
-#         tol = 1e-12
-#         norms = np.linalg.norm(self._snapshots, axis=0)
-#         self._snapshots = self._snapshots[:, norms > 0]
-
-#     def getCompressionMethod(self, method):
-#         """Get method for the criterion for selecting modes"""
-#         return self._methodCompress
-
-#     def getCriterionModes(self, method):
-#         """Get method for the compression method"""
-#         return self._criterionModes
-
-#     def selectModes(self, Phi, singval, tolerance=None, nbModes=None):
-#         """Method for selecting the number of modes given a basis and previously calculated singular values
-
-#         Arguments
-#         ----------
-#         Phi : numpy.ndarray
-#             Previously calculated reduced order basis (size = number of DOFs * number of modes).
-#             Here number of modes should be close to the number of snapshots. Only redundant information can be removed.
-#         singval : numpy.ndarray
-#             Previously calculated singular values.
-#         tolerance : str or NoneType
-#             POD compression tolerance for an energy criterion (criterion=energy).
-#         nbModes : str or NoneType
-#             Number of modes used for a criterion where the number of modes is provided (criterion=nbModes).
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis after truncation
-#         singval : numpy.ndarray
-#             Singular values after truncation
-#         """
-#         ## - Test
-#         if tolerance is None and nbModes is None:
-#             raise ValueError(
-#                 "selectModes: Either tolerance or nbModes should be provided to the method"
-#             )
-#         ## - Choice of the number of modes to keep
-#         if self._criterionModes == "energy":
-#             s_squared = singval**2
-#             sum_i = 0
-#             i = 0
-#             while i < len(singval) and sum_i / np.sum(s_squared) < (1 - tolerance):
-#                 sum_i += s_squared[i]
-#                 i += 1
-#             nbModes_v = i
-#         elif self._criterionModes == "nbModes":
-#             if nbModes is None or nbModes > len(singval):
-#                 raise ValueError("selectModes: nbModes should be given or is too big!")
-#             nbModes_v = nbModes
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{self._criterionModes}' is not valid. Choose method in {POD_CRITERION_METHOD}."
-#             )
-#         ## - Truncation of the POD Basis
-#         Phi_v = Phi[:, :nbModes_v]
-#         singval_v = singval[:nbModes_v]
-#         return Phi_v, singval_v
-
-#     def POD(self, matS, option):
-#         """Method to construct a reduced order basis by POD
-
-#         Arguments
-#         ----------
-#         matS : numpy.ndarray
-#             Matrix of snapshots on which the POD operator should be applied
-#         option : int
-#             Changes the outputs of the function. If option=1, only reduced order basis.
-#             If option=2, returns reduced order basis and singular values.
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values (only if option=2)
-#         """
-#         ## - Compression step
-#         if self._methodCompress == "snapshot":
-#             Phi, singval = self.snapshotMethod(matS)
-#         elif self._methodCompress == "SVD":
-#             Phi, singval = self.SVDMethod(matS)
-#         elif self._methodCompress == "GS-classical":
-#             Phi, singval = self.GSMethod(matS, self._crit_tolerance, "classical")
-#         elif self._methodCompress == "GS-modified":
-#             Phi, singval = self.GSMethod(matS, self._crit_tolerance, "modified")
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{self._methodCompress}' is not implemented yet."
-#             )
-#         if self._methodCompress in POD_METHOD_WITHOUT_CRIT:
-#             Phi_t, singval_t = Phi, singval
-#         else:
-#             ## - Apply truncation
-#             Phi_t, singval_t = self.selectModes(
-#                 Phi, singval, self._crit_tolerance, self._crit_nbModes
-#             )
-#         ## - Return outputs
-#         if option == 1:
-#             return Phi_t
-#         elif option == 2:
-#             return Phi_t, singval_t
-#         else:
-#             raise ValueError("PODAnalysis: computePODBasis should be 1 or 2.")
-
-#     def computePODBasis(self, option=1):
-#         """Method to construct a reduced order basis by POD
-#         using the stored snapshots
-
-#         Arguments
-#         ----------
-#         option : int
-#             Changes the outputs of the function. If option=1, only reduced order basis.
-#             If option=2, returns reduced order basis and singular values.
-
-#         """
-#         return self.POD(self._snapshots, option=option)
-
-#     def computePODBasisIncremental(self, Phi, singval=None, method="HPOD"):
-#         """Method to enrich a reduced order basis with the stored snapshots
-
-#         Arguments
-#         ----------
-#         Phi : numpy.ndarray
-#             Reduced order basis which has been previously computed
-#         method : str
-#             Name of the incremental approach to use
-#         """
-#         assert method in INCR_POD_VALID_METHOD
-#         if method == "HPOD":
-#             matS = self._snapshots
-#             projS = np.zeros(np.shape(matS))
-#             for i in range(matS.shape[1]):
-#                 projS[:, i] = self.computeGSprojection(Phi, matS[:, i], "modified")
-#             Phi_new = self.POD(projS, option=1)
-#             return np.column_stack((Phi, Phi_new))
-#         elif method == "HAPOD":
-#             assert singval is not None
-#             mPhi = singval * Phi
-#             assert np.shape(Phi) == np.shape(mPhi)
-#             mS = np.column_stack((mPhi, self._snapshots))
-#             return self.POD(mS, option=1)
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_VALID_METHOD}."
-#             )
-
-#     def SVDMethod(self, matS):
-#         """Compression method using SVD on the snapshot matrix
-
-#         Arguments
-#         ----------
-#         matS : numpy.ndarray
-#             Matrix of snapshots on which the POD operator should be applied
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values
-#         """
-#         ## - Apply SVD directly on the snapshot matrix
-#         U, sigma, _ = np.linalg.svd(matS, full_matrices=False)
-#         ## - Order eigenvalues and compute basis
-#         n = np.where(sigma == 0)[0]
-#         if n.size == 0:
-#             n = len(sigma)
-#         else:
-#             n = n[0]
-#         return U[:, :n], sigma[:n]
-
-#     def snapshotMethod(self, matS):
-#         """Compression method using the snapshot method on a correlation matrix
-
-#         Arguments
-#         ----------
-#         matS : numpy.ndarray
-#             Matrix of snapshots on which the POD operator should be applied
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values
-#         """
-#         ## - Compute correlation matrix
-#         corrMatrix = matS.T @ self._CorrOperator @ matS
-#         ## - Solve eigenproblem
-#         eigenvalues, eigenvectors = np.linalg.eigh(corrMatrix)
-#         ## - Order eigenvalues and compute basis
-#         idx = np.argsort(eigenvalues)[::-1]
-#         eigenvalues = eigenvalues[idx]
-#         eigenvalues = np.where(eigenvalues < 0, 0, eigenvalues)
-#         eigenvectors = eigenvectors[:, idx]
-
-#         n = np.where(eigenvalues == 0)[0]
-#         if n.size == 0:
-#             n = len(eigenvalues)
-#         else:
-#             n = n[0]
-#         # - Return reduced order basis and singular values
-#         return np.dot(matS, eigenvectors[:, :n]) / np.sqrt(eigenvalues[:n]), np.sqrt(
-#             eigenvalues[:n]
-#         )
-
-#     def GSMethod(self, matS, tole, methodGS):
-#         """Compression method using a Gram-Schmidt process
-
-#         Arguments
-#         ----------
-#         matS : numpy.ndarray
-#             Matrix of snapshots on which the POD operator should be applied
-#         tole : float
-#             Tolerance used for the test when adding new snapshot
-#         methodGS : str
-#             Should be "classical" or "modified" = GS method applied
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values
-#         """
-#         s_0_norm = np.linalg.norm(matS[:, 0])
-#         Phi = matS[:, 0:1] / s_0_norm
-#         singval = np.array([s_0_norm])
-#         n_snap = matS.shape[1]
-#         for i in range(1, n_snap):
-#             Phi, singval = self.updateGStype(Phi, singval, matS[:, i : i + 1], tole, methodGS)
-#         return Phi, singval
-
-#     def computeGSprojection(self, Phi, s_new, methodGS):
-#         assert methodGS in GS_METHOD
-#         ## - GS orthogonalisation
-#         n_modes = Phi.shape[1]
-#         for kp in range(2):  # Kahan-Parlett process
-#             if methodGS == "classical":
-#                 s_new_loc = s_new
-#                 for k in range(n_modes):
-#                     s_new = s_new - np.dot(s_new_loc, Phi[:, k]) * Phi[:, k]
-#             if methodGS == "modified":
-#                 for k in range(n_modes):
-#                     s_new = s_new - np.dot(s_new, Phi[:, k]) * Phi[:, k]
-#         return s_new
-
-#     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
-#         """Update a basis with a new snapshot method using a Gram-Schmidt process
-
-#         Arguments
-#         ----------
-#         Phi : numpy.ndarray
-#             Basis to enrich
-#         singval : numpy.ndarray
-#             Singular values
-#         snapshot_new : numpy.ndarray
-#             Snapshot to add
-#         tole : float
-#             Tolerance used for the test when adding new snapshot
-#         methodGS : str
-#             Should be "classical" or "modified" = GS method applied
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values
-#         """
-#         assert methodGS in GS_METHOD
-#         ## - Check that the added snapshot is 1D
-#         s_new = snapshot_new.flatten()
-#         s_new_norm = np.linalg.norm(snapshot_new)
-#         ## - GS orthogonalisation
-#         s_new = self.computeGSprojection(Phi, s_new, methodGS)
-#         s_new_perp_norm = np.linalg.norm(s_new)
-#         if s_new_perp_norm > tole * s_new_norm:
-#             Phi = np.column_stack((Phi, s_new / s_new_perp_norm))
-#             singval = np.hstack([singval, s_new_perp_norm])
-#         return Phi, singval
-
-#     def computeDecayRate(self, singval):
-#         """Compute a decay rate of a list of singular values
-
-#         Parameters
-#         ----------
-#         singval : numpy.ndarray
-#             Singular values (order in a decreasing manner)
-
-#         Returns
-#         -------
-#         Phi : float
-#             Decay rate
-#         """
-#         nbSing = len(singval)
-
-#         N = np.log(np.arange(1, nbSing + 1))
-#         Y = np.log(singval)
-
-#         sum_N = np.sum(N)
-#         sum_Y = np.sum(Y)
-#         sum2_N = np.sum(N**2)
-
-#         decayRate = (nbSing * np.dot(Y.T, N) - sum_N * sum_Y) / (nbSing * sum2_N - sum_N**2)
-#         return decayRate
-
-
-# """
-# On utilise notamment https://slepc.upv.es/release/slepc4py/demo/ex10.html
-# """
-
-
-# class PODAnalysisPETSC:
-#     """
-#     Class for building a base incrementally using POD.
-
-#     This class is designed to build a base from a set of snapshots.
-#     """
-
-#     def __init__(
-#         self, snapshots, method="SVD", criterion="energy", tolerance=None, nbModes=None, CorrOp=None
-#     ):
-#         """
-#         Initializes a PODAnalysis.
-
-#         Arguments
-#         ----------
-#         snapshots : numpy.ndarray
-#             Snapshot array. Each column contains a given snapshot (size = number of dofs * number of snapshots).
-#         method : str
-#             Data compression method used.
-#         criterion : str
-#             Criteria for selecting the number of modes used (energy or nbModes)
-#         tolerance : str or NoneType
-#             POD compression tolerance for an energy criterion (criterion=energy).
-#         nbModes : str or NoneType
-#             Number of modes used for a criterion where the number of modes is provided (criterion=nbModes).
-#         CorrOp : numpy.ndarray or NoneType
-#             Correlation operator, provided in matrix form for a snapshot approach (method=snapshot).
-#         """
-#         self._snapshots = snapshots  # Each column is a snapshot
-#         self._comm = self._snapshots.getComm()
-#         ## - Initialisation parameterss
-#         self._methodCompress = None
-#         self._criterionModes = None
-#         self._crit_tolerance = tolerance
-#         self._crit_nbModes = nbModes
-#         ## - Prepare the operators for POD Analysis
-#         self.setInfosSnapshots()
-#         self.setCompressionMethod(method)
-#         self.setCorrelationOperator(CorrOperator=CorrOp)
-#         self.setCriterionModes(criterion)
-#         ## - Tests
-#         self._correctionSnapshots()
-#         self._runCompatibilityTests()
-#         assert self._methodCompress is not None
-#         assert self._criterionModes is not None
-
-#     def _runCompatibilityTests(self):
-#         """Testing compatibility between options (for arguments)"""
-#         if self._methodCompress in ["GS-classical", "GS-modified"] and self._crit_tolerance is None:
-#             raise ValueError("If method is of GS type, user should provide a tolerance")
-#         if self._criterionModes == "energy" and self._crit_tolerance is None:
-#             raise ValueError("If criterion = energy, user should provide a tolerance")
-#         if self._criterionModes == "nbModes" and self._crit_nbModes is None:
-#             raise ValueError("If criterion = nbModes, user should provide a number of modes")
-
-#     def setInfosSnapshots(self):
-#         """Store information about the size of the snapshot matrix"""
-#         self._numberOfDOFs = self._snapshots.shape[0]
-#         self._numberOfSnapshots = self._snapshots.shape[1]
-
-#     def setCorrelationOperator(self, CorrOperator=None):
-#         """Set method for the correlation operator"""
-#         if CorrOperator is None:
-#             I = PETSc.Mat().create(self._comm)
-#             I.setSizes(((None, self._numberOfDOFs), (None, self._numberOfDOFs)))
-#             I.setType("aij")
-#             I.setPreallocationNNZ(1)
-#             # diag_vec = PETSc.Vec().create(self._comm)
-#             # diag_vec.setSizes((None, self._numberOfDOFs))
-#             # diag_vec.setUp()
-#             diag_vec = I.createVecLeft()
-#             diag_vec.set(1.0)
-
-#             I.setDiagonal(diag_vec)
-#             diag_vec.destroy()
-#             I.assemble()
-#             self._CorrOperator = I
-#         else:
-#             self._CorrOperator = CorrOperator
-
-#     def setCompressionMethod(self, method):
-#         """Set method for the compression method"""
-#         if method in POD_VALID_METHOD:
-#             self._methodCompress = method
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{method}' is not valid. Choose method in {POD_VALID_METHOD}."
-#             )
-
-#     def setCriterionModes(self, criterion):
-#         """Set method for the criterion for selecting modes"""
-#         if criterion in POD_CRITERION_METHOD:
-#             self._criterionModes = criterion
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{criterion}' is not valid. Choose method in {POD_CRITERION_METHOD}."
-#             )
-
-#     def _correctionSnapshots(self):
-#         """Correct the snapshots by removing null values"""
-#         tol = 1e-12
-#         norms = np.linalg.norm(self._snapshots, axis=0)
-#         self._snapshots = self._snapshots[:, norms > 0]
-
-#     def getCompressionMethod(self, method):
-#         """Get method for the criterion for selecting modes"""
-#         return self._methodCompress
-
-#     def getCriterionModes(self, method):
-#         """Get method for the compression method"""
-#         return self._criterionModes
-
-#     def selectModes(self, Phi, singval, tolerance=None, nbModes=None):
-#         """Method for selecting the number of modes given a basis and previously calculated singular values
-
-#         Arguments
-#         ----------
-#         Phi : numpy.ndarray
-#             Previously calculated reduced order basis (size = number of DOFs * number of modes).
-#             Here number of modes should be close to the number of snapshots. Only redundant information can be removed.
-#         singval : numpy.ndarray
-#             Previously calculated singular values.
-#         tolerance : str or NoneType
-#             POD compression tolerance for an energy criterion (criterion=energy).
-#         nbModes : str or NoneType
-#             Number of modes used for a criterion where the number of modes is provided (criterion=nbModes).
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis after truncation
-#         singval : numpy.ndarray
-#             Singular values after truncation
-#         """
-#         ## - Test
-#         if tolerance is None and nbModes is None:
-#             raise ValueError(
-#                 "selectModes: Either tolerance or nbModes should be provided to the method"
-#             )
-#         ## - Choice of the number of modes to keep
-#         if self._criterionModes == "energy":
-#             s_squared = singval**2
-#             sum_i = 0
-#             i = 0
-#             while i < len(singval) and sum_i / np.sum(s_squared) < (1 - tolerance):
-#                 sum_i += s_squared[i]
-#                 i += 1
-#             nbModes_v = i
-#         elif self._criterionModes == "nbModes":
-#             if nbModes is None or nbModes > len(singval):
-#                 raise ValueError("selectModes: nbModes should be given or is too big!")
-#             nbModes_v = nbModes
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{self._criterionModes}' is not valid. Choose method in {POD_CRITERION_METHOD}."
-#             )
-#         ## - Truncation of the POD Basis
-#         Phi_v = Phi[:, :nbModes_v]
-#         singval_v = singval[:nbModes_v]
-#         return Phi_v, singval_v
-
-#     def POD(self, matS, option):
-#         """Method to construct a reduced order basis by POD
-
-#         Arguments
-#         ----------
-#         matS : numpy.ndarray
-#             Matrix of snapshots on which the POD operator should be applied
-#         option : int
-#             Changes the outputs of the function. If option=1, only reduced order basis.
-#             If option=2, returns reduced order basis and singular values.
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values (only if option=2)
-#         """
-#         ## - Compression step
-#         if self._methodCompress == "snapshot":
-#             Phi, singval = self.snapshotMethod(matS)
-#         elif self._methodCompress == "SVD":
-#             Phi, singval = self.SVDMethod(matS)
-#         elif self._methodCompress == "GS-classical":
-#             Phi, singval = self.GSMethod(matS, self._crit_tolerance, "classical")
-#         elif self._methodCompress == "GS-modified":
-#             Phi, singval = self.GSMethod(matS, self._crit_tolerance, "modified")
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{self._methodCompress}' is not implemented yet."
-#             )
-#         if self._methodCompress in POD_METHOD_WITHOUT_CRIT:
-#             Phi_t, singval_t = Phi, singval
-#         else:
-#             ## - Apply truncation
-#             Phi_t, singval_t = self.selectModes(
-#                 Phi, singval, self._crit_tolerance, self._crit_nbModes
-#             )
-#         ## - Return outputs
-#         if option == 1:
-#             return Phi_t
-#         elif option == 2:
-#             return Phi_t, singval_t
-#         else:
-#             raise ValueError("PODAnalysis: computePODBasis should be 1 or 2.")
-
-#     def computePODBasis(self, option=1):
-#         """Method to construct a reduced order basis by POD
-#         using the stored snapshots
-
-#         Arguments
-#         ----------
-#         option : int
-#             Changes the outputs of the function. If option=1, only reduced order basis.
-#             If option=2, returns reduced order basis and singular values.
-
-#         """
-#         return self.POD(self._snapshots, option=option)
-
-#     def computePODBasisIncremental(self, Phi, singval=None, method="HPOD"):
-#         """Method to enrich a reduced order basis with the stored snapshots
-
-#         Arguments
-#         ----------
-#         Phi : numpy.ndarray
-#             Reduced order basis which has been previously computed
-#         method : str
-#             Name of the incremental approach to use
-#         """
-#         assert method in INCR_POD_VALID_METHOD
-#         if method == "HPOD":
-#             matS = self._snapshots
-#             projS = np.zeros(np.shape(matS))
-#             for i in range(matS.shape[1]):
-#                 projS[:, i] = self.computeGSprojection(Phi, matS[:, i], "modified")
-#             Phi_new = self.POD(projS, option=1)
-#             return np.column_stack((Phi, Phi_new))
-#         elif method == "HAPOD":
-#             assert singval is not None
-#             mPhi = singval * Phi
-#             assert np.shape(Phi) == np.shape(mPhi)
-#             mS = np.column_stack((mPhi, self._snapshots))
-#             return self.POD(mS, option=1)
-#         else:
-#             raise ValueError(
-#                 f"PODAnalysis: Method '{method}' is not valid. Choose method in {INCR_POD_VALID_METHOD}."
-#             )
-
-#     # def SVDMethod(self, matS):
-#     #     """Compression method using SVD on the snapshot matrix
-
-#     #     Arguments
-#     #     ----------
-#     #     matS : numpy.ndarray
-#     #         Matrix of snapshots on which the POD operator should be applied
-#     #     Returns
-#     #     -------
-#     #     Phi : numpy.ndarray
-#     #         Reduced order basis
-#     #     singval : numpy.ndarray
-#     #         Singular values
-#     #     """
-#     #     ## - Apply SVD directly on the snapshot matrix
-#     #     U, sigma, _ = np.linalg.svd(matS, full_matrices=False)
-#     #     ## - Order eigenvalues and compute basis
-#     #     n = np.where(sigma == 0)[0]
-#     #     if n.size == 0:
-#     #         n = len(sigma)
-#     #     else:
-#     #         n = n[0]
-#     #     return U[:, :n], sigma[:n]
-
-#     def SVDMethod(self, matS, verbose=True):
-#         tol = 1e-12
-#         comm = matS.getComm()
-#         Print = PETSC.Sys.Print
-
-#         # - Creation and configuration of the SVD solver
-#         svd = SLEPc.SVD().create(comm=comm)
-#         svd.setOperator(matS)
-#         S.setType(S.Type.TRLANCZOS)
-
-#         # - Ask to compute all the needed singular values
-#         _, n_cols = matS.getSize()
-#         svd.setDimensions(nsv=n_cols)
-#         S.setFromOptions()
-#         # - Resolution
-#         svd.solve()
-
-#         n_conv = svd.getConverged()
-#         if verbose and comm.rank == 0:
-#             Print("******************************")
-#             Print("*** SLEPc SVD Solution Results ***")
-#             Print("******************************\n")
-#             svd_type = svd.getType()
-#             Print(f"Solution method: {svd_type}")
-#             its = svd.getIterationNumber()
-#             Print(f"Number of iterations: {its}")
-#             nsv, _, _ = svd.getDimensions()
-#             Print(f"Number of requested singular values: {nsv}")
-#             tol, maxit = svd.getTolerances()
-#             Print(f"Stopping condition: tol={tol:.4g}, maxit={maxit}")
-#             Print(f"Number of converged singular triplets: {n_conv}\n")
-
-#         # - Construction of the outputs
-#         singular_values = []
-#         singular_vectors = []
-
-#         if n_conv > 0:
-#             u_tmp, v_tmp = matS.createVecs()
-
-#             if verbose and comm.rank == 0:
-#                 Print("    sigma       residual norm ")
-#                 Print("-------------  ---------------")
-
-#             for i in range(n_conv):
-#                 sigma_i = svd.getSingularTriplet(i, u_tmp, v_tmp)
-#                 singular_values.append(sigma_i)
-#                 singular_vectors.append(u_tmp.copy())
-
-#                 if verbose and comm.rank == 0:
-#                     error = svd.computeError(i)
-#                     Print(f"   {sigma_i:6f}     {error:12g}")
-
-#             if verbose and comm.rank == 0:
-#                 Print()
-
-#             u_tmp.destroy()
-#             v_tmp.destroy()
-
-#         sigma = np.array(singular_values)
-#         zero_indices = np.where(sigma < tol)[0]
-#         n = zero_indices[0] if zero_indices.size > 0 else len(sigma)
-
-#         n_rows, _ = matS_petsc.getSize()
-#         Phi_petsc = PETSc.Mat().createDense([n_rows, n], comm=comm)
-#         Phi_petsc.setUp()
-
-#         for i in range(n):
-#             Phi_petsc.setColumnVector(i, singular_vectors[i])
-#         Phi_petsc.assemble()
-
-#         # - Clean vectors
-#         for vec in singular_vectors:
-#             vec.destroy()
-#         svd.destroy()
-
-#         return Phi_petsc, sigma[:n]
-
-#     def snapshotMethod(self, matS):
-#         """Compression method using the snapshot method on a correlation matrix
-
-#         Arguments
-#         ----------
-#         matS : numpy.ndarray
-#             Matrix of snapshots on which the POD operator should be applied
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values
-#         """
-#         ## - Compute correlation matrix
-#         corrMatrix = matS.T @ self._CorrOperator @ matS
-#         ## - Solve eigenproblem
-#         eigenvalues, eigenvectors = np.linalg.eigh(corrMatrix)
-#         ## - Order eigenvalues and compute basis
-#         idx = np.argsort(eigenvalues)[::-1]
-#         eigenvalues = eigenvalues[idx]
-#         eigenvalues = np.where(eigenvalues < 0, 0, eigenvalues)
-#         eigenvectors = eigenvectors[:, idx]
-
-#         n = np.where(eigenvalues == 0)[0]
-#         if n.size == 0:
-#             n = len(eigenvalues)
-#         else:
-#             n = n[0]
-#         # - Return reduced order basis and singular values
-#         return np.dot(matS, eigenvectors[:, :n]) / np.sqrt(eigenvalues[:n]), np.sqrt(
-#             eigenvalues[:n]
-#         )
-
-#     def snapshotMethod(self, matS):
-#         ## - Compute correlation matrix
-#         corrMatrix = self._CorrOperator.ptap(matS)
-#         ## - Solve eigenproblem using SLEPc
-#         eps = SLEPc.EPS().create(comm=matS.getComm())
-#         eps.setOperators(corrMatrix)
-#         eps.setProblemType(SLEPc.EPS.ProblemType.HEP)
-
-#     def GSMethod(self, matS, tole, methodGS):
-#         """Compression method using a Gram-Schmidt process
-
-#         Arguments
-#         ----------
-#         matS : numpy.ndarray
-#             Matrix of snapshots on which the POD operator should be applied
-#         tole : float
-#             Tolerance used for the test when adding new snapshot
-#         methodGS : str
-#             Should be "classical" or "modified" = GS method applied
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values
-#         """
-#         s_0_norm = np.linalg.norm(matS[:, 0])
-#         Phi = matS[:, 0:1] / s_0_norm
-#         singval = np.array([s_0_norm])
-#         n_snap = matS.shape[1]
-#         for i in range(1, n_snap):
-#             Phi, singval = self.updateGStype(Phi, singval, matS[:, i : i + 1], tole, methodGS)
-#         return Phi, singval
-
-#     def computeGSprojection(self, Phi, s_new, methodGS):
-#         assert methodGS in GS_METHOD
-#         ## - GS orthogonalisation
-#         n_modes = Phi.shape[1]
-#         for kp in range(2):  # Kahan-Parlett process
-#             if methodGS == "classical":
-#                 s_new_loc = s_new
-#                 for k in range(n_modes):
-#                     s_new = s_new - np.dot(s_new_loc, Phi[:, k]) * Phi[:, k]
-#             if methodGS == "modified":
-#                 for k in range(n_modes):
-#                     s_new = s_new - np.dot(s_new, Phi[:, k]) * Phi[:, k]
-#         return s_new
-
-#     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
-#         """Update a basis with a new snapshot method using a Gram-Schmidt process
-
-#         Arguments
-#         ----------
-#         Phi : numpy.ndarray
-#             Basis to enrich
-#         singval : numpy.ndarray
-#             Singular values
-#         snapshot_new : numpy.ndarray
-#             Snapshot to add
-#         tole : float
-#             Tolerance used for the test when adding new snapshot
-#         methodGS : str
-#             Should be "classical" or "modified" = GS method applied
-
-#         Returns
-#         -------
-#         Phi : numpy.ndarray
-#             Reduced order basis
-#         singval : numpy.ndarray
-#             Singular values
-#         """
-#         assert methodGS in GS_METHOD
-#         ## - Check that the added snapshot is 1D
-#         s_new = snapshot_new.flatten()
-#         s_new_norm = np.linalg.norm(snapshot_new)
-#         ## - GS orthogonalisation
-#         s_new = self.computeGSprojection(Phi, s_new, methodGS)
-#         s_new_perp_norm = np.linalg.norm(s_new)
-#         if s_new_perp_norm > tole * s_new_norm:
-#             Phi = np.column_stack((Phi, s_new / s_new_perp_norm))
-#             singval = np.hstack([singval, s_new_perp_norm])
-#         return Phi, singval
-
-#     def computeDecayRate(self, singval):
-#         """Compute a decay rate of a list of singular values
-
-#         Parameters
-#         ----------
-#         singval : numpy.ndarray
-#             Singular values (order in a decreasing manner)
-
-#         Returns
-#         -------
-#         Phi : float
-#             Decay rate
-#         """
-#         nbSing = len(singval)
-
-#         N = np.log(np.arange(1, nbSing + 1))
-#         Y = np.log(singval)
-
-#         sum_N = np.sum(N)
-#         sum_Y = np.sum(Y)
-#         sum2_N = np.sum(N**2)
-
-#         decayRate = (nbSing * np.dot(Y.T, N) - sum_N * sum_Y) / (nbSing * sum2_N - sum_N**2)
-#         return decayRate
