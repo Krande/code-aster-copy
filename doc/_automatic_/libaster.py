@@ -4949,10 +4949,11 @@ class TimesList(DataStructure):
         """
 
     def getValues(self):
-        pass
+        """Return the current times values.
 
-    def setValues(self, arg0):
-        pass
+        Returns:
+            list[float]: Current values.
+        """
 
     # ----------------------------------------------------------------------
     # Data descriptors defined here:
