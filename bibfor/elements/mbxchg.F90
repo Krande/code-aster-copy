@@ -91,7 +91,7 @@ subroutine mbxchg(plateOrie, &
     integer(kind=8) :: i, n, c, cc, ier
     real(kind=8) :: b(3, 3, 9), jac
     real(kind=8) :: matrRigi(3, 3), rho
-    real(kind=8) :: epsthe, epsref, sgmref, sig(3), alpha, beta
+    real(kind=8) :: epsthe, sgmref, sig(3), alpha, beta
     real(kind=8) :: xgau, ygau, zgau, epsinif(3)
     type(RESI_REFE):: refe
 !
@@ -166,12 +166,8 @@ subroutine mbxchg(plateOrie, &
 
     else if (option .eq. 'REFE_FORC_NODA') then
         call refe%Init('MEMBRANE')
-        epsref = refe%GetRef('EPSI')
+        sgmref = refe%GetRef('SIGM')
         call refe%Check()
-        call mbrigi(fami, kpg, jvMaterc, matrRigi)
-
-! ---   ON CALCULE UN ORDRE DE GRANDEUR DE LA CONTRAINTE MEMBRANAIRE
-        sgmref = epsref*(matrRigi(1, 1)+matrRigi(2, 2))/2.d0
         ASSERT(sgmref .gt. 0.d0)
         do n = 1, nno
             do i = 1, nddl
