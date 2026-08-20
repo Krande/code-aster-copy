@@ -318,12 +318,7 @@ evol_me = CALC_ENDO(
     NEWTON=_F(MATRICE="TANGENTE"),
     SOLVEUR=_F(ELIM_LAGR="NON"),
     CONVERGENCE=_F(
-        RESI_REFE_RELA=r_conv,
-        EPSI_REFE=1.0e-3,
-        SIGM_REFE=b_ft,
-        EFFORT_REFE=700,
-        MOMENT_REFE=4900,
-        ITER_GLOB_MAXI=10,
+        RESI_REFE_RELA=r_conv, SIGM_REFE=b_ft, EFFORT_REFE=700, MOMENT_REFE=4900, ITER_GLOB_MAXI=10
     ),
     ENDO_VISC=_F(LIST_INST=inst_visc, ARRET="NON", TABLE=CO("tab_obs")),
 )

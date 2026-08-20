@@ -70,7 +70,7 @@ subroutine te0430(option, nomte)
     integer(kind=8) :: ipoids, ivf, idfde, jvGeom, jvMaterc, jvSigm, jvVect
     integer(kind=8) :: jvPesa, jvEpsi, jvInstr
     integer(kind=8) :: iadzi, iazk24
-    real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac, epsthe, epsref
+    real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac, epsthe
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn
     character(len=8), parameter :: fami = 'RIGI'
     real(kind=8) :: sig, rho, b_max_rot
@@ -202,16 +202,8 @@ subroutine te0430(option, nomte)
 !
         else if (option .eq. 'REFE_FORC_NODA') then
             call refe%Init(nomte)
-            epsref = refe%GetRef('EPSI')
+            sig = refe%GetRef('SIGM')
             call refe%Check()
-
-! --------- Get Young modulus
-            call rcvalb(fami, kpg, 1, '+', &
-                        zi(jvMaterc), ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        nbProp, propName, &
-                        propVale, propCode, 1)
-            sig = propVale(1)*epsref
 !
             do n = 1, nno
                 do i = 1, 3
