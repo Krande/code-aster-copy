@@ -409,7 +409,7 @@ class CombModalResponse:
     def H(self):
         """Matrix of correlation"""
         if self._H is None:
-            if self._type_comb in ("CQC", "GUPTA"):
+            if self._type_comb in ("CQC", "GUPTA", "CQC_SIGNE"):
                 self._H = self.cqc_array(self._amors, self._freqs)
                 if self._type_comb == "GUPTA":
                     coeff_p = np.sqrt(1 - self.alpha_r**2)
@@ -459,7 +459,7 @@ class CombModalResponse:
             R_m2 = np.sum(R_mi**2, axis=0)
         elif self._type_comb == "ABS":
             R_m2 = np.sum(np.abs(R_mi), axis=0) ** 2
-        elif self._type_comb in ("CQC", "DSC", "GUPTA"):
+        elif self._type_comb in ("CQC", "DSC", "GUPTA", "CQC_SIGNE"):
             H = self.H
             R_m2 = 0
             for i, r_i in enumerate(R_mi):
@@ -772,6 +772,29 @@ class BaseRunner:
             for i, imode in enumerate(nume_ordres):
                 phis[i] = mode_meca.getField(option, imode).getValues()
         return phis
+    
+    @staticmethod
+    def _get_signe_mode(mode_meca, option, signed_order):
+        """Get sign of considered eigen-vector, for CQC_SIGNE method
+        Args:
+            mode_meca  : modale basis
+            option     : fields to get, except for (VITE, ACCE_ABSOLU)
+            signed_order: selected order number to sign the response
+        Returns:
+            phis (ndarray)
+        """
+
+        if option in ("VITE", "ACCE_ABSOLU"):
+            option = "DEPL"
+
+        if option not in mode_meca.getFieldsNames():
+            UTMESS("F", "SEISME_62", valk=option)
+
+        modeValues = mode_meca.getField(option, signed_order).getValues()
+        modal_sign = np.sign(modeValues)
+        # Convention : sign(0) = 1.
+        modal_sign[modal_sign == 0] = 1.0
+        return modal_sign
 
     def _s_r_freq_cut(self, spectre):
         """Value of ZPA at the cutting frequency
@@ -833,7 +856,7 @@ class BaseRunner:
 
         return R_c
 
-    def compute(self, comb_modal_response, spectres, mode_corr, pseudo_mode, d_fact_partici):
+    def compute(self, comb_modal_response, spectres, mode_corr, pseudo_mode, d_fact_partici, comb_mode):
         """Compute responses for TYPE_ANALYSE = 'MONO_APPUI' and 'ENVELOPPE'
         Args:
             comb_modal_response (CombModalResponse): instance to combine modals responses
@@ -967,6 +990,48 @@ class BaseRunner:
             # step 6 : reponse by direction
             # total
             R_x = np.sqrt(R_m2 + (R_qs + R_c) ** 2 + R_e2)
+
+            if comb_mode["TYPE"] == "CQC_SIGNE":
+                l_params = self._mode_meca.getParameters()
+                ordre_to_mode = {int(nume_ordre): int(nume_mode) 
+                                    for nume_ordre, nume_mode in 
+                                    zip(l_params["NUME_ORDRE"],l_params["NUME_MODE"],)
+                                    }
+                nume_modes_retenus = np.asarray([ordre_to_mode[int(nume_ordre)] 
+                                                    for nume_ordre in self._nume_ordres],dtype=int,)
+                mode_to_order = {int(nume_mode): int(nume_ordre)
+                                    for nume_mode, nume_ordre in 
+                                    zip(l_params["NUME_MODE"],l_params["NUME_ORDRE"],)
+                                    }
+                if direction == 'X':
+                    if not comb_mode["NUME_MODE_X"]:
+                        UTMESS("F", "SEISME_93", valk=direction)
+                    else:
+                        mode_signe = comb_mode["NUME_MODE_X"]
+                        if mode_signe not in nume_modes_retenus:
+                            l_modes = ", ".join(str(nume_mode)for nume_mode in nume_modes_retenus)
+                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali = mode_signe)
+                elif direction == 'Y':
+                    if not comb_mode["NUME_MODE_Y"]:
+                        UTMESS("F", "SEISME_93", valk=direction)
+                    else:
+                        mode_signe = comb_mode["NUME_MODE_Y"]
+                        if mode_signe not in nume_modes_retenus:
+                            l_modes = ", ".join(str(nume_mode)for nume_mode in nume_modes_retenus)
+                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali = mode_signe)
+                elif direction == 'Z':
+                    if not comb_mode["NUME_MODE_Z"]:
+                        UTMESS("F", "SEISME_93", valk=direction)
+                    else:
+                        mode_signe = comb_mode["NUME_MODE_Z"]
+                        if mode_signe not in nume_modes_retenus:
+                            l_modes = ", ".join(str(nume_mode)for nume_mode in nume_modes_retenus)
+                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali = mode_signe)
+
+                ordr_signe = mode_to_order[mode_signe]
+                applied_signs = self._get_signe_mode(self._mode_meca, self._option, ordr_signe)
+                R_x = R_x*applied_signs
+
             # inertial part (part primaire)
             R_prim = np.sqrt(R_m2 + (R_qs + R_c) ** 2)
             # add total directionnal responses
@@ -1193,6 +1258,7 @@ class MultiAppuiRunner(BaseRunner):
         appuis,
         group_appuis,
         mesh,
+        comb_mode
     ):
         """Compute responses for TYPE_ANALYSE = 'MULTI_APPUI'
         Args:
@@ -1464,13 +1530,55 @@ class MultiAppuiRunner(BaseRunner):
                     part_s_x = l_part_s_j[0]
                     R_prim_x = l_R_prim_j[0]
                     R_seco_x = l_R_seco_j[0]
-                self._R_x[direction] = R_x
-                # POST_ROCHE / part dynamique et pseudo statique
-                self._part_d[direction] = part_d_x
-                self._part_s[direction] = part_s_x
-                # RCCM part primaire
-                self._R_prim[direction] = R_prim_x
-                self._R_seco[direction] = R_seco_x
+
+            if comb_mode["TYPE"] == "CQC_SIGNE":
+                l_params = self._mode_meca.getParameters()
+                ordre_to_mode = {int(nume_ordre): int(nume_mode) 
+                                    for nume_ordre, nume_mode in 
+                                    zip(l_params["NUME_ORDRE"],l_params["NUME_MODE"],)
+                                    }
+                nume_modes_retenus = np.asarray([ordre_to_mode[int(nume_ordre)] 
+                                                    for nume_ordre in self._nume_ordres],dtype=int,)
+                mode_to_order = {int(nume_mode): int(nume_ordre)
+                                    for nume_mode, nume_ordre in 
+                                    zip(l_params["NUME_MODE"],l_params["NUME_ORDRE"],)
+                                    }
+                if direction == 'X':
+                    if not comb_mode["NUME_MODE_X"]:
+                        UTMESS("F", "SEISME_93", valk=direction)
+                    else:
+                        mode_signe = comb_mode["NUME_MODE_X"]
+                        if mode_signe not in nume_modes_retenus:
+                            l_modes = ", ".join(str(nume_mode)for nume_mode in nume_modes_retenus)
+                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali = mode_signe)
+                elif direction == 'Y':
+                    if not comb_mode["NUME_MODE_Y"]:
+                        UTMESS("F", "SEISME_93", valk=direction)
+                    else:
+                        mode_signe = comb_mode["NUME_MODE_Y"]
+                        if mode_signe not in nume_modes_retenus:
+                            l_modes = ", ".join(str(nume_mode)for nume_mode in nume_modes_retenus)
+                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali = mode_signe)
+                elif direction == 'Z':
+                    if not comb_mode["NUME_MODE_Z"]:
+                        UTMESS("F", "SEISME_93", valk=direction)
+                    else:
+                        mode_signe = comb_mode["NUME_MODE_Z"]
+                        if mode_signe not in nume_modes_retenus:
+                            l_modes = ", ".join(str(nume_mode)for nume_mode in nume_modes_retenus)
+                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali = mode_signe)
+
+                ordr_signe = mode_to_order[mode_signe]
+                applied_signs = self._get_signe_mode(self._mode_meca, self._option, ordr_signe)
+                R_x = R_x*applied_signs
+
+            self._R_x[direction] = R_x
+            # POST_ROCHE / part dynamique et pseudo statique
+            self._part_d[direction] = part_d_x
+            self._part_s[direction] = part_s_x
+            # RCCM part primaire
+            self._R_prim[direction] = R_prim_x
+            self._R_seco[direction] = R_seco_x
 
 
 def comb_sism_modal_ops(self, **args):
@@ -1502,6 +1610,11 @@ def comb_sism_modal_ops(self, **args):
     type_resu = args.get("TYPE_RESU")
     verbosity = args["INFO"]
     setFortranLoggingLevel(verbosity)
+
+    # Check if CQC_SIGNE uses directionnal combine "NEWMARK"
+    if comb_mode["TYPE"] == "CQC_SIGNE":
+        if comb_direction != "NEWMARK":
+            UTMESS("F", "SEISME_94")
 
     # exploring mode_meca
     mesh = mode_meca.getMesh()
@@ -1542,7 +1655,7 @@ def comb_sism_modal_ops(self, **args):
             runner = MonoAppuiRunner(
                 mode_meca, option, nume_ordres, freqs, amors, freq_coup_in, mode_corr
             )
-            runner.compute(comb_modal_response, spectres, mode_corr, pseudo_mode, d_fact_partici)
+            runner.compute(comb_modal_response, spectres, mode_corr, pseudo_mode, d_fact_partici, comb_mode)
             runner.combine(resu, comb_direction)
             runner.prints(
                 verbosity, spectres, mode_corr, comb_dds_correle, comb_direction, nume_modes
@@ -1551,7 +1664,7 @@ def comb_sism_modal_ops(self, **args):
             runner = EnveloppeRunner(
                 mode_meca, option, nume_ordres, freqs, amors, freq_coup_in, mode_corr
             )
-            runner.compute(comb_modal_response, spectres, mode_corr, pseudo_mode, d_fact_partici)
+            runner.compute(comb_modal_response, spectres, mode_corr, pseudo_mode, d_fact_partici, comb_mode)
             runner.combine(resu, comb_direction)
             runner.prints(
                 verbosity, spectres, mode_corr, comb_dds_correle, comb_direction, nume_modes
@@ -1573,6 +1686,7 @@ def comb_sism_modal_ops(self, **args):
                 appuis,
                 group_appuis,
                 mesh,
+                comb_mode,
             )
             runner.combine(resu, comb_direction)
             runner.prints(
