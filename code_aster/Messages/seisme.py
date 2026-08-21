@@ -321,12 +321,12 @@ le mot-clé RATIO_HV. Cette valeur est fixée à 1.
 """
     ),
     99: _(
-"""
+        """
 Le numéro de mode demandé pour signer la réponse est invalide.
 Direction : %(k1)s
 Numéro de mode demandé : %(i1)d
 Numéros de modes admis : %(k2)s
 Vous devez choisir le mode à signer parmi les numéros de modes admis.
 """
-),
+    ),
 }
