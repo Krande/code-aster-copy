@@ -399,7 +399,7 @@ class MET3SEG3(Element):
             te=586,
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCAORIE, CCAORIE),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -481,7 +481,7 @@ class MET3SEG3(Element):
             te=586,
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCAORIE, CCAORIE),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -551,7 +551,7 @@ class MET3SEG3(Element):
             te=586,
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCAORIE, CCAORIE),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),

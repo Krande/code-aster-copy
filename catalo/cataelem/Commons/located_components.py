@@ -150,13 +150,8 @@ CFREQR = LocatedComponents(phys=PHY.FREQ_R, type="ELEM", components=("FREQ",))
 # Field for time
 MTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
-# Field for material orientation in 3D (ANGLE_MASSIF)
-CCAMA3D = LocatedComponents(
-    phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
-)
-
-# Field for material orientation in 2D (ANGLE_MASSIF)
-CCAMA2D = LocatedComponents(
+# Field for material orientation
+CCAMASS = LocatedComponents(
     phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
 )
 

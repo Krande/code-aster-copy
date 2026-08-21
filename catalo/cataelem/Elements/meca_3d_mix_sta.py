@@ -123,7 +123,7 @@ class MEMS_HEXA8(Element):
         OP.CHAR_MECA_EPSI_F(
             te=49,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINF, LC.CEPS3DF),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
@@ -135,7 +135,7 @@ class MEMS_HEXA8(Element):
         OP.CHAR_MECA_EPSI_R(
             te=49,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINR, LC.EGPS3DR),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
@@ -156,7 +156,7 @@ class MEMS_HEXA8(Element):
         OP.CHAR_MECA_HYDR_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -202,7 +202,7 @@ class MEMS_HEXA8(Element):
         OP.CHAR_MECA_SECH_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -214,7 +214,7 @@ class MEMS_HEXA8(Element):
         OP.CHAR_MECA_TEMP_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -283,7 +283,7 @@ class MEMS_HEXA8(Element):
         OP.EPME_ELGA(
             te=25,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.EPME_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, NDEPLAR),
                 (SP.PGEOMER, LC.EGEOM3D),
@@ -318,7 +318,7 @@ class MEMS_HEXA8(Element):
         OP.EPSI_ELGA(
             te=25,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, NDEPLAR),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
@@ -360,7 +360,7 @@ class MEMS_HEXA8(Element):
         OP.FULL_MECA(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
@@ -388,7 +388,7 @@ class MEMS_HEXA8(Element):
         OP.FULL_MECA_ELAS(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
@@ -431,7 +431,7 @@ class MEMS_HEXA8(Element):
         OP.RAPH_MECA(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.RAPH_MECA.PCONTMR, ECONTPG),
@@ -465,13 +465,13 @@ class MEMS_HEXA8(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PGEOMER, LC.EGEOM3D)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, LC.EGEOM3D)),
             para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
         ),
         OP.RIGI_MECA_ELAS(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
@@ -491,7 +491,7 @@ class MEMS_HEXA8(Element):
         OP.RIGI_MECA_TANG(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),

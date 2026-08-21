@@ -56,7 +56,7 @@ class SEAXTL3(Element):
         OP.CHAR_THER_EVOL(
             te=78,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -70,7 +70,7 @@ class SEAXTL3(Element):
             para_in=(
                 (OP.CHAR_THER_EVOLNI.PCOMPOR, LC.CCOMPOT),
                 (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
@@ -163,7 +163,7 @@ class SEAXTL3(Element):
         OP.FLUX_ELGA(
             te=69,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -224,7 +224,7 @@ class SEAXTL3(Element):
             para_in=(
                 (OP.RIGI_THER_TANG.PCOMPOR, LC.CCOMPOT),
                 (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
@@ -269,7 +269,7 @@ class SEAXTL3(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PGEOMER, LC.EGEOM2D)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, LC.EGEOM2D)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.RAPH_THER(
@@ -277,7 +277,7 @@ class SEAXTL3(Element):
             para_in=(
                 (OP.RAPH_THER.PCOMPOR, LC.CCOMPOT),
                 (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
@@ -308,7 +308,7 @@ class SEAXTL3(Element):
         OP.RIGI_THER(
             te=76,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.CTIMETR),

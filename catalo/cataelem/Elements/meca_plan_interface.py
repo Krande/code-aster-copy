@@ -116,7 +116,7 @@ class EIPLQU8(Element):
         OP.FORC_NODA(
             te=361,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCOMPOR, LC.CCOMPOR),
                 (SP.PSIEFR, ECONTPG),
                 (SP.PDEPLAR, DDL_MECA),
@@ -128,7 +128,7 @@ class EIPLQU8(Element):
         OP.FULL_MECA(
             te=360,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
@@ -156,7 +156,7 @@ class EIPLQU8(Element):
         OP.FULL_MECA_ELAS(
             te=360,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
@@ -190,7 +190,7 @@ class EIPLQU8(Element):
         OP.PILO_PRED_DEFO(
             te=349,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.PILO_PRED_DEFO.PCOMPOR, LC.CCOMPOR),
                 (SP.PDDEPLR, DDL_MECA),
                 (SP.PDEPL0R, DDL_MECA),
@@ -205,7 +205,7 @@ class EIPLQU8(Element):
             te=359,
             para_in=(
                 (SP.PBORNPI, LC.CBORNPI),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PCDTAU, LC.CCDTAU),
                 (OP.PILO_PRED_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -224,7 +224,7 @@ class EIPLQU8(Element):
         OP.RAPH_MECA(
             te=360,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.RAPH_MECA.PCONTMR, ECONTPG),
@@ -250,7 +250,7 @@ class EIPLQU8(Element):
         OP.REFE_FORC_NODA(
             te=361,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRESIREF, LC.CRESIREF),
                 (SP.PRESICMP, LC.CRESICMP),
@@ -260,7 +260,7 @@ class EIPLQU8(Element):
         OP.RIGI_MECA_ELAS(
             te=360,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
@@ -280,7 +280,7 @@ class EIPLQU8(Element):
         OP.RIGI_MECA_TANG(
             te=360,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),

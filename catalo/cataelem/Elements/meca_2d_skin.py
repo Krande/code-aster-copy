@@ -40,10 +40,6 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
-
-ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELEM", components=("X[30]",))
-
 
 # ---------------------------------------------------------------------------------------------------
 class MEPLSE2(Element):
@@ -287,9 +283,11 @@ class MEPLSE2(Element):
             te=99,
             para_out=(
                 (OP.TOU_INI_ELEM.PERREUR, LC.CERROR),
-                (OP.TOU_INI_ELEM.PNEUT_F, ELNEUT_F),
-                (SP.PNEU1_R, ENEU1_R),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
+                (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
             ),
         ),
         OP.TOU_INI_ELGA(

@@ -275,7 +275,7 @@ class MVCA_HEXA20(Element):
         OP.CHAR_MECA_EPSI_F(
             te=49,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINF, CEPSINF),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -287,7 +287,7 @@ class MVCA_HEXA20(Element):
         OP.CHAR_MECA_EPSI_R(
             te=49,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINR, CEPSINR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -308,7 +308,7 @@ class MVCA_HEXA20(Element):
         OP.CHAR_MECA_HYDR_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -354,7 +354,7 @@ class MVCA_HEXA20(Element):
         OP.CHAR_MECA_SECH_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -366,7 +366,7 @@ class MVCA_HEXA20(Element):
         OP.CHAR_MECA_TEMP_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -415,7 +415,7 @@ class MVCA_HEXA20(Element):
         OP.EPSI_ELGA(
             te=25,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, NDEPLAR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -440,7 +440,7 @@ class MVCA_HEXA20(Element):
         OP.FULL_MECA(
             te=545,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
@@ -468,7 +468,7 @@ class MVCA_HEXA20(Element):
         OP.FULL_MECA_ELAS(
             te=545,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
@@ -588,7 +588,7 @@ class MVCA_HEXA20(Element):
         OP.RAPH_MECA(
             te=545,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.RAPH_MECA.PCONTMR, ECONTPG),
@@ -624,13 +624,13 @@ class MVCA_HEXA20(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
         ),
         OP.RIGI_MECA_ELAS(
             te=545,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
@@ -650,7 +650,7 @@ class MVCA_HEXA20(Element):
         OP.RIGI_MECA_TANG(
             te=545,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),

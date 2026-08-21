@@ -88,7 +88,7 @@ class MEMS_QU4(Element):
         OP.CHAR_MECA_EPSI_F(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINF, LC.CEPS2DF),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -100,7 +100,7 @@ class MEMS_QU4(Element):
         OP.CHAR_MECA_EPSI_R(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINR, LC.EGPS2DR),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -121,7 +121,7 @@ class MEMS_QU4(Element):
         OP.CHAR_MECA_HYDR_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -167,7 +167,7 @@ class MEMS_QU4(Element):
         OP.CHAR_MECA_SECH_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -179,7 +179,7 @@ class MEMS_QU4(Element):
         OP.CHAR_MECA_TEMP_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -248,7 +248,7 @@ class MEMS_QU4(Element):
         OP.EPME_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.EPME_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, NDEPLAR),
                 (SP.PGEOMER, LC.EGEOM2D),
@@ -283,7 +283,7 @@ class MEMS_QU4(Element):
         OP.EPSI_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, NDEPLAR),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -326,7 +326,7 @@ class MEMS_QU4(Element):
         OP.FULL_MECA(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
@@ -354,7 +354,7 @@ class MEMS_QU4(Element):
         OP.FULL_MECA_ELAS(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
@@ -397,7 +397,7 @@ class MEMS_QU4(Element):
         OP.RAPH_MECA(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.RAPH_MECA.PCONTMR, ECONTPG),
@@ -431,13 +431,13 @@ class MEMS_QU4(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, LC.EGEOM2D)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, LC.EGEOM2D)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D), (SP.PREPLO3, LC.CGEOM2D)),
         ),
         OP.RIGI_MECA_ELAS(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
@@ -457,7 +457,7 @@ class MEMS_QU4(Element):
         OP.RIGI_MECA_TANG(
             te=54,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),

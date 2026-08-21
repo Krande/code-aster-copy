@@ -21,7 +21,6 @@ from cataelem.Tools.base_objects import InputParameter, OutputParameter
 from cataelem.Tools.base_objects import objects_from_context
 import cataelem.Commons.physical_quantities as PHY
 
-
 # Parametres 'In' :
 # -----------------
 
@@ -1797,9 +1796,11 @@ PMATUND = OutputParameter(
 """,
 )
 
-PNEU1_R = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
+PNEUT_R = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
 
 PNEUT_I = OutputParameter(phys=PHY.NEUT_I, type="ELEM", comment="""""")
+
+PNEUT_F = OutputParameter(phys=PHY.NEUT_F, type="ELEM", comment="""""")
 
 PNEUMAT = OutputParameter(phys=PHY.NEUT_R, type="ELGA", comment="""""")
 

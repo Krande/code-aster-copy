@@ -285,7 +285,7 @@ class HM_DPQ8_XH(Element):
             te=588,
             para_in=(
                 (OP.FULL_MECA.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCNSETO, LC.E36NEUI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -347,7 +347,7 @@ class HM_DPQ8_XH(Element):
             te=588,
             para_in=(
                 (OP.RAPH_MECA.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCNSETO, LC.E36NEUI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -382,7 +382,7 @@ class HM_DPQ8_XH(Element):
             te=588,
             para_in=(
                 (OP.RIGI_MECA_TANG.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCNSETO, LC.E36NEUI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),

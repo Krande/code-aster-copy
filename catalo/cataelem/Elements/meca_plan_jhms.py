@@ -139,7 +139,7 @@ class HM_J_DPQ8S(Element):
         OP.FORC_NODA(
             te=313,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PSIEFR, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -150,7 +150,7 @@ class HM_J_DPQ8S(Element):
         OP.FULL_MECA(
             te=313,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
@@ -176,7 +176,7 @@ class HM_J_DPQ8S(Element):
         OP.FULL_MECA_ELAS(
             te=313,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
@@ -226,7 +226,7 @@ class HM_J_DPQ8S(Element):
         OP.RAPH_MECA(
             te=313,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.RAPH_MECA.PCONTMR, ECONTPG),
@@ -250,13 +250,13 @@ class HM_J_DPQ8S(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.RIGI_MECA_ELAS(
             te=313,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
@@ -276,7 +276,7 @@ class HM_J_DPQ8S(Element):
         OP.RIGI_MECA_TANG(
             te=313,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),

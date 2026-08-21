@@ -296,7 +296,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.CHAR_MECA_HYDR_R(
             te=503,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -310,7 +310,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.CHAR_MECA_PTOT_R(
             te=503,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -324,7 +324,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.CHAR_MECA_SECH_R(
             te=503,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -338,7 +338,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.CHAR_MECA_TEMP_R(
             te=503,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -357,7 +357,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.EPSI_ELGA(
             te=448,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (OP.EPSI_ELGA.PCHHOBS, CHHOBS),
@@ -386,7 +386,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.FULL_MECA(
             te=455,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -554,7 +554,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.RAPH_MECA(
             te=455,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -597,7 +597,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.RIGI_MECA(
             te=455,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
@@ -609,7 +609,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.RIGI_MECA_ELAS(
             te=455,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -631,7 +631,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.RIGI_MECA_TANG(
             te=455,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
@@ -663,7 +663,7 @@ class MECA_DPQ9_HHO111(Element):
         OP.SIEF_ELGA(
             te=504,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),

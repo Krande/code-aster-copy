@@ -82,7 +82,7 @@ class THER3DH27_HHO444(Element):
         OP.CHAR_THER_EVOL(
             te=445,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -132,7 +132,7 @@ class THER3DH27_HHO444(Element):
         OP.FLUX_ELGA(
             te=487,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -271,7 +271,7 @@ class THER3DH27_HHO444(Element):
             para_in=(
                 (OP.RAPH_THER.PCOMPOR, LC.CCOMPOT),
                 (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
@@ -282,7 +282,7 @@ class THER3DH27_HHO444(Element):
         OP.RIGI_THER(
             te=454,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.CTIMETR),
@@ -296,7 +296,7 @@ class THER3DH27_HHO444(Element):
             para_in=(
                 (OP.RIGI_THER_TANG.PCOMPOR, LC.CCOMPOT),
                 (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
