@@ -103,6 +103,22 @@ class TimeStepper(Observer, EventSource):
         new.register_default_error_event()
         return new
 
+    def setTimes(self, times):
+        """Set values of the times list
+
+        Args:
+            times (list[float]): new values to be assigned
+        """
+        times = list(times)
+        if sorted(times) != times:
+            raise ValueError("the time steps must be ordered")
+        self._times = times
+        self._forced = [True] * len(self._times)
+        self._initial = times[0]
+        self._final = times[-1]
+        self._check_bounds()
+        self._check_epsilon()
+
     def _check_bounds(self):
         """Remove out of bounds values."""
         times = self._times
