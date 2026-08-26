@@ -135,10 +135,6 @@ EFORCNO = LocatedComponents(
 
 ENBSP_I = LocatedComponents(phys=PHY.NBSP_I, type="ELEM", components=("COQ_NCOU",))
 
-ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
-
-ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELEM", components=("X[30]",))
-
 EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
 
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
@@ -197,8 +193,10 @@ class TemplateElement(Element):
             para_out=(
                 (OP.TOU_INI_ELEM.PERREUR, LC.CERROR),
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
                 (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
-                (SP.PNEU1_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),

@@ -297,7 +297,7 @@ class HM_HEXA20_XH(Element):
             te=588,
             para_in=(
                 (OP.FULL_MECA.PBASLOR, LC.N9NEUT_R),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCNSETO, LC.E320NEUI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -348,7 +348,7 @@ class HM_HEXA20_XH(Element):
             te=588,
             para_in=(
                 (OP.RAPH_MECA.PBASLOR, LC.N9NEUT_R),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCNSETO, LC.E320NEUI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -383,7 +383,7 @@ class HM_HEXA20_XH(Element):
             te=588,
             para_in=(
                 (OP.RIGI_MECA_TANG.PBASLOR, LC.N9NEUT_R),
-                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCNSETO, LC.E320NEUI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),

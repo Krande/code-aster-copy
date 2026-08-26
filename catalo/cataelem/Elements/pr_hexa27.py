@@ -30,9 +30,6 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
-
-
 # ------------------------------------------------------------
 class PR_HEXA27(Element):
     """Please document this element"""
@@ -41,7 +38,14 @@ class PR_HEXA27(Element):
     elrefe = (ElrefeLoc(MT.H27),)
     calculs = (
         OP.TOU_INI_ELEM(
-            te=99, para_out=((SP.PNEU1_R, ENEU1_R), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+            te=99,
+            para_out=(
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
+                (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
+            ),
         ),
     )
 

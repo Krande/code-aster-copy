@@ -288,7 +288,7 @@ class MEDPQU8(Element):
         OP.CHAR_MECA_EPSI_F(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINF, LC.CEPS2DF),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -300,7 +300,7 @@ class MEDPQU8(Element):
         OP.CHAR_MECA_EPSI_R(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINR, LC.EGPS2DR),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -321,7 +321,7 @@ class MEDPQU8(Element):
         OP.CHAR_MECA_HYDR_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -356,7 +356,7 @@ class MEDPQU8(Element):
         OP.CHAR_MECA_PTOT_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -373,7 +373,7 @@ class MEDPQU8(Element):
         OP.CHAR_MECA_SECH_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -385,7 +385,7 @@ class MEDPQU8(Element):
         OP.CHAR_MECA_TEMP_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
@@ -461,7 +461,7 @@ class MEDPQU8(Element):
         OP.ENEL_ELGA(
             te=575,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.ENEL_ELGA.PCOMPOR, LC.CCOMPOR),
                 (OP.ENEL_ELGA.PCONTRR, LC.EGIG2DR),
                 (SP.PDEPLAR, DDL_MECA),
@@ -550,7 +550,7 @@ class MEDPQU8(Element):
         OP.EPME_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.EPME_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
@@ -569,7 +569,7 @@ class MEDPQU8(Element):
         OP.EPMG_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.EPMG_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
@@ -598,7 +598,7 @@ class MEDPQU8(Element):
         OP.EPOT_ELEM(
             te=286,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -644,7 +644,7 @@ class MEDPQU8(Element):
         OP.EPSI_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -769,7 +769,7 @@ class MEDPQU8(Element):
         OP.FULL_MECA(
             te=139,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -799,7 +799,7 @@ class MEDPQU8(Element):
         OP.FULL_MECA_ELAS(
             te=139,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -1026,7 +1026,7 @@ class MEDPQU8(Element):
         OP.RAPH_MECA(
             te=139,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -1054,7 +1054,7 @@ class MEDPQU8(Element):
         OP.RAPH_MECA_IMPLEX(
             te=139,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -1090,7 +1090,7 @@ class MEDPQU8(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, LC.EGEOM2D)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, LC.EGEOM2D)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.REST_ECRO(
@@ -1122,7 +1122,7 @@ class MEDPQU8(Element):
         OP.RIGI_MECA(
             te=81,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
@@ -1132,7 +1132,7 @@ class MEDPQU8(Element):
         OP.RIGI_MECA_ELAS(
             te=139,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -1168,7 +1168,7 @@ class MEDPQU8(Element):
         OP.RIGI_MECA_IMPLEX(
             te=139,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_IMPLEX.PCOMPOR, LC.CCOMPOR),
@@ -1189,7 +1189,7 @@ class MEDPQU8(Element):
         OP.RIGI_MECA_TANG(
             te=139,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
@@ -1228,7 +1228,7 @@ class MEDPQU8(Element):
         OP.SIEF_ELGA(
             te=22,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
@@ -1274,8 +1274,10 @@ class MEDPQU8(Element):
             para_out=(
                 (OP.TOU_INI_ELEM.PERREUR, LC.CERROR),
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
                 (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
-                (SP.PNEU1_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
             ),
         ),

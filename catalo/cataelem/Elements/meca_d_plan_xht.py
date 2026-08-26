@@ -428,7 +428,7 @@ class MEDPTR3_XHT(Element):
             te=541,
             para_in=(
                 (OP.CHAR_MECA_TEMP_R.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.CHAR_MECA_TEMP_R.PCNSETO, LC.E36NEUI),
                 (OP.CHAR_MECA_TEMP_R.PCOMPOR, LC.CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
@@ -550,7 +550,7 @@ class MEDPTR3_XHT(Element):
             te=539,
             para_in=(
                 (OP.FULL_MECA.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCNSETO, LC.E36NEUI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -644,7 +644,7 @@ class MEDPTR3_XHT(Element):
             te=539,
             para_in=(
                 (OP.RAPH_MECA.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCNSETO, LC.E36NEUI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -716,7 +716,7 @@ class MEDPTR3_XHT(Element):
             te=539,
             para_in=(
                 (OP.RIGI_MECA_TANG.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCNSETO, LC.E36NEUI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
@@ -752,7 +752,7 @@ class MEDPTR3_XHT(Element):
             te=261,
             para_in=(
                 (OP.SIEF_ELGA.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.SIEF_ELGA.PCNSETO, LC.E36NEUI),
                 (OP.SIEF_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, DDL_MECA),

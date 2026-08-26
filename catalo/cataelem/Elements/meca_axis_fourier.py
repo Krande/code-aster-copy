@@ -181,7 +181,7 @@ class MEFOQU4(Element):
         OP.CHAR_MECA_EPSI_F(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINF, CEPSINF),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
@@ -194,7 +194,7 @@ class MEFOQU4(Element):
         OP.CHAR_MECA_EPSI_R(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINR, CEPSINR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
@@ -231,7 +231,7 @@ class MEFOQU4(Element):
         OP.CHAR_MECA_TEMP_R(
             te=198,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
@@ -256,7 +256,7 @@ class MEFOQU4(Element):
         OP.EPOT_ELEM(
             te=286,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
@@ -289,13 +289,13 @@ class MEFOQU4(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.RIGI_MECA(
             te=190,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
@@ -315,7 +315,7 @@ class MEFOQU4(Element):
         OP.SIEF_ELGA(
             te=115,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),

@@ -147,10 +147,6 @@ CTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
 ENBSP_I = LocatedComponents(phys=PHY.NBSP_I, type="ELEM", components=("COQ_NCOU",))
 
-ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
-
-ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELEM", components=("X[30]",))
-
 EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
 
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
@@ -816,12 +812,14 @@ class MEQ4QU4(Element):
         OP.TOU_INI_ELEM(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELEM.PNEUT_F, ELNEUT_F),
-                (SP.PNEU1_R, ENEU1_R),
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
                 (OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),
                 (OP.TOU_INI_ELEM.PPRES_R, CPRES_R),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
+                (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
             ),
         ),
         OP.TOU_INI_ELGA(

@@ -453,7 +453,7 @@ class MUAXQU8(Element):
         OP.CHAR_MECA_TEMP_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -718,13 +718,13 @@ class MUAXQU8(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.RIGI_MECA(
             te=597,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
@@ -779,7 +779,7 @@ class MUAXQU8(Element):
         OP.SIEF_ELGA(
             te=97,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),

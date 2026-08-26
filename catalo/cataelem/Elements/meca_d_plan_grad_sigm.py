@@ -230,7 +230,7 @@ class MGSPQU8(Element):
         OP.CHAR_MECA_EPSI_F(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINF, CEPSINF),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -242,7 +242,7 @@ class MGSPQU8(Element):
         OP.CHAR_MECA_EPSI_R(
             te=284,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PEPSINR, CEPSINR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -253,7 +253,7 @@ class MGSPQU8(Element):
         OP.CHAR_MECA_HYDR_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -275,7 +275,7 @@ class MGSPQU8(Element):
         OP.CHAR_MECA_PTOT_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -287,7 +287,7 @@ class MGSPQU8(Element):
         OP.CHAR_MECA_TEMP_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -316,7 +316,7 @@ class MGSPQU8(Element):
         OP.ENEL_ELGA(
             te=575,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (OP.ENEL_ELGA.PCOMPOR, LC.CCOMPOR),
                 (OP.ENEL_ELGA.PCONTRR, ECONTPG),
                 (SP.PDEPLAR, DDL_MECA),
@@ -371,7 +371,7 @@ class MGSPQU8(Element):
         OP.EPOT_ELEM(
             te=286,
             para_in=(
-                (SP.PCAMASS, LC.CCAMA2D),
+                (SP.PCAMASS, LC.CCAMASS),
                 (SP.PDEPLAR, NDEPLAR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -585,7 +585,7 @@ class MGSPQU8(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMASS), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.RIGI_MECA_ELAS(

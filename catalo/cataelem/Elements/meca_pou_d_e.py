@@ -168,12 +168,6 @@ ESTRAUX = LocatedComponents(
 
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
 
-##AJOUT POUR COMBINAISON_FERRAILLAGE
-ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
-
-ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELEM", components=("X[30]",))
-
-
 MVECTUC = ArrayOfComponents(phys=PHY.VDEP_C, locatedComponents=NDEPLAC)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
@@ -779,9 +773,11 @@ class MECA_POU_D_E(Element):
             te=99,
             para_out=(
                 (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
-                (SP.PNEU1_R, ENEU1_R),
-                (OP.TOU_INI_ELEM.PNEUT_F, ELNEUT_F),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
+                (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
             ),
         ),
         OP.TOU_INI_ELGA(

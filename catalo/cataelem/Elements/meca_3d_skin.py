@@ -419,6 +419,10 @@ class MECA_FACE3(Element):
                 (OP.TOU_INI_ELEM.PPRES_R, LC.CPRE3DR),
                 (SP.PDEPLEL, LC.CDEPL3D),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
+                (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
+                (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
             ),
         ),
         OP.TOU_INI_ELGA(
