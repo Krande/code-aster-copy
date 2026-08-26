@@ -162,12 +162,17 @@ def calc_precont_ops(
         __L2[-1:-1] = [__TINT]
 
         # __LST0 est la liste d'instants utilisée pour l'etape 1
+        # Pas de copie de la liste d'instants fournie en entrée car modèle différent pour cet étape
         __LSTR0 = DEFI_LIST_REEL(DEBUT=__TMIN, INTERVALLE=_F(JUSQU_A=__TMAX, NOMBRE=1))
         __LST0 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__LSTR0))
 
         # __LST et __FCT sont utilisés pour les etapes 2 et 3
-        __LSTR = DEFI_LIST_REEL(VALE=__L2)
-        __LST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__LSTR))
+        if type(__L0) == TimesList:
+            __LST = __L0.copy()
+            __LST.setValues(__L2)
+        else:
+            __LSTR = DEFI_LIST_REEL(VALE=__L2)
+            __LST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__LSTR))
         __FCT = DEFI_FONCTION(
             INTERPOL=("LIN", "LIN"), NOM_PARA="INST", VALE=(__TMIN, 0.0, __TINT, 1.0, __TMAX, 1.0)
         )
@@ -770,9 +775,12 @@ def calc_precont_ops(
             t_fin_etape2 = __TINT2
             t_fin_etape3 = __TMAX
             # ------------------------------
-
-        __LSTR = DEFI_LIST_REEL(VALE=__L2)
-        __LST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__LSTR))
+        if type(__L0) == TimesList:
+            __LST = __L0.copy()
+            __LST.setValues(__L2)
+        else:
+            __LSTR = DEFI_LIST_REEL(VALE=__L2)
+            __LST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__LSTR))
         dIncrement["LIST_INST"] = __LST
 
         # construction des fonctions multiplicatrices
