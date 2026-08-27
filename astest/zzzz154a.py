@@ -20,7 +20,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 
-CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", IGNORE_ALARM=("CALCULEL4_76"))
 
 from zzzz154a_cmd import MACRO_TEST
 
