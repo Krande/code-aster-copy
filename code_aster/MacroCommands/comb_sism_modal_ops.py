@@ -283,11 +283,12 @@ def get_amor_reduit(list_para, nume_ordres, amor_reduit, list_amor, amor_gene):
 
 class CombModalResponse:
     """Manage how to combine modals responses according to strategy defined by user
+
     Args:
-        comb_mode: input for key_factor COMB_MODE
-        type_analyse: input for key TYPE_ANALYSE (MONO_APPUI or MULT_APPUI)
-        amors: list of all damping coefficients
-        freqs: list of all frequencies
+        comb_mode (dict): input for key_factor COMB_MODE
+        type_analyse (str): input for key TYPE_ANALYSE (MONO_APPUI or MULT_APPUI)
+        amors (list[float]): list of all damping coefficients
+        freqs (list[float]): list of all frequencies
     """
 
     def __init__(self, comb_mode, type_analyse, amors, freqs):
@@ -752,12 +753,14 @@ class BaseRunner:
     @staticmethod
     def _get_phis(mode_meca, option, nume_ordres):
         """Get eigen-vector
+
         Args:
-            mode_meca  : modale basis
-            option     : fields to get, except for (VITE, ACCE_ABSOLU)
-            nume_ordres: nume_ordre of feild to be gotten
+            mode_meca (mode_meca): modale basis
+            option (str): fields to get, except for (VITE, ACCE_ABSOLU)
+            nume_ordres (list[int)]): nume_ordre of feild to be gotten
+
         Returns:
-            phis (ndarray)
+            ndarray: phis
         """
 
         if option in ("VITE", "ACCE_ABSOLU"):
@@ -776,12 +779,14 @@ class BaseRunner:
     @staticmethod
     def _get_signe_mode(mode_meca, option, signed_order):
         """Get sign of considered eigen-vector, for CQC_SIGNE method
+
         Args:
-            mode_meca  : modale basis
-            option     : fields to get, except for (VITE, ACCE_ABSOLU)
-            signed_order: selected order number to sign the response
+            mode_meca (mode_meca): modal basis
+            option (str): fields to get, except for (VITE, ACCE_ABSOLU)
+            signed_order (int): selected order number to sign the response
+
         Returns:
-            phis (ndarray)
+            ndarray: phis
         """
 
         if option in ("VITE", "ACCE_ABSOLU"):
@@ -795,6 +800,38 @@ class BaseRunner:
         # Convention : sign(0) = 1.
         modal_sign[modal_sign == 0] = 1.0
         return modal_sign
+
+    def _apply_signed_cqc(self, mode_sign, direction):
+        """Apply CQC_SIGNE feature.
+
+        Arguments:
+            mode_sign (int): index of the signed eigen vector.
+            indexes (list[int]): list of eigen vectors indexes
+
+        Returns:
+            ndarray: phis
+        """
+        l_params = self._mode_meca.getParameters()
+        ordre_to_mode = {
+            int(nume_ordre): int(nume_mode)
+            for nume_ordre, nume_mode in zip(l_params["NUME_ORDRE"], l_params["NUME_MODE"])
+        }
+        nume_modes_retenus = np.asarray(
+            [ordre_to_mode[int(nume_ordre)] for nume_ordre in self._nume_ordres], dtype=int
+        )
+        mode_to_order = {
+            int(nume_mode): int(nume_ordre)
+            for nume_mode, nume_ordre in zip(l_params["NUME_MODE"], l_params["NUME_ORDRE"])
+        }
+        if not mode_sign:
+            UTMESS("F", "SEISME_93", valk=direction)
+        if mode_sign not in nume_modes_retenus:
+            l_modes = ", ".join(str(nume_mode) for nume_mode in nume_modes_retenus)
+            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali=mode_sign)
+
+        ordr_signe = mode_to_order[mode_sign]
+        applied_signs = self._get_signe_mode(self._mode_meca, self._option, ordr_signe)
+        return applied_signs
 
     def _s_r_freq_cut(self, spectre):
         """Value of ZPA at the cutting frequency
@@ -866,6 +903,7 @@ class BaseRunner:
             mode_corr (str): static correction, user input
             pseudo_mode (ModeResult): pseudo modes, user input
             d_fact_partici (dict[str, ndarray]): given participation factors, by direction
+            comb_mode (dict): input for key_factor COMB_MODE
         """
 
         # some checks
@@ -994,45 +1032,9 @@ class BaseRunner:
             R_x = np.sqrt(R_m2 + (R_qs + R_c) ** 2 + R_e2)
 
             if comb_mode["TYPE"] == "CQC_SIGNE":
-                l_params = self._mode_meca.getParameters()
-                ordre_to_mode = {
-                    int(nume_ordre): int(nume_mode)
-                    for nume_ordre, nume_mode in zip(l_params["NUME_ORDRE"], l_params["NUME_MODE"])
-                }
-                nume_modes_retenus = np.asarray(
-                    [ordre_to_mode[int(nume_ordre)] for nume_ordre in self._nume_ordres], dtype=int
+                applied_signs = self._apply_signed_cqc(
+                    comb_mode[f"NUME_MODE_{direction}"], direction
                 )
-                mode_to_order = {
-                    int(nume_mode): int(nume_ordre)
-                    for nume_mode, nume_ordre in zip(l_params["NUME_MODE"], l_params["NUME_ORDRE"])
-                }
-                if direction == "X":
-                    if not comb_mode["NUME_MODE_X"]:
-                        UTMESS("F", "SEISME_93", valk=direction)
-                    else:
-                        mode_signe = comb_mode["NUME_MODE_X"]
-                        if mode_signe not in nume_modes_retenus:
-                            l_modes = ", ".join(str(nume_mode) for nume_mode in nume_modes_retenus)
-                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali=mode_signe)
-                elif direction == "Y":
-                    if not comb_mode["NUME_MODE_Y"]:
-                        UTMESS("F", "SEISME_93", valk=direction)
-                    else:
-                        mode_signe = comb_mode["NUME_MODE_Y"]
-                        if mode_signe not in nume_modes_retenus:
-                            l_modes = ", ".join(str(nume_mode) for nume_mode in nume_modes_retenus)
-                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali=mode_signe)
-                elif direction == "Z":
-                    if not comb_mode["NUME_MODE_Z"]:
-                        UTMESS("F", "SEISME_93", valk=direction)
-                    else:
-                        mode_signe = comb_mode["NUME_MODE_Z"]
-                        if mode_signe not in nume_modes_retenus:
-                            l_modes = ", ".join(str(nume_mode) for nume_mode in nume_modes_retenus)
-                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali=mode_signe)
-
-                ordr_signe = mode_to_order[mode_signe]
-                applied_signs = self._get_signe_mode(self._mode_meca, self._option, ordr_signe)
                 R_x = R_x * applied_signs
 
             # inertial part (part primaire)
@@ -1264,6 +1266,7 @@ class MultiAppuiRunner(BaseRunner):
         comb_mode,
     ):
         """Compute responses for TYPE_ANALYSE = 'MULTI_APPUI'
+
         Args:
             comb_modal_response (CombModalResponse): instance to combine modal responses
             spectres (dict[str, list]): list of spectras, by direction
@@ -1277,6 +1280,7 @@ class MultiAppuiRunner(BaseRunner):
             appuis (dict[str, dict]): supports, by direction
             group_appuis (list[dict[str, list]]): groups of supports
             mesh (Mesh): mesh extracted from mode_meca
+            comb_mode (dict): input for key_factor COMB_MODE
         """
         # search for all directions presented by users
         self._directions = [direction for direction in ("X", "Y", "Z") if spectres[direction]]
@@ -1535,45 +1539,9 @@ class MultiAppuiRunner(BaseRunner):
                     R_seco_x = l_R_seco_j[0]
 
             if comb_mode["TYPE"] == "CQC_SIGNE":
-                l_params = self._mode_meca.getParameters()
-                ordre_to_mode = {
-                    int(nume_ordre): int(nume_mode)
-                    for nume_ordre, nume_mode in zip(l_params["NUME_ORDRE"], l_params["NUME_MODE"])
-                }
-                nume_modes_retenus = np.asarray(
-                    [ordre_to_mode[int(nume_ordre)] for nume_ordre in self._nume_ordres], dtype=int
+                applied_signs = self._apply_signed_cqc(
+                    comb_mode[f"NUME_MODE_{direction}"], direction
                 )
-                mode_to_order = {
-                    int(nume_mode): int(nume_ordre)
-                    for nume_mode, nume_ordre in zip(l_params["NUME_MODE"], l_params["NUME_ORDRE"])
-                }
-                if direction == "X":
-                    if not comb_mode["NUME_MODE_X"]:
-                        UTMESS("F", "SEISME_93", valk=direction)
-                    else:
-                        mode_signe = comb_mode["NUME_MODE_X"]
-                        if mode_signe not in nume_modes_retenus:
-                            l_modes = ", ".join(str(nume_mode) for nume_mode in nume_modes_retenus)
-                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali=mode_signe)
-                elif direction == "Y":
-                    if not comb_mode["NUME_MODE_Y"]:
-                        UTMESS("F", "SEISME_93", valk=direction)
-                    else:
-                        mode_signe = comb_mode["NUME_MODE_Y"]
-                        if mode_signe not in nume_modes_retenus:
-                            l_modes = ", ".join(str(nume_mode) for nume_mode in nume_modes_retenus)
-                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali=mode_signe)
-                elif direction == "Z":
-                    if not comb_mode["NUME_MODE_Z"]:
-                        UTMESS("F", "SEISME_93", valk=direction)
-                    else:
-                        mode_signe = comb_mode["NUME_MODE_Z"]
-                        if mode_signe not in nume_modes_retenus:
-                            l_modes = ", ".join(str(nume_mode) for nume_mode in nume_modes_retenus)
-                            UTMESS("F", "SEISME_99", valk=(direction, l_modes), vali=mode_signe)
-
-                ordr_signe = mode_to_order[mode_signe]
-                applied_signs = self._get_signe_mode(self._mode_meca, self._option, ordr_signe)
                 R_x = R_x * applied_signs
 
             self._R_x[direction] = R_x
@@ -1616,9 +1584,8 @@ def comb_sism_modal_ops(self, **args):
     setFortranLoggingLevel(verbosity)
 
     # Check if CQC_SIGNE uses directionnal combine "NEWMARK"
-    if comb_mode["TYPE"] == "CQC_SIGNE":
-        if comb_direction != "NEWMARK":
-            UTMESS("F", "SEISME_94")
+    if comb_mode["TYPE"] == "CQC_SIGNE" and comb_direction != "NEWMARK":
+        UTMESS("F", "SEISME_94")
 
     # exploring mode_meca
     mesh = mode_meca.getMesh()
