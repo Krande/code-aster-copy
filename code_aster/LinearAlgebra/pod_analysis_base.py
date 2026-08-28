@@ -19,7 +19,7 @@
 import abc
 import scipy.sparse
 import numpy as np
-from ...Utilities import PETSc, SLEPc
+from ..Utilities import PETSc, SLEPc
 from mpi4py import MPI
 
 # GENERAL PARAMETERS FOR THE MODULE

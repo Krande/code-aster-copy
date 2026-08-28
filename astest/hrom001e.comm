@@ -65,7 +65,7 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 # --------------------------------------------------------------------
 #   TEST THE EXTRACTION PROCEDURE FROM THE RESULT
 # --------------------------------------------------------------------
-from code_aster.MacroCommands.ROM.calc_pod_mod import *
+from code_aster.LinearAlgebra.pod_analysis_base import *
 
 nDOF = 192
 nELGA_SIEF = 384
