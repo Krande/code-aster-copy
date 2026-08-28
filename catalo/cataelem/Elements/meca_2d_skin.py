@@ -284,10 +284,10 @@ class MEPLSE2(Element):
             para_out=(
                 (OP.TOU_INI_ELEM.PERREUR, LC.CERROR),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
-                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
-                (OP.TOU_INI_ELEM.PNEUT_R, LC.CNTINIR),
-                (OP.TOU_INI_ELEM.PNEUT_F, LC.CNTINIF),
                 (OP.TOU_INI_ELEM.PCAMA_R, LC.CCAMASS),
+                (SP.PNEUT_F, LC.CNTINIF),
+                (SP.PNEUT_R, LC.CNTINIR),
+                (SP.PNEUT_I, LC.CNTINII),
             ),
         ),
         OP.TOU_INI_ELGA(

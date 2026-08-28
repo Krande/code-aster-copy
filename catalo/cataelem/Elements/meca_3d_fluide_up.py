@@ -140,7 +140,14 @@ class MEFL_HEXA20P(Element):
             ),
         ),
         OP.TOU_INI_ELEM(
-            te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+            te=99,
+            para_out=(
+                (SP.PGEOM_R, LC.CGEOM3D),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (SP.PNEUT_F, LC.CNTINIF),
+                (SP.PNEUT_R, LC.CNTINIR),
+                (SP.PNEUT_I, LC.CNTINII),
+            ),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO3D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM3D),)),
@@ -282,7 +289,14 @@ class MEFL_FACE3P(Element):
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.TOU_INI_ELEM(
-            te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+            te=99,
+            para_out=(
+                (SP.PGEOM_R, LC.CGEOM3D),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (SP.PNEUT_F, LC.CNTINIF),
+                (SP.PNEUT_R, LC.CNTINIR),
+                (SP.PNEUT_I, LC.CNTINII),
+            ),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO3D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM3D),)),

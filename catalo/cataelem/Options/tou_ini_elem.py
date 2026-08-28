@@ -24,26 +24,17 @@ import cataelem.Commons.attributes as AT
 
 PNBSP_I = OutputParameter(phys=PHY.NBSP_I, type="ELEM")
 
-
 PERREUR = OutputParameter(phys=PHY.ERRE_R, type="ELEM")
-
 
 PPRES_R = OutputParameter(phys=PHY.PRES_R, type="ELEM")
 
-
 PSOUR_R = OutputParameter(phys=PHY.SOUR_R, type="ELEM")
-
 
 PGEOM_R = OutputParameter(phys=PHY.GEOM_R, type="ELEM")
 
-
 PCOEH_R = OutputParameter(phys=PHY.COEH_R, type="ELEM")
 
-
 PFLUN_R = OutputParameter(phys=PHY.FLUN_R, type="ELEM")
-
-
-PNEUT_F = OutputParameter(phys=PHY.NEUT_F, type="ELEM")
 
 PCADISK = OutputParameter(phys=PHY.CADISK_R, type="ELEM")
 

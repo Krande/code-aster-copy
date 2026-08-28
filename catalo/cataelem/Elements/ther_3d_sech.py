@@ -340,6 +340,9 @@ class SECH_HEXA20(Element):
                 (OP.TOU_INI_ELEM.PCOEH_R, LC.CHECHPR),
                 (OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (SP.PNEUT_F, LC.CNTINIF),
+                (SP.PNEUT_R, LC.CNTINIR),
+                (SP.PNEUT_I, LC.CNTINII),
             ),
         ),
         OP.TOU_INI_ELGA(

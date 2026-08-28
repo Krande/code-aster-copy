@@ -361,7 +361,14 @@ class MESSHELL_SB9(Element):
             para_out=((OP.SIGM_ELNO.PSIEFNOR, LC.ESIG3DR),),
         ),
         OP.TOU_INI_ELEM(
-            te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER))
+            te=99,
+            para_out=(
+                (SP.PGEOM_R, LC.CGEOM3D),
+                (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (SP.PNEUT_F, LC.CNTINIF),
+                (SP.PNEUT_R, LC.CNTINIR),
+                (SP.PNEUT_I, LC.CNTINII),
+            ),
         ),
         OP.TOU_INI_ELGA(
             te=99,

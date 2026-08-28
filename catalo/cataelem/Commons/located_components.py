@@ -907,6 +907,10 @@ EVITEFR = LocatedComponents(
 # Located components - ELNO - Field on nodes by element
 # ----------------------------------------------------------------------------------------------
 # For TOU_INI_ELNO
+# ENTINIF = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
+# ENTINIR = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
+# ENTINII = LocatedComponents(phys=PHY.NEUT_I, type="ELNO", components=("X[30]",))
+
 ENNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
 ENNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
 
@@ -1212,6 +1216,8 @@ EGGAU3D = LocatedComponents(
 # For TOU_INI_ELGA
 EGTINIF = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
 EGTINIR = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
+EGTINII = LocatedComponents(phys=PHY.NEUT_I, type="ELGA", location="RIGI", components=("X[30]",))
+
 EGTINIV = LocatedComponents(
     phys=PHY.VALO_R, type="ELGA", location="RIGI", components=("VALEUR", "GRAD_X", "GRAD_Y")
 )

@@ -207,6 +207,9 @@ class MECA3DQU9_HHO1_F(Element):
                 (SP.PFORC_R, CFORCER),
                 (OP.TOU_INI_ELEM.PPRES_R, CPRES_R),
                 (OP.TOU_INI_ELEM.PTEMP_R, LC.CTEMPER),
+                (SP.PNEUT_F, LC.CNTINIF),
+                (SP.PNEUT_R, LC.CNTINIR),
+                (SP.PNEUT_I, LC.CNTINII),
             ),
         ),
         OP.TOU_INI_ELGA(
