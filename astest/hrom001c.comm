@@ -145,7 +145,7 @@ Phi_5, singval = POD_An5.computePODBasis(option=2)
 test.assertEqual(Phi_5.getSize()[1], 7, msg="GS-modified - depl")
 test_singular_values(singval, singval_An5_ref, msg_end="using GS-modified")
 
-abs_errors, _ = computeProjectionErrors(Phi_3, arrPetsc_depl, format="petsc")
+abs_errors, _ = computeProjectionErrors(Phi_3, arrPetsc_depl)
 abs_errors_ref = [
     0.00000000e00,
     8.96514117e-05,
@@ -172,4 +172,15 @@ POD_An5_bis = PODAnalysis(
 )
 Phi_5_bis, singval_bis = POD_An5_bis.computePODBasis(option=2)
 test_singular_values(singval_bis, singval_An5_ref, msg_end="using GS-modified + transfer")
+
+# --------------------------------------------------------------------
+#   TEST FOR ORTHONORMALITY
+# --------------------------------------------------------------------
+test.assertTrue(is_orthonormal_basis(Phi, POD_An1._corrOperator), msg="Orthonormality test - 1")
+test.assertTrue(is_orthonormal_basis(Phi_2, POD_An2._corrOperator), msg="Orthonormality test - 2")
+test.assertTrue(is_orthonormal_basis(Phi_3, POD_An3._corrOperator), msg="Orthonormality test - 3")
+test.assertTrue(is_orthonormal_basis(Phi_4, POD_An4._corrOperator), msg="Orthonormality test - 4")
+test.assertTrue(is_orthonormal_basis(Phi_5, POD_An5._corrOperator), msg="Orthonormality test - 5")
+
+
 FIN()

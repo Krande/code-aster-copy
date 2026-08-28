@@ -26,9 +26,9 @@ test = CA.TestCase()
 #   HF COMPUTATION
 # --------------------------------------------------------------------
 
-DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
 
-mesh = LIRE_MAILLAGE(FORMAT="MED")
+mesh = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU="S_e"))
 
@@ -113,8 +113,10 @@ test_singular_values(singval_B2, singval_B2_ref, " using incr-POD (HAPOD)")
 test.assertEqual(Phi_B2.getSize()[0], nDOF, msg="Test incremental POD with HAPOD - number of DOFs")
 test.assertEqual(Phi_B2.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes")
 
-# - Test on the absolute projection errors
-abs_errors, _ = computeProjectionErrors(Phi_B, arrPetsc_depl, format="petsc")
+# --------------------------------------------------------------------
+#   TEST ON THE ABSOLUTE PROJECTION ERRORS
+# --------------------------------------------------------------------
+abs_errors, _ = computeProjectionErrors(Phi_B, arrPetsc_depl)
 abs_errors_ref = [
     0.00000000e00,
     7.22649897e-05,
@@ -130,7 +132,7 @@ abs_errors_ref = [
 ]
 test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
 
-abs_errors, _ = computeProjectionErrors(Phi_B2, arrPetsc_depl, format="petsc")
+abs_errors, _ = computeProjectionErrors(Phi_B2, arrPetsc_depl)
 abs_errors_ref = [
     0.0,
     0.00181504,
@@ -145,4 +147,11 @@ abs_errors_ref = [
     0.00102071,
 ]
 test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
+
+# --------------------------------------------------------------------
+#   TEST FOR ORTHONORMALITY
+# --------------------------------------------------------------------
+test.assertTrue(is_orthonormal_basis(Phi_B, POD_An_B._corrOperator), msg="Orthonormality test - 1")
+test.assertTrue(is_orthonormal_basis(Phi_B, POD_An_B._corrOperator), msg="Orthonormality test - 2")
+
 FIN()

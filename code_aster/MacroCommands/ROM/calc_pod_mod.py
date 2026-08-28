@@ -23,7 +23,7 @@ from ...Utilities import PETSc, SLEPc
 from mpi4py import MPI
 
 # GENERAL PARAMETERS FOR THE MODULE
-TOL_NUM = 1e-12
+TOL_NUM = 1e-9
 comm = MPI.COMM_WORLD
 global_size = comm.Get_size()
 
@@ -157,11 +157,6 @@ def transferSnapshotsToPETSC(snapshots):
     -------
     snapshots_petsc : PETSc.Mat
         The snapshot matrix in PETSc format.
-
-    Raises
-    ------
-    ValueError
-        If the function is called in a parallel environment (MPI > 1 process).
     """
     if global_size == 1:
         snapshots_petsc = PETSc.Mat().createDense(snapshots.shape, array=snapshots, comm=comm)
@@ -172,17 +167,20 @@ def transferSnapshotsToPETSC(snapshots):
 
 
 # POST-TREATMENT FUNCTIONNALITIES
-def computeProjectionErrors(Phi, snapshots, format):
+
+
+def computeProjectionErrors(Phi, snapshots):
     """Compute the projection errors on snaphots knowing a reduced order basis
 
     Arguments
     ----------
-    Phi : numpy.ndarray
+    Phi : numpy.ndarray or PETSc.Mat
         Reduced order basis.
-    snapshots : numpy.ndarray
+    snapshots : numpy.ndarray  or PETSc.Mat
         Snapshot array. Each column contains a given snapshot (size = number of dofs * number of snapshots).
-    format : str
-        Format of the snapshots (should be numpy or petsc vectors)
+
+    .. warning::
+        Phi and snapshots should have the same type. If not, a TypeError will be raised.
 
     Returns
     -------
@@ -191,12 +189,10 @@ def computeProjectionErrors(Phi, snapshots, format):
     rel_errors_arr : numpy.ndarray
         Array of relative projection error
     """
-    AVALAIBLE_FORMAT = ["numpy", "petsc"]
-    assert format in AVALAIBLE_FORMAT
     abs_errors_arr = []
     rel_errors_arr = []
 
-    if format == "numpy":
+    if isinstance(Phi, np.ndarray) and isinstance(snapshots, np.ndarray):
         for i in range(snapshots.shape[1]):
             u = snapshots[:, i]
             ## - Projection and reconstruction
@@ -214,7 +210,7 @@ def computeProjectionErrors(Phi, snapshots, format):
             rel_errors_arr.append(rel_error)
 
         return np.array(abs_errors_arr), np.array(rel_errors_arr)
-    elif format == "petsc":
+    elif isinstance(Phi, PETSc.Mat) and isinstance(snapshots, PETSc.Mat):
         n_dim, n_snapshots = snapshots.getSize()
         u_vec = Phi.createVecLeft()
         u_proj_vec = Phi.createVecLeft()
@@ -239,9 +235,146 @@ def computeProjectionErrors(Phi, snapshots, format):
             rel_errors_arr.append(rel_error)
         return np.array(abs_errors_arr), np.array(rel_errors_arr)
     else:
-        raise ValueError(
-            f"Snapshot extraction: parameter '{format}' is not valid. Choose format in {AVALAIBLE_FORMAT}."
+        raise TypeError(
+            f"Unsupported type for Phi and snapshots (same type for both is expected). "
+            "Only numpy.ndarray and PETSc.Mat are supported."
         )
+
+
+def is_orthonormal_basis(matrix, corrOp):
+    """
+    Checks if the columns of a given matrix form an orthonormal basis.
+
+    This function verifies that the column vectors of the matrix are mutually
+    orthogonal and have a unit norm (corrOp-norm). It implements the check by
+    computing matrix.T @ matrix and verifying if the result is close to the identity
+    matrix.
+
+
+    The function is dispatched based on the matrix type and works for both
+    dense NumPy arrays and distributed PETSc matrices in parallel.
+
+    Parameters
+    ----------
+    matrix : numpy.ndarray or PETSc.Mat
+        The matrix whose columns are to be checked.
+    corrOp : numpy.ndarray, scipy.sparse.spmatrix, or PETSc.Mat
+        The correlation operator defining the inner product. This is a
+        **required** argument. It must be of a compatible type with `Q`:
+        - If `Q` is NumPy, `corrOp` can be NumPy or SciPy sparse.
+        - If `Q` is PETSc, `corrOp` must also be PETSc.
+    Returns
+    -------
+    bool
+        True if the columns form an orthonormal basis within the given
+        tolerance, False otherwise.
+
+    Raises
+    ------
+    TypeError
+        If the input matrix is not a supported type.
+    """
+    tol = TOL_NUM
+    if isinstance(matrix, np.ndarray):
+        if isinstance(corrOp, (np.ndarray, scipy.sparse.csr_matrix)):
+            return _is_orthonormal_numpy(matrix, corrOp, tol)
+        else:
+            raise TypeError(
+                f"With a NumPy `matrix`, `corrOp` must be NumPy or SciPy sparse, "
+                f"not {type(corrOp).__name__}."
+            )
+    elif isinstance(matrix, PETSc.Mat):
+        if isinstance(corrOp, PETSc.Mat):
+            return _is_orthonormal_petsc(matrix, corrOp, tol)
+        else:
+            raise TypeError(
+                f"With a PETSc `matrix`, `corrOp` must also be PETSc.Mat, "
+                f"not {type(corrOp).__name__}."
+            )
+    else:
+        raise TypeError(
+            f"Unsupported type for `matrix`: {type(matrix).__name__}. "
+            "Only numpy.ndarray and PETSc.Mat are supported."
+        )
+
+
+def _is_orthonormal_numpy(matrix, corrOp, tol):
+    """NumPy/SciPy implementation for checking orthonormality.
+
+    Parameters
+    ----------
+    matrix : numpy.ndarray
+        The basis matrix, with vectors as columns.
+    corrOp : numpy.ndarray or scipy.sparse.csr_matrix
+        The correlation operator for the inner product.
+    tol : float
+        The absolute tolerance for the `numpy.allclose` comparison.
+
+    Returns
+    -------
+    bool
+        True if the basis is orthonormal, False otherwise.
+    """
+    n_cols = matrix.shape[1]
+    if n_cols == 0:
+        return True
+
+    identity_check = matrix.T @ corrOp @ matrix
+
+    identity = np.identity(n_cols)
+    return np.allclose(identity_check, identity, atol=tol, rtol=0)
+
+
+def _is_orthonormal_petsc(matrix, corrOp, tol):
+    """NumPy/SciPy implementation for checking orthonormality.
+
+    Parameters
+    ----------
+    matrix : PETSc.Mat
+        The basis matrix, with vectors as columns.
+    corrOp : PETSc.Mat
+        The correlation operator for the inner product.
+    tol : float
+        The absolute tolerance for the `numpy.allclose` comparison.
+
+    Returns
+    -------
+    bool
+        True if the basis is orthonormal, False otherwise.
+    """
+    comm = matrix.getComm()
+    n_cols = matrix.getSize()[1]
+
+    if n_cols == 0:
+        return True
+
+    ## - Create temporary vectors
+    qi = matrix.createVecLeft()
+    qj = matrix.createVecLeft()
+    temp_vec = corrOp.createVecLeft()
+    ## - Double loop
+    is_orthonormal_local = True
+    for i in range(n_cols):
+        matrix.getColumnVector(i, qi)
+
+        for j in range(i, n_cols):
+            matrix.getColumnVector(j, qj)
+
+            corrOp.mult(qj, temp_vec)
+            dot_product = qi.dot(temp_vec)
+
+            ## - Check the value
+            target = 1.0 if i == j else 0.0
+            if abs(dot_product - target) > tol:
+                is_orthonormal_local = False
+                break
+
+        if not is_orthonormal_local:
+            break
+    ## - Synchronization
+    mpi_comm = comm.tompi4py()
+    global_is_orthonormal = mpi_comm.allreduce(is_orthonormal_local, op=MPI.LAND)
+    return global_is_orthonormal
 
 
 # CLASS DEFINITION FOR A POD ANALYSIS

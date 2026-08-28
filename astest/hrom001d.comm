@@ -161,8 +161,11 @@ test.assertEqual(
     Phi_B2_bis.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes"
 )
 
-# - Test on the absolute projection errors
-abs_errors, _ = computeProjectionErrors(Phi_B, arrPetsc_depl, format="petsc")
+
+# --------------------------------------------------------------------
+#   TEST ON THE ABSOLUTE PROJECTION ERRORS
+# --------------------------------------------------------------------
+abs_errors, _ = computeProjectionErrors(Phi_B, arrPetsc_depl)
 abs_errors_ref = [
     0.00000000e00,
     9.78934372e-05,
@@ -178,7 +181,7 @@ abs_errors_ref = [
 ]
 test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
 
-abs_errors, _ = computeProjectionErrors(Phi_B2, arrPetsc_depl, format="petsc")
+abs_errors, _ = computeProjectionErrors(Phi_B2, arrPetsc_depl)
 abs_errors_ref = [
     0.0,
     0.00181116,
@@ -193,5 +196,11 @@ abs_errors_ref = [
     0.00108799,
 ]
 test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
+
+# --------------------------------------------------------------------
+#   TEST FOR ORTHONORMALITY
+# --------------------------------------------------------------------
+test.assertTrue(is_orthonormal_basis(Phi_B, POD_An_B._corrOperator), msg="Orthonormality test - 1")
+test.assertTrue(is_orthonormal_basis(Phi_B, POD_An_B._corrOperator), msg="Orthonormality test - 2")
 
 FIN()
