@@ -20,6 +20,20 @@
 from code_aster.Commands import *
 from code_aster import CA
 
+try:
+    import matplotlib
+
+    matplotlib.use("TkAgg")
+    import matplotlib.pyplot as plt
+
+    HAS_MATPLOTLIB = True
+    matplotlib.rcParams["mathtext.fontset"] = "stix"
+    matplotlib.rcParams["font.family"] = "STIXGeneral"
+except ImportError:
+    HAS_MATPLOTLIB = False
+
+import os
+
 test = CA.TestCase()
 
 # --------------------------------------------------------------------
@@ -67,16 +81,31 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 # --------------------------------------------------------------------
 from code_aster.MacroCommands.ROM.calc_pod_mod import *
 
-arr_depl = extractSnapshotsFromResult(stnl, "DEPL", format="numpy")
+
+def test_singular_values(singval_num, singval_ref, msg_end):
+    test_array_floats(singval_num, singval_ref, "singval = ", msg_end)
+
+
+def test_array_floats(arr_num, arr_ref, msg_begin, msg_end):
+    for i in range(len(arr_ref)):
+        test.assertAlmostEqual(arr_num[i], arr_ref[i], msg=msg_begin + str(i) + " " + msg_end)
+
 
 nDOF = 192
 n_cut = 3
 
-arr_depl_A = arr_depl[:, :n_cut]
-arr_depl_B = arr_depl[:, n_cut:]
+indices_A = [1, 2, 3]
+indices_B = [4, 5, 6, 7, 8, 9, 10]
 
-arrPetsc_depl_A = transferSnapshotsToPETSC(arr_depl_A)
-arrPetsc_depl_B = transferSnapshotsToPETSC(arr_depl_B)
+arrPetsc_depl = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=None, format="petsc")
+
+arrPetsc_depl_A = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_A, format="petsc")
+arrPetsc_depl_B = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_B, format="petsc")
+
+arr_depl_A = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_A, format="numpy")
+arr_depl_B = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_B, format="numpy")
+arrPetsc_depl_A_bis = transferSnapshotsToPETSC(arr_depl_A)
+arrPetsc_depl_B_bis = transferSnapshotsToPETSC(arr_depl_B)
 
 # - Compute the ROB using the snapshot method
 POD_An_A = PODAnalysis(arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
@@ -86,12 +115,83 @@ test.assertEqual(Phi_A.getSize()[0], nDOF)
 test.assertEqual(Phi_A.getSize()[1], 2)
 
 POD_An_B = PODAnalysis(arrPetsc_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
-Phi_B = POD_An_B.computePODBasisIncremental(Phi_A, method="HPOD")
+Phi_B, singval_B = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HPOD", option=2)
 
+singval_B_ref = [6.60693745e-01, 2.38644383e-03, 4.94061245e-02, 3.19205110e-03, 2.19501875e-04]
+test_singular_values(singval_B, singval_B_ref, " using incr-POD (HPOD)")
 test.assertEqual(Phi_B.getSize()[0], nDOF, msg="Test incremental POD with HPOD - number of DOFs")
 test.assertEqual(Phi_B.getSize()[1], 5, msg="Test incremental POD with HPOD - number of modes")
 
-Phi_B2 = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HAPOD")
+Phi_B2, singval_B2 = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HAPOD", option=2)
+singval_B2_ref = [5.0746443, 0.01659096]
+test_singular_values(singval_B2, singval_B2_ref, " using incr-POD (HAPOD)")
+
 test.assertEqual(Phi_B2.getSize()[0], nDOF, msg="Test incremental POD with HAPOD - number of DOFs")
 test.assertEqual(Phi_B2.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes")
+
+# - Test with transfer from numpy to petsc
+POD_An_A_bis = PODAnalysis(
+    arrPetsc_depl_A_bis, method="snapshot", criterion="energy", tolerance=1e-5
+)
+Phi_A_bis, singval_A_bis = POD_An_A.computePODBasis(option=2)
+
+test.assertEqual(Phi_A_bis.getSize()[0], nDOF)
+test.assertEqual(Phi_A_bis.getSize()[1], 2)
+
+POD_An_B_bis = PODAnalysis(
+    arrPetsc_depl_B_bis, method="snapshot", criterion="energy", tolerance=1e-5
+)
+Phi_B_bis, singval_B_bis = POD_An_B.computePODBasisIncremental(
+    Phi_A_bis, singval_A_bis, method="HPOD", option=2
+)
+test_singular_values(singval_B_bis, singval_B_ref, " using incr-POD (HPOD)")
+test.assertEqual(
+    Phi_B_bis.getSize()[0], nDOF, msg="Test incremental POD with HPOD - number of DOFs"
+)
+test.assertEqual(Phi_B_bis.getSize()[1], 5, msg="Test incremental POD with HPOD - number of modes")
+
+Phi_B2_bis, singval_B2_bis = POD_An_B.computePODBasisIncremental(
+    Phi_A, singval_A, method="HAPOD", option=2
+)
+test_singular_values(singval_B2, singval_B2_ref, " using incr-POD (HAPOD)")
+test.assertEqual(
+    Phi_B2_bis.getSize()[0], nDOF, msg="Test incremental POD with HAPOD - number of DOFs"
+)
+test.assertEqual(
+    Phi_B2_bis.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes"
+)
+
+# - Test on the absolute projection errors
+abs_errors, _ = computeProjectionErrors(Phi_B, arrPetsc_depl, format="petsc")
+abs_errors_ref = [
+    0.00000000e00,
+    9.78934372e-05,
+    6.47339793e-05,
+    3.07300574e-05,
+    7.53159321e-06,
+    6.18178554e-06,
+    5.10500826e-06,
+    9.05533265e-07,
+    4.93503036e-06,
+    3.68256779e-06,
+    4.32878011e-06,
+]
+test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
+
+abs_errors, _ = computeProjectionErrors(Phi_B2, arrPetsc_depl, format="petsc")
+abs_errors_ref = [
+    0.0,
+    0.00181116,
+    0.00205585,
+    0.00113663,
+    0.00026387,
+    0.00059264,
+    0.00091257,
+    0.00087843,
+    0.00051098,
+    0.00017178,
+    0.00108799,
+]
+test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
+
 FIN()

@@ -67,7 +67,17 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 # --------------------------------------------------------------------
 from code_aster.MacroCommands.ROM.calc_pod_mod import *
 
-arr_depl = extractSnapshotsFromResult(stnl, "DEPL", format="numpy")
+
+def test_singular_values(singval_num, singval_ref, msg_end):
+    test_array_floats(singval_num, singval_ref, "singval = ", msg_end)
+
+
+def test_array_floats(arr_num, arr_ref, msg_begin, msg_end):
+    for i in range(len(arr_ref)):
+        test.assertAlmostEqual(arr_num[i], arr_ref[i], msg=msg_begin + str(i) + " " + msg_end)
+
+
+arr_depl = extractSnapshotsFromResult(stnl, "DEPL", "numpy")
 
 nDOF = 192
 n_cut = 3
@@ -83,12 +93,50 @@ test.assertEqual(Phi_A.shape[0], nDOF)
 test.assertEqual(Phi_A.shape[1], 2)
 
 POD_An_B = PODAnalysis(arr_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
-Phi_B = POD_An_B.computePODBasisIncremental(Phi_A, method="HPOD")
+Phi_B, singval_B = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HPOD", option=2)
 
+singval_B_ref = [0.2900185, 0.00180277, 0.09454346, 0.00603555, 0.00061865]
+test_singular_values(singval_B, singval_B_ref, " using incr-POD (HPOD)")
 test.assertEqual(Phi_B.shape[0], nDOF)
 test.assertEqual(Phi_B.shape[1], 5)
 
-Phi_B2 = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HAPOD")
+Phi_B2, singval_B2 = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HAPOD", option=2)
+singval_B2_ref = [5.0746443, 0.01660781]
+test_singular_values(singval_B2, singval_B2_ref, " using incr-POD (HAPOD)")
 test.assertEqual(Phi_B2.shape[0], nDOF)
 test.assertEqual(Phi_B2.shape[1], 2)
+
+# - Test on the absolute projection errors
+abs_errors, _ = computeProjectionErrors(Phi_B, arr_depl, format="numpy")
+abs_errors_ref = [
+    0.00000000e00,
+    1.08434595e-17,
+    6.09980583e-16,
+    2.48724660e-05,
+    1.15301187e-05,
+    1.71412666e-05,
+    5.12242973e-06,
+    8.18239499e-06,
+    1.33427805e-05,
+    6.84027368e-06,
+    1.23861954e-05,
+]
+test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
+
+abs_errors, _ = computeProjectionErrors(Phi_B2, arr_depl, format="numpy")
+abs_errors_ref = [
+    0.0,
+    0.00181194,
+    0.00205454,
+    0.00113096,
+    0.00025245,
+    0.00059416,
+    0.00091508,
+    0.00087997,
+    0.0005106,
+    0.00017201,
+    0.00109232,
+]
+test_array_floats(abs_errors_ref, abs_errors, "Absolute errors - ", "- case SVD")
+print(abs_errors)
 FIN()
