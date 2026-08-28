@@ -221,7 +221,15 @@ class MEPLSE2_XHT(Element):
                 (SP.PNEUT_I, LC.CNTINII),
             ),
         ),
-        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER),)),
+        OP.TOU_INI_ELGA(
+            te=99,
+            para_out=(
+                (OP.TOU_INI_ELGA.PGEOM_R, EGEOMER),
+                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
+                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
+            ),
+        ),
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(

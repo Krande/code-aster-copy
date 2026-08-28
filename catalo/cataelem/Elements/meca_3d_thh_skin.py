@@ -110,7 +110,15 @@ class THH_FACE8(Element):
             para_in=((SP.PGEOMER, NGEOMER), (SP.PSIG3D, ECONTNO)),
             para_out=((SP.PPJSIGM, LC.EPJSIGM),),
         ),
-        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
+        OP.TOU_INI_ELGA(
+            te=99,
+            para_out=(
+                (OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),
+                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
+                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
+            ),
+        ),
         OP.TOU_INI_ELEM(
             te=99,
             para_out=(

@@ -653,6 +653,7 @@ class MEBA3DSE2(Element):
                 (OP.TOU_INI_ELGA.PSIEF_R, EEFGEGA),
                 (OP.TOU_INI_ELGA.PEPSI_R, EDEFOPG),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELNO(

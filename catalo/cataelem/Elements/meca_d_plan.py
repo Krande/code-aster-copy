@@ -1294,6 +1294,7 @@ class MEDPQU8(Element):
                 (OP.TOU_INI_ELGA.PSIEF_R, LC.EGIG2DR),
                 (OP.TOU_INI_ELGA.PSOUR_R, LC.ESOURCR),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELNO(

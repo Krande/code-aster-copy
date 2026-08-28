@@ -201,6 +201,7 @@ class THER_2D_HHO2_F(Element):
                 (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
                 (SP.PTEMP_R, LC.ETEMPPG),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELEM(

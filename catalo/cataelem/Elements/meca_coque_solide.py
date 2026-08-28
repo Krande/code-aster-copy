@@ -383,6 +383,7 @@ class MESSHELL_SB9(Element):
                 (OP.TOU_INI_ELGA.PDOMMAG, LC.EDOMGGA),
                 (SP.PFACY_R, LC.EGFC3DR),
                 (OP.TOU_INI_ELGA.PINST_R, LC.EGINST_R),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELNO(

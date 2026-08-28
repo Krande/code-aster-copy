@@ -569,6 +569,7 @@ class MEMS_HEXA8(Element):
                 (OP.TOU_INI_ELGA.PSIEF_R, ECONTPG),
                 (SP.PVALO_R, LC.EGTINIV),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELNO(

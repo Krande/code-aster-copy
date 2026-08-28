@@ -340,10 +340,11 @@ class THER3DH27_HHO222(Element):
                 (OP.TOU_INI_ELGA.PFLUX_R, LC.EFLUX3R),
                 (OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO3D),
                 (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
-                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGNEUT1R),
                 (OP.TOU_INI_ELGA.PSOUR_R, LC.ESOURCR),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
                 (SP.PTEMP_R, LC.ETEMPPG),
+                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELNO(

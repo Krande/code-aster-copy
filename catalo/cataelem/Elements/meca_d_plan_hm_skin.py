@@ -109,7 +109,15 @@ class HM_DPSE3(Element):
             para_in=((SP.PCONTR, NSIEF_R), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PFLHN, EFLHN),),
         ),
-        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
+        OP.TOU_INI_ELGA(
+            te=99,
+            para_out=(
+                (OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),
+                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
+                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
+            ),
+        ),
         OP.TOU_INI_ELEM(
             te=99,
             para_out=(

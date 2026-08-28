@@ -714,6 +714,7 @@ class GVI_3D_HE20(Element):
                 (OP.TOU_INI_ELGA.PSIEF_R, ECONTPG),
                 (SP.PVALO_R, LC.EGTINIV),
                 (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELNO(

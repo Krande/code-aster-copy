@@ -435,6 +435,7 @@ class THPLQU4(Element):
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
                 (OP.TOU_INI_ELGA.PHYDR_R, LC.EHYDRR),
                 (SP.PTEMP_R, LC.ETEMPPG),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
         OP.TOU_INI_ELNO(

@@ -147,7 +147,15 @@ class MEFLQU4(Element):
                 (SP.PNEUT_I, LC.CNTINII),
             ),
         ),
-        OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO2D),)),
+        OP.TOU_INI_ELGA(
+            te=99,
+            para_out=(
+                (SP.PGEOM_R, LC.EGGEO2D),
+                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
+                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
+            ),
+        ),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM2D),)),
         OP.VERI_JACOBIEN(
             te=328, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PCODRET, LC.ECODRET),)
@@ -236,7 +244,15 @@ class MEFLSE2(Element):
                 (SP.PNEUT_I, LC.CNTINII),
             ),
         ),
-        OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO2D),)),
+        OP.TOU_INI_ELGA(
+            te=99,
+            para_out=(
+                (SP.PGEOM_R, LC.EGGEO2D),
+                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
+                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
+            ),
+        ),
         OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM2D),)),
     )
 
