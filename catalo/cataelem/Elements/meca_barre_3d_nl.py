@@ -661,12 +661,13 @@ class MEBA3DSE2(Element):
             para_out=(
                 (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),
                 (OP.TOU_INI_ELNO.PINST_R, LC.EEINST_R),
-                (OP.TOU_INI_ELNO.PNEUT_F, LC.EENEUT_F),
-                (OP.TOU_INI_ELNO.PNEUT_R, LC.EENEUT_R),
                 (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PEPSI_R, EDEFONO),
                 (OP.TOU_INI_ELNO.PSIEF_R, EEFGENO),
                 (OP.TOU_INI_ELNO.PVARI_R, ZVARENO),
+                (OP.TOU_INI_ELNO.PNEUT_F, LC.ENTINIF),
+                (OP.TOU_INI_ELNO.PNEUT_R, LC.ENTINIR),
+                (OP.TOU_INI_ELNO.PNEUT_I, LC.ENTINII),
             ),
         ),
         OP.VARC_ELGA(

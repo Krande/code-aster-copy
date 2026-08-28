@@ -151,7 +151,15 @@ class MEAXFLQ4PSI(Element):
                 (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
-        OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM2D),)),
+        OP.TOU_INI_ELNO(
+            te=99,
+            para_out=(
+                (SP.PGEOM_R, LC.EGEOM2D),
+                (OP.TOU_INI_ELNO.PNEUT_F, LC.ENTINIF),
+                (OP.TOU_INI_ELNO.PNEUT_R, LC.ENTINIR),
+                (OP.TOU_INI_ELNO.PNEUT_I, LC.ENTINII),
+            ),
+        ),
         OP.VERI_JACOBIEN(
             te=328, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PCODRET, LC.ECODRET),)
         ),
@@ -248,7 +256,15 @@ class MEAXFLS2PSI(Element):
                 (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
             ),
         ),
-        OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM2D),)),
+        OP.TOU_INI_ELNO(
+            te=99,
+            para_out=(
+                (SP.PGEOM_R, LC.EGEOM2D),
+                (OP.TOU_INI_ELNO.PNEUT_F, LC.ENTINIF),
+                (OP.TOU_INI_ELNO.PNEUT_R, LC.ENTINIR),
+                (OP.TOU_INI_ELNO.PNEUT_I, LC.ENTINII),
+            ),
+        ),
     )
 
 

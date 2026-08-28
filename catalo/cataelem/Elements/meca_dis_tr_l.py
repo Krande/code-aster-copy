@@ -569,10 +569,11 @@ class MECA_DIS_TR_L(Element):
             para_out=(
                 (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
                 (OP.TOU_INI_ELNO.PINST_R, LC.EEINST_R),
-                (OP.TOU_INI_ELNO.PNEUT_F, LC.EENEUT_F),
-                (OP.TOU_INI_ELNO.PNEUT_R, LC.EENEUT_R),
                 (OP.TOU_INI_ELNO.PSIEF_R, EEFGENO),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
+                (OP.TOU_INI_ELNO.PNEUT_F, LC.ENTINIF),
+                (OP.TOU_INI_ELNO.PNEUT_R, LC.ENTINIR),
+                (OP.TOU_INI_ELNO.PNEUT_I, LC.ENTINII),
             ),
         ),
         OP.VARI_ELNO(

@@ -907,12 +907,10 @@ EVITEFR = LocatedComponents(
 # Located components - ELNO - Field on nodes by element
 # ----------------------------------------------------------------------------------------------
 # For TOU_INI_ELNO
-# ENTINIF = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
-# ENTINIR = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
-# ENTINII = LocatedComponents(phys=PHY.NEUT_I, type="ELNO", components=("X[30]",))
+ENTINIF = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
+ENTINIR = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
+ENTINII = LocatedComponents(phys=PHY.NEUT_I, type="ELNO", components=("X[30]",))
 
-ENNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
-ENNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
 
 # For stresses (Real-3D)
 ESIG3DR = LocatedComponents(
@@ -1130,9 +1128,6 @@ EEFGENOQ = LocatedComponents(phys=PHY.SIEF_R, type="ELNO", components=("MT", "MF
 
 EEINST_R = LocatedComponents(phys=PHY.INST_R, type="ELNO", components=("INST",))
 
-EENEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
-
-EENEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
 
 EERRENOT = LocatedComponents(
     phys=PHY.ERRE_R,

@@ -75,6 +75,7 @@ TOU_INI_ELNO = Option(
         PINST_R,
         PNEUT_F,
         PNEUT_R,
+        PNEUT_I,
         SP.PTEMPN_R,
         PPRES_R,
         PSIEF_R,
