@@ -568,6 +568,28 @@ class PODAnalysisBase(abc.ABC):
         decayRate = (nbSing * np.dot(Y.T, N) - sum_N * sum_Y) / (nbSing * sum2_N - sum_N**2)
         return decayRate
 
+    def _validate_incremental_params(self, singval, method, option):
+        """
+        Validates parameters for the incremental POD computation.
+
+        Raises
+        ------
+        ValueError
+            If parameter combinations are invalid.
+        """
+        assert method in INCR_POD_METHOD
+        assert option in OPTION_POD_VALUES
+        if option == 2 and singval is None:
+            raise ValueError(
+                "To compute updated singular values (option=2), the initial "
+                "singular values (`singval`) must be provided."
+            )
+        if method == "HAPOD" and singval is None:
+            raise ValueError(
+                "The 'HAPOD' method requires the initial singular values "
+                "(`singval`) to be provided."
+            )
+
 
 class PODAnalysisNumpy(PODAnalysisBase):
 
@@ -633,8 +655,7 @@ class PODAnalysisNumpy(PODAnalysisBase):
             Changes the outputs of the function. If option=1, only reduced order basis.
             If option=2, returns reduced order basis and singular values.
         """
-        assert method in INCR_POD_METHOD
-        assert option in OPTION_POD_VALUES
+        self._validate_incremental_params(singval, method, option)
         if method == "HPOD":
             matS = self._snapshots
             projS = np.zeros(np.shape(matS))
@@ -996,8 +1017,7 @@ class PODAnalysisPetsc(PODAnalysisBase):
             Changes the outputs of the function. If option=1, only reduced order basis.
             If option=2, returns reduced order basis and singular values.
         """
-        assert method in INCR_POD_METHOD
-        assert option in OPTION_POD_VALUES
+        self._validate_incremental_params(singval, method, option)
         row_indices = np.arange(self._numberOfDOFs, dtype="int32")
 
         if method == "HPOD":
