@@ -45,6 +45,11 @@ cata_msg = {
  Il est recommandé d'utiliser FONC_MULT.
 """
     ),
+    5: _(
+        """
+ L'OBSERVATION %(k1)s porte sur le(s) groupe(s) de mailles %(k2)s.
+"""
+    ),
     6: _(
         """
  Le critère de stabilisation n'est pas vérifié au dernier instant de la séquence de chargement.
@@ -79,6 +84,56 @@ cata_msg = {
         """
  Dans le cas où l'utilisateur ne fournit pas de critère de stabilisation (OBSERVATION_VISC et CRIT_STAB_VISC non définis),
  CALC_ENDO ne peut être utilisé qu'avec un critère de convergence de type RESI_REFE_RELA.
+"""
+    ),
+    13: _(
+        """
+CALC_ENDO a traité la variable de commande %(k1)s comme %(k2)s .
+"""
+    ),
+    14: _(
+        """
+On a retenu TAU = %(r1)f
+"""
+    ),
+    15: _(
+        """
+Une séquence de chargement fictive (rampe et stabilisation) sera calculée pour chacun des instants physiques suivants : %(k1)s
+"""
+    ),
+    16: _(
+        """
+Une séquence de chargement fictive (rampe et stabilisation) sera discrétisée par la liste d'instants suivante : %(k1)s
+"""
+    ),
+    17: _(
+        """
+On a trouvé %(i1)d chargement(s) fonction du temps, et %(i2)d chargement(s) indépendant(s) du temps
+"""
+    ),
+    18: _(
+        """
+Séquence de chargement : %(i1)d
+Instant physique initial de cette séquence de chargement : %(r1)f
+Instant physique final de cette séquence de chargement : %(r2)f
+"""
+    ),
+    19: _(
+        """
+Instant courant de la séquence de stabilisation : %(r1)f
+"""
+    ),
+    20: _(
+        """
+%(k1)s courant : %(r1)f
+Variation de %(k1)s courante : %(r2)f
+"""
+    ),
+    21: _(
+        """
+Critère de stabilisation pour %(k1)s
+%(k1)s courant : %(r1)f
+Ratio %(k1)s sur seuil de stabilité : %(r2)f
 """
     ),
 }

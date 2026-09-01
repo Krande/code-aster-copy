@@ -24,7 +24,6 @@ Utilitaires pour CALC_ENDO
 from ...Messages import UTMESS
 from ...CodeCommands import CALC_TABLE, FORMULE, DEFI_LIST_INST
 from ...Behaviours import regu_visc_elas, endo_loca_tc  # , endo_fiss_tc
-from ...Utilities import logger
 
 
 def get_obs_values(ctrl_resu, name_obs):
@@ -88,7 +87,7 @@ def concatenate_table(table_out, obs_table, t_comp):
         return obs_table
 
 
-def Get_Vari_By_Name(bhv, vi_name):
+def get_vari_by_name(bhv, vi_name):
     """
     Return the Vxx name of an internal variable vi_name with respect to the constituive relation bhv
 
@@ -149,6 +148,7 @@ def set_default_observation(kwds):
                 l_mesh_ent = [compor["TOUT"]]
                 d_mesh_ent = {"TOUT": "OUI"}
             l_ft = []
+            mesh_ent_names = " ".join(l_mesh_ent)
 
             for mesh_ent in l_mesh_ent:
                 index_mesh_ent = [names_mesh_ent.index(x) for x in names_mesh_ent if mesh_ent in x]
@@ -168,7 +168,7 @@ def set_default_observation(kwds):
                 kvisc_elas = mat_on_grp_ma.getValueReal("VISC_ELAS", "K")
                 nbvi_ldc = ldc.loi.get_nb_vari()
                 nom_vari_ener_elas = "V%d" % (
-                    nbvi_ldc + int(Get_Vari_By_Name(regu_visc_elas, "VISCELAS")[1:])
+                    nbvi_ldc + int(get_vari_by_name(regu_visc_elas, "VISCELAS")[1:])
                 )
                 f_sigm_visc_elas = FORMULE(
                     NOM_PARA=nom_vari_ener_elas,
@@ -189,16 +189,10 @@ def set_default_observation(kwds):
                 )
                 obs_stab_visc.append(obs_visc)
                 crit_stab_visc.append(resi_refe_rela * ft_min)
-
-                logger.info(
-                    "L'observation VISCELAS_"
-                    + str(num_obs)
-                    + " porte sur le groupe de mailles "
-                    + str(l_mesh_ent)
-                )
+                UTMESS("I", "CALCENDO_5", valk=tuple(["VISCELAS_" + str(num_obs), mesh_ent_names]))
 
             if ldc_name in ["ENDO_LOCA_TC", "ENDO_FISS_TC"]:
-                vari_endotot = Get_Vari_By_Name(ldc, "ENDOTOT")
+                vari_endotot = get_vari_by_name(ldc, "ENDOTOT")
                 obs_endomoy = _F(
                     TITRE="ENDOTOT_" + str(num_obs),
                     PAS_OBSE=1,
@@ -210,7 +204,7 @@ def set_default_observation(kwds):
                 )
                 other_obs.append(obs_endomoy)
 
-                vari_visc = Get_Vari_By_Name(ldc, "SIGMVISC")
+                vari_visc = get_vari_by_name(ldc, "SIGMVISC")
                 obs_visc = _F(
                     TITRE="VISCENDO_" + str(num_obs),
                     PAS_OBSE=1,
@@ -223,18 +217,8 @@ def set_default_observation(kwds):
                 obs_stab_visc.append(obs_visc)
                 crit_stab_visc.append(resi_refe_rela * ft_min)
 
-                logger.info(
-                    "L'observation ENDOTOT_"
-                    + str(num_obs)
-                    + " porte sur le groupe de mailles "
-                    + str(l_mesh_ent)
-                )
-                logger.info(
-                    "L'observation VISCENDO_"
-                    + str(num_obs)
-                    + " porte sur le groupe de mailles "
-                    + str(l_mesh_ent)
-                )
+                UTMESS("I", "CALCENDO_5", valk=tuple(["ENDOTOT_" + str(num_obs), mesh_ent_names]))
+                UTMESS("I", "CALCENDO_5", valk=tuple(["VISCENDO_" + str(num_obs), mesh_ent_names]))
 
                 num_obs += num_obs
 
@@ -271,7 +255,7 @@ def set_default_listinst(_kwds, tau, l_fict_endo):
             elif "TOUT" in compor:
                 d_mesh_ent = {}
 
-            nom_vari = Get_Vari_By_Name(ldc, "HISTTRAC")
+            nom_vari = get_vari_by_name(ldc, "HISTTRAC")
 
             l_echec.append(
                 _F(

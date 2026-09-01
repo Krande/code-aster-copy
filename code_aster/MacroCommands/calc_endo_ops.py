@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Utilities import logger, no_new_attributes
+from ..Utilities import no_new_attributes
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Objects import (
     EntityType,
@@ -165,7 +165,6 @@ class CalcEndoVarc:
         """Initialisation of an external state variable"""
 
         self.name = ExternalVariableTraits.getExternVarTypeStr(varc_on_mesh[0].getType())
-        logger.info("Info CALC_ENDO : " + "Variable de commande : " + str(self.name))
         self.varc_on_mesh = varc_on_mesh
 
     def check_time_dependency(self):
@@ -176,11 +175,11 @@ class CalcEndoVarc:
         assert field or transient
 
         if field:
-            logger.info("Info CALC_ENDO : " + self.name + " indépendant du temps.")
+            UTMESS("I", "CALCENDO_13", valk=(self.name, "indépendante du temps"))
 
         if transient:
             self.has_time_dep = True
-            logger.info("Info CALC_ENDO : " + self.name + " fonction du temps.")
+            UTMESS("I", "CALCENDO_13", valk=(self.name, "fonction du temps"))
 
     def eval(self, t_init, t_comp, model, t_init_ramp, t_fin):
         """Create syntax for the next AFFE_VARC
@@ -397,12 +396,7 @@ class CalcEndo:
                     if tau > self.tau:
                         self.tau = tau
 
-        logger.info(
-            "Info CALC_ENDO : "
-            + "On a retenu TAU = "
-            + str(self.tau)
-            + " pour la création de la liste d'instants."
-        )
+        UTMESS("I", "CALCENDO_14", valr=(self.tau))
 
         if not self.tau > 0.0:
             UTMESS("F", "CALCENDO_2")
@@ -430,11 +424,7 @@ class CalcEndo:
                 nume_inst_init = where(isclose(array(full_user_list), inst_init, rtol=tol))[0][0]
             self.user_list_inst = self.user_list_inst[nume_inst_init:]
 
-        logger.info(
-            "Info CALC_ENDO : "
-            + "Une séquence de chargement fictive (rampe et stabilisation) sera calculée pour chacun des instants physiques suivants : "
-            + str(self.user_list_inst)
-        )
+        UTMESS("I", "CALCENDO_15", valk=(str(self.user_list_inst)))
 
         if "PAS_ARCH" in self.kwds["ARCHIVAGE"]:
             self.arch = self.user_list_inst[:: self.kwds["ARCHIVAGE"]["PAS_ARCH"]]
@@ -467,11 +457,7 @@ class CalcEndo:
         ]
         self.t_fin = l_fict_endo[-1]
 
-        logger.info(
-            "Info CALC_ENDO : "
-            + "Une séquence de chargement fictive (rampe et stabilisation) sera discrétisée par la liste d'instants suivante : "
-            + str(l_fict_endo)
-        )
+        UTMESS("I", "CALCENDO_16", valk=(str(l_fict_endo)))
 
         if isinstance(self.kwds["ENDO_VISC"]["LIST_INST"], ListOfFloats):
             self.visc_list_inst = set_default_listinst(self.kwds, self.tau, l_fict_endo)
@@ -494,16 +480,7 @@ class CalcEndo:
             else:
                 nb_fixed += 1
 
-        logger.info("")
-        logger.info(
-            "Info CALC_ENDO : "
-            + "On a trouvé "
-            + str(nb_time_dep)
-            + " chargement(s) fonction du temps, et "
-            + str(nb_fixed)
-            + " chargement(s) indépendant(s) du temps"
-        )
-        logger.info("")
+        UTMESS("I", "CALCENDO_17", vali=(nb_time_dep, nb_fixed))
 
     def sort_varc(self):
         """Sort external state variables in two : time dependant varc and other varc"""
@@ -512,17 +489,10 @@ class CalcEndo:
         user_mat = self.kwds["CHAM_MATER"]
 
         if user_mat.hasExternalStateVariable():
-            logger.info("")
             for varc_on_mesh in user_mat.getExtStateVariablesOnMeshEntities():
                 calcendo_varc = CalcEndoVarc(varc_on_mesh)
                 calcendo_varc.check_time_dependency()
                 self.varc.append(calcendo_varc)
-            logger.info("")
-
-        else:
-            logger.info("")
-            logger.info("Info CALC_ENDO : " + "Aucune variable de commande détectée.")
-            logger.info("")
 
     def init_sequence(self, nume_ordre, t_init, t_comp):
         """Initialisation of a new load sequence
@@ -547,17 +517,7 @@ class CalcEndo:
                 t_init = self.user_list_inst[nume_ordre]
         self.stab = False
 
-        logger.info("Info CALC_ENDO : " + "Séquence de chargement : " + str(nume_ordre))
-        logger.info(
-            "Info CALC_ENDO : "
-            + "Instant physique initial de cette séquence de chargement : "
-            + str(t_init)
-        )
-        logger.info(
-            "Info CALC_ENDO : "
-            + "Instant physique final de cette séquence de chargement : "
-            + str(t_comp)
-        )
+        UTMESS("I", "CALCENDO_18", vali=(nume_ordre), valr=(t_init, t_comp))
 
         return nume_ordre, t_init
 
@@ -675,54 +635,24 @@ class CalcEndo:
         """
 
         current_inst = evol_endo.getAccessParameters()["INST"][-1]
-        logger.info("")
-        logger.info(
-            "Info CALC_ENDO : "
-            + "Instant courant de la séquence de stabilisation : "
-            + str(current_inst)
-        )
+        UTMESS("I", "CALCENDO_19", valr=(current_inst))
         ctrl_resu = RECU_TABLE(CO=evol_endo, NOM_TABLE="OBSERVATION")
 
         for obs in self.other_obs:
             if ("EVAL_CHAM" in obs) and (obs["EVAL_CHAM"] != "VALE"):
                 name_obs = obs["TITRE"]
                 v_obs = get_obs_values(ctrl_resu, name_obs)
-
-                logger.info("Info CALC_ENDO : " + name_obs + " courant : " + str(v_obs[-1]))
-                logger.info(
-                    "Info CALC_ENDO : "
-                    + "Variation de "
-                    + name_obs
-                    + " courante : "
-                    + str(v_obs[-1] - v_obs[0])
-                )
+                UTMESS("I", "CALCENDO_20", valk=(name_obs), valr=(v_obs[-1], v_obs[-1] - v_obs[0]))
 
         crit = False
         for num_obs, obs_visc in enumerate(self.obs_stab_visc):
             name_obs_visc = obs_visc["TITRE"]
             v_obs_visc = get_obs_values(ctrl_resu, name_obs_visc)
             crit += v_obs_visc[-1] < self.crit_stab_visc[num_obs]
-
-            logger.info(
-                "Info CALC_ENDO : " + "Evaluation du critère de stabilisation pour " + name_obs_visc
-            )
-            logger.info("Info CALC_ENDO : " + name_obs_visc + " courant : " + str(v_obs_visc[-1]))
-            logger.info(
-                "Info CALC_ENDO : "
-                + "Ratio "
-                + name_obs_visc
-                + " sur seuil de stabilité : "
-                + str(v_obs_visc[-1] / self.crit_stab_visc[num_obs])
-            )
+            ratio_v_obs = v_obs_visc[-1] / self.crit_stab_visc[num_obs]
+            UTMESS("I", "CALCENDO_21", valk=(name_obs_visc), valr=(v_obs_visc[-1], ratio_v_obs))
 
         self.stab = crit == len(self.obs_stab_visc)
-        logger.info("")
-        if self.stab:
-            logger.info("Info CALC_ENDO : " + "Le critère de stabilisation global est atteint.")
-        else:
-            logger.info(
-                "Info CALC_ENDO : " + "Le critère de stabilisation global n'est pas atteint."
-            )
 
         if self.arret == "NON" and current_inst == self.t_fin:
             self.stab = True
