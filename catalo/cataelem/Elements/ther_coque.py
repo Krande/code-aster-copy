@@ -29,10 +29,6 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-
-CCACOQU = LocatedComponents(phys=PHY.CACOQU_R, type="ELEM", components=("EP", "ALPHA", "BETA"))
-
-
 CCOEFHF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H_INF", "H_SUP"))
 
 
@@ -137,7 +133,7 @@ class THCOQU4(Element):
         OP.CHAR_THER_EVOL(
             te=110,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLTH2),
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PCOEFHR, CCOEFHR),
                 (SP.PGEOMER, NGEOMER),
@@ -186,7 +182,7 @@ class THCOQU4(Element):
         OP.FLUX_ELGA(
             te=109,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLTH2),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.FLUX_ELGA.PNBSP_I, ENBSP_I),
@@ -203,7 +199,7 @@ class THCOQU4(Element):
         OP.MASS_THER(
             te=102,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLTH2),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),
@@ -219,7 +215,7 @@ class THCOQU4(Element):
         OP.RIGI_THER(
             te=101,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLTH2),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, CTEMPSR),

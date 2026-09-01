@@ -18,7 +18,7 @@
 !
 subroutine merime(modelz, nbLoad, listLoadK24, &
                   materFieldZ, materCodeZ, caraElemz, &
-                  time, comporMultz, matrElemz, modeFourier, &
+                  time, comporMultz, matrElemz, numeHarm, &
                   jvBaseZ, listElemCalcz, &
                   hasExteStatVari_, onlyDirichlet_)
 !
@@ -54,7 +54,7 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     character(len=*), intent(in) :: materFieldZ, materCodeZ, caraElemz
     real(kind=8), intent(in) :: time
     character(len=*), intent(in) :: comporMultz, matrElemz
-    integer(kind=8), intent(in) :: modeFourier
+    integer(kind=8), intent(in) :: numeHarm
     character(len=*), intent(in) :: jvBaseZ, listElemCalcz
     aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
 !
@@ -75,7 +75,7 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
 ! In  time             : current time
 ! In  comporMult       : name of comportment definition for PMF (field)
 ! In  matrElem         : elementary matrix
-! In  modeFourier      : index of Fourier mode
+! In  numeHarm         : index of Fourier mode
 ! In  jvBase           : JEVEUX nase to create matrElem
 ! In  listElemCalc     : list of elements (LIGREL) where matrElem is computed
 ! In  onlyDirichlet    : flag to compute only Dirichlet [B] matrix
@@ -83,11 +83,11 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: phenom = 'MECANIQUE'
     integer(kind=8), parameter :: nbFieldInMax = 100, nbFieldOutMax = 2
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
-    character(len=16), parameter :: phenom = 'MECANIQUE'
     integer(kind=8) :: nbFieldIn, nbFieldOut
     character(len=2) :: codret
     integer(kind=8) :: iret
@@ -95,7 +95,7 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     character(len=24), parameter :: chvarc = '&&MERIME.CHVARC'
     character(len=24), parameter :: chtime = '&&MERIME.CHTIME'
     character(len=24) :: comporMult, listElemCalc
-    character(len=24) :: chgeom, chcara(18), chharm
+    character(len=24) :: chgeom, chharm
     character(len=1) :: jvBase
     character(len=8) :: model, caraElem
     character(len=24) :: materField, materCode
@@ -140,8 +140,8 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nbSubstruct)
 
 ! - Preparation of input fields
-    call mecham(option, model, caraElem, modeFourier, chgeom, &
-                chcara, chharm, iret)
+    call mecham(option, model, numeHarm, &
+                chgeom, chharm, iret)
     hasFiniteElement = iret .eq. 0
 
 ! - Create field for time

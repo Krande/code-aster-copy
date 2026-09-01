@@ -25,7 +25,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
@@ -38,9 +37,6 @@ DDL_MECA = LocatedComponents(
     ),
 )
 
-CCACOQU = LocatedComponents(
-    phys=PHY.CACOQU_R, type="ELEM", components=("EP", "ALPHA", "BETA", "CTOR", "EXCENT", "INERTIE")
-)
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
@@ -57,7 +53,7 @@ class RACS2T3(Element):
     calculs = (
         OP.LIAI_CO_3D(
             te=231,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PCACOQU, CCACOQU)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PCACOQU, LC.CSHLDKT)),
             para_out=((SP.PMATUNS, MMATUNS),),
         ),
         OP.TOU_INI_ELEM(

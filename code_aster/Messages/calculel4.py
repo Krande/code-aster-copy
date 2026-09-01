@@ -85,15 +85,14 @@ Risques et conseils :
     ),
     14: _(
         """
- Erreur d'utilisation de la commande CREA_RESU / PREP_VARC :
-    Le CARA_ELEM (%(k1)s) ne contient pas d'éléments à "couches"
- Il n'y a aucune raison d'utiliser l'option PREP_VARC
+Erreur d'utilisation de la commande CREA_RESU / PREP_VARC.
+Le CARA_ELEM ne contient pas d'éléments à "couches" et il n'y a donc aucune raison d'utiliser l'option PREP_VARC
 """
     ),
     15: _(
         """
- Erreur d'utilisation (CREA_RESU/PREP_VARC) :
-   Le modèle associé au CARA_ELEM (%(k1)s) est différent de celui fourni à la commande.
+Erreur d'utilisation de la commande CREA_RESU / PREP_VARC.
+Le modèle associé au CARA_ELEM est différent de celui fourni à la commande.
 """
     ),
     16: _(

@@ -54,15 +54,18 @@ subroutine compStress(modelZ, modelLigrelZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: option = 'SIEF_ELGA'
     integer(kind=8), parameter :: nbFieldInMax = 100, nbFieldOut = 1
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOut)
     character(len=24) :: lchin(nbFieldInMax), lchout(nbFieldOut)
+!
+    integer(kind=8) :: nbFieldIn
     character(len=1) :: jvBase
     character(len=8) :: model, caraElem
-    character(len=16), parameter :: option = 'SIEF_ELGA'
+
     character(len=19), parameter :: canbsp = '&&MECALC.NBSP'
     character(len=24) :: chdisp, chelem
-    integer(kind=8) :: nbFieldIn, iret
+    integer(kind=8) :: iret
     aster_logical :: lXFEM
 !
 ! --------------------------------------------------------------------------------------------------

@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
-                            option, sigm, sig, vip, dsidep, &
-                            carcri, iret, t2iu)
 !
+subroutine kit_glrc_dm_vmis(plateCara, plateOrie, &
+                            jvMaterCode, relaPlas, epsm, deps, vim, &
+                            option, sigm, sig, vip, dsidep, &
+                            carcri, iret)
+!
+    use plate_type
     implicit none
 !
 #include "asterf_types.h"
@@ -35,10 +37,12 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
 #include "asterfort/trlds.h"
 #include "jeveux.h"
 !
-    integer(kind=8) :: imate, iret
+    type(plateCara_Para), intent(in) :: plateCara
+    type(plateOrie_Para), intent(in) :: plateOrie
+    integer(kind=8) :: jvMaterCode, iret
     real(kind=8) :: epsm(6), deps(6), vim(*), ep
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-    real(kind=8) :: sigm(*), sig(*), vip(*), dsidep(6, *), t2iu(4)
+    real(kind=8) :: sigm(*), sig(*), vip(*), dsidep(6, *)
     character(len=16), intent(in) :: option, relaPlas
 ! ----------------------------------------------------------------------
 !
@@ -55,9 +59,8 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
 !       DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 !
-!
     aster_logical :: rigi, resi, is_param_opt(2)
-    integer(kind=8) :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
+    integer(kind=8) :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
     real(kind=8) :: tandam(6, 6), tanepl(6, 6), sigpd(6), deda(6), residu
@@ -75,9 +78,8 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
     rac2 = sqrt(2.d0)
     carcriDummy = 0.d0
 !
-! ---EPAISSEUR TOTALE :
-    call jevech('PCACOQU', 'L', icara)
-    ep = zr(icara)
+! - EPAISSEUR TOTALE :
+    ep = plateCara%thick
 !
 ! -- OPTION
     rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
@@ -111,7 +113,7 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
     end if
 !
 !-----LECTURE DES PARAMETRES D ENDOMMAGEMENT
-    call glrc_recup_mate(imate, 'GLRC_DM         ', .false._1, ep, lambda=lambda, &
+    call glrc_recup_mate(jvMaterCode, 'GLRC_DM         ', .false._1, ep, lambda=lambda, &
                          deuxmu=deuxmu, lamf=lamf, deumuf=deumuf, &
                          gt=gt, gc=gc, gf=gf, seuil=seuil, &
                          alpha=alpha, alfmc=alfmc, epsic=epsi_c, &
@@ -123,12 +125,13 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
     call r8inir(6, 0.d0, demp, 1)
     call r8inir(18, 0.d0, vip, 1)
 !
-    call glrc_lc(demp, demp, vip, 'RIGI_MECA_TANG  ', demp, &
+    call glrc_lc(plateOrie, &
+                 demp, demp, vip, 'RIGI_MECA_TANG  ', demp, &
                  vip, cel, lambda, deuxmu, lamf, &
                  deumuf, gt, gc, gf, seuil, &
                  alpha, alfmc, carcri, &
                  epsi_c, epsi_els, epsi_lim, iret, &
-                 ep, is_param_opt, val_param_opt, t2iu)
+                 ep, is_param_opt, val_param_opt)
 !
     do j = 1, 6
         do i = 1, 6
@@ -175,12 +178,13 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
 !
 !-------CALCUL DE L ENDOMMAGEMENT
         call r8inir(6, 0.d0, sigpd, 1)
-        call glrc_lc(emmp, demp, vim, 'FULL_MECA       ', sigpd, &
+        call glrc_lc(plateOrie, &
+                     emmp, demp, vim, 'FULL_MECA       ', sigpd, &
                      vip, tandam, lambda, deuxmu, lamf, &
                      deumuf, gt, gc, gf, seuil, &
                      alpha, alfmc, carcri, &
                      epsi_c, epsi_els, epsi_lim, iret, &
-                     ep, is_param_opt, val_param_opt, t2iu)
+                     ep, is_param_opt, val_param_opt)
 !
 !-------CALCUL DE L INCREMENT DE LA DEFORMATION ELASTIQUE
 !        PUIS DEPS - DEPS^D
@@ -224,7 +228,7 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
 !---------VMIS_CINE_LINE--------------------
             call r8inir(6, 0.d0, sig2dp, 1)
             if (relaPlas(1:14) .eq. 'VMIS_CINE_LINE') then
-                call nmcine('RIGI', 1, 1, 3, imate, &
+                call nmcine('RIGI', 1, 1, 3, jvMaterCode, &
                             carcriDummy, &
                             deps2d, sig2dm, vim(19), 'FULL_MECA       ', sig2dp, &
                             vip(19), tan3d, iret)
@@ -235,7 +239,7 @@ subroutine kit_glrc_dm_vmis(imate, relaPlas, epsm, deps, vim, &
                 typmod(1) = '3D  '
                 typmod(2) = '        '
                 call nmisot('RIGI', 1, 1, 3, typmod, ASTER_TRUE, &
-                            imate, relaPlas, carcriDummy, deps2d, sig2dm, &
+                            jvMaterCode, relaPlas, carcriDummy, deps2d, sig2dm, &
                             vim(19), 'FULL_MECA       ', sig2dp, vip(19), tan3d, &
                             iret)
             end if

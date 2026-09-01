@@ -23,6 +23,8 @@ subroutine te0239(option, nomte)
     use Behaviour_module
     use MaterialPara_module
     use MaterialPara_type
+    use plate_type
+    use plateGeom_module, only: getCara, compCoorSystNone
     implicit none
 !
 #include "asterf_types.h"
@@ -30,7 +32,6 @@ subroutine te0239(option, nomte)
 #include "asterfort/defgen.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/effi.h"
-#include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matdtd.h"
@@ -74,13 +75,12 @@ subroutine te0239(option, nomte)
     real(kind=8) :: propVale(nbProp)
     integer(kind=8), parameter :: npge = 3
     character(len=8), parameter :: typmod(2) = (/'C_PLAN  ', '        '/)
-    integer(kind=8) :: nbLayer, icontm, ideplm, ivectu, icou, inte, icontp
+    integer(kind=8) :: nbLayer, icontm, ideplm, ivectu, iLayer, inte, icontp
     integer(kind=8) :: kpki, k1, k2, kompt, ivarim, ivarip, iinstm, iinstp, lgpg, ideplp
     integer(kind=8) :: jvCarcri, nbvari, jcret, codret
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
     real(kind=8) :: zmin, epLayer, depsx3
     integer(kind=8) :: itab(8), jnbspi
-    character(len=8) :: elrefe
     real(kind=8) :: tempMoy
     real(kind=8) :: dfdx(3)
     real(kind=8) :: test, test2, eps, nu, h, cosa, sina, cour, r
@@ -89,7 +89,7 @@ subroutine te0239(option, nomte)
     real(kind=8) :: x3
     real(kind=8) :: dtild(5, 5), dtildi(5, 5), dsidep(6, 6)
     real(kind=8) :: rtangi(9, 9), rtange(9, 9), sigm2d(4), sigp2d(4)
-    integer(kind=8) :: nno, kpg, npg, i, j, k, imatuu, jvCacoqu, ndimv
+    integer(kind=8) :: nno, kpg, npg, i, j, k, imatuu, ndimv
     integer(kind=8) :: ivarix
     integer(kind=8) :: ipoids, ivf, idfdk, jvGeom, jvMaterc
     integer(kind=8) :: cod, iret, ksp
@@ -99,21 +99,28 @@ subroutine te0239(option, nomte)
     aster_logical :: lVect, lMatr, lVari, lSigm
     type(Material_Para) :: materPara
     blas_int :: b_incx, b_incy, b_n
+    type(plateCara_Para) :: plateCara
+    type(plateOrie_Para) :: plateOrie
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ivarip = 1
-!
     eps = 1.d-3
     codret = 0
-
-    call elref1(elrefe)
     call elrefe_info(fami=fami, nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk)
 
+! - Get plate parameters
+    call getCara(plateCara, plateOrie)
+    h = plateCara%thick
+    kappa = plateCara%shearCoef
+    correc = plateCara%metric
+
+! - No global<=>local transformation
+    call compCoorSystNone(plateOrie)
+
 ! - Get input fields
     call jevech('PGEOMER', 'L', jvGeom)
-    call jevech('PCACOQU', 'L', jvCacoqu)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PDEPLMR', 'L', ideplm)
@@ -163,9 +170,9 @@ subroutine te0239(option, nomte)
                               materPara, BEHInteg)
 
 ! - Properties of shell
-    h = zr(jvCacoqu)
-    kappa = zr(jvCacoqu+1)
-    correc = zr(jvCacoqu+2)
+    h = plateCara%thick
+    kappa = plateCara%shearCoef
+    correc = plateCara%metric
     zmin = -h/2.d0
 
 ! - Some checks
@@ -220,15 +227,13 @@ subroutine te0239(option, nomte)
         call dfdm1d(nno, zr(ipoids+kpg-1), zr(idfdk+k), zr(jvGeom), dfdx, &
                     cour, jacp, cosa, sina)
         r = zero
-!
-        call r8inir(5, 0.d0, sigmtd, 1)
-        call r8inir(25, 0.d0, dtild, 1)
-!
-!-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
-!
         do i = 1, nno
             r = r+zr(jvGeom+2*i-2)*zr(ivf+k+i-1)
         end do
+!
+        call r8inir(5, 0.d0, sigmtd, 1)
+        call r8inir(25, 0.d0, dtild, 1)
+
 !
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
@@ -255,16 +260,16 @@ subroutine te0239(option, nomte)
                   abs(cour*r) .le. eps .or. abs(cosa-cour*r) .le. eps)
 
 ! ----- DEBUT DE BOUCLE D'INTEGRATION DANS L'EPAISSEUR
-        do icou = 1, nbLayer
+        do iLayer = 1, nbLayer
             do inte = 1, npge
                 if (inte .eq. 1) then
-                    zic = zmin+(icou-1)*epLayer
+                    zic = zmin+(iLayer-1)*epLayer
                     coef = 1.d0/3.d0
                 else if (inte .eq. 2) then
-                    zic = zmin+epLayer/2.d0+(icou-1)*epLayer
+                    zic = zmin+epLayer/2.d0+(iLayer-1)*epLayer
                     coef = 4.d0/3.d0
                 else
-                    zic = zmin+epLayer+(icou-1)*epLayer
+                    zic = zmin+epLayer+(iLayer-1)*epLayer
                     coef = 1.d0/3.d0
                 end if
 !
@@ -303,8 +308,8 @@ subroutine te0239(option, nomte)
 !           CALCUL DU NUMERO DU POINT D'INTEGRATION COURANT
                 kpki = kpki+1
                 k1 = 4*(kpki-1)
-                k2 = lgpg*(kpg-1)+(npge*(icou-1)+inte-1)*nbvari
-                ksp = (icou-1)*npge+inte
+                k2 = lgpg*(kpg-1)+(npge*(iLayer-1)+inte-1)*nbvari
+                ksp = (iLayer-1)*npge+inte
 !
                 do i = 1, 4
                     sigm2d(i) = zr(icontm+k1+i-1)

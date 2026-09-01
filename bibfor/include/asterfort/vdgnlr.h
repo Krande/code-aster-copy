@@ -17,9 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vdgnlr(materPara, &
+    subroutine vdgnlr(plateCara, plateOrie, &
+                      materPara, &
                       lMatr, lVect, lSigm, lVari, relaComp, nomte)
         use MaterialPara_type
+        use plate_type
+        type(plateCara_Para), intent(in) :: plateCara
+        type(plateOrie_Para), intent(in) :: plateOrie
         type(Material_Para), intent(inout) :: materPara
         aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
         character(len=16), intent(in) :: nomte, relaComp

@@ -17,8 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0413
 !
-subroutine dxmat1(famiZ, epais, df, dm, dmf, pgl, indith, npg)
+subroutine dxmat1(plateOrie, &
+                  famiZ, epais, df, dm, dmf, pgl, indith, npg)
 !
+    use plate_type
     implicit none
 !
 #include "jeveux.h"
@@ -31,9 +33,10 @@ subroutine dxmat1(famiZ, epais, df, dm, dmf, pgl, indith, npg)
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 !
+    type(plateOrie_Para), intent(in) :: plateOrie
     character(len=*), intent(in) :: famiZ
     integer(kind=8) :: indith, npg
-    real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
+    real(kind=8) :: epais, df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,10 +50,10 @@ subroutine dxmat1(famiZ, epais, df, dm, dmf, pgl, indith, npg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: jvCacoqu, jvMaterc, iret
+    integer(kind=8) :: jvMaterc, iret
     integer(kind=8) :: nbpar
     real(kind=8) :: cdf, cdm, valres(21)
-    real(kind=8) :: young, nu, epais, valpar
+    real(kind=8) :: young, nu, valpar
     real(kind=8) :: dh(3, 3)
     real(kind=8) :: dx, dy, dz, norm
     real(kind=8) :: ps, pjdx, pjdy, pjdz, alphat
@@ -71,10 +74,8 @@ subroutine dxmat1(famiZ, epais, df, dm, dmf, pgl, indith, npg)
     call r8inir(6, 0.d0, dmc, 1)
     call r8inir(6, 0.d0, dfc, 1)
 !
-    call jevech('PCACOQU', 'L', jvCacoqu)
-    epais = zr(jvCacoqu)
-    alpha = zr(jvCacoqu+1)*r8dgrd()
-    beta = zr(jvCacoqu+2)*r8dgrd()
+    alpha = plateOrie%alpha
+    beta = plateOrie%beta
 !
     dx = cos(beta)*cos(alpha)
     dy = cos(beta)*sin(alpha)
@@ -91,7 +92,7 @@ subroutine dxmat1(famiZ, epais, df, dm, dmf, pgl, indith, npg)
 !
     indith = 0
     call jevech('PMATERC', 'L', jvMaterc)
-    call rccoma(zi(jvMaterc), 'ELAS', 1, elasKeyword, icodre(1))
+    call rccoma(zi(jvMaterc), 'ELAS', 1, elasKeyword)
 !
     if (elasKeyword .eq. 'ELAS') then
         if (norm .le. r8prem()) then

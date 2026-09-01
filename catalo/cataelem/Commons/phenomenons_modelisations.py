@@ -36,7 +36,7 @@ phen.add(
     "PLAQ_MITC",
     Modelisation(
         dim=(2, 3),
-        code="DKT",
+        code="MIT",
         attrs=(
             (AT.NBSIGM, "6"),
             (AT.TYPMOD, "C_PLAN"),
@@ -6547,7 +6547,7 @@ phen.add(
 phen.add(
     "COQUE_AXIS",
     Modelisation(
-        dim=(1, 2), code="CQA", attrs=((AT.COQUE, "OUI"),), elements=((MT.SEG3, EL.THCASE3),)
+        dim=(1, 2), code="CTA", attrs=((AT.COQUE, "OUI"),), elements=((MT.SEG3, EL.THCASE3),)
     ),
 )
 

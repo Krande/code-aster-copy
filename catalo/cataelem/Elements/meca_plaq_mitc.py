@@ -39,10 +39,6 @@ DDL_MECA = LocatedComponents(
     components=(("EN1", ("DZ", "DRX", "DRY")), ("EN2", ("DRX", "DRY"))),
 )
 
-CCACOQU = LocatedComponents(
-    phys=PHY.CACOQU_R, type="ELEM", components=("EP", "ALPHA", "BETA", "CTOR", "EXCENT", "INERTIE")
-)
-
 CCAORIE = LocatedComponents(
     phys=PHY.CAORIE_R,
     type="ELEM",
@@ -231,7 +227,7 @@ class TemplateElement(Element):
         OP.SIEF_ELGA(
             te=33,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLMITC),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
@@ -246,11 +242,6 @@ class TemplateElement(Element):
             te=51,
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PCHCKPR, LC.CCHCKPR)),
             para_out=((OP.VERI_PLAN.PCODRET, LC.ECODRET), (OP.VERI_PLAN.PINDICR, LC.CINDICR)),
-        ),
-        OP.VERI_CARA_ELEM(
-            te=119,
-            para_in=((SP.PCACOQU, CCACOQU),),
-            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
         ),
         OP.NSPG_NBVA(
             te=496,
@@ -283,7 +274,7 @@ class PLAQ_MITC_QUAD9(TemplateElement):
         OP.RIGI_MECA(
             te=28,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLMITC),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PNBSP_I, ENBSP_I),
@@ -295,7 +286,7 @@ class PLAQ_MITC_QUAD9(TemplateElement):
         OP.CHAR_MECA_PRES_R(
             te=29,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLMITC),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PPRESSR, EPRESNO),
@@ -305,7 +296,7 @@ class PLAQ_MITC_QUAD9(TemplateElement):
         OP.CHAR_MECA_PRES_F(
             te=29,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLMITC),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PPRESSF, CPRESSF),
@@ -330,7 +321,7 @@ class PLAQ_MITC_TRIA6(TemplateElement):
         OP.RIGI_MECA(
             te=555,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLMITC),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PNBSP_I, ENBSP_I),
@@ -342,7 +333,7 @@ class PLAQ_MITC_TRIA6(TemplateElement):
         OP.CHAR_MECA_PRES_R(
             te=556,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLMITC),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PPRESSR, EPRESNO),
@@ -352,7 +343,7 @@ class PLAQ_MITC_TRIA6(TemplateElement):
         OP.CHAR_MECA_PRES_F(
             te=556,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLMITC),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PPRESSF, CPRESSF),

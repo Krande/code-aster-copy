@@ -30,11 +30,6 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCACOQU = LocatedComponents(
-    phys=PHY.CACOQU_R, type="ELEM", components=("EP", "ALPHA", "BETA", "CTOR")
-)
-
-
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "DRX", "DRY", "DRZ")
 )
@@ -74,7 +69,7 @@ class MEBODKT(Element):
         OP.CARA_SECT_POUT3(
             te=570,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLDKT),
                 (OP.CARA_SECT_POUT3.PCAORIE, LC.CGEOM3D),
                 (SP.PGEOMER, MGEOMER),
             ),
@@ -83,7 +78,7 @@ class MEBODKT(Element):
         OP.CARA_SECT_POUT4(
             te=570,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLDKT),
                 (OP.CARA_SECT_POUT4.PCAORIE, LC.CGEOM3D),
                 (SP.PGEOMER, MGEOMER),
                 (SP.PORIGIN, LC.CGEOM3D),
@@ -93,7 +88,7 @@ class MEBODKT(Element):
         OP.CARA_SECT_POUT5(
             te=570,
             para_in=(
-                (SP.PCACOQU, CCACOQU),
+                (SP.PCACOQU, LC.CSHLDKT),
                 (OP.CARA_SECT_POUT5.PCAORIE, LC.CGEOM3D),
                 (SP.PGEOMER, MGEOMER),
                 (SP.PNUMMOD, LC.CNUMMOD),

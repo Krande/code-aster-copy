@@ -22,6 +22,8 @@ subroutine te0431(option, nomte)
     use Behaviour_module
     use MaterialPara_module
     use MaterialPara_type
+    use plate_type
+    use plateGeom_module, only: getCara, compCoorSystPara, compCoorSystGrid
     implicit none
 !
 #include "asterf_types.h"
@@ -29,8 +31,6 @@ subroutine te0431(option, nomte)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/cargri.h"
 #include "asterfort/codere.h"
-#include "asterfort/dxqpgl.h"
-#include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -71,7 +71,7 @@ subroutine te0431(option, nomte)
     integer(kind=8) :: jtab(7), jcret, ideplm, ideplp, iret
     integer(kind=8) :: ivectu, icontp, ivarip, ivarix, icontx
     real(kind=8) :: dff(2, 8), b(6, 8), p(3, 6), jac
-    real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
+    real(kind=8) :: dir11(3), densit, pgl(3, 3), distn
     real(kind=8) :: deps, sigm, sig, tmp, rig
     integer(kind=8) :: iinstm, iinstp
     aster_logical :: lexc, lNonLine, lLine
@@ -83,15 +83,16 @@ subroutine te0431(option, nomte)
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2)
     blas_int :: b_incx, b_incy, b_n
+    type(plateCara_Para) :: plateCara
+    type(plateOrie_Para) :: plateOrie
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! - Type of modelling
     call teattr('S', 'TYPMOD', typmod(1))
     call teattr('C', 'TYPMOD2', typmod(2), iret)
     if (iret .eq. 1) typmod(2) = ' '
-
     lexc = (lteatt('MODELI', 'GRC'))
+
     lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA') .or. &
                (option(1:10) .eq. 'RIGI_MECA_')
     lLine = option .eq. 'RIGI_MECA'
@@ -101,9 +102,22 @@ subroutine te0431(option, nomte)
                      nno=nno, npg=npg, &
                      jpoids=ipoids, jdfde=idfde)
 
-! - Get input fields
+! - Get plate parameters
+    call getCara(plateCara, plateOrie)
+
+! - Geometry
     call jevech('PGEOMER', 'L', jvGeom)
-    call jevech('PMATERC', 'L', jvMaterc)
+
+! - Calculate the transformation: global coordinate system/intrinsic coordinate system
+    if (lexc) then
+        call compCoorSystPara(plateCara, zr(jvGeom), pgl)
+        nddl = 6
+    else
+        nddl = 3
+    end if
+    call compCoorSystGrid(pgl, plateCara, plateOrie)
+
+! - Get input fields
     if (lLine) then
         lVect = ASTER_FALSE
         lVari = ASTER_FALSE
@@ -190,38 +204,21 @@ subroutine te0431(option, nomte)
     cod = 0
 
 ! - LECTURE DES CARACTERISTIQUES DE GRILLE ET CALCUL DE LA DIRECTION D'ARMATURE
-    call cargri(lexc, densit, distn, dir11)
+    call cargri(plateCara, plateOrie, &
+                densit, distn, dir11)
 
-! - SI EXCENTREE : RECUPERATION DE LA NORMALE ET DE L'EXCENTREMENT
-    if (lexc) then
-        if (nomte .eq. 'MEGCTR3') then
-            call dxtpgl(zr(jvGeom), pgl)
-        else if (nomte .eq. 'MEGCQU4') then
-            call dxqpgl(zr(jvGeom), pgl)
-        end if
-        do i = 1, 3
-            vecn(i) = distn*pgl(3, i)
-        end do
-        nddl = 6
-    else
-        nddl = 3
-    end if
-
-! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
     do kpg = 1, npg
 ! ----- Set main parameters for material (on point)
         call initParaPoin(kpg, ksp, materPara)
 
-! --- MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
-!     ET DES DERIVEES DE FONCTION DE FORME
         do n = 1, nno
             dff(1, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
         end do
 
-! --- CALCUL DE LA MATRICE "B" : DEPL NODAL --> EPS11 ET DU JACOBIEN
+! ----- CALCUL DE LA MATRICE "B" : DEPL NODAL --> EPS11 ET DU JACOBIEN
         call nmgrib(nno, zr(jvGeom), dff, dir11, lexc, &
-                    vecn, b, jac, p)
+                    plateOrie%gridNorm, b, jac, p)
 
         if (lLine) then
             call rcvalb(materPara%schemePara%fami, &

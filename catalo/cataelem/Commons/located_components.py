@@ -242,6 +242,41 @@ CINDICR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 # Field for parameters of indicator (AFFE_MODELE)
 CCHCKPR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 
+# Field for parameters of mechanical plate (DKT/DKTG/DST/Q4G/Q4GG)
+CSHLDKT = LocatedComponents(
+    phys=PHY.CACOQU_R, type="ELEM", components=("EP", "ALPHA", "BETA", "CTOR", "EXCENT", "INERTIE")
+)
+
+# Field for parameters of mechanical plate (MITC)
+CSHLMITC = LocatedComponents(phys=PHY.CACOQU_R, type="ELEM", components=("EP",))
+
+# Field for parameters of mechanical plate (COQUE_3D)
+CSHL3D = LocatedComponents(
+    phys=PHY.CACOQU_R,
+    type="ELEM",
+    components=("EP", "ALPHA", "BETA", "KAPPA", "CTOR", "EXCENT", "INERTIE"),
+)
+
+# Field for parameters of mechanical plate (COQUE_AXIS)
+CSHLAXI = LocatedComponents(phys=PHY.CACOQU_R, type="ELEM", components=("EP", "KAPPA", "C_METR"))
+
+# Field for parameters of grid (GRILLE_EXCENTRE/GRILLE_MEMBRANE)
+CGRID = LocatedComponents(
+    phys=PHY.CACOQU_R, type="ELEM", components=("SECT_L", "ALPHA", "BETA", "DIST_N", "CTOR")
+)
+
+# Field for parameters of membrane (MEMBRANE)
+CMEMB = LocatedComponents(
+    phys=PHY.CACOQU_R, type="ELEM", components=("EP", "ALPHA", "BETA", "TENS")
+)
+
+# Field for parameters of thermal plate (COQUE_AXIS/COQUE_PLAN)
+CSHLTH1 = LocatedComponents(phys=PHY.CACOQU_R, type="ELEM", components=("EP",))
+
+# Field for parameters of thermal plate (COQUE)
+CSHLTH2 = LocatedComponents(phys=PHY.CACOQU_R, type="ELEM", components=("EP", "ALPHA", "BETA"))
+
+
 CNEUTR1 = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
