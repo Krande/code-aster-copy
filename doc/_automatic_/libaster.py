@@ -14416,6 +14416,14 @@ class Result(DataStructure):
             index (int):  index where to save value of parameter
         """
 
+    def setTable(self, identifier, table):
+        """Set a Table to the datastructure.
+
+        Arguments:
+            identifier (str): Table identifier.
+            Table: Table to be stored with the given identifier.
+        """
+
     def setTime(self, time, index):
         """Add time at the specified index
 
@@ -17457,6 +17465,17 @@ class BehaviourProperty(DataStructure):
 
         Returns:
             bool: *True* if present, *False* otherwise.
+        """
+
+    def variNameToCmp(self, cells, variNames):
+        """Return the components ("V1", "V1", "V3", etc.) corresponding to variNames for a given set of cells
+
+        Arguments:
+            cells (list[int]): the cells
+            variNames (list[string]): the variNames
+
+        Returns:
+            list[string]: return the components
         """
 
 

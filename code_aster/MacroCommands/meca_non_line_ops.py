@@ -100,6 +100,7 @@ def meca_non_line_ops(self, **args):
         "REUSE": args["reuse"],
         "INCREMENT": args["INCREMENT"],
         "SCHEMA_TEMPS": args.get("SCHEMA_TEMPS"),
+        "OBSERVATION": args["OBSERVATION"],
     }
     if kwds["SOLVEUR"]["METHODE"] == "PETSC":
         if kwds["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
