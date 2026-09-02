@@ -529,25 +529,25 @@ class meshMatplotlibFigure:
         for k in range(len(inteConvexSet)):
             if self._dimMatPlot == 2:
                 plt.plot(
-                    [inteConvexSet[k][0], cell._bary[0]],
-                    [inteConvexSet[k][1], cell._bary[1]],
+                    [inteConvexSet[k][0], cell.computeBary()[0]],
+                    [inteConvexSet[k][1], cell.computeBary()[1]],
                     color="black",
                     marker=None,
                     linestyle="dashed",
                 )
             elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
                 plt.plot(
-                    [inteConvexSet[k][0], cell._bary[0]],
-                    [inteConvexSet[k][1], cell._bary[1]],
-                    [inteConvexSet[k][2], cell._bary[2]],
+                    [inteConvexSet[k][0], cell.computeBary()[0]],
+                    [inteConvexSet[k][1], cell.computeBary()[1]],
+                    [inteConvexSet[k][2], cell.computeBary()[2]],
                     color="black",
                     marker=None,
                     linestyle="dashed",
                 )
             elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
                 plt.plot(
-                    [inteConvexSet[k][self._indexPPx], cell._bary[self._indexPPx]],
-                    [inteConvexSet[k][self._indexPPy], cell._bary[self._indexPPy]],
+                    [inteConvexSet[k][self._indexPPx], cell.computeBary()[self._indexPPx]],
+                    [inteConvexSet[k][self._indexPPy], cell.computeBary()[self._indexPPy]],
                     color="black",
                     marker=None,
                     linestyle="dashed",
