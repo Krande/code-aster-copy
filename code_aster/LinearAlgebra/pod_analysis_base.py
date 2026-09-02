@@ -62,7 +62,7 @@ def extractSnapshotsFromResult(result, chamName, format, indexSteps=None):
     chamName : str
         Name of the field in the result (example: DEPL or SIEF_ELGA)
     format : str
-        Format of the snapshots (should be numpy or petsc vectors)
+        Format of the snapshots (should be numpy or PETSc vectors)
     indexSteps : list or None
         List of the indices of the snapshots we seek to keep
 
@@ -74,14 +74,14 @@ def extractSnapshotsFromResult(result, chamName, format, indexSteps=None):
     AVALAIBLE_FORMAT = ["numpy", "petsc"]
     assert format in AVALAIBLE_FORMAT
 
-    # - Checks for the extraction procedure
+    ## - Checks for the extraction procedure
     fieldsNames = result.getFieldsNames()
     if not fieldsNames:
         raise ValueError("Error in extraction procedure: No fields available in RESULTAT")
     chamIndex = findIndexCHAM(fieldsNames, chamName)
     if chamIndex is None:
         raise ValueError("Error in extraction procedure: Couldn't find the asked field in RESULTAT")
-    # - Get proper data-structure for indexSteps : either None, int or list
+    ## - Get proper data-structure for indexSteps : either None, int or list
     # if indexSteps is an integer, should be modified to be a list
     if indexSteps is None:
         # if None, all the timesteps are taken into account
@@ -93,7 +93,7 @@ def extractSnapshotsFromResult(result, chamName, format, indexSteps=None):
             indStepsList = [indexSteps]
         else:
             indStepsList = indexSteps
-    # - Extraction of the snapshots
+    ## - Extraction of the snapshots
     if format == "numpy":
         snapshots = []
 
@@ -138,15 +138,11 @@ def extractSnapshotsFromResult(result, chamName, format, indexSteps=None):
 
 
 def transferSnapshotsToPETSC(snapshots):
-    """Converts a snapshot matrix (NumPy) into a PETSc matrix.
-
-    This function takes a dense matrix, typically a NumPy array,
-    and transforms it into a dense `PETSc.Mat` object.
+    """Converts a snapshot matrix (numpy) into a PETSc matrix.
 
     .. warning::
-       This implementation only works in sequential mode (a single
-       process). Attempting to run it in parallel (MPI) will raise
-       a `ValueError`.
+       This implementation should not be used in parallel distributed
+       versions.
 
     Arguments
     ----------
@@ -158,12 +154,9 @@ def transferSnapshotsToPETSC(snapshots):
     snapshots_petsc : PETSc.Mat
         The snapshot matrix in PETSc format.
     """
-    if global_size == 1:
-        snapshots_petsc = PETSc.Mat().createDense(snapshots.shape, array=snapshots, comm=comm)
-        snapshots_petsc.assemble()
-        return snapshots_petsc
-    else:
-        raise ValueError("Method should not be used in MPI mode")
+    snapshots_petsc = PETSc.Mat().createDense(snapshots.shape, array=snapshots, comm=comm)
+    snapshots_petsc.assemble()
+    return snapshots_petsc
 
 
 # POST-TREATMENT FUNCTIONNALITIES
@@ -244,25 +237,16 @@ def computeProjectionErrors(Phi, snapshots):
 def is_orthonormal_basis(matrix, corrOp):
     """
     Checks if the columns of a given matrix form an orthonormal basis.
-
-    This function verifies that the column vectors of the matrix are mutually
-    orthogonal and have a unit norm (corrOp-norm). It implements the check by
-    computing matrix.T @ matrix and verifying if the result is close to the identity
-    matrix.
-
-
     The function is dispatched based on the matrix type and works for both
-    dense NumPy arrays and distributed PETSc matrices in parallel.
+    dense numpy arrays and distributed PETSc matrices in parallel.
 
-    Parameters
+    Arguments
     ----------
     matrix : numpy.ndarray or PETSc.Mat
         The matrix whose columns are to be checked.
     corrOp : numpy.ndarray, scipy.sparse.spmatrix, or PETSc.Mat
-        The correlation operator defining the inner product. This is a
-        **required** argument. It must be of a compatible type with `Q`:
-        - If `Q` is NumPy, `corrOp` can be NumPy or SciPy sparse.
-        - If `Q` is PETSc, `corrOp` must also be PETSc.
+        The correlation operator defining the inner product
+
     Returns
     -------
     bool
@@ -280,7 +264,7 @@ def is_orthonormal_basis(matrix, corrOp):
             return _is_orthonormal_numpy(matrix, corrOp, tol)
         else:
             raise TypeError(
-                f"With a NumPy `matrix`, `corrOp` must be NumPy or SciPy sparse, "
+                f"With a numpy `matrix`, `corrOp` must be numpy or scipy sparse, "
                 f"not {type(corrOp).__name__}."
             )
     elif isinstance(matrix, PETSc.Mat):
@@ -299,16 +283,16 @@ def is_orthonormal_basis(matrix, corrOp):
 
 
 def _is_orthonormal_numpy(matrix, corrOp, tol):
-    """NumPy/SciPy implementation for checking orthonormality.
+    """numpy/scipy implementation for checking orthonormality.
 
-    Parameters
+    Arguments
     ----------
     matrix : numpy.ndarray
         The basis matrix, with vectors as columns.
     corrOp : numpy.ndarray or scipy.sparse.csr_matrix
         The correlation operator for the inner product.
     tol : float
-        The absolute tolerance for the `numpy.allclose` comparison.
+        The absolute tolerance for the numerical comparison.
 
     Returns
     -------
@@ -326,16 +310,16 @@ def _is_orthonormal_numpy(matrix, corrOp, tol):
 
 
 def _is_orthonormal_petsc(matrix, corrOp, tol):
-    """NumPy/SciPy implementation for checking orthonormality.
+    """PETSc implementation for checking orthonormality.
 
-    Parameters
+    Arguments
     ----------
     matrix : PETSc.Mat
         The basis matrix, with vectors as columns.
     corrOp : PETSc.Mat
         The correlation operator for the inner product.
     tol : float
-        The absolute tolerance for the `numpy.allclose` comparison.
+        The absolute tolerance for the numerical comparison.
 
     Returns
     -------
@@ -558,7 +542,7 @@ class PODAnalysisBase(abc.ABC):
 
         Arguments
         ----------
-        Phi : numpy.ndarray
+        Phi : format depends on class
             The full matrix of POD modes.
         singval : numpy.ndarray
             The array of all singular values.
@@ -569,7 +553,7 @@ class PODAnalysisBase(abc.ABC):
 
         Returns
         -------
-        Phi_v : numpy.ndarray
+        Phi_v : format depends on class
             The truncated matrix of POD modes (reduced order basis).
         singval_v : numpy.ndarray
             The truncated array of singular values.
@@ -679,7 +663,7 @@ class PODAnalysisBase(abc.ABC):
     def computeDecayRate(self, singval):
         """Compute a decay rate of a list of singular values
 
-        Parameters
+        Arguments
         ----------
         singval : numpy.ndarray
             Singular values (order in a decreasing manner)
@@ -729,8 +713,6 @@ class PODAnalysisNumpy(PODAnalysisBase):
     def __init__(self, *args, **kwargs):
         "Initialization of PODAnalysisNumpy"
         super().__init__(*args, **kwargs)
-        # if global_size > 1:
-        #     raise ValueError("full HPC MPI version should not be used with Numpy matrices")
 
     def validate_method_state(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
@@ -974,24 +956,24 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def validate_method_state(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
         if not isinstance(self._corrOperator, PETSc.Mat):
-            raise TypeError("The correlation operator should be a CSR matrix or a numpy matrix")
+            raise TypeError("The correlation operator should be a PETSc.Mat")
         if not isinstance(self._snapshots, PETSc.Mat):
-            raise TypeError("The snapshots should be strored in a numpy matrix")
+            raise TypeError("The snapshots should be strored in a PETSc.Mat")
 
     def setInfosSnapshots(self):
         """Store information about the size of the snapshot matrix"""
         self._numberOfDOFs, self._numberOfSnapshots = self._snapshots.getSize()
-        # - Add communicator to handle the parallel version
+        ## - Add communicator to handle the parallel version
         self._comm = self._snapshots.getComm()
 
-    def _extractColumnsPetscMat(self, matA, select_condition):  # indices):
+    def _extractColumnsPetscMat(self, matA, select_condition):
         """Extracts columns from a PETSc matrix based on a condition.
 
         Arguments
         ----------
         matA : PETSc.Mat
             The source PETSc matrix.
-        select_condition : callable
+        select_condition : function to select the right indices
             Function returning True for columns to keep.
         """
         i_start, i_end = matA.getOwnershipRange()
@@ -1007,10 +989,6 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
     def _restrictBasisAfterProcedure(self, n_rows, vectors, n):
         """Assembles a list of PETSc vectors into a single PETSc matrix.
-
-        This internal method creates a matrix where each column corresponds to one of
-        the input vectors. It builds a temporary transposed matrix row-by-row before
-        returning the final correctly oriented matrix.
 
         Arguments
         ----------
@@ -1259,8 +1237,7 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
             def vector_to_matrix_col(v: PETSc.Vec) -> PETSc.Mat:
                 """
-                Convertit un vecteur PETSc en une matrice PETSc dense à une seule colonne,
-                en garantissant une distribution et une copie correctes en parallèle.
+                Converts a PETSc vector into a single-column dense PETSc matrix.
                 """
                 comm = v.getComm()
 
@@ -1526,22 +1503,18 @@ class PODAnalysis:
     Performs Proper Orthogonal Decomposition (POD) analysis.
 
     This class acts as a factory that automatically
-    selects and instantiates the most appropriate backend implementation
-    (either NumPy-based or PETSc-based) depending on the type of the input
-    `snapshots` matrix.
+    selects and instantiates the most appropriate implementation
+    depending on the type of the input `snapshots` matrix.
 
     Method calls and attribute access are delegated to the chosen
     implementation instance.
 
-    Parameters
+    Arguments
     ----------
     snapshots : numpy.ndarray or PETSc.Mat
         The snapshot matrix, where each column represents a state of the
         system at a specific time.
     **kwargs : dict, optional
-        Additional keyword arguments passed directly to the constructor of the
-        selected implementation (`PODAnalysisNumpy` or `PODAnalysisPetsc`).
-        Please refer to the documentation of those classes for available options.
 
     Attributes
     ----------
@@ -1550,15 +1523,14 @@ class PODAnalysis:
 
     See Also
     --------
-    PODAnalysisNumpy : NumPy-based implementation of POD.
+    PODAnalysisNumpy : numpy-based implementation of POD.
     PODAnalysisPetsc : PETSc-based implementation of POD.
 
     """
 
     def __init__(self, snapshots, **kwargs):
         """
-        The constructor acts as an internal factory.
-        It selects and instantiates the correct implementation."""
+        Selects and instantiates the correct implementation."""
         if isinstance(snapshots, np.ndarray):
             self._impl = PODAnalysisNumpy(snapshots, **kwargs)
         elif isinstance(snapshots, PETSc.Mat):

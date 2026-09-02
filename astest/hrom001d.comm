@@ -19,6 +19,12 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+from code_aster.CA import MPI
+
+if MPI.ASTER_COMM_WORLD.Get_size() > 1:
+    is_parallel = True
+else:
+    is_parallel = False
 
 try:
     import matplotlib
@@ -102,10 +108,12 @@ arrPetsc_depl = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=None, format
 arrPetsc_depl_A = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_A, format="petsc")
 arrPetsc_depl_B = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_B, format="petsc")
 
-arr_depl_A = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_A, format="numpy")
-arr_depl_B = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_B, format="numpy")
-arrPetsc_depl_A_bis = transferSnapshotsToPETSC(arr_depl_A)
-arrPetsc_depl_B_bis = transferSnapshotsToPETSC(arr_depl_B)
+
+if not is_parallel:
+    arr_depl_A = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_A, format="numpy")
+    arr_depl_B = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_B, format="numpy")
+    arrPetsc_depl_A_bis = transferSnapshotsToPETSC(arr_depl_A)
+    arrPetsc_depl_B_bis = transferSnapshotsToPETSC(arr_depl_B)
 
 # - Compute the ROB using the snapshot method
 POD_An_A = PODAnalysis(arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
@@ -130,36 +138,39 @@ test.assertEqual(Phi_B2.getSize()[0], nDOF, msg="Test incremental POD with HAPOD
 test.assertEqual(Phi_B2.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes")
 
 # - Test with transfer from numpy to petsc
-POD_An_A_bis = PODAnalysis(
-    arrPetsc_depl_A_bis, method="snapshot", criterion="energy", tolerance=1e-5
-)
-Phi_A_bis, singval_A_bis = POD_An_A.computePODBasis(option=2)
+if not is_parallel:
+    POD_An_A_bis = PODAnalysis(
+        arrPetsc_depl_A_bis, method="snapshot", criterion="energy", tolerance=1e-5
+    )
+    Phi_A_bis, singval_A_bis = POD_An_A.computePODBasis(option=2)
 
-test.assertEqual(Phi_A_bis.getSize()[0], nDOF)
-test.assertEqual(Phi_A_bis.getSize()[1], 2)
+    test.assertEqual(Phi_A_bis.getSize()[0], nDOF)
+    test.assertEqual(Phi_A_bis.getSize()[1], 2)
 
-POD_An_B_bis = PODAnalysis(
-    arrPetsc_depl_B_bis, method="snapshot", criterion="energy", tolerance=1e-5
-)
-Phi_B_bis, singval_B_bis = POD_An_B.computePODBasisIncremental(
-    Phi_A_bis, singval_A_bis, method="HPOD", option=2
-)
-test_singular_values(singval_B_bis, singval_B_ref, " using incr-POD (HPOD)")
-test.assertEqual(
-    Phi_B_bis.getSize()[0], nDOF, msg="Test incremental POD with HPOD - number of DOFs"
-)
-test.assertEqual(Phi_B_bis.getSize()[1], 5, msg="Test incremental POD with HPOD - number of modes")
+    POD_An_B_bis = PODAnalysis(
+        arrPetsc_depl_B_bis, method="snapshot", criterion="energy", tolerance=1e-5
+    )
+    Phi_B_bis, singval_B_bis = POD_An_B.computePODBasisIncremental(
+        Phi_A_bis, singval_A_bis, method="HPOD", option=2
+    )
+    test_singular_values(singval_B_bis, singval_B_ref, " using incr-POD (HPOD)")
+    test.assertEqual(
+        Phi_B_bis.getSize()[0], nDOF, msg="Test incremental POD with HPOD - number of DOFs"
+    )
+    test.assertEqual(
+        Phi_B_bis.getSize()[1], 5, msg="Test incremental POD with HPOD - number of modes"
+    )
 
-Phi_B2_bis, singval_B2_bis = POD_An_B.computePODBasisIncremental(
-    Phi_A, singval_A, method="HAPOD", option=2
-)
-test_singular_values(singval_B2, singval_B2_ref, " using incr-POD (HAPOD)")
-test.assertEqual(
-    Phi_B2_bis.getSize()[0], nDOF, msg="Test incremental POD with HAPOD - number of DOFs"
-)
-test.assertEqual(
-    Phi_B2_bis.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes"
-)
+    Phi_B2_bis, singval_B2_bis = POD_An_B.computePODBasisIncremental(
+        Phi_A, singval_A, method="HAPOD", option=2
+    )
+    test_singular_values(singval_B2, singval_B2_ref, " using incr-POD (HAPOD)")
+    test.assertEqual(
+        Phi_B2_bis.getSize()[0], nDOF, msg="Test incremental POD with HAPOD - number of DOFs"
+    )
+    test.assertEqual(
+        Phi_B2_bis.getSize()[1], 2, msg="Test incremental POD with HAPOD - number of modes"
+    )
 
 
 # --------------------------------------------------------------------

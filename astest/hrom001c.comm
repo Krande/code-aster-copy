@@ -19,6 +19,12 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+from code_aster.CA import MPI
+
+if MPI.ASTER_COMM_WORLD.Get_size() > 1:
+    is_parallel = True
+else:
+    is_parallel = False
 
 test = CA.TestCase()
 
@@ -70,7 +76,6 @@ from code_aster.LinearAlgebra.pod_analysis_base import *
 arrPetsc_depl = extractSnapshotsFromResult(stnl, "DEPL", "petsc")
 
 arr_depl = extractSnapshotsFromResult(stnl, "DEPL", "numpy")
-arrPetsc_depl_bis = transferSnapshotsToPETSC(arr_depl)
 
 nDOF = 192
 nTimeSteps = 11
@@ -78,8 +83,11 @@ nTimeSteps = 11
 # - Tests
 test.assertEqual(arrPetsc_depl.getSize()[0], nDOF, msg="Test initialisation array PETSc - 1")
 test.assertEqual(arrPetsc_depl.getSize()[1], nTimeSteps, msg="Test initialisation array PETSc - 2")
-test.assertEqual(arrPetsc_depl.getSize()[0], arrPetsc_depl_bis.getSize()[0])
-test.assertEqual(arrPetsc_depl.getSize()[1], arrPetsc_depl_bis.getSize()[1])
+
+if not is_parallel:
+    arrPetsc_depl_bis = transferSnapshotsToPETSC(arr_depl)
+    test.assertEqual(arrPetsc_depl.getSize()[0], arrPetsc_depl_bis.getSize()[0])
+    test.assertEqual(arrPetsc_depl.getSize()[1], arrPetsc_depl_bis.getSize()[1])
 
 
 # --------------------------------------------------------------------
@@ -163,15 +171,16 @@ test_array_floats(abs_errors_ref, abs_errors, "Absolyte errors - ", "- case SVD"
 
 
 ## - Test specific to the right transfer between datastructure in sequential
-POD_An3_bis = PODAnalysis(arrPetsc_depl_bis, method="SVD", criterion="nbModes", nbModes=4)
-Phi_3_bis, singval_bis = POD_An3.computePODBasis(option=2)
-test_singular_values(singval_bis, singval_An3_ref, msg_end="using SVD + transfer")
+if not is_parallel:
+    POD_An3_bis = PODAnalysis(arrPetsc_depl_bis, method="SVD", criterion="nbModes", nbModes=4)
+    Phi_3_bis, singval_bis = POD_An3.computePODBasis(option=2)
+    test_singular_values(singval_bis, singval_An3_ref, msg_end="using SVD + transfer")
 
-POD_An5_bis = PODAnalysis(
-    arrPetsc_depl_bis, method="GS-modified", criterion="energy", tolerance=1e-5
-)
-Phi_5_bis, singval_bis = POD_An5_bis.computePODBasis(option=2)
-test_singular_values(singval_bis, singval_An5_ref, msg_end="using GS-modified + transfer")
+    POD_An5_bis = PODAnalysis(
+        arrPetsc_depl_bis, method="GS-modified", criterion="energy", tolerance=1e-5
+    )
+    Phi_5_bis, singval_bis = POD_An5_bis.computePODBasis(option=2)
+    test_singular_values(singval_bis, singval_An5_ref, msg_end="using GS-modified + transfer")
 
 # --------------------------------------------------------------------
 #   TEST FOR ORTHONORMALITY
