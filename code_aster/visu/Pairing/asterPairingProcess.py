@@ -20,27 +20,39 @@ from ...Objects import MeshPairing
 import os
 import numpy as np
 import pickle
-from libaster import (
-    PairingMethod,
-)  # ContactPairing, ContactComputation, PairingMethod, CoordinatesSpace
+from pathlib import Path
+from libaster import Mesh, PairingMethod
 
 ## -----------------------------------------------------------
 #   AVAILABLE METHODS FOR PAIRING AND MORTAR COMPUTATIONS
 ## -----------------------------------------------------------
-availablePairingMethod = ["BrutForce", "Fast", "Legacy"]
+AVAILABLE_PAIRING_METHODS = ["BrutForce", "Fast", "Legacy"]
 
 
 class AsterPairingProcess:
+    """Class to wrap the call to any pairing process in aste"""
+
+    _METHOD_MAP = {
+        "BrutForce": PairingMethod.BrutForce,
+        "Fast": PairingMethod.Fast,
+        "Legacy": PairingMethod.Legacy,
+    }
 
     def __init__(self, groupMaSlv, groupMaMas, asterMesh):
-        r"""Constructor
+        """Constructor
 
-        Args:
-            groupMaSlv (:class:`str`): Name of the group of the contact slave interface.
-            groupMaMas (:class:`str`): Name of the group of the contact master interface.
-            asterMesh (:class:`libaster.Mesh`): aster Mesh considered for pairing
+        Arguments
+        ---------
+
+        groupMaSlv : str
+             Name of the group of the contact slave interface.
+        groupMaMas : str
+            Name of the group of the contact master interface.
+        asterMesh : libaster.Mesh
+            aster Mesh considered for pairing
 
         """
+        self._checkConsistency(groupMaSlv, groupMaMas, asterMesh)
         self._groupMaSlv = groupMaSlv
         self._groupMaMas = groupMaMas
         self._asterMesh = asterMesh
@@ -53,76 +65,83 @@ class AsterPairingProcess:
         self._quadPointsList = None
         self._hasRun = False
 
+    def _checkConsistency(self, groupMaSlv, groupMaMas, asterMesh):
+        """Test the consistency of the provided arguments"""
+        if not isinstance(groupMaSlv, str):
+            raise TypeError(f"groupMaSlv must be a string, not {type(groupMaSlv).__name__}")
+        if not isinstance(groupMaMas, str):
+            raise TypeError(f"groupMaMas must be a string, not {type(groupMaMas).__name__}")
+        if not isinstance(asterMesh, Mesh):
+            raise TypeError(
+                f"asterMesh must be a libaster.Mesh object, not {type(asterMesh).__name__}"
+            )
+
     def setMethod(self, method="BrutForce"):
-        r"""Choose the pairing method. Mandatory to run the computation.
+        """Choose the pairing method. Mandatory to run the computation.
 
-        Args:
-            method (:class:`str`): Name of the pairing method used in `code_aster`.
+        Arguments
+        ---------
+
+        method : str
+            Name of the pairing method used in `code_aster`.
             Should be chosen between BrutForce, Legacy, and Fast.
-
         """
-        if method in availablePairingMethod:
-            self._method = method
-            self._hasRun = False  # the method has changed, then no pairing has been computed
-        else:
-            raise NameError("method not available: choose between Fast-Legacy-BrutForce")
+        if method not in AVAILABLE_PAIRING_METHODS:
+            raise ValueError(
+                f"Method '{method}' not available. Choose from {AVAILABLE_PAIRING_METHODS}"
+            )
+
+        self._method = method
+        self._hasRun = False  # the method has changed, then no pairing has been computed
 
     def computePairing(self):
-        r"""Compute pairing procedure"""
+        """Compute pairing procedure"""
 
         if self._method is None:
             raise NameError("No pairing method is set: use setMethod before")
-        else:
 
-            # - Set MeshPairing and compute pairing
-            meshPair = MeshPairing()
-            meshPair.setMesh(self._asterMesh)
-            meshPair.setPair(self._groupMaSlv, self._groupMaMas)
-            if self._method == "BrutForce":
-                meshPair.setMethod(PairingMethod.BrutForce)
-            elif self._method == "Fast":
-                meshPair.setMethod(PairingMethod.Fast)
-            elif self._method == "Legacy":
-                meshPair.setMethod(PairingMethod.Legacy)
+        # - Set MeshPairing and compute pairing
+        meshPair = MeshPairing()
+        meshPair.setMesh(self._asterMesh)
+        meshPair.setPair(self._groupMaSlv, self._groupMaMas)
+        meshPair.setMethod(self._METHOD_MAP[self._method])
+        meshPair.compute()
+        # - Save MeshPairing
+        self._meshPair = meshPair
 
-            meshPair.compute()
-            # - Save MeshPairing
-            self._meshPair = meshPair
+    def _getPointsFromPairsList(self, getter_method_name):
+        """Private helper to extract points (intersection or quadrature) for all pairs."""
+        nbPairs = self._meshPair.getNumberOfPairs()
+        points_list = []
+        for iPair in range(nbPairs):
+            # getattr permet d'appeler une méthode par son nom
+            points = getattr(self._meshPair, getter_method_name)(iPair)
+            points_current = [tuple(pt) for pt in points]
+            points_list.append(points_current)
+        return points_list
 
     def extractData(self):
-        r"""Extract the list of pairs, the list of intersection points and the computed quadrature points coordinates.
+        """Extract the list of pairs, the list of intersection points and the computed quadrature points coordinates.
         Store them within the datastructure"""
-        # - Get the list of pairs
-        listPairs = self._meshPair.getListOfPairs()
-        # - Get the intersection points
-        nbPairs = self._meshPair.getNumberOfPairs()
-        intePointsList = []
-        for iPair in range(nbPairs):
-            IntePoints = self._meshPair.getIntersectionPoints(iPair)
-            intePts_current = [tuple(intePt) for intePt in IntePoints]
-            intePointsList.append(intePts_current)
-        # - Get the quadrature points
-        quadPointsList = []
-        for iPair in range(nbPairs):
-            quadPoints = self._meshPair.getQuadraturePoints(iPair)
-            quadPts_current = [tuple(quaPt) for quaPt in quadPoints]
-            quadPointsList.append(quadPts_current)
-        # Save all data
-        self._listPairs = listPairs
-        self._intePointsList = intePointsList
-        self._quadPointsList = quadPointsList
+        if not self._hasRun:
+            raise ValueError(
+                "Cannot extract data before running the computation. Call run() first."
+            )
+        self._listPairs = self._meshPair.getListOfPairs()
+        self._intePointsList = self._getPointsFromPairsList("getIntersectionPoints")
+        self._quadPointsList = self._getPointsFromPairsList("getQuadraturePoints")
 
     def run(self):
-        r"""Main method: compute the pairing and save the needed data"""
+        """Main method: compute the pairing and save the needed data"""
         # - Compute Pairing
         self.computePairing()
-        # - Extract available data
-        self.extractData()
         # - Flag to show that one pairing process has been computed
         self._hasRun = True
+        # - Extract available data
+        self.extractData()
 
     def extractMeshInfosFromAsterMesh(self):
-        r"""Extract the connecitivity and the node coordinates from the mesh"""
+        """Extract the connecitivity and the node coordinates from the mesh"""
         # - get aster connectivity
         asterConnectivity = self._asterMesh.getConnectivity()
         nbNodes = self._asterMesh.getNumberOfNodes()
@@ -134,7 +153,7 @@ class AsterPairingProcess:
         self._asterConnectivity = asterConnectivity
 
     def computeIndicesMeshFromGroup(self, groupName):
-        r"""Returns the indices of the cells belonging to a given group
+        """Returns the indices of the cells belonging to a given group
         Args:
             groupName (:class:`str`): name of the group
         Returns:
@@ -142,42 +161,57 @@ class AsterPairingProcess:
         """
         return self._asterMesh.getCells(groupName)
 
+    def _dumpPickle(self, data, filepath):
+        """Private helper to dump data to a pickle file."""
+        with open(filepath, "wb") as f:
+            pickle.dump(data, f)
+
     def dumpDataGroupCells(self, groupName, repoSave, nameFile):
-        r"""Dump the cell indices of a group in a given directory
-        Args:
-            groupName (:class:`str`): name of the group
-            repoSave (:class:`str`): name of the directory in which we want to save the file
-            nameFile (:class:`str`): name of the saved file
+        """Dump the cell indices of a group in a given directory
+
+        Arguments
+        ---------
+        groupName: str
+            Name of the group in the considered mesh
+        repoSave: str
+            Name of the directory in which we want to save the file
+        nameFile: str
+            Name of the output file (without the .pkl extension)
         """
         indices = self.computeIndicesMeshFromGroup(groupName)
-        if not os.path.exists(repoSave):
-            os.makedirs(repoSave)
-        with open(os.path.join(repoSave, nameFile + ".pkl"), "wb") as f:
-            pickle.dump(indices, f)
+        save_path = Path(repoSave)
+        save_path.mkdir(parents=True, exist_ok=True)
+        self._dumpPickle(indices, save_path / f"{nameFile}.pkl")
 
     def dumpData(self, repoSave, pairData=True, meshData=True):
-        r"""Dump the pairing data in an given directory
-        Args:
-            groupName (:class:`str`): name of the directory in which we want to save the file
-            groupName (:class:`bool`): if True, save pairing Data
-            groupName (:class:`str`): if True, save mesh Data (connectivity and node coordinates)
+        """Dump the pairing data in an given directory
+
+        Arguments
+        ---------
+        repoSave : str
+            Path to the directory where the files will be saved.
+        pairData : bool
+            If True, saves pairing data (pairs, points).
+        meshData : bool
+            If True, saves mesh data (connectivity and node coordinates)
         """
-        if not os.path.exists(repoSave):
-            os.makedirs(repoSave)
-        if pairData:
-            if self._coords is not None:
-                with open(os.path.join(repoSave, "coords.pkl"), "wb") as f:
-                    pickle.dump(self._coords, f)
-            if self._asterConnectivity is not None:
-                with open(os.path.join(repoSave, "asterConnectivity.pkl"), "wb") as f:
-                    pickle.dump(self._asterConnectivity, f)
+        save_path = Path(repoSave)
+        save_path.mkdir(parents=True, exist_ok=True)
+
         if meshData:
+            if self._coords is None or self._asterConnectivity is None:
+                raise ValueError(
+                    "Mesh data not extracted. Call extractMeshInfosFromAsterMesh() first."
+                )
+            self._dump_pickle(self._coords, save_path / "coords.pkl")
+            self._dump_pickle(self._asterConnectivity, save_path / "asterConnectivity.pkl")
+
+        if pairData:
+            if not self._hasRun:
+                raise ValueError("Pairing data not computed. Call run() first.")
             if self._listPairs is not None:
-                with open(os.path.join(repoSave, "listPairs.pkl"), "wb") as f:
-                    pickle.dump(self._listPairs, f)
+                self._dump_pickle(self._listPairs, save_path / "listPairs.pkl")
             if self._intePointsList is not None:
-                with open(os.path.join(repoSave, "intePointsList.pkl"), "wb") as f:
-                    pickle.dump(self._intePointsList, f)
+                self._dump_pickle(self._intePointsList, save_path / "intePointsList.pkl")
             if self._quadPointsList is not None:
-                with open(os.path.join(repoSave, "quadPointsList.pkl"), "wb") as f:
-                    pickle.dump(self._quadPointsList, f)
+                self._dump_pickle(self._quadPointsList, save_path / "quadPointsList.pkl")

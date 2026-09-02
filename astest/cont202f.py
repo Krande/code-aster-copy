@@ -49,7 +49,7 @@ dimMesh = 3
 # - If True, then choose a specific option, else loop over all the options
 specific_visu_option = True
 # - Option test to run
-option_test = 23
+option_test = 2
 # - Dictionnary of options
 option_dict = {
     2: {  # - Visualisation of the two interfaces of the mesh
