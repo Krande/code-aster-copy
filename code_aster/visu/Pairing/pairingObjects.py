@@ -21,22 +21,30 @@ from .meshMatplotlibFigure import meshMatplotlibFigure as MMFig
 from abc import ABC, abstractmethod
 import itertools
 
+AMBIENT_DIMENSION = [2, 3]
+
 
 ## -----------------------------------------------------------
 #   GENERIC CLASS FOR PAIRING OBJECTS
 ## -----------------------------------------------------------
-class PairingObject:
+class PairingObject(ABC):
     def __init__(self, dimension, masterDomain, masterInterface, slaveDomain, slaveInterface):
-        r"""Constructor
+        """Constructor
 
-        Args:
-            dimension (:class:`int`): Dimension of the problem (2 or 3)
-            masterDomain (:class:`str`): Name of the master solid
-            masterInterface (:class:`str`): Name of the master interface
-            slaveDomain (:class:`str`): Name of the slave solid
-            slaveInterface (:class:`str`): Name of the slave interface
+        Arguments
+        ---------
+        dimension : int
+            Dimension of the problem (2 or 3).
+        masterDomain : str
+            Name of the master solid.
+        masterInterface : str
+            Name of the master interface.
+        slaveDomain : str
+            Name of the slave solid.
+        slaveInterface : str
+            Name of the slave interface.
         """
-        assert dimension in [2, 3]
+        assert dimension in AMBIENT_DIMENSION
         self._dim = dimension
         # - mesh informations
         self._mastSolid = masterDomain
@@ -57,10 +65,12 @@ class PairingObject:
         self._flag_CellsInfos = False
 
     def getNodesCoordsFromCellIndices(self, cellIndices):
-        r"""Provide a list of nodes belonging to a given list of cells
+        """Provide a list of nodes belonging to a given list of cells
 
-        Args:
-            cellIndices (:class:`list`): Cells indices
+        Arguments
+        ---------
+        cellIndices : list
+            Cells indices
         """
         if self._flag_MeshInfos:
             nodesIndices = [
@@ -75,7 +85,7 @@ class PairingObject:
             raise ValueError("Mesh informations have not been implemented.")
 
     def checkInfosForPlot(self):
-        r"""Check if all the infos necessary for plots have been provided"""
+        """Check if all the infos necessary for plots have been provided"""
         boolTest = self._flag_MeshInfos and self._flag_PairingInfos and self._flag_CellsInfos
         if not boolTest:
             raise ValueError(
@@ -94,20 +104,28 @@ class PairingObject:
         s=50,
         indexPlaneProjected=None,
     ):
-        r"""Interative plot
+        """Interative plot
 
-        Args:
-            optionMesh (:class:`str`): option for mesh visu (domain or interface)
-            suboptionMesh (:class:`str`): target problem
-                (all pairs ? one selected pair ?)
-            optionPair (:class:`str`): option for the level of information one seek
-                        (mesh ? pairs ? intersection points ? quadrature points ?)
-            addNodeLabel (:class:`bool`): if True, then add node labels (numbering)
-            addMeshNodes (:class:`bool`): if True, then add mesh node (bullet for nodes)
-            index (:class:`str`): index of a selected cell
-            s (:class:`float`): opacity parameter
-            indexPlaneProjected (:class:`str`): option for projection
-                    when dealing with 3D case
+        Arguments
+        ---------
+        optionMesh : str
+            Option for mesh visu (domain or interface).
+        suboptionMesh : str
+            Target problem (all pairs ? one selected pair ?).
+        optionPair : str
+            Option for the level of information one seek (mesh ? pairs ? intersection points ? quadrature points ?).
+        addNodeLabel : bool
+            If True, then add node labels (numbering).
+        addMeshNodes : bool
+            If True, then add mesh node (bullet for nodes).
+        addLegend : bool
+            If True, add the legend.
+        index : str
+            Index of a selected cell.
+        s : float
+            Opacity parameter.
+        indexPlaneProjected : str
+            Option for projection when dealing with 3D case.
         """
         self.checkInfosForPlot()
         fig = MMFig(
@@ -125,7 +143,7 @@ class PairingObject:
         fig.plot(s)
 
     def computebasicInfosFromPairs(self):
-        r"""Compute information associated to each cell in all the provided pairs"""
+        """Compute information associated to each cell in all the provided pairs"""
         # - Step 1: Compute unique indices for the first column
         unique_indices, counts = np.unique(self._listPairs[:, 0], return_counts=True)
         # Result as list [[index, number of occurrences]]
@@ -148,7 +166,7 @@ class PairingObject:
         self._listPairsDict = index_dict
 
     def getSlaveCellsPaired(self):
-        r"""Return the indices of slave cells that appear in pairs"""
+        """Return the indices of slave cells that appear in pairs"""
         if self._listPairsBasicInfo is None:
             self.computebasicInfosFromPairs()
         return self._listPairsBasicInfo[:, 0]
@@ -180,36 +198,50 @@ class PairingObject:
 # - Class to use when data dumped from pairing process
 class PairingAnalysisAsterFromPkl(PairingObject):
     def __init__(self, dimension, masterDomain, masterInterface, slaveDomain, slaveInterface):
-        r"""Constructor
+        """Constructor
 
-        Args:
-            dimension (:class:`int`): Dimension of the problem (2 or 3)
-            masterDomain (:class:`str`): Name of the master solid
-            masterInterface (:class:`str`): Name of the master interface
-            slaveDomain (:class:`str`): Name of the slave solid
-            slaveInterface (:class:`str`): Name of the slave interface
-            asterPairingProcess (:class:`AsterPairingProcess`)
+        Arguments
+        ---------
+        dimension : int
+            Dimension of the problem (2 or 3).
+        masterDomain : str
+            Name of the master solid.
+        masterInterface : str
+            Name of the master interface.
+        slaveDomain : str
+            Name of the slave solid.
+        slaveInterface : str
+            Name of the slave interface.
         """
         super().__init__(dimension, masterDomain, masterInterface, slaveDomain, slaveInterface)
 
     def setMeshInfos(self, coords, asterConnectivity):
-        r"""Set mesh informations: node coordinates and connectivity
+        """Set mesh informations: node coordinates and connectivity
 
-        Args:
-            coords (:class:`list`): node coordinates
-            asterConnectivity (:class:`list`): connectivity array"""
+        Arguments
+        ---------
+        coords : list
+            Node coordinates.
+        asterConnectivity : list
+            Connectivity array.
+        """
         self._coords = np.copy(coords)
         self._asterConnectivity = asterConnectivity
         # - Update flag
         self._flag_MeshInfos = True
 
     def setPairingInfos(self, listPairs, listIntersectionPts, listQuadraturePts):
-        r"""Set pairing informations:
+        """Set pairing informations:
 
-        Args:
-            listPairs (:class:`list`): list of pairs of cells
-            listIntersectionPts (:class:`list`): list of intersection points
-            listQuadraturePts (:class:`list`): list of quadrature points"""
+        Arguments
+        ---------
+        listPairs : list
+            List of pairs of cells.
+        listIntersectionPts : list
+            List of intersection points.
+        listQuadraturePts : list
+            List of quadrature points.
+        """
         # - Set pairing information
         self._listPairs = np.copy(listPairs)
         self._listIntersectionPts = np.copy(listIntersectionPts)
@@ -220,13 +252,19 @@ class PairingAnalysisAsterFromPkl(PairingObject):
     def setCellInfos(
         self, indices_grma_slv, indices_grma_mas, indices_grma_do_slv, indices_grma_do_mas
     ):
-        r"""Set cell informations:
+        """Set cell informations:
 
-        Args:
-            indices_grma_slv (:class:`list`): list of indices for the slave cells (interface)
-            indices_grma_mas (:class:`list`): list of indices for the master cells (interface)
-            indices_grma_do_slv (:class:`list`): list of indices for the slave cells (domain)
-            indices_grma_do_mas (:class:`list`): list of indices for the master cells (domain)"""
+        Arguments
+        ---------
+        indices_grma_slv : list
+            List of indices for the slave cells (interface).
+        indices_grma_mas : list
+            List of indices for the master cells (interface).
+        indices_grma_do_slv : list
+            List of indices for the slave cells (domain).
+        indices_grma_do_mas : list
+            List of indices for the master cells (domain).
+        """
         # - Slave side
         self._indicesSlaveDomain = indices_grma_do_slv
         self._indicesSlaveInterface = indices_grma_slv
@@ -248,15 +286,22 @@ class PairingAnalysisAster(PairingObject):
         slaveInterface,
         asterPairingProcess,
     ):
-        r"""Constructor
+        """Constructor
 
-        Args:
-            dimension (:class:`int`): Dimension of the problem (2 or 3)
-            masterDomain (:class:`str`): Name of the master solid
-            masterInterface (:class:`str`): Name of the master interface
-            slaveDomain (:class:`str`): Name of the slave solid
-            slaveInterface (:class:`str`): Name of the slave interface
-            asterPairingProcess (:class:`AsterPairingProcess`)
+        Arguments
+        ---------
+        dimension : int
+            Dimension of the problem (2 or 3).
+        masterDomain : str
+            Name of the master solid.
+        masterInterface : str
+            Name of the master interface.
+        slaveDomain : str
+            Name of the slave solid.
+        slaveInterface : str
+            Name of the slave interface.
+        asterPairingProcess : AsterPairingProcess
+            Previously computed AsterPairingProcess object.
         """
         super().__init__(dimension, masterDomain, masterInterface, slaveDomain, slaveInterface)
         self.setMeshInfos(asterPairingProcess)
@@ -264,10 +309,15 @@ class PairingAnalysisAster(PairingObject):
         self.setCellInfos(asterPairingProcess)
 
     def setMeshInfos(self, asterPairingProcess):
-        r"""Set mesh informations: node coordinates and connectivity
+        """Set mesh informations from an AsterPairingProcess object.
+        Mesh information include:
+            node coordinates
+            connectivity
 
-        Args:
-            asterPairingProcess (:class:`AsterPairingProcess`): previsouly computed AsterPairingProcess
+        Arguments
+        ---------
+        asterPairingProcess : AsterPairingProcess
+            Previously computed AsterPairingProcess object.
         """
         self._coords = np.copy(asterPairingProcess._coords)
         self._asterConnectivity = asterPairingProcess._asterConnectivity
@@ -275,13 +325,16 @@ class PairingAnalysisAster(PairingObject):
         self._flag_MeshInfos = True
 
     def setPairingInfos(self, asterPairingProcess):
-        r"""Set pairing informations:
-        list of pairs of cells
-        list of intersection points
-        list of quadrature points
+        """Set pairing informations from an AsterPairingProcess object.
+        Pairing information include:
+            list of pairs of cells
+            list of intersection points
+            list of quadrature points
 
-        Args:
-            asterPairingProcess (:class:`AsterPairingProcess`): previsouly computed AsterPairingProcess
+        Arguments
+        ---------
+        asterPairingProcess : AsterPairingProcess
+            Previously computed AsterPairingProcess object.
         """
         if asterPairingProcess._hasRun:
             self._listPairs = asterPairingProcess._listPairs
@@ -293,12 +346,15 @@ class PairingAnalysisAster(PairingObject):
             raise ValueError("No pairing has been computed before")
 
     def setCellInfos(self, asterPairingProcess):
-        r"""Set call informations:
-        list of indices for the slave cells (domain and interface)
-        list of indices for the slave cells (domain and interface)
+        """Set cell informations from an AsterPairingProcess object.
+        Cell informations include:
+            list of indices for the slave cells (domain and interface)
+            list of indices for the master cells (domain and interface)
 
-        Args:
-            asterPairingProcess (:class:`AsterPairingProcess`): previsouly computed AsterPairingProcess
+        Arguments
+        ---------
+        asterPairingProcess : AsterPairingProcess
+            Previously computed AsterPairingProcess object.
         """
         # - Slave side
         self._indicesSlaveDomain = asterPairingProcess._asterMesh.getCells(self._slvSolid)

@@ -23,9 +23,16 @@ from code_aster.visu.Pairing.convexPointSet import (
     CSStrat2DCodim0,
     CSStrat1D,
 )
+
+from code_aster.visu.Pairing.pairingObjects import (
+    PairingObject,
+    PairingAnalysisAsterFromPkl,
+    PairingAnalysisAster,
+)
 import numpy as np
 
 
+## - TEST FOR CLASSES IN convexPointSet
 class TestConvexSetPoint(unittest.TestCase):
     """Tests the ConvexSetPoint class"""
 
@@ -113,6 +120,205 @@ class TestCSStrat2DCodim1(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.norm(vec1), 1)
         self.assertAlmostEqual(np.linalg.norm(vec2), 1)
         self.assertAlmostEqual(np.linalg.norm(norm), 1)
+
+
+## - TEST FOR CLASSES IN pairingObjects
+
+
+class TestPairingObject(unittest.TestCase):
+
+    def setUp(self):
+        self.coords_test = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
+        self.connect_test = [[0, 1], [1, 2], [2, 3], [1, 4], [4, 5], [5, 2]]
+        self.list_pairs_test = np.array([[0, 1], [0, 2], [3, 4]])
+
+    class DummyPairingObject(PairingObject):
+        def setMeshInfos(self, *arg, **kwargs):
+            self._flag_MeshInfos = True
+
+        def setPairingInfos(self, *arg, **kwargs):
+            self._flag_PairingInfos = True
+
+        def setCellInfos(self, *arg, **kwargs):
+            self._flag_CellsInfos = True
+
+    def test_initError(self):
+        """Test the abstract instanciation of PairingObject"""
+        with self.assertRaises(TypeError):
+            PairingObject(2, "m", "mi", "s", "si")
+
+    def test_instanciationMeshInformationError(self):
+        """Test the getNodesCoordFromCellIndices logic"""
+        obj = self.DummyPairingObject(2, "m", "mi", "s", "si")
+        # Flag _flag_MeshInfos should be False by default
+        with self.assertRaisesRegex(ValueError, "Mesh informations have not been implemented."):
+            obj.getNodesCoordsFromCellIndices([0, 1])
+
+    def test_instanciationMeshInformation(self):
+        """Test the getNodesCoordFromCellIndices logic"""
+        obj = self.DummyPairingObject(2, "m", "mi", "s", "si")
+
+        obj._coords = self.coords_test
+        obj._asterConnectivity = self.connect_test
+        obj._flag_MeshInfos = True
+
+        cell_indices = [0, 3]
+        expected_node_indices = [0, 1, 4]
+        expected_coords = self.coords_test[expected_node_indices]
+
+        coords, node_indices = obj.getNodesCoordsFromCellIndices(cell_indices)
+
+        self.assertListEqual(node_indices, expected_node_indices)
+        np.testing.assert_array_equal(coords, expected_coords)
+
+    def test_computebasicInfosFromPairs_logic(self):
+        """Test the computebasicInfosFromPairs logic"""
+        obj = self.DummyPairingObject(2, "m", "mi", "s", "si")
+        obj._listPairs = self.list_pairs_test
+
+        obj.computebasicInfosFromPairs()
+
+        expected_basic_info = np.array([[0, 2], [3, 1]])
+        np.testing.assert_array_equal(obj._listPairsBasicInfo, expected_basic_info)
+
+        expected_dict = {
+            0: {"indicesCell": [1, 2], "indicesPairs": [0, 1]},
+            3: {"indicesCell": [4], "indicesPairs": [2]},
+        }
+        self.assertDictEqual(obj._listPairsDict, expected_dict)
+
+    def test_getSlaveCellsPaired_logic(self):
+        """Test the getSlaveCellsPaired logic"""
+        obj = self.DummyPairingObject(2, "m", "mi", "s", "si")
+        obj._listPairs = self.list_pairs_test
+
+        self.assertIsNone(obj._listPairsBasicInfo)
+
+        slave_cells = obj.getSlaveCellsPaired()
+
+        self.assertIsNotNone(obj._listPairsBasicInfo)
+        np.testing.assert_array_equal(slave_cells, np.array([0, 3]))
+
+
+class TestPairingAnalysisAsterFromPkl(unittest.TestCase):
+    def test_init_PairingAnalysisAsterFromPkl(self):
+        """Verifies that the constructor correctly initializes the object."""
+        # - Prepare the constructor
+        coords = np.array([[0.0, 0.0], [1.0, 1.0]])
+        connectivity = [[0, 1]]
+        listPairs = np.array([[0, 1]])
+        listIntersectionPts = np.array([[0.5, 0.5]])
+        listQuadraturePts = np.array([[0.25, 0.25]])
+        indices_slv = [0, 2, 4]
+        indices_mas = [1, 3, 5]
+        indices_do_slv = [10, 12, 14]
+        indices_do_mas = [11, 13, 15]
+
+        obj = PairingAnalysisAsterFromPkl(
+            dimension=2,
+            masterDomain="m",
+            masterInterface="mi",
+            slaveDomain="s",
+            slaveInterface="si",
+        )
+
+        self.assertFalse(obj._flag_MeshInfos, "_flag_MeshInfos should be False")
+        self.assertFalse(obj._flag_PairingInfos, "_flag_PairingInfos should be False")
+        self.assertFalse(obj._flag_CellsInfos, "_flag_CellsInfos should be False")
+
+        obj.setMeshInfos(coords, connectivity)
+        self.assertTrue(obj._flag_MeshInfos, "_flag_MeshInfos should be True")
+
+        # - Check mesh information (from setMeshInfos)
+        np.testing.assert_array_equal(
+            obj._coords, coords, "_coords attribute was not initialized correctly."
+        )
+        self.assertEqual(
+            obj._asterConnectivity,
+            connectivity,
+            "_asterConnectivity attribute was not initialized correctly.",
+        )
+
+        obj.setPairingInfos(listPairs, listIntersectionPts, listQuadraturePts)
+        self.assertTrue(obj._flag_MeshInfos, "_flag_MeshInfos should be True")
+
+        # - Check pairing information (from setPairingInfos)
+        np.testing.assert_array_equal(
+            obj._listPairs, listPairs, "_listPairs attribute was not initialized correctly."
+        )
+        np.testing.assert_array_equal(
+            obj._listIntersectionPts,
+            listIntersectionPts,
+            "_listIntersectionPts attribute was not initialized correctly.",
+        )
+        np.testing.assert_array_equal(
+            obj._listQuadraturePts,
+            listQuadraturePts,
+            "_listQuadraturePts attribute was not initialized correctly.",
+        )
+
+        obj.setCellInfos(indices_slv, indices_mas, indices_do_slv, indices_do_mas)
+        self.assertTrue(obj._flag_CellsInfos, "_flag_CellsInfos should be True")
+
+        # - Check cell information (from setCellInfos)
+        self.assertEqual(
+            obj._indicesSlaveInterface,
+            indices_slv,
+            "_indicesSlaveInterface attribute was not initialized correctly.",
+        )
+        self.assertEqual(
+            obj._indicesMasterInterface,
+            indices_mas,
+            "_indicesMasterInterface attribute was not initialized correctly.",
+        )
+        self.assertEqual(
+            obj._indicesSlaveDomain,
+            indices_do_slv,
+            "_indicesSlaveDomain attribute was not initialized correctly.",
+        )
+        self.assertEqual(
+            obj._indicesMasterDomain,
+            indices_do_mas,
+            "_indicesMasterDomain attribute was not initialized correctly.",
+        )
+
+
+class TestPairingAnalysisAster(unittest.TestCase):
+
+    def test_init_TestPairingAnalysisAster(self):
+        """Test initialization with a mock (if aster pairing has been computed)"""
+        mock_aster_process = unittest.mock.Mock()
+        mock_aster_process._hasRun = True
+        mock_aster_process._coords = np.array([[0.0, 0.0]])
+        mock_aster_process._asterConnectivity = [[0]]
+        mock_aster_process._listPairs = np.array([[0, 1]])
+        mock_aster_process._intePointsList = np.array([[0.5, 0.5]])
+        mock_aster_process._quadPointsList = np.array([[0.25, 0.25]])
+
+        # - Mock the getCells method
+        mock_aster_process._asterMesh.getCells.side_effect = [
+            ["10"],  # First call _slvSolid
+            ["0"],  # Second call _slvtInt
+            ["11"],  # Third call for _mastSolid
+            ["1"],  # Fourth call for _mastInt
+        ]
+
+        obj = PairingAnalysisAster(2, "m_solid", "m_int", "s_solid", "s_int", mock_aster_process)
+
+        self.assertTrue(obj._flag_MeshInfos)
+        self.assertTrue(obj._flag_PairingInfos)
+        self.assertTrue(obj._flag_CellsInfos)
+        np.testing.assert_array_equal(obj._listPairs, mock_aster_process._listPairs)
+        self.assertEqual(obj._indicesSlaveDomain, [10])
+        self.assertEqual(obj._indicesMasterInterface, [1])
+
+    def test_init_raises_error_if_pairing_not_run(self):
+        """Test initialization with a mock (if aster pairing has not been computed)"""
+        mock_aster_process = unittest.mock.Mock()
+        mock_aster_process._hasRun = False
+
+        with self.assertRaisesRegex(ValueError, "No pairing has been computed before"):
+            PairingAnalysisAster(2, "m", "mi", "s", "si", mock_aster_process)
 
 
 if __name__ == "__main__":
