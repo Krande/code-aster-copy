@@ -86,13 +86,13 @@ subroutine te0116(option, nomte)
     postIncr = compor(POSTINCR)
     ASSERT(nbVari .le. nbVariMaxi)
 
-! - Type of hardening to apply annealing
-    call metaAnnealGetType(relaComp, lHardIsot, lHardKine, lHardMixed, nbVariAnneal)
-
 ! - Get output field
     call jevech('PVARIPR', 'E', jvVariOut)
 !
     if (postIncr .eq. 'REST_ECRO') then
+! ----- Type of hardening to apply annealing
+        call metaAnnealGetType(relaComp, lHardIsot, lHardKine, lHardMixed, nbVariAnneal)
+
 ! ----- Get annealing parameters on cell
         call getAnnealingParaOnCell(fami, zi(jvMater), &
                                     T1, T2, &
