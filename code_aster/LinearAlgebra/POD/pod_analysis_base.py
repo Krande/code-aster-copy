@@ -19,347 +19,10 @@
 import abc
 import scipy.sparse
 import numpy as np
-from ..Utilities import PETSc, SLEPc
-from mpi4py import MPI
+from ...Utilities import PETSc, SLEPc, MPI, no_new_attributes
 
 # GENERAL PARAMETERS FOR THE MODULE
 TOL_NUM = 1e-9
-comm = MPI.COMM_WORLD
-global_size = comm.Get_size()
-
-
-# FUNCTIONNALITIES TO EXTRACT SNAPSHOT MATRIX FROM RESULT
-def findIndexCHAM(lst, s):
-    """Find the index of the first occurrence of an element in a list.
-
-    Arguments
-    ----------
-    lst : list
-        The list to search within.
-    s : any
-        The element to find in the list.
-
-    Returns
-    -------
-    int or None
-        The index of the first occurrence of `s` in `lst`, or `None` if the
-        element is not present.
-    """
-    try:
-        return lst.index(s)
-    except ValueError:
-        return None
-
-
-def extractSnapshotsFromResult(result, chamName, format, indexSteps=None):
-    """
-    Extraction of snapshots from a SD RESULTAT.
-
-    Arguments
-    ----------
-    result : SD RESULTAT
-        code_aster result in which we seek snapshots
-    chamName : str
-        Name of the field in the result (example: DEPL or SIEF_ELGA)
-    format : str
-        Format of the snapshots (should be numpy or PETSc vectors)
-    indexSteps : list or None
-        List of the indices of the snapshots we seek to keep
-
-    Returns
-    -------
-    snapshots : numpy.ndarray
-        Snapshot array. Each column contains a given snapshot (size = number of dofs * number of snapshots).
-    """
-    AVALAIBLE_FORMAT = ["numpy", "petsc"]
-    assert format in AVALAIBLE_FORMAT
-
-    ## - Checks for the extraction procedure
-    fieldsNames = result.getFieldsNames()
-    if not fieldsNames:
-        raise ValueError("Error in extraction procedure: No fields available in RESULTAT")
-    chamIndex = findIndexCHAM(fieldsNames, chamName)
-    if chamIndex is None:
-        raise ValueError("Error in extraction procedure: Couldn't find the asked field in RESULTAT")
-    ## - Get proper data-structure for indexSteps : either None, int or list
-    # if indexSteps is an integer, should be modified to be a list
-    if indexSteps is None:
-        # if None, all the timesteps are taken into account
-        indStepsList = result.getIndexes()
-        if isinstance(indStepsList, int):
-            indStepsList = [indStepsList]
-    else:
-        if isinstance(indexSteps, int):
-            indStepsList = [indexSteps]
-        else:
-            indStepsList = indexSteps
-    ## - Extraction of the snapshots
-    if format == "numpy":
-        snapshots = []
-
-        for idx in indStepsList:
-            if idx not in result.getIndexes():
-                raise ValueError(
-                    f"Error in extraction procedure: Timestep index {idx} is not available in RESULTAT"
-                )
-            cham = result.getField(chamName, idx)
-            values = cham.getValues()
-            snapshots.append(np.array(values))
-
-        return np.column_stack(snapshots)
-    elif format == "petsc":
-        neqg = result.getEquationNumberings()[0].getNumberOfDOFs(local=False)
-        ndindices = len(indStepsList)  # result.getNumberOfIndexes()
-        snapshotsT = PETSc.Mat().createDense([ndindices, neqg], comm=comm)
-
-        row = 0
-        for idx in indStepsList:
-            if idx not in result.getIndexes():
-                raise ValueError(
-                    f"Error in extraction procedure: Timestep index {idx} is not available in RESULTAT"
-                )
-            cham = result.getField(chamName, idx)
-            vec = cham.toPetsc()
-            i_start, i_end = vec.getOwnershipRange()
-            vec_array = vec.getArray(readonly=True)
-            snapshotsT.setValues(
-                row,
-                np.arange(i_start, i_end, dtype="int32"),
-                vec_array,
-                addv=PETSc.InsertMode.INSERT_VALUES,
-            )
-            row += 1
-        snapshotsT.assemble()
-        return snapshotsT.transpose()
-    else:
-        raise ValueError(
-            f"Snapshot extraction: parameter '{format}' is not valid. Choose format in {AVALAIBLE_FORMAT}."
-        )
-
-
-def transferSnapshotsToPETSC(snapshots):
-    """Converts a snapshot matrix (numpy) into a PETSc matrix.
-
-    .. warning::
-       This implementation should not be used in parallel distributed
-       versions.
-
-    Arguments
-    ----------
-    snapshots : numpy.ndarray
-        The snapshot matrix to be converted.
-
-    Returns
-    -------
-    snapshots_petsc : PETSc.Mat
-        The snapshot matrix in PETSc format.
-    """
-    snapshots_petsc = PETSc.Mat().createDense(snapshots.shape, array=snapshots, comm=comm)
-    snapshots_petsc.assemble()
-    return snapshots_petsc
-
-
-# POST-TREATMENT FUNCTIONNALITIES
-
-
-def computeProjectionErrors(Phi, snapshots):
-    """Compute the projection errors on snaphots knowing a reduced order basis
-
-    Arguments
-    ----------
-    Phi : numpy.ndarray or PETSc.Mat
-        Reduced order basis.
-    snapshots : numpy.ndarray  or PETSc.Mat
-        Snapshot array. Each column contains a given snapshot (size = number of dofs * number of snapshots).
-
-    .. warning::
-        Phi and snapshots should have the same type. If not, a TypeError will be raised.
-
-    Returns
-    -------
-    abs_errors_arr : numpy.ndarray
-        Array of absolute projection error
-    rel_errors_arr : numpy.ndarray
-        Array of relative projection error
-    """
-    abs_errors_arr = []
-    rel_errors_arr = []
-
-    if isinstance(Phi, np.ndarray) and isinstance(snapshots, np.ndarray):
-        for i in range(snapshots.shape[1]):
-            u = snapshots[:, i]
-            ## - Projection and reconstruction
-            u_proj = Phi @ (Phi.T @ u)
-            ## - Compute errors
-            norm_u = np.linalg.norm(u)
-            abs_error = np.subtract(u, u_proj)
-
-            if norm_u > TOL_NUM:
-                rel_error = np.linalg.norm(abs_error) / norm_u
-            else:
-                rel_error = 0.0
-
-            abs_errors_arr.append(np.linalg.norm(abs_error))
-            rel_errors_arr.append(rel_error)
-
-        return np.array(abs_errors_arr), np.array(rel_errors_arr)
-    elif isinstance(Phi, PETSc.Mat) and isinstance(snapshots, PETSc.Mat):
-        n_dim, n_snapshots = snapshots.getSize()
-        u_vec = Phi.createVecLeft()
-        u_proj_vec = Phi.createVecLeft()
-        abs_error_vec = Phi.createVecLeft()
-        projected_coords_vec = Phi.createVecRight()
-
-        for i in range(n_snapshots):
-            snapshots.getColumnVector(i, u_vec)
-            Phi.multTranspose(u_vec, projected_coords_vec)
-            Phi.mult(projected_coords_vec, u_proj_vec)
-            u_vec.copy(result=abs_error_vec)
-            abs_error_vec.axpy(-1.0, u_proj_vec)
-
-            norm_u = u_vec.norm(PETSc.NormType.NORM_2)
-            abs_error = abs_error_vec.norm(PETSc.NormType.NORM_2)
-
-            if norm_u > TOL_NUM:
-                rel_error = abs_error / norm_u
-            else:
-                rel_error = 0.0
-            abs_errors_arr.append(abs_error)
-            rel_errors_arr.append(rel_error)
-        return np.array(abs_errors_arr), np.array(rel_errors_arr)
-    else:
-        raise TypeError(
-            f"Unsupported type for Phi and snapshots (same type for both is expected). "
-            "Only numpy.ndarray and PETSc.Mat are supported."
-        )
-
-
-def is_orthonormal_basis(matrix, corrOp):
-    """
-    Checks if the columns of a given matrix form an orthonormal basis.
-    The function is dispatched based on the matrix type and works for both
-    dense numpy arrays and distributed PETSc matrices in parallel.
-
-    Arguments
-    ----------
-    matrix : numpy.ndarray or PETSc.Mat
-        The matrix whose columns are to be checked.
-    corrOp : numpy.ndarray, scipy.sparse.spmatrix, or PETSc.Mat
-        The correlation operator defining the inner product
-
-    Returns
-    -------
-    bool
-        True if the columns form an orthonormal basis within the given
-        tolerance, False otherwise.
-
-    Raises
-    ------
-    TypeError
-        If the input matrix is not a supported type.
-    """
-    tol = TOL_NUM
-    if isinstance(matrix, np.ndarray):
-        if isinstance(corrOp, (np.ndarray, scipy.sparse.csr_matrix)):
-            return _is_orthonormal_numpy(matrix, corrOp, tol)
-        else:
-            raise TypeError(
-                f"With a numpy `matrix`, `corrOp` must be numpy or scipy sparse, "
-                f"not {type(corrOp).__name__}."
-            )
-    elif isinstance(matrix, PETSc.Mat):
-        if isinstance(corrOp, PETSc.Mat):
-            return _is_orthonormal_petsc(matrix, corrOp, tol)
-        else:
-            raise TypeError(
-                f"With a PETSc `matrix`, `corrOp` must also be PETSc.Mat, "
-                f"not {type(corrOp).__name__}."
-            )
-    else:
-        raise TypeError(
-            f"Unsupported type for `matrix`: {type(matrix).__name__}. "
-            "Only numpy.ndarray and PETSc.Mat are supported."
-        )
-
-
-def _is_orthonormal_numpy(matrix, corrOp, tol):
-    """numpy/scipy implementation for checking orthonormality.
-
-    Arguments
-    ----------
-    matrix : numpy.ndarray
-        The basis matrix, with vectors as columns.
-    corrOp : numpy.ndarray or scipy.sparse.csr_matrix
-        The correlation operator for the inner product.
-    tol : float
-        The absolute tolerance for the numerical comparison.
-
-    Returns
-    -------
-    bool
-        True if the basis is orthonormal, False otherwise.
-    """
-    n_cols = matrix.shape[1]
-    if n_cols == 0:
-        return True
-
-    identity_check = matrix.T @ corrOp @ matrix
-
-    identity = np.identity(n_cols)
-    return np.allclose(identity_check, identity, atol=tol, rtol=0)
-
-
-def _is_orthonormal_petsc(matrix, corrOp, tol):
-    """PETSc implementation for checking orthonormality.
-
-    Arguments
-    ----------
-    matrix : PETSc.Mat
-        The basis matrix, with vectors as columns.
-    corrOp : PETSc.Mat
-        The correlation operator for the inner product.
-    tol : float
-        The absolute tolerance for the numerical comparison.
-
-    Returns
-    -------
-    bool
-        True if the basis is orthonormal, False otherwise.
-    """
-    comm = matrix.getComm()
-    n_cols = matrix.getSize()[1]
-
-    if n_cols == 0:
-        return True
-
-    ## - Create temporary vectors
-    qi = matrix.createVecLeft()
-    qj = matrix.createVecLeft()
-    temp_vec = corrOp.createVecLeft()
-    ## - Double loop
-    is_orthonormal_local = True
-    for i in range(n_cols):
-        matrix.getColumnVector(i, qi)
-
-        for j in range(i, n_cols):
-            matrix.getColumnVector(j, qj)
-
-            corrOp.mult(qj, temp_vec)
-            dot_product = qi.dot(temp_vec)
-
-            ## - Check the value
-            target = 1.0 if i == j else 0.0
-            if abs(dot_product - target) > tol:
-                is_orthonormal_local = False
-                break
-
-        if not is_orthonormal_local:
-            break
-    ## - Synchronization
-    mpi_comm = comm.tompi4py()
-    global_is_orthonormal = mpi_comm.allreduce(is_orthonormal_local, op=MPI.LAND)
-    return global_is_orthonormal
-
 
 # CLASS DEFINITION FOR A POD ANALYSIS
 POD_METHOD = ["SVD", "snapshot", "GS-classical", "GS-modified"]
@@ -376,26 +39,44 @@ class PODAnalysisBase(abc.ABC):
     Abstract class for building a base incrementally using POD.
 
     This class is designed to build a base from a set of snapshots.
+
+    Attributes:
+    _snapshots : Any
+        Matrix of snapshots.
+    _numberOfDOFs : int | None
+        Number of degrees of freedom of the problem.
+    _numberOfSnapshots : int | None
+        Number of snapshots.
+    _corrOperator : PETSc.Mat | None
+        Correlation operator.
+    _methodCompress : str | None
+        Method used to compress the data (e.g., 'svd').
+    _criterionModes : str | None
+        Method used to choose the number of modes (e.g., 'tolerance').
+    _crit_tolerance : float | None
+        Tolerance for the POD basis construction.
+    _crit_nbModes : int | None
+        Fixed number of modes for the POD basis construction.
+    _tol_num : float | None
+        Numerical tolerance for various computations.
     """
 
-    _METHOD_ATTRS = (
-        "_methodCompress",  # Method used to compress the data
-        "_criterionModes",  # Method used to choose the number of modes
-    )
+    _methodCompress = _criterionModes = None
+    _crit_tolerance = _crit_nbModes = _tol_num = None
+    _snapshots = _numberOfDOFs = _numberOfSnapshots = _corrOperator = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
-    _HYPERPARAM_ATTRS = (
-        "_crit_tolerance",  # Tolerance for the POD basis construction (SVD, POD, etc)
-        "_crit_nbModes",  # Number of modes for the POD basis construction (SVD, POD, etc)
-        "_tol_num",  # Numerical tolerance for the POD basis construction (SVD, POD, etc)
-    )
-    _STATES_ATTRS = (
-        "_snapshots",  # Matrix of snapshots
-        "_numberOfDOFs",  # Number of degrees of freedom of the problem
-        "_numberOfSnapshots",  # Number of snapshots
-        "_corrOperator",  # Correlation operator
-    )
-
-    __slots__ = _METHOD_ATTRS + _HYPERPARAM_ATTRS + _STATES_ATTRS
+    @staticmethod
+    def factory(snapshots, **kwargs):
+        """
+        Factory method for PODAnalysisBase
+        """
+        if isinstance(snapshots, np.ndarray):
+            return PODAnalysisNumpy(snapshots, **kwargs)
+        elif isinstance(snapshots, PETSc.Mat):
+            return PODAnalysisPetsc(snapshots, **kwargs)
+        else:
+            raise TypeError(f"The snapshot type is not supported : {type(snapshots).__name__}")
 
     def __init__(
         self, snapshots, method="SVD", criterion="energy", tolerance=None, nbModes=None, corrOp=None
@@ -406,23 +87,15 @@ class PODAnalysisBase(abc.ABC):
         the decomposition hyperparameters, and preparing the operators
         required for the analysis.
 
-        Arguments
-        ----------
-        snapshots : Matrix (e.g., numpy.ndarray, PETSc.Mat)
-            Matrix of snapshots, where each column represents a system snapshot.
-        method : str, optional
-            Compression method to be used for the decomposition. By default, "SVD".
-        criterion : str, optional
-            Criterion to determine the number of modes to retain.
-            Options: 'energy', 'nbModes'. By default, "energy".
-        tolerance : float, optional
-            Tolerance threshold for the 'energy' criterion, defining the
-            cumulative energy to be preserved. Required if `criterion` is 'energy'.
-        nbModes : int, optional
-            Fixed number of modes to retain. Required if `criterion` is 'nbModes'.
-        corrOp : Matrix, optional
-            Correlation operator (e.g., mass matrix) for the inner product.
-            If `None`, the Euclidean inner product is used. By default, `None`.
+        Arguments:
+            snapshots (Matrix): Matrix of snapshots, where each column represents a system snapshot (e.g., numpy.ndarray, PETSc.Mat).
+            method (str, optional): Compression method to be used for the decomposition. By default, "SVD".
+            criterion (str, optional): Criterion to determine the number of modes to retain. Options: 'energy', 'nbModes'. By default, "energy".
+            tolerance (float, optional): Tolerance threshold for the 'energy' criterion, defining the cumulative energy to be preserved.
+                Required if `criterion` is 'energy'.
+            nbModes (int, optional): Fixed number of modes to retain. Required if `criterion` is 'nbModes'.
+            corrOp (Matrix | None, optional): Correlation operator (e.g., mass matrix) for the inner product.
+                If `None`, the Euclidean inner product is used. By default, `None`.
         """
         self._snapshots = snapshots  # Each column is a snapshot
         ## - Initialisation parameters
@@ -441,14 +114,14 @@ class PODAnalysisBase(abc.ABC):
         self.setCriterionModes(criterion)
         ## - Tests
         self.correctionSnapshots()
-        self.validate_method_attrs()
-        self.validate_hyperparam_attrs()
-        self.validate_method_state()
+        self.validateMethodAttrs()
+        self.validateHyperParametersAttrs()
+        self.validateMethodState()
         self.runCompatibilityTests()
         assert self._methodCompress is not None
         assert self._criterionModes is not None
 
-    def validate_method_attrs(self):
+    def validateMethodAttrs(self):
         """Check the attributes associated to the numerical method (compression method and mode selection criterion)."""
         if self._methodCompress not in POD_METHOD:
             raise ValueError(
@@ -459,7 +132,7 @@ class PODAnalysisBase(abc.ABC):
                 f"PODAnalysisBase: criterion '{self._criterionModes}' is not valid. Choose method in {self._criterionModes}."
             )
 
-    def validate_hyperparam_attrs(self):
+    def validateHyperParametersAttrs(self):
         """Check the attributes associated to the numerical hyperparameters (tolerances, etc)"""
         if self._crit_tolerance is not None and (
             not isinstance(self._crit_tolerance, float) or self._crit_tolerance <= 0
@@ -479,7 +152,7 @@ class PODAnalysisBase(abc.ABC):
             )
 
     @abc.abstractmethod
-    def validate_method_state(self):
+    def validateMethodState(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
         pass
 
@@ -512,26 +185,29 @@ class PODAnalysisBase(abc.ABC):
         """Method to construct a reduced order basis by POD
         using the stored snapshots
 
-        Arguments
-        ----------
-        option : int
-            Changes the outputs of the function. If option=1, only reduced order basis.
-            If option=2, returns reduced order basis and singular values.
-
+        Arguments:
+            option (int): Changes the outputs of the function. If option=1, only reduced order basis. If option=2, returns reduced order basis and singular values.
         """
         assert option in OPTION_POD_VALUES
         return self.POD(self._snapshots, option=option)
 
     @abc.abstractmethod
     def setInfosSnapshots(self):
+        """Store information about the size of the snapshot matrix"""
         pass
 
     @abc.abstractmethod
     def setCorrelationOperator(self, corrOperator=None):
+        """Set method for the correlation operator
+
+        Arguments:
+            corrOperator (Any): Correlation operator when using the method of snapshots
+        """
         pass
 
     @abc.abstractmethod
     def correctionSnapshots(self):
+        """Correct the snapshots by removing null values"""
         pass
 
     def selectModes(self, Phi, singval, tolerance=None, nbModes=None):
@@ -540,23 +216,15 @@ class PODAnalysisBase(abc.ABC):
         The selection is performed according to the `_criterionModes` attribute,
         which can be 'energy' (using `tolerance`) or 'nbModes'.
 
-        Arguments
-        ----------
-        Phi : format depends on class
-            The full matrix of POD modes.
-        singval : numpy.ndarray
-            The array of all singular values.
-        tolerance : float, optional
-            Tolerance for the 'energy' criterion. Defaults to None.
-        nbModes : int, optional
-            Number of modes for the 'nbModes' criterion. Defaults to None.
+        Arguments:
+            Phi (Any): The full matrix of POD modes (format depends on class).
+            singval (numpy.ndarray): The array of all singular values.
+            tolerance (float | None, optional): Tolerance for the 'energy' criterion. Defaults to None.
+            nbModes (int | None, optional): Number of modes for the 'nbModes' criterion. Defaults to None.
 
-        Returns
-        -------
-        Phi_v : format depends on class
-            The truncated matrix of POD modes (reduced order basis).
-        singval_v : numpy.ndarray
-            The truncated array of singular values.
+        Returns:
+            Phi_v (Any): The truncated matrix of POD modes (reduced order basis).
+            singval_v (numpy.ndarray): The truncated array of singular values.
         """
         ## - Test
         if tolerance is None and nbModes is None:
@@ -587,25 +255,26 @@ class PODAnalysisBase(abc.ABC):
 
     @abc.abstractmethod
     def correctionModesAfterSelection(self, Phi, nbModes_v):
+        """Construction of a reduced basis by selecting
+        the most important modes (the first nbModes_v)
+
+        Arguments:
+            Phi (Any): Basis
+            nbModes_v (int): number of modes to keep (the first ones)
+        """
         pass
 
     def POD(self, matS, option):
         """Method to construct a reduced order basis by POD
 
-        Arguments
-        ----------
-        matS : format depends on class
-            Matrix of snapshots on which the POD operator should be applied
-        option : int
-            Changes the outputs of the function. If option=1, only reduced order basis.
-            If option=2, returns reduced order basis and singular values.
+        Arguments:
+            matS (Any): Matrix of snapshots on which the POD operator should be applied
+            option (int): Changes the outputs of the function. If option=1, only reduced order basis.
+                If option=2, returns reduced order basis and singular values.
 
-        Returns
-        -------
-        Phi : format depends on class
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values (only if option=2)
+        Returns:
+            Phi (Any): Reduced order basis
+            singval (numpy.ndarray): Singular values (only if option=2)
         """
         assert option in OPTION_POD_VALUES
         ## - Compression step
@@ -638,40 +307,94 @@ class PODAnalysisBase(abc.ABC):
 
     @abc.abstractmethod
     def SVDMethod(self, matS, verbose=True):
+        """Compression method using the snapshot method on a correlation matrix
+
+        Arguments:
+            matS (Any): Matrix of snapshots on which the POD operator should be applied
+
+        Returns:
+            Phi (Any): Reduced order basis
+            singval (numpy.ndarray): Singular values
+        """
         pass
 
     @abc.abstractmethod
     def snapshotMethod(self, matS):
+        """Compression method using SVD on the snapshot matrix
+
+        Arguments:
+            matS (Any): Matrix of snapshots on which the POD operator should be applied
+
+        Returns:
+            Phi (Any): Reduced order basis
+            singval (numpy.ndarray): Singular values
+        """
         pass
 
     @abc.abstractmethod
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
+        """Compression method using a Gram-Schmidt process
+
+        Arguments:
+            matS (Any): Matrix of snapshots on which the POD operator should be applied
+            tole (float): Tolerance used for the test when adding new snapshot
+            methodGS (str): Should be "classical" or "modified" = GS method applied
+
+        Returns:
+            Phi (numpy.ndarray): Reduced order basis
+            singval (numpy.ndarray): Singular values
+        """
         pass
 
     @abc.abstractmethod
     def computeGSprojection(self, Phi, s_new, methodGS):
+        """Compute a Gram-Schmidt projection
+
+        Arguments:
+            Phi (Any): Basis
+            s_new (Any): New snapshot considered
+            methodGS (str): Should be "classical" or "modified" = GS method applied
+
+        Returns:
+            numpy.ndarray: Projected snapshot
+        """
         pass
 
     @abc.abstractmethod
     def GSMethod(self, matS, tole, methodGS):
+        """Compression method using a Gram-Schmidt process
+
+        Arguments:
+            matS (Any): Matrix of snapshots on which the POD operator should be applied
+            tole (float): Tolerance used for the test when adding new snapshot
+            methodGS (str): Should be "classical" or "modified" = GS method applied
+
+        Returns:
+            Phi (Any): Reduced order basis
+            singval (numpy.ndarray): Singular values
+        """
         pass
 
     @abc.abstractmethod
     def computePODBasisIncremental(self, Phi, singval=None, method="HPOD", option=1):
+        """Method to enrich a reduced order basis with the stored snapshots
+
+        Arguments:
+            Phi (Any): Reduced order basis which has been previously computed
+            method (str): Name of the incremental approach to use
+            option (int): Changes the outputs of the function. If option=1, only reduced order basis.
+                If option=2, returns reduced order basis and singular values.
+        """
         pass
 
     def computeDecayRate(self, singval):
         """Compute a decay rate of a list of singular values
 
-        Arguments
-        ----------
-        singval : numpy.ndarray
-            Singular values (order in a decreasing manner)
+        Arguments:
+            singval (numpy.ndarray): Singular values (order in a decreasing manner)
 
-        Returns
-        -------
-        Phi : float
-            Decay rate
+        Returns:
+            float: Decay rate
         """
         nbSing = len(singval)
 
@@ -685,14 +408,12 @@ class PODAnalysisBase(abc.ABC):
         decayRate = (nbSing * np.dot(Y.T, N) - sum_N * sum_Y) / (nbSing * sum2_N - sum_N**2)
         return decayRate
 
-    def _validate_incremental_params(self, singval, method, option):
+    def validateIncrementalParams(self, singval, method, option):
         """
         Validates parameters for the incremental POD computation.
 
-        Raises
-        ------
-        ValueError
-            If parameter combinations are invalid.
+        Raises:
+            ValueError: If parameter combinations are invalid.
         """
         assert method in INCR_POD_METHOD
         assert option in OPTION_POD_VALUES
@@ -709,12 +430,16 @@ class PODAnalysisBase(abc.ABC):
 
 
 class PODAnalysisNumpy(PODAnalysisBase):
+    """
+    Class for building a base incrementally using POD
+    when using numpy arrays for storage
+    """
 
     def __init__(self, *args, **kwargs):
         "Initialization of PODAnalysisNumpy"
         super().__init__(*args, **kwargs)
 
-    def validate_method_state(self):
+    def validateMethodState(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
         if not isinstance(self._corrOperator, (np.ndarray, scipy.sparse.csr_matrix)):
             raise TypeError("The correlation operator should be a CSR matrix or a numpy matrix")
@@ -729,10 +454,8 @@ class PODAnalysisNumpy(PODAnalysisBase):
     def setCorrelationOperator(self, corrOperator=None):
         """Set method for the correlation operator
 
-        Arguments
-         ----------
-         corrOperator : scipy.sparse.csr_matrix or None
-             Correlation operator when using the method of snapshots
+        Arguments:
+            corrOperator (scipy.sparse.csr_matrix | None): Correlation operator when using the method of snapshots
         """
         if corrOperator is None:
             self._corrOperator = scipy.sparse.identity(self._numberOfDOFs, format="csr")
@@ -748,29 +471,22 @@ class PODAnalysisNumpy(PODAnalysisBase):
         """Construction of a reduced basis by selecting
         the most important modes (the first nbModes_v)
 
-        Arguments
-        ----------
-        Phi : numpy.ndarray
-            Basis
-        nbModes_v : int
-            number of modes to keep (the first ones)
+        Arguments:
+            Phi (numpy.ndarray): Basis
+            nbModes_v (int): number of modes to keep (the first ones)
         """
         return Phi[:, :nbModes_v]
 
     def computePODBasisIncremental(self, Phi, singval=None, method="HPOD", option=1):
         """Method to enrich a reduced order basis with the stored snapshots
 
-        Arguments
-        ----------
-        Phi : numpy.ndarray
-            Reduced order basis which has been previously computed
-        method : str
-            Name of the incremental approach to use
-        option : int
-            Changes the outputs of the function. If option=1, only reduced order basis.
+        Arguments:
+            Phi (numpy.ndarray): Reduced order basis which has been previously computed
+            method (str): Name of the incremental approach to use
+            option (int): Changes the outputs of the function. If option=1, only reduced order basis.
             If option=2, returns reduced order basis and singular values.
         """
-        self._validate_incremental_params(singval, method, option)
+        self.validateIncrementalParams(singval, method, option)
         if method == "HPOD":
             matS = self._snapshots
             projS = np.zeros(np.shape(matS))
@@ -796,27 +512,16 @@ class PODAnalysisNumpy(PODAnalysisBase):
             )
 
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
-        """Update a basis with a new snapshot method using a Gram-Schmidt process
+        """Compression method using a Gram-Schmidt process
 
-        Arguments
-        ----------
-        Phi : numpy.ndarray
-            Basis to enrich
-        singval : numpy.ndarray
-            Singular values
-        snapshot_new : numpy.ndarray
-            Snapshot to add
-        tole : float
-            Tolerance used for the test when adding new snapshot
-        methodGS : str
-            Should be "classical" or "modified" = GS method applied
+        Arguments:
+            matS (numpy.ndarray): Matrix of snapshots on which the POD operator should be applied
+            tole (float): Tolerance used for the test when adding new snapshot
+            methodGS (str): Should be "classical" or "modified" = GS method applied
 
-        Returns
-        -------
-        Phi : numpy.ndarray
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Returns:
+            Phi (numpy.ndarray): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         assert methodGS in GS_METHOD
         ## - Check that the added snapshot is 1D
@@ -833,21 +538,14 @@ class PODAnalysisNumpy(PODAnalysisBase):
     def GSMethod(self, matS, tole, methodGS):
         """Compression method using a Gram-Schmidt process
 
-        Arguments
-        ----------
-        matS : numpy.ndarray
-            Matrix of snapshots on which the POD operator should be applied
-        tole : float
-            Tolerance used for the test when adding new snapshot
-        methodGS : str
-            Should be "classical" or "modified" = GS method applied
+        Arguments:
+            matS (numpy.ndarray): Matrix of snapshots on which the POD operator should be applied
+            tole (float): Tolerance used for the test when adding new snapshot
+            methodGS (str): Should be "classical" or "modified" = GS method applied
 
-        Returns
-        -------
-        Phi : numpy.ndarray
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Returns:
+            Phi (numpy.ndarray): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         s_0_norm = np.linalg.norm(matS[:, 0])
         Phi = matS[:, 0:1] / s_0_norm
@@ -860,19 +558,13 @@ class PODAnalysisNumpy(PODAnalysisBase):
     def computeGSprojection(self, Phi, s_new, methodGS):
         """Compute a Gram-Schmidt projection
 
-        Arguments
-        ----------
-        Phi : numpy.ndarray
-            Basis
-        s_new : numpy.ndarray
-            New snapshot considered
-        methodGS : str
-            Should be "classical" or "modified" = GS method applied
+        Arguments:
+            Phi (numpy.ndarray): Basis
+            s_new (numpy.ndarray): New snapshot considered
+            methodGS (str): Should be "classical" or "modified" = GS method applied
 
-        Returns
-        -------
-        s_proj : numpy.ndarray
-            Projected snapshot
+        Returns:
+            numpy.ndarray: Projected snapshot
         """
         assert methodGS in GS_METHOD
         ## - GS orthogonalisation
@@ -888,18 +580,14 @@ class PODAnalysisNumpy(PODAnalysisBase):
         return s_new
 
     def SVDMethod(self, matS, verbose=True):
-        """Compression method using SVD on the snapshot matrix
+        """Compression method using the snapshot method on a correlation matrix
 
-        Arguments
-        ----------
-        matS : numpy.ndarray
-            Matrix of snapshots on which the POD operator should be applied
-        Returns
-        -------
-        Phi : numpy.ndarray
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Arguments:
+            matS (numpy.ndarray): Matrix of snapshots on which the POD operator should be applied
+
+        Returns:
+            Phi (numpy.ndarray): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         ## - Apply SVD directly on the snapshot matrix
         U, sigma, _ = np.linalg.svd(matS, full_matrices=False)
@@ -912,19 +600,14 @@ class PODAnalysisNumpy(PODAnalysisBase):
         return U[:, :n], sigma[:n]
 
     def snapshotMethod(self, matS):
-        """Compression method using the snapshot method on a correlation matrix
+        """Compression method using SVD on the snapshot matrix
 
-        Arguments
-        ----------
-        matS : numpy.ndarray
-            Matrix of snapshots on which the POD operator should be applied
+        Arguments:
+            matS (numpy.ndarray): Matrix of snapshots on which the POD operator should be applied
 
-        Returns
-        -------
-        Phi : numpy.ndarray
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Returns:
+            Phi (numpy.ndarray): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         ## - Compute correlation matrix
         corrMatrix = matS.T @ self._corrOperator @ matS
@@ -948,12 +631,19 @@ class PODAnalysisNumpy(PODAnalysisBase):
 
 
 class PODAnalysisPetsc(PODAnalysisBase):
+    """
+    Class for building a base incrementally using POD
+    when using PETSc arrays for storage
+    """
+
+    _comm = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, *args, **kwargs):
         "Initialization of PODAnalysisPetsc"
         super().__init__(*args, **kwargs)
 
-    def validate_method_state(self):
+    def validateMethodState(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
         if not isinstance(self._corrOperator, PETSc.Mat):
             raise TypeError("The correlation operator should be a PETSc.Mat")
@@ -969,12 +659,9 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def _extractColumnsPetscMat(self, matA, select_condition):
         """Extracts columns from a PETSc matrix based on a condition.
 
-        Arguments
-        ----------
-        matA : PETSc.Mat
-            The source PETSc matrix.
-        select_condition : function to select the right indices
-            Function returning True for columns to keep.
+        Arguments:
+            matA (PETSc.Mat): The source PETSc matrix.
+            select_condition (Callable): Function returning True for columns to keep.
         """
         i_start, i_end = matA.getOwnershipRange()
         is_rows = PETSc.IS().createStride(i_end - i_start, i_start, 1, comm=self._comm)
@@ -990,19 +677,13 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def _restrictBasisAfterProcedure(self, n_rows, vectors, n):
         """Assembles a list of PETSc vectors into a single PETSc matrix.
 
-        Arguments
-        ----------
-        n_rows : int
-            Total number of rows for the final basis matrix (global vector size).
-        vectors : list of PETSc.Vec
-            A list of the PETSc vectors that will form the columns of the matrix.
-        n : int
-            The number of vectors in the list (and columns in the final matrix).
+        Arguments:
+            n_rows (int): Total number of rows for the final basis matrix (global vector size).
+            vectors (list[PETSc.Vec]): A list of the PETSc vectors that will form the columns of the matrix.
+            n (int): The number of vectors in the list (and columns in the final matrix).
 
-        Returns
-        -------
-        PETSc.Mat
-            The assembled basis matrix, where each column is an input vector.
+        Returns:
+            PETSc.Mat: The assembled basis matrix, where each column is an input vector.
         """
         ## - Set transpose of the basis matrix
         Phi_petscT = PETSc.Mat().createDense([n, n_rows], comm=self._comm)
@@ -1026,10 +707,8 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def setCorrelationOperator(self, corrOperator=None):
         """Set method for the correlation operator
 
-        Arguments
-        ----------
-        corrOperator : PETSc.Mat or None
-            Correlation operator when using the method of snapshots
+        Arguments:
+            corrOperator (PETSc.Mat | None): Correlation operator when using the method of snapshots
         """
         if corrOperator is None:
             I = PETSc.Mat().create(self._comm)
@@ -1065,25 +744,21 @@ class PODAnalysisPetsc(PODAnalysisBase):
         """Construction of a reduced basis by selecting
         the most important modes (the first nbModes_v)
 
-        Arguments
-        ----------
-        Phi : PETSc.Mat
-            Basis
-        nbModes_v : int
-            number of modes to keep (the first ones)
+        Arguments:
+            Phi (PETSc.Mat): Basis
+            nbModes_v (int): number of modes to keep (the first ones)
         """
         Phi_v = self._extractColumnsPetscMat(Phi, lambda i: i < nbModes_v)
 
         return Phi_v
 
-    def _stack_matrices_horizontally(self, mat_a, mat_b):
+    def _stackMatriceHorizontally(self, mat_a, mat_b):
         """
         Compute a new matrix [mat_a, mat_b] using an efficient method for dense matrices.
 
-        Arguments
-        ----------
-        mat_a : PETSc.Mat (dense)
-        mat_b : PETSc.Mat (dense)
+        Arguments:
+            mat_a (PETSc.Mat): (dense)
+            mat_b (PETSc.Mat): (dense)
         """
         ## - Get sizes and check for compatibility
         M1, N1 = mat_a.getSize()
@@ -1115,20 +790,15 @@ class PODAnalysisPetsc(PODAnalysisBase):
         return new_mat
 
     def computePODBasisIncremental(self, Phi, singval=None, method="HPOD", option=1):
-        """
-        Method to enrich a reduced order basis with the stored snapshots
+        """Method to enrich a reduced order basis with the stored snapshots
 
-        Arguments
-        ----------
-        Phi : PETSc.Mat
-            Reduced order basis which has been previously computed
-        method : str
-            Name of the incremental approach to use
-        option : int
-            Changes the outputs of the function. If option=1, only reduced order basis.
+        Arguments:
+            Phi (PETSc.Mat): Reduced order basis which has been previously computed
+            method (str): Name of the incremental approach to use
+            option (int): Changes the outputs of the function. If option=1, only reduced order basis.
             If option=2, returns reduced order basis and singular values.
         """
-        self._validate_incremental_params(singval, method, option)
+        self.validateIncrementalParams(singval, method, option)
         row_indices = np.arange(self._numberOfDOFs, dtype="int32")
 
         if method == "HPOD":
@@ -1161,10 +831,10 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
             Phi_new, singval_new = self.POD(projS, option=option)
             if option == 1:
-                return self._stack_matrices_horizontally(Phi, Phi_new)
+                return self._stackMatriceHorizontally(Phi, Phi_new)
             else:
                 assert singval is not None
-                return self._stack_matrices_horizontally(Phi, Phi_new), np.concatenate(
+                return self._stackMatriceHorizontally(Phi, Phi_new), np.concatenate(
                     (singval, singval_new), axis=None
                 )
 
@@ -1193,7 +863,7 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
             mPhi.assemble()
 
-            mS = self._stack_matrices_horizontally(mPhi, self._snapshots)
+            mS = self._stackMatriceHorizontally(mPhi, self._snapshots)
             return self.POD(mS, option=option)
 
         else:
@@ -1204,25 +874,16 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
         """Update of a reduced order basis using a Gram-Schmidt process
 
-        Arguments
-        ----------
-        Phi : PETSc.Mat
-            Basis
-        singval : numpy.ndarray
-            Singular values
-        snapshot_new : PETSc.Vec
-            New snapshot considered
-        tole : float
-            Tolerance used for the test when adding new snapshot
-        methodGS : str
-            Should be "classical" or "modified" = GS method applied
+        Arguments:
+            Phi (PETSc.Mat): Basis
+            singval (numpy.ndarray): Singular values
+            snapshot_new (PETSc.Vec): New snapshot considered
+            tole (float): Tolerance used for the test when adding new snapshot
+            methodGS (str): Should be "classical" or "modified" = GS method applied
 
-        Returns
-        -------
-        Phi : PETSc.Mat
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Returns:
+            Phi (PETSc.Mat): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         assert methodGS in GS_METHOD
         _, N = Phi.getSize()
@@ -1235,7 +896,7 @@ class PODAnalysisPetsc(PODAnalysisBase):
         if s_new_perp_norm > tole * s_new_norm:
             _, N = Phi.getSize()
 
-            def vector_to_matrix_col(v: PETSc.Vec) -> PETSc.Mat:
+            def vectorToMatrixCol(v: PETSc.Vec) -> PETSc.Mat:
                 """
                 Converts a PETSc vector into a single-column dense PETSc matrix.
                 """
@@ -1257,9 +918,9 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
                 return V_mat
 
-            a = vector_to_matrix_col(s_new_proj)
+            a = vectorToMatrixCol(s_new_proj)
             a.scale(1.0 / s_new_perp_norm)
-            Phi_new = self._stack_matrices_horizontally(Phi, a)
+            Phi_new = self._stackMatriceHorizontally(Phi, a)
             ## - Update the singular values
             singval_new = np.hstack([singval, s_new_perp_norm])
 
@@ -1271,21 +932,14 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def GSMethod(self, matS, tole, methodGS):
         """Compression method using a Gram-Schmidt process
 
-        Arguments
-        ----------
-        matS : PETSc.Mat
-            Matrix of snapshots on which the POD operator should be applied
-        tole : float
-            Tolerance used for the test when adding new snapshot
-        methodGS : str
-            Should be "classical" or "modified" = GS method applied
+        Arguments:
+            matS (PETSc.Mat): Matrix of snapshots on which the POD operator should be applied
+            tole (float): Tolerance used for the test when adding new snapshot
+            methodGS (str): Should be "classical" or "modified" = GS method applied
 
-        Returns
-        -------
-        Phi : PETSc.Mat
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Returns:
+            Phi (PETSc.Mat): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         ## - Set first column for GS process
         col_vec = matS.createVecLeft()
@@ -1318,19 +972,13 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def computeGSprojection(self, Phi, s_new, methodGS):
         """Compute a Gram-Schmidt projection
 
-        Arguments
-        ----------
-        Phi : PETSc.Mat
-            Basis
-        s_new : PETSc.Vec
-            New snapshot considered
-        methodGS : str
-            Should be "classical" or "modified" = GS method applied
+        Arguments:
+            Phi (PETSc.Mat): Basis
+            s_new (PETSc.Vec): New snapshot considered
+            methodGS (str): Should be "classical" or "modified" = GS method applied
 
-        Returns
-        -------
-        s_proj : PETSc.Vec
-            Projected snapshot
+        Returns:
+            PETSc.Vec: Projected snapshot
         """
         assert methodGS in GS_METHOD
 
@@ -1358,16 +1006,12 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def SVDMethod(self, matS, verbose=False):
         """Compression method using SVD on the snapshot matrix
 
-        Arguments
-        ----------
-        matS : PETSc.Mat
-            Matrix of snapshots on which the POD operator should be applied
-        Returns
-        -------
-        Phi : PETSc.Mat
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Arguments:
+            matS (PETSc.Mat): Matrix of snapshots on which the POD operator should be applied
+
+        Returns:
+            Phi (PETSc.Mat): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         Print = PETSc.Sys.Print
 
@@ -1438,17 +1082,12 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def snapshotMethod(self, matS):
         """Compression method using the snapshot method on a correlation matrix
 
-        Arguments
-        ----------
-        matS : PETSc.Mat
-            Matrix of snapshots on which the POD operator should be applied
+        Arguments:
+            matS (PETSc.Mat): Matrix of snapshots on which the POD operator should be applied
 
-        Returns
-        -------
-        Phi : PETSc.Mat
-            Reduced order basis
-        singval : numpy.ndarray
-            Singular values
+        Returns:
+            Phi (PETSc.Mat): Reduced order basis
+            singval (numpy.ndarray): Singular values
         """
         ## - Compute correlation matrix
         corrMatrix = self._corrOperator.ptap(matS)
@@ -1499,45 +1138,21 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
 
 class PODAnalysis:
-    """
-    Performs Proper Orthogonal Decomposition (POD) analysis.
+    """POD analysis factory.
 
-    This class acts as a factory that automatically
-    selects and instantiates the most appropriate implementation
-    depending on the type of the input `snapshots` matrix.
+    Selects and returns a concrete implementation (`PODAnalysisNumpy` or
+    `PODAnalysisPetsc`) based on the input `snapshots` type.
 
-    Method calls and attribute access are delegated to the chosen
-    implementation instance.
+    Arguments:
+        snapshots (numpy.ndarray | PETSc.Mat): The snapshot matrix.
+        **kwargs: Arguments passed to the chosen implementation's constructor.
 
-    Arguments
-    ----------
-    snapshots : numpy.ndarray or PETSc.Mat
-        The snapshot matrix, where each column represents a state of the
-        system at a specific time.
-    **kwargs : dict, optional
-
-    Attributes
-    ----------
-    _impl : PODAnalysisNumpy or PODAnalysisPetsc
-        The concrete implementation instance chosen for the analysis.
-
-    See Also
-    --------
-    PODAnalysisNumpy : numpy-based implementation of POD.
-    PODAnalysisPetsc : PETSc-based implementation of POD.
-
+    Returns:
+        PODAnalysisNumpy | PODAnalysisPetsc: A concrete POD analysis instance.
     """
 
-    def __init__(self, snapshots, **kwargs):
+    def __new__(cls, snapshots, **kwargs):
         """
-        Selects and instantiates the correct implementation."""
-        if isinstance(snapshots, np.ndarray):
-            self._impl = PODAnalysisNumpy(snapshots, **kwargs)
-        elif isinstance(snapshots, PETSc.Mat):
-            self._impl = PODAnalysisPetsc(snapshots, **kwargs)
-        else:
-            raise TypeError(f"The snapshot type is not supported : {type(snapshots).__name__}")
-
-    def __getattr__(self, name):
-        """Delegates all method calls to the implementation object."""
-        return getattr(self._impl, name)
+        Creates an instance by calling the PODAnalysisBase factory.
+        """
+        return PODAnalysisBase.factory(snapshots, **kwargs)

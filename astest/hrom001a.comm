@@ -32,7 +32,14 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
+import numpy as np
 import os
+from code_aster.LinearAlgebra.POD.pod_analysis_base import PODAnalysis
+from code_aster.LinearAlgebra.POD.pod_postreat_utils import (
+    computeProjectionErrors,
+    is_orthonormal_basis,
+)
+from code_aster.LinearAlgebra.POD.pod_aster_interface import extractSnapshotsFromResult
 
 test = CA.TestCase()
 
@@ -79,7 +86,6 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 # --------------------------------------------------------------------
 #   TEST THE EXTRACTION PROCEDURE FROM THE RESULT
 # --------------------------------------------------------------------
-from code_aster.LinearAlgebra.pod_analysis_base import *
 
 arr_depl = extractSnapshotsFromResult(stnl, "DEPL", "numpy")
 arr_sief_noe = extractSnapshotsFromResult(stnl, "SIEF_NOEU", "numpy")

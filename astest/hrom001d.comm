@@ -39,6 +39,15 @@ except ImportError:
     HAS_MATPLOTLIB = False
 
 import os
+from code_aster.LinearAlgebra.POD.pod_analysis_base import PODAnalysis
+from code_aster.LinearAlgebra.POD.pod_postreat_utils import (
+    computeProjectionErrors,
+    is_orthonormal_basis,
+)
+from code_aster.LinearAlgebra.POD.pod_aster_interface import (
+    extractSnapshotsFromResult,
+    transferSnapshotsToPETSC,
+)
 
 test = CA.TestCase()
 
@@ -85,7 +94,6 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 # --------------------------------------------------------------------
 #   TEST THE EXTRACTION PROCEDURE FROM THE RESULT
 # --------------------------------------------------------------------
-from code_aster.LinearAlgebra.pod_analysis_base import *
 
 
 def test_singular_values(singval_num, singval_ref, msg_end):
