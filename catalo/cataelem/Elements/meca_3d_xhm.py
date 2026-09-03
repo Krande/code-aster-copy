@@ -165,6 +165,7 @@ E1NEUTK = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z1",))
 
 
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="XFEM", components=("X[30]",))
+EGNEUT_I = LocatedComponents(phys=PHY.NEUT_I, type="ELGA", location="XFEM", components=("X[30]",))
 
 
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
@@ -720,9 +721,9 @@ class MECA_XH1_HEXA8(Element):
                 (OP.TOU_INI_ELGA.PINST_R, LC.EGINST_R),
                 (OP.TOU_INI_ELGA.PSIEF_R, ECONTPG),
                 (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
-                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
-                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
-                (OP.TOU_INI_ELGA.PNEUT_I, LC.EGTINII),
+                (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
+                (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
+                (OP.TOU_INI_ELGA.PNEUT_I, EGNEUT_I),
             ),
         ),
         OP.TOU_INI_ELNO(
