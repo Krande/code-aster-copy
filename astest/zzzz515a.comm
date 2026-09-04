@@ -382,8 +382,12 @@ evol_me = CALC_ENDO(
     INCREMENT=_F(LIST_INST=inst_me),
     NEWTON=_F(MATRICE="TANGENTE"),
     SOLVEUR=_F(ELIM_LAGR="NON"),
-    CONVERGENCE=_F(
-        RESI_REFE_RELA=r_conv, SIGM_REFE=b_ft, EFFORT_REFE=700, MOMENT_REFE=4900, ITER_GLOB_MAXI=10
+    CONVERGENCE=_F(RESI_REFE_RELA=r_conv, ITER_GLOB_MAXI=10),
+    CONVERGENCE_REFE=(
+        _F(GROUP_MA="massif", SIGM=b_ft),
+        _F(GROUP_MA="coque", EFFORT=700, MOMENT=4900),
+        _F(GROUP_MA=("grille", "grille_excentree"), SIGM=a_sy),
+        _F(GROUP_MA=("barre", "ressort"), EFFORT=a_sy * 1.0),
     ),
     OBSERVATION=(
         _F(

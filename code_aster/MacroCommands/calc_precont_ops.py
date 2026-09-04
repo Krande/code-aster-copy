@@ -104,6 +104,12 @@ def calc_precont_ops(
     else:
         dEtatInit = None
 
+    # Traitement de CONVERGENCE_REFE
+    if "CONVERGENCE_REFE" in args:
+        dConvergenceRefe = args["CONVERGENCE_REFE"]
+    else:
+        dConvergenceRefe = None
+
     # Teste si INST_INIT est donné ou bien recalcule __TMIN
     if dIncrement["INST_INIT"] is None:
         if reuse is None:
@@ -509,6 +515,7 @@ def calc_precont_ops(
             ETAT_INIT=dEtatInit,
             METHODE=METHODE,
             CONVERGENCE=dConvergence,
+            CONVERGENCE_REFE=dConvergenceRefe,
             RECH_LINEAIRE=dRech_lin,
             SOLVEUR=dSolveur,
             ARCHIVAGE=ARCHIVAGE,
@@ -537,6 +544,7 @@ def calc_precont_ops(
             METHODE=METHODE,
             RECH_LINEAIRE=dRech_lin,
             CONVERGENCE=dConvergence,
+            CONVERGENCE_REFE=dConvergenceRefe,
             SOLVEUR=dSolveur,
             ARCHIVAGE=ARCHIVAGE,
             INFO=INFO,
@@ -870,6 +878,7 @@ def calc_precont_ops(
                 ETAT_INIT=ETAT_INIT,
                 METHODE=METHODE,
                 CONVERGENCE=CONVERGENCE,
+                CONVERGENCE_REFE=dConvergenceRefe,
                 RECH_LINEAIRE=RECH_LINEAIRE,
                 SOLVEUR=SOLVEUR,
                 ARCHIVAGE=ARCHIVAGE,
@@ -924,6 +933,7 @@ def calc_precont_ops(
                 NEWTON=_F(REAC_ITER=1),
                 METHODE=METHODE,
                 CONVERGENCE=CONVERGENCE,
+                CONVERGENCE_REFE=dConvergenceRefe,
                 RECH_LINEAIRE=RECH_LINEAIRE,
                 SOLVEUR=SOLVEUR,
                 ARCHIVAGE=ARCHIVAGE,
@@ -943,6 +953,7 @@ def calc_precont_ops(
                 METHODE=METHODE,
                 ETAT_INIT=ETAT_INIT,
                 CONVERGENCE=CONVERGENCE,
+                CONVERGENCE_REFE=dConvergenceRefe,
                 RECH_LINEAIRE=RECH_LINEAIRE,
                 SOLVEUR=SOLVEUR,
                 ARCHIVAGE=ARCHIVAGE,
@@ -966,6 +977,7 @@ def calc_precont_ops(
                 NEWTON=_F(REAC_ITER=1),
                 METHODE=METHODE,
                 CONVERGENCE=CONVERGENCE,
+                CONVERGENCE_REFE=dConvergenceRefe,
                 RECH_LINEAIRE=RECH_LINEAIRE,
                 SOLVEUR=SOLVEUR,
                 ARCHIVAGE=ARCHIVAGE,
