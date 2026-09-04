@@ -551,10 +551,11 @@ TEST_RESU(
 )
 
 ##################################################################################
-##                  Tests de non régression sur les contraintes dans massif
+##                  Tests de non régression sur les contraintes
 ##################################################################################
 TEST_RESU(
     RESU=(
+        ##Massif
         _F(
             INST=25,
             RESULTAT=evol_me,
@@ -593,6 +594,51 @@ TEST_RESU(
             GROUP_MA="massif",
             POINT=1,
             VALE_CALC=0.90777730,
+            CRITERE="RELATIF",
+        ),
+        ##Coque
+        _F(
+            INST=25,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=50,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            INST=50,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=100,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            INST=75,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=150,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            INST=100,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=200,
             CRITERE="RELATIF",
         ),
     )

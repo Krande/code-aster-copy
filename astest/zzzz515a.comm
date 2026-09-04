@@ -826,10 +826,11 @@ TEST_RESU(
 )
 
 ##################################################################################
-##                  Tests de non régression sur les contraintes dans massif
+##                  Tests de non régression sur les contraintes
 ##################################################################################
 TEST_RESU(
     RESU=(
+        ##Massif
         _F(
             INST=25,
             RESULTAT=evol_me,
@@ -868,6 +869,51 @@ TEST_RESU(
             GROUP_MA="massif",
             POINT=1,
             VALE_CALC=0.8436879023,
+            CRITERE="RELATIF",
+        ),
+        ##Coque
+        _F(
+            INST=25,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=50,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            INST=50,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=100,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            INST=75,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=150,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            INST=100,
+            RESULTAT=evol_me,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=1,
+            VALE_CALC=200,
             CRITERE="RELATIF",
         ),
     )
@@ -961,18 +1007,6 @@ TEST_TABLE(
     VALE_CALC=8.09232e-03,
 )
 
-# TEST_TABLE(
-#     TABLE=tab_obs,
-#     NOM_PARA="VALE",
-#     FILTRE=(
-#         _F(NOM_PARA="INST", VALE=100),
-#         _F(NOM_PARA="INST_VISC", VALE=d_evol["VISC_4"].getAccessParameters()["INST"][-1]),
-#         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCELAS"),
-#     ),
-#     VALE_CALC=3.696803968851e-07,
-# )
-
-
 TEST_TABLE(
     TABLE=tab_obs,
     NOM_PARA="VALE",
@@ -984,16 +1018,5 @@ TEST_TABLE(
     ),
     VALE_CALC=1.9584878439,
 )
-
-# TEST_TABLE(
-#     TABLE=tab_obs,
-#     NOM_PARA="VALE",
-#     FILTRE=(
-#         _F(NOM_PARA="INST", VALE=100),
-#         _F(NOM_PARA="INST_VISC", VALE=d_evol["VISC_4"].getAccessParameters()["INST"][-1]),
-#         _F(NOM_PARA="NOM_OBSERVATION", VALE_K="VISCENDO"),
-#     ),
-#     VALE_CALC=3.8484846303e-07,
-# )
 
 FIN()
