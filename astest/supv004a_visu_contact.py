@@ -29,6 +29,14 @@ from code_aster.visu.Pairing.pairingObjects import (
     PairingAnalysisAsterFromPkl,
     PairingAnalysisAster,
 )
+
+from code_aster.visu.Pairing.meshMatplotlibFigure import (
+    PlotConfig,
+    OptionMesh,
+    SubOptionMesh,
+    OptionPair,
+    IndexPlane,
+)
 import numpy as np
 
 
@@ -319,6 +327,31 @@ class TestPairingAnalysisAster(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "No pairing has been computed before"):
             PairingAnalysisAster(2, "m", "mi", "s", "si", mock_aster_process)
+
+
+class TestMeshMatplotlibFigure(unittest.TestCase):
+    def test_valid_configuration(self):
+        """Tests that a right PlotConfig succeeds"""
+        config = PlotConfig(
+            dimMatPlot=2,
+            optionMesh=OptionMesh.DOMAIN,
+            suboptionMesh=SubOptionMesh.ALL,
+            optionPair=OptionPair.MESH_ONLY,
+            addNodeLabel=True,
+        )
+        self.assertIsInstance(config, PlotConfig)
+        self.assertEqual(config.dimMatPlot, 2)
+        self.assertEqual(config.optionMesh, OptionMesh.DOMAIN)
+        self.assertTrue(config.addNodeLabel)
+
+    def test_wrong_configuration(self):
+        with self.assertRaises(ValueError) as context:
+            PlotConfig(
+                dimMatPlot=3,
+                optionMesh=OptionMesh.DOMAIN,
+                suboptionMesh=SubOptionMesh.ALL,
+                optionPair=OptionPair.MESH_ONLY,
+            )
 
 
 if __name__ == "__main__":

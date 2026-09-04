@@ -79,7 +79,7 @@ option_dict = {
         "index": 0,
         "indexPlaneProjected": None,
     },
-    5: {  # - Visualisation of the pair which involves the slave cell of index = 17
+    5: {  # - Visualisation of the pair which involves the slave cell of index = 330
         #     on the two interfaces of the mesh
         "optionMesh": "interface",
         "suboptionMesh": "givenSlvIndex",
@@ -99,18 +99,17 @@ option_dict = {
         "index": 0,
         "indexPlaneProjected": None,
     },
-    ## -- NOT AVAILABLE YET
-    # 7: {  # - Visualisation of the intersection points of the pairs
-    #     #     which involve the slave cell of index = 17
-    #     #     on the two interfaces of the mesh
-    #     "optionMesh": "interface",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "intePoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 17,
-    #     "indexPlaneProjected": None,
-    # },
+    7: {  # - Visualisation of the intersection points of the pairs
+        #     which involve the slave cell of index = 330
+        #     on the two interfaces of the mesh
+        "optionMesh": "interface",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "intePoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": None,
+    },
     8: {  # - Visualisation of the quadrature points
         # of index = 0 (first pair) on the two interfaces of the mesh
         "optionMesh": "interface",
@@ -121,49 +120,46 @@ option_dict = {
         "index": 0,
         "indexPlaneProjected": None,
     },
-    ## -- NOT AVAILABLE YET
-    # 9: {  # - Visualisation of the quadrature points of the pairs
-    #     #     which involve the slave cell of index = 17
-    #     #     on the two interfaces of the mesh
-    #     "optionMesh": "interface",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "quadPoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 17,
-    #     "indexPlaneProjected": None,
-    # },
-    ## -- NOT AVAILABLE YET
-    # 10: {  # - Visualisation of all the cells paired to the slave cell of index = 18
-    #     "optionMesh": "selectSlvCell",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "pairs",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 18,
-    #     "indexPlaneProjected": None,
-    # },
-    ## -- NOT AVAILABLE YET
-    # 11: {  # - Visualisation of all the intersections of
-    #     # the pairs to which the slave cell of index = 18 belongs
-    #     "optionMesh": "selectSlvCell",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "intePoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 18,
-    #     "indexPlaneProjected": None,
-    # },
-    # 12: {  # - Visualisation of all the quadrature points of
-    #     # the pairs to which the slave cell of index = 18 belongs
-    #     "optionMesh": "selectSlvCell",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "quadPoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 18,
-    #     "indexPlaneProjected": None,
-    # },
+    9: {  # - Visualisation of the quadrature points of the pairs
+        #     which involve the slave cell of index = 330
+        #     on the two interfaces of the mesh
+        "optionMesh": "interface",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "quadPoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": None,
+    },
+    10: {  # - Visualisation of all the cells paired to the slave cell of index = 330
+        "optionMesh": "selectSlvCell",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "pairs",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": None,
+    },
+    11: {  # - Visualisation of all the intersections of
+        # the pairs to which the slave cell of index = 330 belongs
+        "optionMesh": "selectSlvCell",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "intePoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": None,
+    },
+    12: {  # - Visualisation of all the quadrature points of
+        # the pairs to which the slave cell of index = 330 belongs
+        "optionMesh": "selectSlvCell",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "quadPoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": None,
+    },
     13: {  # - Visualisation of the two interfaces of the mesh
         "optionMesh": "interface",
         "suboptionMesh": "all",
@@ -191,7 +187,7 @@ option_dict = {
         "index": 0,
         "indexPlaneProjected": "Z",
     },
-    16: {  # - Visualisation of the pair which involves the slave cell of index = 17
+    16: {  # - Visualisation of the pair which involves the slave cell of index = 330
         #     on the two interfaces of the mesh
         "optionMesh": "interface",
         "suboptionMesh": "givenSlvIndex",
@@ -212,7 +208,7 @@ option_dict = {
         "indexPlaneProjected": "Z",
     },
     18: {  # - Visualisation of the intersection points of the pairs
-        #     which involve the slave cell of index = 17
+        #     which involve the slave cell of index = 330
         #     on the two interfaces of the mesh
         "optionMesh": "interface",
         "suboptionMesh": "givenSlvIndex",
@@ -222,31 +218,28 @@ option_dict = {
         "index": 330,
         "indexPlaneProjected": "Z",
     },
-    ## -- ERROR in plotQuadPts
-    # 19: {  # - Visualisation of the quadrature points
-    #     # of index = 0 (first pair) on the two interfaces of the mesh
-    #     "optionMesh": "interface",
-    #     "suboptionMesh": "givenPair",
-    #     "optionPair": "quadPoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 0,
-    #     "indexPlaneProjected": "Z",
-    # },
-    ## -- NOT AVAILABLE YET
-    # 20: {  # - Visualisation of the quadrature points of the pairs
-    #     #     which involve the slave cell of index = 17
-    #     #     on the two interfaces of the mesh
-    #     "optionMesh": "interface",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "quadPoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 330,
-    #     "indexPlaneProjected": "Z",
-    # },
-    ## -- NOT AVAILABLE YET
-    21: {  # - Visualisation of all the cells paired to the slave cell of index = 18
+    19: {  # - Visualisation of the quadrature points
+        # of index = 0 (first pair) on the two interfaces of the mesh
+        "optionMesh": "interface",
+        "suboptionMesh": "givenPair",
+        "optionPair": "quadPoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 0,
+        "indexPlaneProjected": "Z",
+    },
+    20: {  # - Visualisation of the quadrature points of the pairs
+        #     which involve the slave cell of index = 330
+        #     on the two interfaces of the mesh
+        "optionMesh": "interface",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "quadPoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": "Z",
+    },
+    21: {  # - Visualisation of all the cells paired to the slave cell of index = 330
         "optionMesh": "selectSlvCell",
         "suboptionMesh": "givenSlvIndex",
         "optionPair": "pairs",
@@ -255,28 +248,26 @@ option_dict = {
         "index": 330,
         "indexPlaneProjected": "Z",
     },
-    ## -- NOT AVAILABLE YET
-    # 22: {  # - Visualisation of all the intersections of
-    #     # the pairs to which the slave cell of index = 18 belongs
-    #     "optionMesh": "selectSlvCell",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "intePoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 18,
-    #     "indexPlaneProjected": "Z",
-    # },
-    ## -- NOT AVAILABLE YET
-    # 23: {  # - Visualisation of all the quadrature points of
-    #     # the pairs to which the slave cell of index = 18 belongs
-    #     "optionMesh": "selectSlvCell",
-    #     "suboptionMesh": "givenSlvIndex",
-    #     "optionPair": "quadPoints",
-    #     "addMeshNodes": True,
-    #     "addLegend": True,
-    #     "index": 18,
-    #     "indexPlaneProjected": "Z",
-    # },
+    22: {  # - Visualisation of all the intersections of
+        # the pairs to which the slave cell of index = 330 belongs
+        "optionMesh": "selectSlvCell",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "intePoints",
+        "addMeshNodes": False,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": "Z",
+    },
+    23: {  # - Visualisation of all the quadrature points of
+        # the pairs to which the slave cell of index = 330 belongs
+        "optionMesh": "selectSlvCell",
+        "suboptionMesh": "givenSlvIndex",
+        "optionPair": "quadPoints",
+        "addMeshNodes": True,
+        "addLegend": True,
+        "index": 330,
+        "indexPlaneProjected": "Z",
+    },
 }
 
 ## -------------------------------------------------------

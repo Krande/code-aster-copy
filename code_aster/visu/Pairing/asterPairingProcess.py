@@ -22,6 +22,7 @@ import numpy as np
 import pickle
 from pathlib import Path
 from libaster import Mesh, PairingMethod
+from ...Utilities import no_new_attributes
 
 ## -----------------------------------------------------------
 #   AVAILABLE METHODS FOR PAIRING AND MORTAR COMPUTATIONS
@@ -30,7 +31,12 @@ AVAILABLE_PAIRING_METHODS = ["BrutForce", "Fast", "Legacy"]
 
 
 class AsterPairingProcess:
-    """Class to wrap the call to any pairing process in aste"""
+    """
+    Interfaces with code_aster to run the mesh pairing process.
+
+    This class is the main entry point for a computation. It wraps the
+    native code_aster methods..
+    """
 
     _METHOD_MAP = {
         "BrutForce": PairingMethod.BrutForce,
@@ -38,19 +44,20 @@ class AsterPairingProcess:
         "Legacy": PairingMethod.Legacy,
     }
 
+    _groupMaSlv = _groupMaMas = _asterMesh = _method = None
+    _coords = _asterConnectivity = None
+    _listPairs = _intePointsList = _quadPointsList = None
+    _hasRun = None
+    _meshPair = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
     def __init__(self, groupMaSlv, groupMaMas, asterMesh):
-        """Constructor
+        """Constructor.
 
-        Arguments
-        ---------
-
-        groupMaSlv : str
-             Name of the group of the contact slave interface.
-        groupMaMas : str
-            Name of the group of the contact master interface.
-        asterMesh : libaster.Mesh
-            aster Mesh considered for pairing
-
+        Arguments:
+            groupMaSlv (str): Name of the group of the contact slave interface.
+            groupMaMas (str): Name of the group of the contact master interface.
+            asterMesh (libaster.Mesh): aster Mesh considered for pairing.
         """
         self._checkConsistency(groupMaSlv, groupMaMas, asterMesh)
         self._groupMaSlv = groupMaSlv
@@ -64,6 +71,7 @@ class AsterPairingProcess:
         self._intePointsList = None
         self._quadPointsList = None
         self._hasRun = False
+        self._meshPair = None
 
     def _checkConsistency(self, groupMaSlv, groupMaMas, asterMesh):
         """Test the consistency of the provided arguments"""
@@ -79,12 +87,9 @@ class AsterPairingProcess:
     def setMethod(self, method="BrutForce"):
         """Choose the pairing method. Mandatory to run the computation.
 
-        Arguments
-        ---------
-
-        method : str
-            Name of the pairing method used in `code_aster`.
-            Should be chosen between BrutForce, Legacy, and Fast.
+        Arguments:
+            method (str): Name of the pairing method used in `code_aster`.
+                Should be chosen between BrutForce, Legacy, and Fast.
         """
         if method not in AVAILABLE_PAIRING_METHODS:
             raise ValueError(
@@ -153,11 +158,13 @@ class AsterPairingProcess:
         self._asterConnectivity = asterConnectivity
 
     def computeIndicesMeshFromGroup(self, groupName):
-        """Returns the indices of the cells belonging to a given group
-        Args:
-            groupName (:class:`str`): name of the group
+        """Returns the indices of the cells belonging to a given group.
+
+        Arguments:
+            groupName (str): Name of the group.
+
         Returns:
-            indices (:class:`numpy.ndarray`): list of the cells indices in the group
+            numpy.ndarray: List of the cells indices in the group.
         """
         return self._asterMesh.getCells(groupName)
 
@@ -167,16 +174,12 @@ class AsterPairingProcess:
             pickle.dump(data, f)
 
     def dumpDataGroupCells(self, groupName, repoSave, nameFile):
-        """Dump the cell indices of a group in a given directory
+        """Dump the cell indices of a group in a given directory.
 
-        Arguments
-        ---------
-        groupName: str
-            Name of the group in the considered mesh
-        repoSave: str
-            Name of the directory in which we want to save the file
-        nameFile: str
-            Name of the output file (without the .pkl extension)
+        Arguments:
+            groupName (str): Name of the group in the considered mesh.
+            repoSave (str): Name of the directory in which we want to save the file.
+            nameFile (str): Name of the output file (without the .pkl extension).
         """
         indices = self.computeIndicesMeshFromGroup(groupName)
         save_path = Path(repoSave)
@@ -184,16 +187,12 @@ class AsterPairingProcess:
         self._dumpPickle(indices, save_path / f"{nameFile}.pkl")
 
     def dumpData(self, repoSave, pairData=True, meshData=True):
-        """Dump the pairing data in an given directory
+        """Dump the pairing data in a given directory.
 
-        Arguments
-        ---------
-        repoSave : str
-            Path to the directory where the files will be saved.
-        pairData : bool
-            If True, saves pairing data (pairs, points).
-        meshData : bool
-            If True, saves mesh data (connectivity and node coordinates)
+        Arguments:
+            repoSave (str): Path to the directory where the files will be saved.
+            pairData (bool): If True, saves pairing data (pairs, points).
+            meshData (bool): If True, saves mesh data (connectivity and node coordinates).
         """
         save_path = Path(repoSave)
         save_path.mkdir(parents=True, exist_ok=True)

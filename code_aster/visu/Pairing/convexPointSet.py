@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 import numpy as np
 from abc import ABC, abstractmethod
+from ...Utilities import no_new_attributes
 
 
 ## -----------------------------------------------------------
@@ -25,19 +26,18 @@ from abc import ABC, abstractmethod
 ## -----------------------------------------------------------
 def transformToPlanarCoords(point, ref, vec1, vec2):
     """Transforms a 3D point into planar coordinates based on a basis defined by two vectors.
+
     This function projects the vector from a reference point (ref) to a given point (point)
     onto the two basis vectors (vec1, vec2), and returns the resulting 2D coordinates.
 
-    Arguments
-    ---------
+    Arguments:
         point (numpy.ndarray): 3D point to transform (array of 3 elements).
         ref (numpy.ndarray): 3D reference point (array of 3 elements).
         vec1 (numpy.ndarray): First basis vector (array of 3 elements).
-        vec2: (numpy.ndarray): Second basis vector (array of 3 elements).
+        vec2 (numpy.ndarray): Second basis vector (array of 3 elements).
 
-    Returns
-    ---------
-        Array of 2 elements containing the planar coordinates.
+    Returns:
+        numpy.ndarray: Array of 2 elements containing the planar coordinates.
     """
     # - Compute the vector between a given point and the ref point (ref)
     pointVector = point - ref
@@ -55,10 +55,27 @@ def transformToPlanarCoords(point, ref, vec1, vec2):
 
 class ConvexSetStrategyInterface(ABC):
     """
-    Base class for convex set numerical strategies
+    Base class for numerical strategies for convex sets.
+
+     Attributes:
+         _initPoints (numpy.ndarray): The array of initial (unsorted) points provided at creation.
+             The shape is (N, D), where N is the number of points and D is the dimension.
+         _sortedPoints (numpy.ndarray | None): The array of sorted points to form a simple polygon
+             (e.g., counter-clockwise). Initialized to None and computed on demand.
+         _bary (numpy.ndarray | None): The barycenter (centroid) of the initial points.
+             Initialized to None and computed on demand.
     """
 
+    _initPoints = _sortedPoints = _bary = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
     def __init__(self, points):
+        """
+        Initializes the strategy with a set of points.
+
+        Arguments:
+            points (numpy.ndarray): An array of points of shape (N, D) defining the convex set.
+        """
         self._initPoints = points
         self._sortedPoints = None
         self._bary = None
@@ -70,8 +87,20 @@ class ConvexSetStrategyInterface(ABC):
 
     @abstractmethod
     def computeArea(self):
-        """Computes the area (or length for 1D sets)."""
+        """Computes the area (or length for 1D sets).
+
+        Returns:
+            float: The area of the polygon.
+        """
         pass
+
+    @abstractmethod
+    def computeBary(self):
+        """Computes the barycenter of the points.
+
+        Returns:
+            numpy.ndarray: The barycenter point.
+        """
 
     def getSortedPoints(self):
         """Returns the sorted points, sorting them first if necessary."""
@@ -89,7 +118,11 @@ class CSStrat1D(ConvexSetStrategyInterface):
         self._sortedPoints = np.copy(self._initPoints[indicesSorted])
 
     def computeBary(self):
-        """Computes the barycenter (midpoint) of the 1D set."""
+        """Computes the barycenter (midpoint) of the 1D set.
+
+        Returns:
+            numpy.ndarray: The barycenter point.
+        """
         if self._bary is None:
             self._bary = np.mean(self._initPoints, axis=0)
         return self._bary
@@ -98,6 +131,9 @@ class CSStrat1D(ConvexSetStrategyInterface):
         """Computes the length of the 1D convex set.
         The "area" of a 1D set is its total length, defined by the distance
         between its two extreme points.
+
+        Returns:
+            float: The length of the segment.
         """
         if self._sortedPoints is None:
             self.sortPoints()
@@ -108,7 +144,11 @@ class CSStrat2DCodim0(ConvexSetStrategyInterface):
     """Strategy for 2D convex sets in a 2D ambient space."""
 
     def computeBary(self):
-        """Computes the barycenter of the points."""
+        """Computes the barycenter of the points.
+
+        Returns:
+            numpy.ndarray: The barycenter point.
+        """
         if self._bary is None:
             self._bary = np.mean(self._initPoints, axis=0)
         return self._bary
@@ -121,7 +161,11 @@ class CSStrat2DCodim0(ConvexSetStrategyInterface):
         self._sortedPoints = np.copy(self._initPoints[indicesSorted])
 
     def computeArea(self):
-        """Computes the area of a 2D polygon"""
+        """Computes the area of a 2D polygon.
+
+        Returns:
+            float: The area of the polygon.
+        """
         if self._sortedPoints is None:
             self.sortPoints()
 
@@ -135,20 +179,40 @@ class CSStrat2DCodim0(ConvexSetStrategyInterface):
 
 
 class CSStrat2DCodim1(ConvexSetStrategyInterface):
-    """Strategy for 2D convex sets in a 3D ambient space"""
+    """Strategy for 2D convex sets in a 3D ambient space.
+
+    In addition to the attributes inherited from `ConvexSetStrategyInterface`,
+    this class defines:
+
+    Attributes:
+        _localBasis (numpy.ndarray | None): A local orthonormal basis [tangent1, tangent2, normal]
+            for the plane containing the points.
+    """
+
+    _localBasis = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, points):
         super().__init__(points)
         self._localBasis = None
 
     def computeBary(self):
-        """Computes the barycenter of the 3D points."""
+        """Computes the barycenter of the 3D points.
+
+        Returns:
+            numpy.ndarray: The barycenter point.
+        """
         if self._bary is None:
             self._bary = np.mean(self._initPoints, axis=0)
         return self._bary
 
     def computeLocalBasis(self):
-        """Computes a local orthonormal basis [tangent1, tangent2, normal] for the plane."""
+        """
+        Computes a local orthonormal basis [tangent1, tangent2, normal] for the plane.
+
+        Returns:
+            numpy.ndarray: The local basis as a (3, 3) array.
+        """
         if self._localBasis is not None:
             return self._localBasis
 
@@ -233,8 +297,7 @@ class ConvexPointSet:
     instantiates the appropriate calculation strategy, then
     delegates all computational work to it.
 
-    Attributes
-    -----------
+    Attributes:
         _dim (int): Dimension of the convex set itself (1 for a line, 2 for a surface).
         _codim (int): Codimension of the set (ambient_space_dim - dim).
         _initPoints (np.ndarray): A copy of the points provided at construction.
@@ -243,17 +306,18 @@ class ConvexPointSet:
             performing all calculations.
     """
 
+    _dim = _codim = _initPoints = _pointSorted = _strategy = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
     def __init__(self, dim, points, codim):
         """Constructor for a convex set of points.
 
-        Arguments
-        ---------
+        Arguments:
             dim (int): Dimension of the convex set itself (1 for a line, 2 for a surface).
             points (list or np.ndarray): List of points defining the convex set.
             codim (int): Codimension of the set (ambient_space_dim - dim).
 
-        Raises
-        ------
+        Raises:
             NotImplementedError: If no strategy is available for the given dim/codim combination.
             ValueError, TypeError: For invalid input arguments (validation is recommended).
         """
@@ -268,7 +332,16 @@ class ConvexPointSet:
         self._createStrategy()
 
     def _validateDimensions(self, dim, codim):
-        """Checks if 'dim' and 'codim' have valid types and values."""
+        """Internal helper to validate dimension and codimension values.
+
+        Arguments:
+            dim (int): The dimension of the convex set.
+            codim (int): The codimension of the convex set in its ambient space.
+
+        Raises:
+            TypeError: If 'dim' or 'codim' is not an integer.
+            ValueError: If 'dim' or 'codim' is outside the allowed values.
+        """
         DIM_AVAILABLE = [1, 2]
         CODIM_AVAILABLE = [0, 1, 2]
         if not isinstance(dim, int):
@@ -281,12 +354,25 @@ class ConvexPointSet:
             raise ValueError(f"Codimension 'codim' must be 0, 1 or 2, but got {codim}.")
 
     def _validateAndConvertPoints(self, points):
-        """Checks if 'points' is a valid array-like structure and converts it to a NumPy array."""
+        """Internal helper to validate and convert input points to a numpy array.
+
+        Arguments:
+            points (array-like): The input points to validate and convert.
+                Can be a list of lists, a tuple of tuples, or any other
+                structure convertible to a numpy array.
+
+        Returns:
+            numpy.ndarray: The converted points as a numpy array of floats.
+
+        Raises:
+            TypeError: If the input 'points' cannot be converted into a
+                numeric numpy array.
+        """
         try:
             init_points = np.array(points, dtype=float)
         except (ValueError, TypeError) as e:
             raise TypeError(
-                f"Input 'points' could not be converted to a numeric NumPy array. Reason: {e}"
+                f"Input 'points' could not be converted to a numeric numpy array. Reason: {e}"
             )
 
         if init_points.ndim != 2:
@@ -319,18 +405,15 @@ class ConvexPointSet:
 
     def computeBary(self):
         """Computes the barycenter of the convex set of points.
-
         Delegates the computation to the currently selected strategy.
 
-        Returns
-        -------
-            np.ndarray: The coordinates of the barycenter.
+        Returns:
+            numpy.ndarray: The coordinates of the barycenter.
         """
         return self._strategy.computeBary()
 
     def sortPoints(self):
         """Sorts the points of the convex set.
-
         Delegates the sorting operation to the selected strategy. The points
         are sorted only once.
         """
@@ -348,8 +431,7 @@ class ConvexPointSet:
     def plotEdges(self, axis_, colorGiven, linestyleGiven, alphaGiven, dimSpace, label=None):
         """Plots the edges of the object as a closed polygon on the given axis.
 
-        Arguments
-        ---------
+        Arguments:
             axis_ (matplotlib.axes.Axes): The axis on which to plot.
             colorGiven (str): The color of the edges.
             linestyleGiven (str): The line style (e.g., '-', '--').

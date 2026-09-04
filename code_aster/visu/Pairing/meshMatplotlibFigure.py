@@ -18,6 +18,11 @@
 # --------------------------------------------------------------------
 from .convexPointSet import ConvexPointSet
 import numpy as np
+from enum import Enum
+from dataclasses import dataclass
+from typing import Optional
+from abc import ABC, abstractmethod
+from ...Utilities import no_new_attributes
 
 try:
     import matplotlib
@@ -31,682 +36,800 @@ except ImportError:
 
 DEFAULT_FIGURE_SIZE = (11, 9)
 DEFAULT_TICKS_SIZE = 12
+
+
 ## -----------------------------------------------------------
 #   OPTION AVAILABLE FOR THE VISUALISATION
 ## -----------------------------------------------------------
-OPTION_MESH_VISU = {"domain", "interface", "selectSlvCell"}
-SUBOPTION_MESH_VISU = {"all", "givenPair", "givenSlvIndex"}
-OPTION_PAIRING_VISU = {"meshOnly", "pairs", "intePoints", "quadPoints"}
-OPTION_PAIRING_VISU_DETAILS = OPTION_PAIRING_VISU - {"meshOnly"}
+# - Enum definition of the options
+class OptionMesh(str, Enum):
+    """Main options for mesh visualization."""
 
-DIM_AVAILABLE = {2, 3}
+    DOMAIN = "domain"
+    INTERFACE = "interface"
+    SELECT_SLV_CELL = "selectSlvCell"
 
-INDEX_PLANE_PROJECTED = {"X", "Y", "Z", None}
 
-VALID_COMBINATION = {
-    2: {
-        "domain": {
-            "all": OPTION_PAIRING_VISU,
-            "givenPair": OPTION_PAIRING_VISU_DETAILS,
-            "givenSlvIndex": OPTION_PAIRING_VISU_DETAILS,
-        },
-        "interface": {
-            "all": OPTION_PAIRING_VISU,
-            "givenPair": OPTION_PAIRING_VISU_DETAILS,
-            "givenSlvIndex": OPTION_PAIRING_VISU_DETAILS,
-        },
-        "selectSlvCell": {"givenSlvIndex": OPTION_PAIRING_VISU_DETAILS},
-    },
-    3: {
-        "domain": {"all": {}, "givenPair": {}, "givenSlvIndex": {}},
-        "interface": {
-            "all": OPTION_PAIRING_VISU,
-            "givenPair": OPTION_PAIRING_VISU_DETAILS,
-            "givenSlvIndex": OPTION_PAIRING_VISU_DETAILS,
-        },
-        "selectSlvCell": {"givenSlvIndex": OPTION_PAIRING_VISU_DETAILS},
-    },
+class SubOptionMesh(str, Enum):
+    """Sub-options for visualization, specifying the scope."""
+
+    ALL = "all"
+    GIVEN_PAIR = "givenPair"
+    GIVEN_SLV_INDEX = "givenSlvIndex"
+
+
+class OptionPair(str, Enum):
+    """Rendering options for master/slave cell pairs."""
+
+    MESH_ONLY = "meshOnly"
+    PAIRS = "pairs"
+    INTE_POINTS = "intePoints"
+    QUAD_POINTS = "quadPoints"
+
+
+class IndexPlane(str, Enum):
+    """Projection axes for 3D visualization."""
+
+    X = "X"
+    Y = "Y"
+    Z = "Z"
+
+
+OPTION_PAIRING_VISU = {p for p in OptionPair}
+OPTION_PAIRING_VISU_DETAILS = OPTION_PAIRING_VISU - {OptionPair.MESH_ONLY}
+
+# - Options developped for now in the module
+VALID_COMBINATIONS = {
+    # - 2D Cases
+    (2, OptionMesh.DOMAIN, SubOptionMesh.ALL): OPTION_PAIRING_VISU,
+    (2, OptionMesh.DOMAIN, SubOptionMesh.GIVEN_PAIR): OPTION_PAIRING_VISU_DETAILS,
+    (2, OptionMesh.DOMAIN, SubOptionMesh.GIVEN_SLV_INDEX): OPTION_PAIRING_VISU_DETAILS,
+    (2, OptionMesh.INTERFACE, SubOptionMesh.ALL): OPTION_PAIRING_VISU,
+    (2, OptionMesh.INTERFACE, SubOptionMesh.GIVEN_PAIR): OPTION_PAIRING_VISU_DETAILS,
+    (2, OptionMesh.INTERFACE, SubOptionMesh.GIVEN_SLV_INDEX): OPTION_PAIRING_VISU_DETAILS,
+    (2, OptionMesh.SELECT_SLV_CELL, SubOptionMesh.GIVEN_SLV_INDEX): OPTION_PAIRING_VISU_DETAILS,
+    # - 3D Cases
+    (3, OptionMesh.INTERFACE, SubOptionMesh.ALL): OPTION_PAIRING_VISU,
+    (3, OptionMesh.INTERFACE, SubOptionMesh.GIVEN_PAIR): OPTION_PAIRING_VISU_DETAILS,
+    (3, OptionMesh.INTERFACE, SubOptionMesh.GIVEN_SLV_INDEX): OPTION_PAIRING_VISU_DETAILS,
+    (3, OptionMesh.SELECT_SLV_CELL, SubOptionMesh.GIVEN_SLV_INDEX): OPTION_PAIRING_VISU_DETAILS,
 }
+
+
+@dataclass(frozen=True)
+class PlotConfig:
+    """
+    Groups and validates all plot configuration options.
+
+    This dataclass ensures that only valid configuration states can be created.
+
+    Attributes:
+        dimMatPlot (int): The dimension of the plot (2 or 3).
+        optionMesh (OptionMesh): The main mesh option.
+        suboptionMesh (SubOptionMesh): The mesh sub-option.
+        optionPair (OptionPair): The pair rendering option.
+        addNodeLabel (bool): If True, display node labels.
+        addMeshNodes (bool): If True, display mesh nodes.
+        addLegend (bool): If True, display the legend.
+        index (Optional[int]): Required index for certain sub-options (e.g., GIVEN_PAIR).
+        indexPlaneProjected (Optional[IndexPlane]): The plane for 3D projection.
+    """
+
+    dimMatPlot: int
+    optionMesh: OptionMesh
+    suboptionMesh: SubOptionMesh
+    optionPair: OptionPair
+    addNodeLabel: bool = False
+    addMeshNodes: bool = False
+    addLegend: bool = True
+    index: Optional[int] = None
+    indexPlaneProjected: Optional[IndexPlane] = None
+
+    def __post_init__(self):
+        """
+        Validation method called automatically after initialization.
+
+        Raises:
+            ValueError: If the configuration (PlotConfig object) is invalid.
+        """
+        key = (self.dimMatPlot, self.optionMesh, self.suboptionMesh)
+        valid_pairing_options = VALID_COMBINATIONS.get(key)
+
+        if valid_pairing_options is None:
+            raise ValueError(
+                f"The combination (dim={self.dimMatPlot}, optionMesh='{self.optionMesh.value}', "
+                f"suboptionMesh='{self.suboptionMesh.value}') is not supported."
+            )
+
+        if self.optionPair not in valid_pairing_options:
+            raise ValueError(
+                f"The render option '{self.optionPair.value}' is not valid for the combination "
+                f"(dim={self.dimMatPlot}, optionMesh='{self.optionMesh.value}', suboptionMesh='{self.suboptionMesh.value}').\n"
+                f"Valid options are: {[opt.value for opt in valid_pairing_options]}"
+            )
+
+        if (
+            self.suboptionMesh in {SubOptionMesh.GIVEN_PAIR, SubOptionMesh.GIVEN_SLV_INDEX}
+            and self.index is None
+        ):
+            raise ValueError(
+                f"The 'index' argument is required when suboptionMesh is "
+                f"'{SubOptionMesh.GIVEN_PAIR.value}' or '{SubOptionMesh.GIVEN_SLV_INDEX.value}'."
+            )
+
+
+## -----------------------------------------------------------
+#   PLOTTING STRATEGIES DIFFERENT ACCORDING TO THE DATASTRUCTURE
+## -----------------------------------------------------------
+
+
+class PlottingStrategy(ABC):
+    """Abstract base class for a plotting strategy."""
+
+    _ax = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self, ax=None):
+        """Initializes the plotting strategy.
+
+        Arguments:
+            ax (Optional[plt.Axes]): The matplotlib axes object to draw on.
+        """
+        self._ax = ax
+
+    @abstractmethod
+    def generateAxis(self):
+        """Generates and returns the figure and axis objects."""
+        pass
+
+    @abstractmethod
+    def scatter(self, coords, color, s, marker="o"):
+        """Draws scatter points.
+
+        Arguments:
+            coords (np.ndarray): The coordinates of the points.
+            color (str): The color of the points.
+            s (int): The marker size.
+            marker (str): The marker style.
+        """
+        pass
+
+    @abstractmethod
+    def text(self, coords, label, color):
+        """Draws text labels.
+
+        Arguments:
+            coords (np.ndarray): The coordinates of the text label.
+            label (str): The text content of the label.
+            color (str): The color of the text.
+        """
+        pass
+
+    @abstractmethod
+    def plotEdges(self, cell, color, linestyle, alpha, label):
+        """Plots the edges of a given cell object.
+
+        Arguments:
+            cell (Any): The cell object with a `plotEdges` method.
+            color (str): The color of the edges.
+            linestyle (str): The line style of the edges.
+            alpha (float): The transparency of the edges.
+            label (str): The label for the legend.
+        """
+        pass
+
+    @abstractmethod
+    def plotLine(self, start_coords, end_coords, color, linestyle):
+        """Draws a single line between two points.
+
+        Arguments:
+            start_coords (np.ndarray): The starting point coordinates.
+            end_coords (np.ndarray): The ending point coordinates.
+            color (str): The color of the line.
+            linestyle (str): The style of the line.
+        """
+        pass
+
+
+class PlottingStrategy2D(PlottingStrategy):
+    """Plotting strategy for 2D geometries."""
+
+    def generateAxis(self):
+        fig, ax = plt.subplots(figsize=DEFAULT_FIGURE_SIZE)
+        ax.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
+        self._ax = ax
+        return fig, ax
+
+    def scatter(self, coords, color, s, marker="o"):
+        self._ax.scatter(coords[:, 0], coords[:, 1], color=color, s=s, marker=marker)
+
+    def text(self, coords, label, color):
+        factor = 1.01
+        self._ax.text(
+            factor * coords[0], factor * coords[1], f"{label}", size=15, zorder=2, color=color
+        )
+
+    def plotEdges(self, cell, color, linestyle, alpha, label):
+        """Plots the 2D edges of a cell.
+
+        Arguments:
+            cell (Any): The cell object with a `plotEdges` method.
+            color (str): The color of the edges.
+            linestyle (str): The line style of the edges.
+            alpha (float): The transparency of the edges.
+            label (str): The label for the legend.
+        """
+        cell.plotEdges(self._ax, color, linestyle, alpha, 2, label)
+
+    def plotLine(self, start_coords, end_coords, color, linestyle):
+        self._ax.plot(
+            [start_coords[0], end_coords[0]],
+            [start_coords[1], end_coords[1]],
+            color=color,
+            linestyle=linestyle,
+        )
+
+
+class PlottingStrategy3D(PlottingStrategy):
+    """Plotting strategy for 3D geometries."""
+
+    def generateAxis(self):
+        """
+        Generates a 3D interactive axis.
+
+        This implementation creates a matplotlib axis with a '3d' projection
+        and enables interactive mode (`plt.ion()`).
+        """
+        plt.ion()
+        fig = plt.figure(figsize=DEFAULT_FIGURE_SIZE)
+        ax = plt.axes(projection="3d")
+        ax.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
+        self._ax = ax
+        return fig, ax
+
+    def scatter(self, coords, color, s, marker="o"):
+        self._ax.scatter(coords[:, 0], coords[:, 1], coords[:, 2], color=color, s=s, marker=marker)
+
+    def text(self, coords, label, color):
+        factor = 1.01
+        self._ax.text(
+            factor * coords[0],
+            factor * coords[1],
+            factor * coords[2],
+            f"{label}",
+            size=15,
+            zorder=2,
+            color=color,
+        )
+
+    def plotEdges(self, cell, color, linestyle, alpha, label):
+        """
+        Plots the 3D edges of a cell.
+
+        Arguments:
+            cell (Any): The cell object with a `plotEdges` method.
+            color (str): The color of the edges.
+            linestyle (str): The line style of the edges.
+            alpha (float): The transparency of the edges.
+            label (str): The label for the legend.
+        """
+        cell.plotEdges(self._ax, color, linestyle, alpha, 3, label)
+
+    def plotLine(self, start_coords, end_coords, color, linestyle):
+        self._ax.plot(
+            [start_coords[0], end_coords[0]],
+            [start_coords[1], end_coords[1]],
+            [start_coords[2], end_coords[2]],
+            color=color,
+            linestyle=linestyle,
+        )
+
+
+class PlottingStrategy3DProjected(PlottingStrategy):
+    """Plotting strategy for 3D geometries by projection onto a 2D plane."""
+
+    _index_ppx = _index_ppy = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self, index_ppx, index_ppy):
+        """
+        Initializes the 3D projected plotting strategy.
+
+        The behavior of all plotting methods will depend on the indices provided
+        here to project 3D coordinates onto a 2D plane.
+
+        Arguments:
+            projection_axis_x_idx (int): Index of the 3D coordinate for the plane's X-axis (0, 1, or 2).
+            projection_axis_y_idx (int): Index of the 3D coordinate for the plane's Y-axis (0, 1, or 2).
+        """
+        super().__init__()
+        self._index_ppx = index_ppx
+        self._index_ppy = index_ppy
+
+    def generateAxis(self):
+        """Generates a 2D axis for the projected plot."""
+        fig, ax = plt.subplots(figsize=DEFAULT_FIGURE_SIZE)
+        ax.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
+        ax.set_aspect("equal", adjustable="box")
+        self._ax = ax
+        return fig, ax
+
+    def scatter(self, coords, color, s, marker="o"):
+        """
+        Draws a 2D scatter plot of projected 3D coordinates.
+
+        Arguments:
+            coords (np.ndarray): The 3D coordinates of the points.
+            color (str): The color of the points.
+            s (int): The marker size.
+            marker (str): The marker style.
+        """
+        self._ax.scatter(
+            coords[:, self._index_ppx], coords[:, self._index_ppy], color=color, s=s, marker=marker
+        )
+
+    def text(self, coords, label, color):
+        """
+        Draws a text label at a projected 3D coordinate.
+
+        Arguments:
+            coords (np.ndarray): The 3D coordinates of the text label.
+            label (str): The text content of the label.
+            color (str): The color of the text.
+        """
+        factor = 1.01
+        self._ax.text(
+            factor * coords[self._index_ppx],
+            factor * coords[self._index_ppy],
+            f"{label}",
+            size=15,
+            zorder=2,
+            color=color,
+        )
+
+    def plotEdges(self, cell, color, linestyle, alpha, label):
+        """
+        Plots the projected 2D edges of a cell.
+
+        Arguments:
+            cell (Any): The cell object with a `plotEdges` method.
+            color (str): The color of the edges.
+            linestyle (str): The line style of the edges.
+            alpha (float): The transparency of the edges.
+            label (str): The label for the legend.
+        """
+        cell.plotEdges(self._ax, color, linestyle, alpha, 2, label)
+
+    def plotLine(self, start_coords, end_coords, color, linestyle):
+        """
+        Draws a 2D line between two projected 3D points.
+
+        Arguments:
+            start_coords (np.ndarray): The starting 3D point coordinates.
+            end_coords (np.ndarray): The ending 3D point coordinates.
+            color (str): The color of the line.
+            linestyle (str): The style of the line.
+        """
+        self._ax.plot(
+            [start_coords[self._index_ppx], end_coords[self._index_ppx]],
+            [start_coords[self._index_ppy], end_coords[self._index_ppy]],
+            color=color,
+            linestyle=linestyle,
+        )
 
 
 ## -----------------------------------------------------------
 #   CLASS MESH MATPLOTLIB FIGURE
 ## -----------------------------------------------------------
-class meshMatplotlibFigure:
+class MeshMatplotlibFigure:
+    """
+    Class to generate a Matplotlib figure based on a validated PlotConfig.
+    """
 
-    def __init__(
-        self,
-        pairingAnalysisInstance,
-        dimMatPlot,
-        optionMesh,
-        suboptionMesh,
-        optionPair,
-        addNodeLabel=False,
-        addMeshNodes=False,
-        addLegend=True,
-        index=None,
-        indexPlaneProjected=None,
-    ):
-        r"""Constructor
+    _pairingAnalysis = _config = _strategy = None
+    _dim = _codim = None
+    _indexPPx = _indexPPy = _indexPPz = None
+    _fig = _ax = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
-        Args:
-            pairingAnalysisInstance (:class:`PairingObject`):
-            dimMatPlot (:class:`int`): space dimension
-            optionMesh (:class:`str`): should be in OPTION_MESH_VISU
-            suboptionMesh (:class:`str`): should be in SUBOPTION_MESH_VISU
-            optionPair (:class:`str`): should be in OPTION_PAIRING_VISU
-            addNodeLabel (:class:`bool`): if True, then add node labels (numbering)
-            addMeshNodes (:class:`bool`): if True, then add mesh node (bullet for nodes)
-            addLegend (:class:`bool`): if True, then plot legend
-            index (:class:`int`), optional: index of a selected cell
-            indexPlaneProjected (:class:`str`), optional: should be un INDEX_PLANE_PROJECTED
+    def __init__(self, pairingAnalysisInstance, config: PlotConfig):
+        """
+        Constructor
+
+        Arguments
+        ---------
+        pairingAnalysisInstance : PairingObject
+            Previously computed AsterPairingProcess object.
+
+        config: PlotConfig
+            A valid plot configuration object
         """
         self._pairingAnalysis = pairingAnalysisInstance
-        # - Option for visualisation
-        self._optionMesh = optionMesh
-        self._suboptionMesh = suboptionMesh
-        self._optionPair = optionPair
-        # - Details for the plot
-        self._dimMatPlot = dimMatPlot
-        self._addNodeLabel = addNodeLabel
-        self._addMeshNodes = addMeshNodes
-        self._addLegend = addLegend
-        self._index = index
-        self._indexPlaneProjected = indexPlaneProjected
-        # - Initialisation of some variables
+        self._config = config
+
+        # - Create the right plotting strategy
+        self._strategy = self.createPlottingStrategy()
+
+        # - Initialize variables
         self._dim = None
         self._codim = None
-        # - Precomputation
-        self.checkConsistency()
+        self._indexPPx, self._indexPPy, self._indexPPz = None, None, None
+
+        # - Compute information (geometry and index for the arrays)
         self.computeDimCodim()
         self.setIndicesProjected()
-        self.validityOptions()
 
-    def checkConsistency(self):
-        r"""Consistency check of the options"""
-        if self._optionMesh not in OPTION_MESH_VISU:
-            raise ValueError(f"Key {self._optionMesh} not in OPTION_MESH_VISU definition")
-        if self._suboptionMesh not in SUBOPTION_MESH_VISU:
-            raise ValueError(f"Key {self._suboptionMesh} not in SUBOPTION_MESH_VISU definition")
-        if self._optionPair not in OPTION_PAIRING_VISU:
-            raise ValueError(f"Key {self._optionPair} not in OPTION_PAIRING_VISU definition")
-        if self._indexPlaneProjected not in INDEX_PLANE_PROJECTED:
-            raise ValueError(
-                f"Key : indexPlaneProjected '{self._indexPlaneProjected}' not in INDEX_PLANE_PROJECTED"
-            )
+        # - Initialize attributes for the figure
+        self._fig = None
+        self._ax = None
 
-    def validityOptions(self):
-        # - Check whether the method is valid for the given dimension
-        if self._suboptionMesh not in VALID_COMBINATION[self._dim][self._optionMesh]:
-            raise ValueError(
-                f"ERROR : Option '{self._suboptionMesh}' invalid for the method '{self._optionMesh}' and dimension '{self._dim}'."
-            )
-        # - Check if the option is valid for the given method and dimension
-        if self._suboptionMesh not in VALID_COMBINATION[self._dim][self._optionMesh]:
-            raise ValueError(
-                f"ERROR : Option '{self._suboptionMesh}' invalid for the method '{self._optionMesh}' and dimension '{self._dim}'."
-            )
-        # - Check if the sub-option is valid for the given option
-        if (
-            self._optionPair
-            not in VALID_COMBINATION[self._dim][self._optionMesh][self._suboptionMesh]
-        ):
-            raise ValueError(
-                f"ERROR : Suboption '{self._optionPair}' invalid for option '{self._suboptionMesh}' and method '{self._optionMesh}'."
-            )
+    def createPlottingStrategy(self):
+        """Factory method to create the appropriate plotting strategy."""
+        dim = self._config.dimMatPlot
+        plane = self._config.indexPlaneProjected
+
+        if dim == 2:
+            return PlottingStrategy2D()
+        elif dim == 3:
+            if plane is None:
+                return PlottingStrategy3D()
+            else:
+                indices = {"X": (1, 2), "Y": (0, 2), "Z": (0, 1)}
+                idx_x, idx_y = indices[plane.value]
+                return PlottingStrategy3DProjected(idx_x, idx_y)
+        else:
+            raise ValueError(f"Plotting dimension {dim} is not supported.")
 
     def computeDimCodim(self):
-        r"""Method to computed codimension"""
-        if self._optionMesh == "domain":
-            self._dim = self._dimMatPlot
+        """Method to compute dimension and codimension."""
+        if self._config.optionMesh == OptionMesh.DOMAIN:
+            self._dim = self._config.dimMatPlot
             self._codim = 0
-        elif self._optionMesh == "interface":
-            self._dim = self._dimMatPlot
+        elif self._config.optionMesh == OptionMesh.INTERFACE:
+            self._dim = self._config.dimMatPlot
             self._codim = 1
-        elif self._optionMesh == "selectSlvCell":
-            self._dim = self._dimMatPlot
+        elif self._config.optionMesh == OptionMesh.SELECT_SLV_CELL:
+            self._dim = self._config.dimMatPlot
             self._codim = 1
-        else:
-            raise ValueError(f"Key {self._optionMesh} not in OPTION_MESH_VISU definition")
+
+        print(f"Computed dim={self._dim}, codim={self._codim}")
 
     def setIndicesProjected(self):
-        r"""Given the option provided, defines the coordinates to be selected
-        for a 3D plot projected onto a plane."""
-        if self._indexPlaneProjected == "X":
-            self._indexPPx = 1
-            self._indexPPy = 2
-            self._indexPPz = 0  # - coordinates removed
-        elif self._indexPlaneProjected == "Y":
-            self._indexPPx = 0
-            self._indexPPy = 2
-            self._indexPPz = 1  # - coordinates removed
-        elif self._indexPlaneProjected == "Z":
-            self._indexPPx = 0
-            self._indexPPy = 1
-            self._indexPPz = 2  # - coordinates removed
-        elif self._indexPlaneProjected is None:
-            self._indexPPx = None
-            self._indexPPy = None
-            self._indexPPz = None  # - coordinates removed
-        else:
-            raise ValueError(
-                f"Error : indexPlaneProjected '{self._indexPlaneProjected}' is not valid."
-            )
-
-    def generateAxis(self):
-        r"""Axis generation for plot"""
-        if self._dimMatPlot == 2:
-            fig, ax = plt.subplots(figsize=DEFAULT_FIGURE_SIZE)
-            self._fig = fig
-            self._ax = ax
-            plt.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
-            plt.ion()
-            self._fig = plt.figure(figsize=DEFAULT_FIGURE_SIZE)
-            self._ax = plt.axes(projection="3d")
-            plt.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
-            fig, ax = plt.subplots(figsize=DEFAULT_FIGURE_SIZE)
-            plt.tick_params(axis="both", labelsize=DEFAULT_TICKS_SIZE)
-            self._fig = fig
-            self._ax = ax
-        else:
-            raise NameError("generateAxis: Dimension of plot not available")
-
-    def addNodes(self, nodesCoords, color, s):
-        r"""Add nodes in a figure
-
-        Args:
-            nodesCoords (:class:`numpy.ndarray`): Array of the nodes coordinates
-            color (:class:`str`): Color of the node coordinates
-            s (:class:`float`): Opacity parameter
-
         """
-        if self._dimMatPlot == 2:
-            self._ax.scatter(nodesCoords[:, 0], nodesCoords[:, 1], color=color, s=s)
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
-            self._ax.scatter(
-                nodesCoords[:, 0], nodesCoords[:, 1], nodesCoords[:, 2], color=color, s=s
-            )
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
-            self._ax.scatter(
-                nodesCoords[:, self._indexPPx], nodesCoords[:, self._indexPPy], color=color, s=s
-            )
-        else:
-            raise NameError("addNodes: Dimension of plot not available")
-
-    def addNodeLabels(self, nodeCoords, nodeIndices, color):
-        r"""Add node labels to the plot
-
-        Args:
-            nodeCoords (:class:`numpy.ndarray`): Array of nodes coordinates
-            color (:class:`str`): Color of the edges
-
+        Given the option provided, defines the coordinates to be selected
+        for a 3D plot projected onto a plane.
         """
-        factor = 1.01
-        for nodeIndex in range(nodeCoords.shape[0]):
-            if self._dimMatPlot == 2:
-                self._ax.text(
-                    factor * nodeCoords[nodeIndex, 0],
-                    factor * nodeCoords[nodeIndex, 1],
-                    "%s" % (nodeIndices[nodeIndex]),
-                    size=15,
-                    zorder=2,
-                    color=color,
-                )
-            elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
-                self._ax.text(
-                    factor * nodeCoords[nodeIndex, 0],
-                    factor * nodeCoords[nodeIndex, 1],
-                    factor * nodeCoords[nodeIndex, 2],
-                    "%s" % (nodeIndices[nodeIndex]),
-                    size=15,
-                    zorder=2,
-                    color=color,
-                )
-            elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
-                self._ax.text(
-                    factor * nodeCoords[nodeIndex, self._indexPPx],
-                    factor * nodeCoords[nodeIndex, self._indexPPy],
-                    "%s" % (nodeIndices[nodeIndex]),
-                    size=15,
-                    zorder=2,
-                    color=color,
-                )
-            else:
-                raise NameError("addNodeLabels: Dimension of plot not available")
+        plane = self._config.indexPlaneProjected
 
-    def addEdges(self, cellIndices, dim, codim, color, linestyle, alpha, labelStr):
-        r"""Add edges associate to a cell
+        if plane == IndexPlane.X:
+            self._indexPPx, self._indexPPy, self._indexPPz = 1, 2, 0
+        elif plane == IndexPlane.Y:
+            self._indexPPx, self._indexPPy, self._indexPPz = 0, 2, 1
+        elif plane == IndexPlane.Z:
+            self._indexPPx, self._indexPPy, self._indexPPz = 0, 1, 2
 
-        Args:
-            cellIndices (:class:`list`): List of the cell indices to plot
-            dim (:class:`int`): Dimension of the space
-            codim (:class:`int`): Codimension for the convex set to plot
-            color (:class:`str`): Color of the edges
-            linestyle (:class:`str`): Linestyle of the edges
-            alpha (:class:`float`): Opacity parameter
-            labelStr (:class:`float`): Label for this cell
+        if plane:
+            print(f"Projection indices set for plane '{plane.value}'.")
 
+    ## - Plot methods call the right PlottingStrategy methods
+    def _generateAxis(self):
+        """Delegates axis generation to the current strategy."""
+        self._fig, self._ax = self._strategy.generateAxis()
+
+    def _addNodes(self, nodes_coords, color, s):
+        """Delegates scatter plotting to the current strategy.
+
+        Arguments:
+            nodes_coords (np.ndarray): Array of node coordinates.
+            color (str): The color for the nodes.
+            s (int): The marker size for the nodes.
         """
-        for k, index in enumerate(cellIndices):
+        self._strategy.scatter(nodes_coords, color, s)
+
+    def _addNodeLabels(self, node_coords, node_indices, color):
+        """Delegates text plotting to the current strategy.
+
+        Arguments:
+            node_coords (np.ndarray): Array of node coordinates.
+            node_indices (list[int]): List of integer indices for each node.
+            color (str): The color for the text labels.
+        """
+        for i, node_index in enumerate(node_indices):
+            self._strategy.text(node_coords[i], node_index, color)
+
+    def _addEdges(self, cell_indices, color, linestyle, alpha, label_str):
+        """Delegates edge plotting to the current strategy.
+
+        Arguments:
+            cell_indices (list[int]): List of cell indices to plot.
+            color (str): The color for the edges.
+            linestyle (str): The line style for the edges (e.g., '-', '--').
+            alpha (float): The transparency of the lines.
+            label_str (str): The label for the legend.
+        """
+        is_projected = isinstance(self._strategy, PlottingStrategy3DProjected)
+
+        for i, index in enumerate(cell_indices):
             nodes, _ = self._pairingAnalysis.getNodesCoordsFromCellIndices([index])
-            if self._indexPlaneProjected is not None:
-                indicesProj = [self._indexPPx, self._indexPPy]
-                nodesNew = np.zeros(np.shape(nodes))
-                nodesExtr = nodes[:, indicesProj]
-                nodesNew[:, [0, 1]] = nodesExtr
-                cell = ConvexPointSet(dim - codim, nodesNew, 0)
+
+            # - When projection is used, one should get the right coordinates
+            if is_projected:
+                indices_proj = [self._strategy._index_ppx, self._strategy._index_ppy]
+                nodes_projected = np.zeros_like(nodes)
+                nodes_projected[:, :2] = nodes[:, indices_proj]
+                cell = ConvexPointSet(self._dim - self._codim, nodes_projected, 0)
             else:
-                cell = ConvexPointSet(dim - codim, nodes, codim)
-            if self._addLegend and k == 0:
-                label = labelStr
-            else:
-                label = None
+                cell = ConvexPointSet(self._dim - self._codim, nodes, self._codim)
 
-            if self._indexPlaneProjected is not None:
-                cell.plotEdges(self._ax, color, linestyle, alpha, self._dim - 1, label)
-            else:
-                cell.plotEdges(self._ax, color, linestyle, alpha, self._dim, label)
+            label = label_str if self._config.addLegend and i == 0 else None
+            self._strategy.plotEdges(cell, color, linestyle, alpha, label)
 
-    def setCellsIndices(self):
-        r"""Set indices of the slave and master cells"""
-        if self._optionMesh == "domain":
-            self._SlvIndices = self._pairingAnalysis._indicesSlaveDomain
-            self._MasIndices = self._pairingAnalysis._indicesMasterDomain
-            # codim = 0
-        elif self._optionMesh == "interface":
-            self._SlvIndices = self._pairingAnalysis._indicesSlaveInterface
-            self._MasIndices = self._pairingAnalysis._indicesMasterInterface
-            # codim = 1
-        elif self._optionMesh == "selectSlvCell":
-            self._SlvIndices = self._pairingAnalysis._indicesSlaveInterface
-            self._MasIndices = self._pairingAnalysis._indicesMasterInterface
-            # codim = 1
-        else:
-            raise ValueError(f"Key {self._optionMesh} not in OPTION_MESH_VISU definition")
+    def _set_legend(self):
+        """Adds a legend to the figure if requested."""
+        if self._config.addLegend:
+            ncol = 4 if self._config.optionPair != OptionPair.MESH_ONLY else 2
+            self._ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.1), ncol=ncol)
 
-    def setLegend(self):
-        r"""Add legend to the matplotlib figure"""
-        if self._addLegend:
-            if self._optionPair:
-                ncolLeg = 4
-            else:
-                ncolLeg = 2
-            self._ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.1), ncol=ncolLeg)
+    ## - Plot method
+    def plot(self, s=50):
+        """Main plotting method. Acts as a dispatcher based on the configuration.
 
-    def plotMeshStructure(self, plotParams, s):
-        r"""Plot the mesh structure (nodes and edges
-
-        Args:
-            plotParams (:class:`dict`): dictionnary of parameters for plot (colors)
-            s (:class:`float`): Opacity parameter
+        Arguments:
+            s (int): Base marker size for points.
         """
-        # - Slave and Master get indices
-        nodesSlvcoords, nodesSlvIndices = self._pairingAnalysis.getNodesCoordsFromCellIndices(
-            self._SlvIndices
+        if self._config.optionMesh == OptionMesh.SELECT_SLV_CELL:
+            self._plotSelectSlaveCell(s)
+            return
+
+        if self._config.optionPair == OptionPair.MESH_ONLY:
+            self._plotMeshOnly(s)
+            return
+
+        if self._config.suboptionMesh == SubOptionMesh.ALL:
+            all_pairs = self._pairingAnalysis._listPairs
+            for i in range(len(all_pairs)):
+                self._drawFullPlotForOnePair(i, s)
+
+        elif self._config.suboptionMesh == SubOptionMesh.GIVEN_PAIR:
+            self._drawFullPlotForOnePair(self._config.index, s)
+
+        elif self._config.suboptionMesh == SubOptionMesh.GIVEN_SLV_INDEX:
+            slv_index = self._config.index
+            for i, (pair_slv, _) in enumerate(self._pairingAnalysis._listPairs):
+                if pair_slv == slv_index:
+                    self._drawFullPlotForOnePair(i, s)
+
+    def _plotMeshOnly(self, s):
+        """Plots only the base mesh structure.
+
+        Arguments:
+            s (int): Base marker size for nodes if they are plotted.
+        """
+        self._generateAxis()
+        plot_params = self._getPlotParams()
+        self._plotMeshStructure(plot_params, s)
+        self._set_legend()
+        plt.show(block=True)
+
+    def _drawFullPlotForOnePair(self, pair_index, s):
+        """
+        Worker method: Generates a complete plot for a single specified pair.
+        This is the core logic reused by multiple dispatch methods.
+
+        Arguments:
+            pair_index (int): The index of the pair in `_pairingAnalysis._listPairs`.
+            s (int): Base marker size for point
+        """
+        self._generateAxis()
+        plot_params = self._getPlotParams()
+
+        # - Plot basic structure
+        self._plotMeshStructure(plot_params, s)
+
+        # - Plot the specific pair
+        pair_slv_ind, pair_mas_ind = self._pairingAnalysis._listPairs[pair_index]
+        self._plotASinglePair(pair_slv_ind, pair_mas_ind, plot_params)
+
+        # - Add intersection or quadrature points if needed
+        if self._config.optionPair == OptionPair.INTE_POINTS:
+            self._plotIntersectionPoints(pair_index, s)
+        elif self._config.optionPair == OptionPair.QUAD_POINTS:
+            self._plotQuadraturePoints(pair_index, int(s / 3))
+
+        self._set_legend()
+        plt.show(block=True)
+
+    def _plotSelectSlaveCell(self, s):
+        """
+        Special case: plots only the cells involved in pairs with a given slave cell,
+        without the rest of the mesh.
+
+        Arguments:
+            s (int): Base marker size for points.
+        """
+        self._generateAxis()
+        plot_params = {
+            "SlvInt": {"color": "blue", "linestyle": "--", "alpha": 0.25},
+            "MasInt": {"color": "red", "linestyle": "--", "alpha": 0.25},
+        }
+        slv_index_to_find = self._config.index
+        found_at_least_one = False
+
+        for pair_index, (pair_slv_ind, pair_mas_ind) in enumerate(self._pairingAnalysis._listPairs):
+            if pair_slv_ind == slv_index_to_find:
+                found_at_least_one = True
+                # - Plot pair
+                self._plotASinglePair(pair_slv_ind, pair_mas_ind, plot_params)
+
+                # - Add node and their labels if needed
+                if self._config.addMeshNodes or self._config.addNodeLabel:
+                    slv_coords, slv_node_idx = self._pairingAnalysis.getNodesCoordsFromCellIndices(
+                        [pair_slv_ind]
+                    )
+                    mas_coords, mas_node_idx = self._pairingAnalysis.getNodesCoordsFromCellIndices(
+                        [pair_mas_ind]
+                    )
+                    if self._config.addMeshNodes:
+                        self._addNodes(slv_coords, "blue", s)
+                        self._addNodes(mas_coords, "red", s)
+                    if self._config.addNodeLabel:
+                        self._addNodeLabels(slv_coords, slv_node_idx, "blue")
+                        self._addNodeLabels(mas_coords, mas_node_idx, "red")
+
+                # - Add intersection or quadrature points if needed
+                if self._config.optionPair == OptionPair.INTE_POINTS:
+                    self._plotIntersectionPoints(pair_index, s)
+                elif self._config.optionPair == OptionPair.QUAD_POINTS:
+                    self._plotQuadraturePoints(pair_index, int(s / 3))
+
+        if found_at_least_one:
+            self._set_legend()
+            plt.show(block=True)
+        else:
+            print(f"Warning: No pairs found for slave cell index {slv_index_to_find}.")
+
+    def _getPlotParams(self):
+        """Determines the color and style parameters based on the configuration.
+
+        Returns:
+            dict: A dictionary containing style parameters like 'color',
+                  'linestyle', and 'alpha' for different mesh components.
+        """
+        if self._config.optionPair == OptionPair.MESH_ONLY:
+            return {
+                "Slv": {"color": "blue", "linestyle": "-", "alpha": 1.0},
+                "Mas": {"color": "red", "linestyle": "-", "alpha": 1.0},
+            }
+        else:
+            return {
+                "Slv": {"color": "blue", "linestyle": "-", "alpha": 0.15},
+                "Mas": {"color": "red", "linestyle": "-", "alpha": 0.15},
+                "SlvInt": {"color": "orange", "linestyle": "-", "alpha": 1.0},
+                "MasInt": {"color": "green", "linestyle": "-", "alpha": 1.0},
+            }
+
+    def _plotMeshStructure(self, plot_params, s):
+        """Plots the base mesh structure (slave and master cells).
+
+        Arguments:
+            plot_params (dict): A dictionary of styles.
+            s (int): Marker size for nodes if they are plotted.
+        """
+        # - Get cell indices to plot
+        if self._config.optionMesh == OptionMesh.DOMAIN:
+            slv_indices = self._pairingAnalysis._indicesSlaveDomain
+            mas_indices = self._pairingAnalysis._indicesMasterDomain
+        elif self._config.optionMesh in {OptionMesh.INTERFACE, OptionMesh.SELECT_SLV_CELL}:
+            slv_indices = self._pairingAnalysis._indicesSlaveInterface
+            mas_indices = self._pairingAnalysis._indicesMasterInterface
+        else:
+            return
+
+        # - Get the node coordinates
+        nodes_slv_coords, nodes_slv_indices = self._pairingAnalysis.getNodesCoordsFromCellIndices(
+            slv_indices
         )
-        nodesMascoords, nodesMasIndices = self._pairingAnalysis.getNodesCoordsFromCellIndices(
-            self._MasIndices
+        nodes_mas_coords, nodes_mas_indices = self._pairingAnalysis.getNodesCoordsFromCellIndices(
+            mas_indices
         )
-        # - Add mesh nodes and/or labels if needed
-        if self._addMeshNodes:
-            # - Slave
-            self.addNodes(nodesSlvcoords, plotParams["Slv"]["color"], s)
-            if self._addNodeLabel:
-                for nodeIndex in range(nodesSlvcoords.shape[0]):
-                    self.addNodeLabels(nodesSlvcoords, nodesSlvIndices, plotParams["Slv"]["color"])
-            # - Master
-            self.addNodes(nodesMascoords, plotParams["Mas"]["color"], s)
-            if self._addNodeLabel:
-                for nodeIndex in range(nodesMascoords.shape[0]):
-                    self.addNodeLabels(nodesMascoords, nodesMasIndices, plotParams["Mas"]["color"])
-        # - Slave and Master edges plot
-        self.addEdges(
-            self._SlvIndices,
-            self._dim,
-            self._codim,
-            plotParams["Slv"]["color"],
-            plotParams["Slv"]["linestyle"],
-            plotParams["Slv"]["alpha"],
+
+        # - Add node and their labels if needed
+        if self._config.addMeshNodes:
+            self._addNodes(nodes_slv_coords, plot_params["Slv"]["color"], s)
+            self._addNodes(nodes_mas_coords, plot_params["Mas"]["color"], s)
+        if self._config.addNodeLabel:
+            self._addNodeLabels(nodes_slv_coords, nodes_slv_indices, plot_params["Slv"]["color"])
+            self._addNodeLabels(nodes_mas_coords, nodes_mas_indices, plot_params["Mas"]["color"])
+
+        # - Add edges of the mesh cells if needed
+        self._addEdges(
+            slv_indices,
+            plot_params["Slv"]["color"],
+            plot_params["Slv"]["linestyle"],
+            plot_params["Slv"]["alpha"],
             "slave",
         )
-        self.addEdges(
-            self._MasIndices,
-            self._dim,
-            self._codim,
-            plotParams["Mas"]["color"],
-            plotParams["Mas"]["linestyle"],
-            plotParams["Mas"]["alpha"],
+        self._addEdges(
+            mas_indices,
+            plot_params["Mas"]["color"],
+            plot_params["Mas"]["linestyle"],
+            plot_params["Mas"]["alpha"],
             "master",
         )
 
-    def plotPair(
-        self, pairSlvInd, pairMasInd, pairIndex, plotParams, intePts=False, inteQuad=False
-    ):
-        r"""Plot a pair
+    def _plotASinglePair(self, pair_slv_ind, pair_mas_ind, plot_params):
+        """Plots a single slave/master pair.
 
-        Args:
-            pairSlvInd (:class:`int`): index of the slave cell
-            pairMasInd (:class:`int`): index of the master cell
-            pairIndex (:class:`int`): pair index
-            plotParams (:class:`dict`): plot parameters
-            intePts (:class:`bool`):
-            inteQuad (:class:`bool`):
+        Arguments:
+            pair_slv_ind (int): The index of the slave cell in the pair.
+            pair_mas_ind (int): The index of the master cell in the pair.
+            plot_params (dict): A dictionary of styles
         """
-        if intePts == False:
-            if self._indexPlaneProjected is None:
-                # - Slave pair
-                nodes, _ = self._pairingAnalysis.getNodesCoordsFromCellIndices([pairSlvInd])
-                cell = ConvexPointSet(self._dim - self._codim, nodes, self._codim)
-                cell.plotEdges(
-                    self._ax,
-                    plotParams["SlvInt"]["color"],
-                    plotParams["SlvInt"]["linestyle"],
-                    plotParams["SlvInt"]["alpha"],
-                    self._dim,
-                    "cell=" + str(pairSlvInd),
-                )
-                # - Master pair
-                nodes, _ = self._pairingAnalysis.getNodesCoordsFromCellIndices([pairMasInd])
-                cell = ConvexPointSet(self._dim - self._codim, nodes, self._codim)
-                cell.plotEdges(
-                    self._ax,
-                    plotParams["MasInt"]["color"],
-                    plotParams["MasInt"]["linestyle"],
-                    plotParams["MasInt"]["alpha"],
-                    self._dim,
-                    "cell=" + str(pairMasInd),
-                )
-            else:
-                # - Slave pair
-                nodes, _ = self._pairingAnalysis.getNodesCoordsFromCellIndices([pairSlvInd])
-                indicesProj = [self._indexPPx, self._indexPPy]
-                nodesNew = np.zeros(np.shape(nodes))
-                nodesExtr = nodes[:, indicesProj]
-                nodesNew[:, [0, 1]] = nodesExtr
-                cell = ConvexPointSet(self._dim - self._codim, nodesNew, 0)
-                # cell = ConvexPointSet(self.dim - self.codim, nodes, self.codim)
-                cell.plotEdges(
-                    self._ax,
-                    plotParams["SlvInt"]["color"],
-                    plotParams["SlvInt"]["linestyle"],
-                    plotParams["SlvInt"]["alpha"],
-                    self._dim - 1,
-                    "cell=" + str(pairSlvInd),
-                )
-                # - Master pair
-                nodes, _ = self._pairingAnalysis.getNodesCoordsFromCellIndices([pairMasInd])
-                indicesProj = [self._indexPPx, self._indexPPy]
-                nodesNew = np.zeros(np.shape(nodes))
-                nodesExtr = nodes[:, indicesProj]
-                nodesNew[:, [0, 1]] = nodesExtr
-                cell = ConvexPointSet(self._dim - self._codim, nodesNew, 0)
-                # cell = ConvexPointSet(self.dim - self.codim, nodes, self.codim)
-                cell.plotEdges(
-                    self._ax,
-                    plotParams["MasInt"]["color"],
-                    plotParams["MasInt"]["linestyle"],
-                    plotParams["MasInt"]["alpha"],
-                    self._dim - 1,
-                    "cell=" + str(pairMasInd),
-                )
-            # raise ValueError("not implemented")
-        else:
-            if inteQuad == False:
-                raise ValueError("not implemented")
-            else:
-                raise ValueError("not implemented")
+        self._addEdges(
+            [pair_slv_ind],
+            plot_params["SlvInt"]["color"],
+            plot_params["SlvInt"]["linestyle"],
+            plot_params["SlvInt"]["alpha"],
+            f"cell={pair_slv_ind}",
+        )
+        self._addEdges(
+            [pair_mas_ind],
+            plot_params["MasInt"]["color"],
+            plot_params["MasInt"]["linestyle"],
+            plot_params["MasInt"]["alpha"],
+            f"cell={pair_mas_ind}",
+        )
 
-    def plotIntePts(self, pairIndex, s):
-        r"""Plot the intersection points for a given pair.
+    def _plotIntersectionPoints(self, pair_index, s):
+        """Plots the intersection points for a given pair.
 
-        Args:
-            pairIndex (:class:`int`): index of the pair in the list of pairs
-            s (:class:`float`): Opacity parameter
+        Arguments:
+            pair_index (int): The index of the pair.
+            s (int): Marker size for the points.
         """
-        if self._indexPlaneProjected is None:
-            # - Intersection points
-            inteConvexSet = [
-                list(tu) for tu in self._pairingAnalysis._listIntersectionPts[pairIndex]
-            ]
-            inteConvexSetNP = np.array(inteConvexSet)
-            cell = ConvexPointSet(self._dim - self._codim, inteConvexSet, self._codim)
-            cell.plotEdges(self._ax, "black", "-", 1.0, self._dim, None)
-        else:
-            # - Intersection points
-            inteConvexSet = [
-                list(tu) for tu in self._pairingAnalysis._listIntersectionPts[pairIndex]
-            ]
-            inteConvexSetNP = np.array(inteConvexSet)
-            indicesProj = [self._indexPPx, self._indexPPy]
-            inteConvexSetNPExtr = inteConvexSetNP[:, indicesProj]
-            inteConvexSetNPNew = np.zeros(np.shape(inteConvexSetNP))
-            inteConvexSetNPNew[:, [0, 1]] = inteConvexSetNPExtr
-            cell = ConvexPointSet(self._dim - self._codim, inteConvexSetNPNew, 0)
-            cell.plotEdges(self._ax, "black", "-", 1.0, self._dim - 1, None)
-        if self._dimMatPlot == 2:
-            self._ax.scatter(inteConvexSetNP[:, 0], inteConvexSetNP[:, 1], color="black", s=s)
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
-            self._ax.scatter(
-                inteConvexSetNP[:, 0],
-                inteConvexSetNP[:, 1],
-                inteConvexSetNP[:, 2],
-                color="black",
-                s=s,
-            )
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
-            self._ax.scatter(
-                inteConvexSetNP[:, self._indexPPx],
-                inteConvexSetNP[:, self._indexPPy],
-                color="black",
-                s=s,
-            )
-        else:
-            raise ValueError("dimension of the plot is either 2 or 3")
+        inte_convex_set = np.array(self._pairingAnalysis._listIntersectionPts[pair_index])
 
-    def plotQuadPts(self, pairIndex, s):
-        r"""Plot the quadrature points for a given pair.
+        # - Plot the points (only)
+        self._strategy.scatter(inte_convex_set, color="black", s=s)
 
-        Args:
-            pairIndex (:class:`int`): index of the pair in the list of pairs
-            s (:class:`float`): Opacity parameter
+        # - Plot edges for the intersection cells
+        if isinstance(self._strategy, PlottingStrategy3DProjected):
+            indices_proj = [self._strategy._index_ppx, self._strategy._index_ppy]
+            nodes_projected = np.zeros_like(inte_convex_set)
+            nodes_projected[:, :2] = inte_convex_set[:, indices_proj]
+            cell = ConvexPointSet(self._dim - self._codim, nodes_projected, 0)
+        else:
+            cell = ConvexPointSet(self._dim - self._codim, inte_convex_set, self._codim)
+        self._strategy.plotEdges(cell, "black", "-", 1.0, None)
+
+    def _plotQuadraturePoints(self, pair_index, s):
         """
-        if self._indexPlaneProjected is None:
-            inteConvexSet = self._pairingAnalysis._listIntersectionPts[pairIndex]
-            cell = ConvexPointSet(self._dim - self._codim, inteConvexSet, self._codim)
-            cell.computeBary()
-            cell.plotEdges(self._ax, "black", "-", 1.0, self._dim, None)
+        Plots the quadrature points for a given pair, including the intersection
+        boundary and lines to its barycenter.
+
+        Arguments:
+            pair_index (int): The index of the pair.
+            s (int): Marker size for the points.
+        """
+        quad_points = np.array(self._pairingAnalysis._listQuadraturePts[pair_index])
+        inte_convex_set_coords = np.array(self._pairingAnalysis._listIntersectionPts[pair_index])
+
+        # - Plot the quadrature points
+        self._strategy.scatter(quad_points, color="red", s=s, marker="x")
+
+        # - Add some information to visualize the integration domain
+        is_projected = isinstance(self._strategy, PlottingStrategy3DProjected)
+        if is_projected:
+            indices_proj = [self._strategy._index_ppx, self._strategy._index_ppy]
+            nodes_projected = np.zeros_like(inte_convex_set_coords)
+            nodes_projected[:, :2] = inte_convex_set_coords[:, indices_proj]
+            cell = ConvexPointSet(self._dim - self._codim, nodes_projected, 0)
         else:
-            inteConvexSet = self._pairingAnalysis._listIntersectionPts[pairIndex]
-            indicesProj = [self._indexPPx, self._indexPPy]
-            inteConvexSetNew = np.zeros(np.shape(inteConvexSet))
-            inteConvexSetExtr = inteConvexSet[:, indicesProj]
-            inteConvexSetNew[:, [0, 1]] = inteConvexSetExtr
-            cell = ConvexPointSet(self._dim - self._codim, inteConvexSetNew, 0)
-            cell.computeBary()
-            cell.plotEdges(self._ax, "black", "-", 1.0, self._dim - 1, None)
-        for k in range(len(inteConvexSet)):
-            if self._dimMatPlot == 2:
-                plt.plot(
-                    [inteConvexSet[k][0], cell.computeBary()[0]],
-                    [inteConvexSet[k][1], cell.computeBary()[1]],
-                    color="black",
-                    marker=None,
-                    linestyle="dashed",
-                )
-            elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
-                plt.plot(
-                    [inteConvexSet[k][0], cell.computeBary()[0]],
-                    [inteConvexSet[k][1], cell.computeBary()[1]],
-                    [inteConvexSet[k][2], cell.computeBary()[2]],
-                    color="black",
-                    marker=None,
-                    linestyle="dashed",
-                )
-            elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
-                plt.plot(
-                    [inteConvexSet[k][self._indexPPx], cell.computeBary()[self._indexPPx]],
-                    [inteConvexSet[k][self._indexPPy], cell.computeBary()[self._indexPPy]],
-                    color="black",
-                    marker=None,
-                    linestyle="dashed",
-                )
-            else:
-                raise ValueError("dimension of the plot is either 2 or 3")
-        # - Quadrature points
-        quadPointspairIndex = self._pairingAnalysis._listQuadraturePts[pairIndex]
-        quadPointspairIndexNP = np.array(quadPointspairIndex)
-        if self._dimMatPlot == 2:
-            self._ax.scatter(
-                quadPointspairIndexNP[:, 0],
-                quadPointspairIndexNP[:, 1],
-                color="black",
-                s=s,
-                marker="o",
-            )
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is None:
-            self._ax.scatter(
-                quadPointspairIndexNP[:, 0],
-                quadPointspairIndexNP[:, 1],
-                quadPointspairIndexNP[:, 2],
-                color="black",
-                s=s,
-                marker="o",
-            )
-        elif self._dimMatPlot == 3 and self._indexPlaneProjected is not None:
-            self._ax.scatter(
-                quadPointspairIndexNP[:, self._indexPPx],
-                quadPointspairIndexNP[:, self._indexPPy],
-                color="black",
-                s=s,
-                marker="o",
-            )
-        else:
-            raise ValueError("dimension of the plot is either 2 or 3")
+            cell = ConvexPointSet(self._dim - self._codim, inte_convex_set_coords, self._codim)
 
-    def plot(self, s=50):
-        r"""Method for generating a plot given pairing coordinates"""
-        if HAS_MATPLOTLIB:
-            # - Initialisation of the cells indices to plot
-            self.setCellsIndices()
-            if self._optionMesh != "selectSlvCell":
-                # - Set the plotting parameters
-                if self._optionPair == "meshOnly":
-                    plotParams = {
-                        "Slv": {"color": "blue", "linestyle": "-", "alpha": 1.0},
-                        "Mas": {"color": "red", "linestyle": "-", "alpha": 1.0},
-                    }
-                else:
-                    plotParams = {
-                        "Slv": {"color": "blue", "linestyle": "-", "alpha": 0.15},
-                        "Mas": {"color": "red", "linestyle": "-", "alpha": 0.15},
-                        "SlvInt": {"color": "orange", "linestyle": "-", "alpha": 1.0},
-                        "MasInt": {"color": "green", "linestyle": "-", "alpha": 1.0},
-                    }
+        barycenter = cell.computeBary()
 
-                if self._optionPair == "meshOnly":
-
-                    # - Initialisation of the Figure
-                    self.generateAxis()
-                    # - Plot Mesh
-                    self.plotMeshStructure(plotParams, s)
-                    self.setLegend()
-                    plt.show(block=True)
-
-                # elif self.optionPair == "Pairs":
-                else:
-                    if self._suboptionMesh == "all":
-
-                        for pairIndex in range(len(self._pairingAnalysis._listPairs)):
-                            self.generateAxis()
-                            self.plotMeshStructure(plotParams, s)
-                            pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[pairIndex]
-                            self.plotPair(
-                                pairSlvInd, pairMasInd, pairIndex, plotParams, False, False
-                            )
-                            if self._optionPair == "intePoints":
-                                self.plotIntePts(pairIndex, s)
-                            if self._optionPair == "quadPoints":
-                                self.plotQuadPts(pairIndex, int(s / 3))
-                            self.setLegend()
-                            plt.show(block=True)
-
-                    elif self._suboptionMesh == "givenPair":
-                        self.generateAxis()
-                        self.plotMeshStructure(plotParams, s)
-                        pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[self._index]
-                        self.plotPair(pairSlvInd, pairMasInd, self._index, plotParams, False, False)
-                        if self._optionPair == "intePoints":
-                            self.plotIntePts(self._index, s)
-                        if self._optionPair == "quadPoints":
-                            self.plotQuadPts(self._index, int(s / 3))
-                        self.setLegend()
-                        plt.show(block=True)
-
-                    elif self._suboptionMesh == "givenSlvIndex":
-                        for pairIndex in range(len(self._pairingAnalysis._listPairs)):
-                            pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[pairIndex]
-                            if pairSlvInd == self._index:
-                                self.generateAxis()
-                                self.plotMeshStructure(plotParams, s)
-                                self.plotPair(
-                                    pairSlvInd, pairMasInd, pairIndex, plotParams, False, False
-                                )
-                                if self._optionPair == "intePoints":
-                                    self.plotIntePts(pairIndex, s)
-                                if self._optionPair == "quadPoints":
-                                    self.plotQuadPts(pairIndex, int(s / 3))
-                                self.setLegend()
-                                plt.show(block=True)
-                    else:
-                        raise ValueError("not implemented yet")
-                # else:
-                #     raise ValueError("not implemented yet")
-            else:
-                plotParams = {
-                    "Slv": {"color": "blue", "linestyle": "-", "alpha": 0.15},
-                    "Mas": {"color": "red", "linestyle": "-", "alpha": 0.15},
-                    "SlvInt": {"color": "blue", "linestyle": "-", "alpha": 1.0},
-                    "MasInt": {"color": "red", "linestyle": "-", "alpha": 1.0},
-                }
-                self.generateAxis()
-                for pairIndex in range(len(self._pairingAnalysis._listPairs)):
-                    pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[pairIndex]
-                    if pairSlvInd == self._index:
-                        # - Slave and Master get indices
-                        nodesSlvcoords, _ = self._pairingAnalysis.getNodesCoordsFromCellIndices(
-                            [pairSlvInd]
-                        )
-                        nodesMascoords, _ = self._pairingAnalysis.getNodesCoordsFromCellIndices(
-                            [pairMasInd]
-                        )
-                        if self._addMeshNodes:
-                            # - Slave
-                            self.addNodes(nodesSlvcoords, plotParams["Slv"]["color"], s)
-                            if self._addNodeLabel:
-                                for nodeIndex in range(nodesSlvcoords.shape[0]):
-                                    self.addNodeLabels(
-                                        nodesSlvcoords, [pairSlvInd], plotParams["Slv"]["color"]
-                                    )
-                            # - Master
-                            self.addNodes(nodesMascoords, plotParams["Mas"]["color"], s)
-                            if self._addNodeLabel:
-                                for nodeIndex in range(nodesMascoords.shape[0]):
-                                    self.addNodeLabels(
-                                        nodesMascoords, [pairMasInd], plotParams["Mas"]["color"]
-                                    )
-                        self.plotPair(pairSlvInd, pairMasInd, pairIndex, plotParams, False, False)
-                for pairIndex in range(len(self._pairingAnalysis._listPairs)):
-                    pairSlvInd, pairMasInd = self._pairingAnalysis._listPairs[pairIndex]
-                    if pairSlvInd == self._index:
-                        if self._optionPair == "intePoints":
-                            self.plotIntePts(pairIndex, s)
-                        if self._optionPair == "quadPoints":
-                            self.plotQuadPts(pairIndex, int(s / 3))
-                self.setLegend()
-                plt.show(block=True)
-        else:
-            raise ValueError(
-                f"HAS_MATPLOTLIB value is {HAS_MATPLOTLIB}. Should try to run it in interactive mode."
+        for vertex_coords in inte_convex_set_coords:
+            self._strategy.plotLine(
+                start_coords=vertex_coords, end_coords=barycenter, color="black", linestyle="dashed"
             )
