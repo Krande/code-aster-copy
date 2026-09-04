@@ -121,7 +121,7 @@ def test_array_floats(arr_num, arr_ref, msg_begin, msg_end):
 
 
 # - Compute the ROB using the snapshot method
-POD_An1 = PODAnalysis(arr_depl, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An1 = PODAnalysis.factory(arr_depl, method="snapshot", criterion="energy", tolerance=1e-5)
 Phi_1, singval = POD_An1.computePODBasis(option=2)
 dRate = POD_An1.computeDecayRate(singval)
 test.assertAlmostEqual(dRate, -8.255, places=3)
@@ -132,14 +132,14 @@ singval_An1_ref = [5.0746443, 0.01660781]
 test_singular_values(singval, singval_An1_ref, msg_end="using snapshot")
 
 singval_An2_ref = [5.07464430e00, 1.66078074e-02, 3.09228298e-03]
-POD_An2 = PODAnalysis(arr_depl, method="snapshot", criterion="nbModes", nbModes=3)
+POD_An2 = PODAnalysis.factory(arr_depl, method="snapshot", criterion="nbModes", nbModes=3)
 Phi_2, singval = POD_An2.computePODBasis(option=2)
 test.assertEqual(Phi_2.shape[1], 3, msg="snapshot - nbModes - depl")
 test_singular_values(singval, singval_An2_ref, msg_end="using snapshot")
 
 # - Compute the ROB using SVD
 singval_An3_ref = [5.07464430e00, 1.66078074e-02, 3.09228298e-03, 1.58907559e-03]
-POD_An3 = PODAnalysis(arr_depl, method="SVD", criterion="nbModes", nbModes=4)
+POD_An3 = PODAnalysis.factory(arr_depl, method="SVD", criterion="nbModes", nbModes=4)
 Phi_3, singval = POD_An3.computePODBasis(option=2)
 test.assertEqual(Phi_3.shape[1], 4, msg="SVD - depl")
 test_singular_values(singval, singval_An3_ref, msg_end="using SVD")
@@ -154,7 +154,7 @@ singval_An4_ref = [
     3.99430747e-05,
     4.13119530e-05,
 ]
-POD_An4 = PODAnalysis(arr_depl, method="GS-classical", criterion="energy", tolerance=1e-5)
+POD_An4 = PODAnalysis.factory(arr_depl, method="GS-classical", criterion="energy", tolerance=1e-5)
 Phi_4, singval = POD_An4.computePODBasis(option=2)
 test.assertEqual(Phi_4.shape[1], 7, msg="GS-classical - depl")
 test_singular_values(singval, singval_An4_ref, msg_end="using GS-classical")
@@ -169,7 +169,7 @@ singval_An5_ref = [
     3.99430747e-05,
     4.13119530e-05,
 ]
-POD_An5 = PODAnalysis(arr_depl, method="GS-modified", criterion="energy", tolerance=1e-5)
+POD_An5 = PODAnalysis.factory(arr_depl, method="GS-modified", criterion="energy", tolerance=1e-5)
 Phi_5, singval = POD_An5.computePODBasis(option=2)
 test.assertEqual(Phi_5.shape[1], 7, msg="GS-modified - depl")
 test_singular_values(singval, singval_An5_ref, msg_end="using GS-modified")

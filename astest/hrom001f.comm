@@ -94,13 +94,17 @@ arrPetsc_depl_A = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_A,
 arrPetsc_depl_B = extractSnapshotsFromResult(stnl, "DEPL", indexSteps=indices_B, format="petsc")
 
 # - Compute the ROB using the snapshot method
-POD_An_A = PODAnalysis(arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An_A = PODAnalysis.factory(
+    arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5
+)
 Phi_A, singval_A = POD_An_A.computePODBasis(option=2)
 
 test.assertEqual(Phi_A.getSize()[0], nDOF)
 test.assertEqual(Phi_A.getSize()[1], 2)
 
-POD_An_B = PODAnalysis(arrPetsc_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An_B = PODAnalysis.factory(
+    arrPetsc_depl_B, method="snapshot", criterion="energy", tolerance=1e-5
+)
 Phi_B, singval_B = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HPOD", option=2)
 
 singval_B_ref = [6.60693745e-01, 2.38644383e-03, 4.94068815e-02, 3.19800428e-03, 2.54641633e-04]

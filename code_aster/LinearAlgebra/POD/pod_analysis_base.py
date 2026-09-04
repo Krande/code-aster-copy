@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-import abc
+from abc import abstractmethod, ABC
 import scipy.sparse
 import numpy as np
 from ...Utilities import PETSc, SLEPc, MPI, no_new_attributes
@@ -34,7 +34,7 @@ GS_METHOD = ["classical", "modified"]
 OPTION_POD_VALUES = [1, 2]
 
 
-class PODAnalysisBase(abc.ABC):
+class PODAnalysis(ABC):
     """
     Abstract class for building a base incrementally using POD.
 
@@ -66,17 +66,28 @@ class PODAnalysisBase(abc.ABC):
     _snapshots = _numberOfDOFs = _numberOfSnapshots = _corrOperator = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    @staticmethod
-    def factory(snapshots, **kwargs):
+    @classmethod
+    def factory(cls, snapshots, **kwargs):
+        """POD analysis factory.
+
+        Selects and returns a concrete implementation (`PODAnalysisNumpy` or
+        `PODAnalysisPetsc`) based on the input `snapshots` type.
+
+        Arguments:
+            snapshots (numpy.ndarray | PETSc.Mat): The snapshot matrix.
+            **kwargs: Arguments passed to the chosen implementation's constructor.
+
+        Returns:
+            PODAnalysisNumpy | PODAnalysisPetsc: A concrete POD analysis instance.
         """
-        Factory method for PODAnalysisBase
-        """
-        if isinstance(snapshots, np.ndarray):
-            return PODAnalysisNumpy(snapshots, **kwargs)
-        elif isinstance(snapshots, PETSc.Mat):
-            return PODAnalysisPetsc(snapshots, **kwargs)
-        else:
+        klas = None
+        for subclass in cls.__subclasses__():
+            if subclass.supports(snapshots):
+                klas = subclass
+                break
+        if not klas:
             raise TypeError(f"The snapshot type is not supported : {type(snapshots).__name__}")
+        return klas(snapshots, **kwargs)
 
     def __init__(
         self, snapshots, method="SVD", criterion="energy", tolerance=None, nbModes=None, corrOp=None
@@ -121,15 +132,27 @@ class PODAnalysisBase(abc.ABC):
         assert self._methodCompress is not None
         assert self._criterionModes is not None
 
+    @classmethod
+    @abstractmethod
+    def supports(cls, snapshots):
+        """Tell if these snapshots are supported.
+
+        Args:
+            snapshots (Misc): snapshots to be tested.
+
+        Returns:
+            bool: supported or not.
+        """
+
     def validateMethodAttrs(self):
         """Check the attributes associated to the numerical method (compression method and mode selection criterion)."""
         if self._methodCompress not in POD_METHOD:
             raise ValueError(
-                f"PODAnalysisBase: method '{self._methodCompress}' is not valid. Choose method in {POD_METHOD}."
+                f"PODAnalysis: method '{self._methodCompress}' is not valid. Choose method in {POD_METHOD}."
             )
         if self._criterionModes not in POD_CRITERION_METHOD:
             raise ValueError(
-                f"PODAnalysisBase: criterion '{self._criterionModes}' is not valid. Choose method in {self._criterionModes}."
+                f"PODAnalysis: criterion '{self._criterionModes}' is not valid. Choose method in {self._criterionModes}."
             )
 
     def validateHyperParametersAttrs(self):
@@ -151,7 +174,7 @@ class PODAnalysisBase(abc.ABC):
                 "Numerical tolerance for basis construction (TOL_NUM) should be an float and positive"
             )
 
-    @abc.abstractmethod
+    @abstractmethod
     def validateMethodState(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
         pass
@@ -191,12 +214,12 @@ class PODAnalysisBase(abc.ABC):
         assert option in OPTION_POD_VALUES
         return self.POD(self._snapshots, option=option)
 
-    @abc.abstractmethod
+    @abstractmethod
     def setInfosSnapshots(self):
         """Store information about the size of the snapshot matrix"""
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def setCorrelationOperator(self, corrOperator=None):
         """Set method for the correlation operator
 
@@ -205,7 +228,7 @@ class PODAnalysisBase(abc.ABC):
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def correctionSnapshots(self):
         """Correct the snapshots by removing null values"""
         pass
@@ -253,7 +276,7 @@ class PODAnalysisBase(abc.ABC):
         singval_v = singval[:nbModes_v]
         return Phi_v, singval_v
 
-    @abc.abstractmethod
+    @abstractmethod
     def correctionModesAfterSelection(self, Phi, nbModes_v):
         """Construction of a reduced basis by selecting
         the most important modes (the first nbModes_v)
@@ -305,7 +328,7 @@ class PODAnalysisBase(abc.ABC):
         else:
             raise ValueError("PODAnalysis: computePODBasis should be 1 or 2.")
 
-    @abc.abstractmethod
+    @abstractmethod
     def SVDMethod(self, matS, verbose=True):
         """Compression method using the snapshot method on a correlation matrix
 
@@ -318,7 +341,7 @@ class PODAnalysisBase(abc.ABC):
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def snapshotMethod(self, matS):
         """Compression method using SVD on the snapshot matrix
 
@@ -331,7 +354,7 @@ class PODAnalysisBase(abc.ABC):
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def updateGStype(self, Phi, singval, snapshot_new, tole, methodGS):
         """Compression method using a Gram-Schmidt process
 
@@ -346,7 +369,7 @@ class PODAnalysisBase(abc.ABC):
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def computeGSprojection(self, Phi, s_new, methodGS):
         """Compute a Gram-Schmidt projection
 
@@ -360,7 +383,7 @@ class PODAnalysisBase(abc.ABC):
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def GSMethod(self, matS, tole, methodGS):
         """Compression method using a Gram-Schmidt process
 
@@ -375,7 +398,7 @@ class PODAnalysisBase(abc.ABC):
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def computePODBasisIncremental(self, Phi, singval=None, method="HPOD", option=1):
         """Method to enrich a reduced order basis with the stored snapshots
 
@@ -429,7 +452,7 @@ class PODAnalysisBase(abc.ABC):
             )
 
 
-class PODAnalysisNumpy(PODAnalysisBase):
+class PODAnalysisNumpy(PODAnalysis):
     """
     Class for building a base incrementally using POD
     when using numpy arrays for storage
@@ -438,6 +461,18 @@ class PODAnalysisNumpy(PODAnalysisBase):
     def __init__(self, *args, **kwargs):
         "Initialization of PODAnalysisNumpy"
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def supports(cls, snapshots):
+        """Tell if these snapshots are supported.
+
+        Args:
+            snapshots (Misc): snapshots to be tested.
+
+        Returns:
+            bool: *True* if *snapshots* is a numpy array.
+        """
+        return isinstance(snapshots, np.ndarray)
 
     def validateMethodState(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
@@ -630,7 +665,7 @@ class PODAnalysisNumpy(PODAnalysisBase):
         )
 
 
-class PODAnalysisPetsc(PODAnalysisBase):
+class PODAnalysisPetsc(PODAnalysis):
     """
     Class for building a base incrementally using POD
     when using PETSc arrays for storage
@@ -642,6 +677,18 @@ class PODAnalysisPetsc(PODAnalysisBase):
     def __init__(self, *args, **kwargs):
         "Initialization of PODAnalysisPetsc"
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def supports(cls, snapshots):
+        """Tell if these snapshots are supported.
+
+        Args:
+            snapshots (Misc): snapshots to be tested.
+
+        Returns:
+            bool: *True* if *snapshots* is a PETSc matrix.
+        """
+        return isinstance(snapshots, PETSc.Mat)
 
     def validateMethodState(self):
         """Check the attributes associated to the state (anything linked to matrices and vectors)"""
@@ -1135,24 +1182,3 @@ class PODAnalysisPetsc(PODAnalysisBase):
 
             singular_values = np.sqrt(np.array(eigenvalues))
             return Phi_petsc, singular_values
-
-
-class PODAnalysis:
-    """POD analysis factory.
-
-    Selects and returns a concrete implementation (`PODAnalysisNumpy` or
-    `PODAnalysisPetsc`) based on the input `snapshots` type.
-
-    Arguments:
-        snapshots (numpy.ndarray | PETSc.Mat): The snapshot matrix.
-        **kwargs: Arguments passed to the chosen implementation's constructor.
-
-    Returns:
-        PODAnalysisNumpy | PODAnalysisPetsc: A concrete POD analysis instance.
-    """
-
-    def __new__(cls, snapshots, **kwargs):
-        """
-        Creates an instance by calling the PODAnalysisBase factory.
-        """
-        return PODAnalysisBase.factory(snapshots, **kwargs)

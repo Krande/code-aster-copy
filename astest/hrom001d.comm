@@ -109,13 +109,17 @@ if not is_parallel:
     arrPetsc_depl_B_bis = transferSnapshotsToPETSC(arr_depl_B)
 
 # - Compute the ROB using the snapshot method
-POD_An_A = PODAnalysis(arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An_A = PODAnalysis.factory(
+    arrPetsc_depl_A, method="snapshot", criterion="energy", tolerance=1e-5
+)
 Phi_A, singval_A = POD_An_A.computePODBasis(option=2)
 
 test.assertEqual(Phi_A.getSize()[0], nDOF)
 test.assertEqual(Phi_A.getSize()[1], 2)
 
-POD_An_B = PODAnalysis(arrPetsc_depl_B, method="snapshot", criterion="energy", tolerance=1e-5)
+POD_An_B = PODAnalysis.factory(
+    arrPetsc_depl_B, method="snapshot", criterion="energy", tolerance=1e-5
+)
 Phi_B, singval_B = POD_An_B.computePODBasisIncremental(Phi_A, singval_A, method="HPOD", option=2)
 
 singval_B_ref = [6.60693745e-01, 2.38644383e-03, 4.94061245e-02, 3.19205110e-03, 2.19501875e-04]
@@ -132,7 +136,7 @@ test.assertEqual(Phi_B2.getSize()[1], 2, msg="Test incremental POD with HAPOD - 
 
 # - Test with transfer from numpy to petsc
 if not is_parallel:
-    POD_An_A_bis = PODAnalysis(
+    POD_An_A_bis = PODAnalysis.factory(
         arrPetsc_depl_A_bis, method="snapshot", criterion="energy", tolerance=1e-5
     )
     Phi_A_bis, singval_A_bis = POD_An_A.computePODBasis(option=2)
@@ -140,7 +144,7 @@ if not is_parallel:
     test.assertEqual(Phi_A_bis.getSize()[0], nDOF)
     test.assertEqual(Phi_A_bis.getSize()[1], 2)
 
-    POD_An_B_bis = PODAnalysis(
+    POD_An_B_bis = PODAnalysis.factory(
         arrPetsc_depl_B_bis, method="snapshot", criterion="energy", tolerance=1e-5
     )
     Phi_B_bis, singval_B_bis = POD_An_B.computePODBasisIncremental(
