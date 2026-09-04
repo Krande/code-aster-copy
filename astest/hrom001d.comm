@@ -26,26 +26,11 @@ if MPI.ASTER_COMM_WORLD.Get_size() > 1:
 else:
     is_parallel = False
 
-try:
-    import matplotlib
-
-    matplotlib.use("TkAgg")
-    import matplotlib.pyplot as plt
-
-    HAS_MATPLOTLIB = True
-    matplotlib.rcParams["mathtext.fontset"] = "stix"
-    matplotlib.rcParams["font.family"] = "STIXGeneral"
-except ImportError:
-    HAS_MATPLOTLIB = False
-
-import os
-from code_aster.LinearAlgebra.POD.pod_analysis_base import PODAnalysis
-from code_aster.LinearAlgebra.POD.pod_postreat_utils import (
+from code_aster.LinearAlgebra.POD import (
+    PODAnalysis,
     computeProjectionErrors,
-    is_orthonormal_basis,
-)
-from code_aster.LinearAlgebra.POD.pod_aster_interface import (
     extractSnapshotsFromResult,
+    is_orthonormal_basis,
     transferSnapshotsToPETSC,
 )
 

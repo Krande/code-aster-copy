@@ -32,14 +32,16 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
-import numpy as np
 import os
-from code_aster.LinearAlgebra.POD.pod_analysis_base import PODAnalysis
-from code_aster.LinearAlgebra.POD.pod_postreat_utils import (
+
+import numpy as np
+
+from code_aster.LinearAlgebra.POD import (
+    PODAnalysis,
     computeProjectionErrors,
+    extractSnapshotsFromResult,
     is_orthonormal_basis,
 )
-from code_aster.LinearAlgebra.POD.pod_aster_interface import extractSnapshotsFromResult
 
 test = CA.TestCase()
 
