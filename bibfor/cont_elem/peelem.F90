@@ -19,14 +19,14 @@
 subroutine peelem(nomte, geom, param)
 !
     use contact_type
-!
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/laQuantities.h"
+#include "asterfort/lteatt.h"
 #include "contact_module.h"
+#include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: nomte
     type(ContactGeom), intent(inout) :: geom
@@ -140,8 +140,8 @@ subroutine peelem(nomte, geom, param)
 !
     geom%nb_dofs = geom%nb_node_mast*geom%elem_dime+geom%nb_node_slav*geom%elem_dime
 !
-    ASSERT(geom%nb_node_slav .le. 9)
-    ASSERT(geom%nb_node_mast .le. 9)
+    ASSERT(geom%nb_node_slav .le. MT_NNOMAX2D)
+    ASSERT(geom%nb_node_mast .le. MT_NNOMAX2D)
     ASSERT(geom%nb_dofs .le. MAX_PENA_DOFS)
     ASSERT((geom%elem_dime .eq. 2) .or. (geom%elem_dime .eq. 3))
 !
