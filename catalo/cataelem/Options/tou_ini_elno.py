@@ -37,8 +37,9 @@ PINST_R = OutputParameter(phys=PHY.INST_R, type="ELNO")
 
 PNEUT_F = OutputParameter(phys=PHY.NEUT_F, type="ELNO")
 
-
 PNEUT_R = OutputParameter(phys=PHY.NEUT_R, type="ELNO")
+
+PNEUT_I = OutputParameter(phys=PHY.NEUT_I, type="ELNO")
 
 
 PPRES_R = OutputParameter(phys=PHY.PRES_R, type="ELNO")
@@ -74,6 +75,7 @@ TOU_INI_ELNO = Option(
         PINST_R,
         PNEUT_F,
         PNEUT_R,
+        PNEUT_I,
         SP.PTEMPN_R,
         PPRES_R,
         PSIEF_R,
