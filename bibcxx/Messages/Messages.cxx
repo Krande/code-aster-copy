@@ -24,24 +24,29 @@
 
 #include "aster_fort_utils.h"
 
+#include <algorithm>
+
 void UTMESS( const std::string &typm, const std::string &idmess, const VectorString &vk,
              const VectorLong &vi, const VectorReal &vr ) {
     if ( typm == "A" || typm == "I" ) {
         std::string typm2( typm ), idmess2( idmess );
         ASTERINTEGER nk( vk.size() ), ni( vi.size() ), nr( vr.size() );
+        nk = std::max( nk, (ASTERINTEGER)1 );
+        ni = std::max( ni, (ASTERINTEGER)1 );
+        nr = std::max( nr, (ASTERINTEGER)1 );
         ASTERINTEGER nexc = 0;
         char *valk;
-        ASTERINTEGER vali[vi.size()];
-        ASTERDOUBLE valr[vr.size()];
         char *fname;
         fname = MakeBlankFStr( 1 );
-        valk = MakeTabFStr( vk.size(), VALK_SIZE );
+        valk = MakeTabFStr( nk, VALK_SIZE );
         for ( int i = 0; i < vk.size(); ++i ) {
             SetTabFStr( valk, i, vk[i].data(), VALK_SIZE );
         }
+        ASTERINTEGER vali[ni];
         for ( int i = 0; i < vi.size(); ++i ) {
             vali[i] = vi[i];
         }
+        ASTERDOUBLE valr[nr];
         for ( int i = 0; i < vr.size(); ++i ) {
             valr[i] = vr[i];
         }
