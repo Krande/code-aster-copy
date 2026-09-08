@@ -230,6 +230,10 @@ class CodeVisitor:
                 if kwd.getCataTypeId() == IDS.simp:
                     self.mcsimp = key
                 elif kwd.getCataTypeId() == IDS.fact:
+                    # 2 commands must be fixed, see vocab01a
+                    # assert (
+                    #     self.mcfact == EMPTY
+                    # ), f"nested FACT keywords dectected, level 2: {self.mcfact}"
                     self.mcfact = key
                 else:
                     raise TypeError(type(kwd))
