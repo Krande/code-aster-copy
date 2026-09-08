@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Utilities import no_new_attributes
+from ..Utilities import no_new_attributes, logger
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Objects import (
     EntityType,
@@ -447,8 +447,10 @@ class CalcEndo:
         else:
             rampe = [self.t_init_ramp, 0.0]
 
-        self.dt_stab = self.tau * (values_visc[1] - values_visc[0])
-        nb_stab_max = int((values_visc[2] - values_visc[0]) / (values_visc[1] - values_visc[0]))
+        self.dt_stab = self.tau * abs(values_visc[1] - values_visc[0])
+        nb_stab_max = int(
+            abs(values_visc[2] - values_visc[0]) / abs(values_visc[1] - values_visc[0])
+        )
 
         l_fict_endo = rampe + [
             val
@@ -566,8 +568,8 @@ class CalcEndo:
                 if "DEPL" in self.kwds["ETAT_INIT"]:
                     depl_init = self.kwds["ETAT_INIT"]["DEPL"]
                     init_state.set_depl(depl_init)
-                if "SIGMA" in self.kwds["ETAT_INIT"]:
-                    sief_init = self.kwds["ETAT_INIT"]["SIGMA"]
+                if "SIGM" in self.kwds["ETAT_INIT"]:
+                    sief_init = self.kwds["ETAT_INIT"]["SIGM"]
                     init_state.set_sief(sief_init)
                 if "VARI" in self.kwds["ETAT_INIT"]:
                     vari_init = self.kwds["ETAT_INIT"]["VARI"]
