@@ -2454,7 +2454,7 @@ def post_jmod_ops(
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         if ETAT_INIT is not None:
-            DATAINIT = ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
+            DATAINIT = ETAT_INIT[0]
 
             __INITEPSI = DATAINIT["EPSI"]
 
@@ -5238,7 +5238,7 @@ def post_jmod_ops(
             else:
                 __EPSI_TOTA = get_deformation(self, __RESU, "ELGA", inst)
 
-                DATA_INIT = ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
+                DATA_INIT = ETAT_INIT[0]
                 # print ("^^^^^^^^^^^^^^^^^^^^^^")
                 # print ("dir EPSI_INIT",dir(DATA_INIT['EPSI']))
                 # print ("dir EPSI_INIT",DATA_INIT['EPSI'].keys()))

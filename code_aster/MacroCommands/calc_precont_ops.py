@@ -83,7 +83,7 @@ def calc_precont_ops(
     # 1.1 Recuperation de la liste d'instants, de l'instant initial et final
     #     Creation de la nouvelle liste d'instants
     # ----------------------------------------------------------
-    dIncrement = INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
+    dIncrement = INCREMENT[0]
     __prec = dIncrement["PRECISION"]
 
     __L0 = dIncrement["LIST_INST"]
@@ -97,7 +97,7 @@ def calc_precont_ops(
 
     # Traitement de l'etat initial
     if ETAT_INIT:
-        dEtatInit = ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
+        dEtatInit = ETAT_INIT[0]
         for i in list(dEtatInit.keys()):
             if dEtatInit[i] is None:
                 del dEtatInit[i]
@@ -190,18 +190,18 @@ def calc_precont_ops(
         #     for j in dNewton.keys():
         #       if dNewton[j] is None : del dNewton[j]
 
-        dConvergence = CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste)
+        dConvergence = CONVERGENCE[0]
         for i in list(dConvergence.keys()):
             if dConvergence[i] is None:
                 del dConvergence[i]
 
-        dSolveur = SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
+        dSolveur = SOLVEUR[0]
         for i in list(dSolveur.keys()):
             if dSolveur[i] is None:
                 del dSolveur[i]
 
         if RECH_LINEAIRE:
-            dRech_lin = RECH_LINEAIRE[0].cree_dict_valeurs(RECH_LINEAIRE[0].mc_liste)
+            dRech_lin = RECH_LINEAIRE[0]
             for i in list(dRech_lin.keys()):
                 if dRech_lin[i] is None:
                     del dRech_lin[i]
@@ -209,7 +209,7 @@ def calc_precont_ops(
             dRech_lin = None
 
         if ENERGIE:
-            dEnergie = ENERGIE[0].cree_dict_valeurs(ENERGIE[0].mc_liste)
+            dEnergie = ENERGIE[0]
             motscle4["ENERGIE"] = dEnergie
             motscle5["ENERGIE"] = dEnergie
 
@@ -293,7 +293,7 @@ def calc_precont_ops(
         # ------------------------------------------------------
         dComp_incr = []
         for j in COMPORTEMENT:
-            dComp_incr.append(j.cree_dict_valeurs(j.mc_liste))
+            dComp_incr.append(j)
             for i in list(dComp_incr[-1].keys()):
                 if dComp_incr[-1][i] is None:
                     del dComp_incr[-1][i]
@@ -482,7 +482,7 @@ def calc_precont_ops(
         # Regeneration des mots-cles EXCIT passés en argument de la macro
         dExcit = []
         for j in EXCIT:
-            dExcit.append(j.cree_dict_valeurs(j.mc_liste))
+            dExcit.append(j)
             for i in list(dExcit[-1].keys()):
                 if dExcit[-1][i] is None:
                     del dExcit[-1][i]
@@ -721,7 +721,7 @@ def calc_precont_ops(
 
         dExcit = []
         for j in EXCIT:
-            dExcit.append(j.cree_dict_valeurs(j.mc_liste))
+            dExcit.append(j)
             for i in list(dExcit[-1].keys()):
                 if dExcit[-1][i] is None:
                     del dExcit[-1][i]

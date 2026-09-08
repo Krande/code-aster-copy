@@ -45,7 +45,7 @@ def crea_elem_ssd_ops(self, **args):
     CALC_FREQ = args.get("CALC_FREQ")
     SOLVEUR = args.get("SOLVEUR")
 
-    mSolveur = SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
+    mSolveur = SOLVEUR[0]
 
     _kelem = CALC_MATR_ELEM(
         CHARGE=args["CHARGE"],

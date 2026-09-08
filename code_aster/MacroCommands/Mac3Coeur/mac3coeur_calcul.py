@@ -501,7 +501,7 @@ class Mac3CoeurCalcul:
         """Return the loadings due to the pression of
         the vessel head"""
 
-        dicv = self.mcf[0].cree_dict_valeurs(self.mcf[0].mc_liste)
+        dicv = self.mcf[0]
         typ = dicv.get("TYPE_MAINTIEN") or "DEPL_PSC"
         force = None
         compression_init = self.fluence_cycle != 0
