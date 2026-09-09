@@ -38,11 +38,15 @@ from code_aster.Messages import UTMESS
 from code_aster.Supervis.ExecuteCommand import UserMacro
 from code_aster.Utilities import CR, force_list
 
+# Edit code_file.py when fixed
+FIXME_LEVEL2 = ("PRE_SEISME_NONL", "CALC_ENDO")
+
 
 class CataChecker:
     """Check catalogs"""
 
-    def __init__(self):
+    def __init__(self, command):
+        self.command = command
         self.cr = CR()
 
     def check_regles(self, step):
@@ -212,6 +216,13 @@ class CataChecker:
         if any(subds) and not all(subds):
             self.cr.fatal("All 'typ' values must be subclasses of DataStructure: %r", typ)
 
+    def check_nested(self, step, sub):
+        """Check that nested keywords are at level 1 only."""
+        if self.command in FIXME_LEVEL2:
+            return
+        if sub.getCataTypeId() == IDS.fact:
+            self.cr.fatal("Only one level of nested keyword is supported")
+
     def visitCommand(self, step, userDict=None):
         """Visit a Command object"""
         self.check_regles(step)
@@ -246,6 +257,7 @@ class CataChecker:
         self.check_validators(step)
         # self.verif_cata_regles(step)
         for entity in step.entities.values():
+            self.check_nested(step, entity)
             entity.accept(self)
 
     def visitBloc(self, step, userDict=None):
@@ -309,7 +321,7 @@ def checkDefinition(test, commands):
     print(">>> Checking for catalogs of the commands...")
     err = []
     for cmd in commands:
-        checker = CataChecker()
+        checker = CataChecker(cmd.name)
         cmd.accept(checker)
         if not checker.cr.estvide():
             err.append([cmd.name, str(checker.cr)])
@@ -335,7 +347,7 @@ def check_sdprod(command, func_prod, sd_prod, verbose=True):
     def _name(class_):
         return getattr(class_, "__name__", class_)
 
-    if type(func_prod) != types.FunctionType:
+    if type(func_prod) is not types.FunctionType:
         return
 
     cr = CR()
