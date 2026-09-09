@@ -136,4 +136,10 @@ Critère de stabilisation pour %(k1)s
 Ratio %(k1)s sur seuil de stabilité : %(r2)f
 """
     ),
+    22: _(
+        """
+Erreur de syntaxe dans CALC_ENDO
+ARCHIVAGE_VISC et RESULTAT sous ENDO_VISC doivent être tous les deux définis ou indéfinis.
+"""
+    ),
 }

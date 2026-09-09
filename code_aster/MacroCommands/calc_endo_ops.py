@@ -35,6 +35,7 @@ from ..CodeCommands import (
     CREA_CHAMP,
     CREA_RESU,
     AFFE_MATERIAU,
+    DEFI_LIST_REEL,
 )
 from .Utils.calc_endo_utils import (
     get_obs_values,
@@ -328,8 +329,13 @@ class CalcEndo:
         self.crit_stab_visc = self.kwds["ENDO_VISC"]["PREC_STAB"]
         self.arret = self.kwds["ENDO_VISC"]["ARRET"]
         self.resu_visc = NonLinearResultDict("resu_visc")
-        if "ARCHIVAGE" in self.kwds["ENDO_VISC"]:
-            self.arch_visc = self.kwds["ENDO_VISC"]["ARCHIVAGE"]
+        if "ARCHIVAGE_VISC" in self.kwds:
+            self.arch_visc = self.kwds["ARCHIVAGE_VISC"]
+
+        if ("ARCHIVAGE_VISC" in self.kwds and "RESULTAT" not in self.kwds["ENDO_VISC"]) or (
+            "ARCHIVAGE_VISC" not in self.kwds and "RESULTAT" in self.kwds["ENDO_VISC"]
+        ):
+            UTMESS("F", "CALCENDO_22")
 
         if self.crit_stab_visc:
             if len(self.kwds["ENDO_VISC"]["PREC_STAB"]) != len(
@@ -682,6 +688,7 @@ class CalcEndo:
                 "EXCIT",
                 "INCREMENT",
                 "ARCHIVAGE",
+                "ARCHIVAGE_VISC",
                 "ETAT_INIT",
                 "OBSERVATION",
                 "CHAM_MATER",
@@ -707,7 +714,12 @@ class CalcEndo:
         params_snl["INCREMENT"] = _F(LIST_INST=self.visc_list_inst, INST_FIN=0.0, NUME_INST_INIT=0)
         params_snl["OBSERVATION"] = self.obs_stab_visc + self.other_obs
         params_snl["EXCIT"] = visc_excit
-        params_snl["ARCHIVAGE"] = self.arch_visc
+        if self.arch_visc:
+            params_snl["ARCHIVAGE"] = self.arch_visc
+        else:
+            params_snl["ARCHIVAGE"] = _F(
+                LIST_INST=DEFI_LIST_REEL(VALE=self.visc_list_inst.getValues())
+            )
 
         evol_endo = STAT_NON_LINE(**params_snl)
         self.eval_stab_crit(evol_endo)
@@ -747,6 +759,7 @@ class CalcEndo:
                 "EXCIT",
                 "INCREMENT",
                 "ARCHIVAGE",
+                "ARCHIVAGE_VISC",
                 "ETAT_INIT",
                 "OBSERVATION",
                 "CHAM_MATER",
@@ -760,8 +773,12 @@ class CalcEndo:
         params_snl["OBSERVATION"] = self.obs_stab_visc + self.other_obs
 
         params_snl["EXCIT"] = visc_excit
-        params_snl["ARCHIVAGE"] = self.arch_visc
-
+        if self.arch_visc:
+            params_snl["ARCHIVAGE"] = self.arch_visc
+        else:
+            params_snl["ARCHIVAGE"] = _F(
+                LIST_INST=DEFI_LIST_REEL(VALE=self.visc_list_inst.getValues())
+            )
         evol_endo = STAT_NON_LINE(reuse=evol_endo, **params_snl)
 
         self.eval_stab_crit(evol_endo)

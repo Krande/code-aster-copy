@@ -24,7 +24,7 @@ from ..Language.Syntax import BLOC, FACT, SIMP, UN_PARMI, NoRepeat
 
 def C_ARCHIVAGE(cmd=None):
 
-    if cmd == "ENDO_VISC":
+    if cmd == "CALC_ENDO":
         status = "f"
         regle = (UN_PARMI("PAS_ARCH", "LIST_INST", "INST"),)
 

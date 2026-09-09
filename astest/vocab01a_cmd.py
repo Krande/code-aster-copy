@@ -39,7 +39,7 @@ from code_aster.Supervis.ExecuteCommand import UserMacro
 from code_aster.Utilities import CR, force_list
 
 # Edit code_file.py when fixed
-FIXME_LEVEL2 = ("PRE_SEISME_NONL", "CALC_ENDO")
+FIXME_LEVEL2 = ("PRE_SEISME_NONL",)
 
 
 class CataChecker:
