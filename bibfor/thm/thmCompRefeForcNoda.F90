@@ -128,7 +128,7 @@ subroutine thmCompRefeForcNoda(ds_thm)
                 ndim, l_axi, fnoevo, &
                 mecani, press1, press2, tempe, second, &
                 nno, nnos, npi, npg, &
-                zr(jv_geom), dt, dimdef, dimcon, dimuel, &
+                zr(jv_geom), dt, dimdef, dimcon, dimuel, inte_type, &
                 jv_poids, jv_poids2, &
                 jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
                 nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
