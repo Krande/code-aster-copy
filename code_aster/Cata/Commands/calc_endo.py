@@ -106,15 +106,15 @@ CALC_ENDO = MACRO(
     ENDO_VISC=FACT(
         statut="o",
         max=1,
-        regles=(ENSEMBLE("OBSERVATION", "PREC_STAB"), ENSEMBLE("ARCHIVAGE", "RESULTAT")),
+        regles=(ENSEMBLE("OBSERVATION", "PREC_STAB")),
         LIST_INST=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
         OBSERVATION=SIMP(statut="f", typ="TXM", max="**"),
         PREC_STAB=SIMP(statut="f", typ="R", max="**"),
-        ARCHIVAGE=C_ARCHIVAGE(cmd="ENDO_VISC"),
         ARRET=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
         TABLE=SIMP(statut="f", typ=CO),
         RESULTAT=SIMP(statut="f", typ=CO),
     ),
+    ARCHIVAGE_VISC=C_ARCHIVAGE(cmd="CALC_ENDO"),
     # -------------------------------------------------------------------
     AFFICHAGE=C_AFFICHAGE(),
     # -------------------------------------------------------------------

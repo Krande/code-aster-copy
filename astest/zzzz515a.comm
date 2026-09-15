@@ -426,10 +426,10 @@ evol_me = CALC_ENDO(
         LIST_INST=inst_visc,
         OBSERVATION=["VISCENDO", "VISCELAS"],
         PREC_STAB=[r_stab * b_ft] * 2,
-        ARCHIVAGE=_F(PAS_ARCH=1),
         TABLE=CO("tab_obs"),
         RESULTAT=CO("d_evol"),
     ),
+    ARCHIVAGE_VISC=_F(PAS_ARCH=1),
 )
 
 # -----------------------------------------
