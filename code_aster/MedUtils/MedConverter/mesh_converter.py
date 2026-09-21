@@ -32,6 +32,7 @@ def convertMesh2MedCoupling(asmesh, spacedim_3d=False):
     Returns:
         *MEDCouplingMesh*: MEDCoupling object.
     """
+
     cells, groups_c, groups_n = libaster.getMedCouplingConversionData(asmesh)
 
     if spacedim_3d:
@@ -43,6 +44,7 @@ def convertMesh2MedCoupling(asmesh, spacedim_3d=False):
     coords = medc.DataArrayDouble(
         asmesh.getCoordinates().getValues(), asmesh.getNumberOfNodes(), 3
     )[:, :spacedim]
+    coords.setInfoOnComponents(["{} [INCONNU]".format(chr(ord("X") + i)) for i in range(spacedim)])
 
     maxdim = max(cells.keys())
     levels = {i: i - maxdim for i in range(maxdim, -1, -1)}
@@ -53,12 +55,16 @@ def convertMesh2MedCoupling(asmesh, spacedim_3d=False):
         mesh_at_current_level = medc.MEDCouplingUMesh(asmesh.getName(), dim)
         mesh_at_current_level.setCoords(coords)
 
-        conn, connI = cells[dim]
+        conn, connI, ids = cells[dim]
         mesh_at_current_level.setConnectivity(medc.DataArrayInt(conn), medc.DataArrayInt(connI))
 
+        aster_ids_cur_dim = medc.DataArrayInt(ids)
+
         o2n = mesh_at_current_level.sortCellsInMEDFileFrmt()
+        aster_ids_cur_dim.renumberInPlace(o2n)
         mesh_at_current_level.checkConsistencyLight()
         mcmesh.setMeshAtLevel(levels[dim], mesh_at_current_level)
+        mcmesh.setRenumFieldArr(levels[dim], aster_ids_cur_dim)
 
         # Groupes de mailles
         try:
