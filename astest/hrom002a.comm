@@ -1,0 +1,180 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2026 - EDF - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+from scipy.linalg import hilbert
+import numpy as np
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.LinearAlgebra.EQ import nnls_solver
+import os
+
+try:
+    import matplotlib
+
+    matplotlib.use("TkAgg")
+    import matplotlib.pyplot as plt
+
+    HAS_MATPLOTLIB = True
+    matplotlib.rcParams["mathtext.fontset"] = "stix"
+    matplotlib.rcParams["font.family"] = "STIXGeneral"
+except ImportError:
+    HAS_MATPLOTLIB = False
+
+DEBUT(CODE="OUI")
+
+test = CA.TestCase()
+## -------------------------------------------
+#   ANALYTICAL MATRICES FOR NUMERICAL TEST
+## -------------------------------------------
+
+
+def create_hilbert_matrix(n, verbose=False):
+    """Creates a Hilbert matrix of size n x n.
+
+    Arguments:
+        n (int): The size of the square matrix (n x n).
+        verbose (bool): True if printing is need, False otherwise.
+
+    Returns:
+    -------
+        nunmpy.ndarray: The Hilbert matrix of shape (n, n).
+    """
+    if verbose:
+        print(f"\n--- Creating a Hilbert matrix (size {n}x{n}) ---")
+    C = hilbert(n)
+
+    return C
+
+
+## -------------------------------------------
+#   TEST SET UP
+## -------------------------------------------
+n_h = 200
+n_h_true = 50
+C_hilbert = create_hilbert_matrix(n_h)
+
+test.assertEqual(n_h, C_hilbert.shape[0], msg="Test dimensions - petsc - C_hilbert")
+test.assertEqual(n_h, C_hilbert.shape[1], msg="Test dimensions - petsc - C_hilbert")
+
+np.random.seed(0)
+x_true = np.zeros(n_h)
+true_indices = np.random.choice(n_h, n_h_true, replace=False)
+x_true[true_indices] = np.random.rand(n_h_true) * 2
+d_hilbert = C_hilbert @ x_true
+
+## - Numerical resolution
+opts_hist = {"StoreResiduals": True, "Tol": 1e-9}
+
+
+def test_matrix_numpy(C_test, d_test, msg, verbose=False, option=None):
+    NNLS_test = nnls_solver.NNLSSolver.factory(C_test, d_test)
+    if option is not None:
+        NNLS_test.set_solve_option(option)
+    x_test, info_test = NNLS_test.solve(opts=opts_hist)
+    residual_vec = np.subtract(C_test @ x_test, d_test)
+    norm = np.linalg.norm(residual_vec)
+    norm_norm = norm / np.linalg.norm(d_test)
+    if verbose:
+        print(f"Residual norm at the end=" + str(norm), flush=True)
+        print(f"Normalized residual norm at the end=" + str(norm_norm), flush=True)
+    test.assertTrue(norm_norm < opts_hist["Tol"], msg=msg)
+    return x_test, info_test
+
+
+x_hilbert_a, info_hilbert_a = test_matrix_numpy(
+    C_hilbert, d_hilbert, "Test ill - Approx OK", verbose=True
+)
+
+x_hilbert_b, info_hilbert_b = test_matrix_numpy(
+    C_hilbert, d_hilbert, "Test ill - Approx OK", verbose=True, option="QR_solve"
+)
+
+
+## - Basic numerical tests
+def test_pourcentage(x_test, p):
+    nb_non_zeros = np.count_nonzero(x_test)
+    per = (nb_non_zeros / len(x_test)) * 100
+    test.assertTrue(per < p)
+
+
+test_pourcentage(x_hilbert_a, 10.0)
+test_pourcentage(x_hilbert_b, 10.0)
+
+# --------------------------------------------------------------------
+#   VISUALISATION IF NEED TO UNDERSTAND
+# --------------------------------------------------------------------
+"""Nothing will be plotted if matplotlib is unavailable.
+A plot will be geenrated if matplotlib is available:
+    - interactive=True and the code is run in a interactive section
+    - interactive=False and no savedir is given"""
+interactive = True
+savedir = None
+fontsize_ticks = 15
+fontsize_labels = 18
+
+
+def print_semilog_byhand(arr_values, num_xticks=5):
+    """
+    Generate semilog figure using matplotlib
+
+    arr_values: numpy.ndarray
+        Array to plot
+    (can be used to overcome floatting point error)
+    """
+    log_data = np.log10(arr_values)
+    x_data = np.arange(1, len(arr_values) + 1)
+    plt.figure(figsize=(8, 6))
+    plt.plot(x_data, log_data, marker="o", linestyle="-")
+    min_power = np.floor(log_data.min())
+    max_power = np.ceil(log_data.max())
+    tick_positions = np.arange(min_power, max_power + 1)
+    tick_labels = []
+    for p in tick_positions:
+        if p == 0:
+            tick_labels.append("1")
+        elif p == 1:
+            tick_labels.append("10")
+        else:
+            label = "$10^{" + str(int(p)) + "}$"
+            tick_labels.append(label)
+
+    plt.yticks(tick_positions, tick_labels, fontsize=fontsize_ticks)
+    plt.grid(True, which="both", linestyle="--")
+    # plt.xticks(x_data, fontsize=fontsize_ticks)
+    xtick_positions = np.linspace(x_data.min(), x_data.max(), num_xticks)
+    xtick_labels = xtick_positions.astype(int)
+    plt.xticks(ticks=xtick_positions, labels=xtick_labels, fontsize=fontsize_ticks)
+
+
+if HAS_MATPLOTLIB:
+    if (interactive == False and savedir is not None) or (interactive == True):
+        matplotlib.use("QtAgg")
+        assert "residual_history" in info_hilbert_a, "'residual_history' key should be in info."
+        print_semilog_byhand(info_hilbert_a["residual_history"])
+        plt.xlabel(r"Iteration (solution x update)", fontsize=18)
+        plt.ylabel(r"Residual Norm ||Cx - d||", fontsize=18)
+        plt.grid(True, which="both", ls="--")
+        plt.tight_layout()
+
+        if interactive == False and savedir is not None:
+            plt.savefig(os.path.join(savedir, "residuals_nnls.png"))
+        else:
+            plt.show()
+
+FIN()
