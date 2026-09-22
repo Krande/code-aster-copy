@@ -7,6 +7,7 @@ schema_version: 1
 context:
   name: code-aster
   version: "18.1.7"
+  build: 0
 
 package:
   name: ${{ name }}
@@ -23,7 +24,7 @@ source:
         - "output/**"
 
 build:
-  number: 0
+  number: ${{ build }}
   skip: not win
   script: build.bat
   string: py${{ python | version_to_buildstring }}_nompi_h${{ hash }}_${{ build }}
