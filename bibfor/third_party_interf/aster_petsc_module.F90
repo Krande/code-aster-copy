@@ -49,6 +49,7 @@ module aster_petsc_module
 !
 ! Mat routines
 !
+#if !PETSC_VERSION_GE(3, 25, 0)
     interface
         subroutine PCHPDDMSetAuxiliaryMat(pc, is, mat, func, ctx, ierr)
             use petsckspdef
@@ -60,6 +61,8 @@ module aster_petsc_module
             PetscErrorCode, intent(out) :: ierr
         end subroutine PCHPDDMSetAuxiliaryMat
     end interface
+#endif
+#if !PETSC_VERSION_GE(3, 25, 0)
     interface
         subroutine MatCreateShell(comm, m, n, mg, ng, ctxt, a_mat, ierr)
             use petscmatdef
@@ -73,6 +76,8 @@ module aster_petsc_module
             PetscErrorCode, intent(out) :: ierr
         end subroutine MatCreateShell
     end interface
+#endif
+#if !PETSC_VERSION_GE(3, 25, 0)
     interface
         subroutine MatShellSetOperation(mat, operation, myop, ierr)
             use petscmatdef
@@ -82,6 +87,7 @@ module aster_petsc_module
             PetscErrorCode, intent(out) :: ierr
         end subroutine MatShellSetOperation
     end interface
+#endif
 !
 ! PC and KSP routines
 !
@@ -133,6 +139,7 @@ module aster_petsc_module
     !         PetscErrorCode, intent(out) :: ierr
     !     end subroutine PCShellSetDestroy
     ! end interface
+#if !PETSC_VERSION_GE(3, 25, 0)
     interface
         subroutine KSPMonitorSet(ksp, mykspmonitor, vf, mydestroy, ierr)
             use petsckspdef
@@ -142,6 +149,7 @@ module aster_petsc_module
             PetscErrorCode, intent(out) :: ierr
         end subroutine KSPMonitorSet
     end interface
+#endif
     ! interface
     !     subroutine PCShellSetName(pc, myname, ierr)
     !         use petsckspdef

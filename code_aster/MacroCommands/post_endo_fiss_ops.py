@@ -124,7 +124,7 @@ def cherche_trajet(
     idxNoeud = NP.array(Noeybar)
     Coorx = NP.take(Xtot, idxNoeud)
     Coory = NP.take(Ytot, idxNoeud)
-    coorIni3 = int(NP.nonzero(dnor)[0])
+    coorIni3 = int(NP.nonzero(dnor)[0][0])
     NormTot = Coortot[coorIni3 : len(Coortot) : 3]
     CoorNor = NP.take(NormTot, idxNoeud)
     zCoupe = CoorNor[0]  # On dit que dans la coupe tous les valeurs sont constants

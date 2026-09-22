@@ -48,7 +48,7 @@ def parse_med(unit):
     """
     fname = LogicalUnitFile.filename_from_unit(unit)
     mdata = medc.MEDFileData(fname)
-    mednames = [i.getName() for i in mdata.getFields()]
+    mednames = list(mdata.getFields().getFieldsNames())
     if not all(n.startswith("Z") for n in mednames):
         UTMESS("F", "HOMO1_17")
 

@@ -318,10 +318,10 @@ def gene_traj_gauss_evol_ND(self, data_cohe, rv=None, **kwargs):
         #   calcul de la variance (sigma^2) de normalisation mof
         if "ALEA_DSP" in kwargs:
             l_ALPHA = kwargs["ALEA_DSP"]
-            mof = NP.trapz(dsp_fr_refe * l_FIT * l_ALPHA, self.sampler.liste_w2) * 2.0
+            mof = NP.trapezoid(dsp_fr_refe * l_FIT * l_ALPHA, self.sampler.liste_w2) * 2.0
             l_FIT = l_FIT * l_ALPHA
         else:
-            mof = NP.trapz(dsp_fr_refe * l_FIT, self.sampler.liste_w2) * 2.0
+            mof = NP.trapezoid(dsp_fr_refe * l_FIT, self.sampler.liste_w2) * 2.0
     if rv is None:
         #        rv = NP.random.normal(0.0, 1., nbfreq) + \
         #            1j * NP.random.normal(0.0, 1., nbfreq)
@@ -354,12 +354,12 @@ def gene_traj_gauss_evol_ND(self, data_cohe, rv=None, **kwargs):
         if TYPE == "KT":
             dsp = calc_dsp_KT(self, fgt, amo)
             # constante de normalisation pour que ecart_type=1 a pour tout t
-            S_cst = 1.0 / NP.trapz(dsp, self.sampler.liste_w2) * 0.5
+            S_cst = 1.0 / NP.trapezoid(dsp, self.sampler.liste_w2) * 0.5
             vale_dsp = calc_dsp_KT(self, fgt, amo, S_cst)
         elif TYPE == "FR":
             dsp = calc_dsp_FR(self.sampler.liste_w2, fgt, amo, R0, R2, self.FREQ_CORNER)
             # constante de normalisation pour que ecart_type=1 a pour tout t
-            S_cst = mof / (NP.trapz(dsp * l_FIT, self.sampler.liste_w2) * 2.0)
+            S_cst = mof / (NP.trapezoid(dsp * l_FIT, self.sampler.liste_w2) * 2.0)
             vale_dsp = (
                 calc_dsp_FR(self.sampler.liste_w2, fgt, amo, R0, R2, self.FREQ_CORNER, So=S_cst)
                 * l_FIT

@@ -34,7 +34,7 @@ def getNumberOfTimeSteps(medresult):
     Returns:
         n (int) : The number of time steps.
     """
-    nb_time_steps = list(set(fmts.getNumberOfTS() for fmts in medresult.getFields()))
+    nb_time_steps = list(set(fmts.getNumberOfTS() for fmts in list(medresult.getFields())))
     check_ts = len(nb_time_steps) == 1
     if not check_ts:
         msg = "Results with different time steps are not managed now."
@@ -63,25 +63,25 @@ def canConvertMedFileData(medresult):
 
     nb_time_steps = getNumberOfTimeSteps(medresult)
 
-    nb_ord = [[v[0] for v in fmts.getTimeSteps()] for fmts in medresult.getFields()]
+    nb_ord = [[v[0] for v in fmts.getTimeSteps()] for fmts in list(medresult.getFields())]
     check_ord = all([len(set(i)) == 1 for i in zip(*nb_ord)])
     if not check_ord:
         msg = "Results do not share the same ranks."
         raise RuntimeError(msg)
 
-    nb_time = [[v[2] for v in fmts.getTimeSteps()] for fmts in medresult.getFields()]
+    nb_time = [[v[2] for v in fmts.getTimeSteps()] for fmts in list(medresult.getFields())]
     check_times = all([len(set(i)) == 1 for i in zip(*nb_time)])
     if not check_times:
         msg = "Results do not share the same time values."
         raise RuntimeError(msg)
 
-    nb_types = [fmts.getTypesOfFieldAvailable() for fmts in medresult.getFields()]
+    nb_types = [fmts.getTypesOfFieldAvailable() for fmts in list(medresult.getFields())]
     check_disc = all([all(k == 1 for k in list(map(len, i))) for i in nb_types])
     if not check_disc:
         msg = "Fields with multiple space discr not managed !"
         raise RuntimeError(msg)
 
-    nb_pfs = [len(fmts.getPflsReallyUsed()) for fmts in medresult.getFields()]
+    nb_pfs = [len(fmts.getPflsReallyUsed()) for fmts in list(medresult.getFields())]
     check_pfs = all([i == 0 for i in nb_pfs])
     if not check_pfs:
         msg = "Profiles are not managed now !"

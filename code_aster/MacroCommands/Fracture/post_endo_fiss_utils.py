@@ -195,7 +195,7 @@ def conv_smoothing1D(lreg, Coorx, Coory, Fun0):
     Absc = curvilinearAbsissa(Coorx, Coory, len(Coorx) // 2)
     Gauss = NP.exp(-(Absc**2) / (2.0 * lreg**2))
     area = NP.convolve(Gauss, NP.ones(len(Gauss)), "valid")
-    area = float(area)
+    area = float(area[0])
     FunReg = NP.convolve(Fun0, Gauss, "same")
     FunReg = FunReg / area
     return FunReg
@@ -215,14 +215,14 @@ def conv_smoothing_arc(lreg, Coorx, Coory, Fun0):
     AbsC = NP.concatenate((NP.array([0.0]), AbsC))
     FunReg = NP.array([])
     Gauss = NP.exp(-(AbsC**2) / (2.0 * lreg**2))
-    area = float(NP.convolve(Gauss, NP.ones(len(Gauss)), "valid"))
+    area = float(NP.convolve(Gauss, NP.ones(len(Gauss)), "valid")[0])
     for i in range(len(Fun0)):
         Fun_I = NP.concatenate((Fun0[i:], Fun0[0:i]), axis=0)
         Fun_I = NP.concatenate(
             (Fun_I[len(Fun_I) // 2 + 1 :], Fun_I[0 : len(Fun_I) // 2 + 1]), axis=0
         )
         zreg = NP.convolve(Fun_I, Gauss, "valid")
-        FunReg = NP.append(FunReg, float(zreg))
+        FunReg = NP.append(FunReg, float(zreg[0]))
     FunReg = FunReg / area
     return FunReg
 
@@ -527,7 +527,7 @@ def curvilinearAbsissa(Coorx, Coory, idxZero):
 def crackOpeningStrong(lreg, Coorx, Coory, Epsi):
     Absc = curvilinearAbsissa(Coorx, Coory, len(Coorx) // 2)
     Gauss = NP.exp(-(Absc**2) / (2.0 * lreg**2))
-    area = NP.trapz(Gauss, x=Absc)
+    area = NP.trapezoid(Gauss, x=Absc)
     EpsiReg = conv_smoothing1D(lreg, Coorx, Coory, Epsi)
     idxMax, epsMax = nearestMax(EpsiReg, len(Coorx) // 2)
     gauss0 = 1.0
@@ -537,7 +537,7 @@ def crackOpeningStrong(lreg, Coorx, Coory, Epsi):
     ycentre = Coory[idxMax]
     Absc = curvilinearAbsissa(Coorx, Coory, idxMax)
     EpsSDreg = CO / area * NP.exp(-(Absc**2) / (2.0 * lreg**2))
-    errPerc = 100.0 * (NP.trapz(abs(EpsiReg - EpsSDreg), x=Absc)) / (NP.trapz(abs(EpsiReg), x=Absc))
+    errPerc = 100.0 * (NP.trapezoid(abs(EpsiReg - EpsSDreg), x=Absc)) / (NP.trapezoid(abs(EpsiReg), x=Absc))
     return CO, errPerc
 
 

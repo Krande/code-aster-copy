@@ -102,10 +102,10 @@ def gene_traj_gauss_evol1D(self, rv=None, **kwargs):
         #   calcul de la variance (sigma^2) de normalisation mof
         if "ALEA_DSP" in kwargs:
             l_ALPHA = kwargs["ALEA_DSP"]
-            mof = NP.trapz(dsp_fr_refe * l_FIT * l_ALPHA, self.sampler.liste_w2) * 2.0
+            mof = NP.trapezoid(dsp_fr_refe * l_FIT * l_ALPHA, self.sampler.liste_w2) * 2.0
             l_FIT = l_FIT * l_ALPHA
         else:
-            mof = NP.trapz(dsp_fr_refe * l_FIT, self.sampler.liste_w2) * 2.0
+            mof = NP.trapezoid(dsp_fr_refe * l_FIT, self.sampler.liste_w2) * 2.0
     if rv is None:
         rv = NP.random.normal(0.0, 1.0, nbfreq) + 1j * NP.random.normal(0.0, 1.0, nbfreq)
     #      vecc1=(NP.random.normal(0.0,1.,nbfreq2)+1j*NP.random.normal(0.0,1.,nbfreq2))
@@ -130,12 +130,12 @@ def gene_traj_gauss_evol1D(self, rv=None, **kwargs):
         if TYPE == "KT":
             dsp = calc_dsp_KT(self, fgt, amo)
             # constante de normalisation pour que ecart_type=1 a pour tout t
-            S_cst = 1.0 / NP.trapz(dsp, self.sampler.liste_w2) * 0.5
+            S_cst = 1.0 / NP.trapezoid(dsp, self.sampler.liste_w2) * 0.5
             MAT = calc_dsp_KT(self, fgt, amo, S_cst)
         elif TYPE == "FR":
             dsp = calc_dsp_FR(self.sampler.liste_w2, fgt, amo, R0, R2, self.FREQ_CORNER)
             # constante de normalisation pour que ecart_type=1 a pour tout t
-            S_cst = mof / (NP.trapz(dsp * l_FIT, self.sampler.liste_w2) * 2.0)
+            S_cst = mof / (NP.trapezoid(dsp * l_FIT, self.sampler.liste_w2) * 2.0)
             MAT = (
                 calc_dsp_FR(self.sampler.liste_w2, fgt, amo, R0, R2, self.FREQ_CORNER, So=S_cst)
                 * l_FIT
@@ -325,7 +325,7 @@ def calc_dsp_FR(lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0):
 # -----------------------------------------------------------------
 def f_ARIAS(ta, acce, norme):
     acce2 = NP.array(acce) ** 2
-    arias = NP.trapz(acce2, ta)  # energie
+    arias = NP.trapezoid(acce2, ta)  # energie
     arias = arias * pi / (2.0 * norme)  # indic Arias
     return arias
 
@@ -334,7 +334,7 @@ def f_ARIAS_TSM(ta, acce, norme):
     arias = f_ARIAS(ta, acce, norme)  # indic Arias
     ener = arias * (2.0 * norme) / pi
     acce2 = NP.array(acce) ** 2
-    cumener = NP.array([NP.trapz(acce2[0 : ii + 1], ta[0 : ii + 1]) for ii in range(len(ta))])
+    cumener = NP.array([NP.trapezoid(acce2[0 : ii + 1], ta[0 : ii + 1]) for ii in range(len(ta))])
     fract = cumener / ener
     n1 = NP.searchsorted(fract, 0.05)
     n2 = NP.searchsorted(fract, 0.95)
@@ -349,7 +349,7 @@ def f_phase_forte(ta, acce, p1, p2):
     arias = f_ARIAS(ta, acce, 1.0)  # indic Arias
     ener = arias * (2.0 * 1.0) / pi
     acce2 = NP.array(acce) ** 2
-    cumener = NP.array([NP.trapz(acce2[0 : ii + 1], ta[0 : ii + 1]) for ii in range(len(ta))])
+    cumener = NP.array([NP.trapezoid(acce2[0 : ii + 1], ta[0 : ii + 1]) for ii in range(len(ta))])
     fract = cumener / ener
     n1 = NP.searchsorted(fract, p1)
     n2 = NP.searchsorted(fract, p2)
@@ -358,9 +358,9 @@ def f_phase_forte(ta, acce, p1, p2):
 
 def f_ENER_qt(ta, acce, n1, n2):
     acce2 = acce**2
-    ener = NP.trapz(acce2, ta)  # energie totale
-    P1 = NP.trapz(acce2[0:n1], ta[0:n1]) / ener
-    P2 = NP.trapz(acce2[0:n2], ta[0:n2]) / ener
+    ener = NP.trapezoid(acce2, ta)  # energie totale
+    P1 = NP.trapezoid(acce2[0:n1], ta[0:n1]) / ener
+    P2 = NP.trapezoid(acce2[0:n2], ta[0:n2]) / ener
     return ener, P1, P2
 
 
@@ -445,9 +445,9 @@ def fonctm_JetH(ltemps, T1, T2, a1, a2):
 
 def Rice2(w2, DSP):
     #   MOMENTS
-    m0 = NP.trapz(DSP, w2) * 2.0
-    m1 = NP.trapz(DSP * abs(w2), w2) * 2.0
-    m2 = NP.trapz(DSP * w2**2, w2) * 2.0
+    m0 = NP.trapezoid(DSP, w2) * 2.0
+    m1 = NP.trapezoid(DSP * abs(w2), w2) * 2.0
+    m2 = NP.trapezoid(DSP * w2**2, w2) * 2.0
     #   FREQ_CENTRALE, BANDWIDTH
     vop = 1 / (2.0 * pi) * sqrt(m2 / m0)
     delta = sqrt(1.0 - m1**2 / (m0 * m2))
@@ -488,9 +488,9 @@ def peakm(p, TSM, w2, DSP):
     #          fractile p, duration TSM
     # OUT  :  peak factor
     # ---------------------------------------------
-    m0 = NP.trapz(DSP, w2) * 2.0
-    m1 = NP.trapz(DSP * abs(w2), w2) * 2.0
-    m2 = NP.trapz(DSP * w2**2, w2) * 2.0
+    m0 = NP.trapezoid(DSP, w2) * 2.0
+    m1 = NP.trapezoid(DSP * abs(w2), w2) * 2.0
+    m2 = NP.trapezoid(DSP * w2**2, w2) * 2.0
     vop = 1.0 / (2.0 * pi) * sqrt(m2 / m0)  # FREQ_CENTRALE
     delta = sqrt(1.0 - m1**2.0 / (m0 * m2))  # BANDWIDTH
     deuxn = 2.0 * vop * TSM / (-log(p))
@@ -838,7 +838,7 @@ def SRO2DSP(
             nup2 = nupi**2
             v1 = 1.0 / (freqi * (pi / (2.0 * AMORT) - 2.0))
             v2 = (valsro**2) / nup2
-            v3 = 2.0 * NP.trapz(NP.array(DSP), NP.array(lw))
+            v3 = 2.0 * NP.trapezoid(NP.array(DSP), NP.array(lw))
             v4 = v1 * (v2 - v3)
             valg = max(v4, 0.0)
             DSP.append(valg)
@@ -986,7 +986,7 @@ def DSP2FR(f_dsp_refe, FC):
     #      w0= vop*2.*pi
     xi0 = deltau ** (2.0 / 1.2) * pi / 4.0
     dsp_FR_ini = calc_dsp_FR(lfreq, vop, xi0, (vop * 2.0 * pi) ** 2, 4.0 * vop * pi * xi0, FC)
-    const_ini = 2.0 * NP.trapz(dsp_FR_ini, lfreq)
+    const_ini = 2.0 * NP.trapezoid(dsp_FR_ini, lfreq)
     R0 = (vop * 2.0 * pi) ** 2 * sqrt(m0) / sqrt(const_ini)
     R2 = 4.0 * vop * pi * xi0 * sqrt(m0) / sqrt(const_ini)
     x0 = [R0, R2]

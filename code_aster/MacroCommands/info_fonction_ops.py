@@ -348,7 +348,7 @@ def info_fonction_ops(self, INFO, **args):
                     )
                 )
                 __srov = __so.convert().l_fonc[0]
-                ASA_R = 1.0 / (ratio * freq_osci) * NP.trapz(__srov.vale_y, __srov.vale_x)
+                ASA_R = 1.0 / (ratio * freq_osci) * NP.trapezoid(__srov.vale_y, __srov.vale_x)
                 l_table.append(_F(LISTE_R=ASA_R, PARA="ASA"))
                 l_table.append(_F(LISTE_R=ratio, PARA="RATIO"))
                 if option == "ASA":

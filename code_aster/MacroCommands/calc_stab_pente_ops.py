@@ -1427,11 +1427,11 @@ class LEM_Solver:
                         + l_pente[ipos - 1]
                     )
                 # calcul de la force de pression
-                pres_v[ind_s, :] = np.trapz(p_slice[:, 2:], l_pente, axis=0)
+                pres_v[ind_s, :] = np.trapezoid(p_slice[:, 2:], l_pente, axis=0)
                 # calcul du moment de pression
                 coor_c = centre if len(centre.shape) == 1 else centre[ind_s, :]
                 vec_c = p_slice[:, :2] - coor_c
-                moment += np.trapz(np.cross(vec_c, p_slice[:, 2:]), l_pente)
+                moment += np.trapezoid(np.cross(vec_c, p_slice[:, 2:]), l_pente)
 
             char_ext.update(
                 {

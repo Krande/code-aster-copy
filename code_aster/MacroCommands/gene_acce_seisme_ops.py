@@ -343,7 +343,7 @@ class GeneratorDSP(Generator):
             # calcul du facteur de normalisation
             dsp = calc_dsp_KT(self, self.DSP_args["FREQ_FOND"], self.DSP_args["AMORT"])
             # constante de normalisation pour que ecart_type=1:
-            S_cst = 1.0 / (NP.trapz(dsp, self.sampler.liste_w2) * 2.0)
+            S_cst = 1.0 / (NP.trapezoid(dsp, self.sampler.liste_w2) * 2.0)
             # calcul de la DSP KT
             vale_dsp_KT = calc_dsp_KT(
                 self, self.DSP_args["FREQ_FOND"], self.DSP_args["AMORT"], S_cst
@@ -607,17 +607,17 @@ class Modulator:
         elif "ECART_TYPE" in self.modul_params:
             N1 = NP.searchsorted(sample_time, T1)
             N2 = NP.searchsorted(sample_time, T2)
-            int12 = NP.trapz((fqt[N1:N2]) ** 2, sample_time[N1:N2])
+            int12 = NP.trapezoid((fqt[N1:N2]) ** 2, sample_time[N1:N2])
             fqt = fqt * self.modul_params["ECART_TYPE"] * sqrt(self.DUREE_PHASE_FORTE / int12)
         elif "ACCE_MAX" in self.modul_params:
             N1 = NP.searchsorted(sample_time, T1)
             N2 = NP.searchsorted(sample_time, T2)
-            int12 = NP.trapz(fqt[N1:N2] ** 2, sample_time[N1:N2])
+            int12 = NP.trapezoid(fqt[N1:N2] ** 2, sample_time[N1:N2])
             fqt = fqt * self.sigma * sqrt(self.DUREE_PHASE_FORTE / int12)
         else:
             # equivalence energie totale avec signal module par CONSTANT sur
             # DUREE
-            int12 = NP.trapz(fqt**2, sample_time)
+            int12 = NP.trapezoid(fqt**2, sample_time)
             fqt = fqt * sqrt(self.DUREE_PHASE_FORTE / int12)
         f_mod = t_fonction(sample_time, fqt, para=self.para_fonc_modul)
         self.fonc_modul = f_mod
