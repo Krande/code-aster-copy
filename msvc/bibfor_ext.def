@@ -77,6 +77,8 @@ EXPORTS
     elg_module_mp_build_elg_context_
     elg_resoud_
     elim75_
+    filter_rhs_
+    filter_rhs_c_
     filter_smd_
     irmhpc_
     ldsp1_
@@ -93,6 +95,10 @@ EXPORTS
     matrix_conversion_module_mp_csc2csr_
     matrix_conversion_module_mp_csc2dense_
     matrix_conversion_module_mp_matas2csc_
+    mumps_instance_mod_mp_cmps_
+    mumps_instance_mod_mp_dmps_
+    mumps_instance_mod_mp_smps_
+    mumps_instance_mod_mp_zmps_
     pchpddmdumpauxiliarymat_
     saddle_point_context_type_mp_free_saddle_point_context_
     saddle_point_context_type_mp_get_num_of_constraints_
@@ -102,5 +108,9 @@ EXPORTS
     saddle_point_module_mp_update_double_lagrange_
     vect_asse_from_petsc_
     vect_asse_update_ghost_values_
+    vector_comm_ghost_values_i_
+    vector_update_ghost_values_
+    vector_update_ghost_values_c_
+    vector_zero_late_values_
     verifels_
     verifelu_
