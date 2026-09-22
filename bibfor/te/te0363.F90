@@ -153,6 +153,9 @@ subroutine te0363(option, nomte)
                          codret)
     lMatr = ASTER_FALSE
     lElas = ASTER_TRUE
+    ! only set when lMatr, but always passed to nmspfm (ktan(nddlsym))
+    matsym = ASTER_TRUE
+    nddlsym = 0
 
 ! - Get output fields
     if (lMatr) then
