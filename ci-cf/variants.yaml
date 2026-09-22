@@ -1,0 +1,15 @@
+c_compiler:
+  - vs2022
+cxx_compiler:
+  - vs2022
+c_stdlib:
+  - vs
+c_stdlib_version:
+  - "2022"
+fortran_compiler:
+  - ifx
+# match the ifx used for the conda-forge mumps-seq ifx_* build
+fortran_compiler_version:
+  - "2026.1"
+python:
+  - "3.12"
