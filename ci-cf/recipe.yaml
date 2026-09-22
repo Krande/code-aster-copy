@@ -37,6 +37,11 @@ requirements:
     - ${{ compiler('fortran') }}
     - clang
     - waf ==2.1.5
+    # waf runs under the *build* python on win (waf's console script lives in
+    # BUILD_PREFIX); data/wscript imports yaml directly at build stage, while
+    # the configure check 'Checking for python module yaml' probes the *host*
+    # python. Both need it.
+    - pyyaml
   host:
     - python
     - pip
