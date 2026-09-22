@@ -47,22 +47,34 @@ def options(self):
 def configure(self):
     # already done by waftools/parallel.py: self.load("compiler_c")
     # preserve symbols in the dyn table for stdcalls
-    if self.env.ASTER_PLATFORM_MINGW:
-        self.add_linkflags(["-Wl,--export-all-symbols"])
-    elif sys.platform != "darwin":
-        self.add_linkflags("-Wl,--export-dynamic")
+    if self.env.CXX_NAME == 'msvc':
+        import pathlib
+
+        top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent
+
+        bibfor_incldir = osp.join(top_dir, "bibfor", "include")
+        self.env.append_value("INCLUDES_BIBC", bibfor_incldir)
+
+        bibcxx_incldir = osp.join(top_dir, "bibcxx", "include")
+        self.env.append_value("INCLUDES_BIBC", bibcxx_incldir)
     else:
-        # '--export-dynamic' is '-export_dynamic' in OS X linker
-        # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
-        self.add_linkflags("-Wl,-export_dynamic")
+        if self.env.ASTER_PLATFORM_MINGW:
+            self.add_linkflags(["-Wl,--export-all-symbols"])
+        elif sys.platform != "darwin":
+            self.add_linkflags("-Wl,--export-dynamic")
+        else:
+            # '--export-dynamic' is '-export_dynamic' in OS X linker
+            # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
+            self.add_linkflags("-Wl,-export_dynamic")
 
     # prefer memory usage over speed
-    self.add_linkflags("-Wl,--no-keep-memory")
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        self.add_linkflags("-Wl,--no-keep-memory")
 
-    self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
-    self.add_linkflags([f"-Wl,{i}" for i in self.get_lto_options()], dest="LINKFLAGS")
+        self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
+        self.add_linkflags([f"-Wl,{i}" for i in self.get_lto_options()], dest="LINKFLAGS")
 
-    self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
+        self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
@@ -233,14 +245,16 @@ def build_libaster(self, env):
         use=use,
         install_path=install_path,
     )
-
-    self.add_post_fun(post_install_links)
+    # on MSVC, the Python modules are proxies built in msvc/wscript
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        self.add_post_fun(post_install_links)
 
 
 @Configure.conf
 def check_c_compiler_flags(self):
-    self.check_c_compiler_options("-fPIC")
-    self.check_c_compiler_options(self.get_lto_options())
+    if self.env.CXX_NAME != 'msvc':
+        self.check_c_compiler_options("-fPIC")
+        self.check_c_compiler_options(self.get_lto_options())
     self.start_msg("C compiler flags")
     self.end_msg(self.env["CFLAGS"])
 
@@ -275,6 +289,34 @@ def check_optimization_cflags(self):
     flags = ["-O2"]
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
+
+
+@Configure.conf
+def check_optimization_cflags_msvc(self):
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        return
+    self.setenv("debug")
+    self.start_msg("Setting C debug flags for MSVC")
+    self.remove_flags("CFLAGS", "^/O[0-9a-z]")
+    debug_flags = ["/Zi", "/Od"]  # Debug information and no optimization
+    self.env.append_unique("LINKFLAGS", ["/DEBUG:FULL", "/INCREMENTAL:NO"])
+    self.env.append_unique("CFLAGS", debug_flags)
+    if self.options.enable_coverage:
+        # Note: MSVC does not have a direct --coverage equivalent
+        # You may need to use external tools or Visual Studio features for coverage
+        pass
+    if self.options.enable_asan:
+        # Enable Address Sanitizer (available in recent MSVC versions)
+        asan_flags = ["/fsanitize=address"]
+        self.env.append_unique("CFLAGS", asan_flags)
+        self.env.append_unique("LINKFLAGS", asan_flags)
+    self.end_msg(debug_flags)
+
+    self.setenv("release")
+    self.start_msg("Setting C optimization flags for MSVC")
+    optimization_flags = ["/O2"]  # Maximize speed
+    self.env.append_unique("CFLAGS", optimization_flags)
+    self.end_msg(optimization_flags)
 
 
 @Configure.conf

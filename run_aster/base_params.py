@@ -38,9 +38,18 @@ def _set_root():
     if path:
         return path
     path = Path(__file__).absolute()
-    while path != path.parent and path.name != "lib":
+    is_windows = os.name == "nt"
+    # Windows' conda layout splits python (<prefix>\Lib\site-packages) from
+    # compiled libraries/data (<prefix>\Library\{bin,lib,share}); "lib" (the
+    # POSIX site-packages ancestor) never appears on this file's path at all
+    # -- it is "Lib" here, a sibling of "Library", not an ancestor of it.
+    # Without this, the comparison below never matches on Windows and the
+    # loop silently walks all the way up to the drive root instead.
+    target = "Lib" if is_windows else "lib"
+    while path != path.parent and path.name != target:
         path = path.parent
-    return str(path.parent)
+    root = path.parent
+    return str(root / "Library") if is_windows else str(root)
 
 
 RUNASTER_ROOT = _set_root()

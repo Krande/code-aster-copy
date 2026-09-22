@@ -183,6 +183,12 @@ def options(self):
         "(this is the default, useful for conda/rattler builds where files _"
         "should go directly to lib)",
     )
+    group.add_option(
+        "--msvc-entry",
+        dest="msvc_entry",
+        action="store_true",
+        help="rewrites pybind11 entry points for MSVC to skip symlink",
+    )
     group = self.add_option_group("code_aster options")
 
     self.load("parallel", tooldir="waftools")
@@ -195,6 +201,8 @@ def options(self):
     self.load("scotch", tooldir="waftools")
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
+
+    self.recurse("msvc")
     self.recurse("libs")
     self.recurse("bibfor")
     self.recurse("code_aster")
@@ -259,6 +267,15 @@ def all_components(self):
 
 
 def configure(self):
+    # Check OS environment variable first, before platform detection
+    is_msvc_platform = os.environ.get('ASTER_PLATFORM_MSVC64') == '1' or \
+                       (sys.platform == 'win32' and os.environ.get('CC', '').lower() in ['cl.exe', 'clang-cl.exe'])
+
+    if is_msvc_platform and os.getenv('WAFDIR') is None:
+        Logs.info("Loading custom 'ifort' and 'msvc' toolchains")
+        self.load("ifort", tooldir="config")
+        self.load("msvc", tooldir="config")
+
     opts = self.options
     self.setenv("default")
     self.load("official_platforms", tooldir="waftools")
@@ -271,6 +288,7 @@ def configure(self):
     self.add_os_flags("CXXFLAGS")
     self.add_os_flags("FCFLAGS")
     self.add_os_flags("LINKFLAGS")
+    self.add_os_flags("LDFLAGS")
     self.add_os_flags("DEFINES")
     self.add_os_flags("WAFBUILD_ENV")
     self.add_os_flags("CFLAGS_ASTER_DEBUG")
@@ -333,6 +351,13 @@ def configure(self):
     self.recurse("bibc")
     self.check_asan()
 
+    if is_msvc_platform:
+        self.recurse("msvc")
+        if self.options.msvc_entry:
+            self.env["ASTER_WITH_MSVC64_ENTRY"] = True
+        else:
+            Logs.info("Configuring without MSVC entrypoints")
+
     self.load("mathematics", tooldir="waftools")
     self.load("med_cfg", tooldir="waftools")
     self.load("metis", tooldir="waftools")
@@ -392,6 +417,10 @@ def build(self):
     self.recurse("run_aster")
     self.recurse("bibcxx")
     self.recurse("bibc")
+
+    if env.ASTER_PLATFORM_MSVC64:
+        self.recurse("msvc")
+
     self.recurse("mfront")
     self.recurse("i18n")
     self.recurse("catalo")
@@ -554,23 +583,37 @@ def check_platform(self):
     if os_name == "cygwin":
         os_name = "linux"
     elif os_name == "win32":
-        os_name = "mingw32"
+        if self.env.CC_NAME == "msvc":
+            os_name = "msvc"
+        else:
+            os_name = "mingw32"
+
     if "64" in self.env.DEST_CPU:
         if os_name.endswith("32"):
             os_name = os_name[:-2]
         os_name += "64"
         self.define("ASTER_HAVE_64_BITS", 1)
     plt = "ASTER_PLATFORM_" + os_name.upper()
-    if not os_name.startswith("mingw"):
-        self.define("ASTER_PLATFORM_POSIX", 1)
-        self.env.ASTER_PLATFORM_POSIX = True
-        self.undefine("ASTER_PLATFORM_MINGW")
-    else:
+    if os_name.startswith("mingw"):
         self.define("ASTER_PLATFORM_MINGW", 1)
         self.env.ASTER_PLATFORM_MINGW = True
         self.undefine("ASTER_PLATFORM_POSIX")
+        self.undefine("ASTER_PLATFORM_MSVC64")
+    elif os_name.startswith("msvc") and "ASTER_PLATFORM_MSVC64" in self.env.DEFINES:
+        self.define("ASTER_PLATFORM_MSVC64", 1)
+        self.define("ASTER_PLATFORM_WINDOWS", 1)
+        self.define("H5_BUILT_AS_DYNAMIC_LIB", 1)
+        self.env.ASTER_PLATFORM_MSVC64 = True
+        self.env.ASTER_PLATFORM_WINDOWS = True
+        self.undefine("ASTER_PLATFORM_POSIX")
+        self.undefine("ASTER_PLATFORM_MINGW")
+    else:
+        self.define("ASTER_PLATFORM_POSIX", 1)
+        self.env.ASTER_PLATFORM_POSIX = True
+        self.undefine("ASTER_PLATFORM_MINGW")
+        self.undefine("ASTER_PLATFORM_MSVC64")
     self.env.ASTER_PLATFORM = plt
-    if os.getenv("MSYSTEM"):
+    if os.getenv("MSYSTEM") and not self.env.ASTER_PLATFORM_MSVC64:
         ## Define and additional variable for MSYS2
         self.define("ASTER_PLATFORM_MSYS2", 1)
         self.env.ASTER_PLATFORM_MSYS2 = True
@@ -585,9 +628,15 @@ def check_optimization_options(self):
     self.setenv("debug", env=self.all_envs["default"])
     self.setenv("release", env=self.all_envs["default"])
     # these functions must switch between each environment
-    self.check_optimization_cflags()
-    self.check_optimization_cxxflags()
-    self.check_optimization_fcflags()
+    if self.env.CC_NAME != "msvc":
+        self.check_optimization_cflags()
+        self.check_optimization_cxxflags()
+        self.check_optimization_fcflags()
+    else:
+        self.check_optimization_cflags_msvc()
+        self.check_optimization_cxxflags_msvc()
+        self.check_optimization_fcflags_msvc()
+
     self.check_optimization_python()
     self.check_variant_vars()
 

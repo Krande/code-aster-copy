@@ -20,6 +20,7 @@
 import os
 import os.path as osp
 import shutil
+import sys
 import tempfile
 from subprocess import call
 
@@ -43,9 +44,19 @@ class MGISBuilder:
         Arguments:
             behaviour_name (str): Name of the behaviour.
         """
-        libpath = osp.join(
-            os.environ["ASTER_LIBDIR"], "lib" + config["ASTER_BEHAVIOUR_LIB"] + ".so"
-        )
+        # On Windows/MSVC, shared libraries use .dll extension with no "lib" prefix,
+        # and are installed to the bin directory (sibling of ASTER_LIBDIR).
+        if sys.platform == "win32":
+            libname = config["ASTER_BEHAVIOUR_LIB"] + ".dll"
+            libdir = os.environ.get("ASTER_LIBDIR", "")
+            libpath = osp.join(libdir, libname)
+            if not osp.isfile(libpath):
+                # DLLs are typically in the bin directory on Windows
+                libpath = osp.join(osp.dirname(libdir), "bin", libname)
+        else:
+            libpath = osp.join(
+                os.environ["ASTER_LIBDIR"], "lib" + config["ASTER_BEHAVIOUR_LIB"] + ".so"
+            )
         return MGISBuilder.from_library(behaviour_name, libpath)
 
     @classmethod
@@ -103,15 +114,17 @@ class MGISBuilder:
 
     def compile(self, flags=None):
         """Compile a '.mfront' source file."""
+        # Use platform-appropriate shared library extension
+        _libext = ".dll" if sys.platform == "win32" else ".so"
         if not self._lib:
-            self._lib = tempfile.NamedTemporaryFile(prefix="libMGIS", suffix=".so", dir=".").name
+            self._lib = tempfile.NamedTemporaryFile(prefix="libMGIS", suffix=_libext, dir=".").name
         cmd = [ExecutionParameter().get_option("prog:mfront"), "--build", "--interface=generic"]
         cmd.extend(flags or [])
         cmd.append(self._src)
         logger.debug("Execute command %r", cmd)
         try:
             call(cmd)
-            libname = "libBehaviour.so"
+            libname = "libBehaviour" + _libext
             filename = osp.join("src", libname)
             if not osp.exists(filename):
                 UTMESS("F", "MFRONT_4", valk=libname)

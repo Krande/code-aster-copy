@@ -20,6 +20,7 @@ subroutine amumps(actionz, kxmps, rsolu, vcine, nbsol, &
                   iret, impr, ifmump, prepos, pcentp)
 !
 !
+    use mumps_instance_mod
     implicit none
 !--------------------------------------------------------------
 ! OBJET: DRIVER EN MODE REEL DE LA RESOLUTION DE SYSTEMES LINEAIRES
@@ -69,7 +70,7 @@ subroutine amumps(actionz, kxmps, rsolu, vcine, nbsol, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
-#include "mumps/smumps.h"
+!
 #include "asterfort/isParallelMatrix.h"
 !
     character(len=*) :: actionz
@@ -80,7 +81,7 @@ subroutine amumps(actionz, kxmps, rsolu, vcine, nbsol, &
     aster_logical :: prepos
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
     type(smumps_struc), pointer :: smpsk => null()
     integer(kind=8) :: rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer(kind=8) :: ietrat, nprec, ifact, iaux, vali(4), pcpi

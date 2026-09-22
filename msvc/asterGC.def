@@ -1,0 +1,5 @@
+LIBRARY AsterGC
+EXPORTS
+    PyInit_libAsterGC
+    dintels
+    dintelu

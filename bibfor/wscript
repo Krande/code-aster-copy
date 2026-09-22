@@ -56,7 +56,10 @@ def build(self):
         use.append("OPENMP")
 
     src_i8 = get_srcs("**/*.F90", excl="third_party_interf/*.F90")
-    src_ext = get_srcs("third_party_interf/*.F90")
+    src_ext = get_srcs(
+        "third_party_interf/*.F90", excl="third_party_interf/mumps_instance_mod.F90"
+    )
+    src_mumps_mod = get_srcs("third_party_interf/mumps_instance_mod.F90")
 
     # Determine install paths - DLLs go to BINDIR on Windows, libs stay in LIBDIR
     if self.env.ASTER_PLATFORM_MSVC64:
@@ -75,7 +78,41 @@ def build(self):
         env=env.derive(),
         install_path=lib_install_path,
     )
+
+    # mumps_instance_mod: compiled with integer-size matching the MUMPS
+    # library ABI (ASTER_MUMPS_INT_SIZE, detected in waftools/mumps.py).
+    # On Linux, bibfor_ext already compiles without -fdefault-integer-8
+    # (see check_fortran_compiler_flags below), so no override is needed
+    # there. On Windows the global /integer-size:64 in FCFLAGS is
+    # required across bibfor/bibfor_ext for ABI consistency (ifx has no
+    # -fallow-argument-mismatch equivalent to tolerate a mix), which
+    # means the MUMPS struct/interface would otherwise silently inherit
+    # it too and no longer match the MUMPS library's own LP64 ABI --
+    # overridden here (last flag wins in ifx). Files that `use` this
+    # module still get the module's own (correct) struct layout,
+    # regardless of their own /integer-size flag: Fortran module import
+    # preserves the type layout from the module's compilation.
+    mumps_mod_env = env.derive()
+    if self.env.ASTER_PLATFORM_MSVC64:
+        mumps_int_bits = self.env.ASTER_MUMPS_INT_SIZE * 8
+        mumps_mod_env.append_value(
+            "FCFLAGS", ["/integer-size:%d" % mumps_int_bits, "/real-size:32"]
+        )
+    self(
+        features="fc",
+        name="mumps_instance_mod",
+        source=src_mumps_mod,
+        defines=["WITHOUT_INT64"],
+        use=use,
+        env=mumps_mod_env,
+    )
+
     # ... except for subroutines linked against external libraries
+    # On MSVC, bibfor_ext links against bibfor so that the Jeveux COMMON
+    # blocks (exported as DATA from bibfor.dll) are shared between DLLs.
+    use_ext = use + ["asterbibfor", "mumps_instance_mod"]
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        use_ext = use + ["mumps_instance_mod"]
     self(
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor_ext",
@@ -83,7 +120,7 @@ def build(self):
         rpath="$ORIGIN",
         source=src_ext,
         defines=["WITHOUT_INT64"],
-        use=use,
+        use=use_ext,
         env=env.derive(),
         install_path=lib_install_path,
     )
@@ -95,8 +132,9 @@ MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
-    self.check_fortran_compiler_options("-fPIC")
-    self.check_fortran_compiler_options(self.get_lto_options())
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        self.check_fortran_compiler_options("-fPIC")
+        self.check_fortran_compiler_options(self.get_lto_options())
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
@@ -109,11 +147,15 @@ def check_fortran_compiler_flags(self):
         # long lines after preprocessing
         self.check_fortran_compiler_options("-ffree-line-length-none")
     if self.env.FC_IS_INTEL:
-        self.check_fortran_compiler_options(["-fpe0", "-traceback"])
-        if "64" in self.env.DEST_CPU:
-            self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
-            self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
-        self.check_fortran_compiler_options(["-nogen-interfaces"])
+        if self.env.ASTER_PLATFORM_MSVC64:
+            # /fpe:0, /traceback and the integer/real sizes come from FCFLAGS
+            self.check_fortran_compiler_options(["/nologo"])
+        else:
+            self.check_fortran_compiler_options(["-fpe0", "-traceback"])
+            if "64" in self.env.DEST_CPU:
+                self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
+                self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options(["-nogen-interfaces"])
         # TODO: "-xCORE-AVX2" with execute=True
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
@@ -465,6 +507,8 @@ def check_c_fortran_real8(self):
 @Configure.conf
 def check_optimization_fcflags(self):
     """Check for optimization FCFLAGS."""
+    if self.env.ASTER_PLATFORM_MSVC64:
+        return
     self.remove_flags("FCFLAGS", "^-O[0-9]")
     self.setenv("debug")
     self.start_msg("Setting fortran debug flags")
@@ -541,6 +585,31 @@ def check_optimization_fcflags(self):
     self.start_msg("Setting Fortran optimization flags")
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)
+
+
+@Configure.conf
+def check_optimization_fcflags_msvc(self):
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        return
+    self.setenv("debug")
+    self.start_msg("Setting Fortran debug flags for ifx")
+    self.remove_flags("FCFLAGS", "^/O[0-9a-z]")
+    flags = ["/Od", "/Zi", "/debug:full", "/traceback"]
+    flags += Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
+    self.env.append_unique("FCFLAGS", flags)
+    self.end_msg(flags)
+
+    self.setenv("release")
+    self.start_msg("Setting Fortran optimization flags for ifx")
+    # The release build must be optimized: this is the whole solver. /Od here
+    # left every Fortran routine unoptimized (release C/C++ is correctly /O2),
+    # which also inflates stack usage because nothing is reused across slots.
+    # /traceback is kept in release so the ifx crash handler can still symbolize
+    # a native stack (that is what makes the <F> DVP_2 reports readable).
+    self.remove_flags("FCFLAGS", "^/O[0-9a-z]")
+    flags = ["/O2", "/traceback"]
+    self.env.append_unique("FCFLAGS", flags)
+    self.end_msg(flags)
 
 
 @Configure.conf

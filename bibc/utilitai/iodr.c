@@ -26,7 +26,13 @@
 #define OFF_INIT ASTER_INT_SIZE
 
 static FILE *fpfile[MAX_FAC];
-static long nenr[MAX_FAC];
+/* nenr holds the record length, read/written as OFF_INIT (= ASTER_INT_SIZE = 8)
+ * bytes and used in the file-offset arithmetic below. It must therefore be an
+ * 8-byte type: as `long` it is only 4 bytes on LLP64 (Windows), so the fread at
+ * OPENDR overran into nenr[iu+1] and the fwrite at WRITDR emitted 4 bytes of
+ * the neighbouring slot as part of the record-length header. It also made the
+ * offset multiply 32-bit. */
+static ASTERINTEGER nenr[MAX_FAC];
 
 static long nbFAC = 0;
 static char *nomFAC[MAX_FAC];
@@ -142,7 +148,9 @@ void DEFSP( CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, ASTERINTEGER *
 
 void DEFSPPPP( READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
                ASTERINTEGER *nbytes, ASTERINTEGER *irec, ASTERINTEGER *ierr ) {
-#if defined ASTER_HAVE_LONG_LONG
+/* ASTER_HAVE_LONG_LONG is only defined for MinGW, so MSVC fell back to a 32-bit
+ * `long` offset and plain fseek(): any base over 2 GB silently corrupted. */
+#if defined ASTER_HAVE_LONG_LONG || defined ASTER_PLATFORM_WINDOWS
     long long offset;
 #else
     long offset;
@@ -170,7 +178,7 @@ void DEFSPPPP( READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
         return;
     }
     offset = ( *irec - 1 ) * nenr[iu] + OFF_INIT;
-#if defined ASTER_HAVE_LONG_LONG
+#if defined ASTER_HAVE_LONG_LONG || defined ASTER_PLATFORM_WINDOWS
     nbseek = _fseeki64( fpfile[iu], offset, SEEK_SET );
 #else
     nbseek = fseek( fpfile[iu], offset, SEEK_SET );
@@ -184,7 +192,8 @@ void DEFSPPPP( READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
 
 void DEFSPPPP( WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
                ASTERINTEGER *nbytes, ASTERINTEGER *irec, ASTERINTEGER *ierr ) {
-#if defined ASTER_HAVE_LONG_LONG
+/* see READDR above */
+#if defined ASTER_HAVE_LONG_LONG || defined ASTER_PLATFORM_WINDOWS
     long long offset;
 #else
     long offset;
@@ -211,7 +220,7 @@ void DEFSPPPP( WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
         nbwrite = fwrite( &nenr[iu], OFF_INIT, 1, fpfile[iu] );
     }
     offset = ( *irec - 1 ) * ( nenr[iu] ) + OFF_INIT;
-#if defined ASTER_HAVE_LONG_LONG
+#if defined ASTER_HAVE_LONG_LONG || defined ASTER_PLATFORM_WINDOWS
     nbseek = _fseeki64( fpfile[iu], offset, SEEK_SET );
 #else
     nbseek = fseek( fpfile[iu], offset, SEEK_SET );

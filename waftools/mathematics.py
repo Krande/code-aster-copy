@@ -52,7 +52,8 @@ def options(self):
 
 def configure(self):
     # always check for libpthread, libm (never in static)
-    self.check_cc(uselib_store="M", lib="m")
+    if self.env.CXX_NAME != "msvc":
+        self.check_cc(uselib_store="M", lib="m")
     self.check_cc(uselib_store="Z", lib="z")
     self.check_number_cores()
     if self.options.maths_libs == "mkl":
@@ -153,6 +154,10 @@ def detect_mkl(self):
             # scalapack = "mkl_scalapack" + suffix
             # blacs = "mkl_blacs_openmpi" + suffix
             scalapack = "scalapack"
+    if self.env.CXX_NAME == "msvc":
+        interf += "_dll"
+        thread += "_dll"
+        core += "_dll"
     libs.append(interf)
     libs.append(thread)
     libs.append(core)
@@ -164,7 +169,9 @@ def detect_mkl(self):
     try:
         self.env.stash()
         self.env.append_value("LIB_MATH", libs)
-        if "MKLROOT" in os.environ:
+        if self.env.CXX_NAME == "msvc":
+            self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib")
+        elif "MKLROOT" in os.environ:
             self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
         self.check_math_libs_call(color="YELLOW")
     except:
@@ -183,7 +190,11 @@ def detect_math_lib(self, libs=BLAS):
     varlib = ("ST" if embed else "") + "LIB_MATH"
 
     # blas
-    blaslibs, lapacklibs = self.get_mathlib_from_numpy()
+    if self.env.CXX_NAME == "msvc":
+        # math libraries are passed explicitly through LDFLAGS
+        blaslibs, lapacklibs = [], []
+    else:
+        blaslibs, lapacklibs = self.get_mathlib_from_numpy()
     self.check_math_libs(list(libs) + blaslibs, embed)
 
     # lapack
@@ -290,6 +301,10 @@ def check_math_libs(self, libs, embed, optional=False):
 def check_number_cores(self):
     """Check for the number of available cores."""
     self.start_msg("Checking for number of cores")
+    if self.env.CXX_NAME == "msvc":
+        self.env["NPROC"] = os.cpu_count() or 1
+        self.end_msg(self.env["NPROC"])
+        return
     try:
         self.find_program("nproc")
         try:

@@ -24,6 +24,7 @@ subroutine op9999(options)
 #include "asterc/chkmsg.h"
 #include "asterc/dllcls.h"
 #include "asterc/lcdiscard.h"
+#include "asterc/closdr.h"
 #include "asterc/rmfile.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/asmpi_checkalarm.h"
@@ -137,6 +138,26 @@ subroutine op9999(options)
     call jefini('NORMAL', close_base)
 
     if (.not. close_base) then
+!       When close_base is false, jelibf was not called so the C stdio
+!       file handles (managed by iodr.c) for glob.* and vola.* are still
+!       open. On POSIX, remove() can delete open files (the directory
+!       entry is unlinked, data persists until the last fd is closed).
+!       On Windows, remove() fails with EACCES if any handle is open.
+!       Close the C handles via closdr() before attempting deletion.
+        idx = 1
+        iret = 0
+        do while (iret .eq. 0 .and. idx .lt. 99)
+            call get_jvbasename("glob", idx, path)
+            call closdr(path, iret)
+            idx = idx+1
+        end do
+        idx = 1
+        iret = 0
+        do while (iret .eq. 0 .and. idx .lt. 99)
+            call get_jvbasename("vola", idx, path)
+            call closdr(path, iret)
+            idx = idx+1
+        end do
         idx = 1
         iret = 0
         do while (iret .eq. 0 .and. idx .lt. 99)

@@ -69,6 +69,7 @@ See ``bin/run_ctest --help`` for the available options.
 import argparse
 import os
 import os.path as osp
+import pathlib
 import re
 import sys
 import tempfile
@@ -501,7 +502,7 @@ def _build_def(datadir, lexport, options, testdir, slot_size):
                 processors=slots,
                 timeout=timeout,
                 options=options,
-                ASTERDATADIR=datadir,
+                ASTERDATADIR=pathlib.Path(datadir).as_posix(),
                 TESTDIR=testdir,
                 ext=".bat" if RUNASTER_PLATFORM == "win" else "",
             )

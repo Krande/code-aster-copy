@@ -22,6 +22,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !
 !
     use iso_c_binding, only: c_ptr, c_f_pointer
+    use mumps_instance_mod
     implicit none
 !-----------------------------------------------------------------------
 ! BUT : ROUTINE DE PRE/POST-TRAITEMENT DE LA SOLUTION ET DU
@@ -87,7 +88,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     complex(kind=8) :: csolu(*)
 !
 #ifdef ASTER_HAVE_MUMPS
-#include "asterf_mumps.h"
+!
     type(smumps_struc), pointer :: smpsk => null()
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()

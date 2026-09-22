@@ -22,6 +22,17 @@
 !---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 #include "asterf_types.h"
 !
+! On Windows (MSVC/Intel Fortran), COMMON blocks must be explicitly shared
+! between DLLs. bibfor.dll owns them (DLLEXPORT); bibfor_ext.dll imports
+! them (DLLIMPORT). WITHOUT_INT64 is defined only for bibfor_ext.
+#if defined(ASTER_PLATFORM_MSVC64) && defined(WITHOUT_INT64)
+!DEC$ ATTRIBUTES DLLIMPORT :: /I4VAJE/, /IVARJE/, /RVARJE/
+!DEC$ ATTRIBUTES DLLIMPORT :: /CVARJE/, /LVARJE/, /KVARJE/
+#elif defined(ASTER_PLATFORM_MSVC64)
+!DEC$ ATTRIBUTES DLLEXPORT :: /I4VAJE/, /IVARJE/, /RVARJE/
+!DEC$ ATTRIBUTES DLLEXPORT :: /CVARJE/, /LVARJE/, /KVARJE/
+#endif
+!
     volatile           zi4, zi, zr, zc, zl
     volatile           zk8, zk16, zk24, zk32, zk80
 !

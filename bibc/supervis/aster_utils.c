@@ -391,7 +391,7 @@ PyObject *MakeTupleInt( long nbval, ASTERINTEGER *kval ) {
     PyObject *tupl;
     tupl = PyTuple_New( (Py_ssize_t)nbval );
     for ( i = 0; i < nbval; i++ ) {
-        if ( PyTuple_SetItem( tupl, i, PyLong_FromLong( (long)kval[i] ) ) ) {
+        if ( PyTuple_SetItem( tupl, i, PyLong_FromLongLong( (long long)kval[i] ) ) ) {
             Py_DECREF( tupl );
             return NULL;
         }
@@ -413,7 +413,7 @@ PyObject *MakeListInt( long nbval, ASTERINTEGER *kval ) {
     int i;
     PyObject *l = PyList_New( (Py_ssize_t)nbval );
     for ( i = 0; i < nbval; i++ ) {
-        if ( PyList_SetItem( l, i, PyLong_FromLong( (long)kval[i] ) ) ) {
+        if ( PyList_SetItem( l, i, PyLong_FromLongLong( (long long)kval[i] ) ) ) {
             Py_DECREF( l );
             return NULL;
         }

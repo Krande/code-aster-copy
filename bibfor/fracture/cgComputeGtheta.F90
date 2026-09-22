@@ -86,6 +86,7 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     character(len=24) :: chgeom, chsig, chgtheta
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d, iscplan
     character(len=24) :: lchin(50), lchout(1)
+    character(len=24) :: dummyElemAffe
     aster_logical     :: lfonc, inco
     integer(kind=8), pointer :: v_cesv(:) => null()
     integer(kind=8), pointer :: v_liel(:) => null()
@@ -167,7 +168,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !   Cas 2D : creation du champ ISCPLAN
     if (cgField%ndim .eq. 2) then
 !       Recuperation de la modelisation
-        outExicp = exicp(cgStudy%model, ASTER_TRUE, "", 0)
+        dummyElemAffe = ' '
+        outExicp = exicp(cgStudy%model, ASTER_TRUE, dummyElemAffe, 0)
 !
 !       Creation d'un champ simple par elements
         call cescre('V', chscpl, 'ELEM', cgStudy%mesh, 'NEUT_I', &

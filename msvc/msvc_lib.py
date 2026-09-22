@@ -1,0 +1,701 @@
+import os
+import pathlib
+import platform
+import shutil
+from dataclasses import dataclass
+
+from waflib import Logs, TaskGen, Task, Errors
+
+
+
+class defgen(Task.Task):
+    """Task to generate .def files from compiled object files using dumpbin."""
+    color = "CYAN"
+
+    def __str__(self):
+        """Provide a concise task banner to avoid dumping thousands of inputs."""
+        try:
+            out_name = self.outputs[0].name if self.outputs else "<no-output>"
+            return f"Processing defgen: {out_name}"
+        except Exception:
+            return super().__str__()
+
+    def run(self):
+        """Execute the def generation script."""
+        import subprocess
+
+        script_path = self.env.DEF_SCRIPT
+        build_dir = self.env.BUILD_DIR
+        output_file = self.outputs[0].abspath()
+
+        # Build command - the script will find object files itself
+        cmd = [
+            self.env.PYTHON[0],
+            script_path,
+            "--build-dir", build_dir,
+            "--output", output_file
+        ]
+
+
+        Logs.info(f"Generating {self.outputs[0].name}...")
+        Logs.debug(f"Command: {' '.join(cmd)}")
+
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            if result.stdout:
+                Logs.debug(result.stdout)
+            if result.stderr:
+                Logs.warn(result.stderr)
+            return 0
+        except subprocess.CalledProcessError as e:
+            Logs.error(f"Def generation failed: {e}")
+            if e.stdout:
+                Logs.error(e.stdout)
+            if e.stderr:
+                Logs.error(e.stderr)
+            return 1
+
+
+class msvclibgen(Task.Task):
+    # Use a minimal run_str; we will compose the full command with a response file in exec_command
+    run_str = "LIB.exe /OUT:${TGT}"
+    color = "BLUE"
+    after = ["defgen"]
+    before = ["cshlib", "cxxshlib", "fcshlib"]
+    use_msvc_entry = False
+
+    def __str__(self):
+        # Provide a concise task banner to avoid dumping thousands of inputs
+        try:
+            out_name = self.outputs[0].name if self.outputs else "<no-output>"
+            n_inputs = len(self.inputs) if hasattr(self, "inputs") else 0
+            return f"msvclibgen: {out_name} ({n_inputs} objects)"
+        except Exception:
+            # Fall back to default if anything unexpected happens
+            return super().__str__()
+
+    def exec_command(self, cmd, **kw):
+        """Execute the command with a response file to avoid massive command lines/logs."""
+        output_fp = pathlib.Path(self.outputs[0].abspath())
+        output_fp.parent.mkdir(parents=True, exist_ok=True)
+        obld = self.generator.bld
+        root_path = pathlib.Path(obld.root.abspath()).resolve().absolute()
+        clean_name_map = {
+            "bibc": self.env.BIBC_DEF,
+            "bibcxx": self.env.BIBCXX_DEF,
+            "bibfor": self.env.BIBFOR_DEF,
+            "bibfor_ext": self.env.BIBFOR_EXT_DEF,
+            "AsterGC": self.env.ASTERGC_DEF,
+            "aster": self.env.ASTER_DEF,
+            "mfront": self.env.MFRONT_DEF,
+        }
+        clean_name = output_fp.stem.replace("_gen", "")
+        # libs directory for dependent libs
+        libs_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "libs"
+        # Base options
+        opts = ["/NOLOGO", "/MACHINE:X64", "/SUBSYSTEM:CONSOLE", f"/LIBPATH:{libs_dir}"]
+        # DEF file
+        def_file = root_path / clean_name / f"{clean_name}.def"
+        if clean_name.endswith("proxy"):
+            def_file = root_path / "msvc/c_entrypoints" / f"{clean_name}.def"
+            opts += [f"/DEF:{def_file}"]
+        else:
+            def_file_v = clean_name_map.get(clean_name, None)
+            if def_file_v is not None:
+                def_file = root_path / def_file_v
+                Logs.debug(f"Using def file {def_file=}")
+            opts += [f"/DEF:{def_file}"]
+
+        # Build a response file containing all input object files
+        # self.inputs are Nodes (previous compile tasks' outputs)
+        src_paths = [str(n.abspath()) for n in self.inputs]
+        rsp_path = output_fp.with_suffix(".rsp")
+        with open(rsp_path, "w", encoding="utf-8") as rsp:
+            # one entry per line keeps it readable
+            for p in src_paths:
+                rsp.write(p)
+                rsp.write("\n")
+
+        # Compose compact command: LIB.exe /OUT:<out> <opts> @<rsp>
+        cmd_compact = [cmd[0], cmd[1], *opts, f"@{rsp_path}"]
+
+        # Log a concise summary at info level
+        Logs.info(
+            f"Generating {output_fp.name} with {len(src_paths)} objects (using response file '{rsp_path}')."
+        )
+        Logs.debug(f"Response file: {rsp_path}")
+
+        # Execute
+        ret = super().exec_command(cmd_compact, **kw)
+        return ret
+
+
+@dataclass
+class TaskObject:
+    libtask: Task
+    program_task: Task
+    tasks: list[Task]
+    task_gen: TaskGen
+
+
+@dataclass
+class LibTask:
+    asterbibc: TaskObject
+    asterbibcxx: TaskObject
+    asterbibfor: TaskObject
+    asterbibfor_ext: TaskObject
+    astergc: TaskObject
+    asterlib: TaskObject
+
+    def all_tasks_ready(self) -> bool:
+        for key, task in self.__dict__.items():
+            if len(task.tasks) == 0:
+                Logs.debug(f"No tasks found for {task.task_gen.get_name()=}")
+                return False
+        return True
+
+    def get_missing_tasks(self) -> list[str]:
+        missing_tasks = []
+        for key, task in self.__dict__.items():
+            if len(task.tasks) == 0:
+                missing_tasks.append(task.task_gen.get_name())
+
+        return missing_tasks
+
+
+def get_task_object(bld: TaskGen, taskgen_name: str, compiler_prefix: str) -> TaskObject:
+    lib_task = None
+    program_task = None
+    tasks = []
+    task_gen = bld.get_tgen_by_name(taskgen_name)
+    for task in task_gen.tasks:
+        if task.__class__.__name__ == f"{compiler_prefix}shlib":
+            lib_task = task
+        if task.__class__.__name__ == f"{compiler_prefix}program":
+            program_task = task
+        if task.__class__.__name__ == compiler_prefix:
+            tasks.append(task)
+
+    if len(tasks) == 0:
+        Errors.WafError(f"No tasks found for {taskgen_name}")
+
+    return TaskObject(lib_task, program_task, tasks, task_gen)
+
+
+def get_task_object_multi(bld: TaskGen, taskgen_name: str, compiler_prefixes) -> TaskObject:
+    """Return a TaskObject aggregating tasks from multiple compiler families (e.g., ['cxx','fc']).
+    Prefers a C++ shlib as the libtask if present, otherwise takes the first available.
+    """
+    if isinstance(compiler_prefixes, str):
+        compiler_prefixes = [compiler_prefixes]
+
+    lib_task = None
+    program_task = None
+    tasks = []
+    task_gen = bld.get_tgen_by_name(taskgen_name)
+
+    # Collect all matching compile tasks and remember shlib/program tasks per family
+    family_libtasks = []
+    for task in task_gen.tasks:
+        tname = task.__class__.__name__
+        for pref in compiler_prefixes:
+            if tname == f"{pref}shlib":
+                family_libtasks.append((pref, task))
+            elif tname == f"{pref}program":
+                # keep the first program we find (rarely used here)
+                if program_task is None:
+                    program_task = task
+            elif tname == pref:
+                tasks.append(task)
+
+    # Choose the libtask: prefer cxx if available to drive the DLL link
+    preferred_order = ["cxx", "fc", "c"]
+    for pref in preferred_order:
+        for fam, t in family_libtasks:
+            if fam == pref:
+                lib_task = t
+                break
+        if lib_task is not None:
+            break
+    if lib_task is None and family_libtasks:
+        lib_task = family_libtasks[0][1]
+
+    if len(tasks) == 0:
+        Errors.WafError(f"No tasks found for {taskgen_name} (prefixes={compiler_prefixes})")
+
+    return TaskObject(lib_task, program_task, tasks, task_gen)
+
+
+def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
+    Logs.debug(f"Extracting main tasks for {self.get_name()=}")
+
+    bld = self.bld
+    c_task_object = get_task_object(bld, "asterbibc", "c")
+    cxx_task_object = get_task_object(bld, "asterbibcxx", "cxx")
+    fc_task_object = get_task_object(bld, "asterbibfor", "fc")
+    fc_ext_task_object = get_task_object(bld, "asterbibfor_ext", "fc")
+    gc_task_object = get_task_object_multi(bld, "astergc", ["cxx", "fc"])
+    c_aster_object = get_task_object(bld, "asterlib", "cxx")
+    Logs.debug(f"AsterGC objects found: {len(gc_task_object.tasks)}")
+    # print asterGC task names for debugging
+    for t in gc_task_object.tasks:
+        Logs.debug(f"AsterGC task: {t.__class__.__name__} - {t.outputs}")
+    return LibTask(c_task_object, cxx_task_object, fc_task_object, fc_ext_task_object, gc_task_object, c_aster_object)
+
+
+def create_defgen_task(self, lib_name: str, script_name: str, input_tasks) -> Task:
+    """Create a defgen task for generating .def files from object files.
+
+    Args:
+        self: The task generator
+        lib_name: Name of the library (e.g., 'bibc', 'bibfor', 'bibcxx', 'AsterGC', 'bibfor_ext')
+        script_name: Name of the def generation script (e.g., 'def_gen_c.py')
+        input_tasks: List of compiled object files (task outputs)
+
+    Returns:
+        The created defgen task
+    """
+    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
+    root_path = pathlib.Path(self.bld.root.abspath()).resolve().absolute()
+
+    # Determine output path for .def file
+    if lib_name == "AsterGC":
+        def_output_path = root_path / "msvc" / "asterGC.def"
+    elif lib_name == "bibfor_ext":
+        def_output_path = root_path / "msvc" / "bibfor_ext.def"
+    else:
+        def_output_path = root_path / "msvc" / f"{lib_name}.def"
+
+    # Create node for output
+    def_output_node = self.bld.root.make_node(def_output_path.as_posix())
+
+    # Create the defgen task
+    defgen_task = self.create_task("defgen")
+    defgen_task.inputs = input_tasks  # For dependency tracking - ensures objects are compiled first
+    defgen_task.outputs = [def_output_node]
+    # Note: The script finds object files itself via --build-dir, no need to pass them
+
+    # Set up environment variables needed by the task
+    defgen_task.env = self.env.derive()
+    defgen_task.env.DEF_SCRIPT = str(root_path / "msvc" / script_name)
+    defgen_task.env.BUILD_DIR = str(bld_path)
+
+    Logs.debug(f"Created defgen task for {lib_name}: {def_output_node}")
+
+    return defgen_task
+
+
+def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
+    # Create a task for MSVC lib generation for C
+    # the task takes in the outputs of all C tasks
+    # it's outputs are bibc.lib and bibc.exp located in the build directory
+    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
+    if lib_name == "aster":
+        lib_output_file_path = bld_path / "bibc" / "aster.lib"
+    elif lib_name == "bibfor_ext":
+        lib_output_file_path = bld_path / "bibfor" / "bibfor_ext.lib"
+    elif lib_name == "AsterGC":
+        lib_output_file_path = bld_path / "libs" / "AsterGC.lib"
+    elif lib_name.endswith("proxy"):
+        Logs.debug(f"input_tasks: {input_tasks=}")
+        lib_output_file_path = bld_path / "msvc" / f"{lib_name}.lib"
+    else:
+        lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
+
+    # create nodes for the output files
+    bib_lib_output_file_node = self.bld.bldnode.make_node(lib_output_file_path.relative_to(bld_path).as_posix())
+
+    msvc_libgen_task = self.create_task("msvclibgen")
+    msvc_libgen_task.inputs = input_tasks
+    msvc_libgen_task.env = self.env
+    msvc_libgen_task.dep_nodes = input_tasks
+    msvc_libgen_task.outputs = [bib_lib_output_file_node]
+
+    Logs.debug(f"{msvc_libgen_task.outputs=}")
+
+    return msvc_libgen_task
+
+
+def run_mvsc_lib_gen(self, task_obj: LibTask):
+    clib_task = task_obj.asterbibc.libtask
+    cxxlib_task = task_obj.asterbibcxx.libtask
+    fclib_task = task_obj.asterbibfor.libtask
+    fcext_lib_task = task_obj.asterbibfor_ext.libtask
+    gc_lib_task = task_obj.astergc.libtask
+    aster_task = task_obj.asterlib.libtask
+
+    Logs.debug(f"Before removal: {clib_task.outputs=}")
+
+    # Lib files are created by MSVC lib generation, so will remove these from the shlib outputs
+    clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
+    cxxlib_task.outputs = [o for o in cxxlib_task.outputs if o.suffix() != ".lib"]
+    fclib_task.outputs = [o for o in fclib_task.outputs if o.suffix() != ".lib"]
+    fcext_lib_task.outputs = [o for o in fcext_lib_task.outputs if o.suffix() != ".lib"]
+    gc_lib_task.outputs = [o for o in gc_lib_task.outputs if o.suffix() != ".lib"]
+    aster_task.outputs = [o for o in aster_task.outputs if o.suffix() != ".lib"]
+
+    Logs.debug(f"After removal: {clib_task.outputs=}")
+    Logs.debug(f"After removal: {fclib_task.outputs=}")
+    Logs.debug(f"After removal: {fcext_lib_task.outputs=}")
+    Logs.debug(f"After removal: {gc_lib_task.outputs=}")
+    Logs.debug(f"After removal: {cxxlib_task.outputs=}")
+    Logs.debug(f"After removal: {aster_task.outputs=}")
+
+    c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
+    cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
+    fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor.tasks]
+    fc_ext_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor_ext.tasks]
+    # Collect all object file outputs (.o or .obj) from AsterGC tasks, not just outputs[0]
+    gc_input_tasks = []
+    Logs.debug(f"Collecting AsterGC .o/.obj inputs from {len(task_obj.astergc.tasks)} tasks")
+    for gctask in task_obj.astergc.tasks:
+        try:
+            outs = [n.abspath() for n in getattr(gctask, "outputs", [])]
+        except Exception:
+            outs = []
+        Logs.debug(f"AsterGC task {gctask.__class__.__name__} outputs: {outs}")
+        for outn in getattr(gctask, "outputs", []):
+            p = outn.abspath()
+            inc = p.lower().endswith(".o") or p.lower().endswith(".obj")
+            Logs.debug(f"  consider {p} -> {'IN' if inc else 'skip'}")
+            if inc:
+                gc_input_tasks.append(outn)
+    aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
+    Logs.debug(f"{aster_input_tasks=}")
+    Logs.debug(f"AsterGC object inputs collected for libgen: {len(gc_input_tasks)}")
+    for n in gc_input_tasks:
+        Logs.debug(f"AsterGC libgen input: {n}")
+
+    if len(aster_input_tasks) == 0:
+        raise Errors.WafError("Failed MSVC lib generation: No aster input tasks found")
+
+    # Create defgen tasks first - they run after compilation and before msvclibgen
+    Logs.info("Creating def generation tasks...")
+
+    bibc_defgen_task = create_defgen_task(self, "bibc", "def_gen_c.py", c_input_tasks)
+    bibcxx_defgen_task = create_defgen_task(self, "bibcxx", "def_gen_cpp.py", cxx_input_tasks)
+    bibfor_defgen_task = create_defgen_task(self, "bibfor", "def_gen_fc.py", fc_input_tasks)
+    bibfor_ext_defgen_task = create_defgen_task(self, "bibfor_ext", "def_gen_bibfor_ext.py", fc_ext_input_tasks)
+    gc_defgen_task = create_defgen_task(self, "AsterGC", "def_gen_astergc.py", gc_input_tasks)
+
+    # Create msvclibgen tasks - they run after defgen
+    Logs.info("Creating MSVC lib generation tasks...")
+
+    clib_lib_task = create_msvclibgen_task(self, "bibc", c_input_tasks)
+    bibcxx_lib_task = create_msvclibgen_task(self, "bibcxx", cxx_input_tasks)
+    bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
+    bibfor_ext_lib_task = create_msvclibgen_task(self, "bibfor_ext", fc_ext_input_tasks)
+    gc_lib_task_gen = create_msvclibgen_task(self, "AsterGC", gc_input_tasks)
+    bibaster_lib_task = create_msvclibgen_task(self, "aster", aster_input_tasks)
+
+    # Set up dependencies: msvclibgen tasks must run after their corresponding defgen tasks
+    clib_lib_task.set_run_after(bibc_defgen_task)
+    bibcxx_lib_task.set_run_after(bibcxx_defgen_task)
+    bibfor_lib_task.set_run_after(bibfor_defgen_task)
+    bibfor_ext_lib_task.set_run_after(bibfor_ext_defgen_task)
+    gc_lib_task_gen.set_run_after(gc_defgen_task)
+
+    Logs.debug(f"{clib_lib_task.outputs=}")
+    Logs.debug(f"{fclib_task.outputs=}")
+    Logs.debug(f"{fcext_lib_task.outputs=}")
+    Logs.debug(f"{gc_lib_task.outputs=}")
+    Logs.debug(f"{bibaster_lib_task.outputs=}")
+
+    # filter out all non-lib files
+    clib_task_outputs = [x for x in clib_lib_task.outputs if x.suffix() == ".lib"]
+    fclib_task_outputs = [x for x in bibfor_lib_task.outputs if x.suffix() == ".lib"]
+    fcext_lib_task_outputs = [x for x in bibfor_ext_lib_task.outputs if x.suffix() == ".lib"]
+    gc_task_outputs = [x for x in gc_lib_task_gen.outputs if x.suffix() == ".lib"]
+    bibaster_task_outputs = [x for x in bibaster_lib_task.outputs if x.suffix() == ".lib"]
+    bibcxx_task_outputs = [x for x in bibcxx_lib_task.outputs if x.suffix() == ".lib"]
+
+    Logs.debug(f"{clib_task_outputs=}")
+    Logs.debug(f"{fclib_task_outputs=}")
+    Logs.debug(f"{fcext_lib_task_outputs=}")
+    Logs.debug(f"{gc_task_outputs=}")
+    Logs.debug(f"{bibaster_task_outputs=}")
+    Logs.debug(f"{bibcxx_task_outputs=}")
+
+    # Set up library dependencies according to the dependency chain
+    # Strategy: Generate all .lib files first (they only need object files),
+    # then link all DLLs (which need the .lib files)
+
+    # Note: msvclibgen tasks (bibfor_lib_task, etc.) only need object files as inputs.
+    # They do NOT depend on other .lib files, so NO set_run_after between them.
+    # This avoids circular dependencies.
+    # Only the DLL link tasks need to wait for .lib generation to complete.
+
+    # All DLL link tasks must wait for ALL .lib generation tasks to complete
+    all_lib_gen_tasks = [bibfor_lib_task, bibfor_ext_lib_task, clib_lib_task,
+                         bibcxx_lib_task, gc_lib_task_gen, bibaster_lib_task]
+
+    # Resolve external library .lib files (MED, MUMPS, etc.) as waf nodes
+    # so they can be added as direct inputs to link tasks.
+    # This is more reliable than LINKFLAGS on Windows where the link command
+    # may not properly expand env variables.
+    env = self.env
+    external_lib_nodes = []
+    external_uselibs = ["MED", "MUMPS", "SCOTCH", "METIS", "MATH", "HDF5", "MPI", "OPENMP"]
+    seen_ext_libs = set()
+    for uselib in external_uselibs:
+        for var_prefix in ("LIB_", "STLIB_"):
+            for lib in env.get_flat(var_prefix + uselib).split():
+                if lib and lib not in seen_ext_libs:
+                    seen_ext_libs.add(lib)
+        for var_prefix in ("LIBPATH_", "STLIBPATH_"):
+            for p in env[var_prefix + uselib]:
+                if p:
+                    lib_dir = pathlib.Path(p)
+                    for lib_name in list(seen_ext_libs):
+                        lib_file = lib_dir / f"{lib_name}.lib"
+                        if lib_file.exists():
+                            node = self.bld.root.find_node(lib_file.as_posix())
+                            if node and node not in external_lib_nodes:
+                                external_lib_nodes.append(node)
+    # Also check LDFLAGS for additional library files
+    for flag in env["LDFLAGS"]:
+        if flag and flag.endswith(".lib") and not flag.startswith("/"):
+            lib_name_only = flag.replace(".lib", "")
+            if lib_name_only not in seen_ext_libs:
+                seen_ext_libs.add(lib_name_only)
+                # Search in LDFLAGS paths
+                for flag2 in env["LDFLAGS"]:
+                    if flag2.startswith("/LIBPATH:"):
+                        p = flag2[len("/LIBPATH:"):]
+                        lib_file = pathlib.Path(p) / flag
+                        if lib_file.exists():
+                            node = self.bld.root.find_node(lib_file.as_posix())
+                            if node and node not in external_lib_nodes:
+                                external_lib_nodes.append(node)
+
+    Logs.info(f"[run_mvsc_lib_gen] Found {len(external_lib_nodes)} external library nodes: "
+              f"{[n.name for n in external_lib_nodes]}")
+
+    # bibfor.dll depends on bibcxx.lib, bibc.lib, bibfor_ext.lib, AsterGC.lib, and external libs
+    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs + fcext_lib_task_outputs + gc_task_outputs + external_lib_nodes
+    for lib_task in all_lib_gen_tasks:
+        fclib_task.set_run_after(lib_task)
+
+    # bibfor_ext.dll depends on bibfor.lib, bibcxx.lib, bibc.lib, AsterGC.lib, and external libs
+    fcext_lib_task.inputs += fclib_task_outputs + bibcxx_task_outputs + clib_task_outputs + gc_task_outputs + external_lib_nodes
+    for lib_task in all_lib_gen_tasks:
+        fcext_lib_task.set_run_after(lib_task)
+
+    # bibc.dll depends on bibfor.lib, bibfor_ext.lib, and bibcxx.lib
+    clib_task.inputs += fclib_task_outputs + fcext_lib_task_outputs + bibcxx_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        clib_task.set_run_after(lib_task)
+
+    # AsterGC.dll should not depend on bibfor to avoid cycles; keep bibc only if required
+    # Remove bibfor from AsterGC inputs
+    # gc_lib_task.inputs += clib_task_outputs  # uncomment if AsterGC actually needs bibc
+    for lib_task in all_lib_gen_tasks:
+        gc_lib_task.set_run_after(lib_task)
+
+    # bibcxx.dll depends on aster.lib, bibc.lib, bibfor.lib, bibfor_ext.lib, and AsterGC.lib
+    cxxlib_task.inputs += bibaster_task_outputs + clib_task_outputs + fclib_task_outputs + fcext_lib_task_outputs + gc_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        cxxlib_task.set_run_after(lib_task)
+
+    # aster.dll depends on bibfor.lib, bibfor_ext.lib, bibc.lib, bibcxx.lib, and AsterGC.lib
+    aster_task.inputs += fclib_task_outputs + fcext_lib_task_outputs + clib_task_outputs + bibcxx_task_outputs + gc_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        aster_task.set_run_after(lib_task)
+
+    bibc_dll = [o for o in clib_task.outputs if o.suffix() == ".dll"][0]
+    bibcxx_dll = [o for o in cxxlib_task.outputs if o.suffix() == ".dll"][0]
+    Logs.debug(f"{type(bibc_dll)=}{bibc_dll=}")
+    Logs.debug(f"{type(bibcxx_dll)=}{bibcxx_dll=}")
+
+    Logs.info("Successfully Configured MSVC lib build sequence")
+
+
+_lib_task_obj: LibTask | None = None
+_task_done = False
+_compiler_map = {
+    "asterlib": "cxx",
+    "asterbibc": "c",
+    "asterbibfor": "fc",
+    "asterbibfor_ext": "fc",
+    "astergc": "cxx",
+    "asterbibcxx": "cxx"
+}
+
+_proxy_tasks = set()
+
+
+@TaskGen.feature("cxxshlib")
+@TaskGen.after_method("apply_link", "propagate_uselib_vars")
+def make_libs_for_entrypoints(self) -> None:
+    if platform.system() != "Windows":
+        return
+    name = self.get_name()
+    if not name.endswith("proxy"):
+        return
+    global _proxy_tasks
+    if name in _proxy_tasks:
+        return
+    _proxy_tasks.add(name)
+
+    aster_object = get_task_object(self.bld, name, "cxx")
+    c_input_tasks = [ctask.outputs[0] for ctask in aster_object.tasks]
+    clib_task = aster_object.libtask
+
+    Logs.debug(f"{name=},{c_input_tasks=}, {clib_task.outputs=}")
+
+    clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
+    Logs.debug(f"{clib_task.outputs=} after removal")
+
+    aster_msvc_lib_task = create_msvclibgen_task(self, name, c_input_tasks)
+
+    clib_task_outputs = [x for x in aster_msvc_lib_task.outputs if x.suffix() == ".lib"]
+
+    clib_task.inputs += clib_task_outputs
+    Logs.debug(f"{clib_task.inputs=}")
+
+
+@TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
+@TaskGen.after_method("apply_link", "propagate_uselib_vars")
+def set_flags(self) -> None:
+    if platform.system() != "Windows":
+        return
+    name = self.get_name()
+    args = []
+    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
+    if name == "asterbibc":
+        archive_name = "bibc"
+    elif name == "asterbibcxx":
+        archive_name = "bibcxx"
+    elif name == "asterbibfor":
+        archive_name = "bibfor"
+    elif name == "asterbibfor_ext":
+        archive_name = "bibfor_ext"
+    elif name == "astergc":
+        archive_name = "AsterGC"
+    elif name == "asterlib":
+        archive_name = "aster"
+    elif name.endswith("proxy"):
+        archive_name = name
+        conda_dir = bld_path / "msvc"
+        args += [f"/LIBPATH:{conda_dir.as_posix()}"]
+    else:
+        Logs.debug(f"Skipping {name=}")
+        return None
+
+
+    if name == "astergc":
+        archive_dir = bld_path / 'libs'
+    elif name == "asterbibfor_ext":
+        archive_dir = bld_path / 'bibfor'
+    else:
+        archive_dir = bld_path / archive_name
+
+    # Add LIBPATH for the library's own directory
+    args += [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
+
+    # Add LIBPATH for all dependent libraries so the linker can find their import libraries
+    # All libraries potentially depend on each other, so add all paths
+    dependent_lib_paths = [
+        bld_path / 'bibc',
+        bld_path / 'bibcxx',
+        bld_path / 'bibfor',
+        bld_path / 'libs',  # for AsterGC
+    ]
+
+    for lib_path in dependent_lib_paths:
+        if lib_path != archive_dir:  # Don't duplicate the library's own path
+            args += [f"/LIBPATH:{lib_path.as_posix()}"]
+
+    # Explicitly add dependent library files to the link command
+    # Define which libraries each component depends on
+    dependency_map = {
+        "bibfor": ["bibcxx.lib", "bibc.lib"],
+        "bibfor_ext": ["bibfor.lib", "bibcxx.lib", "bibc.lib"],
+        "bibc": ["bibfor.lib", "bibfor_ext.lib", "bibcxx.lib"],
+        "bibcxx": ["aster.lib", "bibc.lib", "bibfor.lib", "bibfor_ext.lib", "AsterGC.lib"],
+        "AsterGC": ["bibfor.lib", "bibc.lib"],
+        "aster": ["bibfor.lib", "bibfor_ext.lib", "bibc.lib", "bibcxx.lib", "AsterGC.lib"],
+    }
+
+    if archive_name in dependency_map:
+        for dep_lib in dependency_map[archive_name]:
+            args.append(dep_lib)
+
+    # Add external library dependencies (MED, MUMPS, etc.) for Fortran libraries.
+    # Waf's propagate_uselib_vars should handle this, but on Windows with MSVC
+    # the libraries don't reliably reach the linker through the standard mechanism.
+    if archive_name in ("bibfor", "bibfor_ext", "bibc", "bibcxx", "aster"):
+        external_uselibs = ["MED", "MUMPS", "SCOTCH", "METIS", "MATH", "HDF5", "MPI", "OPENMP", "NUMPY"]
+        seen_libs = set()
+        seen_paths = set()
+        for uselib in external_uselibs:
+            for var_prefix in ("LIB_", "STLIB_"):
+                for lib in self.env.get_flat(var_prefix + uselib).split():
+                    if lib and lib not in seen_libs:
+                        seen_libs.add(lib)
+                        lib_name = f"{lib}.lib" if not lib.endswith(".lib") else lib
+                        args.append(lib_name)
+            for var_prefix in ("LIBPATH_", "STLIBPATH_"):
+                for p in getattr(self.env, var_prefix + uselib, []):
+                    if p and p not in seen_paths:
+                        seen_paths.add(p)
+                        args.append(f"/LIBPATH:{p}")
+        # Also pass through LDFLAGS from the environment (may contain additional libs)
+        for flag in getattr(self.env, "LDFLAGS", []):
+            if flag and flag not in args:
+                args.append(flag)
+        Logs.info(f"[set_flags] {archive_name} external libs from env: {seen_libs}")
+        Logs.info(f"[set_flags] {archive_name} external paths from env: {seen_paths}")
+        Logs.info(f"[set_flags] {archive_name} LDFLAGS from env: {list(getattr(self.env, 'LDFLAGS', []))}")
+
+    Logs.info(f"[set_flags] {archive_name} total link args count: {len(args)}")
+    self.link_task.env.append_unique("LINKFLAGS", args)
+    Logs.debug(f"{archive_name=}: {self.link_task.env.LINKFLAGS=}")
+
+@TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
+@TaskGen.after_method("apply_link")
+def make_msvc_modifications(self: TaskGen.task_gen):
+    name = self.get_name()
+    Logs.debug(f"task: {name=}")
+
+    global _lib_task_obj
+    global _task_done
+    if _task_done:
+        Logs.debug("Task already done")
+        return
+
+    if _lib_task_obj is None:
+        _lib_task_obj = extract_main_tasks(self)
+    lib_task_obj = _lib_task_obj
+
+    if name in _compiler_map.keys():
+        Logs.debug(f"setting {name=}")
+        if name == "astergc":
+            # Do NOT overwrite the aggregated astergc TaskObject captured in extract_main_tasks.
+            # Overwriting here (when only one family is ready) would drop the other family's tasks.
+            Logs.debug("Skipping astergc TaskObject override to preserve aggregated fc+cxx tasks")
+        else:
+            aster_object = get_task_object(self.bld, name, _compiler_map[name])
+            if name == "asterlib" and len(aster_object.tasks) == 0:
+                # For some reason the asterlib compile tasks are forced to be compiled with the c compiler despite it
+                # being assigned cxx compiler in the wscript
+                aster_object_c = get_task_object(self.bld, name, "c")
+                aster_object.tasks = aster_object_c.tasks
+            setattr(lib_task_obj, name, aster_object)
+
+    are_tasks_ready = lib_task_obj.all_tasks_ready()
+    Logs.debug(f"{are_tasks_ready=}")
+
+    if are_tasks_ready is False:
+        missing_task_names = lib_task_obj.get_missing_tasks()
+        Logs.debug(f"Missing tasks @{name} after: {missing_task_names}")
+        return
+
+    Logs.info("All tasks are ready")
+    run_mvsc_lib_gen(self, lib_task_obj)
+    _task_done = True

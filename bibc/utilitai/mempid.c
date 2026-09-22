@@ -35,7 +35,7 @@
 #include <sys/sysctl.h>
 #include <sys/user.h>
 
-#elif defined ASTER_PLATFORM_MINGW
+#elif defined ASTER_PLATFORM_WINDOWS || defined ASTER_PLATFORM_MINGW
 #include <windows.h>
 #
 #include <psapi.h>
@@ -113,7 +113,7 @@ ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     return 0;
 }
 
-#elif defined ASTER_PLATFORM_MINGW
+#elif defined ASTER_PLATFORM_WINDOWS || defined ASTER_PLATFORM_MINGW
 ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     PROCESS_MEMORY_COUNTERS pmc; // PROCESS_MEMORY_COUNTERS_EX is the same but with one additional
                                  // field the PrivateUsage one.

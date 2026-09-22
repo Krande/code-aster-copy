@@ -201,9 +201,12 @@ def _waitstatus_to_exitcode(status):
         int: exit code.
     """
     if RUNASTER_PLATFORM == "win":
-        # https://stackoverflow.com/questions/10931134
-        #   /return-value-of-system-function-call-in-c-used-to-run-a-python-program
-        return status >> 8
+        # os.system() on Windows returns the child's exit code directly (see the
+        # comment on the assignment below), not a Unix-style wait status, so it
+        # must NOT be shifted: >> 8 turned every code below 256 into 0, i.e. a
+        # failed execution reported as success whenever no exitcode file was
+        # written.
+        return status
     if os.WIFSIGNALED(status):
         returncode = -os.WTERMSIG(status)
     elif os.WIFEXITED(status):
@@ -215,7 +218,10 @@ def _waitstatus_to_exitcode(status):
     return returncode
 
 
-if not hasattr(os, "waitstatus_to_exitcode"):
+# On Windows, always use the custom implementation because os.system() returns
+# the exit code directly, not a Unix-style wait status. The built-in
+# waitstatus_to_exitcode (Python 3.9+) expects Unix wait status and fails on Windows.
+if not hasattr(os, "waitstatus_to_exitcode") or RUNASTER_PLATFORM == "win":
     waitstatus_to_exitcode = _waitstatus_to_exitcode
 
 

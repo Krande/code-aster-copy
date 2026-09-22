@@ -337,7 +337,7 @@ static PyObject *asterc_get_mem_stat( PyObject *self, PyObject *args ) {
     /* retour de la fonction */
     t_res = PyTuple_New( 2 );
     PyTuple_SetItem( t_res, 0, t_valres );
-    PyTuple_SetItem( t_res, 1, PyLong_FromLong( (long)codret ) );
+    PyTuple_SetItem( t_res, 1, PyLong_FromLongLong( (long long)codret ) );
 
     FreeStr( nompar );
     free( valres );
@@ -381,7 +381,7 @@ void DEFSPSPSPPPPS( UTPRIN, utprin, _IN char *typmess, _IN STRING_SIZE ltype,
 
     tup_vali = PyTuple_New( (Py_ssize_t)*nbi );
     for ( i = 0; i < *nbi; i++ ) {
-        PyTuple_SetItem( tup_vali, i, PyLong_FromLong( (long)vali[i] ) );
+        PyTuple_SetItem( tup_vali, i, PyLong_FromLongLong( (long long)vali[i] ) );
     }
 
     tup_valr = PyTuple_New( (Py_ssize_t)*nbr );
@@ -533,8 +533,8 @@ void DEFSSPPPPPPPPPPPP( TESTRESU_PRINT, testresu_print, _IN char *refer, _IN STR
         val = PyFloat_FromDouble( (double)( *valr ) );
         break;
     case 2:
-        ref = PyLong_FromLong( (long)( *refi ) );
-        val = PyLong_FromLong( (long)( *vali ) );
+        ref = PyLong_FromLongLong( (long long)( *refi ) );
+        val = PyLong_FromLongLong( (long long)( *vali ) );
         break;
     case 3:
         ref = PyComplex_FromDoubles( (double)( *refc ), (double)( *( refc + 1 ) ) );

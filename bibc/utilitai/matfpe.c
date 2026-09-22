@@ -52,12 +52,16 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
 
     /* permet juste de vérifier où on en est si besoin ! */
     if ( *enable == 0 ) {
-        printf( "#MATFPE var = %ld (compteur %d)\n", *enable, compteur_fpe );
+        /* ASTERINTEGER is 64-bit; %ld is 32-bit on LLP64 (Windows) */
+        printf( "#MATFPE var = %lld (compteur %d)\n", (long long)*enable, compteur_fpe );
         return;
     }
     compteur_fpe = compteur_fpe + *enable;
     if ( compteur_fpe < 1 ) {
-#if defined ASTER_PLATFORM_MINGW
+/* fe{enable,disable,clear}except are GNU extensions: they do not exist in the
+ * MSVC CRT (and <fenv.h> is only included on POSIX above). Windows -- MinGW and
+ * MSVC alike -- uses the _controlfp mask API instead. */
+#if defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_WINDOWS
         _controlfp( _MCW_EM, _MCW_EM );
 #else
         fedisableexcept( ASTER_SIGFPE );
@@ -66,7 +70,7 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
         signal( SIGFPE, hanfpe );
     } else if ( compteur_fpe >= 1 ) {
         /* avant de reactiver le controle des FPE, on abaisse les flags */
-#if defined ASTER_PLATFORM_MINGW
+#if defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_WINDOWS
         _clearfp();
         _controlfp( _EM_UNDERFLOW | _EM_DENORMAL | _EM_INEXACT, _MCW_EM );
 #else

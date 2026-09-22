@@ -18,11 +18,10 @@
 
 #include "aster.h"
 
-#ifndef ASTER_PLATFORM_MINGW
+#ifndef ASTER_PLATFORM_WINDOWS
 #include <execinfo.h>
 #else
 #include <windows.h>
-#
 #include <dbghelp.h>
 #endif
 

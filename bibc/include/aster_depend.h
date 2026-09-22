@@ -51,11 +51,16 @@
 #endif
 
 /* test required value */
-#if ( !defined ASTER_PLATFORM_POSIX ) && ( !defined ASTER_PLATFORM_MINGW )
-#error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW is required
+#if ( !defined ASTER_PLATFORM_POSIX ) && ( !defined ASTER_PLATFORM_MINGW ) && ( !defined ASTER_PLATFORM_WINDOWS )
+#error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW or ASTER_PLATFORM_WINDOWS is required
 #endif
-#if ( defined ASTER_PLATFORM_POSIX ) && ( defined ASTER_PLATFORM_MINGW )
-#error ERROR only one of ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW, not both
+#if ( \
+    ( defined ASTER_PLATFORM_POSIX && defined ASTER_PLATFORM_MINGW ) || \
+    ( defined ASTER_PLATFORM_POSIX && defined ASTER_PLATFORM_WINDOWS ) || \
+    ( defined ASTER_PLATFORM_MINGW && defined ASTER_PLATFORM_WINDOWS ) \
+    )
+
+#error ERROR only one of ASTER_PLATFORM_POSIX, ASTER_PLATFORM_MINGW or ASTER_PLATFORM_WINDOWS can be defined
 #endif
 
 /* MS Windows platforms */
@@ -108,7 +113,11 @@ typedef ASTER_C_FORTRAN_LOGICAL ASTERLOGICAL;
 
 /* Comportement par défaut des FPE dans matfpe pour les blas/lapack */
 /* On non GNU/Linux systems, FPE are always enabled */
-#if defined ASTER_PLATFORM_LINUX || defined ASTER_PLATFORM_MINGW
+/* ASTER_PLATFORM_WINDOWS (MSVC) supports this too: inisig.c unmasks
+ * _EM_ZERODIVIDE|_EM_OVERFLOW there, so without this matfpe() is a no-op and
+ * every FPE shield around BLAS/LAPACK is dead -- MKL then traps inside its own
+ * kernels (seen crashing numpy.linalg.eigh via MKL). */
+#if defined ASTER_PLATFORM_LINUX || defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_WINDOWS
 #ifndef ASTER_HAVE_SUPPORT_FPE
 #define ASTER_HAVE_SUPPORT_FPE
 #endif
