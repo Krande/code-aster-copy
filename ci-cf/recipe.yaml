@@ -52,7 +52,8 @@ requirements:
     - libmed * nompi_*
     - medcoupling * *nompi*
     - metis
-    - scotch
+    # 64-bit scotch, as selected by the conda-forge global pinning
+    - scotch * int64_*
     - mfront
     - mgis
     # Fortran ABI marker: code_aster calls MUMPS through its Fortran interface,

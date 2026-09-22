@@ -51,6 +51,11 @@ set "DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARN
 
 :: tell config/ifort.py to take the activated conda ifx environment
 set "CONDA_BUILD_INTEL_FORTRAN=1"
+:: ifx activation only sets FC: expose its runtime import libs (ifconsol.lib, ...),
+:: its intrinsic modules and helper binaries from the build environment
+set "PATH=%BUILD_PREFIX%\Library\bin\compiler;%PATH%"
+set "LIB=%BUILD_PREFIX%\Library\lib;%LIB%"
+set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%INCLUDE%"
 
 python "%RECIPE_DIR%\config\update_version.py"
 if errorlevel 1 exit 1
