@@ -23,6 +23,7 @@
 """
 
 import pathlib
+import re
 from .config import CFG
 from .utils import run_command
 import os
@@ -41,10 +42,21 @@ def make_shared(lib, src, *args):
     fc = CFG.get("FC")
     fcp = pathlib.Path(fc)
     if not fcp.exists():
-        fcp = pathlib.Path(os.getenv("FC"))
+        fcp = pathlib.Path(os.getenv("FC") or fc)
     cmd = [fcp.as_posix()]
     cmd.extend(CFG.get("FCFLAGS"))
-    cmd.extend(["-shared", "-o", lib, src])
+    if os.name == "nt":
+        # ifx: build a DLL and export the Fortran routines explicitly, as
+        # dll_umat.c resolves them with GetProcAddress (e.g. 'umat_')
+        names = re.findall(
+            r"^[^!c*\n][^!\n]*?\b(?:subroutine|function)\s+(\w+)",
+            pathlib.Path(src).read_text(errors="replace"),
+            re.I | re.M,
+        )
+        cmd.extend(["/dll", f"/Fe:{lib}", src, "/link"])
+        cmd.extend(f"/EXPORT:{name.lower()}_" for name in dict.fromkeys(names))
+    else:
+        cmd.extend(["-shared", "-o", lib, src])
     cmd.extend(args)
     print("INFO make_shared command line:", " ".join(cmd))
     return run_command(cmd)

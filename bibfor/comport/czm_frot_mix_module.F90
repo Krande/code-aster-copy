@@ -196,6 +196,9 @@ contains
         dphi_delta = 0.d0
         dka = 0.d0
         tel = 0.d0
+        ! nel is only computed on slip, but the prediction tangent may use the
+        ! previous (slip) state: do not read it uninitialized
+        nel = 0.d0
         id = 0.d0
         if (self%mat%ad) then
             alpha_n = 1.d0
