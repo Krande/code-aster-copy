@@ -27,6 +27,7 @@ data files, execute code_aster and copy the result files.
 
 import os
 import os.path as osp
+import platform
 import tempfile
 from glob import glob
 from pathlib import Path
@@ -216,7 +217,8 @@ class RunAster:
         )
         comm = self.change_comm_file(comm)
         status.update(self._exec_one(comm, timeout - status.times[-1]))
-        self._coredump_analysis()
+        if platform.system() != "Windows":
+            self._coredump_analysis()
         return status
 
     def _exec_one(self, comm, timeout):
@@ -425,7 +427,9 @@ class RunAster:
             text = file_changed(text, comm)
         text = add_coding_line(text)
         if self._show_comm:
-            logger.info("\nContent of the file to execute:\n%s\n", text)
+            # Normalize line endings for consistent display on Windows
+            display_text = text.replace('\r\n', '\n').replace('\r', '\n')
+            logger.info("\nContent of the file to execute:\n%s\n", display_text)
         if not changed:
             return comm
 
@@ -635,7 +639,15 @@ def _ls(*paths):
     if RUNASTER_PLATFORM == "linux":
         proc = run(["ls", "-l"] + list(paths), stdout=PIPE, universal_newlines=True)
     else:
-        proc = run(["dir"] + list(paths), stdout=PIPE, universal_newlines=True, shell=True)
+        # Use cp850 (OEM/console codepage) which is the default for cmd.exe output
+        # /N flag uses long list format without thousand separators
+        proc = run(
+            ["dir", "/-C"] + list(paths),
+            stdout=PIPE,
+            shell=True,
+            encoding="cp850",
+            errors="replace"
+        )
     return proc.stdout
 
 

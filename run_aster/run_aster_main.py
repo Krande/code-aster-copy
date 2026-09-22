@@ -506,7 +506,8 @@ def main(argv=None):
         if RUNASTER_PLATFORM == "linux":
             opts["tee"] = not args.only_proc0 or procid == args.proc0id
         else:
-            opts["tee"] = not args.ctest
+            # MSVC build: tee through the Windows console breaks the output capture
+            opts["tee"] = False
         opts["interactive"] = args.interactive
         opts["savedb"] = args.save_db
         opts["proc0id"] = args.proc0id

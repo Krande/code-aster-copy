@@ -19,6 +19,7 @@
 
 import os
 import os.path as osp
+import pathlib
 import re
 import shutil
 from functools import partial
@@ -99,6 +100,11 @@ def check_mgis(self):
     opts = self.options
     if opts.enable_mfront is False:
         raise Errors.ConfigurationError("MGIS disabled")
+    # On Windows, MGIS headers use std::string/std::string_view/std::span without
+    # including them. Force-include the necessary standard headers.
+    if self.env.ASTER_PLATFORM_MSVC64:
+        for hdr in ("string", "string_view", "span"):
+            self.env.append_unique("CXXFLAGS", "/FI%s" % hdr)
     # for MGIS
     self.check_mgis_headers()
     self.check_mgis_api_version(1)
@@ -131,7 +137,8 @@ def check_mfront(self):
     if tfelhome:
         paths.insert(0, osp.join(tfelhome[0], "bin"))
     self.env.TFELHOME = tfelhome
-    ext = ".exe" if self.env.ASTER_PLATFORM_MINGW else ""
+    # Extension .ext is handled by waf automatically
+    ext = ".exe" if (self.env.ASTER_PLATFORM_MINGW or self.env.ASTER_PLATFORM_MSVC64) else ""
     # export TFELHOME for future checkings
     os.environ["TFELHOME"] = tfelhome[0]
     # takes TFELVERS from env (wafcfg) or environment
@@ -171,12 +178,15 @@ def check_mfront(self):
         self.safe_remove("CFLAGS_MFRONT", flag)
         self.safe_remove("CXXFLAGS_MFRONT", flag)
         # these options are not relevant for C
-        self.env.append_value("CXXFLAGS_MFRONT_ONLY", flag)
-    self.env.append_value("CXXFLAGS_MFRONT_ONLY", "-Wno-return-type")
+        if self.env.CC_NAME != "msvc":
+            self.env.append_value("CXXFLAGS_MFRONT_ONLY", flag)
+    if self.env.CC_NAME != "msvc":
+        self.env.append_value("CXXFLAGS_MFRONT_ONLY", "-Wno-return-type")
     # MFront
     self.check_mfront_version((4, 1, 0))
     self.check_mfront_libs()
-    self.check_cxx11_abi()
+    if self.env.CC_NAME != "msvc":
+        self.check_cxx11_abi()
     self.check_mfront_obsolete_source()
 
 
@@ -188,6 +198,7 @@ def check_mfront_version(self, minver=None):
     assert isinstance(minver, tuple)
     cmd = self.env.MFRONT + ["--version"]
     res = self.cmd_and_log(cmd)
+
     mfrver = "0.0.0"
     regexp = re.compile(r"version *: *([0-9]+\.[0-9]+\..*) *", re.I | re.M)
     mat = regexp.search(res.strip())
@@ -259,7 +270,12 @@ def check_mfront_obsolete_source(self):
     src = self.path.get_src().abspath()
     # clean obsolete behaviours (from a previous build)
     bld, mfront = osp.split(self.path.get_bld().abspath())
-    excl = ["libAsterMFrOfficial.so", "libAsterMFrOfficialDebug.so", "include"]
+    excl = [
+        "libAsterMFrOfficial.so", "libAsterMFrOfficialDebug.so",
+        # Windows/MSVC: no "lib" prefix, .dll extension
+        "AsterMFrOfficial.dll", "AsterMFrOfficialDebug.dll",
+        "include",
+    ]
     for variant in ("debug", "release"):
         build = osp.join(bld, variant, mfront)
         if osp.exists(build):
@@ -329,8 +345,8 @@ class mfront2cxx(Task.Task):
         wrkdir = wrknode.abspath()
         cmd = "%s --interface=generic --search-path=%s %s" % (
             self.env.MFRONT[0],
-            mfrdir.get_src().abspath(),
-            self.inputs[0].abspath(),
+            pathlib.Path(mfrdir.get_src().abspath()).as_posix(),
+            pathlib.Path(self.inputs[0].abspath()).as_posix(),
         )
         if self.env.ASTER_PLATFORM_MSYS2:
             # Temporary workaround for MSYS2

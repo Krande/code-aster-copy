@@ -83,7 +83,12 @@ def configure(self):
         self.environ.setdefault("CXX", "mpicxx")
         self.environ.setdefault("FC", "mpif90")
     self.load_compilers()
-    self.check_fortran_verbose_flag()
+    if Utils.is_win32:
+        # ifx does not support -v for link output parsing;
+        # libraries are specified explicitly via LDFLAGS
+        self.msg("fortran link verbose flag", "skipped (Windows)", color="YELLOW")
+    else:
+        self.check_fortran_verbose_flag()
     self.check_openmp()
     # self.check_vmsize() is executed after mpiexec checking
 

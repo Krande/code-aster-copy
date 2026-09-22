@@ -62,6 +62,8 @@ subroutine op0039()
     character(len=8) :: model, mesh, resultMesh, proc0, ispar, nameType
     character(len=19) :: result
     aster_logical :: lResu, lMesh, lfichUniq, lNomCas
+    logical :: fileIsOpen
+    integer(kind=8) :: ioerr
 !
 ! ------------------------------------------------------------------------------
 !
@@ -159,6 +161,12 @@ subroutine op0039()
         call ultype(fileUnit, fileType)
         if (fileType .ne. 'B' .and. fileType .ne. 'L') then
             call utmess('A', 'RESULT3_12')
+!           On Windows, the Fortran runtime holds exclusive file locks.
+!           Close the Fortran file handle so the MED library (HDF5) can open
+!           the same file.  The common-block bookkeeping is left intact so that
+!           ulisog can still look up the filename from the unit number.
+            inquire(unit=fileUnit, opened=fileIsOpen)
+            if (fileIsOpen) close(unit=fileUnit, iostat=ioerr)
         end if
     end if
     if (fileFormat .eq. 'MED') then
@@ -172,6 +180,9 @@ subroutine op0039()
         call ultype(fileUnit, fileType)
         if (fileType .ne. 'B' .and. fileType .ne. 'L') then
             call utmess('A', 'RESULT3_12')
+!           Close the Fortran file handle for the same reason as above.
+            inquire(unit=fileUnit, opened=fileIsOpen)
+            if (fileIsOpen) close(unit=fileUnit, iostat=ioerr)
         end if
     end if
 ! ----- Check consistency for GMSH

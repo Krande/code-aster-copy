@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dismdy(questi, nomobz, repi, repkz, ierd)
+recursive subroutine dismdy(questi, nomobz, repi, repkz, ierd)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

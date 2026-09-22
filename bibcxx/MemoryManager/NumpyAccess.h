@@ -39,7 +39,8 @@ struct npy_type {
 };
 template <>
 struct npy_type< JeveuxVectorLong > {
-    static const int value = NPY_LONG;
+    // NPY_LONG is 32-bit on Windows (LLP64); ASTERINTEGER is int64_t
+    static const int value = NPY_INT64;
 };
 template <>
 struct npy_type< JeveuxVectorShort > {
@@ -79,7 +80,7 @@ struct npy_type< JeveuxVectorChar80 > {
 };
 template <>
 struct npy_type< ASTERINTEGER > {
-    static const int value = NPY_LONG;
+    static const int value = NPY_INT64;
 };
 template <>
 struct npy_type< ASTERDOUBLE > {

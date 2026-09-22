@@ -96,7 +96,8 @@ def build(self):
 @Configure.conf
 def check_bibcxx_depends(self):
     """check dependencies of bibcxx"""
-    self.check_cxx(uselib_store="CXX", lib="stdc++")
+    if self.env.CC_NAME != 'msvc':
+        self.check_cxx(uselib_store="CXX", lib="stdc++")
     if self.env.CC_NAME.lower() == "gcc" and int(self.env.CC_VERSION[0] or 0) < 9:
         self.check_cxx(uselib_store="CXX", lib="stdc++fs")
 
@@ -104,22 +105,35 @@ def check_bibcxx_depends(self):
 @Configure.conf
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
-    # compiler independent (icpc/icpx & g++)
-    self.check_cxx_compiler_options("-fPIC")
-    self.check_cxx_compiler_options(self.get_lto_options())
-    try:
-        self.check_cxx_compiler_options("-std=c++20", optional=False)
-    except Errors.ConfigurationError:
-        # for GCC 9 and earlier
-        self.check_cxx_compiler_options("-std=c++2a")
-    # FIXME: should globally add -fvisibility-hidden
-    self.check_cxx_compiler_options("-Wno-attributes")
-    # New in 12.x: https://github.com/pybind/pybind11/issues/5224
-    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103483: same bug?
-    # Suppose to be fixed in 13.x
-    if self.env.CC_NAME.lower() == "gcc" and int(self.env.CC_VERSION[0] or 0) == 12:
-        self.check_cxx_compiler_options("-Wno-array-bounds")
-        self.check_cxx_compiler_options("-Wno-stringop-overread")
+    if self.env.CXX_NAME == 'msvc':
+        self.check_cxx_compiler_options("/std:c++20")
+        # Allow writing to PDB files from multiple processes
+        self.check_cxx_compiler_options("/FS")
+        # Enable unwind semantics for C++ exceptions
+        self.check_cxx_compiler_options("/EHs")
+        # extern "C" defaults to nothrow
+        # self.check_cxx_compiler_options("/EHc")
+        # Enable strict conformance to the C++ Standard
+        self.check_cxx_compiler_options("/permissive-")
+        # Disable language extensions
+        #self.check_cxx_compiler_options("/Za")
+    else:
+        # compiler independent (icpc/icpx & g++)
+        self.check_cxx_compiler_options("-fPIC")
+        self.check_cxx_compiler_options(self.get_lto_options())
+        try:
+            self.check_cxx_compiler_options("-std=c++20", optional=False)
+        except Errors.ConfigurationError:
+            # for GCC 9 and earlier
+            self.check_cxx_compiler_options("-std=c++2a")
+        # FIXME: should globally add -fvisibility-hidden
+        self.check_cxx_compiler_options("-Wno-attributes")
+        # New in 12.x: https://github.com/pybind/pybind11/issues/5224
+        # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103483: same bug?
+        # Suppose to be fixed in 13.x
+        if self.env.CC_NAME.lower() == "gcc" and int(self.env.CC_VERSION[0] or 0) == 12:
+            self.check_cxx_compiler_options("-Wno-array-bounds")
+            self.check_cxx_compiler_options("-Wno-stringop-overread")
     self.start_msg("C++ compiler flags")
     self.end_msg(self.env["CXXFLAGS"])
 
@@ -142,6 +156,8 @@ def check_cxx_compiler_options(self, options, optional=True):
 
 @Configure.conf
 def check_optimization_cxxflags(self):
+    if self.env.ASTER_PLATFORM_MSVC64:
+        return
     self.remove_flags("CXXFLAGS", "^-O[0-9]")
     self.setenv("debug")
     self.start_msg("Setting C++ debug flags")
@@ -156,6 +172,33 @@ def check_optimization_cxxflags(self):
     self.setenv("release")
     self.start_msg("Setting C++ optimization flags")
     flags = ["-O2"]
+    self.env.append_unique("CXXFLAGS", flags)
+    self.end_msg(flags)
+
+@Configure.conf
+def check_optimization_cxxflags_msvc(self):
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        return
+    self.setenv("debug")
+    self.start_msg("Setting C++ debug flags for MSVC")
+    self.define("ASTER_DEBUG_CXX", 1)
+    self.remove_flags("CXXFLAGS", "^/O[0-9a-z]")
+    flags = ["/Zi", "/Od"] + Utils.to_list(self.env["CXXFLAGS_ASTER_DEBUG"])
+    # Add linker flags for full debug information (needed for proper stack traces on crashes)
+    self.env.append_unique("LINKFLAGS", ["/DEBUG:FULL", "/INCREMENTAL:NO"])
+    if self.options.enable_coverage:
+        # Note: MSVC uses different mechanisms for code coverage; adjust as necessary for your tooling.
+        pass
+    if self.options.enable_asan:
+        flags.extend(["/fsanitize=address"])
+        self.env.append_unique("LINKFLAGS", ["/fsanitize=address"])
+
+    self.env.append_unique("CXXFLAGS", flags)
+    self.end_msg(flags)
+
+    self.setenv("release")
+    self.start_msg("Setting C++ optimization flags for MSVC")
+    flags = ["/O2"]
     self.env.append_unique("CXXFLAGS", flags)
     self.end_msg(flags)
 

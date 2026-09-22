@@ -38,7 +38,7 @@ static long R8UND[2] = { 0x00000000, 0x7ff80000 };
 #endif
 
 /* entier max, réel max, réel min, précision en réel simple et double */
-#if defined ASTER_HAVE_64_BITS && defined ASTER_PLATFORM_MINGW
+#if defined ASTER_HAVE_64_BITS && defined ASTER_PLATFORM_WINDOWS
 static ASTERINTEGER ISMAX = 0x7FFFFFFFFFFFFFFF;
 #else
 static ASTERINTEGER ISMAX = LONG_MAX;

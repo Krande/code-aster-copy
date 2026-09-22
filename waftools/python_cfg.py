@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import os
+import pathlib
 from pathlib import PureWindowsPath
 from subprocess import PIPE, Popen
 
@@ -41,7 +42,12 @@ def check_python(self):
     self.load("python")
     self.check_python_version((3, 7, 0))
     self.check_venv()
-    self.check_python_headers()
+    if self.env.ASTER_PLATFORM_MSVC64:
+        path = self.env["PATH"]
+        include_dir = pathlib.Path(self.env.PREFIX) / "include"
+        self.env["PATH"] = f"{path};{include_dir.as_posix()}"
+    else:
+        self.check_python_headers()
     if self.env.CC_IS_INTEL:
         self.env["LIB_PYEMBED"] = list(set(self.env["LIB_PYEMBED"]))
         # Best is to clear PYEMBED and PYEXT {c/cxx}flags
@@ -90,6 +96,14 @@ def check_numpy_headers(self):
     numpy_includes = self.cmd_and_log(cmd, shell=False).strip()
     self.end_msg(numpy_includes)
     self.start_msg("Checking for numpy arrayobject.h")
+
+    extra_flags = dict()
+    if self.env.ASTER_PLATFORM_MSVC64:
+        # only add Python library link path for MSVC
+        env_root = pathlib.Path(self.env.PREFIX)
+        python_libs_dir = env_root / 'Library' / 'lib'
+        extra_flags.update(linkflags=[f"/LIBPATH:{python_libs_dir.as_posix()}"])
+
     # Bad path formating on msys2
     if self.is_defined("ASTER_PLATFORM_MINGW") and not self.is_defined("ASTER_PLATFORM_MSYS2"):
         incs = PureWindowsPath(numpy_includes)
@@ -100,14 +114,24 @@ def check_numpy_headers(self):
             if sub == "lib":
                 parts[i] = "Lib"
         numpy_includes = PureWindowsPath(*parts).as_posix()
+    # split include paths into list for proper -I flags
+    include_list = numpy_includes.split()
+
+    # Add Python include directory for MSVC platform
+    if self.env.ASTER_PLATFORM_MSVC64:
+        cmd_py = self.env.PYTHON + ["-c", "\nimport sysconfig\nprint(sysconfig.get_path('include'))"]
+        python_includes = self.cmd_and_log(cmd_py, shell=False).strip()
+        include_list.append(python_includes)
+
     # check the given includes dirs
     self.check(
         feature="c",
         header_name="Python.h numpy/arrayobject.h",
-        includes=[numpy_includes],
+        includes=include_list,
         use="PYEMBED",
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",
+        **extra_flags
     )
     self.end_msg(numpy_includes)
 

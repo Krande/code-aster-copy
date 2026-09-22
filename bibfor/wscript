@@ -76,6 +76,9 @@ def build(self):
         install_path=lib_install_path,
     )
     # ... except for subroutines linked against external libraries
+    # On MSVC, bibfor_ext links against bibfor so that the Jeveux COMMON
+    # blocks (exported as DATA from bibfor.dll) are shared between DLLs.
+    use_ext = use + ["asterbibfor"] if self.env.ASTER_PLATFORM_MSVC64 else use
     self(
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor_ext",
@@ -83,7 +86,7 @@ def build(self):
         rpath="$ORIGIN",
         source=src_ext,
         defines=["WITHOUT_INT64"],
-        use=use,
+        use=use_ext,
         env=env.derive(),
         install_path=lib_install_path,
     )
@@ -95,8 +98,9 @@ MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
-    self.check_fortran_compiler_options("-fPIC")
-    self.check_fortran_compiler_options(self.get_lto_options())
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        self.check_fortran_compiler_options("-fPIC")
+        self.check_fortran_compiler_options(self.get_lto_options())
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
@@ -109,11 +113,15 @@ def check_fortran_compiler_flags(self):
         # long lines after preprocessing
         self.check_fortran_compiler_options("-ffree-line-length-none")
     if self.env.FC_IS_INTEL:
-        self.check_fortran_compiler_options(["-fpe0", "-traceback"])
-        if "64" in self.env.DEST_CPU:
-            self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
-            self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
-        self.check_fortran_compiler_options(["-nogen-interfaces"])
+        if self.env.ASTER_PLATFORM_MSVC64:
+            # /fpe:0, /traceback and the integer/real sizes come from FCFLAGS
+            self.check_fortran_compiler_options(["/nologo"])
+        else:
+            self.check_fortran_compiler_options(["-fpe0", "-traceback"])
+            if "64" in self.env.DEST_CPU:
+                self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
+                self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options(["-nogen-interfaces"])
         # TODO: "-xCORE-AVX2" with execute=True
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
@@ -465,6 +473,8 @@ def check_c_fortran_real8(self):
 @Configure.conf
 def check_optimization_fcflags(self):
     """Check for optimization FCFLAGS."""
+    if self.env.ASTER_PLATFORM_MSVC64:
+        return
     self.remove_flags("FCFLAGS", "^-O[0-9]")
     self.setenv("debug")
     self.start_msg("Setting fortran debug flags")
@@ -541,6 +551,25 @@ def check_optimization_fcflags(self):
     self.start_msg("Setting Fortran optimization flags")
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)
+
+
+@Configure.conf
+def check_optimization_fcflags_msvc(self):
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        return
+    self.setenv("debug")
+    self.start_msg("Setting Fortran debug flags for ifx")
+    self.remove_flags("FCFLAGS", "^/O[0-9a-z]")
+    flags = ["/Od", "/Zi", "/debug:full", "/traceback"]
+    flags += Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
+    self.env.append_unique("FCFLAGS", flags)
+    self.end_msg(flags)
+
+    self.setenv("release")
+    self.start_msg("Setting Fortran optimization flags for ifx")
+    flags = ["/Od"]
+    self.env.append_unique("FCFLAGS", flags)
+    self.end_msg(flags)
 
 
 @Configure.conf

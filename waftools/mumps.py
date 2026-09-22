@@ -85,7 +85,8 @@ def check_mumps(self):
     self.check_sizeof_mumps_integer()
     if opts.mumps_libs is None:
         opts.mumps_libs = "dmumps zmumps smumps cmumps mumps_common pord"
-    if not self.env.BUILD_MPI:
+    # on Windows, mpiseq is built into mumps_common
+    if not self.env.BUILD_MPI and self.env.CC_NAME != "msvc":
         opts.mumps_libs += " mpiseq"
     if opts.mumps_libs:
         self.check_mumps_libs()

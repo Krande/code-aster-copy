@@ -44,6 +44,10 @@ void hancpu( int sig );
 #include <ucontext.h>
 void hanfpe( int sig, siginfo_t *sip, ucontext_t *uap );
 
+#elif defined ASTER_PLATFORM_MSVC64
+#include <float.h>
+void hanfpe( int sig );
+
 #elif defined ASTER_PLATFORM_MINGW
 #include <float.h>
 void hanfpe( int sig );
@@ -62,7 +66,7 @@ void stpusr1( int sig );
 void DEF0( INISIG, inisig ) {
 #if defined ASTER_PLATFORM_POSIX
     struct sigaction action_CPU_LIM;
-#else
+#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
     unsigned int cw, cwOrig;
 #endif
 
@@ -90,7 +94,7 @@ void DEF0( INISIG, inisig ) {
 
     signal( SIGFPE, hanfpe );
 
-#elif defined ASTER_PLATFORM_MINGW
+#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
     _clearfp();
     cw = _controlfp( 0, 0 );
     cw &= ~( _EM_OVERFLOW | _EM_ZERODIVIDE );
