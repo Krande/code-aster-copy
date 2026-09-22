@@ -266,10 +266,12 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                     ! Force dans le repère local
                     if (DD%ndim .eq. 3) then
                         call utpsgl(DD%nno, DD%nc, DD%pgl, kgv, klv)
-                        call utpvgl(DD%nno, DD%nc, DD%pgl, forceglob, force)
+                        ! one 3-component vector (forceglob(3) -> force(3)), as for
+                        ! depxyz above: (nno, nc) wrote nno*nc values past force(3)
+                        call utpvgl(1, 3, DD%pgl, forceglob, force)
                     else
                         call ut2mgl(DD%nno, DD%nc, DD%pgl, kgv, klv)
-                        call ut2vgl(DD%nno, DD%nc, DD%pgl, forceglob, force)
+                        call ut2vgl(1, 2, DD%pgl, forceglob, force)
                     end if
                 end if
             else
