@@ -23,8 +23,46 @@
 #include "definition_pt.h"
 #include "dll_register.h"
 
-#ifdef ASTER_PLATFORM_POSIX
+#if defined ASTER_PLATFORM_POSIX || defined ASTER_PLATFORM_WINDOWS
+#define ASTER_HAVE_UMAT_DLL
+#endif
+
+#ifdef ASTER_HAVE_UMAT_DLL
+#ifdef ASTER_PLATFORM_WINDOWS
+/* minimal dlopen/dlsym/dlerror over the Win32 API */
+#include <windows.h>
+static char *umat_dlerr = NULL;
+static void *umat_dlopen( const char *libname ) {
+    /* a library in the working directory is not reliably in the DLL search
+     * path: load it by its full path */
+    char path[MAX_PATH];
+    HMODULE handle = NULL;
+    if ( GetFileAttributesA( libname ) != INVALID_FILE_ATTRIBUTES &&
+         GetFullPathNameA( libname, MAX_PATH, path, NULL ) > 0 ) {
+        handle = LoadLibraryExA( path, NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
+    } else {
+        handle = LoadLibraryA( libname );
+    }
+    umat_dlerr = handle ? NULL : "LoadLibrary failed";
+    return (void *)handle;
+}
+static void *umat_dlsym( void *handle, const char *symbol ) {
+    void *func = (void *)GetProcAddress( (HMODULE)handle, symbol );
+    umat_dlerr = func ? NULL : "GetProcAddress: symbol not found";
+    return func;
+}
+static char *umat_dlerror( void ) {
+    char *err = umat_dlerr;
+    umat_dlerr = NULL;
+    return err;
+}
+#define dlopen( libname, flag ) umat_dlopen( libname )
+#define dlsym umat_dlsym
+#define dlerror umat_dlerror
+#define RTLD_NOW 0
+#else
 #include <dlfcn.h>
+#endif
 PyObject *get_dll_register_dict();
 
 /* *********************************************************************
@@ -101,7 +139,7 @@ void load_umat_lib( const char *libname, const char *symbol ) {
 
 void DEFSSP( UMAT_GET_FUNCTION, umat_get_function, char *nomlib, STRING_SIZE lnomlib, char *nomsub,
              STRING_SIZE lnomsub, ASTERINTEGER *pfumat ) {
-#ifdef ASTER_PLATFORM_POSIX
+#ifdef ASTER_HAVE_UMAT_DLL
     /* UMAT WraPper : wrapper to get the UMAT function.
      */
     char *libname, *symbol;
@@ -140,7 +178,7 @@ void DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(
     ASTERDOUBLE *pnewdt, ASTERDOUBLE *celent, ASTERDOUBLE *dfgrd0, ASTERDOUBLE *dfgrd1,
     ASTERINTEGER *noel, ASTERINTEGER *npt, ASTERINTEGER *layer, ASTERINTEGER *kspt,
     ASTERINTEGER *kstep, ASTERINTEGER *kinc ) {
-#ifdef ASTER_PLATFORM_POSIX
+#ifdef ASTER_HAVE_UMAT_DLL
     /* UMAT WraPper : wrapper to the UMAT function through the function pointer
      * Load the library if necessary (at the first call).
      */
