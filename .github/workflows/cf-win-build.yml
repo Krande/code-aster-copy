@@ -1,0 +1,50 @@
+name: cf-win-build
+
+# Windows (ifx) build of the minimal conda-forge patch against conda-forge deps.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - cf-win-patch
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: win-64 ifx
+    runs-on: windows-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - uses: prefix-dev/setup-pixi@v0.9.4
+        with:
+          run-install: false
+
+      - name: Build
+        shell: bash
+        run: |
+          pixi exec -s rattler-build -- rattler-build build \
+            -r ci-cf/recipe.yaml -m ci-cf/variants.yaml \
+            -c conda-forge --output-dir output --keep-build
+
+      - name: Collect logs
+        if: ${{ failure() }}
+        shell: bash
+        run: |
+          mkdir -p logs
+          find output/bld -path '*work/build*' \( -name 'config.log' -o -name '*.log' -o -name 'c4che' -prune \) -type f \
+            -exec cp --parents {} logs/ \; 2>/dev/null || true
+          find output/bld -maxdepth 4 -name 'conda_build.log' -exec cp {} logs/ \; 2>/dev/null || true
+          ls -R logs | head -50
+
+      - name: Upload logs
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs-${{ github.run_id }}
+          path: logs
+          if-no-files-found: ignore

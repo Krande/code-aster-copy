@@ -1,0 +1,81 @@
+# Windows (ifx) build of code_aster against conda-forge dependencies only.
+# Test harness for the conda-forge code-aster-feedstock Windows patch: the
+# source is this branch (18.1.7 + the minimal Windows patch); ci-cf/ and
+# .github/ are harness-only and not part of the patch.
+schema_version: 1
+
+context:
+  name: code-aster
+  version: "18.1.7"
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  - path: ../
+    use_gitignore: false
+    filter:
+      exclude:
+        - ".git/**"
+        - ".github/**"
+        - "ci-cf/**"
+        - "output/**"
+
+build:
+  number: 0
+  skip: not win
+  script: build.bat
+  string: py${{ python | version_to_buildstring }}_nompi_h${{ hash }}_${{ build }}
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ compiler('fortran') }}
+    - clang
+    - waf ==2.1.5
+  host:
+    - python
+    - pip
+    - numpy
+    - pyyaml
+    - libboost-devel
+    - mkl-devel
+    - libblas * *mkl
+    - liblapack * *mkl
+    - libxml2-devel
+    - zlib
+    - hdf5
+    - libmed * nompi_*
+    - medcoupling * *nompi*
+    - metis
+    - scotch
+    - mfront
+    - mgis
+    # Fortran ABI marker: code_aster calls MUMPS through its Fortran interface,
+    # so it must link the ifx build (run-exports the matching mumps-seq ifx_*)
+    - mumps-seq-fortran-devel * ifx_*
+  run:
+    - python
+    - pyyaml
+    - psutil
+    - libblas * *mkl
+    - liblapack * *mkl
+    - medcoupling * *nompi*
+    - mfront
+    - mgis
+
+tests:
+  - python:
+      imports:
+        - code_aster
+      pip_check: false
+  - script:
+      - run_aster --version
+
+about:
+  homepage: https://www.code-aster.org
+  license: GPL-3.0-only
+  summary: code_aster Windows (ifx) build against conda-forge deps (patch test harness)
