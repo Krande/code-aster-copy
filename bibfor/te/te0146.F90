@@ -535,11 +535,13 @@ subroutine te0146(option, nomte)
                         call utmess('A', 'CALCULEL7_38')
                     end if
 
-                elseif ((N .gt. 0.d0) .and. (abs(M/N) .lt. ht/6.d0)) then
+                ! |M/N| < ht/6 written without dividing: Fortran does not
+                ! short-circuit .and., so M/N may be evaluated with N = 0
+                elseif ((N .gt. 0.d0) .and. (abs(M) .lt. N*ht/6.d0)) then
                     ! Full compression
                     Asmininf = 0.d0
                     Asminsup = 0.d0
-                elseif ((N .lt. 0.d0) .and. (abs(-M/N) .lt. ht/6.d0)) then
+                elseif ((N .lt. 0.d0) .and. (abs(M) .lt. -N*ht/6.d0)) then
                     ! Full tension
 
                     Act = b*ht
