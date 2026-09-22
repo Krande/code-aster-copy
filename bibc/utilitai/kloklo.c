@@ -18,6 +18,8 @@
 
 #include "aster.h"
 
+#include <time.h>
+
 /***************************************************************
  *
  *  Sous programme       : KLOKLO

@@ -64,7 +64,6 @@ contains
         character(len=*), intent(in):: comp_name_
         real(kind=8) :: vale_refe
         ! ------------------------------------------------------------------------------------------
-        integer(kind=8), pointer:: pos(:) => null()
         integer(kind=8):: idx
         character(len=8):: comp_name
         character(len=16) :: kmess(2)
@@ -72,9 +71,9 @@ contains
         ASSERT(self%maxi_refe .ne. 0)
         comp_name = comp_name_
 
-        pos = findloc(self%names, comp_name)
-        ASSERT(size(pos) .eq. 1)
-        idx = pos(1)
+        ! scalar findloc: the result used to be assigned to an unassociated
+        ! pointer array (undefined behaviour; ifx compiles it to a trap)
+        idx = findloc(self%names, comp_name, dim=1)
         ASSERT(idx .ge. 1 .and. idx .le. self%maxi_refe)
 
         vale_refe = self%values(idx)
