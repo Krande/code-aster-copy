@@ -46,7 +46,9 @@ subroutine asseVectSuper(model, mesh, vectElem, &
     real(kind=8), intent(in) :: vectElemCoef
     character(len=8), pointer :: nomacr(:)
     integer(kind=8), intent(in) :: meshNbNode, nbCmp, nec, nbecmx
-    integer(kind=8), intent(in) :: iapsdl, ianueq, jvale, jresl
+    integer(kind=8), intent(in) :: iapsdl, ianueq, jvale
+    ! jresl is (re)set by ssvalv: it must not be intent(in)
+    integer(kind=8), intent(inout) :: jresl
     integer(kind=8), intent(in) :: idprn1, idprn2
     integer(kind=8), intent(inout) :: icodla(nbecmx), icodge(nbecmx)
 !
