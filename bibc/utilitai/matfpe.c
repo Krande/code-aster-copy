@@ -72,7 +72,10 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
         /* avant de reactiver le controle des FPE, on abaisse les flags */
 #if defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_WINDOWS
         _clearfp();
-        _controlfp( _EM_UNDERFLOW | _EM_DENORMAL | _EM_INEXACT, _MCW_EM );
+        /* re-enable only what inisig enables (ASTER_SIGFPE: zero-divide and
+         * overflow); unmasking _EM_INVALID here too made every NaN comparison
+         * trap after the first matfpe(-1)/matfpe(1) pair */
+        _controlfp( _MCW_EM & ~( _EM_ZERODIVIDE | _EM_OVERFLOW ), _MCW_EM );
 #else
         feclearexcept( ASTER_SIGFPE );
         feenableexcept( ASTER_SIGFPE );

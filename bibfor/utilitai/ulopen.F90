@@ -150,7 +150,13 @@ subroutine ulopen(unit, fichie, name, acces, autor)
         inquire (unit=unit, opened=v11, iostat=ier1)
         if (ier1 .eq. 0) then
             if (.not. v11 .and. unit .ne. 6) then
+#ifdef ASTER_PLATFORM_MSVC64
+! ifx opens files deny-write by default on Windows: Python code (e.g.
+! IMPR_TABLE) writing to a file held by a DEFI_FICHIER unit would then fail.
+                open (unit=unit, file=namell, share='DENYNONE', iostat=ier2)
+#else
                 open (unit=unit, file=namell, iostat=ier2)
+#endif
                 if (ier2 .ne. 0) then
                     valk(1) = k4b
                     valk(2) = namell

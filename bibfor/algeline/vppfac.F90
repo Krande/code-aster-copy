@@ -259,7 +259,6 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
                     ! INER_EFFE_D*
                     inemodz(ivect, iddl2) = rval*raux
                     ! INER_EFFE_UN_D*
-                    inemodz(ivect, iddl) = rval*raux/massTotDirUnit
                     if (massTotDirUnit .gt. epsi) then
                         inemodz(ivect, iddl) = rval*raux/massTotDirUnit
                     else

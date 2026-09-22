@@ -29,6 +29,7 @@ module HHO_inertia_module
     private
 #include "asterf_types.h"
 #include "asterf_debug.h"
+#include "asterc/matfpe.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dsyev.h"
@@ -92,8 +93,11 @@ contains
         b_n = to_blas_int(hhoCell%ndim)
         b_lda = to_blas_int(3)
         b_lwork = to_blas_int(50)
+        ! LAPACK (MKL) may raise floating point exceptions internally
+        call matfpe(-1)
         call dsyev('V', 'U', b_n, axes, b_lda, &
                    evalues, work, b_lwork, info)
+        call matfpe(1)
         ASSERT(info == 0)
 !
         do idim = 1, hhoCell%ndim
@@ -152,8 +156,10 @@ contains
 
 !
 ! ----- Compute eigenvector
+            call matfpe(-1)
             call dsyev('V', 'U', b_n, axes_3d, b_lda, &
                        evalues, work, b_lwork, info)
+            call matfpe(1)
             ASSERT(info == 0)
             ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)
 !

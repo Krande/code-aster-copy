@@ -19,7 +19,7 @@
 from abc import abstractmethod, ABC
 import scipy.sparse
 import numpy as np
-from ...Utilities import PETSc, SLEPc, MPI, no_new_attributes
+from ...Utilities import PETSc, SLEPc, MPI, disable_fpe, no_new_attributes
 
 # GENERAL PARAMETERS FOR THE MODULE
 TOL_NUM = 1e-9
@@ -625,7 +625,9 @@ class PODAnalysisNumpy(PODAnalysis):
             singval (numpy.ndarray): Singular values
         """
         ## - Apply SVD directly on the snapshot matrix
-        U, sigma, _ = np.linalg.svd(matS, full_matrices=False)
+        # LAPACK (MKL) may raise floating point exceptions internally
+        with disable_fpe():
+            U, sigma, _ = np.linalg.svd(matS, full_matrices=False)
         ## - Order eigenvalues and compute basis
         n = np.where(sigma == 0)[0]
         if n.size == 0:
@@ -647,7 +649,8 @@ class PODAnalysisNumpy(PODAnalysis):
         ## - Compute correlation matrix
         corrMatrix = matS.T @ self._corrOperator @ matS
         ## - Solve eigenproblem
-        eigenvalues, eigenvectors = np.linalg.eigh(corrMatrix)
+        with disable_fpe():
+            eigenvalues, eigenvectors = np.linalg.eigh(corrMatrix)
         ## - Order eigenvalues and compute basis
         idx = np.argsort(eigenvalues)[::-1]
         eigenvalues = eigenvalues[idx]
