@@ -250,7 +250,9 @@ bool MeshConnectionGraph::debugCheck() const {
 
         for ( int j = 0; j < edgeNb; ++j ) {
             const auto curNodeId = _edges[startVertId + j];
-            const int procId = std::min( curNodeId / nbNodes0, (long int)nbProcs - 1 );
+            // ASTERINTEGER, not long int: long is 32-bit on Windows (LLP64)
+            const int procId = std::min< ASTERINTEGER >( curNodeId / nbNodes0,
+                                                         ASTERINTEGER( nbProcs ) - 1 );
             nodeConnex.insert( curNodeId );
             if ( curNodeId >= startIndex && curNodeId < endIndex ) {
                 if ( procId != rank ) {

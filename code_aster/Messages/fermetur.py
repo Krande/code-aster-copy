@@ -124,4 +124,10 @@ Cette fonctionnalité nécessite que la bibliothèque "PETSc" ait été construi
 avec le support du préconditionneur "%(k1)s".
 """
     ),
+    17: _(
+        """
+La lecture ou l'écriture parallèle des fichiers MED n'est pas disponible :
+cette version de Code_Aster utilise une bibliothèque "MED" séquentielle.
+"""
+    ),
 }

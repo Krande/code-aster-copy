@@ -37,8 +37,12 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
     med_int :: acces4, comm4, info4, cret4
 #endif
     cret = 0
+#if defined(ASTER_HAVE_MPI) && !defined(ASTER_HAVE_MED_PARALLEL)
+!   MPI build against a sequential MED library (no mpfope)
+    call utmess('F', 'FERMETUR_17')
+#endif
     if (cret .eq. 0) then
-#ifdef ASTER_HAVE_MPI
+#if defined(ASTER_HAVE_MPI) && defined(ASTER_HAVE_MED_PARALLEL)
 #if !ASTER_MED_SAME_INT_IDT
         acces4 = to_med_int(acces)
         comm4 = to_med_int(comm)

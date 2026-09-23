@@ -122,7 +122,11 @@ void aster_mpi_init( const MPI_Fint init_comm_world ) {
     // Pass communicator to PETSc
     PETSC_COMM_WORLD = aster_world;
 #endif
+#ifdef ASTER_PLATFORM_MSVC64
+    AS_ASSERT( atexit( aster_terminate ) == 0 );
+#else
     AS_ASSERT( atexit( terminate ) == 0 );
+#endif
     /* set the error handler */
     AS_ASSERT( MPI_Comm_create_errhandler( errhdlr_func, &errhdlr ) == MPI_SUCCESS );
     AS_ASSERT( MPI_Comm_set_errhandler( aster_world, errhdlr ) == MPI_SUCCESS );
