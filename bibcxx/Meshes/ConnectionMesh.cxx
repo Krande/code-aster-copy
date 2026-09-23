@@ -641,7 +641,7 @@ VectorLong ConnectionMesh::getCells( const std::string name ) const {
 VectorLong ConnectionMesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( long( 0 ), long( getNumberOfCells() - 1 ) );
+        return irange( ASTERINTEGER( 0 ), ASTERINTEGER( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;

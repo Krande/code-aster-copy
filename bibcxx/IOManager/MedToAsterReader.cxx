@@ -166,7 +166,8 @@ void MedToAsterReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toRetur
     }
     const auto globNum = curMesh->getGlobalNodeNumberingAtSequence( -1, -1 );
     if ( globNum.size() != 0 ) {
-        toReturn->setLocalToGlobalNodeIds( globNum );
+        // med_int and ASTERINTEGER may be distinct 64-bit types (Windows LLP64)
+        toReturn->setLocalToGlobalNodeIds( VectorLong( globNum.begin(), globNum.end() ) );
     } else {
         VectorLong nodeGlobNum;
         const auto size = toReturn->getNumberOfNodes();
@@ -197,7 +198,7 @@ void MedToAsterReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
         const auto &curJoint = joints[i];
         const auto &curName = curJoint->getName();
         if ( curJoint->getCorrespondenceNumber() != 1 || curJoint->getStepNumber() != 1 ) {
-            throw std::runtime_error( "Unexpected joint in med file " + std::string( filename ) );
+            throw std::runtime_error( "Unexpected joint in med file " + filename.string() );
         }
 
         domainSet.insert( curJoint->getOppositeDomain() );

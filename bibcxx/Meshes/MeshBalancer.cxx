@@ -235,7 +235,8 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     }
 
     auto globNodeNumVect2 = globNodeNumVect;
-    std::for_each( globNodeNumVect2.begin(), globNodeNumVect2.end(), &decrement< long int > );
+    std::for_each( globNodeNumVect2.begin(), globNodeNumVect2.end(),
+                   &decrement< decltype( globNodeNumVect2 )::value_type > );
 
     convertLastGhostLayerToLocal( globNodeNumVect2 );
 
