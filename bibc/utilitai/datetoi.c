@@ -18,6 +18,8 @@
 
 #include "aster.h"
 
+#include <time.h>
+
 void DEFP( DATETOI, datetoi, ASTERINTEGER itab[6] ) {
     time_t ltime;
     struct tm *today;
