@@ -266,3 +266,24 @@ Rendering the existing win ifx/flang seq and linux variants gives the same hashe
 - Local build hurdle: the ISP DNS filter here resolves `mumps-solver.org` to a block page, so the
   source was taken from the existing rattler source cache of `C:\Work\code\mumps-feedstock`
   (sha256 `eb515aa6…` matches the recipe).
+
+## 9. Status after end-to-end testing (2026-09-24)
+
+Local packages, all built from (re-rendered) feedstock branches:
+- scotch-feedstock `win-impi-2021.17`: libscotch/libptscotch 7.0.13 int64 against
+  impi-devel 2021.17.0 (no pthreads-win32); package tests incl. `mpiexec -n 2` pass.
+- mumps-feedstock `win-impi`: mumps-mpi 5.8.2 ifx, Intel MPI 2021.17.0, MKL
+  ScaLAPACK/BLACS, **PORD + METIS only**. The win-64 SCOTCH ordering corrupts the
+  heap (`mumps_scotch_64` -> esmumps; code_aster mumps01a/mumps03a), also with a
+  consistent scotch 7.0.13 impi build — like the sequential Windows MUMPS, SCOTCH is
+  left out (open issue, needs a debug build of esmumps/scotch).
+- code-aster-feedstock `win-mpi`: `mpi: impi` Windows variant.
+
+End-to-end (built code-aster impi package + local mumps/scotch channels, clean
+`pixi exec` env, no build env/compilers): submit suite sequential + parallel
+**2318/2417**. All 99 failures need PETSc (incl. ELIM_LAGR, petsc4py), parallel
+MED / ParallelMesh, ParaMEDMEM, or parallel MUMPS renumbering; listed in the
+feedstock's `known_failures_windows_mpi.list`.
+
+Next: MPI builds of libmed (parallel MED, `mpi_impi` hdf5 exists) and medcoupling
+(ParaMEDMEM); PETSc on win-64; SCOTCH ordering in MUMPS.
