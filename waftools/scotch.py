@@ -67,8 +67,12 @@ def configure(self):
             raise
     else:
         self.define("ASTER_HAVE_SCOTCH", 1)
-        if self.env.BUILD_MPI:
+        # PT-SCOTCH only if it is linked (--scotch-libs without ptscotch, e.g.
+        # on Windows where no PT-SCOTCH matches the Intel MPI in use)
+        if self.env.BUILD_MPI and "ptscotch" in Utils.to_list(self.options.scotch_libs or ""):
             self.define("ASTER_HAVE_PTSCOTCH", 1)
+        elif self.env.BUILD_MPI:
+            self.msg("Checking for PT-SCOTCH", "no (not in --scotch-libs)", color="YELLOW")
 
 
 ###############################################################################

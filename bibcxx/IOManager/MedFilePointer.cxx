@@ -82,7 +82,7 @@ int MedFilePointer::open( const std::filesystem::path &filename, const MedFileAc
 
 int MedFilePointer::openParallel( const std::filesystem::path &filename,
                                   const MedFileAccessType &openType ) {
-#ifdef ASTER_HAVE_MPI
+#if defined( ASTER_HAVE_MPI ) && defined( ASTER_HAVE_MED_PARALLEL )
     MPI_Info info = MPI_INFO_NULL;
     MPI_Comm comm = aster_get_comm_world()->id;
     med_access_mode medAccessMode = MED_ACC_UNDEF;
@@ -100,9 +100,13 @@ int MedFilePointer::openParallel( const std::filesystem::path &filename,
     _isOpen = true;
     _parallelOpen = true;
     return 0;
+#elif defined( ASTER_HAVE_MPI )
+    throw std::runtime_error( "Parallel opening of MED files is not available: "
+                              "this build uses a sequential MED library" );
+    return 0;
 #else
     throw std::runtime_error( "Parallel opening not available in sequential" );
     return 0;
-#endif /* ASTER_HAVE_MPI */
+#endif /* ASTER_HAVE_MPI && ASTER_HAVE_MED_PARALLEL */
 };
 #endif

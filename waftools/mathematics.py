@@ -145,6 +145,11 @@ def detect_mkl(self):
             # scalapack = "mkl_scalapack" + suffix
             # blacs = "mkl_blacs_intelmpi" + suffix
             scalapack = "scalapack"
+            if self.env.CXX_NAME == "msvc":
+                # Windows: MKL ScaLAPACK/BLACS (BLACS dispatches to Intel MPI);
+                # only the MUMPS DLLs call them, they link these themselves
+                scalapack = "mkl_scalapack" + suffix
+                blacs = "mkl_blacs" + suffix
     else:
         if self.get_define("ASTER_HAVE_OPENMP"):
             thread = "mkl_gnu_thread"
@@ -158,6 +163,10 @@ def detect_mkl(self):
         interf += "_dll"
         thread += "_dll"
         core += "_dll"
+        if scalapack.startswith("mkl_"):
+            scalapack += "_dll"
+        if blacs:
+            blacs += "_dll"
     libs.append(interf)
     libs.append(thread)
     libs.append(core)

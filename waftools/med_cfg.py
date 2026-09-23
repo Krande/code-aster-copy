@@ -239,6 +239,41 @@ def check_med(self):
     self.check_sizeof_med_int()
     self.check_sizeof_med_idt()
     self.check_med_python()
+    self.check_med_parallel()
+
+
+@Configure.conf
+def check_med_parallel(self):
+    """Check for the parallel MED API (MEDparFileOpen) in a MPI build.
+
+    Parallel MED libraries are assumed on POSIX platforms. On Windows only a
+    sequential libmed may be available: ParallelMesh reading/writing is then
+    disabled at runtime instead of failing at link time.
+    """
+    if not self.env.BUILD_MPI:
+        return
+    if not Utils.is_win32:
+        self.define("ASTER_HAVE_MED_PARALLEL", 1)
+        return
+    fragment = "\n".join(
+        [
+            "#include <mpi.h>",
+            "#include <med.h>",
+            "int main(void){",
+            "    med_idt fid = MEDparFileOpen(",
+            '        "x.med", MED_ACC_RDONLY, MPI_COMM_WORLD, MPI_INFO_NULL);',
+            "    return (int)(fid < 0);",
+            "}",
+            "",
+        ]
+    )
+    if self.check_cc(
+        fragment=fragment,
+        use="MED HDF5 MPI Z",
+        mandatory=False,
+        msg="Checking for parallel MED (MEDparFileOpen)",
+    ):
+        self.define("ASTER_HAVE_MED_PARALLEL", 1)
 
 
 @Configure.conf

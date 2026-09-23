@@ -452,7 +452,9 @@ def main(argv=None):
             logger.warning(
                 "If MPI_Abort is called during execution, result files could not be copied."
             )
-            run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
+            run_aster = osp.join(
+                RUNASTER_ROOT, "bin", "run_aster" + (".bat" if RUNASTER_PLATFORM == "win" else "")
+            )
             try:
                 expdir = create_temporary_dir(dir=os.fspath(Path.home() / ".tmp_run_aster"))
             except (OSError, KeyError):

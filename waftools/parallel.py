@@ -152,8 +152,12 @@ def load_compilers_mpi(self):
     )
     # raise ValueError(str(self.env.CC) + "  ///  " + str(self.env.CXX))
 
+    if Utils.is_win32:
+        # Windows (clang-cl + ifx): there is no mpicc/mpif90 wrapper to query,
+        # do what the wrappers would do for every target.
+        self.load_mpi_windows()
     # We won't alter environment if Intel compiler is detected...
-    if not self.env.CC_IS_INTEL:
+    elif not self.env.CC_IS_INTEL:
         msg = "Checking C compiler package (collect configuration flags)"
         if not check(path=self.env.CC, msg=msg):
             self.fatal("Unable to configure the parallel environment for C compiler")
@@ -161,7 +165,7 @@ def load_compilers_mpi(self):
         del self.env["LINKFLAGS_MPI"]
 
     # We won't alter environment if Intel compiler is detected...
-    if not self.env.FC_IS_INTEL:
+    if not self.env.FC_IS_INTEL and not Utils.is_win32:
         msg = "Checking Fortran compiler package (collect configuration flags)"
         if not check(path=self.env.FC, msg=msg):
             self.fatal("Unable to configure the parallel environment for FORTRAN compiler")
@@ -172,6 +176,34 @@ def load_compilers_mpi(self):
     self.env.BUILD_MPI = 1
     self.env.ASTER_HAVE_MPI = 1
     self.check_mpi_fortran_interface()
+
+
+@Configure.conf
+def load_mpi_windows(self):
+    """Windows: add Intel MPI (conda impi-devel) to every target.
+
+    The MPI root is taken from I_MPI_ROOT (set by the impi activation script),
+    else the conda Library prefix. Only the C interface is linked (impi.lib):
+    code_aster Fortran uses mpif.h for PARAMETER constants only.
+    """
+    root = os.environ.get("I_MPI_ROOT") or os.environ.get("LIBRARY_PREFIX", "")
+    self.start_msg("Checking for Intel MPI (Windows)")
+    incdir = osp.join(root, "include")
+    libdir = osp.join(root, "lib")
+    if not (osp.isfile(osp.join(incdir, "mpi.h")) and osp.isfile(osp.join(libdir, "impi.lib"))):
+        self.end_msg("not found in %r" % root, "RED")
+        self.fatal("Intel MPI not found: define I_MPI_ROOT")
+    self.end_msg(root)
+    # the C++ bindings (mpicxx.h, impicxx.lib) are not used
+    defines = ["MPICH_SKIP_MPICXX", "OMPI_SKIP_MPICXX"]
+    self.env.append_unique("INCLUDES", [incdir])
+    self.env.append_unique("LIBPATH", [libdir])
+    self.env.append_unique("LIB", ["impi"])
+    self.env.append_unique("DEFINES", defines)
+    self.env["INCLUDES_MPI"] = [incdir]
+    self.env["LIBPATH_MPI"] = [libdir]
+    self.env["LIB_MPI"] = ["impi"]
+    self.env["DEFINES_MPI"] = defines
 
 
 @Configure.conf
@@ -277,6 +309,11 @@ def check_mpi_fortran_interface(self):
 def check_vmsize(self):
     """Check for VmSize 'bug' with MPI or not."""
     if not self.get_define("ASTER_HAVE_MPI"):
+        return
+    if Utils.is_win32:
+        # the probe reads /proc/<pid>/status; Intel MPI and MS-MPI both
+        # support singleton MPI_Init, so mpiexec is not required either
+        self.msg("Checking measure of VmSize during MPI_Init", "skipped (Windows)", color="YELLOW")
         return
     self.start_msg("Checking measure of VmSize during MPI_Init")
     try:

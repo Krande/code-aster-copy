@@ -627,6 +627,9 @@ def check_mpiexec(self):
     # equivalent to "mpiexec --prefix <path>" + change PATH and LD_LIBRARY_PATH
     mpiexec = "mpiexec"
     root_option = []
+    # program used to probe mpiexec flags: 'echo' is a cmd.exe builtin on
+    # Windows, Intel MPI's mpiexec can not start it
+    probe = "hostname" if sys.platform == "win32" else "echo"
     try:
         user = getpass.getuser()
     except KeyError:
@@ -635,7 +638,7 @@ def check_mpiexec(self):
         if (
             self._call_cmd(
                 "Check for mpiexec flag '--allow-run-as-root'",
-                [mpiexec, "--allow-run-as-root", "echo"],
+                [mpiexec, "--allow-run-as-root", probe],
             )
             == 0
         ):
@@ -658,7 +661,7 @@ def check_mpiexec(self):
         narg = []
         if (
             self._call_cmd(
-                "Check for mpiexec flag '-n N'", self.env["base_mpiexec"] + ["-n", "1", "echo"]
+                "Check for mpiexec flag '-n N'", self.env["base_mpiexec"] + ["-n", "1", probe]
             )
             == 0
         ):
@@ -666,7 +669,7 @@ def check_mpiexec(self):
             mpicmd.extend(["-n", "{mpi_nbcpu}"])
         elif (
             self._call_cmd(
-                "Check for mpiexec flag '-np N'", self.env["base_mpiexec"] + ["-np", "1", "echo"]
+                "Check for mpiexec flag '-np N'", self.env["base_mpiexec"] + ["-np", "1", probe]
             )
             == 0
         ):
@@ -675,17 +678,22 @@ def check_mpiexec(self):
         if (
             self._call_cmd(
                 "Check for mpiexec flag '-np N'",
-                self.env["base_mpiexec"] + narg + ["--bind-to", "none", "echo"],
+                self.env["base_mpiexec"] + narg + ["--bind-to", "none", probe],
             )
             == 0
         ):
             mpicmd.extend(["--bind-to", "none"])
 
-        for opt in ("--tag-output", "-print-rank-map", "-prepend-rank", "-ordered-output"):
+        output_opts = ("--tag-output", "-print-rank-map", "-prepend-rank", "-ordered-output")
+        if sys.platform == "win32":
+            # Intel MPI: -ordered-output holds each rank's output until it
+            # exits, -print-rank-map adds a header to the output
+            output_opts = ("--tag-output", "-prepend-rank")
+        for opt in output_opts:
             if (
                 self._call_cmd(
                     "Check for mpiexec flag '{0}'".format(opt),
-                    self.env["base_mpiexec"] + narg + [opt, "echo"],
+                    self.env["base_mpiexec"] + narg + [opt, probe],
                 )
                 == 0
             ):
@@ -704,6 +712,13 @@ def check_mpi_get_rank(self):
     # srun vs mpiexec
     if self.options.use_srun:
         rank_id = 'test ! -z "${SLURM_STEPID}" && echo ${SLURM_PROCID}'
+    elif sys.platform == "win32":
+        # evaluated by cmd.exe (shell=True): an undefined variable is echoed
+        # as is, which gives the expected -1 when not run under mpiexec
+        out = self.cmd_and_log(self.env["base_mpiexec"] + ["cmd.exe", "/d", "/c", "set"])
+        rank_id = "echo %OMPI_COMM_WORLD_RANK%"
+        if "PMI_RANK" in out:
+            rank_id = "echo %PMI_RANK%"
     else:
         # default to openmpi
         out = self.cmd_and_log(self.env["base_mpiexec"] + ["env"])
