@@ -150,7 +150,11 @@ contains
         integer(kind=8), intent(in) :: nbThreads
         integer(kind=8), intent(in), optional :: blas_max
 #ifdef ASTER_HAVE_OPENMP
+#ifdef ASTER_PLATFORM_MSVC64
+        call omp_set_num_threads(int(nbThreads, 4))
+#else
         call omp_set_num_threads(nbThreads)
+#endif
 #endif
         if (present(blas_max)) then
             if (blas_max .eq. 1) then

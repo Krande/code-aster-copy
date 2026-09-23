@@ -183,7 +183,17 @@ def check_openmp(self):
     # OpenMP interoperability is not secure
     # we consider both compiler should be from same vendor
     # Define CFLAGS_x and CCFLAGS_x to avoid ambiguous behaviour
-    if self.env.FC_IS_INTEL and self.env.CC_IS_INTEL:
+    if Utils.is_win32 and self.env.FC_IS_INTEL:
+        # Windows: ifx for Fortran, clang-cl for C/C++. Only the Fortran code
+        # uses OpenMP, so enable it for ifx only; its objects pull in the Intel
+        # runtime (libiomp5md), the one MKL (mkl_intel_thread) uses as well.
+        self.env["FCFLAGS_OPENMP"] = ["/Qopenmp"]
+        self.env["FCLINKFLAGS_OPENMP"] = []
+        for var in ("CFLAGS", "CCFLAGS", "CCLINKFLAGS", "CXXFLAGS", "CXXLINKFLAGS"):
+            self.env[var + "_OPENMP"] = []
+        self.env.ASTER_HAVE_OPENMP = 1
+        self.msg("Checking for OpenMP flag /Qopenmp for Intel Fortran (Windows)", "yes", color="GREEN")
+    elif self.env.FC_IS_INTEL and self.env.CC_IS_INTEL:
         self.env["FCFLAGS_OPENMP"] = ["-qopenmp"]
         self.env["FCLINKFLAGS_OPENMP"] = ["-qopenmp"]
         self.env["CFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]

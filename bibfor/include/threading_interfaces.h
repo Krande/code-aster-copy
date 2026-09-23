@@ -22,6 +22,22 @@
 !
 interface
 #ifdef ASTER_HAVE_OPENMP
+#ifdef ASTER_PLATFORM_MSVC64
+! Windows: bind to the OpenMP C API. The runtime exports no Fortran entry
+! matching /names:lowercase /assume:underscore ('omp_*_'), and the C types
+! are exact (int, by value) instead of relying on integer(kind=8) punning.
+    subroutine omp_set_num_threads(a) bind(c, name="omp_set_num_threads")
+        integer(kind=4), value, intent(in) :: a
+    end subroutine
+
+    function omp_get_max_threads() bind(c, name="omp_get_max_threads")
+        integer(kind=4) :: omp_get_max_threads
+    end function
+
+    function omp_get_thread_num() bind(c, name="omp_get_thread_num")
+        integer(kind=4) :: omp_get_thread_num
+    end function
+#else
     subroutine omp_set_num_threads(a)
         integer(kind=8), intent(in) :: a
     end subroutine
@@ -33,6 +49,7 @@ interface
     function omp_get_thread_num()
         integer(kind=8) :: omp_get_thread_num
     end function
+#endif
 #endif
 
 #ifdef ASTER_HAVE_OPENBLAS
