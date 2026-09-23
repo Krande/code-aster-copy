@@ -168,7 +168,9 @@ class TimeStepper(Observer, EventSource):
         if self._initStep is not None:
             first = self.getCurrent()
             dt0 = first - time
-            if self._initStep < dt0:
+            # compare using epsilon: when first - time is PAS_INIT up to rounding,
+            # a strict comparison inserted a step equal to 'first' (null increment)
+            if self.cmp(time + self._initStep, first) < 0:
                 logger.info(MessageLog.GetText("I", "DISCRETISATION3_87", valr=self._initStep))
                 self._insert(0, time + self._initStep)
             else:
