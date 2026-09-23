@@ -1,8 +1,8 @@
 # MPI support for the Windows (clang-cl + ifx) build — findings and plan
 
 Branch `cf-win-mpi` (based on `cf-win-openmp` = 18.1.7 + cf-base + Windows patch + OpenMP).
-Status: **Phase 1 (investigation only)**, 2026-09-23. Nothing below has been built yet;
-the only experiments were tiny ifx compile/link checks and `mpiexec` smoke tests.
+Status (2026-09-23): Phase 1 investigation done; **Step 1 (local `mumps-mpi` win-64 package)
+built and passes an MPI smoke test** — see §8. The code_aster MPI build has not been started.
 
 ## 1. Package availability on conda-forge win-64 (anaconda.org API, 2026-09-23)
 
@@ -187,3 +187,82 @@ tests run with 1 rank). Phase B adds libmed (+hdf5) `mpi_impi` → ParallelMesh 
   libmed `mpi_impi` exists?
 - impi at runtime in an activated env sets `I_MPI_ROOT` (activate.d); check that `python -m
   run_aster…` works from a non-activated env (DLL search for `impi.dll`/`libfabric.dll` in `Library\bin`).
+
+## 8. Step 1 result: local `mumps-mpi` for win-64 (Intel MPI, ifx, MKL)
+
+Built 2026-09-23 in worktree `C:\Work\code\mumps-feedstock-mpi`, branch `win-impi`
+(off mumps-feedstock `upstream/main` 1f97314), local commit `61158c3` (not pushed).
+Build command (variant file = `.ci_support/win_64_module_abiifx.yaml` with `mpi: impi`, untracked):
+
+    rattler-build build --recipe recipe -m local_win_64_mpiimpi.yaml --output-dir output
+
+Packages (in `C:\Work\code\mumps-feedstock-mpi\output\win-64`):
+- `mumps-mpi-5.8.2-ifx_h4ab2ee0_3.conda`: depends `impi_rt >=2021.17.0,<2021.17.1`,
+  `mkl >=2026.1`, `libscotch 7.0.13 int64_*`, `metis 5.2.1`, `libblas`/`liblapack` (mkl)
+- `mumps-mpi-fortran-devel-5.8.2-ifx_h809d207_3.conda` (ABI marker, run-exports `mumps-mpi * ifx_*`)
+
+Rendering the existing win ifx/flang seq and linux variants gives the same hashes as before
+(`mumps-seq-5.8.2-ifx_h94ad166_3` etc.), so the seq builds are unaffected.
+
+### Recipe changes (mumps-feedstock `recipe/`)
+- `conda_build_config.yaml`: `mpi: … - impi # [win]`. `recipe.yaml`: `mumps-mpi`/`-fortran-devel`
+  skip `win and (mpi != 'impi' or module_abi != 'ifx')`. win host: `impi-devel 2021.17.0.*`,
+  `mkl-devel`, `metis`, `libscotch * int64_*` (no `scalapack`/`parmetis` on win); no
+  `mumps-include` run dep on win.
+- `CMakeLists.txt` `WITH_MPI AND WIN32` branch: no FindMPI (it wants MPI_CXX, not a project
+  language here); `MPI_ROOT` = `%LIBRARY_PREFIX%`; links `impi.lib`,
+  `mkl_scalapack_lp64_dll mkl_blacs_lp64_dll`, orderings `-Dpord -Dmetis -Dscotch`
+  (`esmumps scotch scotcherr metis`, static scotch); adds `-Dptscotch` + `ptesmumps ptscotch`
+  automatically when `ptscotch.lib` is present.
+- **mpif.h COMMON-block fix**: CMake writes `build/mpi_alias_include/mpif.h` = impi `mpif.h` +
+  `!DEC$ ATTRIBUTES ALIAS:'MPIPRIV1' :: /MPIPRIV1/` (and MPIFCMB5, MPIFCMB9, MPIFCMBa→MPIFCMBA,
+  MPIPRIV2, MPIPRIVC), first on the include path. Verified: `dmumps.dll` imports `MPIPRIV1` and
+  `mpi_initialized_` (+37 more) from `impi.dll`.
+- `build-mumps.bat`: `-DWITH_MPI=ON -DMPI_ROOT=%LIBRARY_PREFIX%` for mpi != nompi; the bundled
+  s/d/c/z simpletests and `c_example` run under `mpiexec -n 2` at build time.
+- package test `run_test-mpi.bat` + `test_mpi_i8.F90`.
+
+### Smoke test results (all under `mpiexec -n 2`, "Number of working processes = 2")
+- build time: `c_example`, `s/d/c/zsimpletest` → correct solutions.
+- package test, fresh test env: `test_mpi_i8.exe` compiled with **`/integer-size:64
+  /real-size:64 /names:lowercase /assume:underscore`** (code_aster's flags), `include 'mpif.h'`
+  + `include 'dmumps_struc.h'`, `id%comm` from `MPI_COMM_WORLD`:
+  case 1 centralized input, case 2 distributed assembled input (ICNTL(18)=3) → both
+  `1 2 3 4 5`, `OK: MPI MUMPS from a 64-bit-INTEGER caller on 2 ranks`; plus the `dsimpletest`,
+  `zsimpletest` and `c_example` examples compiled against the installed package.
+
+### impi version choice: `impi-devel 2021.17.0` (was 2021.16.0 in the first plan)
+- **impi-devel 2021.16.x has no Fortran support**: no `mpif.h`, no `include/mpi/*.mod`
+  (checked: only `mpi.h mpicxx.h mpio.h`). 2021.17.0, 2021.17.2 and 2021.18.0 have them.
+  So the 2021.16 set (ptscotch 7.0.13 + hdf5 1.14.6 `mpi_impi_h8156f85_5`) cannot be used.
+- The 2021.17.0 set has parallel hdf5 (`1.14.6 mpi_impi_hf77ddf2_8`, `2.1.0 mpi_impi_h5596a7b_2`)
+  and impi.dll 2021.17.0 exports the same names (lowercase/underscore procedures, upper-case COMMONs).
+- **PT-SCOTCH is not installable with it**: the only `libptscotch` for impi_rt 2021.17.0
+  (7.0.10/7.0.11 `int64_hf3c0f26_*`) needs an old `libscotch` that depends on `pthreads-win32`,
+  which conflicts with `libwinpthread` (mkl 2026 → tbb → libhwloc). Newer ptscotch builds
+  (7.0.11 `_1.._3`, 7.0.13) are all pinned to impi_rt 2021.16.0. So mumps-mpi is built without
+  PT-SCOTCH for now (sequential SCOTCH/METIS/PORD orderings; parallel analysis ICNTL(28)=2 is
+  unavailable, which MUMPS handles by falling back to sequential analysis).
+  **Fix upstream:** rebuild scotch-feedstock win impi variants against impi-devel >= 2021.17
+  (ideally the same x.x.x as hdf5 `mpi_impi`: 2021.17.2); then mumps-mpi picks up
+  `-Dptscotch` without further changes. code_aster's own `ptscotch` libs (waftools/scotch.py
+  adds `ptscotch ptscotcherr` when MPI is on; `PtScotchPartitioner`) hit the same blocker →
+  build code_aster with `--scotch-libs="esmumps scotch scotcherr"` + a guard for
+  `ASTER_HAVE_PTSCOTCH` until then.
+- Consequence for code_aster: host `impi-devel 2021.17.0.*`, hdf5 `1.14.6 mpi_impi_*`/`2.1.0 mpi_impi_*`
+  at 2021.17.0 if parallel hdf5 is wanted; mpi4py impi builds (`impi_rt >=2021.10`) are compatible.
+
+### Other findings
+- **Caller-side pitfall under `/integer-size:64`**: the mpif.h constants are default-INTEGER
+  PARAMETERs (8-byte) — pass `int(MPI_xxx, 4)` (code_aster already does via `to_mpi_int`).
+  Never use the COMMON "constants" (`MPI_IN_PLACE`, `MPI_BOTTOM`, `MPI_STATUS_IGNORE`) from an
+  `/integer-size:64` unit: the COMMON layout changes, so their addresses no longer match the
+  library's sentinels. code_aster does not use them (only MUMPS does, compiled LP64).
+- `mumps-mpi` (like `mumps-seq` ifx) has no `intel-fortran-rt` run dependency although its DLLs
+  import `libifcoremd.dll`/`libmmd.dll`/`svml_dispmd.dll`; consumers must add it (code_aster
+  already does).
+- `mumps-seq` and `mumps-mpi` install the same file names on win (`dmumps.dll`, …); they are
+  mutually exclusive anyway (different `mpi` variants).
+- Local build hurdle: the ISP DNS filter here resolves `mumps-solver.org` to a block page, so the
+  source was taken from the existing rattler source cache of `C:\Work\code\mumps-feedstock`
+  (sha256 `eb515aa6…` matches the recipe).
