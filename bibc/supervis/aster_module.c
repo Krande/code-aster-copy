@@ -38,6 +38,51 @@
 #include <signal.h>
 #include <stdlib.h>
 
+#if defined( ASTER_PLATFORM_MSVC64 ) && defined( ASTER_HAVE_HDF5 )
+#include "hdf5.h"
+
+/* Windows: close the HDF5 objects still open at the end of the execution
+ * (e.g. IMPR_RESU with CARA_ELEM leaves MED file and datatype identifiers
+ * open) while everything is still alive. Otherwise hdf5.dll closes them from
+ * its own exit handler at DLL unload;
+ * with a parallel HDF5 (hdf5 mpi_impi) that is an access violation in
+ * H5_term_library -> H5VL__native_file_close. */
+static void close_remaining_hdf5_objects( void ) {
+    ssize_t nb, i;
+    hid_t *ids;
+    nb = H5Fget_obj_count( H5F_OBJ_ALL, H5F_OBJ_ALL );
+    if ( nb > 0 ) {
+        ids = (hid_t *)malloc( (size_t)nb * sizeof( hid_t ) );
+        if ( ids != NULL ) {
+            nb = H5Fget_obj_ids( H5F_OBJ_ALL, H5F_OBJ_ALL, (size_t)nb, ids );
+            /* objects first, then files */
+            for ( i = 0; i < nb; i++ ) {
+                switch ( H5Iget_type( ids[i] ) ) {
+                case H5I_DATATYPE:
+                    H5Tclose( ids[i] );
+                    break;
+                case H5I_ATTR:
+                    H5Aclose( ids[i] );
+                    break;
+                case H5I_GROUP:
+                case H5I_DATASET:
+                    H5Oclose( ids[i] );
+                    break;
+                default:
+                    break;
+                }
+            }
+            for ( i = 0; i < nb; i++ ) {
+                if ( H5Iget_type( ids[i] ) == H5I_FILE ) {
+                    H5Fclose( ids[i] );
+                }
+            }
+            free( ids );
+        }
+    }
+}
+#endif
+
 #ifdef ASTER_PLATFORM_MSVC64
 #include <float.h>
 #ifdef ASTER_HAVE_HDF5
@@ -115,6 +160,9 @@ void DEFP( XFINI, xfini, _IN ASTERINTEGER *code ) {
     /* XFINI est n'appelé que par JEFINI avec code=19 (=EOFError) */
     /* jeveux est fermé */
     register_sh_jeveux_status( 0 );
+#if defined( ASTER_PLATFORM_MSVC64 ) && defined( ASTER_HAVE_HDF5 )
+    close_remaining_hdf5_objects();
+#endif
 
     // Do not raise EOFError when using new language description.
     // interruptTry(*code);
