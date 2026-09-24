@@ -23,6 +23,9 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
 #include "med/mpfope.h"
+#if defined(ASTER_HAVE_MPI) && defined(ASTER_HAVE_MED_PARALLEL)
+#include "mpif.h"
+#endif
     med_idt, intent(inout) :: fid
     character(len=*), intent(in) :: nom
     aster_int, intent(in) :: acces
@@ -36,6 +39,11 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
     med_idt :: fidm
     med_int :: acces4, comm4, info4, cret4
 #endif
+#if defined(ASTER_HAVE_MPI) && defined(ASTER_HAVE_MED_PARALLEL)
+!   MPI_INFO_NULL is 0 with Open MPI but not with MPICH/Intel MPI
+    aster_int :: info
+    info = MPI_INFO_NULL
+#endif
     cret = 0
 #if defined(ASTER_HAVE_MPI) && !defined(ASTER_HAVE_MED_PARALLEL)
 !   MPI build against a sequential MED library (no mpfope)
@@ -46,13 +54,13 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
 #if !ASTER_MED_SAME_INT_IDT
         acces4 = to_med_int(acces)
         comm4 = to_med_int(comm)
-        info4 = 0
+        info4 = to_med_int(info)
         call mpfope(fidm, nom, acces4, comm4, info4, &
                     cret4)
         fid = to_med_idt(fidm)
         cret = to_aster_int(cret4)
 #else
-        call mpfope(fid, nom, acces, comm, 0, &
+        call mpfope(fid, nom, acces, comm, info, &
                     cret)
 #endif
 #endif
