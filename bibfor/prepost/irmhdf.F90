@@ -106,7 +106,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
     character(len=200) :: nofimd, desc
     character(len=255) :: kfic
     character(len=64) :: valk(2)
-    aster_logical :: existm, ficexi, lfu
+    aster_logical :: existm, ficexi, lfu, labs
     character(len=16), parameter :: nocoor(3) = (/'X               ', &
                                                   'Y               ', &
                                                   'Z               '/)
@@ -145,8 +145,15 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
     else
         nofimd = kfic(1:200)
     end if
-    if (lfu .and. nofimd(1:1) .ne. "/") then
-        call utmess("F", "MED_11", sk=nofimd)
+    if (lfu) then
+        labs = nofimd(1:1) .eq. "/"
+#ifdef ASTER_PLATFORM_MSVC64
+!       Windows absolute paths: drive letter (C:\ or C:/) or UNC (\\server\share)
+        labs = labs .or. nofimd(2:2) .eq. ":" .or. nofimd(1:1) .eq. achar(92)
+#endif
+        if (.not. labs) then
+            call utmess("F", "MED_11", sk=nofimd)
+        end if
     end if
 !
     if (niv .gt. 1) then
